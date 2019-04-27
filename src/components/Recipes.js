@@ -62,7 +62,7 @@ class Recipes extends Component {
     
     return (
       <div>
-        <h1>CookBook</h1>
+        <h2>All Recipes</h2>
         {selected ?
           this.renderRecipe()
           :
