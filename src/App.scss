@@ -1,9 +1,5 @@
 @import '~antd/dist/antd.css';
 
-.App {
-  text-align: center;
-}
-
 .recipes-list {
   padding-top: 20px;
 
@@ -16,4 +12,13 @@
       text-decoration: underline;
     }
   }
+}
+
+.logo {
+  width: 120px;
+  height: 31px;
+  color: white;
+  font-size: 24px;
+  margin: 16px 24px 16px 0;
+  float: left;
 }
