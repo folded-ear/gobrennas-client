@@ -20,7 +20,7 @@ class Store extends ReduceStore {
   reduce(state, action) {
     switch (action.type) {
       
-      case Types.FETCH_RECIPES:
+      case Types.FETCH_RECIPES: {
         let recipes = List(action.data.map( recipe => {
           return ( new Recipe({
             id: recipe.id,
@@ -32,15 +32,17 @@ class Store extends ReduceStore {
         }));
   
         return state.setIn(['library'], recipes);
-        
-      case Types.ADD_RECIPE:
-  
-        if (!action.data) {
-          return state;
-        }
-        
+      }
+      
+      case Types.ADD_RECIPE: {
+        if (!action.data) { return state; }
         return state.get('library').push(action.data);
-        
+      }
+      
+      case Types.SELECT_RECIPE: {
+        return state.set('selected', action.id)
+      }
+      
       default:
         return state;
     }

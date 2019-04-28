@@ -1,0 +1,19 @@
+@import '~antd/dist/antd.css';
+
+.App {
+  text-align: center;
+}
+
+.recipes-list {
+  padding-top: 20px;
+
+  h2 {
+    color: dodgerblue;
+    cursor: pointer;
+
+    &:hover {
+      color: royalblue;
+      text-decoration: underline;
+    }
+  }
+}

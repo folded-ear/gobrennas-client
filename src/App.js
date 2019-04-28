@@ -6,7 +6,7 @@ import RecipeAdd from './views/RecipeAdd';
 
 import Actions from './data/actions';
 
-import './App.css';
+import './App.scss';
 
 Actions.fetchRecipes();
 

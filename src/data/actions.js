@@ -5,6 +5,14 @@ import axios from 'axios';
 import Recipe from "../models/Recipe";
 
 const Actions = {
+  
+  selectRecipe(id) {
+    Dispatcher.dispatch({
+      type: Types.SELECT_RECIPE,
+      id
+    })
+  },
+  
   addRecipe(recipe) {
     axios
       .post('/api/recipe', recipe.toJSON())

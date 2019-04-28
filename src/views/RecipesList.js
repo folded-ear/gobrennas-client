@@ -1,14 +1,21 @@
 import React from 'react';
+import Actions from '../data/actions';
+
+const handleSelect = (id) => {
+  Actions.selectRecipe(id);
+};
 
 function RecipesList(props) {
+  console.log(props);
   return (
-    <div>
+    <div className="recipes-list">
       {[...props.recipes.get('library').values()].reverse().map(recipe => (
-        <p
+        <h2
           key={recipe.id}
+          onClick={() => handleSelect(recipe.id)}
         >
           {recipe.title}
-        </p>
+        </h2>
       ))}
     </div>
   );

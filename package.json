@@ -33,5 +33,8 @@
       "last 1 safari version"
     ]
   },
-  "proxy": "http://Cookbook-REST-env.m3f6bcn8kw.us-west-2.elasticbeanstalk.com"
+  "proxy": "http://Cookbook-REST-env.m3f6bcn8kw.us-west-2.elasticbeanstalk.com",
+  "devDependencies": {
+    "node-sass": "^4.12.0"
+  }
 }
