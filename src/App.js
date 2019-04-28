@@ -5,15 +5,11 @@ import Container from './containers/container';
 
 import Actions from './data/actions';
 
-import Recipes from './components/Recipes';
 import RecipeAdd from './components/RecipeAdd';
 
 import './App.css';
 
-Actions.addRecipe('My first task');
-Actions.addRecipe('Another task');
-Actions.addRecipe('Finish this tutorial');
-
+Actions.fetchRecipes();
 
 function App() {
   return (
@@ -31,12 +27,10 @@ function App() {
         </Menu>
         
         <div>
-          <Route exact path="/" component={Recipes}/>
+          <Route exact path="/" component={Container}/>
           <Route path="/add" component={RecipeAdd}/>
         </div>
       </Router>
-      <hr />
-      <Container/>
     </div>
   );
 }

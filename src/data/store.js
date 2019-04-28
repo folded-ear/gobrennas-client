@@ -1,4 +1,4 @@
-import Immutable from 'immutable';
+import { List } from 'immutable';
 import {ReduceStore} from 'flux/utils';
 import Types from './types';
 import Dispatcher from './dispatcher';
@@ -12,15 +12,24 @@ class Store extends ReduceStore {
   }
   
   getInitialState() {
-    return Immutable.OrderedMap();
+    return new List();
   }
   
   reduce(state, action) {
     switch (action.type) {
       
       case Types.FETCH_RECIPES:
-        console.log(action);
-        return state;
+        let recipes = List(action.data.map( recipe => {
+          return ( new Recipe({
+            id: recipe.id,
+            title: recipe.title,
+            external_url: recipe.external_url,
+            ingredients: recipe.ingredients,
+            directions: recipe.directions
+          }))
+        }));
+  
+        return state.concat(recipes);
         
       case Types.ADD_RECIPE:
   
@@ -28,7 +37,7 @@ class Store extends ReduceStore {
           return state;
         }
         const id = Counter.increment();
-        return state.set(id, new Recipe({
+        return state.push(id, new Recipe({
           id,
           title: action.title,
           external_url: '',
