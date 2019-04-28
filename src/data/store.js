@@ -36,7 +36,7 @@ class Store extends ReduceStore {
       
       case Types.ADD_RECIPE: {
         if (!action.data) { return state; }
-        return state.get('library').push(action.data);
+        return state.set('library', state.get('library').push(action.data));
       }
       
       case Types.SELECT_RECIPE: {

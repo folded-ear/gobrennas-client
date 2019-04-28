@@ -32,6 +32,7 @@ class RecipeAdd extends Component {
       directions
     });
     Actions.addRecipe(recipe);
+    this.props.history.push('/');
   };
   
   render() {
