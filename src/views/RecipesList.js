@@ -5,13 +5,11 @@ const handleSelect = (id) => {
   Actions.selectRecipe(id);
 };
 
-
 function RecipesList(props) {
   const selected = props.recipes.get('selected');
   const library = props.recipes.get('library');
   
   if(selected) {
-    
     const recipe = library.find( recipe => {
       return recipe.get('id') === selected;
     });
@@ -19,6 +17,7 @@ function RecipesList(props) {
     if(recipe) {
       return (
         <div>
+          <p onClick={() => handleSelect(null)}>X Close</p>
           <h3>{recipe.get('title')}</h3>
           <p>{recipe.get('external_url')}</p>
           <p>{recipe.get('ingredients')}</p>
