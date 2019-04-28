@@ -1,4 +1,4 @@
-import View from '../views/view';
+import RecipesList from '../views/RecipesList';
 import {Container} from 'flux/utils';
 import Store from '../data/store';
 
@@ -14,4 +14,4 @@ function getState() {
   };
 }
 
-export default Container.createFunctional(View, getStores, getState);
+export default Container.createFunctional(RecipesList, getStores, getState);

@@ -1,7 +1,7 @@
 import React from 'react';
 import {BrowserRouter as Router, Route, Link} from 'react-router-dom';
 import {Menu} from 'antd';
-import Container from './containers/container';
+import Recipes from './containers/Recipes';
 
 import Actions from './data/actions';
 
@@ -27,7 +27,7 @@ function App() {
         </Menu>
         
         <div>
-          <Route exact path="/" component={Container}/>
+          <Route exact path="/" component={Recipes}/>
           <Route path="/add" component={RecipeAdd}/>
         </div>
       </Router>

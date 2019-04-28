@@ -1,6 +1,6 @@
 import React from 'react';
 
-function View(props) {
+function RecipesList(props) {
   return <div>
     <section id="main">
       <ul>
@@ -16,4 +16,4 @@ function View(props) {
   </div>;
 }
 
-export default View;
+export default RecipesList;
