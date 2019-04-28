@@ -14,6 +14,8 @@ function RecipesList(props) {
   const selected = props.recipes.get('selected');
   const library = props.recipes.get('library');
   
+  console.log(props.recipes.get('library'));
+  
   if(selected) {
     const recipe = library.find( recipe => {
       return recipe.get('id') === selected;

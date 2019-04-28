@@ -44,9 +44,14 @@ class Store extends ReduceStore {
       }
       
       case Types.DELETE_RECIPE: {
-        return state
-          .set('selected', null)
-          .deleteIn(['library', action.id]);
+        const index = state.get('library').findIndex( recipe => recipe.get('id') === action.id);
+        
+        if(index >= 0) {
+          return state
+            .set('selected', null)
+            .set('library', state.get('library').remove(index));
+        }
+        return state;
       }
       
       default:
