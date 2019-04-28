@@ -25,7 +25,6 @@ class RecipeAdd extends Component {
     const {title, external_url, ingredients, directions } = this.state;
     
     const recipe = new Recipe({
-      id: 0,
       title,
       external_url,
       ingredients,
