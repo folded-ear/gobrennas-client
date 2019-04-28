@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import Actions from '../data/actions';
 import axios from 'axios';
 
 function getRecipes() {
@@ -9,6 +10,7 @@ class Recipes extends Component {
   
   constructor(props) {
     super(props);
+    Actions.fetchRecipes();
     this.state = {
       recipes: [],
       selected: 0

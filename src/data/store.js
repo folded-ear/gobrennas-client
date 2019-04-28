@@ -17,6 +17,11 @@ class Store extends ReduceStore {
   
   reduce(state, action) {
     switch (action.type) {
+      
+      case Types.FETCH_RECIPES:
+        console.log(action);
+        return state;
+        
       case Types.ADD_RECIPE:
   
         if (!action.title) {
