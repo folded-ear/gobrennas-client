@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {BrowserRouter as Router, Route, Link} from 'react-router-dom';
 import {Menu} from 'antd';
 import Recipes from './containers/Recipes';
@@ -8,11 +8,13 @@ import Actions from './data/actions';
 
 import './App.scss';
 
-Actions.fetchRecipes();
-
 function App() {
   
   const [current, setCurrent] = useState('recipes');
+  
+  useEffect( () => {
+    Actions.fetchRecipes();
+  });
   
   return (
     <div className="App">
