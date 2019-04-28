@@ -1,11 +1,19 @@
 import React from 'react';
 import {BrowserRouter as Router, Route, Link} from 'react-router-dom';
-import {Menu, Icon} from 'antd';
+import {Menu} from 'antd';
+import Container from './containers/container';
+
+import Actions from './data/actions';
 
 import Recipes from './components/Recipes';
 import RecipeAdd from './components/RecipeAdd';
 
 import './App.css';
+
+Actions.addRecipe('My first task');
+Actions.addRecipe('Another task');
+Actions.addRecipe('Finish this tutorial');
+
 
 function App() {
   return (
@@ -26,8 +34,9 @@ function App() {
           <Route exact path="/" component={Recipes}/>
           <Route path="/add" component={RecipeAdd}/>
         </div>
-        
       </Router>
+      <hr />
+      <Container/>
     </div>
   );
 }
