@@ -5,7 +5,7 @@ import Recipes from './containers/Recipes';
 
 import Actions from './data/actions';
 
-import RecipeAdd from './components/RecipeAdd';
+import RecipeAdd from './views/RecipeAdd';
 
 import './App.css';
 
