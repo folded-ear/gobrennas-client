@@ -1,31 +1,91 @@
-import React from 'react';
-import {Form, Input, Button} from 'antd/lib/index';
+import React, {Component} from 'react';
+import {Form, Input, Button} from 'antd';
+import Recipe from '../models/Recipe';
+import Actions from '../data/actions';
 
 const {TextArea} = Input;
 
-const RecipeAdd = () => (
-  <div>
-    <h2>Add New Recipe</h2>
-    <div>
-      <Form layout="vertical">
-        <Form.Item>
-          <Input placeholder="Recipe Title"/>
-        </Form.Item>
-        <Form.Item>
-          <Input placeholder="External URL"/>
-        </Form.Item>
-        <Form.Item>
-          <TextArea placeholder="Recipe Ingredients" rows={4}/>
-        </Form.Item>
-        <Form.Item>
-          <TextArea placeholder="Recipe Directions" rows={4}/>
-        </Form.Item>
-        <Form.Item>
-          <Button type="primary">Save</Button>
-        </Form.Item>
-      </Form>
-    </div>
-  </div>
-);
+class RecipeAdd extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      title: '',
+      external_url: '',
+      ingredients: '',
+      directions: ''
+    }
+  }
+  
+  handleUpdate = (e) => {
+    const { name, value } = e.target;
+    this.setState({ [name] : value})
+  };
+  
+  handleSave = () => {
+    const {title, external_url, ingredients, directions } = this.state;
+    
+    const recipe = new Recipe({
+      id: 0,
+      title,
+      external_url,
+      ingredients,
+      directions
+    });
+    Actions.addRecipe(recipe);
+  };
+  
+  render() {
+    const {title, external_url, ingredients, directions } = this.state;
+    
+    return (
+      <div>
+        <h2>Add New Recipe</h2>
+        <div>
+          <Form layout="vertical">
+            <Form.Item>
+              <Input
+                name="title"
+                placeholder="Recipe Title"
+                value={title}
+                onChange={this.handleUpdate}
+              />
+            </Form.Item>
+            <Form.Item>
+              <Input
+                name="external_url"
+                placeholder="External URL"
+                value={external_url}
+                onChange={this.handleUpdate}
+              />
+            </Form.Item>
+            <Form.Item>
+              <TextArea
+                name="ingredients"
+                placeholder="Recipe Ingredients"
+                value={ingredients}
+                onChange={this.handleUpdate}
+                rows={4}
+              />
+            </Form.Item>
+            <Form.Item>
+              <TextArea
+                name="directions"
+                placeholder="Recipe Directions"
+                value={directions}
+                onChange={this.handleUpdate}
+                rows={4}
+              />
+            </Form.Item>
+            <Form.Item>
+              <Button
+                type="primary"
+                onClick={this.handleSave}>Save</Button>
+            </Form.Item>
+          </Form>
+        </div>
+      </div>
+    );
+  }
+}
 
 export default RecipeAdd;

@@ -3,10 +3,10 @@ import Dispatcher from './dispatcher';
 import axios from 'axios';
 
 const Actions = {
-  addRecipe(title) {
+  addRecipe(recipe) {
     Dispatcher.dispatch({
       type: Types.ADD_RECIPE,
-      title,
+      data: recipe,
     });
   },
   

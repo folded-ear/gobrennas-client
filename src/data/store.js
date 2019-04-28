@@ -32,16 +32,11 @@ class Store extends ReduceStore {
         
       case Types.ADD_RECIPE:
   
-        if (!action.title) {
+        if (!action.data) {
           return state;
         }
-        return state.push(new Recipe({
-          id: action.id,
-          title: action.title,
-          external_url: action.external_url,
-          ingredients: action.ingredients,
-          directions: action.directions
-        }));
+        
+        return state.push(action.data);
         
       default:
         return state;
