@@ -3,7 +3,6 @@ import {ReduceStore} from 'flux/utils';
 import Types from './types';
 import Dispatcher from './dispatcher';
 
-import Counter from './Counter';
 import Recipe from '../models/Recipe';
 
 class Store extends ReduceStore {
@@ -36,13 +35,12 @@ class Store extends ReduceStore {
         if (!action.title) {
           return state;
         }
-        const id = Counter.increment();
-        return state.push(id, new Recipe({
-          id,
+        return state.push(new Recipe({
+          id: action.id,
           title: action.title,
-          external_url: '',
-          ingredients: '',
-          directions: ''
+          external_url: action.external_url,
+          ingredients: action.ingredients,
+          directions: action.directions
         }));
         
       default:
