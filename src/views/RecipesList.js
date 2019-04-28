@@ -3,7 +3,7 @@ import React from 'react';
 function RecipesList(props) {
   return (
     <div>
-      {[...props.recipes.values()].reverse().map(recipe => (
+      {[...props.recipes.get('library').values()].reverse().map(recipe => (
         <p
           key={recipe.id}
         >

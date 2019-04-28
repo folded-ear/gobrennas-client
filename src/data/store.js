@@ -1,4 +1,4 @@
-import { List } from 'immutable';
+import { OrderedMap, List } from 'immutable';
 import {ReduceStore} from 'flux/utils';
 import Types from './types';
 import Dispatcher from './dispatcher';
@@ -11,7 +11,10 @@ class Store extends ReduceStore {
   }
   
   getInitialState() {
-    return new List();
+    return new OrderedMap({
+      library: new List(),
+      selected: null
+    });
   }
   
   reduce(state, action) {
@@ -28,7 +31,7 @@ class Store extends ReduceStore {
           }))
         }));
   
-        return state.concat(recipes);
+        return state.setIn(['library'], recipes);
         
       case Types.ADD_RECIPE:
   
@@ -36,7 +39,7 @@ class Store extends ReduceStore {
           return state;
         }
         
-        return state.push(action.data);
+        return state.get('library').push(action.data);
         
       default:
         return state;
