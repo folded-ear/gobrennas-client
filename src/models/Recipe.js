@@ -1,6 +1,6 @@
-import Immutable from 'immutable';
+import { Record } from 'immutable';
 
-const Recipe = Immutable.Record({
+const Recipe = Record({
   id: '',
   title: '',
   external_url: '',

@@ -4,7 +4,7 @@ import Types from './types';
 import Dispatcher from './dispatcher';
 
 import Counter from './Counter';
-import Recipe from './Recipe';
+import Recipe from '../models/Recipe';
 
 class Store extends ReduceStore {
   constructor() {
