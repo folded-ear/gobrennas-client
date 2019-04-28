@@ -43,6 +43,12 @@ class Store extends ReduceStore {
         return state.set('selected', action.id)
       }
       
+      case Types.DELETE_RECIPE: {
+        return state
+          .set('selected', null)
+          .deleteIn(['library', action.id]);
+      }
+      
       default:
         return state;
     }

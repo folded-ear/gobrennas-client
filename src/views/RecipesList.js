@@ -1,8 +1,13 @@
 import React from 'react';
 import Actions from '../data/actions';
+import {Button} from "antd";
 
 const handleSelect = (id) => {
   Actions.selectRecipe(id);
+};
+
+const handleDelete = (id) => {
+  Actions.deleteRecipe(id);
 };
 
 function RecipesList(props) {
@@ -22,6 +27,7 @@ function RecipesList(props) {
           <p>{recipe.get('external_url')}</p>
           <p>{recipe.get('ingredients')}</p>
           <p>{recipe.get('directions')}</p>
+          <Button type="danger" onClick={() => handleDelete(selected)}>Delete Recipe</Button>
         </div>
       )
     }

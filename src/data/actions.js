@@ -35,6 +35,17 @@ const Actions = {
     });
   },
   
+  deleteRecipe(id) {
+    axios
+      .delete(`/api/recipe/${id}`)
+      .then(() => {
+        Dispatcher.dispatch({
+          type: Types.DELETE_RECIPE,
+          id
+        })
+      })
+  },
+  
   fetchRecipes() {
     axios.get('/api/recipe/all')
       .then(res => {
