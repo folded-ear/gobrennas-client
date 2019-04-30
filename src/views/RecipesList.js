@@ -1,6 +1,6 @@
 import React from 'react';
 import Actions from '../data/actions';
-import {Button} from "antd";
+import RecipeDetail from "./RecipeDetail";
 
 const handleSelect = (id) => {
   Actions.selectRecipe(id);
@@ -10,11 +10,9 @@ const handleDelete = (id) => {
   Actions.deleteRecipe(id);
 };
 
-function RecipesList(props) {
+const RecipesList = (props) => {
   const selected = props.recipes.get('selected');
   const library = props.recipes.get('library');
-  
-  console.log(props.recipes.get('library'));
   
   if(selected) {
     const recipe = library.find( recipe => {
@@ -22,21 +20,14 @@ function RecipesList(props) {
     });
     
     if(recipe) {
-      return (
-        <div>
-          <p onClick={() => handleSelect(null)}>X Close</p>
-          <h3>{recipe.get('title')}</h3>
-          <p>{recipe.get('external_url')}</p>
-          <p>{recipe.get('ingredients')}</p>
-          <p>{recipe.get('directions')}</p>
-          <Button type="danger" onClick={() => handleDelete(selected)}>Delete Recipe</Button>
-        </div>
-      )
+      return <RecipeDetail
+        recipe={recipe}
+        onDelete={handleDelete}
+        onSelect={handleSelect}
+      />
     }
     
-    return (
-      <div>Oops.</div>
-    )
+    return <div>Oops.</div>;
   }
   
   return (
@@ -51,6 +42,6 @@ function RecipesList(props) {
       ))}
     </div>
   );
-}
+};
 
 export default RecipesList;
