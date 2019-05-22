@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import {Form, Input, Button} from 'antd';
 import Recipe from '../models/Recipe';
 import Actions from '../data/actions';
+import { AutoComplete } from 'antd';
 
 const {TextArea} = Input;
 
@@ -11,7 +12,7 @@ class RecipeAdd extends Component {
     this.state = {
       title: '',
       external_url: '',
-      ingredients: [],
+      ingredients: ['Milk', 'Cream', 'Things'],
       directions: ''
     }
   }
@@ -57,6 +58,12 @@ class RecipeAdd extends Component {
                 placeholder="External URL"
                 value={external_url}
                 onChange={this.handleUpdate}
+              />
+            </Form.Item>
+            <Form.Item>
+              <AutoComplete
+                dataSource={ingredients}
+                placeholder="Ingredients"
               />
             </Form.Item>
             <Form.Item>
