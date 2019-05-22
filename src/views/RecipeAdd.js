@@ -11,7 +11,7 @@ class RecipeAdd extends Component {
     this.state = {
       title: '',
       external_url: '',
-      ingredients: '',
+      ingredients: [],
       directions: ''
     }
   }
@@ -22,12 +22,13 @@ class RecipeAdd extends Component {
   };
   
   handleSave = () => {
-    const {title, external_url, ingredients, directions } = this.state;
+    const {title, external_url, directions } = this.state;
     
     const recipe = new Recipe({
       title,
+      type: "Recipe",
       external_url,
-      ingredients,
+      ingredients: [],
       directions
     });
     Actions.addRecipe(recipe);
@@ -56,15 +57,6 @@ class RecipeAdd extends Component {
                 placeholder="External URL"
                 value={external_url}
                 onChange={this.handleUpdate}
-              />
-            </Form.Item>
-            <Form.Item>
-              <TextArea
-                name="ingredients"
-                placeholder="Recipe Ingredients"
-                value={ingredients}
-                onChange={this.handleUpdate}
-                rows={4}
               />
             </Form.Item>
             <Form.Item>

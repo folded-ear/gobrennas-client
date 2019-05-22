@@ -25,9 +25,10 @@ const Actions = {
           type: Types.ADD_RECIPE,
           data: new Recipe({
             id: recipe.id,
+            type: "Recipe",
             title: recipe.title,
             external_url: recipe.external_url,
-            ingredients: recipe.ingredients,
+            ingredients: [],
             directions: recipe.directions
           }),
         });
