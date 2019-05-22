@@ -30,6 +30,7 @@ class Store extends ReduceStore {
             external_url: recipe.external_url,
             ingredients: recipe.ingredients.map(ingredient => {
               return new IngredientRef({
+                id: ingredient.ingredientId,
                 quantity: ingredient.quantity,
                 preparation: ingredient.preparation,
                 ingredient: new Ingredient({
