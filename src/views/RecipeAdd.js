@@ -9,12 +9,20 @@ const {TextArea} = Input;
 class RecipeAdd extends Component {
   constructor(props) {
     super(props);
+    
+    // TODO: need to fetch a list of ingredients for the autocomplete -- either that or create a service
     this.state = {
       title: '',
       external_url: '',
-      ingredients: ['Milk', 'Cream', 'Things'],
+      ingredients: [],
       directions: ''
-    }
+    };
+    
+    this.ingredientOptions = [
+      'Milk',
+      "Eggs",
+      "Stuff"
+    ]
   }
   
   handleUpdate = (e) => {
@@ -22,8 +30,13 @@ class RecipeAdd extends Component {
     this.setState({ [name] : value})
   };
   
+  handleSelect = (value) => {
+    const { ingredients } = this.state;
+    this.setState({ ingredients: [...ingredients, value]})
+  }
+  
   handleSave = () => {
-    const {title, external_url, directions } = this.state;
+    const {title, external_url, ingredients, directions } = this.state;
     
     const recipe = new Recipe({
       title,
@@ -62,7 +75,9 @@ class RecipeAdd extends Component {
             </Form.Item>
             <Form.Item>
               <AutoComplete
-                dataSource={ingredients}
+                name="ingredients"
+                dataSource={this.ingredientOptions}
+                onSelect={this.handleSelect}
                 placeholder="Ingredients"
               />
             </Form.Item>
