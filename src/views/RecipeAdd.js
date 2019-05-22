@@ -3,6 +3,7 @@ import {Form, Input, Button} from 'antd';
 import Recipe from '../models/Recipe';
 import Actions from '../data/actions';
 import { AutoComplete } from 'antd';
+import IngredientAdd from "./IngredientAdd";
 
 const {TextArea} = Input;
 
@@ -17,23 +18,17 @@ class RecipeAdd extends Component {
       ingredients: [],
       directions: ''
     };
-    
-    this.ingredientOptions = [
-      'Milk',
-      "Eggs",
-      "Stuff"
-    ]
   }
+  
+  handleSelect = (value) => {
+    const { ingredients } = this.state;
+    this.setState({ ingredients: [...ingredients, value]})
+  };
   
   handleUpdate = (e) => {
     const { name, value } = e.target;
     this.setState({ [name] : value})
   };
-  
-  handleSelect = (value) => {
-    const { ingredients } = this.state;
-    this.setState({ ingredients: [...ingredients, value]})
-  }
   
   handleSave = () => {
     const {title, external_url, ingredients, directions } = this.state;
@@ -73,14 +68,7 @@ class RecipeAdd extends Component {
                 onChange={this.handleUpdate}
               />
             </Form.Item>
-            <Form.Item>
-              <AutoComplete
-                name="ingredients"
-                dataSource={this.ingredientOptions}
-                onSelect={this.handleSelect}
-                placeholder="Ingredients"
-              />
-            </Form.Item>
+            <IngredientAdd onSelect={this.handleSelect} />
             <Form.Item>
               <TextArea
                 name="directions"
