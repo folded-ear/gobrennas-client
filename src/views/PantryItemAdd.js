@@ -15,17 +15,17 @@ class PantryItemAdd extends Component {
   handleSave = () => {
     const { name, aisle } = this.state;
   
+    debugger;
     const item = new PantryItem({
       type: "PantryItem",
       name,
       aisle
     });
+    
     Actions.addPantryItem(item);
-  
   };
   
   handleUpdate = (e) => {
-    console.log(e);
     const { name, value } = e.target;
     this.setState({ [name] : value})
   };

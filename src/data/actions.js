@@ -68,9 +68,9 @@ const Actions = {
       })
   },
   
-  addPantryItem() {
+  addPantryItem(item) {
     axios
-      .post('/api/pantryitem')
+      .post('/api/pantryitem', item.toJSON())
       .then( response => {
         // TODO: Add error handling and logging
         if(response.status && response.status === 201) {
