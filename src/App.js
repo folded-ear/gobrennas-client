@@ -7,6 +7,7 @@ import RecipeAdd from './views/RecipeAdd';
 import Actions from './data/actions';
 
 import './App.scss';
+import PantryItemAdd from "./views/PantryItemAdd";
 
 function App() {
   
@@ -35,6 +36,9 @@ function App() {
               <Menu.Item key="add">
                 <Link to="/add">Add New Recipe</Link>
               </Menu.Item>
+              <Menu.Item key="pantryitem">
+                <Link to="/addpantryitem">Add Pantry Item</Link>
+              </Menu.Item>
             </Menu>
           </Header>
           
@@ -42,6 +46,7 @@ function App() {
             <div style={{ background: '#fff', padding: 24, minHeight: 280 }}>
               <Route exact path="/" component={Recipes}/>
               <Route path="/add" component={RecipeAdd}/>
+              <Route path="/addpantryitem" component={PantryItemAdd} />
             </div>
           </Content>
         </Layout>
