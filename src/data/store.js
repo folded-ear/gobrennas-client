@@ -15,6 +15,7 @@ class Store extends ReduceStore {
   getInitialState() {
     return new OrderedMap({
       library: new List(),
+      pantry_items: new List(),
       selected: null
     });
   }
@@ -65,6 +66,23 @@ class Store extends ReduceStore {
             .set('library', state.get('library').remove(index));
         }
         return state;
+      }
+      
+      case Types.FETCH_PANTRYITEMS: {
+        let items = List(action.data.map( item => {
+          return (new PantryItem({
+            id: item.ingredientId,
+            name: item.name,
+            aisle: item.aisle
+          }))
+        }))
+      }
+      
+      case Types.ADD_PANTRYITEM: {
+        if(!action.data) {
+          return state;
+        }
+        return state.set('pantry_items', state.get('pantry_items').push(action.data))
       }
       
       default:

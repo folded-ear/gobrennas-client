@@ -1,5 +1,7 @@
 import React, {Component} from 'react'
 import {Button, Form, Input} from "antd";
+import PantryItem from "../models/PantryItem";
+import Actions from "../data/actions";
 
 class PantryItemAdd extends Component {
   constructor(props) {
@@ -11,7 +13,15 @@ class PantryItemAdd extends Component {
   }
   
   handleSave = () => {
-    console.log(this.state);
+    const { name, aisle } = this.state;
+  
+    const item = new PantryItem({
+      type: "PantryItem",
+      name,
+      aisle
+    });
+    Actions.addPantryItem(item);
+  
   };
   
   handleUpdate = (e) => {

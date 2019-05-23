@@ -3,6 +3,7 @@ import Types from './types';
 import Dispatcher from './dispatcher';
 import axios from 'axios';
 import Recipe from "../models/Recipe";
+import PantryItem from "../models/PantryItem";
 
 const Actions = {
   
@@ -55,6 +56,36 @@ const Actions = {
           data: res.data
         })
       });
+  },
+  
+  fetchPantryItems() {
+    axios.get('/api/pantryitem/all')
+      .then( res => {
+        Dispatcher.dispatch({
+          type: Types.FETCH_PANTRYITEMS,
+          data: res.data
+        })
+      })
+  },
+  
+  addPantryItem() {
+    axios
+      .post('/api/pantryitem')
+      .then( response => {
+        // TODO: Add error handling and logging
+        if(response.status && response.status === 201) {
+          const { data: item} = response;
+          
+          Dispatcher.dispatch({
+            type: Types.ADD_PANTRYITEM,
+            data: new PantryItem({
+              id: item.ingredientId,
+              name: item.name,
+              aisle: item.aisle
+            })
+          })
+        }
+      })
   }
 };
 
