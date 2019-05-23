@@ -76,7 +76,9 @@ class Store extends ReduceStore {
             name: item.name,
             aisle: item.aisle
           }))
-        }))
+        }));
+  
+        return state.setIn(['pantry_items'], items);
       }
       
       case Types.ADD_PANTRYITEM: {

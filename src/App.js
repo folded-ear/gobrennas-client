@@ -8,6 +8,7 @@ import Actions from './data/actions';
 
 import './App.scss';
 import PantryItemAdd from "./views/PantryItemAdd";
+import PantryItems from "./containers/PantryItems";
 
 function App() {
   
@@ -16,6 +17,7 @@ function App() {
   
   useEffect(() => {
     Actions.fetchRecipes();
+    Actions.fetchPantryItems()
   });
   
   return (
@@ -45,7 +47,7 @@ function App() {
           <Content>
             <div style={{ background: '#fff', padding: 24, minHeight: 280 }}>
               <Route exact path="/" component={Recipes}/>
-              <Route path="/add" component={RecipeAdd}/>
+              <Route exact path="/add" component={PantryItems}/>
               <Route path="/addpantryitem" component={PantryItemAdd} />
             </div>
           </Content>

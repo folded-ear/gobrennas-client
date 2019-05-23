@@ -8,6 +8,7 @@ import IngredientAdd from "./IngredientAdd";
 const {TextArea} = Input;
 
 class RecipeAdd extends Component {
+  
   constructor(props) {
     super(props);
     
@@ -46,6 +47,8 @@ class RecipeAdd extends Component {
   
   render() {
     const {title, external_url, ingredients, directions } = this.state;
+    
+    console.log(this.props);
     
     return (
       <div>

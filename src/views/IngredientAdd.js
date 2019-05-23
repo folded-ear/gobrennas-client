@@ -13,18 +13,19 @@ class IngredientAdd extends Component {
   }
   
   handleUpdate = (e) => {
-    const { name, value } = e.target;
-    this.setState({ [name] : value})
+    const {name, value} = e.target;
+    this.setState({[name]: value})
   };
   
   render() {
+    // const pantryitems = props.recipes.get('pantry_items').map( item => item.name);
     
     // TODO: Add new ingredient from here if you don't see it in the dropdown -- need UX thoughts on this
     // TODO: Send ingredient to the parent component?
     const {onSelect} = this.props;
-    const { quantity, preparation } = this.state;
-  
-    const ingredientOptions = [
+    const {quantity, preparation} = this.state;
+    
+    const pantryitems = [
       'Milk',
       "Eggs",
       "Stuff"
@@ -44,7 +45,7 @@ class IngredientAdd extends Component {
           <Col span={8}>
             <AutoComplete
               name="ingredient"
-              dataSource={ingredientOptions}
+              dataSource={pantryitems}
               onSelect={onSelect}
               placeholder="Ingredients"
             />
