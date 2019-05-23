@@ -47,8 +47,7 @@ class RecipeAdd extends Component {
   
   render() {
     const {title, external_url, ingredients, directions } = this.state;
-    
-    console.log(this.props);
+    const pantryitems = this.props.recipes.get('pantry_items');
     
     return (
       <div>
@@ -71,7 +70,7 @@ class RecipeAdd extends Component {
                 onChange={this.handleUpdate}
               />
             </Form.Item>
-            <IngredientAdd onSelect={this.handleSelect} />
+            <IngredientAdd onSelect={this.handleSelect} data={pantryitems}/>
             <Form.Item>
               <TextArea
                 name="directions"

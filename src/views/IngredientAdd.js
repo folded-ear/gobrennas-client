@@ -18,18 +18,12 @@ class IngredientAdd extends Component {
   };
   
   render() {
-    // const pantryitems = props.recipes.get('pantry_items').map( item => item.name);
+    const pantryitems = this.props.data.map( item => item.name);
     
     // TODO: Add new ingredient from here if you don't see it in the dropdown -- need UX thoughts on this
     // TODO: Send ingredient to the parent component?
     const {onSelect} = this.props;
     const {quantity, preparation} = this.state;
-    
-    const pantryitems = [
-      'Milk',
-      "Eggs",
-      "Stuff"
-    ];
     
     return (
       <Form.Item>
