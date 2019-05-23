@@ -6,6 +6,7 @@ import Dispatcher from './dispatcher';
 import Recipe from '../models/Recipe';
 import IngredientRef from "../models/IngredientRef";
 import Ingredient from "../models/Ingredient";
+import PantryItem from "../models/PantryItem";
 
 class Store extends ReduceStore {
   constructor() {
