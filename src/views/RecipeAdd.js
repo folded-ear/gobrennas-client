@@ -12,7 +12,6 @@ class RecipeAdd extends Component {
   constructor(props) {
     super(props);
     
-    // TODO: need to fetch a list of ingredients for the autocomplete -- either that or create a service
     this.state = {
       title: '',
       external_url: '',
@@ -21,8 +20,9 @@ class RecipeAdd extends Component {
     };
   }
   
-  handleSelect = (value) => {
+  handleSelect = (value, option) => {
     const { ingredients } = this.state;
+    console.log(option);
     this.setState({ ingredients: [...ingredients, value]})
   };
   
@@ -48,6 +48,8 @@ class RecipeAdd extends Component {
   render() {
     const {title, external_url, ingredients, directions } = this.state;
     const pantryitems = this.props.recipes.get('pantry_items');
+    
+    console.log(ingredients);
     
     return (
       <div>
