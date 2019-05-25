@@ -37,11 +37,19 @@ class RecipeAdd extends Component {
       title,
       type: "Recipe",
       external_url,
-      ingredients: [],
+      ingredients: ingredients.map( ingredient => {
+        return {
+          "quantity": ingredient.quantity,
+          "ingredient": {
+            "ingredientId": ingredient.ingredient,
+            "type": "PantryItem"
+          },
+          "preparation": ingredient.preparation
+        }
+      }),
       directions
     });
     Actions.addRecipe(recipe);
-    this.props.history.push('/');
   };
   
   getIngredientName(id) {
