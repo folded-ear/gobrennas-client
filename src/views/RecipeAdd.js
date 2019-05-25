@@ -20,15 +20,14 @@ class RecipeAdd extends Component {
     };
   }
   
-  handleSelect = (value, option) => {
-    const { ingredients } = this.state;
-    console.log(option);
-    this.setState({ ingredients: [...ingredients, value]})
-  };
-  
   handleUpdate = (e) => {
     const { name, value } = e.target;
     this.setState({ [name] : value})
+  };
+  
+  addIngredient = (ingredient) => {
+    const { ingredients } = this.state;
+    this.setState({ ingredients: [...ingredients, ingredient]})
   };
   
   handleSave = () => {
@@ -45,11 +44,28 @@ class RecipeAdd extends Component {
     this.props.history.push('/');
   };
   
+  getIngredientName(id) {
+    const pantryitems = this.props.recipes.get('pantry_items');
+    const item = pantryitems.find( item => item.get('id') === parseInt(id));
+    if(item) {
+      return item.name;
+    }
+  }
+  
+  renderIngredients() {
+    debugger;
+    const { ingredients } = this.state;
+    
+    return ingredients.map( ingredient => {
+      return <p>{ingredient.quantity} {this.getIngredientName(ingredient.ingredient)} {ingredient.preparation}</p>
+    })
+  }
+  
   render() {
-    const {title, external_url, ingredients, directions } = this.state;
+    const {title, external_url, ingredients, directions, ingredient } = this.state;
     const pantryitems = this.props.recipes.get('pantry_items');
     
-    console.log(ingredients);
+    console.log(pantryitems);
     
     return (
       <div>
@@ -72,7 +88,11 @@ class RecipeAdd extends Component {
                 onChange={this.handleUpdate}
               />
             </Form.Item>
-            <IngredientAdd onSelect={this.handleSelect} data={pantryitems}/>
+            <IngredientAdd
+              onSave={this.addIngredient}
+              data={pantryitems}
+            />
+            { this.renderIngredients() }
             <Form.Item>
               <TextArea
                 name="directions"

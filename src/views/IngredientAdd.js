@@ -1,61 +1,75 @@
-import React, {Component} from 'react'
-import {AutoComplete, Form, Input, Row, Col} from "antd";
+import React, { useState } from 'react'
+import {AutoComplete, Button, Col, Form, Input, Row} from "antd";
 import * as PropTypes from "prop-types";
 
-class IngredientAdd extends Component {
+function IngredientAdd(props) {
   
-  constructor(props) {
-    super(props);
-    this.state = {
-      quantity: '',
-      preparation: ''
-    }
-  }
+  const [quantity, setQuantity] = useState('');
+  const [preparation, setPreparation] = useState('');
+  const [ingredient, setIngredient] = useState('');
   
-  handleUpdate = (e) => {
-    const {name, value} = e.target;
-    this.setState({[name]: value})
+  const handleQuantity = (e) => {
+    const { value } = e.target;
+    setQuantity(value)
   };
   
-  render() {
-    const pantryitems = this.props.data.map( item => item.name);
-    
-    // TODO: Add new ingredient from here if you don't see it in the dropdown -- need UX thoughts on this
-    // TODO: Send ingredient to the parent component?
-    const {onSelect} = this.props;
-    const {quantity, preparation} = this.state;
-    
-    return (
-      <Form.Item>
-        <Row>
-          <Col span={4}>
-            <Input
-              name="quantity"
-              placeholder="Quantity"
-              onChange={this.handleUpdate}
-              value={quantity}
-            />
-          </Col>
-          <Col span={8}>
-            <AutoComplete
-              name="ingredient"
-              dataSource={pantryitems}
-              onSelect={onSelect}
-              placeholder="Ingredients"
-            />
-          </Col>
-          <Col span={12}>
-            <Input
-              name="preparation"
-              placeholder="Preparation"
-              onChange={this.handleUpdate}
-              value={preparation}
-            />
-          </Col>
-        </Row>
-      </Form.Item>
-    )
-  }
+  const handlePreparation = (e) => {
+    const { value } = e.target;
+    setPreparation(value)
+  };
+  
+  const handleSave = () => {
+    const { onSave } = props;
+    onSave({quantity, preparation, ingredient});
+  };
+  
+  const Option = AutoComplete.Option;
+  const pantryitems = props.data.map(item => <Option key={item.id}>{item.name}</Option>);
+  
+  
+  return (
+    <Row>
+      <Col span={4}>
+        <Form.Item>
+          <Input
+            name="quantity"
+            placeholder="Quantity"
+            onChange={handleQuantity}
+            value={quantity}
+          />
+        </Form.Item>
+      </Col>
+      <Col span={8}>
+        <Form.Item>
+          <AutoComplete
+            name="ingredient"
+            dataSource={pantryitems}
+            onSelect={setIngredient}
+            placeholder="Ingredients"
+          >
+            {pantryitems}
+          </AutoComplete>
+        </Form.Item>
+      </Col>
+      <Col span={10}>
+        <Form.Item>
+          <Input
+            name="preparation"
+            placeholder="Preparation"
+            onChange={handlePreparation}
+            value={preparation}
+          />
+        </Form.Item>
+      </Col>
+      <Col span={2}>
+        <Form.Item>
+          <Button
+            type="primary"
+            onClick={handleSave}>Add</Button>
+        </Form.Item>
+      </Col>
+    </Row>
+  )
 }
 
 IngredientAdd.propTypes = {onSelect: PropTypes.func};
