@@ -53,7 +53,6 @@ class RecipeAdd extends Component {
   }
   
   renderIngredients() {
-    debugger;
     const { ingredients } = this.state;
     
     return ingredients.map( ingredient => {

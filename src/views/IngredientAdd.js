@@ -21,6 +21,9 @@ function IngredientAdd(props) {
   const handleSave = () => {
     const { onSave } = props;
     onSave({quantity, preparation, ingredient});
+    setQuantity('');
+    setPreparation('');
+    setIngredient('');
   };
   
   const Option = AutoComplete.Option;
@@ -45,6 +48,7 @@ function IngredientAdd(props) {
             name="ingredient"
             dataSource={pantryitems}
             onSelect={setIngredient}
+            value={ingredient}
             placeholder="Ingredients"
           >
             {pantryitems}
