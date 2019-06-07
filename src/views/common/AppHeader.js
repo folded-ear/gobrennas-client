@@ -51,6 +51,9 @@ const AppHeader = ({authenticated, onLogout}) => {
                     <NavLink to="/addpantryitem">Add Pantry Item</NavLink>
                 </Menu.Item>
                 <Menu.Item>
+                    <NavLink to="/tasks">Tasks</NavLink>
+                </Menu.Item>
+                <Menu.Item>
                     <NavLink to="/profile">Profile</NavLink>
                 </Menu.Item>
                 <Menu.Item onClick={onLogout}>Logout</Menu.Item>
