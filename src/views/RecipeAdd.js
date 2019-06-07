@@ -2,7 +2,6 @@ import React, {Component} from 'react';
 import {Form, Input, Button} from 'antd';
 import Recipe from '../models/Recipe';
 import Actions from '../data/actions';
-import { AutoComplete } from 'antd';
 import IngredientAdd from "./IngredientAdd";
 
 const {TextArea} = Input;
@@ -69,7 +68,7 @@ class RecipeAdd extends Component {
   }
   
   render() {
-    const {title, external_url, ingredients, directions, ingredient } = this.state;
+    const {title, external_url, directions } = this.state;
     const pantryitems = this.props.recipes.get('pantry_items');
     
     console.log(pantryitems);
