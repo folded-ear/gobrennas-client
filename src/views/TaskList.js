@@ -13,6 +13,7 @@ class TaskList extends React.PureComponent {
             onCreate,
             onSelect,
             onRename,
+            isTaskActive
         } = this.props;
         return <div>
             <TaskListHeader allLists={allLists}
@@ -25,7 +26,9 @@ class TaskList extends React.PureComponent {
                 {topLevelTasks.map(t =>
                     <Task key={t.id}
                           task={t}
-                          onRename={onRename} />)}
+                          onRename={onRename}
+                          active={isTaskActive(t)}
+                    />)}
             </h2>}
         </div>;
     }
@@ -39,6 +42,8 @@ TaskList.propTypes = {
     onCreate: PropTypes.func.isRequired,
     onSelect: PropTypes.func.isRequired,
     onRename: PropTypes.func.isRequired,
+    onFocus: PropTypes.func.isRequired,
+    isTaskActive: PropTypes.func.isRequired,
 };
 
 export default TaskList;

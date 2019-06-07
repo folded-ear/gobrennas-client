@@ -12,12 +12,15 @@ export default Container.createFunctional(
     ],
     () => {
         const activeList = TaskStore.getActiveList();
+        const activeTask = TaskStore.getActiveTask();
         return {
             allLists: TaskStore.getLists(),
             activeList,
             topLevelTasks: activeList
                 ? TaskStore.getChildTasks(activeList.id)
                 : null,
+            isTaskActive: taskOrId =>
+                (taskOrId.id || taskOrId) === activeTask.id,
             onCreate: name => Dispatcher.dispatch({
                 type: TaskActions.CREATE_LIST,
                 name,
@@ -30,7 +33,11 @@ export default Container.createFunctional(
                 type: TaskActions.RENAME,
                 id,
                 name,
-            })
+            }),
+            onFocus: id => Dispatcher.dispatch({
+                type: TaskActions.FOCUS,
+                id,
+            }),
         };
     }
 );

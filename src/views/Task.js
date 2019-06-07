@@ -21,9 +21,13 @@ class Task extends React.PureComponent {
     render() {
         const {
             task,
+            active,
         } = this.props;
         return <div>
-            <Input value={task.name} onChange={this.onChange} />
+            <Input value={task.name}
+                   autoFocus={active}
+                   onChange={this.onChange}
+            />
         </div>;
     }
 
@@ -31,6 +35,7 @@ class Task extends React.PureComponent {
 
 Task.propTypes = {
     task: PropTypes.object.isRequired,
+    active: PropTypes.bool.isRequired,
     onRename: PropTypes.func.isRequired,
 };
 

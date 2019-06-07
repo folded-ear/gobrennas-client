@@ -82,6 +82,7 @@ const addTask = (state, parentId, name) => {
     return {
         ...state,
         id_seq,
+        activeTaskId: task.id,
         byId: {
             ...state.byId,
             [parent.id]: parent,
@@ -101,6 +102,7 @@ const renameTask = (state, id, name) => {
     } else {
         return {
             ...state,
+            activeTaskId: id,
             byId: {
                 ...state.byId,
                 [id]: {
@@ -112,6 +114,14 @@ const renameTask = (state, id, name) => {
     }
 };
 
+const focusTask = (state, id) => {
+    taskForId(state, id);
+    return {
+        ...state,
+        activeTaskId: id,
+    };
+};
+
 class TaskStore extends ReduceStore {
     constructor() {
         super(Dispatcher);
@@ -121,6 +131,7 @@ class TaskStore extends ReduceStore {
         return {
             id_seq: 0,
             activeListId: null,
+            activeTaskId: null,
             topLevelIds: [],
             byId: {},
         };
@@ -134,6 +145,8 @@ class TaskStore extends ReduceStore {
                 return selectList(state, action.id);
             case TaskActions.RENAME:
                 return renameTask(state, action.id, action.name);
+            case TaskActions.FOCUS:
+                return focusTask(state, action.id);
             default:
                 return state;
         }
@@ -164,6 +177,14 @@ class TaskStore extends ReduceStore {
             ? null
             : taskForId(s, s.activeListId);
     }
+
+    getActiveTask() {
+        const s = this.getState();
+        return s.activeTaskId == null
+            ? null
+            : taskForId(s, s.activeTaskId);
+    }
+
 }
 
 export default localCacheStore("TaskStore", new TaskStore());
