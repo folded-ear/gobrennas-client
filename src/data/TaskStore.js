@@ -10,6 +10,7 @@ import localCacheStore from "../util/localCacheStore";
  */
 
 const CLIENT_ID_PREFIX = "c";
+const AT_END = Math.random();
 
 const _newTask = (state, name) => {
     const id_seq = state.id_seq + 1;
@@ -69,7 +70,22 @@ const tasksForIds = (state, ids) =>
     ids == null ? [] : ids.map(id =>
         taskForId(state, id));
 
-const addTask = (state, parentId, name) => {
+// after can be `null`, an id, or the magic `AT_END` value
+const spliceIds = (ids, id, after = AT_END) => {
+    if (ids == null) return [id];
+    if (ids.length === 0 || after === AT_END) {
+        return ids.concat(id);
+    }
+    if (after == null) {
+        return [id].concat(ids);
+    }
+    let idx = ids.indexOf(after);
+    if (idx < 0) return ids.concat(id);
+    idx += 1; // we want to be after that guy
+    return ids.slice(0, idx).concat(id, ids.slice(idx));
+};
+
+const addTask = (state, parentId, name, after = AT_END) => {
     let parent = taskForId(state, parentId);
     const {
         id_seq,
@@ -77,9 +93,7 @@ const addTask = (state, parentId, name) => {
     } = _newTask(state, name);
     parent = {
         ...parent,
-        subtaskIds: parent.hasOwnProperty("subtaskIds")
-            ? parent.subtaskIds.concat(task.id)
-            : [task.id],
+        subtaskIds: spliceIds(parent.subtaskIds, task.id, after),
     };
     return {
         ...state,
@@ -94,6 +108,32 @@ const addTask = (state, parentId, name) => {
             },
         },
     };
+};
+
+const createTaskAfter = (state, id) => {
+    const t = taskForId(state, id);
+    if (t.parentId == null) {
+        throw new Error(`Can't create a task after root-level '${id}'`)
+    }
+    state = addTask(state, t.parentId, "", id);
+    return state;
+};
+
+const createTaskBefore = (state, id) => {
+    const t = taskForId(state, id);
+    if (t.parentId == null) {
+        throw new Error(`Can't create a task after root-level '${id}'`)
+    }
+    const p = taskForId(state, t.parentId);
+    let afterId = null; // implied first
+    if (p.subtaskIds != null) {
+        const idx = p.subtaskIds.indexOf(id);
+        if (idx > 0) {
+            afterId = p.subtaskIds[idx - 1];
+        }
+    }
+    state = addTask(state, t.parentId, "", afterId);
+    return state;
 };
 
 const renameTask = (state, id, name) => {
@@ -171,6 +211,10 @@ class TaskStore extends ReduceStore {
                 return focusDelta(state, action.id, 1);
             case TaskActions.FOCUS_PREVIOUS:
                 return focusDelta(state, action.id, -1);
+            case TaskActions.CREATE_TASK_AFTER:
+                return createTaskAfter(state, action.id);
+            case TaskActions.CREATE_TASK_BEFORE:
+                return createTaskBefore(state, action.id);
             default:
                 return state;
         }

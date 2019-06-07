@@ -35,6 +35,10 @@ class Task extends React.PureComponent {
 
     onKeyDown(e) {
         const {
+            value,
+            selectionStart,
+        } = e.target;
+        const {
             key,
             ctrlKey,
             shiftKey,
@@ -42,6 +46,12 @@ class Task extends React.PureComponent {
         switch (key) { // eslint-disable-line default-case
             case "Enter":
                 // add a new item, before if the cursor is at the beginning, after otherwise
+                Dispatcher.dispatch({
+                    type: value.length > 0 && selectionStart === 0
+                        ? TaskActions.CREATE_TASK_BEFORE
+                        : TaskActions.CREATE_TASK_AFTER,
+                    id: this.props.task.id,
+                });
                 break;
             case "Backspace":
             case "Delete":
