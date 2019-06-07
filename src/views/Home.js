@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {BrowserRouter as Router, Route, Link} from 'react-router-dom';
+import {Route, Link} from 'react-router-dom';
 import {Layout, Menu} from 'antd';
 import Recipes from '../containers/Recipes';
 
@@ -20,7 +20,6 @@ function Home() {
   
   return (
     <div className="Home">
-      <Router>
         <Layout className="layout">
           <Header>
             <div className="logo">Cookbook</div>
@@ -50,7 +49,6 @@ function Home() {
             </div>
           </Content>
         </Layout>
-      </Router>
     </div>
   );
 }
