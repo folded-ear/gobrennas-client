@@ -2,7 +2,6 @@ import React, {useState, useEffect} from 'react';
 import {BrowserRouter as Router, Route, Link} from 'react-router-dom';
 import {Layout, Menu} from 'antd';
 import Recipes from './containers/Recipes';
-import RecipeAdd from './views/RecipeAdd';
 
 import Actions from './data/actions';
 
