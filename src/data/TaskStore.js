@@ -1,6 +1,7 @@
 import { ReduceStore } from "flux/utils";
 import Dispatcher from './dispatcher';
 import TaskActions from "./TaskActions";
+import localCacheStore from "../util/localCacheStore";
 
 const createSequence = (start = 1) => {
     let counter = start;
@@ -54,7 +55,6 @@ class TaskStore extends ReduceStore {
         };
     }
 
-
     reduce(state, action) {
         switch (action.type) {
             case TaskActions.CREATE_LIST:
@@ -76,4 +76,4 @@ class TaskStore extends ReduceStore {
     }
 }
 
-export default new TaskStore();
+export default localCacheStore("TaskStore", new TaskStore());
