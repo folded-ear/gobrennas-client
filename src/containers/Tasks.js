@@ -10,16 +10,27 @@ export default Container.createFunctional(
     () => [
         TaskStore,
     ],
-    () => ({
-        activeListId: TaskStore.getActiveListId(),
-        lists: TaskStore.getTopLevelTasks(),
-        onCreate: name => Dispatcher.dispatch({
-            type: TaskActions.CREATE_LIST,
-            name,
-        }),
-        onSelect: id => Dispatcher.dispatch({
-            type: TaskActions.SELECT_LIST,
-            id,
-        }),
-    })
+    () => {
+        const activeList = TaskStore.getActiveList();
+        return {
+            allLists: TaskStore.getLists(),
+            activeList,
+            topLevelTasks: activeList
+                ? TaskStore.getChildTasks(activeList.id)
+                : null,
+            onCreate: name => Dispatcher.dispatch({
+                type: TaskActions.CREATE_LIST,
+                name,
+            }),
+            onSelect: id => Dispatcher.dispatch({
+                type: TaskActions.SELECT_LIST,
+                id,
+            }),
+            onRename: (id, name) => Dispatcher.dispatch({
+                type: TaskActions.RENAME,
+                id,
+                name,
+            })
+        };
+    }
 );

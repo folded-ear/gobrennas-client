@@ -39,20 +39,20 @@ class TaskListHeader extends React.PureComponent {
 
     render() {
         const {
-            activeListId,
-            lists,
+            activeList,
+            allLists,
             onSelect,
         } = this.props;
         const {
             name,
         } = this.state;
         return <Form layout="inline">
-            {lists && lists.length > 0 && <Form.Item label="Select a List:">
+            {allLists && allLists.length > 0 && <Form.Item label="Select a List:">
                 <Select style={{minWidth: 120}}
                         onChange={onSelect}
-                        value={activeListId}
+                        value={activeList.id}
                 >
-                    {lists.map(l =>
+                    {allLists.map(l =>
                         <Select.Option key={l.id}
                                        value={l.id}
                         >
@@ -77,12 +77,8 @@ class TaskListHeader extends React.PureComponent {
 }
 
 TaskListHeader.propTypes = {
-    activeListId: PropTypes.oneOfType([
-        // kludge for a db id or a client id
-        PropTypes.number,
-        PropTypes.string,
-    ]),
-    lists: PropTypes.array.isRequired,
+    allLists: PropTypes.array.isRequired,
+    activeList: PropTypes.object,
     onCreate: PropTypes.func.isRequired,
     onSelect: PropTypes.func.isRequired,
 };

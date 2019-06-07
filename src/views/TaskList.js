@@ -1,24 +1,31 @@
 import React from "react";
 import PropTypes from "prop-types";
 import TaskListHeader from "./TaskListHeader";
+import Task from "./Task";
 
 class TaskList extends React.PureComponent {
 
     render() {
         const {
-            lists,
-            activeListId,
+            allLists,
+            activeList,
+            topLevelTasks,
             onCreate,
             onSelect,
+            onRename,
         } = this.props;
         return <div>
-            <TaskListHeader lists={lists}
-                            activeListId={activeListId}
+            <TaskListHeader allLists={allLists}
+                            activeList={activeList}
                             onCreate={onCreate}
                             onSelect={onSelect}
             />
-            {activeListId && <h2>
-                hello {activeListId}
+            {activeList && <h2>
+                hello {activeList.name}
+                {topLevelTasks.map(t =>
+                    <Task key={t.id}
+                          task={t}
+                          onRename={onRename} />)}
             </h2>}
         </div>;
     }
@@ -26,14 +33,12 @@ class TaskList extends React.PureComponent {
 }
 
 TaskList.propTypes = {
-    lists: PropTypes.array.isRequired,
-    activeListId: PropTypes.oneOfType([
-        // kludge for a db id or a client id
-        PropTypes.number,
-        PropTypes.string,
-    ]),
+    allLists: PropTypes.array.isRequired,
+    activeList: PropTypes.object,
+    topLevelTasks: PropTypes.array,
     onCreate: PropTypes.func.isRequired,
     onSelect: PropTypes.func.isRequired,
+    onRename: PropTypes.func.isRequired,
 };
 
 export default TaskList;
