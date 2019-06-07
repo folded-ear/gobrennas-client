@@ -1,7 +1,6 @@
 import React from 'react';
 import Actions from '../data/actions';
 import RecipeDetail from "./RecipeDetail";
-import { GOOGLE_AUTH_URL} from "../constants";
 
 const handleSelect = (id) => {
   Actions.selectRecipe(id);
@@ -33,8 +32,7 @@ const RecipesList = (props) => {
   
   return (
     <div className="recipes-list">
-      <h1><a href={GOOGLE_AUTH_URL}>Log in with Google</a></h1>
-      
+      <h1>Recipes</h1>
       {[...props.recipes.get('library').values()].reverse().map(recipe => (
         <h2
           key={recipe.id}

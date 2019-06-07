@@ -4,9 +4,12 @@ import Dispatcher from './dispatcher';
 import axios from 'axios';
 import Recipe from "../models/Recipe";
 import PantryItem from "../models/PantryItem";
+import user from './user';
 
 const Actions = {
   
+  user,
+
   selectRecipe(id) {
     Dispatcher.dispatch({
       type: Types.SELECT_RECIPE,
