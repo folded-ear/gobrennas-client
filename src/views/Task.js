@@ -54,8 +54,24 @@ class Task extends React.PureComponent {
                 });
                 break;
             case "Backspace":
+                // if the value is empty, delete the task and focus previous
+                if (value.length === 0) {
+                    e.preventDefault();
+                    Dispatcher.dispatch({
+                        type: TaskActions.BACKWARDS_DELETE_TASK,
+                        id: this.props.task.id
+                    });
+                }
+                break;
             case "Delete":
-                // if the value is empty, delete the task
+                // if the value is empty, delete the task and focus next
+                if (value.length === 0) {
+                    e.preventDefault();
+                    Dispatcher.dispatch({
+                        type: TaskActions.FORWARD_DELETE_TASK,
+                        id: this.props.task.id
+                    });
+                }
                 break;
             case "Tab":
                 // suppress the event (eventually nest)

@@ -161,24 +161,94 @@ const focusTask = (state, id) => {
     };
 };
 
+const atIndexOrNull = (items, idx) =>
+    idx >= 0 && idx < items.length
+        ? items[idx]
+        : null;
+
+const getNeighborIds = (state, id, distance = 1) => {
+    const t = taskForId(state, id);
+    const siblingIds = t.parentId == null
+        ? state.topLevelIds
+        : taskForId(state, t.parentId).subtaskIds;
+    const idx = siblingIds.indexOf(id);
+    if (idx < 0) {
+        throw new Error(`Task '${t.id}' isn't a child of it's parent ('${t.parentId}')?`)
+    }
+    return {
+        before: atIndexOrNull(siblingIds, idx - distance),
+        after: atIndexOrNull(siblingIds, idx + distance),
+    };
+};
+
 const focusDelta = (state, id, delta) => {
     if (delta === 0) {
         console.warn("Focus by a delta of zero?");
         return state;
     }
+    const {
+        before,
+        after,
+    } = getNeighborIds(state, id, Math.abs(delta));
+    const sid = delta < 0 ? before : after;
+    if (sid == null) return state;
+    return {
+        ...state,
+        activeTaskId: sid,
+    };
+};
+
+const deleteTask = (state, id) => {
     const t = taskForId(state, id);
-    const siblingIds = t.parentId == null
-        ? state.topLevelIds
-        : taskForId(state, t.parentId).subtaskIds;
-    let idx = siblingIds.indexOf(id);
+    if (t.parentId == null) {
+        throw new Error(`Can't delete root-level task '${id}'`)
+    }
+    const p = taskForId(state, t.parentId);
+    const idx = p.subtaskIds.indexOf(id);
     if (idx < 0) {
         throw new Error(`Task '${t.id}' isn't a child of it's parent ('${t.parentId}')?`)
     }
-    idx += delta;
-    if (idx < 0 || idx >= siblingIds.length) return state;
+    const newById = {
+        ...state.byId,
+    };
+    delete newById[id];
+    newById[p.id] = {
+        ...newById[p.id],
+        subtaskIds: p.subtaskIds.slice(0, idx).concat(p.subtaskIds.slice(idx + 1)),
+    };
     return {
         ...state,
-        activeTaskId: siblingIds[idx],
+        byId: newById,
+    };
+};
+
+const forwardDeleteTask = (state, id) => {
+    const {
+        before,
+        after,
+    } = getNeighborIds(state, id);
+    if (before == null && after == null) {
+        // can't delete the only item on a list
+        return renameTask(state, id, "");
+    }
+    return {
+        ...deleteTask(state, id),
+        activeTaskId: after != null ? after : before,
+    };
+};
+
+const backwardsDeleteTask = (state, id) => {
+    const {
+        before,
+        after,
+    } = getNeighborIds(state, id);
+    if (before == null && after == null) {
+        // can't delete the only item on a list
+        return renameTask(state, id, "");
+    }
+    return {
+        ...deleteTask(state, id),
+        activeTaskId: before != null ? before : after,
     };
 };
 
@@ -215,6 +285,10 @@ class TaskStore extends ReduceStore {
                 return createTaskAfter(state, action.id);
             case TaskActions.CREATE_TASK_BEFORE:
                 return createTaskBefore(state, action.id);
+            case TaskActions.FORWARD_DELETE_TASK:
+                return forwardDeleteTask(state, action.id);
+            case TaskActions.BACKWARDS_DELETE_TASK:
+                return backwardsDeleteTask(state, action.id);
             default:
                 return state;
         }
