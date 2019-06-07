@@ -3,19 +3,12 @@ import Dispatcher from './dispatcher';
 import TaskActions from "./TaskActions";
 import localCacheStore from "../util/localCacheStore";
 
-const createSequence = (start = 1) => {
-    let counter = start;
-    return {
-        next: () => "c" + counter++,
-    };
-};
-
-const id_seq = createSequence();
-
 const createList = (state, name) => {
-    const id = id_seq.next();
+    const id_seq = state.id_seq + 1;
+    const id = "c" + id_seq;
     return {
         ...state,
+        id_seq,
         activeListId: id,
         topLevelIds: state.topLevelIds.concat(id),
         byId: {
@@ -49,6 +42,7 @@ class TaskStore extends ReduceStore {
 
     getInitialState() {
         return {
+            id_seq: 0,
             activeListId: null,
             topLevelIds: [],
             byId: {},
