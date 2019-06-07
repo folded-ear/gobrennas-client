@@ -10,7 +10,6 @@ import localCacheStore from "../util/localCacheStore";
  */
 
 const CLIENT_ID_PREFIX = "c";
-const EMPTY_TASK_ID_PREFIX = "EMPTY_TASK_ID:";
 
 const _newTask = (state, name) => {
     const id_seq = state.id_seq + 1;
@@ -29,29 +28,32 @@ const createList = (state, name) => {
         id_seq,
         task,
     } = _newTask(state, name);
-    return {
+    return addTask({
         ...state,
         id_seq,
         activeListId: task.id,
+        activeTaskId: null,
         topLevelIds: state.topLevelIds.concat(task.id),
         byId: {
             ...state.byId,
             [task.id]: task,
         },
-    };
+    }, task.id, "");
 };
 
 const selectList = (state, id) => {
+    if (state.activeListId === id) return state;
     // only valid ids, please
-    if (! state.byId.hasOwnProperty(id)) {
-        throw new Error(`Unknown '${id}' list.`);
-    }
+    const list = taskForId(state, id);
     if (state.topLevelIds.every(it => it !== id)) {
         throw new Error(`Task '${id}' is not a list.`);
     }
     return {
         ...state,
         activeListId: id,
+        activeTaskId: list.subtaskIds
+            ? list.subtaskIds[0]
+            : null,
     };
 };
 
@@ -86,39 +88,57 @@ const addTask = (state, parentId, name) => {
         byId: {
             ...state.byId,
             [parent.id]: parent,
-            [task.id]: task,
+            [task.id]: {
+                ...task,
+                parentId,
+            },
         },
     };
 };
 
 const renameTask = (state, id, name) => {
-    if (typeof id === "string" && id.indexOf(EMPTY_TASK_ID_PREFIX) === 0) {
-        // it's the implicit empty one
-        let parentId = id.substr(EMPTY_TASK_ID_PREFIX.length);
-        if (parentId.charAt(0) !== CLIENT_ID_PREFIX) {
-            parentId = parseInt(parentId);
-        }
-        return addTask(state, parentId, name);
-    } else {
-        return {
-            ...state,
-            activeTaskId: id,
-            byId: {
-                ...state.byId,
-                [id]: {
-                    ...taskForId(state, id),
-                    name,
-                },
-            }
+    const task = taskForId(state, id);
+    if (task.name === name) return state;
+    return {
+        ...state,
+        activeTaskId: id,
+        byId: {
+            ...state.byId,
+            [id]: {
+                ...task,
+                name,
+            },
         }
     }
 };
 
 const focusTask = (state, id) => {
+    if (state.activeTaskId === id) return state;
     taskForId(state, id);
     return {
         ...state,
         activeTaskId: id,
+    };
+};
+
+const focusDelta = (state, id, delta) => {
+    if (delta === 0) {
+        console.warn("Focus by a delta of zero?");
+        return state;
+    }
+    const t = taskForId(state, id);
+    const siblingIds = t.parentId == null
+        ? state.topLevelIds
+        : taskForId(state, t.parentId).subtaskIds;
+    let idx = siblingIds.indexOf(id);
+    if (idx < 0) {
+        throw new Error(`Task '${t.id}' isn't a child of it's parent ('${t.parentId}')?`)
+    }
+    idx += delta;
+    if (idx < 0 || idx >= siblingIds.length) return state;
+    return {
+        ...state,
+        activeTaskId: siblingIds[idx],
     };
 };
 
@@ -147,6 +167,10 @@ class TaskStore extends ReduceStore {
                 return renameTask(state, action.id, action.name);
             case TaskActions.FOCUS:
                 return focusTask(state, action.id);
+            case TaskActions.FOCUS_NEXT:
+                return focusDelta(state, action.id, 1);
+            case TaskActions.FOCUS_PREVIOUS:
+                return focusDelta(state, action.id, -1);
             default:
                 return state;
         }
@@ -163,12 +187,7 @@ class TaskStore extends ReduceStore {
         if (p == null) {
             throw new Error(`Unknown '${containerId}' task container`);
         }
-        const realTasks = tasksForIds(s, p.subtaskIds);
-        realTasks.push({
-            id: EMPTY_TASK_ID_PREFIX + containerId,
-            name: "",
-        });
-        return realTasks;
+        return tasksForIds(s, p.subtaskIds);
     }
 
     getActiveList() {

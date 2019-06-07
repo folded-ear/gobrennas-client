@@ -6,6 +6,8 @@ import {
     Input,
     Select,
 } from "antd";
+import Dispatcher from "../data/dispatcher";
+import TaskActions from "../data/TaskActions";
 
 const isValidName = name =>
     name != null && name.trim().length > 0;
@@ -18,6 +20,7 @@ class TaskListHeader extends React.PureComponent {
             name: "",
         };
         this.onCreate = this.onCreate.bind(this);
+        this.onSelect = this.onSelect.bind(this);
         this.onNameChange = this.onNameChange.bind(this);
     }
 
@@ -34,14 +37,23 @@ class TaskListHeader extends React.PureComponent {
         this.setState({
             name: "",
         });
-        this.props.onCreate(name);
+        Dispatcher.dispatch({
+            type: TaskActions.CREATE_LIST,
+            name,
+        });
+    }
+
+    onSelect(id) {
+        Dispatcher.dispatch({
+            type: TaskActions.SELECT_LIST,
+            id,
+        })
     }
 
     render() {
         const {
             activeList,
             allLists,
-            onSelect,
         } = this.props;
         const {
             name,
@@ -49,7 +61,7 @@ class TaskListHeader extends React.PureComponent {
         return <Form layout="inline">
             {allLists && allLists.length > 0 && <Form.Item label="Select a List:">
                 <Select style={{minWidth: 120}}
-                        onChange={onSelect}
+                        onChange={this.onSelect}
                         value={activeList.id}
                 >
                     {allLists.map(l =>
@@ -79,8 +91,6 @@ class TaskListHeader extends React.PureComponent {
 TaskListHeader.propTypes = {
     allLists: PropTypes.array.isRequired,
     activeList: PropTypes.object,
-    onCreate: PropTypes.func.isRequired,
-    onSelect: PropTypes.func.isRequired,
 };
 
 export default TaskListHeader;
