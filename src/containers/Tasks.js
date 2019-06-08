@@ -11,6 +11,7 @@ export default Container.createFunctional(
     () => {
         const activeList = TaskStore.getActiveList();
         const activeTask = TaskStore.getActiveTask();
+        const selectedTasks = TaskStore.getSelectedTasks();
         return {
             allLists: TaskStore.getLists(),
             activeList,
@@ -20,6 +21,9 @@ export default Container.createFunctional(
             isTaskActive: activeTask == null
                 ? () => false
                 : taskOrId => (taskOrId.id || taskOrId) === activeTask.id,
+            isTaskSelected: selectedTasks == null
+                ? () => false
+                : taskOrId => selectedTasks.some(t => (taskOrId.id || taskOrId) === t.id),
         };
     }
 );

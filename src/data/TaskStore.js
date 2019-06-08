@@ -167,6 +167,7 @@ const focusTask = (state, id) => {
     return {
         ...state,
         activeTaskId: id,
+        selectedTaskIds: null,
     };
 };
 
@@ -201,6 +202,42 @@ const focusDelta = (state, id, delta) => {
     } = getNeighborIds(state, id, Math.abs(delta));
     const sid = delta < 0 ? before : after;
     return sid == null ? state : focusTask(state, sid);
+};
+
+const selectDelta = (state, id, delta) => {
+    if (delta === 0) {
+        console.warn("Select by a delta of zero?");
+        return state;
+    }
+    if (delta !== 1 && delta !== -1) {
+        throw new Error("Selection can't expand by more than one item at a time");
+    }
+    const {
+        after,
+    } = getNeighborIds(state, id, delta);
+    if (state.selectedTaskIds == null) {
+        // starting to select
+        return {
+            ...focusTask(state, after),
+            selectedTaskIds: [id]
+        };
+    }
+    const idx = state.selectedTaskIds.indexOf(after);
+    if (idx >= 0) {
+        // contract selection
+        return {
+            ...focusTask(state, after),
+            selectedTaskIds: state.selectedTaskIds.length === 0
+                ? null
+                : state.selectedTaskIds.slice(0, idx)
+        };
+    } else {
+        // expand selection
+        return {
+            ...focusTask(state, after),
+            selectedTaskIds: state.selectedTaskIds.concat(id)
+        };
+    }
 };
 
 const completeTask = (state, id) => {
@@ -272,6 +309,7 @@ class TaskStore extends ReduceStore {
             id_seq: 0,
             activeListId: null,
             activeTaskId: null,
+            selectedTaskIds: null,
             topLevelIds: [],
             byId: {},
         };
@@ -301,6 +339,10 @@ class TaskStore extends ReduceStore {
                 return backwardsDeleteTask(state, action.id);
             case TaskActions.MARK_COMPLETE:
                 return completeTask(state, action.id);
+            case TaskActions.SELECT_NEXT:
+                return selectDelta(state, action.id, 1);
+            case TaskActions.SELECT_PREVIOUS:
+                return selectDelta(state, action.id, -1);
             default:
                 return state;
         }
@@ -332,6 +374,13 @@ class TaskStore extends ReduceStore {
         return s.activeTaskId == null
             ? null
             : taskForId(s, s.activeTaskId);
+    }
+
+    getSelectedTasks() {
+        const s = this.getState();
+        return s.selectedTaskIds == null
+            ? null
+            : tasksForIds(s, s.selectedTaskIds);
     }
 
 }

@@ -10,21 +10,20 @@ class TaskList extends React.PureComponent {
             allLists,
             activeList,
             topLevelTasks,
-            isTaskActive
+            isTaskActive,
+            isTaskSelected,
         } = this.props;
-        return <div>
+        return <React.Fragment>
             <TaskListHeader allLists={allLists}
                             activeList={activeList}
             />
-            {activeList && <h2>
-                hello {activeList.name}
-                {topLevelTasks.map(t =>
-                    <Task key={t.id}
-                          task={t}
-                          active={isTaskActive(t)}
-                    />)}
-            </h2>}
-        </div>;
+            {activeList && topLevelTasks.map(t =>
+                <Task key={t.id}
+                      task={t}
+                      active={isTaskActive(t)}
+                      selected={isTaskSelected(t)}
+                />)}
+        </React.Fragment>;
     }
 
 }
@@ -34,6 +33,7 @@ TaskList.propTypes = {
     activeList: PropTypes.object,
     topLevelTasks: PropTypes.array,
     isTaskActive: PropTypes.func.isRequired,
+    isTaskSelected: PropTypes.func.isRequired,
 };
 
 export default TaskList;

@@ -6,6 +6,8 @@ import {
 } from "antd";
 import TaskActions from "../data/TaskActions";
 import Dispatcher from "../data/dispatcher";
+import classnames from "classnames";
+import "./Task.scss";
 
 class Task extends React.PureComponent {
 
@@ -88,6 +90,10 @@ class Task extends React.PureComponent {
                     // ignore!
                 } else if (shiftKey) {
                     // select this task and the previous one
+                    Dispatcher.dispatch({
+                        type: TaskActions.SELECT_PREVIOUS,
+                        id: this.props.task.id,
+                    });
                 } else if (ctrlKey) {
                     // move all selected tasks up one (if a predecessor exists)
                 } else {
@@ -103,6 +109,10 @@ class Task extends React.PureComponent {
                     // ignore!
                 } else if (shiftKey) {
                     // select this task and the next one
+                    Dispatcher.dispatch({
+                        type: TaskActions.SELECT_NEXT,
+                        id: this.props.task.id,
+                    });
                 } else if (ctrlKey) {
                     // move all selected tasks down one (if a follower exists)
                 } else {
@@ -133,6 +143,8 @@ class Task extends React.PureComponent {
     render() {
         const {
             task,
+            active,
+            selected,
         } = this.props;
         return <Input value={task.name}
                       placeholder="Write a task name"
@@ -141,6 +153,10 @@ class Task extends React.PureComponent {
                                            size="small"
                                            onClick={this.onComplete}
                       />}
+                      className={classnames({
+                          "task-active": active,
+                          "task-selected": selected,
+                      })}
                       ref={this.inputRef}
                       onFocus={this.onFocus}
                       onChange={this.onChange}
@@ -155,6 +171,7 @@ class Task extends React.PureComponent {
 Task.propTypes = {
     task: PropTypes.object.isRequired,
     active: PropTypes.bool.isRequired,
+    selected: PropTypes.bool.isRequired,
 };
 
 export default Task;

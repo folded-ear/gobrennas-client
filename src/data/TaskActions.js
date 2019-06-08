@@ -5,6 +5,8 @@ const TaskActions = {
     FOCUS: "task/focus",
     FOCUS_NEXT: "task/focus-next",
     FOCUS_PREVIOUS: "task/focus-previous",
+    SELECT_NEXT: "task/select-next",
+    SELECT_PREVIOUS: "task/select-previous",
     CREATE_TASK_AFTER: "task/create-task-after",
     CREATE_TASK_BEFORE: "task/create-task-before",
     FORWARD_DELETE_TASK: "task/forward-delete-task",
