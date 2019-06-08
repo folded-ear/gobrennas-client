@@ -125,6 +125,12 @@ class Task extends React.PureComponent {
         } = this.props;
         return <div>
             <Input value={task.name}
+                   placeholder="Write a task name"
+                   style={{
+                       borderWidth: 0,
+                       borderRadius: 0,
+                       borderBottom: "1px solid #ddd"
+                   }}
                    ref={this.inputRef}
                    onFocus={this.onFocus}
                    onChange={this.onChange}
