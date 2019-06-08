@@ -45,9 +45,10 @@ class Task extends React.PureComponent {
         } = e;
         switch (key) { // eslint-disable-line default-case
             case "Enter":
+                if (value.length === 0) break;
                 // add a new item, before if the cursor is at the beginning, after otherwise
                 Dispatcher.dispatch({
-                    type: value.length > 0 && selectionStart === 0
+                    type: selectionStart === 0
                         ? TaskActions.CREATE_TASK_BEFORE
                         : TaskActions.CREATE_TASK_AFTER,
                     id: this.props.task.id,

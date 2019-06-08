@@ -59,9 +59,12 @@ const selectList = (state, id) => {
 };
 
 const taskForId = (state, id) => {
+    if (id == null) {
+        throw new Error(`No task has a null id.`);
+    }
     const t = state.byId[id];
     if (t == null) {
-        throw new Error(`No tast '${id}' is known`);
+        throw new Error(`No task '${id}' is known`);
     }
     return t;
 };
@@ -153,8 +156,14 @@ const renameTask = (state, id, name) => {
 };
 
 const focusTask = (state, id) => {
-    if (state.activeTaskId === id) return state;
     taskForId(state, id);
+    if (state.activeTaskId === id) return state;
+    if (state.activeTaskId != null) {
+        const prev = taskForId(state, state.activeTaskId);
+        if (prev.name.trim() === "") {
+            state = deleteTask(state, state.activeTaskId)
+        }
+    }
     return {
         ...state,
         activeTaskId: id,
@@ -191,11 +200,7 @@ const focusDelta = (state, id, delta) => {
         after,
     } = getNeighborIds(state, id, Math.abs(delta));
     const sid = delta < 0 ? before : after;
-    if (sid == null) return state;
-    return {
-        ...state,
-        activeTaskId: sid,
-    };
+    return sid == null ? state : focusTask(state, sid);
 };
 
 const deleteTask = (state, id) => {
@@ -218,6 +223,7 @@ const deleteTask = (state, id) => {
     };
     return {
         ...state,
+        activeTaskId: state.activeTaskId === id ? null : state.activeTaskId,
         byId: newById,
     };
 };
