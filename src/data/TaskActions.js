@@ -9,6 +9,7 @@ const TaskActions = {
     CREATE_TASK_BEFORE: "task/create-task-before",
     FORWARD_DELETE_TASK: "task/forward-delete-task",
     BACKWARDS_DELETE_TASK: "task/backwards-delete-task",
+    MARK_COMPLETE: "task/mark-complete"
 };
 
 export default TaskActions;

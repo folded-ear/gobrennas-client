@@ -1,6 +1,9 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Input } from "antd";
+import {
+    Button,
+    Input,
+} from "antd";
 import TaskActions from "../data/TaskActions";
 import Dispatcher from "../data/dispatcher";
 
@@ -11,6 +14,7 @@ class Task extends React.PureComponent {
         this.onFocus = this.onFocus.bind(this);
         this.onChange = this.onChange.bind(this);
         this.onKeyDown = this.onKeyDown.bind(this);
+        this.onComplete = this.onComplete.bind(this);
         this.inputRef = React.createRef();
     }
 
@@ -111,6 +115,13 @@ class Task extends React.PureComponent {
         }
     }
 
+    onComplete() {
+        Dispatcher.dispatch({
+            type: TaskActions.MARK_COMPLETE,
+            id: this.props.task.id,
+        });
+    }
+
     componentDidMount() {
         if (this.props.active) this.inputRef.current.focus();
     }
@@ -123,20 +134,18 @@ class Task extends React.PureComponent {
         const {
             task,
         } = this.props;
-        return <div>
-            <Input value={task.name}
-                   placeholder="Write a task name"
-                   style={{
-                       borderWidth: 0,
-                       borderRadius: 0,
-                       borderBottom: "1px solid #ddd"
-                   }}
-                   ref={this.inputRef}
-                   onFocus={this.onFocus}
-                   onChange={this.onChange}
-                   onKeyDown={this.onKeyDown}
-            />
-        </div>;
+        return <Input value={task.name}
+                      placeholder="Write a task name"
+                      addonBefore={<Button icon="check"
+                                           shape="circle"
+                                           size="small"
+                                           onClick={this.onComplete}
+                      />}
+                      ref={this.inputRef}
+                      onFocus={this.onFocus}
+                      onChange={this.onChange}
+                      onKeyDown={this.onKeyDown}
+        />;
     }
 
 

@@ -203,6 +203,10 @@ const focusDelta = (state, id, delta) => {
     return sid == null ? state : focusTask(state, sid);
 };
 
+const completeTask = (state, id) => {
+    return deleteTask(state, id);
+};
+
 const deleteTask = (state, id) => {
     const t = taskForId(state, id);
     if (t.parentId == null) {
@@ -295,6 +299,8 @@ class TaskStore extends ReduceStore {
                 return forwardDeleteTask(state, action.id);
             case TaskActions.BACKWARDS_DELETE_TASK:
                 return backwardsDeleteTask(state, action.id);
+            case TaskActions.MARK_COMPLETE:
+                return completeTask(state, action.id);
             default:
                 return state;
         }
