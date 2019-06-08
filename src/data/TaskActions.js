@@ -9,6 +9,8 @@ const TaskActions = {
     SELECT_PREVIOUS: "task/select-previous",
     CREATE_TASK_AFTER: "task/create-task-after",
     CREATE_TASK_BEFORE: "task/create-task-before",
+    MOVE_NEXT: "task/move-next",
+    MOVE_PREVIOUS: "task/move-previous",
     FORWARD_DELETE_TASK: "task/forward-delete-task",
     BACKWARDS_DELETE_TASK: "task/backwards-delete-task",
     MARK_COMPLETE: "task/mark-complete"

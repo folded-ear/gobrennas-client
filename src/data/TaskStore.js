@@ -299,6 +299,39 @@ const backwardsDeleteTask = (state, id) => {
     };
 };
 
+const moveDelta = (state, delta) => {
+    const block = [state.activeTaskId];
+    if (state.selectedTaskIds != null) {
+        block.push(...state.selectedTaskIds);
+    }
+    const t = taskForId(state, state.activeTaskId);
+    const p = taskForId(state, t.parentId);
+    const sids = p.subtaskIds.slice();
+    const idxs = block
+        .map(id => sids.indexOf(id))
+        .sort(delta < 1
+            ? (a, b) => a - b
+            : (a, b) => b - a);
+    if (idxs[0] === 0) return state;
+    if (idxs[0] === sids.length - 1) return state;
+    // this isn't terribly efficient. but whatever.
+    idxs.forEach(i => {
+        const temp = sids[i + delta];
+        sids[i + delta] = sids[i];
+        sids[i] = temp;
+    });
+    return {
+        ...state,
+        byId: {
+            ...state.byId,
+            [p.id]: {
+                ...p,
+                subtaskIds: sids,
+            },
+        },
+    };
+};
+
 class TaskStore extends ReduceStore {
     constructor() {
         super(Dispatcher);
@@ -343,6 +376,10 @@ class TaskStore extends ReduceStore {
                 return selectDelta(state, action.id, 1);
             case TaskActions.SELECT_PREVIOUS:
                 return selectDelta(state, action.id, -1);
+            case TaskActions.MOVE_NEXT:
+                return moveDelta(state, 1);
+            case TaskActions.MOVE_PREVIOUS:
+                return moveDelta(state, -1);
             default:
                 return state;
         }

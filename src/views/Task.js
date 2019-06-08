@@ -86,9 +86,8 @@ class Task extends React.PureComponent {
                 break;
             case "ArrowUp":
                 e.preventDefault();
-                if (shiftKey && ctrlKey) {
-                    // ignore!
-                } else if (shiftKey) {
+                if (shiftKey && ctrlKey) break;
+                if (shiftKey) {
                     // select this task and the previous one
                     Dispatcher.dispatch({
                         type: TaskActions.SELECT_PREVIOUS,
@@ -96,6 +95,9 @@ class Task extends React.PureComponent {
                     });
                 } else if (ctrlKey) {
                     // move all selected tasks up one (if a predecessor exists)
+                    Dispatcher.dispatch({
+                        type: TaskActions.MOVE_PREVIOUS,
+                    });
                 } else {
                     Dispatcher.dispatch({
                         type: TaskActions.FOCUS_PREVIOUS,
@@ -105,9 +107,8 @@ class Task extends React.PureComponent {
                 break;
             case "ArrowDown":
                 e.preventDefault();
-                if (shiftKey && ctrlKey) {
-                    // ignore!
-                } else if (shiftKey) {
+                if (shiftKey && ctrlKey) break;
+                if (shiftKey) {
                     // select this task and the next one
                     Dispatcher.dispatch({
                         type: TaskActions.SELECT_NEXT,
@@ -115,6 +116,9 @@ class Task extends React.PureComponent {
                     });
                 } else if (ctrlKey) {
                     // move all selected tasks down one (if a follower exists)
+                    Dispatcher.dispatch({
+                        type: TaskActions.MOVE_NEXT,
+                    });
                 } else {
                     Dispatcher.dispatch({
                         type: TaskActions.FOCUS_NEXT,
