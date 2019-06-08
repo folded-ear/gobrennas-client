@@ -150,22 +150,43 @@ class Task extends React.PureComponent {
             active,
             selected,
         } = this.props;
-        return <Input value={task.name}
-                      placeholder="Write a task name"
-                      addonBefore={<Button icon="check"
-                                           shape="circle"
-                                           size="small"
-                                           onClick={this.onComplete}
-                      />}
-                      className={classnames({
-                          "task-active": active,
-                          "task-selected": selected,
-                      })}
-                      ref={this.inputRef}
-                      onFocus={this.onFocus}
-                      onChange={this.onChange}
-                      onKeyDown={this.onKeyDown}
+        const lastChar = task.name.length === 0
+            ? ""
+            : task.name.charAt(task.name.length - 1);
+        const section = lastChar === ":";
+        const question = lastChar === "?";
+        let layoutProps;
+        if (section) {
+            layoutProps = {};
+        } else {
+            layoutProps = {
+                addonBefore: <Button icon="check"
+                                     shape="circle"
+                                     size="small"
+                                     onClick={this.onComplete}
+                />,
+            };
+        }
+        const input = <Input {...layoutProps}
+                             value={task.name}
+                             placeholder="Write a task name"
+                             className={classnames({
+                                 "task-active": active,
+                                 "task-selected": selected,
+                                 "task-question": question,
+                             })}
+                             ref={this.inputRef}
+                             onFocus={this.onFocus}
+                             onChange={this.onChange}
+                             onKeyDown={this.onKeyDown}
         />;
+        return section
+            ? <Input.Group className={classnames("task-section", {
+                "task-active": active,
+                "task-selected": selected,
+            })}
+            >{input}</Input.Group>
+            : input;
     }
 
 
