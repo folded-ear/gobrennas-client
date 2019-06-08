@@ -9,11 +9,17 @@ export default Container.createFunctional(
         TaskStore,
     ],
     () => {
+        const allLists = TaskStore.getLists()
+            .sort((a, b) => {
+                if (a.name < b.name) return -1;
+                if (a.name > b.name) return +1;
+                return 0;
+            });
         const activeList = TaskStore.getActiveList();
         const activeTask = TaskStore.getActiveTask();
         const selectedTasks = TaskStore.getSelectedTasks();
         return {
-            allLists: TaskStore.getLists(),
+            allLists,
             activeList,
             topLevelTasks: activeList
                 ? TaskStore.getChildTasks(activeList.id)
