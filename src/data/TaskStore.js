@@ -1,7 +1,6 @@
 import { ReduceStore } from "flux/utils";
 import Dispatcher from './dispatcher';
 import TaskActions from "./TaskActions";
-import localCacheStore from "../util/localCacheStore";
 
 /*
  * This store is way too muddled. But leaving it that way for the moment, to
@@ -354,7 +353,7 @@ class TaskStore extends ReduceStore {
                 return createList(state, action.name);
             case TaskActions.SELECT_LIST:
                 return selectList(state, action.id);
-            case TaskActions.RENAME:
+            case TaskActions.RENAME_TASK:
                 return renameTask(state, action.id, action.name);
             case TaskActions.FOCUS:
                 return focusTask(state, action.id);
@@ -366,9 +365,9 @@ class TaskStore extends ReduceStore {
                 return createTaskAfter(state, action.id);
             case TaskActions.CREATE_TASK_BEFORE:
                 return createTaskBefore(state, action.id);
-            case TaskActions.FORWARD_DELETE_TASK:
+            case TaskActions.DELETE_TASK_FORWARD:
                 return forwardDeleteTask(state, action.id);
-            case TaskActions.BACKWARDS_DELETE_TASK:
+            case TaskActions.DELETE_TASK_BACKWARDS:
                 return backwardsDeleteTask(state, action.id);
             case TaskActions.MARK_COMPLETE:
                 return completeTask(state, action.id);

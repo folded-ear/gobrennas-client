@@ -33,7 +33,7 @@ class Task extends React.PureComponent {
             task,
         } = this.props;
         Dispatcher.dispatch({
-            type: TaskActions.RENAME,
+            type: TaskActions.RENAME_TASK,
             id: task.id,
             name: value,
         });
@@ -65,7 +65,7 @@ class Task extends React.PureComponent {
                 if (value.length === 0) {
                     e.preventDefault();
                     Dispatcher.dispatch({
-                        type: TaskActions.BACKWARDS_DELETE_TASK,
+                        type: TaskActions.DELETE_TASK_BACKWARDS,
                         id: this.props.task.id
                     });
                 }
@@ -75,7 +75,7 @@ class Task extends React.PureComponent {
                 if (value.length === 0) {
                     e.preventDefault();
                     Dispatcher.dispatch({
-                        type: TaskActions.FORWARD_DELETE_TASK,
+                        type: TaskActions.DELETE_TASK_FORWARD,
                         id: this.props.task.id
                     });
                 }
