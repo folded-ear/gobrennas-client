@@ -17,7 +17,8 @@ class Store extends ReduceStore {
     return new OrderedMap({
       library: new List(),
       pantry_items: new List(),
-      selected: null
+      selected: null,
+      token: null
     });
   }
   
@@ -86,6 +87,11 @@ class Store extends ReduceStore {
           return state;
         }
         return state.set('pantry_items', state.get('pantry_items').push(action.data))
+      }
+      
+      case Types.SET_CURRENT_USER: {
+        console.log(action);
+        return state.set('token', action.data);
       }
       
       default:

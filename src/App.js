@@ -1,59 +1,124 @@
-import React, {useState, useEffect} from 'react';
-import {BrowserRouter as Router, Route, Link} from 'react-router-dom';
-import {Layout, Menu} from 'antd';
-import Recipes from './containers/Recipes';
-
-import Actions from './data/actions';
-
+import React, {Component} from 'react';
+import {
+    Route,
+    Switch
+} from 'react-router-dom';
+import AppHeader from './views/common/AppHeader';
+import Landing from './views/Landing';
+import Login from './views/user/Login';
+import Profile from './views/user/Profile';
+import OAuth2RedirectHandler from './views/user/OAuth2RedirectHandler';
+import NotFound from './views/common/NotFound';
+import LoadingIndicator from './views/common/LoadingIndicator';
+import {getCurrentUser} from './utils/APIUtils';
+import {ACCESS_TOKEN} from './constants';
+import PrivateRoute from './views/common/PrivateRoute';
 import './App.scss';
+import {Layout} from "antd";
+import Recipes from "./containers/Recipes";
 import PantryItemAdd from "./views/PantryItemAdd";
 import PantryItems from "./containers/PantryItems";
 
-function App() {
-  
-  const {Header, Content} = Layout;
-  const [current, setCurrent] = useState('recipes');
-  
-  useEffect(() => {
-    Actions.fetchRecipes();
-    Actions.fetchPantryItems()
-  });
-  
-  return (
-    <div className="App">
-      <Router>
-        <Layout className="layout">
-          <Header>
-            <div className="logo">Cookbook</div>
-            <Menu
-              theme="dark"
-              style={{ lineHeight: '64px' }}
-              onClick={(e) => setCurrent(e.key)}
-              selectedKeys={[current]}
-              mode="horizontal">
-              <Menu.Item key="recipes">
-                <Link to="/">Recipes</Link>
-              </Menu.Item>
-              <Menu.Item key="add">
-                <Link to="/add">Add New Recipe</Link>
-              </Menu.Item>
-              <Menu.Item key="pantryitem">
-                <Link to="/addpantryitem">Add Pantry Item</Link>
-              </Menu.Item>
-            </Menu>
-          </Header>
-          
-          <Content>
-            <div style={{ background: '#fff', padding: 24, minHeight: 280 }}>
-              <Route exact path="/" component={Recipes}/>
-              <Route exact path="/add" component={PantryItems}/>
-              <Route path="/addpantryitem" component={PantryItemAdd} />
+class App extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            authenticated: false,
+            currentUser: null,
+            loading: false
+        };
+        
+        this.loadCurrentlyLoggedInUser = this.loadCurrentlyLoggedInUser.bind(this);
+        this.handleLogout = this.handleLogout.bind(this);
+    }
+    
+    componentDidMount() {
+        this.loadCurrentlyLoggedInUser();
+    }
+    
+    loadCurrentlyLoggedInUser() {
+        this.setState({
+            loading: true
+        });
+        
+        getCurrentUser()
+            .then(response => {
+                this.setState({
+                    currentUser: response,
+                    authenticated: true,
+                    loading: false
+                });
+            }).catch(error => {
+            this.setState({
+                loading: false
+            });
+        });
+    }
+    
+    handleLogout() {
+        localStorage.removeItem(ACCESS_TOKEN);
+        this.setState({
+            authenticated: false,
+            currentUser: null
+        });
+    }
+    
+    render() {
+        const {loading, authenticated, currentUser} = this.state;
+        const {Content} = Layout;
+        
+        if (loading) {
+            return <LoadingIndicator/>
+        }
+        
+        return (
+            <div>
+                <AppHeader authenticated={authenticated} onLogout={this.handleLogout}/>
+                
+                <Content>
+                    {authenticated ?
+                        <p>logged in</p>
+                        :
+                        <p>Not logged in</p>
+                    }
+                    <Switch>
+                        <Route exact path="/" component={Landing} />
+                        <Route
+                            path="/login"
+                            render={(props) => <Login authenticated={authenticated} {...props} />}
+                        />
+                        <PrivateRoute
+                            path="/profile"
+                            authenticated={authenticated}
+                            currentUser={currentUser}
+                            component={Profile}
+                        />
+                        <PrivateRoute
+                            path="/recipes"
+                            authenticated={authenticated}
+                            currentUser={currentUser}
+                            component={Recipes}
+                        />
+                        <PrivateRoute
+                            path="/add"
+                            authenticated={authenticated}
+                            currentUser={currentUser}
+                            component={PantryItems}
+                        />
+                        <PrivateRoute
+                            path="/addpantryitem"
+                            authenticated={authenticated}
+                            currentUser={currentUser}
+                            component={PantryItemAdd}
+                        />
+                        <Route path="/oauth2/redirect" component={OAuth2RedirectHandler}/>
+                        <Route component={NotFound}/>
+                    </Switch>
+                
+                </Content>
             </div>
-          </Content>
-        </Layout>
-      </Router>
-    </div>
-  );
+        );
+    }
 }
 
 export default App;

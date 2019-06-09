@@ -32,6 +32,7 @@ const RecipesList = (props) => {
   
   return (
     <div className="recipes-list">
+      <h1>Recipes</h1>
       {[...props.recipes.get('library').values()].reverse().map(recipe => (
         <h2
           key={recipe.id}
