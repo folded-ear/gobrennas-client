@@ -1,5 +1,5 @@
 import React from "react";
-import { Container } from 'flux/utils';
+import { Container } from "flux/utils";
 import TaskList from "../views/TaskList";
 import TaskStore from "../data/TaskStore";
 
@@ -9,12 +9,7 @@ export default Container.createFunctional(
         TaskStore,
     ],
     () => {
-        const allLists = TaskStore.getLists()
-            .sort((a, b) => {
-                if (a.name < b.name) return -1;
-                if (a.name > b.name) return +1;
-                return 0;
-            });
+        const allLists = TaskStore.getLists();
         const activeList = TaskStore.getActiveList();
         const activeTask = TaskStore.getActiveTask();
         const selectedTasks = TaskStore.getSelectedTasks();

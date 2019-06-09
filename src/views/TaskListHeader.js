@@ -8,6 +8,7 @@ import {
 } from "antd";
 import Dispatcher from "../data/dispatcher";
 import TaskActions from "../data/TaskActions";
+import { humanStringComparator } from "../util/comparators";
 
 const isValidName = name =>
     name != null && name.trim().length > 0;
@@ -64,7 +65,7 @@ class TaskListHeader extends React.PureComponent {
                         onChange={this.onSelect}
                         value={activeList.id}
                 >
-                    {allLists.map(l =>
+                    {allLists.sort(humanStringComparator).map(l =>
                         <Select.Option key={l.id}
                                        value={l.id}
                         >
