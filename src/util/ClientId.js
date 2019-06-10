@@ -16,6 +16,10 @@ const ClientId = {
             && id.startsWith(PREFIX);
     },
 
+    isNot(id) {
+        return !ClientId.is(id);
+    },
+
     propType(props, propName) {
         if (ClientId.is(props[propName])) {
             return;

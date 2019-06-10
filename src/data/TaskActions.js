@@ -27,6 +27,9 @@ const TaskActions = {
     SUBTASKS_RESET: "task/subtasks-reset",
     TASK_DELETED: "task/task-deleted",
     TASK_COMPLETED: "task/task-completed",
+    // deferred actions
+    FLUSH_RENAMES: "task/flush-renames",
+    FLUSH_REORDERS: "task/flush-reorders",
 };
 
 export default TaskActions;

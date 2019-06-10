@@ -62,6 +62,10 @@ const taskCreated = (state, clientId, id, task) => {
         })),
     };
     delete byId[clientId];
+    if (tasksToRename.has(clientId)) {
+        tasksToRename.set(id, tasksToRename.get(clientId));
+        tasksToRename.delete(clientId);
+    }
     if (task.parentId != null) {
         const plo = loForId(state, task.parentId);
         byId[task.parentId] = plo.map(p => ({
@@ -151,6 +155,8 @@ const spliceIds = (ids, id, after = AT_END) => {
 const addTask = (state, parentId, name, after = AT_END) => {
     const task = _newTask(name);
     const plo = loForId(state, parentId);
+    parentsToReset.add(parentId);
+    inTheFuture(TaskActions.FLUSH_REORDERS);
     return {
         ...state,
         activeTaskId: task.id,
@@ -194,20 +200,51 @@ const createTaskBefore = (state, id) => {
     return state;
 };
 
+let tasksToRename = new Map();
+
+const flushTasksToRename = state => {
+    if (tasksToRename.size === 0) return state;
+    const requeue = new Map();
+    for (const [id, name] of tasksToRename) {
+        if (ClientId.is(id)) {
+            requeue.set(id, name);
+        } else {
+            TaskApi.renameTask(id, name);
+        }
+    }
+    tasksToRename = requeue;
+    return state;
+};
+
+const timeoutRegistry = new Map();
+
+const inTheFuture = action => {
+    if (timeoutRegistry.has(action)) {
+        clearTimeout(timeoutRegistry.get(action));
+    }
+    timeoutRegistry.set(action, setTimeout(() => {
+        Dispatcher.dispatch({
+            type: action,
+        });
+    }, 5000));
+};
+
 const renameTask = (state, id, name) => {
     let lo = loForId(state, id);
     const task = lo.getValueEnforcing();
     if (task.name === name) return state;
     if (ClientId.is(id)) {
         if (lo.isDone()) {
-            // todo: this needs to queue...
             TaskApi.createTask(name, task.parentId, id);
             lo = lo.creating();
+        } else {
+            tasksToRename.set(id, name);
+            inTheFuture(TaskActions.FLUSH_RENAMES);
         }
     } else {
+        tasksToRename.set(id, name);
+        inTheFuture(TaskActions.FLUSH_RENAMES);
         if (lo.isDone()) {
-            // todo: this needs to queue...
-            TaskApi.renameTask(id, name);
             lo = lo.updating();
         }
     }
@@ -384,6 +421,23 @@ const backwardsDeleteTask = (state, id) => {
     };
 };
 
+let parentsToReset = new Set();
+
+const flushParentsToReset = state => {
+    if (parentsToReset.size === 0) return state;
+    const requeue = new Set();
+    for (const id of parentsToReset) {
+        const p = taskForId(state, id);
+        if (p.subtaskIds.some(ClientId.is)) {
+            requeue.add(p.id);
+        } else {
+            TaskApi.resetSubtasks(p.id, p.subtaskIds);
+        }
+    }
+    parentsToReset = requeue;
+    return state;
+};
+
 const moveDelta = (state, delta) => {
     const block = [state.activeTaskId];
     if (state.selectedTaskIds != null) {
@@ -406,11 +460,8 @@ const moveDelta = (state, delta) => {
         sids[i + delta] = sids[i];
         sids[i] = temp;
     });
-    if (sids.some(ClientId.is)) {
-        // todo: queue this up
-    } else {
-        TaskApi.resetSubtasks(t.parentId, sids);
-    }
+    parentsToReset.add(t.parentId);
+    inTheFuture(TaskActions.FLUSH_REORDERS);
     return {
         ...state,
         byId: {
@@ -530,12 +581,14 @@ class TaskStore extends ReduceStore {
             case TaskActions.CREATE_TASK_BEFORE:
                 return createTaskBefore(state, action.id);
             case TaskActions.TASK_CREATED:
-                return taskCreated(
+                state = taskCreated(
                     state,
                     action.clientId,
                     action.id,
                     action.data,
                 );
+                state = flushTasksToRename(state);
+                return flushParentsToReset(state);
             case TaskActions.DELETE_TASK_FORWARD:
                 return forwardDeleteTask(state, action.id);
             case TaskActions.DELETE_TASK_BACKWARDS:
@@ -552,6 +605,10 @@ class TaskStore extends ReduceStore {
                 return moveDelta(state, 1);
             case TaskActions.MOVE_PREVIOUS:
                 return moveDelta(state, -1);
+            case TaskActions.FLUSH_RENAMES:
+                return flushTasksToRename(state);
+            case TaskActions.FLUSH_REORDERS:
+                return flushParentsToReset(state);
             default:
                 return state;
         }
