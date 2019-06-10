@@ -633,7 +633,7 @@ class TaskStore extends ReduceStore {
     getActiveListLO() {
         const s = this.getState();
         return s.activeListId == null
-            ? null
+            ? LoadObject.empty()
             : loForId(s, s.activeListId);
     }
 
