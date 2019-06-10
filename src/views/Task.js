@@ -78,7 +78,7 @@ class Task extends React.PureComponent {
                 break;
             case "Delete":
                 // if the value is empty, delete the task and focus next
-                if (value.length === 0) {
+                if (value.length === 0 || shiftKey) {
                     e.preventDefault();
                     Dispatcher.dispatch({
                         type: TaskActions.DELETE_TASK_FORWARD,
