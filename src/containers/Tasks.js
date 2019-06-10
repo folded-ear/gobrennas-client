@@ -16,7 +16,7 @@ export default Container.createFunctional(
         return {
             allLists,
             activeListLO,
-            taskLOs: activeListLO && activeListLO.hasValue()
+            taskLOs: activeListLO.hasValue()
                 ? TaskStore.getSubtaskLOs(activeListLO.getValueEnforcing().id)
                 : null,
             isTaskActive: activeTask == null

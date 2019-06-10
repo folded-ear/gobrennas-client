@@ -16,30 +16,27 @@ class TaskList extends React.PureComponent {
             isTaskActive,
             isTaskSelected,
         } = this.props;
-        if (!allLists.hasValue() || !activeListLO.hasValue()) {
+        if (!allLists.hasValue()) {
             return <Spin tip="Loading task lists..." />
         }
-        const activeList = activeListLO.getValueEnforcing();
         return <React.Fragment>
             <TaskListHeader
                 allLists={allLists.getValueEnforcing()}
-                activeList={activeList}
+                activeList={activeListLO.getValue()}
             />
-            {activeListLO.isDone() && activeListLO.hasValue()
-                ? taskLOs.map(lo => {
-                    if (lo.hasValue()) {
-                        const t = lo.getValueEnforcing();
-                        return <Task key={t.id}
-                                     task={t}
-                                     loadObject={lo}
-                                     active={isTaskActive(t)}
-                                     selected={isTaskSelected(t)}
-                        />;
-                    } else {
-                        return <LoadingTask key={lo.id} />;
-                    }
-                })
-                : <Spin tip={`Loading tasks for '${activeList.name}'...`} />}
+            {taskLOs != null && taskLOs.map(lo => {
+                if (lo.hasValue()) {
+                    const t = lo.getValueEnforcing();
+                    return <Task key={t.id}
+                                 task={t}
+                                 loadObject={lo}
+                                 active={isTaskActive(t)}
+                                 selected={isTaskSelected(t)}
+                    />;
+                } else {
+                    return <LoadingTask key={lo.id} />;
+                }
+            })}
         </React.Fragment>;
     }
 
