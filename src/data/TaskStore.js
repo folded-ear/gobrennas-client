@@ -461,6 +461,26 @@ function taskRenamed(state, id, name) {
     };
 }
 
+const loadLists = state => {
+    TaskApi.loadLists();
+    return {
+        ...state,
+        topLevelIds: state.topLevelIds.loading(),
+    };
+};
+
+const listsLoaded = (state, lists) => {
+    state = {
+        ...lists.reduce(taskLoaded, state),
+        topLevelIds: LoadObject.withValue(lists.map(t => t.id)),
+    };
+    if (lists.length > 0) {
+        // auto-select the first one
+        state = selectList(state, lists.sort(humanStringComparator)[0].id);
+    }
+    return state;
+};
+
 class TaskStore extends ReduceStore {
     constructor() {
         super(Dispatcher);
@@ -488,21 +508,9 @@ class TaskStore extends ReduceStore {
                     action.data,
                 );
             case TaskActions.LOAD_LISTS:
-                TaskApi.loadLists();
-                return {
-                    ...state,
-                    topLevelIds: state.topLevelIds.loading(),
-                };
+                return loadLists(state);
             case TaskActions.LISTS_LOADED:
-                state = {
-                    ...action.data.reduce(taskLoaded, state),
-                    topLevelIds: LoadObject.withValue(action.data.map(t => t.id)),
-                };
-                if (action.data.length > 0) {
-                    // auto-select the first one
-                    state = selectList(state, action.data.sort(humanStringComparator)[0].id);
-                }
-                return state;
+                return listsLoaded(state, action.data);
             case TaskActions.SELECT_LIST:
                 return selectList(state, action.id);
             case TaskActions.SUBTASKS_LOADED:
