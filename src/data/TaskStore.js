@@ -223,20 +223,21 @@ const selectDelta = (state, id, delta) => {
         throw new Error("Selection can't expand by more than one item at a time");
     }
     const {
-        after,
+        after: next,
     } = getNeighborIds(state, id, delta);
+    if (next == null) return state; // there's no neighbor
     if (state.selectedTaskIds == null) {
         // starting to select
         return {
-            ...focusTask(state, after),
+            ...focusTask(state, next),
             selectedTaskIds: [id]
         };
     }
-    const idx = state.selectedTaskIds.indexOf(after);
+    const idx = state.selectedTaskIds.indexOf(next);
     if (idx >= 0) {
         // contract selection
         return {
-            ...focusTask(state, after),
+            ...focusTask(state, next),
             selectedTaskIds: state.selectedTaskIds.length === 0
                 ? null
                 : state.selectedTaskIds.slice(0, idx)
@@ -244,7 +245,7 @@ const selectDelta = (state, id, delta) => {
     } else {
         // expand selection
         return {
-            ...focusTask(state, after),
+            ...focusTask(state, next),
             selectedTaskIds: state.selectedTaskIds.concat(id)
         };
     }
@@ -407,12 +408,12 @@ class TaskStore extends ReduceStore {
                 return action.data.reduce(taskLoaded, state);
             // case TaskActions.RENAME_TASK:
             //     return renameTask(state, action.id, action.name);
-            // case TaskActions.FOCUS:
-            //     return focusTask(state, action.id);
-            // case TaskActions.FOCUS_NEXT:
-            //     return focusDelta(state, action.id, 1);
-            // case TaskActions.FOCUS_PREVIOUS:
-            //     return focusDelta(state, action.id, -1);
+            case TaskActions.FOCUS:
+                return focusTask(state, action.id);
+            case TaskActions.FOCUS_NEXT:
+                return focusDelta(state, action.id, 1);
+            case TaskActions.FOCUS_PREVIOUS:
+                return focusDelta(state, action.id, -1);
             // case TaskActions.CREATE_TASK_AFTER:
             //     return createTaskAfter(state, action.id);
             // case TaskActions.CREATE_TASK_BEFORE:
@@ -423,10 +424,10 @@ class TaskStore extends ReduceStore {
             //     return backwardsDeleteTask(state, action.id);
             // case TaskActions.MARK_COMPLETE:
             //     return completeTask(state, action.id);
-            // case TaskActions.SELECT_NEXT:
-            //     return selectDelta(state, action.id, 1);
-            // case TaskActions.SELECT_PREVIOUS:
-            //     return selectDelta(state, action.id, -1);
+            case TaskActions.SELECT_NEXT:
+                return selectDelta(state, action.id, 1);
+            case TaskActions.SELECT_PREVIOUS:
+                return selectDelta(state, action.id, -1);
             // case TaskActions.MOVE_NEXT:
             //     return moveDelta(state, 1);
             // case TaskActions.MOVE_PREVIOUS:
