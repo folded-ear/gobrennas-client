@@ -1,0 +1,29 @@
+.task-section {
+  input {
+    font-weight: bold;
+    font-size: 110%;
+    border-width: 0;
+  }
+  border-bottom: 1px solid #ccc;
+}
+.task-question {
+  .ant-input-group-addon {
+    background-color: #ff9;
+  }
+  input {
+    background-color: #ffe;
+  }
+}
+.task-active {
+  input {
+    background-color: #f9fcff;
+  }
+}
+.task-selected {
+  input {
+    background-color: #f0f7ff;
+  }
+}
+.task-deleting {
+  opacity: 0.4;
+}

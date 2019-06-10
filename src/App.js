@@ -18,6 +18,7 @@ import {Layout} from "antd";
 import Recipes from "./containers/Recipes";
 import PantryItemAdd from "./views/PantryItemAdd";
 import PantryItems from "./containers/PantryItems";
+import Tasks from "./containers/Tasks";
 
 class App extends Component {
     constructor(props) {
@@ -27,20 +28,20 @@ class App extends Component {
             currentUser: null,
             loading: false
         };
-        
+
         this.loadCurrentlyLoggedInUser = this.loadCurrentlyLoggedInUser.bind(this);
         this.handleLogout = this.handleLogout.bind(this);
     }
-    
+
     componentDidMount() {
         this.loadCurrentlyLoggedInUser();
     }
-    
+
     loadCurrentlyLoggedInUser() {
         this.setState({
             loading: true
         });
-        
+
         getCurrentUser()
             .then(response => {
                 this.setState({
@@ -54,7 +55,7 @@ class App extends Component {
             });
         });
     }
-    
+
     handleLogout() {
         localStorage.removeItem(ACCESS_TOKEN);
         this.setState({
@@ -62,19 +63,19 @@ class App extends Component {
             currentUser: null
         });
     }
-    
+
     render() {
         const {loading, authenticated, currentUser} = this.state;
         const {Content} = Layout;
-        
+
         if (loading) {
             return <LoadingIndicator/>
         }
-        
+
         return (
             <div>
                 <AppHeader authenticated={authenticated} onLogout={this.handleLogout}/>
-                
+
                 <Content>
                     {authenticated ?
                         <p>logged in</p>
@@ -111,10 +112,16 @@ class App extends Component {
                             currentUser={currentUser}
                             component={PantryItemAdd}
                         />
+                        <PrivateRoute
+                            path="/tasks"
+                            authenticated={authenticated}
+                            currentUser={currentUser}
+                            component={Tasks}
+                        />
                         <Route path="/oauth2/redirect" component={OAuth2RedirectHandler}/>
                         <Route component={NotFound}/>
                     </Switch>
-                
+
                 </Content>
             </div>
         );
