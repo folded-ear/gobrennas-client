@@ -10,14 +10,14 @@ export default Container.createFunctional(
     ],
     () => {
         const allLists = TaskStore.getLists();
-        const activeList = TaskStore.getActiveList();
+        const activeListLO = TaskStore.getActiveListLO();
         const activeTask = TaskStore.getActiveTask();
         const selectedTasks = TaskStore.getSelectedTasks();
         return {
             allLists,
-            activeList,
-            taskLOs: activeList
-                ? TaskStore.getSubtaskLOs(activeList.id)
+            activeListLO,
+            taskLOs: activeListLO && activeListLO.hasValue()
+                ? TaskStore.getSubtaskLOs(activeListLO.getValueEnforcing().id)
                 : null,
             isTaskActive: activeTask == null
                 ? () => false

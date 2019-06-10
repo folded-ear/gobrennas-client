@@ -204,8 +204,6 @@ class Task extends React.PureComponent {
             : input;
     }
 
-
-
 }
 
 Task.propTypes = {

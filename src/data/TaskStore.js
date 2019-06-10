@@ -4,6 +4,8 @@ import TaskActions from "./TaskActions";
 import LoadObject from "../util/LoadObject";
 import TaskApi from "./TaskApi";
 import hotLoadObject from "../util/hotLoadObject";
+import ClientId from "../util/ClientId";
+import { humanStringComparator } from "../util/comparators";
 
 /*
  * This store is way too muddled. But leaving it that way for the moment, to
@@ -11,37 +13,76 @@ import hotLoadObject from "../util/hotLoadObject";
  * up in the future.
  */
 
-const CLIENT_ID_PREFIX = "c";
 const AT_END = Math.random();
 
-const _newTask = (state, name) => {
-    const id_seq = state.id_seq + 1;
-    const id = CLIENT_ID_PREFIX + id_seq;
-    return {
-        id_seq,
-        task: {
-            id,
-            name,
-        }
-    }
-};
+const _newTask = name => ({
+    id: ClientId.next(),
+    name,
+});
 
 const createList = (state, name) => {
-    const {
-        id_seq,
-        task,
-    } = _newTask(state, name);
-    return addTask({
+    const task = _newTask(name);
+    TaskApi.createList(name, task.id);
+    return {
         ...state,
-        id_seq,
         activeListId: task.id,
         activeTaskId: null,
         topLevelIds: state.topLevelIds.map(ids => ids.concat(task.id)),
         byId: {
             ...state.byId,
-            [task.id]: task,
+            [task.id]: LoadObject.withValue(task).creating(),
         },
-    }, task.id, "");
+    };
+};
+
+const idFixerFactory = (cid, id) => {
+    const idFixer = ids => {
+        if (ids == null) return null;
+        if (ids === cid) return id;
+        if (ids instanceof Array) {
+            return ids.map(v =>
+                v === cid ? id : v);
+        }
+        if (ids instanceof LoadObject) return ids.map(idFixer);
+        throw new Error("Unsupported value passed to replaceId");
+    };
+    return idFixer;
+};
+
+const taskCreated = (state, clientId, id, task) => {
+    const idFixer = idFixerFactory(clientId, id);
+    const byId = {
+        ...state.byId,
+        [id]: LoadObject.withValue(task),
+    };
+    delete byId[clientId];
+    if (task.parentId != null) {
+        const plo = loForId(state, task.parentId);
+        byId[task.parentId] = plo.map(p => ({
+            ...p,
+            subtaskIds: idFixer(p.subtaskIds),
+        }))
+    }
+    return {
+        ...state,
+        activeTaskId: id,
+        byId,
+    };
+};
+
+const listCreated = (state, clientId, id, list) => {
+    const idFixer = idFixerFactory(clientId, id);
+    const byId = {
+        ...state.byId,
+        [id]: LoadObject.withValue(list),
+    };
+    delete byId[clientId];
+    return addTask({
+        ...state,
+        activeListId: idFixer(state.activeListId),
+        topLevelIds: idFixer(state.topLevelIds),
+        byId,
+    }, id, "");
 };
 
 const selectList = (state, id) => {
@@ -51,13 +92,16 @@ const selectList = (state, id) => {
     if (state.topLevelIds.getValueEnforcing().every(it => it !== id)) {
         throw new Error(`Task '${id}' is not a list.`);
     }
-    return {
+    state = {
         ...state,
         activeListId: id,
-        activeTaskId: list.subtaskIds
-            ? list.subtaskIds[0]
-            : null,
     };
+    if (list.subtaskIds && list.subtaskIds.length) {
+        state.activeTaskId = list.subtaskIds[0];
+    } else {
+        state = addTask(state, id, "");
+    }
+    return state;
 };
 
 const taskForId = (state, id) =>
@@ -99,26 +143,21 @@ const spliceIds = (ids, id, after = AT_END) => {
 };
 
 const addTask = (state, parentId, name, after = AT_END) => {
-    let parent = taskForId(state, parentId);
-    const {
-        id_seq,
-        task,
-    } = _newTask(state, name);
-    parent = {
-        ...parent,
-        subtaskIds: spliceIds(parent.subtaskIds, task.id, after),
-    };
+    const task = _newTask(name);
+    const plo = loForId(state, parentId);
     return {
         ...state,
-        id_seq,
         activeTaskId: task.id,
         byId: {
             ...state.byId,
-            [parent.id]: parent,
-            [task.id]: {
+            [parentId]: plo.map(p => ({
+                ...p,
+                subtaskIds: spliceIds(p.subtaskIds, task.id, after),
+            })),
+            [task.id]: LoadObject.withValue({
                 ...task,
                 parentId,
-            },
+            }),
         },
     };
 };
@@ -150,17 +189,29 @@ const createTaskBefore = (state, id) => {
 };
 
 const renameTask = (state, id, name) => {
-    const task = taskForId(state, id);
+    let lo = loForId(state, id);
+    const task = lo.getValueEnforcing();
     if (task.name === name) return state;
+    if (ClientId.is(id)) {
+        if (lo.isDone())
+            // todo: this needs to queue...
+            TaskApi.createTask(name, task.parentId, id);
+        lo = lo.creating();
+    } else {
+        if (lo.isDone())
+            // todo: this needs to queue...
+            TaskApi.renameTask(id, name);
+        lo = lo.updating();
+    }
     return {
         ...state,
         activeTaskId: id,
         byId: {
             ...state.byId,
-            [id]: {
-                ...task,
+            [id]: lo.map(t => ({
+                ...t,
                 name,
-            },
+            })),
         }
     }
 };
@@ -367,6 +418,19 @@ const taskLoading = (state, id) => {
     };
 };
 
+function taskRenamed(state, id, name) {
+    return {
+        ...state,
+        byId: {
+            ...state.byId,
+            // despite thinking we'd want to save the name, we don't, because if
+            // the user has made further changes while the save was in flight,
+            // we want to save those.
+            [id]: loForId(state, id).done(),
+        },
+    };
+}
+
 class TaskStore extends ReduceStore {
     constructor() {
         super(Dispatcher);
@@ -384,8 +448,15 @@ class TaskStore extends ReduceStore {
 
     reduce(state, action) {
         switch (action.type) {
-            // case TaskActions.CREATE_LIST:
-            //     return createList(state, action.name);
+            case TaskActions.CREATE_LIST:
+                return createList(state, action.name);
+            case TaskActions.LIST_CREATED:
+                return listCreated(
+                    state,
+                    action.clientId,
+                    action.id,
+                    action.data,
+                );
             case TaskActions.LOAD_LISTS:
                 TaskApi.loadLists();
                 return {
@@ -399,25 +470,34 @@ class TaskStore extends ReduceStore {
                 };
                 if (action.data.length > 0) {
                     // auto-select the first one
-                    state = selectList(state, action.data[0].id);
+                    state = selectList(state, action.data.sort(humanStringComparator)[0].id);
                 }
                 return state;
             case TaskActions.SELECT_LIST:
                 return selectList(state, action.id);
             case TaskActions.SUBTASKS_LOADED:
                 return action.data.reduce(taskLoaded, state);
-            // case TaskActions.RENAME_TASK:
-            //     return renameTask(state, action.id, action.name);
+            case TaskActions.RENAME_TASK:
+                return renameTask(state, action.id, action.name);
+            case TaskActions.TASK_RENAMED:
+                return taskRenamed(state, action.id, action.name);
             case TaskActions.FOCUS:
                 return focusTask(state, action.id);
             case TaskActions.FOCUS_NEXT:
                 return focusDelta(state, action.id, 1);
             case TaskActions.FOCUS_PREVIOUS:
                 return focusDelta(state, action.id, -1);
-            // case TaskActions.CREATE_TASK_AFTER:
-            //     return createTaskAfter(state, action.id);
-            // case TaskActions.CREATE_TASK_BEFORE:
-            //     return createTaskBefore(state, action.id);
+            case TaskActions.CREATE_TASK_AFTER:
+                return createTaskAfter(state, action.id);
+            case TaskActions.CREATE_TASK_BEFORE:
+                return createTaskBefore(state, action.id);
+            case TaskActions.TASK_CREATED:
+                return taskCreated(
+                    state,
+                    action.clientId,
+                    action.id,
+                    action.data,
+                );
             // case TaskActions.DELETE_TASK_FORWARD:
             //     return forwardDeleteTask(state, action.id);
             // case TaskActions.DELETE_TASK_BACKWARDS:
@@ -453,11 +533,11 @@ class TaskStore extends ReduceStore {
         return losForIds(s, p.subtaskIds);
     }
 
-    getActiveList() {
+    getActiveListLO() {
         const s = this.getState();
         return s.activeListId == null
             ? null
-            : taskForId(s, s.activeListId);
+            : loForId(s, s.activeListId);
     }
 
     getActiveTask() {
