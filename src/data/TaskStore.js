@@ -390,7 +390,8 @@ const moveDelta = (state, delta) => {
         block.push(...state.selectedTaskIds);
     }
     const t = taskForId(state, state.activeTaskId);
-    const p = taskForId(state, t.parentId);
+    const plo = loForId(state, t.parentId);
+    const p = plo.getValueEnforcing();
     const sids = p.subtaskIds.slice();
     const idxs = block
         .map(id => sids.indexOf(id))
@@ -405,14 +406,19 @@ const moveDelta = (state, delta) => {
         sids[i + delta] = sids[i];
         sids[i] = temp;
     });
+    if (sids.some(ClientId.is)) {
+        // todo: queue this up
+    } else {
+        TaskApi.resetSubtasks(t.parentId, sids);
+    }
     return {
         ...state,
         byId: {
             ...state.byId,
-            [p.id]: {
+            [p.id]: plo.map(p => ({
                 ...p,
                 subtaskIds: sids,
-            },
+            })),
         },
     };
 };
@@ -441,6 +447,7 @@ const taskLoading = (state, id) => {
     };
 };
 
+// noinspection JSUnusedLocalSymbols
 function taskRenamed(state, id, name) {
     return {
         ...state,
@@ -533,10 +540,10 @@ class TaskStore extends ReduceStore {
                 return selectDelta(state, action.id, 1);
             case TaskActions.SELECT_PREVIOUS:
                 return selectDelta(state, action.id, -1);
-            // case TaskActions.MOVE_NEXT:
-            //     return moveDelta(state, 1);
-            // case TaskActions.MOVE_PREVIOUS:
-            //     return moveDelta(state, -1);
+            case TaskActions.MOVE_NEXT:
+                return moveDelta(state, 1);
+            case TaskActions.MOVE_PREVIOUS:
+                return moveDelta(state, -1);
             default:
                 return state;
         }

@@ -24,7 +24,7 @@ const TaskActions = {
     SUBTASKS_LOADED: "task/subtasks-loaded",
     TASK_CREATED: "task/task-created",
     TASK_RENAMED: "task/task-renamed",
-    SUBTASKS_UPDATED: "task/subtasks-updated",
+    SUBTASKS_RESET: "task/subtasks-reset",
     TASK_DELETED: "task/task-deleted",
     TASK_COMPLETED: "task/task-completed",
 };

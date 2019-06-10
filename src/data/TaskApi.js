@@ -79,6 +79,18 @@ const TaskApi = {
             }),
         );
     },
+
+    resetSubtasks(id, subtaskIds) {
+        promiseFlux(
+            axios.put(`/${id}/subtaskIds`, {
+                subtaskIds
+            }),
+            () => ({
+                type: TaskActions.SUBTASKS_RESET,
+                id,
+            })
+        );
+    },
 };
 
 export default TaskApi;
