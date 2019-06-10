@@ -21,9 +21,14 @@ class Task extends React.PureComponent {
     }
 
     onFocus() {
+        const {
+            active,
+            task,
+        } = this.props;
+        if (active) return;
         Dispatcher.dispatch({
             type: TaskActions.FOCUS,
-            id: this.props.task.id,
+            id: task.id,
         });
     }
 
@@ -140,7 +145,7 @@ class Task extends React.PureComponent {
         if (this.props.active) this.inputRef.current.focus();
     }
 
-    componentDidUpdate() {
+    componentDidUpdate(prevProps) {
         if (this.props.active) this.inputRef.current.focus();
     }
 
