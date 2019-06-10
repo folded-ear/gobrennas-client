@@ -8,6 +8,7 @@ import TaskActions from "../data/TaskActions";
 import Dispatcher from "../data/dispatcher";
 import classnames from "classnames";
 import "./Task.scss";
+import LoadObject from "../util/LoadObject";
 
 class Task extends React.PureComponent {
 
@@ -152,6 +153,7 @@ class Task extends React.PureComponent {
     render() {
         const {
             task,
+            loadObject: lo,
             active,
             selected,
         } = this.props;
@@ -163,6 +165,14 @@ class Task extends React.PureComponent {
         let layoutProps;
         if (section) {
             layoutProps = {};
+        } else if (! lo.isDone()) {
+            layoutProps = {
+                addonBefore: <Button icon="loading"
+                                     shape="circle"
+                                     size="small"
+                                     disabled
+                />,
+            };
         } else {
             layoutProps = {
                 addonBefore: <Button icon="check"
@@ -200,6 +210,7 @@ class Task extends React.PureComponent {
 
 Task.propTypes = {
     task: PropTypes.object.isRequired,
+    loadObject: PropTypes.instanceOf(LoadObject).isRequired,
     active: PropTypes.bool.isRequired,
     selected: PropTypes.bool.isRequired,
 };

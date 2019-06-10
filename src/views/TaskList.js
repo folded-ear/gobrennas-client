@@ -25,6 +25,7 @@ class TaskList extends React.PureComponent {
                     const t = lo.getValueEnforcing();
                     return <Task key={t.id}
                                  task={t}
+                                 loadObject={lo}
                                  active={isTaskActive(t)}
                                  selected={isTaskSelected(t)}
                     />;
