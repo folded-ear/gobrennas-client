@@ -53,7 +53,13 @@ const taskCreated = (state, clientId, id, task) => {
     const idFixer = idFixerFactory(clientId, id);
     const byId = {
         ...state.byId,
-        [id]: LoadObject.withValue(task),
+        // despite thinking we'd want to save the name, we don't, because if
+        // the user has made further changes while the save was in flight,
+        // we want to save those.
+        [id]: state.byId[clientId].done().map(t => ({
+            ...t,
+            id,
+        })),
     };
     delete byId[clientId];
     if (task.parentId != null) {
@@ -193,15 +199,17 @@ const renameTask = (state, id, name) => {
     const task = lo.getValueEnforcing();
     if (task.name === name) return state;
     if (ClientId.is(id)) {
-        if (lo.isDone())
+        if (lo.isDone()) {
             // todo: this needs to queue...
             TaskApi.createTask(name, task.parentId, id);
-        lo = lo.creating();
+            lo = lo.creating();
+        }
     } else {
-        if (lo.isDone())
+        if (lo.isDone()) {
             // todo: this needs to queue...
             TaskApi.renameTask(id, name);
-        lo = lo.updating();
+            lo = lo.updating();
+        }
     }
     return {
         ...state,
@@ -311,22 +319,37 @@ const deleteTask = (state, id) => {
     if (t.parentId == null) {
         throw new Error(`Can't delete root-level task '${id}'`)
     }
-    const p = taskForId(state, t.parentId);
-    const idx = p.subtaskIds.indexOf(id);
-    if (idx < 0) {
-        throw new Error(`Task '${t.id}' isn't a child of it's parent ('${t.parentId}')?`)
+    state = {
+        ...state,
+        activeTaskId: state.activeTaskId === id ? null : state.activeTaskId,
+        byId: {
+            ...state.byId,
+            [id]: state.byId[id].deleting(),
+        },
+    };
+    if (ClientId.is(id)) {
+        state = taskDeleted(state, id);
+    } else {
+        TaskApi.deleteTask(id);
     }
+    return state;
+};
+
+const taskDeleted = (state, id) => {
+    const t = taskForId(state, id);
+    const plo = loForId(state, t.parentId);
+    const p = plo.getValueEnforcing();
+    const idx = p.subtaskIds.indexOf(id);
     const byId = {
         ...state.byId,
-    };
-    delete byId[id];
-    byId[p.id] = {
-        ...byId[p.id],
-        subtaskIds: p.subtaskIds.slice(0, idx).concat(p.subtaskIds.slice(idx + 1)),
+        [p.id]: plo.map(p => ({
+            ...p,
+            subtaskIds: p.subtaskIds.slice(0, idx)
+                .concat(p.subtaskIds.slice(idx + 1)),
+        })),
     };
     return {
         ...state,
-        activeTaskId: state.activeTaskId === id ? null : state.activeTaskId,
         byId,
     };
 };
@@ -498,12 +521,14 @@ class TaskStore extends ReduceStore {
                     action.id,
                     action.data,
                 );
-            // case TaskActions.DELETE_TASK_FORWARD:
-            //     return forwardDeleteTask(state, action.id);
-            // case TaskActions.DELETE_TASK_BACKWARDS:
-            //     return backwardsDeleteTask(state, action.id);
-            // case TaskActions.MARK_COMPLETE:
-            //     return completeTask(state, action.id);
+            case TaskActions.DELETE_TASK_FORWARD:
+                return forwardDeleteTask(state, action.id);
+            case TaskActions.DELETE_TASK_BACKWARDS:
+                return backwardsDeleteTask(state, action.id);
+            case TaskActions.TASK_DELETED:
+                return taskDeleted(state, action.id);
+            case TaskActions.MARK_COMPLETE:
+                return completeTask(state, action.id);
             case TaskActions.SELECT_NEXT:
                 return selectDelta(state, action.id, 1);
             case TaskActions.SELECT_PREVIOUS:

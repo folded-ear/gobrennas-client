@@ -69,6 +69,16 @@ const TaskApi = {
             }),
         )
     },
+
+    deleteTask(id) {
+        promiseFlux(
+            axios.delete(`/${id}`),
+            () => ({
+                type: TaskActions.TASK_DELETED,
+                id,
+            }),
+        );
+    },
 };
 
 export default TaskApi;

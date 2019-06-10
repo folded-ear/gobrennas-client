@@ -189,6 +189,7 @@ class Task extends React.PureComponent {
                                  "task-active": active,
                                  "task-selected": selected,
                                  "task-question": question,
+                                 "task-deleting": lo.isDeleting(),
                              })}
                              ref={this.inputRef}
                              onFocus={this.onFocus}
