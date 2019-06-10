@@ -1,6 +1,9 @@
 import { ReduceStore } from "flux/utils";
 import Dispatcher from './dispatcher';
 import TaskActions from "./TaskActions";
+import LoadObject from "../util/LoadObject";
+import TaskApi from "./TaskApi";
+import hotLoadObject from "../util/hotLoadObject";
 
 /*
  * This store is way too muddled. But leaving it that way for the moment, to
@@ -33,7 +36,7 @@ const createList = (state, name) => {
         id_seq,
         activeListId: task.id,
         activeTaskId: null,
-        topLevelIds: state.topLevelIds.concat(task.id),
+        topLevelIds: state.topLevelIds.map(ids => ids.concat(task.id)),
         byId: {
             ...state.byId,
             [task.id]: task,
@@ -45,7 +48,7 @@ const selectList = (state, id) => {
     if (state.activeListId === id) return state;
     // only valid ids, please
     const list = taskForId(state, id);
-    if (state.topLevelIds.every(it => it !== id)) {
+    if (state.topLevelIds.getValueEnforcing().every(it => it !== id)) {
         throw new Error(`Task '${id}' is not a list.`);
     }
     return {
@@ -57,20 +60,28 @@ const selectList = (state, id) => {
     };
 };
 
-const taskForId = (state, id) => {
+const taskForId = (state, id) =>
+    loForId(state, id).getValueEnforcing();
+
+const loForId = (state, id) => {
     if (id == null) {
         throw new Error(`No task has a null id.`);
     }
-    const t = state.byId[id];
-    if (t == null) {
-        throw new Error(`No task '${id}' is known`);
+    const lo = state.byId[id];
+    if (lo == null) {
+        throw new Error(`No task '${id}' is known. You have a load race!`);
     }
-    return t;
+    lo.id = id; // kludge for pre-load react keys
+    return lo;
 };
 
 const tasksForIds = (state, ids) =>
+    losForIds(state, ids).map(lo =>
+        lo.getValueEnforcing());
+
+const losForIds = (state, ids) =>
     ids == null ? [] : ids.map(id =>
-        taskForId(state, id));
+        loForId(state, id));
 
 // after can be `null`, an id, or the magic `AT_END` value
 const spliceIds = (ids, id, after = AT_END) => {
@@ -253,18 +264,18 @@ const deleteTask = (state, id) => {
     if (idx < 0) {
         throw new Error(`Task '${t.id}' isn't a child of it's parent ('${t.parentId}')?`)
     }
-    const newById = {
+    const byId = {
         ...state.byId,
     };
-    delete newById[id];
-    newById[p.id] = {
-        ...newById[p.id],
+    delete byId[id];
+    byId[p.id] = {
+        ...byId[p.id],
         subtaskIds: p.subtaskIds.slice(0, idx).concat(p.subtaskIds.slice(idx + 1)),
     };
     return {
         ...state,
         activeTaskId: state.activeTaskId === id ? null : state.activeTaskId,
-        byId: newById,
+        byId,
     };
 };
 
@@ -331,6 +342,30 @@ const moveDelta = (state, delta) => {
     };
 };
 
+const taskLoaded = (state, task) => {
+    if (task.subtaskIds && task.subtaskIds.length > 0) {
+        TaskApi.loadSubtasks(task.id);
+        state = task.subtaskIds.reduce(taskLoading, state);
+    }
+    return {
+        ...state,
+        byId: {
+            ...state.byId,
+            [task.id]: LoadObject.withValue(task),
+        },
+    };
+};
+
+const taskLoading = (state, id) => {
+    return {
+        ...state,
+        byId: {
+            ...state.byId,
+            [id]: LoadObject.loading(),
+        },
+    };
+};
+
 class TaskStore extends ReduceStore {
     constructor() {
         super(Dispatcher);
@@ -338,47 +373,64 @@ class TaskStore extends ReduceStore {
 
     getInitialState() {
         return {
-            id_seq: 0,
-            activeListId: null,
-            activeTaskId: null,
-            selectedTaskIds: null,
-            topLevelIds: [],
-            byId: {},
+            activeListId: null, // ID
+            activeTaskId: null, // ID
+            selectedTaskIds: null, // Array<ID>
+            topLevelIds: LoadObject.empty(), // LoadObject<Array<ID>>
+            byId: {}, // Map<ID, LoadObject<Task>>
         };
     }
 
     reduce(state, action) {
         switch (action.type) {
-            case TaskActions.CREATE_LIST:
-                return createList(state, action.name);
+            // case TaskActions.CREATE_LIST:
+            //     return createList(state, action.name);
+            case TaskActions.LOAD_LISTS:
+                TaskApi.loadLists();
+                return {
+                    ...state,
+                    topLevelIds: state.topLevelIds.loading(),
+                };
+            case TaskActions.LISTS_LOADED:
+                state = {
+                    ...action.data.reduce(taskLoaded, state),
+                    topLevelIds: LoadObject.withValue(action.data.map(t => t.id)),
+                };
+                if (action.data.length > 0) {
+                    // auto-select the first one
+                    state = selectList(state, action.data[0].id);
+                }
+                return state;
             case TaskActions.SELECT_LIST:
                 return selectList(state, action.id);
-            case TaskActions.RENAME_TASK:
-                return renameTask(state, action.id, action.name);
-            case TaskActions.FOCUS:
-                return focusTask(state, action.id);
-            case TaskActions.FOCUS_NEXT:
-                return focusDelta(state, action.id, 1);
-            case TaskActions.FOCUS_PREVIOUS:
-                return focusDelta(state, action.id, -1);
-            case TaskActions.CREATE_TASK_AFTER:
-                return createTaskAfter(state, action.id);
-            case TaskActions.CREATE_TASK_BEFORE:
-                return createTaskBefore(state, action.id);
-            case TaskActions.DELETE_TASK_FORWARD:
-                return forwardDeleteTask(state, action.id);
-            case TaskActions.DELETE_TASK_BACKWARDS:
-                return backwardsDeleteTask(state, action.id);
-            case TaskActions.MARK_COMPLETE:
-                return completeTask(state, action.id);
-            case TaskActions.SELECT_NEXT:
-                return selectDelta(state, action.id, 1);
-            case TaskActions.SELECT_PREVIOUS:
-                return selectDelta(state, action.id, -1);
-            case TaskActions.MOVE_NEXT:
-                return moveDelta(state, 1);
-            case TaskActions.MOVE_PREVIOUS:
-                return moveDelta(state, -1);
+            case TaskActions.SUBTASKS_LOADED:
+                return action.data.reduce(taskLoaded, state);
+            // case TaskActions.RENAME_TASK:
+            //     return renameTask(state, action.id, action.name);
+            // case TaskActions.FOCUS:
+            //     return focusTask(state, action.id);
+            // case TaskActions.FOCUS_NEXT:
+            //     return focusDelta(state, action.id, 1);
+            // case TaskActions.FOCUS_PREVIOUS:
+            //     return focusDelta(state, action.id, -1);
+            // case TaskActions.CREATE_TASK_AFTER:
+            //     return createTaskAfter(state, action.id);
+            // case TaskActions.CREATE_TASK_BEFORE:
+            //     return createTaskBefore(state, action.id);
+            // case TaskActions.DELETE_TASK_FORWARD:
+            //     return forwardDeleteTask(state, action.id);
+            // case TaskActions.DELETE_TASK_BACKWARDS:
+            //     return backwardsDeleteTask(state, action.id);
+            // case TaskActions.MARK_COMPLETE:
+            //     return completeTask(state, action.id);
+            // case TaskActions.SELECT_NEXT:
+            //     return selectDelta(state, action.id, 1);
+            // case TaskActions.SELECT_PREVIOUS:
+            //     return selectDelta(state, action.id, -1);
+            // case TaskActions.MOVE_NEXT:
+            //     return moveDelta(state, 1);
+            // case TaskActions.MOVE_PREVIOUS:
+            //     return moveDelta(state, -1);
             default:
                 return state;
         }
@@ -386,16 +438,18 @@ class TaskStore extends ReduceStore {
 
     getLists() {
         const s = this.getState();
-        return tasksForIds(s, s.topLevelIds);
+        return hotLoadObject(
+            () => s.topLevelIds,
+            () => Dispatcher.dispatch({
+                type: TaskActions.LOAD_LISTS,
+            }),
+        ).map(ids => tasksForIds(s, ids));
     }
 
-    getChildTasks(containerId) {
+    getSubtaskLOs(id) {
         const s = this.getState();
-        const p = s.byId[containerId];
-        if (p == null) {
-            throw new Error(`Unknown '${containerId}' task container`);
-        }
-        return tasksForIds(s, p.subtaskIds);
+        const p = taskForId(s, id);
+        return losForIds(s, p.subtaskIds);
     }
 
     getActiveList() {
@@ -407,9 +461,9 @@ class TaskStore extends ReduceStore {
 
     getActiveTask() {
         const s = this.getState();
-        return s.activeTaskId == null
-            ? null
-            : taskForId(s, s.activeTaskId);
+        if (s.activeTaskId == null) return null;
+        const lo = loForId(s, s.activeTaskId);
+        return lo.hasValue() ? lo.getValueEnforcing() : null;
     }
 
     getSelectedTasks() {
@@ -421,4 +475,4 @@ class TaskStore extends ReduceStore {
 
 }
 
-export default localCacheStore("TaskStore", new TaskStore());
+export default new TaskStore();

@@ -16,8 +16,8 @@ export default Container.createFunctional(
         return {
             allLists,
             activeList,
-            topLevelTasks: activeList
-                ? TaskStore.getChildTasks(activeList.id)
+            taskLOs: activeList
+                ? TaskStore.getSubtaskLOs(activeList.id)
                 : null,
             isTaskActive: activeTask == null
                 ? () => false

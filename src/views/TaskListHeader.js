@@ -63,7 +63,7 @@ class TaskListHeader extends React.PureComponent {
             {allLists && allLists.length > 0 && <Form.Item label="Select a List:">
                 <Select style={{minWidth: 120}}
                         onChange={this.onSelect}
-                        value={activeList.id}
+                        value={activeList && activeList.id}
                 >
                     {allLists.sort(humanStringComparator).map(l =>
                         <Select.Option key={l.id}

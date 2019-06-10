@@ -13,7 +13,7 @@ class LoadObjectValve extends React.PureComponent {
             errorMessage,
             renderBody,
         } = this.props;
-        return lo.isEmpty()
+        return ! lo.hasValue()
             ? <Spin tip={loadingMessage} />
             : lo.isLoading()
                 ? <Spin tip={loadingMessage}>

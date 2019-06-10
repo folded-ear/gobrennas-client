@@ -18,6 +18,7 @@ const TaskActions = {
     MOVE_PREVIOUS: "task/move-previous",
     RENAME_TASK: "task/rename-task",
     // ajax actions
+    LOAD_LISTS: "task/load-lists",
     LISTS_LOADED: "task/lists-loaded",
     LIST_CREATED: "task/list-created",
     SUBTASKS_LOADED: "task/subtasks-loaded",

@@ -2,6 +2,8 @@ import React from "react";
 import PropTypes from "prop-types";
 import TaskListHeader from "./TaskListHeader";
 import Task from "./Task";
+import LoadObjectValve from "./LoadObjectValve";
+import LoadObject from "../util/LoadObject";
 
 class TaskList extends React.PureComponent {
 
@@ -9,29 +11,43 @@ class TaskList extends React.PureComponent {
         const {
             allLists,
             activeList,
-            topLevelTasks,
+            taskLOs,
             isTaskActive,
             isTaskSelected,
         } = this.props;
-        return <React.Fragment>
-            <TaskListHeader allLists={allLists}
-                            activeList={activeList}
+        const renderBody = () => <React.Fragment>
+            <TaskListHeader
+                allLists={allLists.getValueEnforcing()}
+                activeList={activeList}
             />
-            {activeList && topLevelTasks.map(t =>
-                <Task key={t.id}
-                      task={t}
-                      active={isTaskActive(t)}
-                      selected={isTaskSelected(t)}
-                />)}
+            {activeList && taskLOs.map(lo => {
+                if (lo.hasValue()) {
+                    const t = lo.getValueEnforcing();
+                    return <Task key={t.id}
+                                 task={t}
+                                 active={isTaskActive(t)}
+                                 selected={isTaskSelected(t)}
+                    />;
+                } else {
+                    return <div key={lo.id}>
+                        Loading...
+                    </div>;
+                }
+            })}
         </React.Fragment>;
+        return <LoadObjectValve loadObject={allLists}
+                                loadingMessage="Loading Task Lists..."
+                                renderBody={renderBody}
+        />;
     }
 
 }
 
 TaskList.propTypes = {
-    allLists: PropTypes.array.isRequired,
+    allLists: PropTypes.instanceOf(LoadObject).isRequired,
     activeList: PropTypes.object,
-    topLevelTasks: PropTypes.array,
+    taskLOs: PropTypes.arrayOf(
+        PropTypes.instanceOf(LoadObject)),
     isTaskActive: PropTypes.func.isRequired,
     isTaskSelected: PropTypes.func.isRequired,
 };
