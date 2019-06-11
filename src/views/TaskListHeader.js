@@ -28,7 +28,7 @@ class TaskListHeader extends React.PureComponent {
     onNameChange(e) {
         const {value} = e.target;
         this.setState({
-            name: value == null ? "" : value.trim(),
+            name: value == null ? "" : value,
         });
     }
 
@@ -40,7 +40,7 @@ class TaskListHeader extends React.PureComponent {
         });
         Dispatcher.dispatch({
             type: TaskActions.CREATE_LIST,
-            name,
+            name: name.trim(),
         });
     }
 
