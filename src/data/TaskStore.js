@@ -226,7 +226,7 @@ const inTheFuture = action => {
         Dispatcher.dispatch({
             type: action,
         });
-    }, 5000));
+    }, 2000));
 };
 
 const renameTask = (state, id, name) => {
@@ -571,11 +571,14 @@ class TaskStore extends ReduceStore {
             case TaskActions.TASK_RENAMED:
                 return taskRenamed(state, action.id, action.name);
             case TaskActions.FOCUS:
-                return focusTask(state, action.id);
+                state = focusTask(state, action.id);
+                return flushTasksToRename(state);
             case TaskActions.FOCUS_NEXT:
-                return focusDelta(state, action.id, 1);
+                state = focusDelta(state, action.id, 1);
+                return flushTasksToRename(state);
             case TaskActions.FOCUS_PREVIOUS:
-                return focusDelta(state, action.id, -1);
+                state = focusDelta(state, action.id, -1);
+                return flushTasksToRename(state);
             case TaskActions.CREATE_TASK_AFTER:
                 return createTaskAfter(state, action.id);
             case TaskActions.CREATE_TASK_BEFORE:
