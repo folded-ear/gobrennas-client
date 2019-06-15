@@ -1,10 +1,14 @@
 // import { toJSON } from 'immutable';
 import Types from './types';
 import Dispatcher from './dispatcher';
-import axios from 'axios';
+import BaseAxios from 'axios';
 import Recipe from "../models/Recipe";
 import PantryItem from "../models/PantryItem";
-import user from './user';
+import { API_BASE_URL } from "../constants/index";
+
+const axios = BaseAxios.create({
+    baseURL: `${API_BASE_URL}/api`,
+});
 
 const Actions = {
   
@@ -19,7 +23,7 @@ const Actions = {
   
   addRecipe(recipe) {
     axios
-      .post('/api/recipe', recipe.toJSON())
+      .post('/recipe', recipe.toJSON())
       .then((response) => {
       //TODO: handle response back from API if there are errors, etc
       if (response.status && response.status === 201) {
@@ -42,7 +46,7 @@ const Actions = {
   
   deleteRecipe(id) {
     axios
-      .delete(`/api/recipe/${id}`)
+      .delete(`/recipe/${id}`)
       .then(() => {
         Dispatcher.dispatch({
           type: Types.DELETE_RECIPE,
@@ -52,7 +56,7 @@ const Actions = {
   },
   
   fetchRecipes() {
-    axios.get('/api/recipe/all')
+    axios.get('/recipe/all')
       .then(res => {
         Dispatcher.dispatch({
           type: Types.FETCH_RECIPES,
@@ -62,7 +66,7 @@ const Actions = {
   },
   
   fetchPantryItems() {
-    axios.get('/api/pantryitem/all')
+    axios.get('/pantryitem/all')
       .then( res => {
         Dispatcher.dispatch({
           type: Types.FETCH_PANTRYITEMS,
@@ -73,7 +77,7 @@ const Actions = {
   
   addPantryItem(item) {
     axios
-      .post('/api/pantryitem', item.toJSON())
+      .post('/pantryitem', item.toJSON())
       .then( response => {
         // TODO: Add error handling and logging
         if(response.status && response.status === 201) {
