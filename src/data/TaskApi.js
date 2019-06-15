@@ -4,7 +4,7 @@ import TaskActions from "./TaskActions";
 import { API_BASE_URL } from "../constants/index";
 
 const axios = BaseAxios.create({
-    baseURL: API_BASE_URL + "/api/tasks",
+    baseURL: `${API_BASE_URL}/api/tasks`,
 });
 
 const TaskApi = {

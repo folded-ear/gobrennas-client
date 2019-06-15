@@ -1,7 +1,7 @@
-import React, {useEffect} from 'react';
-import {ACCESS_TOKEN} from '../../constants';
-import {Redirect} from 'react-router-dom'
-import Actions from '../../data/actions';
+import React from 'react';
+import Dispatcher from '../../data/dispatcher';
+import { Redirect } from 'react-router-dom'
+import UserActions from "../../data/UserActions";
 
 function getUrlParameter(name, location) {
     name = name.replace(/[[]/, '\\[').replace(/[\]]/, '\\]');
@@ -9,17 +9,21 @@ function getUrlParameter(name, location) {
     
     var results = regex.exec(location.search);
     return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
-};
+}
 
 const OAuth2RedirectHandler = ({location}) => {
-    
     const token = getUrlParameter('token', location);
     const error = getUrlParameter('error', location);
-    
-    useEffect(() => Actions.user.setCurrentUser(token));
-    
+
     if (token) {
-        localStorage.setItem(ACCESS_TOKEN, token);
+        // This has to be deferred to avoid reentrant dispatch. It seems kinda
+        // kludge-y, but I'm not sure how else to process URL params for a
+        // specific Route, as the routed Component gets rendered and there isn't
+        // an obvious way to do a code-only route that redirects.
+        setTimeout(() => Dispatcher.dispatch({
+            type: UserActions.LOGIN,
+            token,
+        }));
         return <Redirect to={{
             pathname: "/recipes",
             state: {from: location}

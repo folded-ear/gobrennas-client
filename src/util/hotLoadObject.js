@@ -3,7 +3,7 @@ import LoadObject from "./LoadObject";
 const hotLoadObject = (
     getLO,
     doLoad,
-    shouldLoad = lo => lo.isEmpty() && ! lo.isLoading(),
+    shouldLoad = lo => lo.isEmpty(),
 ) => {
     let lo = getLO() || LoadObject.empty();
     if (shouldLoad(lo)) {
