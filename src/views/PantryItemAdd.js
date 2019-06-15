@@ -1,5 +1,9 @@
-import React, {Component} from 'react'
-import {Button, Form, Input} from "antd";
+import React, { Component } from 'react'
+import {
+    Button,
+    Form,
+    Input,
+} from "antd";
 import PantryItem from "../models/PantryItem";
 import Actions from "../data/actions";
 
@@ -15,7 +19,6 @@ class PantryItemAdd extends Component {
   handleSave = () => {
     const { name, aisle } = this.state;
   
-    debugger;
     const item = new PantryItem({
       type: "PantryItem",
       name,
