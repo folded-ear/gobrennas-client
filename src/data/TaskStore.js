@@ -6,6 +6,7 @@ import TaskApi from "./TaskApi";
 import hotLoadObject from "../util/hotLoadObject";
 import ClientId from "../util/ClientId";
 import { humanStringComparator } from "../util/comparators";
+import PreferencesStore from "./PreferencesStore";
 
 /*
  * This store is way too muddled. But leaving it that way for the moment, to
@@ -526,8 +527,13 @@ const listsLoaded = (state, lists) => {
         topLevelIds: LoadObject.withValue(lists.map(t => t.id)),
     };
     if (lists.length > 0) {
-        // auto-select the first one
-        state = selectList(state, lists.sort(humanStringComparator)[0].id);
+        // see if there's a preferred active list
+        let alid = PreferencesStore.getActiveTaskList();
+        if (lists.find(it => it.id === alid) == null) {
+            // auto-select the first one
+            alid = lists.sort(humanStringComparator)[0].id;
+        }
+        state = selectList(state, alid);
     }
     return state;
 };

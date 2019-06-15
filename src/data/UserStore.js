@@ -4,8 +4,8 @@ import { OrderedMap } from "immutable";
 import UserActions from "./UserActions";
 import LoadObject from "../util/LoadObject";
 import {
-    ACCESS_TOKEN,
     API_BASE_URL,
+    LOCAL_STORAGE_ACCESS_TOKEN,
 } from "../constants/index";
 import hotLoadObject from "../util/hotLoadObject";
 import promiseFlux from "../util/promiseFlux";
@@ -31,26 +31,31 @@ const initiateProfileLoad = state => {
         lo.loading());
 };
 
+const setToken = (state, token) => {
+    axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+    return initiateProfileLoad(
+        state.set("token", token)
+    );
+};
+
 class UserStore extends ReduceStore {
     constructor() {
         super(Dispatcher);
     }
 
     getInitialState() {
-        return new OrderedMap({
-            token: null,
+        const state = new OrderedMap({
             profile: LoadObject.empty(),
         });
+        const token = localStorage.getItem(LOCAL_STORAGE_ACCESS_TOKEN);
+        return token ? setToken(state, token) : state;
     }
 
     reduce(state, action) {
         switch (action.type) {
             case UserActions.LOGIN: {
-                localStorage.setItem(ACCESS_TOKEN, action.token);
-                axios.defaults.headers.common['Authorization'] = `Bearer ${action.token}`;
-                return initiateProfileLoad(
-                    state.set("token", action.token)
-                );
+                localStorage.setItem(LOCAL_STORAGE_ACCESS_TOKEN, action.token);
+                return setToken(state, action.token);
             }
             case UserActions.LOAD_PROFILE: {
                 return initiateProfileLoad(state);
@@ -64,7 +69,7 @@ class UserStore extends ReduceStore {
                     lo.setError(action.error).done());
             }
             case UserActions.LOGOUT: {
-                localStorage.removeItem(ACCESS_TOKEN);
+                localStorage.removeItem(LOCAL_STORAGE_ACCESS_TOKEN);
                 return this.getInitialState();
             }
             default:
