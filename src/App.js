@@ -1,8 +1,10 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import {
     Route,
-    Switch
+    Switch,
 } from 'react-router-dom';
+import Dispatcher from './data/dispatcher';
+import { Container } from "flux/utils";
 import AppHeader from './views/common/AppHeader';
 import Landing from './views/Landing';
 import Login from './views/user/Login';
@@ -10,67 +12,38 @@ import Profile from './views/user/Profile';
 import OAuth2RedirectHandler from './views/user/OAuth2RedirectHandler';
 import NotFound from './views/common/NotFound';
 import LoadingIndicator from './views/common/LoadingIndicator';
-import {getCurrentUser} from './utils/APIUtils';
-import {ACCESS_TOKEN} from './constants';
 import PrivateRoute from './views/common/PrivateRoute';
 import './App.scss';
-import {Layout} from "antd";
+import { Layout } from "antd";
 import Recipes from "./containers/Recipes";
 import PantryItemAdd from "./views/PantryItemAdd";
 import PantryItems from "./containers/PantryItems";
 import Tasks from "./containers/Tasks";
+import UserActions from "./data/UserActions";
+import UserStore from "./data/UserStore";
 
 class App extends Component {
     constructor(props) {
         super(props);
-        this.state = {
-            authenticated: false,
-            currentUser: null,
-            loading: false
-        };
-
-        this.loadCurrentlyLoggedInUser = this.loadCurrentlyLoggedInUser.bind(this);
         this.handleLogout = this.handleLogout.bind(this);
     }
 
-    componentDidMount() {
-        this.loadCurrentlyLoggedInUser();
-    }
-
-    loadCurrentlyLoggedInUser() {
-        this.setState({
-            loading: true
-        });
-
-        getCurrentUser()
-            .then(response => {
-                this.setState({
-                    currentUser: response,
-                    authenticated: true,
-                    loading: false
-                });
-            }).catch(error => {
-            this.setState({
-                loading: false
-            });
-        });
-    }
-
     handleLogout() {
-        localStorage.removeItem(ACCESS_TOKEN);
-        this.setState({
-            authenticated: false,
-            currentUser: null
+        Dispatcher.dispatch({
+            type: UserActions.LOGOUT,
         });
     }
 
     render() {
-        const {loading, authenticated, currentUser} = this.state;
+        const {authenticated, userLO} = this.props;
         const {Content} = Layout;
 
-        if (loading) {
+        if (! userLO.isDone()) {
             return <LoadingIndicator/>
         }
+        const currentUser = authenticated
+            ? userLO.getValueEnforcing()
+            : null;
 
         return (
             <div>
@@ -128,4 +101,13 @@ class App extends Component {
     }
 }
 
-export default App;
+export default Container.createFunctional(
+    props => <App {...props} />,
+    () => [
+        UserStore,
+    ],
+    () => ({
+        authenticated: UserStore.isAuthenticated(),
+        userLO: UserStore.getProfileLO(),
+    }),
+);

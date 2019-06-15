@@ -1,5 +1,8 @@
-import {OrderedMap, List} from 'immutable';
-import {ReduceStore} from 'flux/utils';
+import {
+    List,
+    OrderedMap,
+} from 'immutable';
+import { ReduceStore } from 'flux/utils';
 import Types from './types';
 import Dispatcher from './dispatcher';
 
@@ -87,11 +90,6 @@ class Store extends ReduceStore {
           return state;
         }
         return state.set('pantry_items', state.get('pantry_items').push(action.data))
-      }
-      
-      case Types.SET_CURRENT_USER: {
-        console.log(action);
-        return state.set('token', action.data);
       }
       
       default:

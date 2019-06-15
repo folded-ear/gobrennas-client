@@ -12,8 +12,6 @@ const axios = BaseAxios.create({
 
 const Actions = {
   
-  user,
-
   selectRecipe(id) {
     Dispatcher.dispatch({
       type: Types.SELECT_RECIPE,
