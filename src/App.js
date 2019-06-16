@@ -50,11 +50,6 @@ class App extends Component {
                 <AppHeader authenticated={authenticated} onLogout={this.handleLogout}/>
 
                 <Content>
-                    {authenticated ?
-                        <p>logged in</p>
-                        :
-                        <p>Not logged in</p>
-                    }
                     <Switch>
                         <Route exact path="/" component={Landing} />
                         <Route
