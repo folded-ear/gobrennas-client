@@ -9,11 +9,21 @@ class IngredientAdd extends Component<{ onSelect: PropTypes.func }> {
     this.state = {
       quantity: '',
       preparation: '',
-      selected: '',
+      value: '',
+      selectedIngredient: '',
       items: []
     }
   }
-
+  
+  reset = () => {
+    this.setState({
+      quantity: '',
+      preparation: '',
+      selectedIngredient: '',
+      value: ''
+    })
+  };
+  
   componentDidUpdate(prev): void {
     if(prev.data !== this.props.data) {
       this.setState({ items: this.props.data })
@@ -25,23 +35,24 @@ class IngredientAdd extends Component<{ onSelect: PropTypes.func }> {
     this.setState({ [name]: value })
   };
   
-  handleSelect = (value) => {
-    console.log(value);
+  handleSelect = (selectedIngredient) => {
+    this.setState({ selectedIngredient })
   };
   
   handleSearch = value => {
     const { data: items } = this.props;
-    this.setState({ items: items.filter( item => item.name.includes(value)) });
+    this.setState({ items: items.filter( item => item.name.includes(value)), value });
   };
   
   handleSave = () => {
     const {onSave} = this.props;
-    const { quantity, preparation, ingredient } = this.state;
-    onSave({quantity, preparation, ingredient});
+    const { quantity, preparation, selectedIngredient } = this.state;
+    onSave({quantity, preparation, selectedIngredient});
+    this.reset();
   };
   
   render() {
-    const { quantity, preparation, ingredient, items } = this.state;
+    const { quantity, preparation, items, value } = this.state;
     const Option = AutoComplete.Option;
     const pantryItems = items.map(item => <Option key={item.id}>{item.name}</Option>);
     
@@ -64,6 +75,7 @@ class IngredientAdd extends Component<{ onSelect: PropTypes.func }> {
                   onSelect={this.handleSelect}
                   onSearch={this.handleSearch}
                   placeholder="Ingredients"
+                  value={value}
               >
                 {pantryItems}
               </AutoComplete>

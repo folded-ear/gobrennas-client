@@ -66,7 +66,7 @@ class RecipeAdd extends Component {
     const { ingredients } = this.state;
     
     return ingredients.map( ingredient => {
-      return <p>{ingredient.quantity} {this.getIngredientName(ingredient.ingredient)} {ingredient.preparation}</p>
+      return <p key={ingredient.selectedIngredient}>{ingredient.quantity} {this.getIngredientName(ingredient.selectedIngredient)} {ingredient.preparation}</p>
     })
   }
   
