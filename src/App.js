@@ -51,7 +51,7 @@ class App extends Component {
                                 <Route
                                     key={route.path}
                                     path={route.path}
-                                    render={ props => <route.component {...props} />}
+                                    render={ props => <route.component authenticated={authenticated} {...props} />}
                                     exact={route.exact}
                                 />
                             )
