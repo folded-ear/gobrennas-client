@@ -3,6 +3,7 @@ import {Form, Input, Button} from 'antd';
 import Recipe from '../models/Recipe';
 import RecipeActions from '../data/RecipeActions';
 import IngredientAdd from "./IngredientAdd";
+import Actions from '../data/RecipeActions'
 
 const {TextArea} = Input;
 
@@ -17,6 +18,10 @@ class RecipeAdd extends Component {
       ingredients: [],
       directions: ''
     };
+  }
+  
+  componentDidMount() {
+      Actions.fetchPantryItems()
   }
   
   handleUpdate = (e) => {
@@ -96,7 +101,7 @@ class RecipeAdd extends Component {
             </Form.Item>
             <IngredientAdd
               onSave={this.addIngredient}
-              data={[]}
+              data={pantryItems}
             />
             { this.renderIngredients() }
             <Form.Item>
