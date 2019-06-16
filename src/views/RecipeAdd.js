@@ -1,11 +1,9 @@
 import React, {Component} from 'react';
 import {Form, Input, Button} from 'antd';
 import Recipe from '../models/Recipe';
-import RecipeActions from '../data/RecipeActions';
+import RecipeApi from '../data/RecipeApi';
+import PantryItemApi from '../data/PantryItemApi';
 import IngredientAdd from "./IngredientAdd";
-import Actions from '../data/RecipeActions'
-
-const {TextArea} = Input;
 
 class RecipeAdd extends Component {
   
@@ -21,7 +19,7 @@ class RecipeAdd extends Component {
   }
   
   componentDidMount() {
-      Actions.fetchPantryItems()
+    PantryItemApi.fetchPantryItems()
   }
   
   handleUpdate = (e) => {
@@ -53,12 +51,12 @@ class RecipeAdd extends Component {
       }),
       directions
     });
-    RecipeActions.addRecipe(recipe);
+    RecipeApi.addRecipe(recipe);
   };
   
   getIngredientName(id) {
-    const pantryitems = this.props.pantry_items;
-    const item = pantryitems.find( item => item.get('id') === parseInt(id));
+    const {pantryItems} = this.props;
+    const item = pantryItems.find( item => item.get('id') === parseInt(id));
     if(item) {
       return item.name;
     }
@@ -75,8 +73,7 @@ class RecipeAdd extends Component {
   render() {
     const {title, external_url, directions } = this.state;
     const {pantryItems} = this.props;
-    
-    console.log(this.props);
+    const {TextArea} = Input;
     
     return (
       <div>

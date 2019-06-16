@@ -1,16 +1,16 @@
 import RecipeAdd from '../views/RecipeAdd'
 import {Container} from "flux/utils";
 import React from "react";
-import RecipeStore from "../data/RecipeStore";
+import PantryItemStore from "../data/PantryItemStore";
 
 export default Container.createFunctional(
-    props => <RecipeAdd {...props}/>,
+    props => <RecipeAdd {...props} />,
     () => [
-        RecipeStore
+        PantryItemStore
     ],
     () => {
         return {
-            pantryItems: RecipeStore.getPantryItems()
+            pantryItems: PantryItemStore.getPantryItems()
         };
     }
 );
