@@ -52,7 +52,7 @@ class RecipeAdd extends Component {
   };
   
   getIngredientName(id) {
-    const pantryitems = this.props.recipes.get('pantry_items');
+    const pantryitems = this.props.pantry_items;
     const item = pantryitems.find( item => item.get('id') === parseInt(id));
     if(item) {
       return item.name;
@@ -69,9 +69,9 @@ class RecipeAdd extends Component {
   
   render() {
     const {title, external_url, directions } = this.state;
-    const pantryitems = this.props.recipes.get('pantry_items');
+    const {pantryItems} = this.props;
     
-    console.log(pantryitems);
+    console.log(this.props);
     
     return (
       <div>
@@ -96,7 +96,7 @@ class RecipeAdd extends Component {
             </Form.Item>
             <IngredientAdd
               onSave={this.addIngredient}
-              data={pantryitems}
+              data={[]}
             />
             { this.renderIngredients() }
             <Form.Item>

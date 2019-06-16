@@ -97,6 +97,10 @@ class RecipeStore extends ReduceStore {
         return state;
     }
   }
+  
+  getPantryItems() {
+      return this.getState().get('pantry_items');
+  }
 }
 
 export default new RecipeStore();

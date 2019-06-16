@@ -17,7 +17,7 @@ import './App.scss';
 import { Layout } from "antd";
 import Recipes from "./containers/Recipes";
 import PantryItemAdd from "./views/PantryItemAdd";
-import PantryItems from "./containers/PantryItems";
+import RecipeAdd from "./containers/RecipeAdd";
 import Tasks from "./containers/Tasks";
 import UserActions from "./data/UserActions";
 import UserStore from "./data/UserStore";
@@ -77,7 +77,7 @@ class App extends Component {
                             path="/add"
                             authenticated={authenticated}
                             currentUser={currentUser}
-                            component={PantryItems}
+                            component={RecipeAdd}
                         />
                         <PrivateRoute
                             path="/addpantryitem"
