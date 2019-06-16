@@ -44,7 +44,7 @@ class App extends Component {
             <div>
                 <AppHeader authenticated={authenticated} onLogout={this.handleLogout}/>
                 
-                <Content>
+                <Content className="content">
                     <Switch>
                         {routes.public.map(route => {
                             return (
