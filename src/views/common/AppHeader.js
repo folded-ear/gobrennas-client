@@ -10,7 +10,7 @@ import {
 const AppHeader = ({authenticated, onLogout}) => {
     
     const {Header} = Layout;
-    const [current, setCurrent] = useState('recipes');
+    const [current, setCurrent] = useState('');
     
     if (!authenticated) {
         return (
