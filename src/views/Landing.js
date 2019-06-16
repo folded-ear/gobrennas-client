@@ -2,13 +2,13 @@ import React, {
     useEffect
 } from 'react';
 
-import Actions from '../data/actions';
+import RecipeActions from '../data/RecipeActions';
 
 function Landing() {
     
     useEffect(() => {
-        Actions.fetchRecipes();
-        Actions.fetchPantryItems()
+        RecipeActions.fetchRecipes();
+        RecipeActions.fetchPantryItems()
     });
     
     return (

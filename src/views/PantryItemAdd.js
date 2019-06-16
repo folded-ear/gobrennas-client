@@ -5,7 +5,7 @@ import {
     Input,
 } from "antd";
 import PantryItem from "../models/PantryItem";
-import Actions from "../data/actions";
+import RecipeActions from "../data/RecipeActions";
 
 class PantryItemAdd extends Component {
   constructor(props) {
@@ -25,7 +25,7 @@ class PantryItemAdd extends Component {
       aisle
     });
     
-    Actions.addPantryItem(item);
+    RecipeActions.addPantryItem(item);
   };
   
   handleUpdate = (e) => {

@@ -10,7 +10,7 @@ const axios = BaseAxios.create({
     baseURL: `${API_BASE_URL}/api`,
 });
 
-const Actions = {
+const RecipeActions = {
   
   selectRecipe(id) {
     Dispatcher.dispatch({
@@ -94,4 +94,4 @@ const Actions = {
   }
 };
 
-export default Actions;
+export default RecipeActions;

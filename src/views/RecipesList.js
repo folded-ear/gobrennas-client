@@ -1,13 +1,13 @@
 import React from 'react';
-import Actions from '../data/actions';
+import RecipeActions from '../data/RecipeActions';
 import RecipeDetail from "./RecipeDetail";
 
 const handleSelect = (id) => {
-  Actions.selectRecipe(id);
+  RecipeActions.selectRecipe(id);
 };
 
 const handleDelete = (id) => {
-  Actions.deleteRecipe(id);
+  RecipeActions.deleteRecipe(id);
 };
 
 const RecipesList = (props) => {

@@ -1,7 +1,7 @@
 import React from 'react'
 import RecipeAdd from '../views/RecipeAdd';
 import {Container} from 'flux/utils';
-import Store from '../data/store';
+import Store from '../data/RecipeStore';
 
 function getStores() {
   return [

@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {Form, Input, Button} from 'antd';
 import Recipe from '../models/Recipe';
-import Actions from '../data/actions';
+import RecipeActions from '../data/RecipeActions';
 import IngredientAdd from "./IngredientAdd";
 
 const {TextArea} = Input;
@@ -48,7 +48,7 @@ class RecipeAdd extends Component {
       }),
       directions
     });
-    Actions.addRecipe(recipe);
+    RecipeActions.addRecipe(recipe);
   };
   
   getIngredientName(id) {

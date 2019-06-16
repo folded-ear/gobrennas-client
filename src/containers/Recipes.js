@@ -1,6 +1,6 @@
 import RecipesList from '../views/RecipesList';
 import {Container} from 'flux/utils';
-import Store from '../data/store';
+import Store from '../data/RecipeStore';
 
 function getStores() {
   return [

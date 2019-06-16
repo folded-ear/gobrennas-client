@@ -11,7 +11,8 @@ import IngredientRef from "../models/IngredientRef";
 import Ingredient from "../models/Ingredient";
 import PantryItem from "../models/PantryItem";
 
-class Store extends ReduceStore {
+class RecipeStore extends ReduceStore {
+  
   constructor() {
     super(Dispatcher);
   }
@@ -98,4 +99,4 @@ class Store extends ReduceStore {
   }
 }
 
-export default new Store();
+export default new RecipeStore();
