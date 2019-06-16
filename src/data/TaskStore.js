@@ -235,7 +235,7 @@ const renameTask = (state, id, name) => {
     const task = lo.getValueEnforcing();
     if (task.name === name) return state;
     if (ClientId.is(id)) {
-        if (lo.isDone()) {
+        if (lo.isDone()) { // really means "hasn't started yet"
             TaskApi.createTask(name, task.parentId, id);
             lo = lo.creating();
         } else {
@@ -614,6 +614,22 @@ class TaskStore extends ReduceStore {
                 return moveDelta(state, 1);
             case TaskActions.MOVE_PREVIOUS:
                 return moveDelta(state, -1);
+
+            case TaskActions.MULTI_LINE_PASTE: {
+                const lines = action.text.split("\n")
+                    .map(l => l.trim())
+                    .filter(l => l.length > 0);
+                const active = taskForId(state, state.activeTaskId);
+                if (active.name == null || active.name.trim().length === 0) {
+                    state = renameTask(state, active.id, lines.shift());
+                }
+                return lines.reduce((s, l) => {
+                    s = createTaskAfter(s, s.activeTaskId);
+                    s = renameTask(s, s.activeTaskId, l);
+                    return s;
+                }, state);
+            }
+
             case TaskActions.FLUSH_RENAMES:
                 return flushTasksToRename(state);
             case TaskActions.FLUSH_REORDERS:

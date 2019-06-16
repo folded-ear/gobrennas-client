@@ -2,6 +2,7 @@ import BaseAxios from "axios";
 import promiseFlux from "../util/promiseFlux";
 import TaskActions from "./TaskActions";
 import { API_BASE_URL } from "../constants/index";
+import serializePromiseFn from "../util/serializePromiseFn";
 
 const axios = BaseAxios.create({
     baseURL: `${API_BASE_URL}/api/tasks`,
@@ -44,7 +45,7 @@ const TaskApi = {
         )
     },
 
-    createTask(name, parentId, clientId) {
+    createTask: serializePromiseFn((name, parentId, clientId) =>
         promiseFlux(
             axios.post(`/${parentId}/subtasks`, {
                 name,
@@ -53,10 +54,10 @@ const TaskApi = {
                 type: TaskActions.TASK_CREATED,
                 clientId,
                 id: data.id,
-                data: data
+                data: data,
             }),
-        );
-    },
+        ),
+    ),
 
     renameTask(id, name) {
         promiseFlux(

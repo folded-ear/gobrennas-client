@@ -16,6 +16,7 @@ class Task extends React.PureComponent {
         super(props);
         this.onFocus = this.onFocus.bind(this);
         this.onChange = this.onChange.bind(this);
+        this.onPaste = this.onPaste.bind(this);
         this.onKeyDown = this.onKeyDown.bind(this);
         this.onComplete = this.onComplete.bind(this);
         this.inputRef = React.createRef();
@@ -43,6 +44,19 @@ class Task extends React.PureComponent {
             id: task.id,
             name: value,
         });
+    }
+
+    onPaste(e) {
+        let text = e.clipboardData.getData("text");
+        if (text == null) return;
+        text = text.trim();
+        if (text.indexOf("\n") < 0) return;
+        // it's multi-line!
+        e.preventDefault();
+        Dispatcher.dispatch({
+            type: TaskActions.MULTI_LINE_PASTE,
+            text,
+        })
     }
 
     onKeyDown(e) {
@@ -194,6 +208,7 @@ class Task extends React.PureComponent {
                              ref={this.inputRef}
                              onFocus={this.onFocus}
                              onChange={this.onChange}
+                             onPaste={this.onPaste}
                              onKeyDown={this.onKeyDown}
         />;
         return section

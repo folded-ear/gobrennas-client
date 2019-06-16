@@ -56,11 +56,9 @@ const promiseFlux = (
             error,
         };
     },
-) => {
-    promise.then(
-        helper("data", resolver),
-        helper("error", rejector),
-    );
-};
+) => promise.then(
+    helper("data", resolver),
+    helper("error", rejector),
+);
 
 export default promiseFlux;
