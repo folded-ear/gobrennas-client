@@ -500,7 +500,7 @@ const taskLoading = (state, id) => {
 };
 
 // noinspection JSUnusedLocalSymbols
-function taskRenamed(state, id, name) {
+function taskRenamed(state, id) {
     return {
         ...state,
         byId: {
