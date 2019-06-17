@@ -1,79 +1,106 @@
-import React, { useState } from 'react'
+import React, { Component} from 'react'
 import {AutoComplete, Button, Col, Form, Input, Row} from "antd";
 import * as PropTypes from "prop-types";
 
-function IngredientAdd(props) {
+class IngredientAdd extends Component<{ onSelect: PropTypes.func }> {
   
-  const [quantity, setQuantity] = useState('');
-  const [preparation, setPreparation] = useState('');
-  const [ingredient, setIngredient] = useState('');
+  constructor(props) {
+    super(props);
+    this.state = {
+      quantity: '',
+      preparation: '',
+      value: '',
+      selectedIngredient: '',
+      items: []
+    }
+  }
   
-  const handleQuantity = (e) => {
-    const { value } = e.target;
-    setQuantity(value)
+  reset = () => {
+    this.setState({
+      quantity: '',
+      preparation: '',
+      selectedIngredient: '',
+      value: ''
+    })
   };
   
-  const handlePreparation = (e) => {
-    const { value } = e.target;
-    setPreparation(value)
+  componentDidUpdate(prev): void {
+    if(prev.data !== this.props.data) {
+      this.setState({ items: this.props.data })
+    }
+  }
+  
+  handleChange = (e) => {
+    const {name, value} = e.target;
+    this.setState({ [name]: value })
   };
   
-  const handleSave = () => {
-    const { onSave } = props;
-    onSave({quantity, preparation, ingredient});
-    setQuantity('');
-    setPreparation('');
-    setIngredient('');
+  handleSelect = (selectedIngredient) => {
+    this.setState({ selectedIngredient })
   };
   
-  const Option = AutoComplete.Option;
-  const pantryitems = props.data.map(item => <Option key={item.id}>{item.name}</Option>);
+  handleSearch = value => {
+    const { data: items } = this.props;
+    this.setState({ items: items.filter( item => item.name.includes(value)), value });
+  };
   
+  handleSave = () => {
+    const {onSave} = this.props;
+    const { quantity, preparation, selectedIngredient } = this.state;
+    onSave({quantity, preparation, selectedIngredient});
+    this.reset();
+  };
   
-  return (
-    <Row>
-      <Col span={4}>
-        <Form.Item>
-          <Input
-            name="quantity"
-            placeholder="Quantity"
-            onChange={handleQuantity}
-            value={quantity}
-          />
-        </Form.Item>
-      </Col>
-      <Col span={8}>
-        <Form.Item>
-          <AutoComplete
-            name="ingredient"
-            dataSource={pantryitems}
-            onSelect={setIngredient}
-            value={ingredient}
-            placeholder="Ingredients"
-          >
-            {pantryitems}
-          </AutoComplete>
-        </Form.Item>
-      </Col>
-      <Col span={10}>
-        <Form.Item>
-          <Input
-            name="preparation"
-            placeholder="Preparation"
-            onChange={handlePreparation}
-            value={preparation}
-          />
-        </Form.Item>
-      </Col>
-      <Col span={2}>
-        <Form.Item>
-          <Button
-            type="primary"
-            onClick={handleSave}>Add</Button>
-        </Form.Item>
-      </Col>
-    </Row>
-  )
+  render() {
+    const { quantity, preparation, items, value } = this.state;
+    const Option = AutoComplete.Option;
+    const pantryItems = items.map(item => <Option key={item.id}>{item.name}</Option>);
+    
+    return (
+        <Row>
+          <Col span={4}>
+            <Form.Item>
+              <Input
+                  name="quantity"
+                  placeholder="Quantity"
+                  onChange={this.handleChange}
+                  value={quantity}
+              />
+            </Form.Item>
+          </Col>
+          <Col span={8}>
+            <Form.Item>
+              <AutoComplete
+                  name="ingredient"
+                  onSelect={this.handleSelect}
+                  onSearch={this.handleSearch}
+                  placeholder="Ingredients"
+                  value={value}
+              >
+                {pantryItems}
+              </AutoComplete>
+            </Form.Item>
+          </Col>
+          <Col span={10}>
+            <Form.Item>
+              <Input
+                  name="preparation"
+                  placeholder="Preparation"
+                  onChange={this.handleChange}
+                  value={preparation}
+              />
+            </Form.Item>
+          </Col>
+          <Col span={2}>
+            <Form.Item>
+              <Button
+                  type="primary"
+                  onClick={this.handleSave}>Add</Button>
+            </Form.Item>
+          </Col>
+        </Row>
+    )
+  }
 }
 
 IngredientAdd.propTypes = {onSelect: PropTypes.func};

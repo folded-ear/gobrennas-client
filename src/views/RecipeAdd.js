@@ -1,10 +1,9 @@
 import React, {Component} from 'react';
 import {Form, Input, Button} from 'antd';
 import Recipe from '../models/Recipe';
-import Actions from '../data/actions';
+import RecipeApi from '../data/RecipeApi';
+import PantryItemApi from '../data/PantryItemApi';
 import IngredientAdd from "./IngredientAdd";
-
-const {TextArea} = Input;
 
 class RecipeAdd extends Component {
   
@@ -17,6 +16,10 @@ class RecipeAdd extends Component {
       ingredients: [],
       directions: ''
     };
+  }
+  
+  componentDidMount() {
+    PantryItemApi.fetchPantryItems()
   }
   
   handleUpdate = (e) => {
@@ -48,12 +51,12 @@ class RecipeAdd extends Component {
       }),
       directions
     });
-    Actions.addRecipe(recipe);
+    RecipeApi.addRecipe(recipe);
   };
   
   getIngredientName(id) {
-    const pantryitems = this.props.recipes.get('pantry_items');
-    const item = pantryitems.find( item => item.get('id') === parseInt(id));
+    const {pantryItems} = this.props;
+    const item = pantryItems.find( item => item.get('id') === parseInt(id));
     if(item) {
       return item.name;
     }
@@ -63,15 +66,14 @@ class RecipeAdd extends Component {
     const { ingredients } = this.state;
     
     return ingredients.map( ingredient => {
-      return <p>{ingredient.quantity} {this.getIngredientName(ingredient.ingredient)} {ingredient.preparation}</p>
+      return <p key={ingredient.selectedIngredient}>{ingredient.quantity} {this.getIngredientName(ingredient.selectedIngredient)} {ingredient.preparation}</p>
     })
   }
   
   render() {
     const {title, external_url, directions } = this.state;
-    const pantryitems = this.props.recipes.get('pantry_items');
-    
-    console.log(pantryitems);
+    const {pantryItems} = this.props;
+    const {TextArea} = Input;
     
     return (
       <div>
@@ -96,7 +98,7 @@ class RecipeAdd extends Component {
             </Form.Item>
             <IngredientAdd
               onSave={this.addIngredient}
-              data={pantryitems}
+              data={pantryItems}
             />
             { this.renderIngredients() }
             <Form.Item>

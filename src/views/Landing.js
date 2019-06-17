@@ -1,21 +1,6 @@
-import React, {
-    useEffect
-} from 'react';
+import React from 'react';
+import { Redirect } from 'react-router-dom'
 
-import Actions from '../data/actions';
-
-function Landing() {
-    
-    useEffect(() => {
-        Actions.fetchRecipes();
-        Actions.fetchPantryItems()
-    });
-    
-    return (
-        <div className="Home">
-            <h1>Welcome to Foodinger</h1>
-        </div>
-    );
-}
+const Landing = ({authenticated}) => authenticated ? <Redirect to="/recipes" /> : <Redirect to="/login"/>
 
 export default Landing;

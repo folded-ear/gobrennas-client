@@ -3,15 +3,14 @@ import {
     OrderedMap,
 } from 'immutable';
 import { ReduceStore } from 'flux/utils';
-import Types from './types';
+import RecipeActions from './RecipeActions';
 import Dispatcher from './dispatcher';
-
 import Recipe from '../models/Recipe';
 import IngredientRef from "../models/IngredientRef";
 import Ingredient from "../models/Ingredient";
-import PantryItem from "../models/PantryItem";
 
-class Store extends ReduceStore {
+class RecipeStore extends ReduceStore {
+  
   constructor() {
     super(Dispatcher);
   }
@@ -19,7 +18,6 @@ class Store extends ReduceStore {
   getInitialState() {
     return new OrderedMap({
       library: new List(),
-      pantry_items: new List(),
       selected: null,
       token: null
     });
@@ -28,7 +26,7 @@ class Store extends ReduceStore {
   reduce(state, action) {
     switch (action.type) {
       
-      case Types.FETCH_RECIPES: {
+      case RecipeActions.FETCH_RECIPES: {
         let recipes = List(action.data.map(recipe => {
           return (new Recipe({
             id: recipe.ingredientId,
@@ -51,18 +49,18 @@ class Store extends ReduceStore {
         return state.setIn(['library'], recipes);
       }
       
-      case Types.ADD_RECIPE: {
+      case RecipeActions.ADD_RECIPE: {
         if (!action.data) {
           return state;
         }
         return state.set('library', state.get('library').push(action.data));
       }
       
-      case Types.SELECT_RECIPE: {
+      case RecipeActions.SELECT_RECIPE: {
         return state.set('selected', action.id)
       }
       
-      case Types.DELETE_RECIPE: {
+      case RecipeActions.DELETE_RECIPE: {
         const index = state.get('library').findIndex(recipe => recipe.get('id') === action.id);
         
         if (index >= 0) {
@@ -73,29 +71,11 @@ class Store extends ReduceStore {
         return state;
       }
       
-      case Types.FETCH_PANTRYITEMS: {
-        let items = List(action.data.map( item => {
-          return (new PantryItem({
-            id: item.ingredientId,
-            name: item.name,
-            aisle: item.aisle
-          }))
-        }));
-  
-        return state.setIn(['pantry_items'], items);
-      }
-      
-      case Types.ADD_PANTRYITEM: {
-        if(!action.data) {
-          return state;
-        }
-        return state.set('pantry_items', state.get('pantry_items').push(action.data))
-      }
-      
       default:
         return state;
     }
   }
+  
 }
 
-export default new Store();
+export default new RecipeStore();

@@ -10,21 +10,15 @@ import {
 const AppHeader = ({authenticated, onLogout}) => {
     
     const {Header} = Layout;
-    const [current, setCurrent] = useState('recipes');
+    const [current, setCurrent] = useState('');
     
     if (!authenticated) {
         return (
             <Header>
                 <Menu
                     theme="dark"
-                    style={{lineHeight: '64px'}}
+                    style={{lineHeight: '10px'}}
                     mode="horizontal">
-                    <Menu.Item>
-                        <NavLink to="/" className="logo">FOODINGER</NavLink>
-                    </Menu.Item>
-                    <Menu.Item>
-                        <NavLink to="/login">Login</NavLink>
-                    </Menu.Item>
                 </Menu>
             </Header>
         )

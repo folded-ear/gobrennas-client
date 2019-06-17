@@ -1,20 +1,18 @@
-// import { toJSON } from 'immutable';
-import Types from './types';
 import Dispatcher from './dispatcher';
 import BaseAxios from 'axios';
+import RecipeActions from './RecipeActions';
 import Recipe from "../models/Recipe";
-import PantryItem from "../models/PantryItem";
 import { API_BASE_URL } from "../constants/index";
 
 const axios = BaseAxios.create({
     baseURL: `${API_BASE_URL}/api`,
 });
 
-const Actions = {
+const RecipeApi = {
   
   selectRecipe(id) {
     Dispatcher.dispatch({
-      type: Types.SELECT_RECIPE,
+      type: RecipeActions.SELECT_RECIPE,
       id
     })
   },
@@ -28,7 +26,7 @@ const Actions = {
         const {data: recipe} = response;
 
         Dispatcher.dispatch({
-          type: Types.ADD_RECIPE,
+          type: RecipeActions.ADD_RECIPE,
           data: new Recipe({
             id: recipe.id,
             type: "Recipe",
@@ -47,7 +45,7 @@ const Actions = {
       .delete(`/recipe/${id}`)
       .then(() => {
         Dispatcher.dispatch({
-          type: Types.DELETE_RECIPE,
+          type: RecipeActions.DELETE_RECIPE,
           id
         })
       })
@@ -57,41 +55,11 @@ const Actions = {
     axios.get('/recipe/all')
       .then(res => {
         Dispatcher.dispatch({
-          type: Types.FETCH_RECIPES,
+          type: RecipeActions.FETCH_RECIPES,
           data: res.data
         })
       });
-  },
-  
-  fetchPantryItems() {
-    axios.get('/pantryitem/all')
-      .then( res => {
-        Dispatcher.dispatch({
-          type: Types.FETCH_PANTRYITEMS,
-          data: res.data
-        })
-      })
-  },
-  
-  addPantryItem(item) {
-    axios
-      .post('/pantryitem', item.toJSON())
-      .then( response => {
-        // TODO: Add error handling and logging
-        if(response.status && response.status === 201) {
-          const { data: item} = response;
-          
-          Dispatcher.dispatch({
-            type: Types.ADD_PANTRYITEM,
-            data: new PantryItem({
-              id: item.ingredientId,
-              name: item.name,
-              aisle: item.aisle
-            })
-          })
-        }
-      })
   }
 };
 
-export default Actions;
+export default RecipeApi;
