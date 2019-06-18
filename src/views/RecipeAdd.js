@@ -43,7 +43,7 @@ class RecipeAdd extends Component {
         return {
           "quantity": ingredient.quantity,
           "ingredient": {
-            "ingredientId": ingredient.ingredient,
+            "ingredientId": ingredient.selectedIngredient,
             "type": "PantryItem"
           },
           "preparation": ingredient.preparation
