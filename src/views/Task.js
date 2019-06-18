@@ -160,7 +160,7 @@ class Task extends React.PureComponent {
         if (this.props.active) this.inputRef.current.focus();
     }
 
-    componentDidUpdate(prevProps) {
+    componentDidUpdate() {
         if (this.props.active) this.inputRef.current.focus();
     }
 
