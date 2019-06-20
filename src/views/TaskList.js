@@ -12,6 +12,7 @@ class TaskList extends React.PureComponent {
         const {
             allLists,
             activeListLO,
+            listDetailVisible,
             taskLOs,
             isTaskActive,
             isTaskSelected,
@@ -23,6 +24,7 @@ class TaskList extends React.PureComponent {
             <TaskListHeader
                 allLists={allLists.getValueEnforcing()}
                 activeList={activeListLO.getValue()}
+                listDetailVisible={listDetailVisible}
             />
             {taskLOs != null && taskLOs.map(lo => {
                 if (lo.hasValue()) {
@@ -45,6 +47,7 @@ class TaskList extends React.PureComponent {
 TaskList.propTypes = {
     allLists: PropTypes.instanceOf(LoadObject).isRequired,
     activeListLO: PropTypes.instanceOf(LoadObject),
+    listDetailVisible: PropTypes.bool.isRequired,
     taskLOs: PropTypes.arrayOf(
         PropTypes.instanceOf(LoadObject)),
     isTaskActive: PropTypes.func.isRequired,
