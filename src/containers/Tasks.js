@@ -16,6 +16,7 @@ export default Container.createFunctional(
         return {
             allLists,
             activeListLO,
+            listDetailVisible: TaskStore.isListDetailVisible(),
             taskLOs: activeListLO.hasValue()
                 ? TaskStore.getSubtaskLOs(activeListLO.getValueEnforcing().id)
                 : null,

@@ -7,6 +7,8 @@ import hotLoadObject from "../util/hotLoadObject";
 import ClientId from "../util/ClientId";
 import { humanStringComparator } from "../util/comparators";
 import PreferencesStore from "./PreferencesStore";
+import dotProp from "dot-prop-immutable";
+import UserStore from "./UserStore";
 
 /*
  * This store is way too muddled. But leaving it that way for the moment, to
@@ -23,6 +25,9 @@ const _newTask = name => ({
 
 const createList = (state, name) => {
     const task = _newTask(name);
+    task.acl = {
+        ownerId: UserStore.getProfileLO().getValueEnforcing().id,
+    };
     TaskApi.createList(name, task.id);
     return {
         ...state,
@@ -106,6 +111,7 @@ const selectList = (state, id) => {
     state = {
         ...state,
         activeListId: id,
+        listDetailVisible: false,
     };
     if (list.subtaskIds && list.subtaskIds.length) {
         state.activeTaskId = list.subtaskIds[0];
@@ -428,6 +434,7 @@ const flushParentsToReset = state => {
     if (parentsToReset.size === 0) return state;
     const requeue = new Set();
     for (const id of parentsToReset) {
+        if (! state.byId.hasOwnProperty(id)) continue;
         const p = taskForId(state, id);
         if (p.subtaskIds.some(ClientId.is)) {
             requeue.add(p.id);
@@ -546,6 +553,7 @@ class TaskStore extends ReduceStore {
     getInitialState() {
         return {
             activeListId: null, // ID
+            listDetailVisible: false, // boolean
             activeTaskId: null, // ID
             selectedTaskIds: null, // Array<ID>
             topLevelIds: LoadObject.empty(), // LoadObject<Array<ID>>
@@ -564,12 +572,81 @@ class TaskStore extends ReduceStore {
                     action.id,
                     action.data,
                 );
+
+            case TaskActions.LIST_DETAIL_VISIBILITY: {
+                if (state.listDetailVisible === action.visible) return state;
+                return {
+                    ...state,
+                    listDetailVisible: action.visible,
+                }
+            }
+
+            case TaskActions.DELETE_LIST: {
+                TaskApi.deleteList(action.id);
+                const next = dotProp.set(state, [
+                    "byId",
+                    action.id,
+                ], lo => lo.deleting());
+                if (next.activeListId === action.id) {
+                    next.activeListId = next.topLevelIds.hasValue()
+                        ? next.topLevelIds.getValueEnforcing().find(id =>
+                            id !== action.id)
+                        : null;
+                    next.listDetailVisible = false;
+                    next.activeTaskId = null;
+                    next.selectedTaskIds = null;
+                }
+                return next;
+            }
+
+            case TaskActions.LIST_DELETED: {
+                return {
+                    ...dotProp.delete(state, [
+                        "byId",
+                        action.id,
+                    ]),
+                    topLevelIds: state.topLevelIds.map(ids =>
+                        ids.filter(id => id !== action.id)),
+                };
+            }
+
             case TaskActions.LOAD_LISTS:
                 return loadLists(state);
             case TaskActions.LISTS_LOADED:
                 return listsLoaded(state, action.data);
             case TaskActions.SELECT_LIST:
                 return selectList(state, action.id);
+
+            case TaskActions.SET_LIST_GRANT: {
+                TaskApi.setListGrant(action.id, action.userId, action.level);
+                return dotProp.set(state, [
+                    "byId",
+                    action.id,
+                ], lo => lo.map(l => dotProp.set(l, ["acl",
+                    "grants",
+                    action.userId,
+                ], action.level)).updating());
+            }
+
+            case TaskActions.CLEAR_LIST_GRANT: {
+                TaskApi.clearListGrant(action.id, action.userId);
+                return dotProp.set(state, [
+                    "byId",
+                    action.id,
+                ], lo => lo.map(l => dotProp.delete(l, ["acl",
+                    "grants",
+                    action.userId,
+                ])).deleting());
+            }
+
+            case TaskActions.LIST_GRANT_SET:
+            case TaskActions.LIST_GRANT_CLEARED: {
+                return dotProp.set(state, [
+                    "byId",
+                    action.id,
+                ], lo => lo.done());
+            }
+
             case TaskActions.SUBTASKS_LOADED:
                 return action.data.reduce(taskLoaded, state);
             case TaskActions.RENAME_TASK:
@@ -646,7 +723,9 @@ class TaskStore extends ReduceStore {
             () => Dispatcher.dispatch({
                 type: TaskActions.LOAD_LISTS,
             }),
-        ).map(ids => tasksForIds(s, ids));
+        ).map(ids => losForIds(s, ids)
+            .filter(lo => lo.isDone())
+            .map(lo => lo.getValueEnforcing()));
     }
 
     getSubtaskLOs(id) {
@@ -674,6 +753,10 @@ class TaskStore extends ReduceStore {
         return s.selectedTaskIds == null
             ? null
             : tasksForIds(s, s.selectedTaskIds);
+    }
+
+    isListDetailVisible() {
+        return this.getState().listDetailVisible;
     }
 
 }

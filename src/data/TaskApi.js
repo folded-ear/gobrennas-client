@@ -72,6 +72,16 @@ const TaskApi = {
         )
     },
 
+    deleteList(id) {
+        promiseFlux(
+            axios.delete(`/${id}`),
+            () => ({
+                type: TaskActions.LIST_DELETED,
+                id,
+            }),
+        );
+    },
+
     deleteTask(id) {
         promiseFlux(
             axios.delete(`/${id}`),
@@ -93,6 +103,33 @@ const TaskApi = {
             })
         );
     },
+
+    setListGrant(id, userId, level) {
+        // i was not thinking when i designed this endpoint. :)
+        promiseFlux(
+            axios.post(`/${id}/acl/grants`, {
+                userId,
+                accessLevel: level,
+            }),
+            () => ({
+                type: TaskActions.LIST_GRANT_SET,
+                id,
+                userId,
+            })
+        )
+    },
+
+    clearListGrant(id, userId) {
+        promiseFlux(
+            axios.delete(`/${id}/acl/grants/${userId}`),
+            () => ({
+                type: TaskActions.LIST_GRANT_CLEARED,
+                id,
+                userId,
+            })
+        )
+    },
+
 };
 
 export default TaskApi;
