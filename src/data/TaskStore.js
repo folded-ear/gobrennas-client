@@ -460,8 +460,8 @@ const moveDelta = (state, delta) => {
         .sort(delta < 1
             ? (a, b) => a - b
             : (a, b) => b - a);
-    if (idxs[0] === 0) return state;
-    if (idxs[0] === sids.length - 1) return state;
+    if (idxs[0] === 0 && delta < 0) return state;
+    if (idxs[0] === sids.length - 1 && delta > 0) return state;
     // this isn't terribly efficient. but whatever.
     idxs.forEach(i => {
         const temp = sids[i + delta];
@@ -759,6 +759,24 @@ class TaskStore extends ReduceStore {
         return this.getState().listDetailVisible;
     }
 
+    isMultiTaskSelection() {
+        const s = this.getState();
+        return s.activeTaskId != null && s.selectedTaskIds != null;
+
+    }
+
+    getSelectionAsTextBlock() {
+        const s = this.getState();
+        return tasksForIds(
+            s,
+            taskForId(s, taskForId(s, s.activeTaskId).parentId)
+                .subtaskIds
+                .filter(id =>
+                    id === s.activeTaskId || s.selectedTaskIds.indexOf(id) >= 0),
+        )
+            .map(t => t.name)
+            .join("\n");
+    }
 }
 
 export default new TaskStore();

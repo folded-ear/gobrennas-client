@@ -9,6 +9,7 @@ import Dispatcher from "../data/dispatcher";
 import classnames from "classnames";
 import "./Task.scss";
 import LoadObject from "../util/LoadObject";
+import TaskStore from "../data/TaskStore";
 
 class Task extends React.PureComponent {
 
@@ -16,6 +17,7 @@ class Task extends React.PureComponent {
         super(props);
         this.onFocus = this.onFocus.bind(this);
         this.onChange = this.onChange.bind(this);
+        this.onCopy = this.onCopy.bind(this);
         this.onPaste = this.onPaste.bind(this);
         this.onKeyDown = this.onKeyDown.bind(this);
         this.onComplete = this.onComplete.bind(this);
@@ -44,6 +46,13 @@ class Task extends React.PureComponent {
             id: task.id,
             name: value,
         });
+    }
+
+    onCopy(e) {
+        if (! TaskStore.isMultiTaskSelection()) return;
+        e.preventDefault();
+        const text = TaskStore.getSelectionAsTextBlock();
+        e.clipboardData.setData("text", text);
     }
 
     onPaste(e) {
@@ -209,6 +218,7 @@ class Task extends React.PureComponent {
                              onFocus={this.onFocus}
                              onChange={this.onChange}
                              onPaste={this.onPaste}
+                             onCopy={this.onCopy}
                              onKeyDown={this.onKeyDown}
         />;
         return section
