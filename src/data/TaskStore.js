@@ -460,8 +460,8 @@ const moveDelta = (state, delta) => {
         .sort(delta < 1
             ? (a, b) => a - b
             : (a, b) => b - a);
-    if (idxs[0] === 0) return state;
-    if (idxs[0] === sids.length - 1) return state;
+    if (idxs[0] === 0 && delta < 0) return state;
+    if (idxs[0] === sids.length - 1 && delta > 0) return state;
     // this isn't terribly efficient. but whatever.
     idxs.forEach(i => {
         const temp = sids[i + delta];
