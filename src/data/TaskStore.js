@@ -759,6 +759,24 @@ class TaskStore extends ReduceStore {
         return this.getState().listDetailVisible;
     }
 
+    isMultiTaskSelection() {
+        const s = this.getState();
+        return s.activeTaskId != null && s.selectedTaskIds != null;
+
+    }
+
+    getSelectionAsTextBlock() {
+        const s = this.getState();
+        return tasksForIds(
+            s,
+            taskForId(s, taskForId(s, s.activeTaskId).parentId)
+                .subtaskIds
+                .filter(id =>
+                    id === s.activeTaskId || s.selectedTaskIds.indexOf(id) >= 0),
+        )
+            .map(t => t.name)
+            .join("\n");
+    }
 }
 
 export default new TaskStore();
