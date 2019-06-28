@@ -1,5 +1,5 @@
 const UserActions = {
-    LOGIN: "user/login",
+    LOGGED_IN: "user/logged-in",
     LOGOUT: "user/logout",
     LOAD_PROFILE: "user/load-profile",
     PROFILE_LOADED: "user/profile-loaded",

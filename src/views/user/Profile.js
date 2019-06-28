@@ -1,24 +1,17 @@
 import React, { Component } from 'react';
 
 class Profile extends Component {
-    constructor(props) {
-        super(props);
-        console.log(props);
-    }
     render() {
         return (
             <div className="profile-container">
                 <div className="container">
                     <div className="profile-info">
                         <div className="profile-avatar">
-                            { 
-                                this.props.currentUser.imageUrl ? (
-                                    <img src={this.props.currentUser.imageUrl} alt={this.props.currentUser.name}/>
-                                ) : (
-                                    <div className="text-avatar">
-                                        <span>{this.props.currentUser.name && this.props.currentUser.name[0]}</span>
-                                    </div>
-                                )
+                            {this.props.currentUser.imageUrl && <img
+                                src={this.props.currentUser.imageUrl}
+                                alt={this.props.currentUser.name}
+                                title="Holy moley, you're attractive!"
+                            />
                             }
                         </div>
                         <div className="profile-name">

@@ -1,7 +1,11 @@
-import React, {Component} from 'react';
-import {GOOGLE_AUTH_URL} from '../../constants';
-import {Redirect} from 'react-router-dom'
+import React, { Component } from 'react';
+import {
+    GOOGLE_AUTH_URL,
+    SESSION_STORAGE_POST_LOGIN,
+} from '../../constants';
+import { Redirect } from 'react-router-dom'
 import { Button } from 'antd'
+import { setJsonItem } from "../../util/storage";
 
 class Login extends Component {
     
@@ -14,9 +18,11 @@ class Login extends Component {
     }
     
     render() {
-        
-        const {authenticated} = this.props;
-        
+        const {
+            authenticated,
+            location,
+        } = this.props;
+
         if (authenticated) {
             return <Redirect
                 to={{
@@ -24,7 +30,16 @@ class Login extends Component {
                     state: {from: this.props.location}
                 }}/>;
         }
-        
+
+        if (location != null && location.state != null && location.state.from != null) {
+            setJsonItem(
+                SESSION_STORAGE_POST_LOGIN,
+                location.state.from,
+                sessionStorage,
+                (k, v) => // omit Router's internal key value
+                    k === "key" ? undefined : v
+            );
+        }
         return (
             <div className="login-container">
                 <div className="login-content">

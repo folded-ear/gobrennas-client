@@ -53,7 +53,7 @@ class UserStore extends ReduceStore {
 
     reduce(state, action) {
         switch (action.type) {
-            case UserActions.LOGIN: {
+            case UserActions.LOGGED_IN: {
                 localStorage.setItem(LOCAL_STORAGE_ACCESS_TOKEN, action.token);
                 return setToken(state, action.token);
             }
