@@ -16,6 +16,7 @@ import { Container } from "flux/utils";
 import UserStore from "../data/UserStore";
 import FriendStore from "../data/FriendStore";
 import AccessLevel, { includesLevel } from "../data/AccessLevel";
+import User from "./user/User";
 
 const LEVEL_NO_ACCESS = "NO_ACCESS";
 
@@ -113,7 +114,7 @@ class TaskListSidebar extends React.PureComponent {
                 <Form.Item
                     label="Owned By"
                 >
-                    {owner.name || owner.email}
+                    <User {...owner} />
                 </Form.Item>
                 {isAdministrator && <Form.Item
                     label="Sharing"
@@ -124,7 +125,7 @@ class TaskListSidebar extends React.PureComponent {
                             f => f.id !== list.acl.ownerId).concat(me)}
                         renderItem={f =>
                             <List.Item>
-                                {f.name || f.email}
+                                <User {...f} />
                                 {" "}
                                 <Select
                                     value={grants[f.id] || LEVEL_NO_ACCESS}
