@@ -20,7 +20,7 @@ const initiateProfileLoad = state => {
             lo.setError("No Access Token Found").done());
     }
     promiseFlux(
-        axios.get(API_BASE_URL + "/user/me"),
+        axios.get(API_BASE_URL + "/api/user/me"),
         data => ({
             type: UserActions.PROFILE_LOADED,
             data: data.data,
