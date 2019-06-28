@@ -1,7 +1,17 @@
 import React from 'react';
 import { Redirect } from 'react-router-dom'
+import { SESSION_STORAGE_POST_LOGIN } from "../constants/index";
+import { getJsonItem } from "../util/storage";
 
-const Landing = () =>
-    <Redirect to="/recipes" />;
+const Landing = ({authenticated}) => {
+    let dest = getJsonItem(SESSION_STORAGE_POST_LOGIN, sessionStorage);
+    if (authenticated) {
+        sessionStorage.removeItem(SESSION_STORAGE_POST_LOGIN);
+    }
+    return <Redirect to={{
+        pathname: "/recipes",
+        ...dest,
+    }} />;
+};
 
 export default Landing;
