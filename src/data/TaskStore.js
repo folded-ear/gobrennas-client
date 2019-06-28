@@ -671,6 +671,9 @@ class TaskStore extends ReduceStore {
             case TaskActions.SUBTASKS_LOADED:
                 return action.data.reduce(taskLoaded, state);
             case TaskActions.RENAME_TASK:
+                if (action.id !== state.activeTaskId) {
+                    throw new Error("Renaming a non-active task is a bug.");
+                }
                 return renameTask(state, action.id, action.name);
             case TaskActions.TASK_RENAMED:
                 return taskRenamed(state, action.id, action.name);
@@ -697,8 +700,14 @@ class TaskStore extends ReduceStore {
                 state = flushTasksToRename(state);
                 return flushParentsToReset(state);
             case TaskActions.DELETE_TASK_FORWARD:
+                if (action.id !== state.activeTaskId) {
+                    throw new Error("Deleting a non-active task is a bug.");
+                }
                 return forwardDeleteTask(state, action.id);
             case TaskActions.DELETE_TASK_BACKWARDS:
+                if (action.id !== state.activeTaskId) {
+                    throw new Error("Deleting a non-active task is a bug.");
+                }
                 return backwardsDeleteTask(state, action.id);
             case TaskActions.TASK_DELETED:
                 return taskDeleted(state, action.id);
