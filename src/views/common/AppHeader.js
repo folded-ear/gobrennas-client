@@ -1,17 +1,17 @@
-import React, {useState} from 'react';
+import React from 'react';
 import {
-    NavLink
+    NavLink,
+    withRouter,
 } from 'react-router-dom';
 import {
     Layout,
-    Menu
+    Menu,
 } from "antd";
 
-const AppHeader = ({authenticated, onLogout}) => {
-    
-    const {Header} = Layout;
-    const [current, setCurrent] = useState('');
-    
+const {Header} = Layout;
+
+const AppHeader = ({authenticated, onLogout, location}) => {
+
     if (!authenticated) {
         return (
             <Header>
@@ -23,31 +23,30 @@ const AppHeader = ({authenticated, onLogout}) => {
             </Header>
         )
     }
-    
+
     return (
         <Header>
             <Menu
                 theme="dark"
                 style={{lineHeight: '64px'}}
-                onClick={(e) => setCurrent(e.key)}
-                selectedKeys={[current]}
+                selectedKeys={[location.pathname]}
                 mode="horizontal">
                 <Menu.Item>
                     <NavLink to="/" className="logo">FOODINGER</NavLink>
                 </Menu.Item>
-                <Menu.Item key="recipes">
+                <Menu.Item key="/recipes">
                     <NavLink to="/recipes">Recipes</NavLink>
                 </Menu.Item>
-                <Menu.Item key="add">
+                <Menu.Item key="/add">
                     <NavLink to="/add">Add New Recipe</NavLink>
                 </Menu.Item>
-                <Menu.Item key="pantryitem">
+                <Menu.Item key="/addpantryitem">
                     <NavLink to="/addpantryitem">Add Pantry Item</NavLink>
                 </Menu.Item>
-                <Menu.Item>
+                <Menu.Item key="/tasks">
                     <NavLink to="/tasks">Tasks</NavLink>
                 </Menu.Item>
-                <Menu.Item>
+                <Menu.Item key="/profile">
                     <NavLink to="/profile">Profile</NavLink>
                 </Menu.Item>
                 <Menu.Item onClick={onLogout}>Logout</Menu.Item>
@@ -56,4 +55,4 @@ const AppHeader = ({authenticated, onLogout}) => {
     )
 };
 
-export default AppHeader;
+export default withRouter(AppHeader);
