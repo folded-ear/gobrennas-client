@@ -35,7 +35,7 @@ class TaskListSidebar extends React.PureComponent {
             list: {id},
         } = this.props;
         Dispatcher.dispatch({
-            type: TaskActions.RENAME_TASK,
+            type: TaskActions.RENAME_LIST,
             id,
             name: value,
         });

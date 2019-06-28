@@ -257,7 +257,6 @@ const renameTask = (state, id, name) => {
     }
     return {
         ...state,
-        activeTaskId: id,
         byId: {
             ...state.byId,
             [id]: lo.map(t => ({
@@ -636,6 +635,8 @@ class TaskStore extends ReduceStore {
                 return listsLoaded(state, action.data);
             case TaskActions.SELECT_LIST:
                 return selectList(state, action.id);
+            case TaskActions.RENAME_LIST:
+                return renameTask(state, action.id, action.name);
 
             case TaskActions.SET_LIST_GRANT: {
                 TaskApi.setListGrant(action.id, action.userId, action.level);
