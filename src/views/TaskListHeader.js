@@ -1,5 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
+import { Container } from "flux/utils";
 import {
     Button,
     Drawer,
@@ -11,6 +12,7 @@ import Dispatcher from "../data/dispatcher";
 import TaskActions from "../data/TaskActions";
 import { humanStringComparator } from "../util/comparators";
 import TaskListSidebar from "./TaskListSidebar";
+import WindowStore from "../data/WindowStore";
 
 const isValidName = name =>
     name != null && name.trim().length > 0;
@@ -74,6 +76,7 @@ class TaskListHeader extends React.PureComponent {
             activeList,
             allLists,
             listDetailVisible,
+            windowWidth,
         } = this.props;
         const {
             name,
@@ -109,7 +112,7 @@ class TaskListHeader extends React.PureComponent {
                     <Drawer
                         visible={listDetailVisible}
                         title="List Info"
-                        width="50%"
+                        width={Math.min(500, windowWidth - 50)}
                         onClose={this.onCloseDrawer}
                     >
                         <TaskListSidebar list={activeList} />
@@ -141,4 +144,16 @@ TaskListHeader.propTypes = {
     listDetailVisible: PropTypes.bool.isRequired,
 };
 
-export default TaskListHeader;
+export default Container.createFunctional(
+    props => <TaskListHeader {...props} />,
+    () => [
+        WindowStore,
+    ],
+    (prev, props) => {
+        return {
+            ...props,
+            windowWidth: WindowStore.getState().width,
+        }
+    },
+    { withProps: true }
+);

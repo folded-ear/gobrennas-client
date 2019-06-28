@@ -19,25 +19,13 @@ class Task extends React.PureComponent {
 
     constructor(props) {
         super(props);
-        this.onFocus = this.onFocus.bind(this);
         this.onChange = this.onChange.bind(this);
         this.onCopy = this.onCopy.bind(this);
         this.onPaste = this.onPaste.bind(this);
         this.onKeyDown = this.onKeyDown.bind(this);
+        this.onClick = this.onClick.bind(this);
         this.onComplete = this.onComplete.bind(this);
         this.inputRef = React.createRef();
-    }
-
-    onFocus() {
-        const {
-            active,
-            task,
-        } = this.props;
-        if (active) return;
-        Dispatcher.dispatch({
-            type: TaskActions.FOCUS,
-            id: task.id,
-        });
     }
 
     onChange(e) {
@@ -162,6 +150,22 @@ class Task extends React.PureComponent {
         }
     }
 
+    onClick(e) {
+        const {
+            active,
+            task,
+        } = this.props;
+        if (active) return;
+        e.preventDefault();
+        e.stopPropagation();
+        Dispatcher.dispatch({
+            type: e.shiftKey
+                ? TaskActions.SELECT_TO
+                : TaskActions.FOCUS,
+            id: task.id,
+        });
+    }
+
     onComplete() {
         Dispatcher.dispatch({
             type: TaskActions.MARK_COMPLETE,
@@ -216,7 +220,7 @@ class Task extends React.PureComponent {
                                  "task-deleting": lo.isDeleting(),
                              })}
                              ref={this.inputRef}
-                             onFocus={this.onFocus}
+                             onClick={this.onClick}
                              onChange={this.onChange}
                              onPaste={this.onPaste}
                              onCopy={this.onCopy}

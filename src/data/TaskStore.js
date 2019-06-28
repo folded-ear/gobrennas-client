@@ -257,7 +257,6 @@ const renameTask = (state, id, name) => {
     }
     return {
         ...state,
-        activeTaskId: id,
         byId: {
             ...state.byId,
             [id]: lo.map(t => ({
@@ -315,6 +314,28 @@ const focusDelta = (state, id, delta) => {
     } = getNeighborIds(state, id, Math.abs(delta));
     const sid = delta < 0 ? before : after;
     return sid == null ? state : focusTask(state, sid);
+};
+
+const selectTo = (state, id) => {
+    if (state.activeTaskId == null) return focusTask(state, id);
+    if (id === state.activeTaskId) return state;
+    const target = taskForId(state, id);
+    const parent = taskForId(state, target.parentId);
+    let i = parent.subtaskIds.indexOf(state.activeTaskId);
+    let j = parent.subtaskIds.indexOf(id);
+    if (i > j) {
+        j += 1; // active doesn't get selected
+        i += 1; // inclusive upper bound
+        const temp = i;
+        i = j;
+        j = temp;
+    }
+    console.log("selectTo", parent.subtaskIds, i, j, parent.subtaskIds.slice(i, j));
+    return {
+        ...state,
+        activeTaskId: id,
+        selectedTaskIds: parent.subtaskIds.slice(i, j),
+    };
 };
 
 const selectDelta = (state, id, delta) => {
@@ -614,6 +635,8 @@ class TaskStore extends ReduceStore {
                 return listsLoaded(state, action.data);
             case TaskActions.SELECT_LIST:
                 return selectList(state, action.id);
+            case TaskActions.RENAME_LIST:
+                return renameTask(state, action.id, action.name);
 
             case TaskActions.SET_LIST_GRANT: {
                 TaskApi.setListGrant(action.id, action.userId, action.level);
@@ -648,6 +671,9 @@ class TaskStore extends ReduceStore {
             case TaskActions.SUBTASKS_LOADED:
                 return action.data.reduce(taskLoaded, state);
             case TaskActions.RENAME_TASK:
+                if (action.id !== state.activeTaskId) {
+                    throw new Error("Renaming a non-active task is a bug.");
+                }
                 return renameTask(state, action.id, action.name);
             case TaskActions.TASK_RENAMED:
                 return taskRenamed(state, action.id, action.name);
@@ -674,8 +700,14 @@ class TaskStore extends ReduceStore {
                 state = flushTasksToRename(state);
                 return flushParentsToReset(state);
             case TaskActions.DELETE_TASK_FORWARD:
+                if (action.id !== state.activeTaskId) {
+                    throw new Error("Deleting a non-active task is a bug.");
+                }
                 return forwardDeleteTask(state, action.id);
             case TaskActions.DELETE_TASK_BACKWARDS:
+                if (action.id !== state.activeTaskId) {
+                    throw new Error("Deleting a non-active task is a bug.");
+                }
                 return backwardsDeleteTask(state, action.id);
             case TaskActions.TASK_DELETED:
                 return taskDeleted(state, action.id);
@@ -685,6 +717,8 @@ class TaskStore extends ReduceStore {
                 return selectDelta(state, action.id, 1);
             case TaskActions.SELECT_PREVIOUS:
                 return selectDelta(state, action.id, -1);
+            case TaskActions.SELECT_TO:
+                return selectTo(state, action.id);
             case TaskActions.MOVE_NEXT:
                 return moveDelta(state, 1);
             case TaskActions.MOVE_PREVIOUS:

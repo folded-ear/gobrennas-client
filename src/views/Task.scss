@@ -1,29 +1,61 @@
-.task-section {
-  input {
-    font-weight: bold;
-    font-size: 110%;
-    border-width: 0;
+.task-list {
+  .ant-list-header {
+    border-bottom: 1px solid #aaa;
   }
-  border-bottom: 1px solid #ccc;
-}
-.task-question {
-  .ant-input-group-addon {
-    background-color: #ff9;
+  .task {
+    &.ant-list-item { // to beat the cascade
+      padding-top: 2px;
+      padding-bottom: 0;
+    }
+
+    .ant-input {
+      border-width: 0;
+      border-bottom: 1px solid #eee;
+    }
+
+    .ant-input-group-addon {
+      border-width: 0;
+
+      button {
+        color: #ccc;
+        &:hover {
+          color: inherit;
+        }
+      }
+    }
   }
-  input {
-    background-color: #ffe;
+  .task-section {
+    border-bottom: 1px solid #ccc;
+
+    input {
+      font-weight: bold;
+      font-size: 110%;
+      border-width: 0;
+    }
   }
-}
-.task-active {
-  input {
-    background-color: #f9fcff;
+  .task-question {
+    .ant-input-group-addon {
+      background-color: #ff9;
+
+      button {
+        background-color: #ffd;
+      }
+    }
+    input {
+      background-color: #ffe;
+    }
   }
-}
-.task-selected {
-  input {
-    background-color: #f0f7ff;
+  .task-active {
+    input {
+      background-color: #f9fcff;
+    }
   }
-}
-.task-deleting {
-  opacity: 0.4;
+  .task-selected {
+    input {
+      background-color: #f0f7ff;
+    }
+  }
+  .task-deleting {
+    opacity: 0.4;
+  }
 }

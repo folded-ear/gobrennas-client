@@ -6,9 +6,11 @@ const TaskActions = {
     SELECT_LIST: "task/select-list",
     SELECT_NEXT: "task/select-next",
     SELECT_PREVIOUS: "task/select-previous",
+    SELECT_TO: "task/select-to",
     MULTI_LINE_PASTE: "task/multi-line-paste",
     // user actions (with persistence)
     CREATE_LIST: "task/create-list",
+    RENAME_LIST: "task/rename-list",
     DELETE_LIST: "task/delete-list",
     LIST_DETAIL_VISIBILITY: "task/list-detail-visibility",
     CREATE_TASK_AFTER: "task/create-task-after",
