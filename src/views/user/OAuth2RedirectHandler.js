@@ -25,7 +25,7 @@ const OAuth2RedirectHandler = ({location}) => {
             token,
         }));
         return <Redirect to={{
-            pathname: "/recipes",
+            pathname: "/",
             state: {from: location}
         }}/>
     } else {
