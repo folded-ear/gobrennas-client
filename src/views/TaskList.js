@@ -3,7 +3,10 @@ import PropTypes from "prop-types";
 import TaskListHeader from "./TaskListHeader";
 import Task from "./Task";
 import LoadObject from "../util/LoadObject";
-import { Spin } from "antd";
+import {
+    List,
+    Spin,
+} from "antd";
 import LoadingTask from "./LoadingTask";
 
 class TaskList extends React.PureComponent {
@@ -20,26 +23,37 @@ class TaskList extends React.PureComponent {
         if (!allLists.hasValue()) {
             return <Spin tip="Loading task lists..." />
         }
-        return <div className="task-list">
-            <TaskListHeader
+        return <List
+            size="small"
+            bordered={false}
+            split={false}
+            className="task-list"
+            header={<TaskListHeader
                 allLists={allLists.getValueEnforcing()}
                 activeList={activeListLO.getValue()}
                 listDetailVisible={listDetailVisible}
-            />
-            {taskLOs != null && taskLOs.map(lo => {
+            />}
+            dataSource={taskLOs}
+            renderItem={lo => {
+                let body;
                 if (lo.hasValue()) {
                     const t = lo.getValueEnforcing();
-                    return <Task key={t.id}
+                    body = <Task key={t.id}
                                  task={t}
                                  loadObject={lo}
                                  active={isTaskActive(t)}
                                  selected={isTaskSelected(t)}
                     />;
                 } else {
-                    return <LoadingTask key={lo.id} />;
+                    body = <LoadingTask key={lo.id} />;
                 }
-            })}
-        </div>;
+                return <List.Item
+                    className="task"
+                >
+                    {body}
+                </List.Item>;
+            }}
+        />;
     }
 
 }

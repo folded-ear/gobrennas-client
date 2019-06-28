@@ -1,23 +1,42 @@
 .task-list {
+  .ant-list-header {
+    border-bottom: 1px solid #aaa;
+  }
   .task {
-    .ant-input-group-addon button {
-      color: #ccc;
-      &:hover {
-        color: inherit;
+    &.ant-list-item { // to beat the cascade
+      padding-top: 2px;
+      padding-bottom: 0;
+    }
+
+    .ant-input {
+      border-width: 0;
+      border-bottom: 1px solid #eee;
+    }
+
+    .ant-input-group-addon {
+      border-width: 0;
+
+      button {
+        color: #ccc;
+        &:hover {
+          color: inherit;
+        }
       }
     }
   }
   .task-section {
+    border-bottom: 1px solid #ccc;
+
     input {
       font-weight: bold;
       font-size: 110%;
       border-width: 0;
     }
-    border-bottom: 1px solid #ccc;
   }
   .task-question {
     .ant-input-group-addon {
       background-color: #ff9;
+
       button {
         background-color: #ffd;
       }
