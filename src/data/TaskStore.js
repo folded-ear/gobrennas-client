@@ -507,18 +507,16 @@ const taskLoading = (state, id) => {
 };
 
 // noinspection JSUnusedLocalSymbols
-function taskRenamed(state, id) {
-    return {
-        ...state,
-        byId: {
-            ...state.byId,
-            // despite thinking we'd want to save the name, we don't, because if
-            // the user has made further changes while the save was in flight,
-            // we want to save those.
-            [id]: loForId(state, id).done(),
-        },
-    };
-}
+const taskRenamed = (state, id) => ({
+    ...state,
+    byId: {
+        ...state.byId,
+        // despite thinking we'd want to save the name, we don't, because if
+        // the user has made further changes while the save was in flight,
+        // we want to save those.
+        [id]: loForId(state, id).done(),
+    },
+});
 
 const loadLists = state => {
     TaskApi.loadLists();

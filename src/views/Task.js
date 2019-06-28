@@ -10,6 +10,10 @@ import classnames from "classnames";
 import "./Task.scss";
 import LoadObject from "../util/LoadObject";
 import TaskStore from "../data/TaskStore";
+import {
+    isQuestionable,
+    isSection,
+} from "../data/tasks";
 
 class Task extends React.PureComponent {
 
@@ -180,11 +184,8 @@ class Task extends React.PureComponent {
             active,
             selected,
         } = this.props;
-        const lastChar = task.name.length === 0
-            ? ""
-            : task.name.charAt(task.name.length - 1);
-        const section = lastChar === ":";
-        const question = lastChar === "?";
+        const section = isSection(task);
+        const question = isQuestionable(task);
         let layoutProps;
         if (section) {
             layoutProps = {};
