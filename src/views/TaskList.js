@@ -20,7 +20,7 @@ class TaskList extends React.PureComponent {
         if (!allLists.hasValue()) {
             return <Spin tip="Loading task lists..." />
         }
-        return <React.Fragment>
+        return <div className="task-list">
             <TaskListHeader
                 allLists={allLists.getValueEnforcing()}
                 activeList={activeListLO.getValue()}
@@ -39,7 +39,7 @@ class TaskList extends React.PureComponent {
                     return <LoadingTask key={lo.id} />;
                 }
             })}
-        </React.Fragment>;
+        </div>;
     }
 
 }

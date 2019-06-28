@@ -213,7 +213,7 @@ class Task extends React.PureComponent {
         const input = <Input {...layoutProps}
                              value={task.name}
                              placeholder="Write a task name"
-                             className={classnames({
+                             className={classnames("task", {
                                  "task-active": active,
                                  "task-selected": selected,
                                  "task-question": question,
