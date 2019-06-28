@@ -317,6 +317,28 @@ const focusDelta = (state, id, delta) => {
     return sid == null ? state : focusTask(state, sid);
 };
 
+const selectTo = (state, id) => {
+    if (state.activeTaskId == null) return focusTask(state, id);
+    if (id === state.activeTaskId) return state;
+    const target = taskForId(state, id);
+    const parent = taskForId(state, target.parentId);
+    let i = parent.subtaskIds.indexOf(state.activeTaskId);
+    let j = parent.subtaskIds.indexOf(id);
+    if (i > j) {
+        j += 1; // active doesn't get selected
+        i += 1; // inclusive upper bound
+        const temp = i;
+        i = j;
+        j = temp;
+    }
+    console.log("selectTo", parent.subtaskIds, i, j, parent.subtaskIds.slice(i, j));
+    return {
+        ...state,
+        activeTaskId: id,
+        selectedTaskIds: parent.subtaskIds.slice(i, j),
+    };
+};
+
 const selectDelta = (state, id, delta) => {
     if (delta === 0) {
         console.warn("Select by a delta of zero?");
@@ -685,6 +707,8 @@ class TaskStore extends ReduceStore {
                 return selectDelta(state, action.id, 1);
             case TaskActions.SELECT_PREVIOUS:
                 return selectDelta(state, action.id, -1);
+            case TaskActions.SELECT_TO:
+                return selectTo(state, action.id);
             case TaskActions.MOVE_NEXT:
                 return moveDelta(state, 1);
             case TaskActions.MOVE_PREVIOUS:
