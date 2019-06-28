@@ -4,6 +4,10 @@ import { Map } from "immutable";
 import UserActions from "./UserActions";
 import TaskActions from "./TaskActions";
 import { LOCAL_STORAGE_PREFERENCES } from "../constants/index";
+import {
+    getJsonItem,
+    setJsonItem,
+} from "../util/storage";
 
 const Prefs = {
     ACTIVE_TASK_LIST: "activeTaskList",
@@ -11,7 +15,7 @@ const Prefs = {
 
 const setPref = (state, key, value) => {
     state = state.set(key, value);
-    localStorage.setItem(LOCAL_STORAGE_PREFERENCES, JSON.stringify(state.toJSON()));
+    setJsonItem(LOCAL_STORAGE_PREFERENCES, state);
     return state;
 };
 
@@ -21,15 +25,7 @@ class PreferencesStore extends ReduceStore {
     }
 
     getInitialState() {
-        const preferences = localStorage.getItem(LOCAL_STORAGE_PREFERENCES);
-        if (preferences != null) {
-            try {
-                return new Map(JSON.parse(preferences));
-            } catch (e) {
-                console.warn("error restoring preferences", e);
-            }
-        }
-        return new Map();
+        return new Map(getJsonItem(LOCAL_STORAGE_PREFERENCES));
     }
 
     reduce(state, action) {
