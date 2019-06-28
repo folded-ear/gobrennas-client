@@ -21,7 +21,7 @@ const OAuth2RedirectHandler = ({location}) => {
         // specific Route, as the routed Component gets rendered and there isn't
         // an obvious way to do a code-only route that redirects.
         setTimeout(() => Dispatcher.dispatch({
-            type: UserActions.LOGIN,
+            type: UserActions.LOGGED_IN,
             token,
         }));
         return <Redirect to={{
