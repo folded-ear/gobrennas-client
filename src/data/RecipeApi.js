@@ -31,8 +31,9 @@ const RecipeApi = {
             id: recipe.id,
             type: "Recipe",
             title: recipe.title,
-            external_url: recipe.external_url,
+            externalUrl: recipe.externalUrl,
             ingredients: [],
+            rawIngredients: recipe.rawIngredients,
             directions: recipe.directions
           }),
         });

@@ -12,7 +12,8 @@ class RecipeAdd extends Component {
     
     this.state = {
       title: '',
-      external_url: '',
+      externalUrl: '',
+      rawIngredients: '',
       ingredients: [],
       directions: ''
     };
@@ -33,12 +34,12 @@ class RecipeAdd extends Component {
   };
   
   handleSave = () => {
-    const {title, external_url, ingredients, directions } = this.state;
+    const {title, externalUrl, ingredients, rawIngredients, directions } = this.state;
     
     const recipe = new Recipe({
       title,
       type: "Recipe",
-      external_url,
+      externalUrl,
       ingredients: ingredients.map( ingredient => {
         return {
           "quantity": ingredient.quantity,
@@ -49,6 +50,7 @@ class RecipeAdd extends Component {
           "preparation": ingredient.preparation
         }
       }),
+      rawIngredients,
       directions
     });
     RecipeApi.addRecipe(recipe);
@@ -71,7 +73,7 @@ class RecipeAdd extends Component {
   }
   
   render() {
-    const {title, external_url, directions } = this.state;
+    const {title, externalUrl, rawIngredients, directions } = this.state;
     const {pantryItems} = this.props;
     const {TextArea} = Input;
     
@@ -90,9 +92,9 @@ class RecipeAdd extends Component {
             </Form.Item>
             <Form.Item>
               <Input
-                name="external_url"
+                name="externalUrl"
                 placeholder="External URL"
-                value={external_url}
+                value={externalUrl}
                 onChange={this.handleUpdate}
               />
             </Form.Item>
@@ -101,6 +103,15 @@ class RecipeAdd extends Component {
               data={pantryItems}
             />
             { this.renderIngredients() }
+            <Form.Item>
+              <TextArea
+                  name="rawIngredients"
+                  placeholder="Add Ingredients List"
+                  value={rawIngredients}
+                  onChange={this.handleUpdate}
+                  rows={4}
+              />
+            </Form.Item>
             <Form.Item>
               <TextArea
                 name="directions"

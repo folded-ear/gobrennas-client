@@ -7,8 +7,9 @@ const Recipe = Record({
   type: '',
   name: '',
   title: '',
-  external_url: '',
+  externalUrl: '',
   ingredients: arrayOf(IngredientRef),
+  rawIngredients: '',
   directions: ''
 });
 

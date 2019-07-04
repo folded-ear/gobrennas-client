@@ -1,22 +1,16 @@
 import React from 'react'
-import RecipesList from '../views/RecipesList';
 import {Container} from 'flux/utils';
-import Store from '../data/RecipeStore';
-
-function getStores() {
-  return [
-    Store
-  ];
-}
-
-function getState() {
-  return {
-    recipes: Store.getState()
-  };
-}
+import RecipesList from '../views/RecipesList';
+import RecipeStore from '../data/RecipeStore';
 
 export default Container.createFunctional(
     (props) => <RecipesList {...props}/>,
-    getStores,
-    getState
+    () => [
+        RecipeStore
+    ],
+    () => {
+      return {
+        recipes: RecipeStore.getState()
+      }
+    }
 );
