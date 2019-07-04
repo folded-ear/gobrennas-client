@@ -1,4 +1,8 @@
 import PropTypes from "prop-types";
+import {
+    createChainableTypeChecker,
+    PropTypeError,
+} from "./typeHelpers";
 
 const NOISE = Math.floor(Math.random() * 100000); // ~5 random digits
 const PREFIX = "c_" + NOISE + "_";
@@ -20,12 +24,12 @@ const ClientId = {
         return !ClientId.is(id);
     },
 
-    propType(props, propName) {
+    propType: createChainableTypeChecker((props, propName) => {
         if (ClientId.is(props[propName])) {
             return;
         }
-        return new Error(`'${propName}' isn't a valid ClientId`);
-    },
+        return new PropTypeError(`'${propName}' isn't a valid ClientId`);
+    }),
 
 };
 

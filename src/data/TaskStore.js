@@ -1,14 +1,18 @@
 import { ReduceStore } from "flux/utils";
+import PropTypes from "prop-types";
 import Dispatcher from './dispatcher';
 import TaskActions from "./TaskActions";
 import LoadObject from "../util/LoadObject";
 import TaskApi from "./TaskApi";
 import hotLoadObject from "../util/hotLoadObject";
-import ClientId from "../util/ClientId";
+import ClientId, { clientOrDatabaseIdType } from "../util/ClientId";
 import { humanStringComparator } from "../util/comparators";
 import PreferencesStore from "./PreferencesStore";
 import dotProp from "dot-prop-immutable";
 import UserStore from "./UserStore";
+import typedStore from "../util/typedStore";
+import loadObjectOf from "../util/loadObjectOf";
+import AccessLevel from "./AccessLevel";
 
 /*
  * This store is way too muddled. But leaving it that way for the moment, to
@@ -811,4 +815,28 @@ class TaskStore extends ReduceStore {
     }
 }
 
-export default new TaskStore();
+TaskStore.stateTypes = {
+    activeListId: clientOrDatabaseIdType,
+    listDetailVisible: PropTypes.bool.isRequired,
+    activeTaskId: clientOrDatabaseIdType,
+    selectedTaskIds: PropTypes.arrayOf(clientOrDatabaseIdType),
+    topLevelIds: loadObjectOf(
+        PropTypes.arrayOf(clientOrDatabaseIdType)
+    ),
+    byId: PropTypes.objectOf(
+        loadObjectOf(PropTypes.exact({
+            id: clientOrDatabaseIdType.isRequired,
+            name: PropTypes.string.isRequired,
+            acl: PropTypes.exact({
+                ownerId: PropTypes.number.isRequired,
+                grants: PropTypes.objectOf(
+                    PropTypes.oneOf(Object.values(AccessLevel))
+                ),
+            }),
+            parentId: PropTypes.number,
+            subtaskIds: PropTypes.arrayOf(clientOrDatabaseIdType),
+        }))
+    ).isRequired,
+};
+
+export default typedStore(new TaskStore());
