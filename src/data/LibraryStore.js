@@ -6,6 +6,7 @@ import {
 } from "immutable";
 import LoadObject from "../util/LoadObject";
 import Recipe from "../models/Recipe";
+import LibraryActions from './LibraryActions'
 import IngredientRef from "../models/IngredientRef";
 import Ingredient from "../models/Ingredient";
 import LibraryApi from "./LibraryApi";
@@ -69,4 +70,11 @@ class LibraryStore extends ReduceStore {
         LibraryApi.loadLibrary();
         return state.set('recipes', lo.loading());
     }
+    
+    getLibraryLO() {
+        const s = this.getState();
+        return s.get('recipes');
+    }
 }
+
+export default new LibraryStore()

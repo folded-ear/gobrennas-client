@@ -1,6 +1,4 @@
-import React, {
-  Component
-} from 'react';
+import React, {Component} from 'react';
 import RecipeApi from '../data/RecipeApi';
 import RecipeDetail from "./RecipeDetail";
 
@@ -19,8 +17,17 @@ class RecipesList extends Component<{}> {
   };
   
   render() {
+    const { libraryLO } = this.props;
     const selected = this.props.recipes.get('selected');
     const library = this.props.recipes.get('library');
+    
+    if (libraryLO.hasValue()) {
+      return <div>Loaded Library Things</div>
+    } else if ( libraryLO.isLoading()) {
+      return <div>Loading Things</div>
+    } else {
+      return <div>No Things</div>
+    }
     
     if (selected) {
       const recipe = library.find(recipe => {

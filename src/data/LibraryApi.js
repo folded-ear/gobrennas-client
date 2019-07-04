@@ -1,6 +1,6 @@
 import BaseAxios from "axios";
 import {API_BASE_URL} from "../constants";
-import {LibraryActions} from "./LibraryActions";
+import LibraryActions from "./LibraryActions";
 import promiseFlux from "../util/promiseFlux";
 
 const axios = BaseAxios.create({
