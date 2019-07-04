@@ -42,6 +42,7 @@ class RecipeStore extends ReduceStore {
                 })
               })
             }),
+            rawIngredients: recipe.rawIngredients,
             directions: recipe.directions
           }))
         }));
