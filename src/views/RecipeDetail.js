@@ -1,5 +1,8 @@
 import React from 'react';
-import {Button} from "antd";
+import {
+    Button,
+    List,
+} from "antd";
 import IngredientItem from "./IngredientItem";
 
 const RecipeDetail = ({recipe, onDelete, onSelect}) => {
@@ -16,10 +19,19 @@ const RecipeDetail = ({recipe, onDelete, onSelect}) => {
           <IngredientItem key={ingredient.id} ingredient={ingredient} />
         )
       })}</div>
-      
+
+        {recipe.get('rawIngredients') && <div>
+          <h5>Raw Ingredients</h5>
+            <List
+                dataSource={recipe.get('rawIngredients')
+                    .split("\n")}
+                renderItem={it => <List.Item>{it}</List.Item>}
+            />
+        </div>}
+
       <h5>Preparation</h5>
       <p>{recipe.get('directions')}</p>
-      
+
       <Button type="danger" onClick={() => onDelete(recipe.get('id'))}>Delete Recipe</Button>
     </div>
   )
