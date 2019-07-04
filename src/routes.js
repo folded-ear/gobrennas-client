@@ -1,5 +1,5 @@
 import Profile from "./views/user/Profile";
-import Recipes from "./containers/Recipes";
+import Library from "./containers/Library";
 import RecipeAdd from "./containers/RecipeAdd";
 import Landing from "./views/Landing";
 import PantryItemAdd from "./views/PantryItemAdd";
@@ -13,7 +13,7 @@ const routes = {
     ],
     private: [
         {path: "/profile", component: Profile},
-        {path: "/recipes", component: Recipes},
+        {path: "/library", component: Library},
         {path: "/add", component: RecipeAdd},
         {path: "/addpantryitem", component: PantryItemAdd},
         {path: "/tasks", component: Tasks}

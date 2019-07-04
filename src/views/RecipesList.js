@@ -1,12 +1,9 @@
 import React, {Component} from 'react';
 import RecipeApi from '../data/RecipeApi';
 import RecipeDetail from "./RecipeDetail";
+import {Spin} from "antd";
 
 class RecipesList extends Component<{}> {
-  
-  componentDidMount() {
-    RecipeApi.fetchRecipes();
-  }
   
   handleSelect = (id) => {
     RecipeApi.selectRecipe(id);
@@ -19,21 +16,16 @@ class RecipesList extends Component<{}> {
   render() {
     const { libraryLO } = this.props;
     const selected = this.props.recipes.get('selected');
-    const library = this.props.recipes.get('library');
     
-    if (libraryLO.hasValue()) {
-      return <div>Loaded Library Things</div>
-    } else if ( libraryLO.isLoading()) {
-      return <div>Loading Things</div>
-    } else {
-      return <div>No Things</div>
+    if (!libraryLO.hasValue()) {
+        return <Spin tip="Loading recipe library..."/>
     }
     
     if (selected) {
       const recipe = library.find(recipe => {
         return recipe.get('id') === selected;
       });
-      
+
       if (recipe) {
         return <RecipeDetail
             recipe={recipe}
@@ -41,17 +33,18 @@ class RecipesList extends Component<{}> {
             onSelect={this.handleSelect}
         />
       }
-      
+
       return <div>Oops.</div>;
     }
     
-    return (
+      const library = libraryLO.getValueEnforcing();
+      return (
         <div className="recipes-list">
           <h1>Recipes</h1>
-          {[...this.props.recipes.get('library').values()].reverse().map(recipe => (
+          {[...library].reverse().map(recipe => (
               <h2
-                  key={recipe.id}
-                  onClick={() => this.handleSelect(recipe.id)}
+                  key={recipe.ingredientId}
+                  onClick={() => this.handleSelect(recipe.ingredientId)}
               >
                 {recipe.title}
               </h2>

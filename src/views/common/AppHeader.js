@@ -34,14 +34,11 @@ const AppHeader = ({authenticated, onLogout, location}) => {
                 <Menu.Item>
                     <NavLink to="/" className="logo">FOODINGER</NavLink>
                 </Menu.Item>
-                <Menu.Item key="/recipes">
-                    <NavLink to="/recipes">Recipes</NavLink>
+                <Menu.Item key="/library">
+                    <NavLink to="/library">Recipe Library</NavLink>
                 </Menu.Item>
                 <Menu.Item key="/add">
                     <NavLink to="/add">Add New Recipe</NavLink>
-                </Menu.Item>
-                <Menu.Item key="/addpantryitem">
-                    <NavLink to="/addpantryitem">Add Pantry Item</NavLink>
                 </Menu.Item>
                 <Menu.Item key="/tasks">
                     <NavLink to="/tasks">Tasks</NavLink>
