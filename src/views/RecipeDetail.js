@@ -4,6 +4,16 @@ import {
     List,
 } from "antd";
 import IngredientItem from "./IngredientItem";
+import RecipeApi from "../data/RecipeApi";
+
+const handleSelect = (id) => {
+    RecipeApi.selectRecipe(id);
+};
+
+const handleDelete = (id) => {
+    RecipeApi.deleteRecipe(id);
+};
+
 
 const RecipeDetail = ({recipe, onDelete, onSelect}) => {
   return (
