@@ -13,6 +13,7 @@ class RecipeAdd extends Component {
     this.state = {
       title: '',
       external_url: '',
+      rawIngredients: '',
       ingredients: [],
       directions: ''
     };
@@ -33,7 +34,7 @@ class RecipeAdd extends Component {
   };
   
   handleSave = () => {
-    const {title, external_url, ingredients, directions } = this.state;
+    const {title, external_url, ingredients, rawIngredients, directions } = this.state;
     
     const recipe = new Recipe({
       title,
@@ -49,6 +50,7 @@ class RecipeAdd extends Component {
           "preparation": ingredient.preparation
         }
       }),
+      rawIngredients,
       directions
     });
     RecipeApi.addRecipe(recipe);
@@ -71,7 +73,7 @@ class RecipeAdd extends Component {
   }
   
   render() {
-    const {title, external_url, directions } = this.state;
+    const {title, external_url, rawIngredients, directions } = this.state;
     const {pantryItems} = this.props;
     const {TextArea} = Input;
     
@@ -101,6 +103,15 @@ class RecipeAdd extends Component {
               data={pantryItems}
             />
             { this.renderIngredients() }
+            <Form.Item>
+              <TextArea
+                  name="rawIngredients"
+                  placeholder="Add Ingredients List"
+                  value={rawIngredients}
+                  onChange={this.handleUpdate}
+                  rows={4}
+              />
+            </Form.Item>
             <Form.Item>
               <TextArea
                 name="directions"
