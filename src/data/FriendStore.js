@@ -35,7 +35,7 @@ class FriendStore extends ReduceStore {
             }
 
             case FriendActions.FRIEND_LIST_LOADED: {
-                return state.setValue(action.data);
+                return state.setValue(action.data).done();
             }
 
             default:
