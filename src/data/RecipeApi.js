@@ -26,7 +26,7 @@ const RecipeApi = {
         const { data } = response;
 
         Dispatcher.dispatch({
-          type: RecipeActions.ADD_RECIPE,
+          type: RecipeActions.RECIPE_CREATED,
           data,
         });
       }
@@ -38,22 +38,12 @@ const RecipeApi = {
       .delete(`/recipe/${id}`)
       .then(() => {
         Dispatcher.dispatch({
-          type: RecipeActions.DELETE_RECIPE,
+          type: RecipeActions.RECIPE_DELETED,
           id
         })
       })
   },
-  
-  fetchRecipes() {
-    axios.get('/recipe/all')
-      .then(res => {
-        Dispatcher.dispatch({
-          type: RecipeActions.FETCH_RECIPES,
-          data: res.data
-        })
-      });
-  },
-
+    
     addTasksFromRawIngredients(recipeId, listId) {
         promiseFlux(
             axios.post(`/recipe/${recipeId}/raw-ingredients/to-tasks/${listId}`),

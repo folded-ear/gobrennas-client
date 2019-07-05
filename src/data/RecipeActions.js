@@ -6,10 +6,9 @@ const sendShape = {
     recipeId: PropTypes.number,
 };
 const RecipeActions = {
-  FETCH_RECIPES: 'FETCH_RECIPES',
-  ADD_RECIPE: 'ADD_RECIPE',
-  DELETE_RECIPE: 'DELETE_RECIPE',
-    SELECT_RECIPE: 'SELECT_RECIPE',
+    RECIPE_CREATED: 'recipe/recipe-created',
+    RECIPE_DELETED: 'recipe/recipe-deleted',
+    SELECT_RECIPE: 'recipe/select-recipe',
     SEND_RAW_INGREDIENTS_TO_TASK_LIST: typedAction("recipe/send-raw-ingredients-to-task-list", sendShape),
     RAW_INGREDIENTS_SENT_TO_TASK_LIST: typedAction("recipe/raw-ingredients-sent-to-task-list", sendShape)
 };
