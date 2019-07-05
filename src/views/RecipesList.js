@@ -1,57 +1,25 @@
-import React, {
-  Component
-} from 'react';
-import RecipeApi from '../data/RecipeApi';
-import RecipeDetail from "./RecipeDetail";
+import React from 'react';
+import {Link} from 'react-router-dom';
+import {Spin} from "antd";
 
-class RecipesList extends Component<{}> {
-  
-  componentDidMount() {
-    RecipeApi.fetchRecipes();
-  }
-  
-  handleSelect = (id) => {
-    RecipeApi.selectRecipe(id);
-  };
-  
-  handleDelete = (id) => {
-    RecipeApi.deleteRecipe(id);
-  };
-  
-  render() {
-    const selected = this.props.recipes.get('selected');
-    const library = this.props.recipes.get('library');
+const RecipesList = (props: {}) => {
+    const {libraryLO} = props;
     
-    if (selected) {
-      const recipe = library.find(recipe => {
-        return recipe.get('id') === selected;
-      });
-      
-      if (recipe) {
-        return <RecipeDetail
-            recipe={recipe}
-            onDelete={this.handleDelete}
-            onSelect={this.handleSelect}
-        />
-      }
-      
-      return <div>Oops.</div>;
+    if (!libraryLO.hasValue()) {
+        return <Spin tip="Loading recipe library..."/>
     }
     
+    const library = libraryLO.getValueEnforcing();
     return (
         <div className="recipes-list">
-          <h1>Recipes</h1>
-          {[...this.props.recipes.get('library').values()].reverse().map(recipe => (
-              <h2
-                  key={recipe.id}
-                  onClick={() => this.handleSelect(recipe.id)}
-              >
-                {recipe.title}
-              </h2>
-          ))}
+            <h1>Recipes</h1>
+            {[...library].reverse().map(recipe => (
+                <h2 key={recipe.ingredientId}>
+                    <Link to={`/recipe/${recipe.ingredientId}`}>{recipe.title}</Link>
+                </h2>
+            ))}
         </div>
     );
-  }
 }
 
 export default RecipesList;
