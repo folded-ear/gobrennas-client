@@ -50,6 +50,19 @@ class LibraryStore extends ReduceStore {
                 })
         );
     }
+    
+    getRecipeById(selectedRecipe) {
+        if( typeof selectedRecipe != "number") {
+            throw new Error("That is not a valid integer");
+        }
+        
+        const lo = this.getLibraryLO();
+        if(lo.hasValue()) {
+            const recipe = lo.getValueEnforcing().find( recipe => recipe.ingredientId === selectedRecipe);
+            return recipe !== null ? LoadObject.withValue(recipe) : LoadObject.empty();
+        }
+        return lo;
+    }
 }
 
 export default new LibraryStore()

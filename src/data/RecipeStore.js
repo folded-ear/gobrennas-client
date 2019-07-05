@@ -2,7 +2,7 @@ import {
     List,
     OrderedMap,
 } from 'immutable';
-import { ReduceStore } from 'flux/utils';
+import {ReduceStore} from 'flux/utils';
 import RecipeActions from './RecipeActions';
 import Dispatcher from './dispatcher';
 import Recipe from '../models/Recipe';
@@ -17,15 +17,17 @@ class RecipeStore extends ReduceStore {
   
   getInitialState() {
     return new OrderedMap({
-      library: new List(),
-      selected: null,
-      token: null
+      selected: null
     });
   }
   
   reduce(state, action) {
     switch (action.type) {
-      
+  
+      case RecipeActions.SELECT_RECIPE: {
+        return state.set('selected', action.id)
+      }
+  
       case RecipeActions.FETCH_RECIPES: {
         let recipes = List(action.data.map(recipe => {
           return (new Recipe({
@@ -57,10 +59,6 @@ class RecipeStore extends ReduceStore {
         return state.set('library', state.get('library').push(action.data));
       }
       
-      case RecipeActions.SELECT_RECIPE: {
-        return state.set('selected', action.id)
-      }
-      
       case RecipeActions.DELETE_RECIPE: {
         const index = state.get('library').findIndex(recipe => recipe.get('id') === action.id);
         
@@ -77,6 +75,9 @@ class RecipeStore extends ReduceStore {
     }
   }
   
+  getSelectedRecipe() {
+    return this.getState().get('selected');
+  }
 }
 
 export default new RecipeStore();

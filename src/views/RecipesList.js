@@ -1,17 +1,9 @@
 import React, {PureComponent} from 'react';
-import Dispatcher from '../data/dispatcher';
-import RecipeActions from '../data/RecipeActions'
+import {Link} from 'react-router-dom';
 import {Spin} from "antd";
 
 
 class RecipesList extends PureComponent<{}> {
-    
-    onSelect = (id) => {
-        Dispatcher.dispatch({
-            type: RecipeActions.SELECT_RECIPE,
-            data: id
-        })
-    };
     
     render() {
         const {libraryLO} = this.props;
@@ -25,12 +17,9 @@ class RecipesList extends PureComponent<{}> {
             <div className="recipes-list">
                 <h1>Recipes</h1>
                 {[...library].reverse().map(recipe => (
-                    <h2
-                        key={recipe.ingredientId}
-                        onClick={() => this.onSelect(recipe.ingredientId)}
-                    >
+                    <Link to={`/recipe/${recipe.ingredientId}`} key={recipe.ingredientId}>
                         {recipe.title}
-                    </h2>
+                    </Link>
                 ))}
             </div>
         );
