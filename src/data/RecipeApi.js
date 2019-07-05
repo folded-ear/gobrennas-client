@@ -1,7 +1,7 @@
 import Dispatcher from './dispatcher';
 import BaseAxios from 'axios';
 import RecipeActions from './RecipeActions';
-import {API_BASE_URL} from "../constants/index";
+import { API_BASE_URL } from "../constants/index";
 import promiseFlux from "../util/promiseFlux";
 
 const axios = BaseAxios.create({
@@ -46,7 +46,10 @@ const RecipeApi = {
     
     addTasksFromRawIngredients(recipeId, listId) {
         promiseFlux(
-            axios.post(`/recipe/${recipeId}/raw-ingredients/to-tasks/${listId}`),
+            axios.post(`/recipe/${recipeId}/_actions`, {
+                type: "RAW_INGREDIENTS_TO_LIST",
+                listId,
+            }),
             () => ({
                 type: RecipeActions.RAW_INGREDIENTS_SENT_TO_TASK_LIST,
                 recipeId,
