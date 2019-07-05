@@ -21,6 +21,10 @@ const handleDelete = (id) => {
     RecipeApi.deleteRecipe(id);
 };
 
+const parse = (ingredients) => {
+    return ingredients ? ingredients.split("\n") : []
+};
+
 const handleAddToList = (recipeId, listId) => Dispatcher.dispatch({
     type: RecipeActions.SEND_RAW_INGREDIENTS_TO_TASK_LIST,
     recipeId,
@@ -52,8 +56,7 @@ const RecipeDetail = ({recipeLO}) => {
             {recipe.rawIngredients && <React.Fragment>
                 <h5>Raw Ingredients</h5>
                 <List
-                    dataSource={recipe.rawIngredients
-                        .split("\n")}
+                    dataSource={parse(recipe.rawIngredients)}
                     renderItem={it => <List.Item>{it}</List.Item>}
                     size="small"
                     footer={<AddToList onClick={listId => handleAddToList(recipe.ingredientId, listId)} />}
