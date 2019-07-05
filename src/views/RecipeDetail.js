@@ -12,6 +12,7 @@ import IngredientItem from "./IngredientItem";
 import RecipeApi from "../data/RecipeApi";
 import TaskStore from "../data/TaskStore";
 import RecipeActions from "../data/RecipeActions";
+import RecipeStore from "../data/RecipeStore";
 
 const handleDelete = (id) => {
     RecipeApi.deleteRecipe(id);
@@ -68,25 +69,30 @@ const AddToList = Container.createFunctional(
     ({
          listLO,
          onClick,
+         isSending,
      }) => {
         if (! listLO.hasValue()) return null;
         const list = listLO.getValueEnforcing();
         return <Button
-                shape="round"
-                size="small"
-                onClick={() => onClick(list.id)}
+            shape="round"
+            size="small"
+            onClick={() => onClick(list.id)}
+            disabled={isSending}
             >
                 Add to "{list.name}"
-                <Icon type="arrow-right" />
+                <Icon type={isSending ? "loading" : "arrow-right"} />
             </Button>;
     },
     () => [
         TaskStore,
+        RecipeStore,
     ],
     (prevState, props) => {
+        const sendState = RecipeStore.getSendState();
         return {
             onClick: props.onClick,
             listLO: TaskStore.getActiveListLO(),
+            isSending: sendState != null && !sendState.isDone(),
         };
     },
     {withProps: true},

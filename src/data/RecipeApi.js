@@ -3,6 +3,7 @@ import BaseAxios from 'axios';
 import RecipeActions from './RecipeActions';
 import Recipe from "../models/Recipe";
 import { API_BASE_URL } from "../constants/index";
+import promiseFlux from "../util/promiseFlux";
 
 const axios = BaseAxios.create({
     baseURL: `${API_BASE_URL}/api`,
@@ -60,7 +61,19 @@ const RecipeApi = {
           data: res.data
         })
       });
-  }
+  },
+
+    addTasksFromRawIngredients(recipeId, listId) {
+        promiseFlux(
+            axios.post(`/recipe/${recipeId}/raw-ingredients/to-tasks/${listId}`),
+            () => ({
+                type: RecipeActions.RAW_INGREDIENTS_SENT_TO_TASK_LIST,
+                recipeId,
+                listId,
+            }),
+        );
+    },
+
 };
 
 export default RecipeApi;
