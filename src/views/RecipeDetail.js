@@ -1,7 +1,10 @@
 import React from 'react';
-import { Container } from "flux/utils";
+import {Container} from "flux/utils";
 import Dispatcher from "../data/dispatcher";
-import { Link } from "react-router-dom";
+import {
+    Link,
+    Redirect
+} from "react-router-dom";
 import {
     Button,
     Icon,
@@ -37,7 +40,7 @@ const RecipeDetail = ({recipeLO}) => {
             <Link to="/library">X Close</Link>
             <h3>{recipe.displayTitle}</h3>
             <h5>Source</h5>
-            <p>{recipe.external_url}</p>
+            <p>{recipe.externalUrl}</p>
             
             <h5>Ingredients</h5>
             <div>{recipe.ingredients.map(ingredient => {
