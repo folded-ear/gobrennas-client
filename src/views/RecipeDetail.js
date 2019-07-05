@@ -35,7 +35,7 @@ const RecipeDetail = ({recipeLO}) => {
     return (
         <div>
             <Link to="/library">X Close</Link>
-            <h3>{recipe.title}</h3>
+            <h3>{recipe.displayTitle}</h3>
             <h5>Source</h5>
             <p>{recipe.external_url}</p>
             

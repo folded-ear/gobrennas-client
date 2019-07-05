@@ -1,5 +1,9 @@
 import React, {Component} from 'react';
-import {Form, Input, Button} from 'antd';
+import {
+    Button,
+    Form,
+    Input
+} from 'antd';
 import Recipe from '../models/Recipe';
 import RecipeApi from '../data/RecipeApi';
 import PantryItemApi from '../data/PantryItemApi';
@@ -11,7 +15,7 @@ class RecipeAdd extends Component {
     super(props);
     
     this.state = {
-      title: '',
+      name: '',
       externalUrl: '',
       rawIngredients: '',
       ingredients: [],
@@ -34,11 +38,12 @@ class RecipeAdd extends Component {
   };
   
   handleSave = () => {
-    const {title, externalUrl, ingredients, rawIngredients, directions } = this.state;
+    const {name, externalUrl, ingredients, rawIngredients, directions } = this.state;
     
     const recipe = new Recipe({
-      title,
+      name,
       type: "Recipe",
+      displayTitle: name,
       externalUrl,
       ingredients: ingredients.map( ingredient => {
         return {
@@ -73,7 +78,7 @@ class RecipeAdd extends Component {
   }
   
   render() {
-    const {title, externalUrl, rawIngredients, directions } = this.state;
+    const {name, externalUrl, rawIngredients, directions } = this.state;
     const {pantryItems} = this.props;
     const {TextArea} = Input;
     
@@ -84,9 +89,9 @@ class RecipeAdd extends Component {
           <Form layout="vertical">
             <Form.Item>
               <Input
-                name="title"
+                name="name"
                 placeholder="Recipe Title"
-                value={title}
+                value={name}
                 onChange={this.handleUpdate}
               />
             </Form.Item>

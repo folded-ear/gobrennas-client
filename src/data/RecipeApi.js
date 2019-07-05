@@ -1,8 +1,7 @@
 import Dispatcher from './dispatcher';
 import BaseAxios from 'axios';
 import RecipeActions from './RecipeActions';
-import Recipe from "../models/Recipe";
-import { API_BASE_URL } from "../constants/index";
+import {API_BASE_URL} from "../constants/index";
 import promiseFlux from "../util/promiseFlux";
 
 const axios = BaseAxios.create({
@@ -24,19 +23,11 @@ const RecipeApi = {
       .then((response) => {
       //TODO: handle response back from API if there are errors, etc
       if (response.status && response.status === 201) {
-        const {data: recipe} = response;
+        const { data } = response;
 
         Dispatcher.dispatch({
           type: RecipeActions.ADD_RECIPE,
-          data: new Recipe({
-            id: recipe.id,
-            type: "Recipe",
-            title: recipe.title,
-            externalUrl: recipe.externalUrl,
-            ingredients: [],
-            rawIngredients: recipe.rawIngredients,
-            directions: recipe.directions
-          }),
+          data,
         });
       }
     });
