@@ -13,6 +13,7 @@ import UserStore from "./UserStore";
 import typedStore from "../util/typedStore";
 import loadObjectOf from "../util/loadObjectOf";
 import AccessLevel from "./AccessLevel";
+import RecipeActions from "./RecipeActions";
 
 /*
  * This store is way too muddled. But leaving it that way for the moment, to
@@ -747,19 +748,32 @@ class TaskStore extends ReduceStore {
                 return flushTasksToRename(state);
             case TaskActions.FLUSH_REORDERS:
                 return flushParentsToReset(state);
+
+            case RecipeActions.RAW_INGREDIENTS_SENT_TO_TASK_LIST: {
+                // todo: this is stupid. not wrong though.
+                return {
+                    ...state,
+                    topLevelIds: LoadObject.empty(),
+                };
+            }
+
             default:
                 return state;
         }
     }
 
-    getLists() {
-        const s = this.getState();
+    getListsLO() {
         return hotLoadObject(
-            () => s.topLevelIds,
+            () => this.getState().topLevelIds,
             () => Dispatcher.dispatch({
                 type: TaskActions.LOAD_LISTS,
             }),
-        ).map(ids => losForIds(s, ids)
+        );
+    }
+
+    getLists() {
+        const s = this.getState();
+        return this.getListsLO().map(ids => losForIds(s, ids)
             .filter(lo => lo.isDone())
             .map(lo => lo.getValueEnforcing()));
     }
@@ -771,6 +785,8 @@ class TaskStore extends ReduceStore {
     }
 
     getActiveListLO() {
+        const lo = this.getListsLO();
+        if (!lo.hasValue()) return lo;
         const s = this.getState();
         return s.activeListId == null
             ? LoadObject.empty()
