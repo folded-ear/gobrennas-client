@@ -752,14 +752,18 @@ class TaskStore extends ReduceStore {
         }
     }
 
-    getLists() {
-        const s = this.getState();
+    getListsLO() {
         return hotLoadObject(
-            () => s.topLevelIds,
+            () => this.getState().topLevelIds,
             () => Dispatcher.dispatch({
                 type: TaskActions.LOAD_LISTS,
             }),
-        ).map(ids => losForIds(s, ids)
+        );
+    }
+
+    getLists() {
+        const s = this.getState();
+        return this.getListsLO().map(ids => losForIds(s, ids)
             .filter(lo => lo.isDone())
             .map(lo => lo.getValueEnforcing()));
     }
@@ -771,6 +775,8 @@ class TaskStore extends ReduceStore {
     }
 
     getActiveListLO() {
+        const lo = this.getListsLO();
+        if (!lo.hasValue()) return lo;
         const s = this.getState();
         return s.activeListId == null
             ? LoadObject.empty()
