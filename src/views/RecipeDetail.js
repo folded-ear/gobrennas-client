@@ -31,7 +31,11 @@ const handleAddToList = (recipeId, listId) => Dispatcher.dispatch({
     listId,
 });
 
-const RecipeDetail = ({recipeLO}) => {
+const RecipeDetail = ({selected, recipeLO}) => {
+    
+    if(!selected) {
+        return <Redirect to="/library" />
+    }
     
     if (!recipeLO.hasValue()) {
         return <Spin tip="Recipe is loading..."/>
