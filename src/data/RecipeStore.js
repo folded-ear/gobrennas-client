@@ -1,13 +1,7 @@
-import {
-    List,
-    OrderedMap,
-} from 'immutable';
-import { ReduceStore } from 'flux/utils';
+import {OrderedMap,} from 'immutable';
+import {ReduceStore} from 'flux/utils';
 import RecipeActions from './RecipeActions';
 import Dispatcher from './dispatcher';
-import Recipe from '../models/Recipe';
-import IngredientRef from "../models/IngredientRef";
-import Ingredient from "../models/Ingredient";
 import RecipeApi from "./RecipeApi";
 import LoadObject from "../util/LoadObject";
 

@@ -1,13 +1,12 @@
 import React, {Component} from 'react';
 import {
-    Button,
-    Form,
-    Input
+  Button,
+  Form,
+  Input
 } from 'antd';
 import Recipe from '../models/Recipe';
 import RecipeApi from '../data/RecipeApi';
 import PantryItemApi from '../data/PantryItemApi';
-import IngredientAdd from "./IngredientAdd";
 
 class RecipeAdd extends Component {
   
@@ -79,7 +78,6 @@ class RecipeAdd extends Component {
   
   render() {
     const {name, externalUrl, rawIngredients, directions } = this.state;
-    const {pantryItems} = this.props;
     const {TextArea} = Input;
     
     return (
@@ -103,18 +101,13 @@ class RecipeAdd extends Component {
                 onChange={this.handleUpdate}
               />
             </Form.Item>
-            <IngredientAdd
-              onSave={this.addIngredient}
-              data={pantryItems}
-            />
-            { this.renderIngredients() }
             <Form.Item>
               <TextArea
                   name="rawIngredients"
                   placeholder="Add Ingredients List"
                   value={rawIngredients}
                   onChange={this.handleUpdate}
-                  rows={4}
+                  rows={10}
               />
             </Form.Item>
             <Form.Item>
@@ -123,7 +116,7 @@ class RecipeAdd extends Component {
                 placeholder="Recipe Directions"
                 value={directions}
                 onChange={this.handleUpdate}
-                rows={4}
+                rows={10}
               />
             </Form.Item>
             <Form.Item>
