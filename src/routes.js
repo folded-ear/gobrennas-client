@@ -13,8 +13,8 @@ const routes = {
     ],
     private: [
         {path: "/profile",  component: Profile},
+        {path: "/library/recipe/:id",   component: Recipe },
         {path: "/library",  component: Library},
-        {path: "/recipe/:id",   component: Recipe },
         {path: "/add",      component: RecipeAdd},
         {path: "/tasks", component: Tasks}
     ]

@@ -6,6 +6,7 @@ import LibraryActions from './LibraryActions'
 import LibraryApi from "./LibraryApi";
 import hotLoadObject from "../util/hotLoadObject";
 import logAction from "../util/logAction";
+import RecipeActions from "./RecipeActions";
 
 class LibraryStore extends ReduceStore {
     
@@ -25,7 +26,9 @@ class LibraryStore extends ReduceStore {
         
         switch (action.type) {
             
-            case LibraryActions.LOAD_LIBRARY: {
+            case LibraryActions.LOAD_LIBRARY:
+            case RecipeActions.RECIPE_CREATED:
+            case RecipeActions.RECIPE_DELETED: {
                 LibraryApi.loadLibrary();
                 return state.set('recipes', state.get('recipes').loading())
             }
@@ -55,7 +58,7 @@ class LibraryStore extends ReduceStore {
         if( typeof selectedRecipe != "number") {
             throw new Error("That is not a valid integer");
         }
-        console.log(selectedRecipe)
+
         const lo = this.getLibraryLO();
         if(lo.hasValue()) {
             const recipe = lo.getValueEnforcing().find( recipe => recipe.ingredientId === selectedRecipe);

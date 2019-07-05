@@ -1,12 +1,12 @@
-import { Record } from 'immutable';
+import {Record} from 'immutable';
 import {arrayOf} from "prop-types";
 import IngredientRef from "./IngredientRef";
 
 const Recipe = Record({
   id: '',
-  type: '',
+  type: 'Recipe',
   name: '',
-  title: '',
+  displayTitle: '',
   externalUrl: '',
   ingredients: arrayOf(IngredientRef),
   rawIngredients: '',
