@@ -55,7 +55,7 @@ class LibraryStore extends ReduceStore {
         if( typeof selectedRecipe != "number") {
             throw new Error("That is not a valid integer");
         }
-        
+        console.log(selectedRecipe)
         const lo = this.getLibraryLO();
         if(lo.hasValue()) {
             const recipe = lo.getValueEnforcing().find( recipe => recipe.ingredientId === selectedRecipe);

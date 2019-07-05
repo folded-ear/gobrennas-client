@@ -2,7 +2,8 @@ import React from 'react';
 import {Link} from "react-router-dom";
 import {
     Button,
-    Spin,
+    List,
+    Spin
 } from "antd";
 import IngredientItem from "./IngredientItem";
 import RecipeApi from "../data/RecipeApi";
@@ -34,7 +35,12 @@ const RecipeDetail = ({recipeLO}) => {
             })}</div>
             
             <h5>Raw Ingredients</h5>
-            <p>{recipe.rawIngredients}</p>
+            <List
+                dataSource={recipe.rawIngredients
+                    .split("\n")}
+                renderItem={it => <List.Item>{it}</List.Item>}
+                size="small"
+            />
             
             <h5>Preparation</h5>
             <p>{recipe.directions}</p>

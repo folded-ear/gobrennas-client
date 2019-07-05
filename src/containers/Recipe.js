@@ -13,8 +13,7 @@ export default withRouter(Container.createFunctional(
     ],
     (prevState, props, context) => {
         const { match } = props;
-        const recipeLO = LibraryStore.getRecipeById(1);
-        console.log(recipeLO)
+        const recipeLO = LibraryStore.getRecipeById(parseInt(match.params.id, 10));
         return {
             recipeLO
         }

@@ -14,9 +14,9 @@ const RecipesList = (props: {}) => {
         <div className="recipes-list">
             <h1>Recipes</h1>
             {[...library].reverse().map(recipe => (
-                <Link to={`/recipe/${recipe.ingredientId}`} key={recipe.ingredientId}>
-                    {recipe.title}
-                </Link>
+                <h2 key={recipe.ingredientId}>
+                    <Link to={`/recipe/${recipe.ingredientId}`}>{recipe.title}</Link>
+                </h2>
             ))}
         </div>
     );
