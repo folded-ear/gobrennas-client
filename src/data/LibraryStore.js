@@ -1,6 +1,6 @@
-import {ReduceStore} from 'flux/utils'
+import { ReduceStore } from 'flux/utils'
 import Dispatcher from './dispatcher'
-import {OrderedMap} from "immutable";
+import { OrderedMap } from "immutable";
 import LoadObject from "../util/LoadObject";
 import LibraryActions from './LibraryActions'
 import LibraryApi from "./LibraryApi";
@@ -62,7 +62,7 @@ class LibraryStore extends ReduceStore {
         const lo = this.getLibraryLO();
         if(lo.hasValue()) {
             const recipe = lo.getValueEnforcing().find( recipe => recipe.ingredientId === selectedRecipe);
-            return recipe !== null ? LoadObject.withValue(recipe) : LoadObject.empty();
+            return recipe != null ? LoadObject.withValue(recipe) : LoadObject.empty();
         }
         return lo;
     }
