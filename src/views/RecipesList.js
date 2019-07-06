@@ -18,6 +18,7 @@ const RecipesList = (props: {}) => {
                     <Link to={`/library/recipe/${recipe.ingredientId}`}>{recipe.displayTitle}</Link>
                 </h2>
             ))}
+            {library.length === 0  && <em>No recipes yet...</em>}
         </div>
     );
 };
