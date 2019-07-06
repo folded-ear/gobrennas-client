@@ -1,5 +1,5 @@
-import {OrderedMap,} from 'immutable';
-import {ReduceStore} from 'flux/utils';
+import { OrderedMap } from 'immutable';
+import { ReduceStore } from 'flux/utils';
 import RecipeActions from './RecipeActions';
 import Dispatcher from './dispatcher';
 import RecipeApi from "./RecipeApi";
@@ -13,7 +13,6 @@ class RecipeStore extends ReduceStore {
     
     getInitialState() {
         return new OrderedMap({
-            selected: null,
             sendState: null,
         });
     }
@@ -21,14 +20,6 @@ class RecipeStore extends ReduceStore {
     reduce(state, action) {
         switch (action.type) {
             
-            case RecipeActions.SELECT_RECIPE: {
-                return state.set('selected', action.id)
-            }
-    
-            case RecipeActions.RECIPE_DELETED: {
-                return state.set('selected', null)
-            }
-    
             case RecipeActions.SEND_RAW_INGREDIENTS_TO_TASK_LIST: {
                 RecipeApi.addTasksFromRawIngredients(
                     action.recipeId,
@@ -46,10 +37,6 @@ class RecipeStore extends ReduceStore {
         }
     }
     
-    getSelectedRecipe() {
-        return this.getState().get('selected');
-    }
-
     getSendState() {
         return this.getState().get("sendState");
     }
