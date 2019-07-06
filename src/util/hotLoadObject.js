@@ -1,5 +1,18 @@
 import LoadObject from "./LoadObject";
 
+/**
+ * I am for use in a selector which returns a LoadObject that might need to have
+ * loading of its value initiated by the request itself.
+ *
+ * @param getLO - a callback which will obtain the current load object from the
+ *  store. It may also return `null`, implying LoadObject.empty().
+ * @param doLoad - a callback to initiate loading a value, which must update the
+ *  store such that the next invocation of getLO returns an already-loading LO.
+ * @param shouldLoad - optional callback for whether the LO (returned by getLO)
+ *  needs to load. This must yield `false` immediately after invoking doLoad. If
+ *  not provided LoadObject.isEmpty is used.
+ * @return {*|LoadObject<*>}
+ */
 const hotLoadObject = (
     getLO,
     doLoad,
@@ -14,7 +27,8 @@ const hotLoadObject = (
          * subsequent items already in the queue. :) There is no "bulk queue",
          * which would address the problem.
          */
-        setTimeout(doLoad, 0);
+        setTimeout(() =>
+            shouldLoad(getLO()) && doLoad());
         lo = lo.loading();
     }
     return lo;

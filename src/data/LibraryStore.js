@@ -44,9 +44,8 @@ class LibraryStore extends ReduceStore {
     }
     
     getLibraryLO() {
-        const s = this.getState();
         return hotLoadObject(
-            () => s.get('recipes'),
+            () => this.getState().get('recipes'),
             () =>
                 Dispatcher.dispatch({
                     type: LibraryActions.LOAD_LIBRARY
