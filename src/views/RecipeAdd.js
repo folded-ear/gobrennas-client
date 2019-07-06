@@ -30,8 +30,6 @@ class RecipeAdd extends Component {
     
     const recipe = new Recipe({
       name,
-      type: "Recipe",
-      displayTitle: name,
       externalUrl,
         ingredients: rawIngredients
             .split("\n")
