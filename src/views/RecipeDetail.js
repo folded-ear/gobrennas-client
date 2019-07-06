@@ -1,9 +1,9 @@
 import React from 'react';
-import {Container} from "flux/utils";
+import { Container } from "flux/utils";
 import Dispatcher from "../data/dispatcher";
 import {
     Link,
-    Redirect
+    Redirect,
 } from "react-router-dom";
 import {
     Button,
@@ -31,14 +31,13 @@ const handleAddToList = (recipeId, listId) => Dispatcher.dispatch({
     listId,
 });
 
-const RecipeDetail = ({selected, recipeLO}) => {
-    
-    if(!selected) {
-        return <Redirect to="/library" />
-    }
-    
+const RecipeDetail = ({recipeLO}) => {
+
     if (!recipeLO.hasValue()) {
-        return <Spin tip="Recipe is loading..."/>
+        if (recipeLO.isLoading()) {
+            return <Spin tip="Recipe is loading..."/>
+        }
+        return <Redirect to="/library" />
     }
     
     const recipe = recipeLO.getValueEnforcing();

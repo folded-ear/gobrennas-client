@@ -10,13 +10,6 @@ const axios = BaseAxios.create({
 
 const RecipeApi = {
   
-  selectRecipe(id) {
-    Dispatcher.dispatch({
-      type: RecipeActions.SELECT_RECIPE,
-      id
-    })
-  },
-  
   addRecipe(recipe) {
     axios
       .post('/recipe', recipe.toJSON())
