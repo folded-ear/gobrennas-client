@@ -16,6 +16,7 @@ import RecipeApi from "../data/RecipeApi";
 import TaskStore from "../data/TaskStore";
 import RecipeActions from "../data/RecipeActions";
 import RecipeStore from "../data/RecipeStore";
+import Directions from "./common/Directions";
 
 const handleDelete = (id) => {
     RecipeApi.deleteRecipe(id);
@@ -42,20 +43,25 @@ const RecipeDetail = ({recipeLO}) => {
         <div>
             <Link to="/library">X Close</Link>
             <h3>{recipe.displayTitle}</h3>
-            <h5>Source</h5>
-            <p>{recipe.externalUrl}</p>
 
-            <h5>Ingredients</h5>
-            <List
-                dataSource={recipe.ingredients}
-                renderItem={it => <IngredientItem ingredient={it} />}
-                size="small"
-                split={false}
-                footer={<AddToList onClick={listId => handleAddToList(recipe.ingredientId, listId)} />}
-            />
+            {recipe.externalUrl && <React.Fragment>
+                <h5>Source</h5>
+                <p><a href={recipe.externalUrl}>{recipe.externalUrl}</a></p>
+            </React.Fragment>}
+
+            {recipe.ingredients != null && recipe.ingredients.length > 0 && <React.Fragment>
+                <h5>Ingredients</h5>
+                <List
+                    dataSource={recipe.ingredients}
+                    renderItem={it => <IngredientItem ingredient={it} />}
+                    size="small"
+                    split={false}
+                    footer={<AddToList onClick={listId => handleAddToList(recipe.ingredientId, listId)} />}
+                />
+            </React.Fragment>}
 
             <h5>Preparation</h5>
-            <p>{recipe.directions}</p>
+            <Directions text={recipe.directions} />
             
             <Button type="danger" onClick={() => handleDelete(recipe.ingredientId)}>Delete Recipe</Button>
         </div>
