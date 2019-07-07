@@ -4,6 +4,7 @@ import {
     Button,
     Form,
     Input,
+    message,
     Spin
 } from "antd";
 import RecipeActions from "../data/RecipeActions";
@@ -19,7 +20,7 @@ const handleUpdate = (e) => {
 
 const handleSave = () => {
     Dispatcher.dispatch({
-        type: RecipeActions.DRAFT_RECIPE_SAVED,
+        type: RecipeActions.SAVE_DRAFT_RECIPE,
     });
 };
 
@@ -27,7 +28,11 @@ const RecipeForm = ({recipeLO}) => {
     if(!recipeLO.hasValue()) {
       return <Spin />
     }
-
+    
+    if(recipeLO.isDone()) {
+        message.success('Your recipe has been saved.');
+    }
+    
     const {TextArea} = Input;
     const draft = recipeLO.getValueEnforcing();
 

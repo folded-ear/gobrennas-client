@@ -19,7 +19,7 @@ class DraftRecipeStore extends ReduceStore {
     reduce(state, action) {
         switch (action.type) {
             case RecipeActions.LOAD_DRAFT_RECIPE: {
-                return state.setValue(new Recipe()).done();
+                return state.setValue(new Recipe()).creating();
             }
             
             case RecipeActions.DRAFT_RECIPE_UPDATED: {
@@ -35,11 +35,15 @@ class DraftRecipeStore extends ReduceStore {
                             .map(raw => ({raw}))))
                 }
                 return state.map(draft =>
-                    draft.set(key, value));
+                    draft.set(key, value)).updating();
             }
             
-            case RecipeActions.DRAFT_RECIPE_SAVED: {
+            case RecipeActions.SAVE_DRAFT_RECIPE: {
                 RecipeApi.addRecipe(state.getValueEnforcing());
+                return state.updating();
+            }
+
+            case RecipeActions.RECIPE_CREATED: {
                 return state.done();
             }
             
