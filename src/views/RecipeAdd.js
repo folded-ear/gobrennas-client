@@ -1,12 +1,11 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import {
-  Button,
-  Form,
-  Input
+    Button,
+    Form,
+    Input,
 } from 'antd';
 import Recipe from '../models/Recipe';
 import RecipeApi from '../data/RecipeApi';
-import PantryItemApi from '../data/PantryItemApi';
 
 class RecipeAdd extends Component {
   
@@ -17,7 +16,6 @@ class RecipeAdd extends Component {
       name: '',
       externalUrl: '',
       rawIngredients: '',
-      ingredients: [],
       directions: ''
     };
   }
@@ -37,24 +35,20 @@ class RecipeAdd extends Component {
   };
   
   handleSave = () => {
-    const {name, externalUrl, ingredients, rawIngredients, directions } = this.state;
+      const {name, externalUrl, rawIngredients, directions} = this.state;
     
     const recipe = new Recipe({
       name,
       type: "Recipe",
       displayTitle: name,
       externalUrl,
-      ingredients: ingredients.map( ingredient => {
-        return {
-          "quantity": ingredient.quantity,
-          "ingredient": {
-            "ingredientId": ingredient.selectedIngredient,
-            "type": "PantryItem"
-          },
-          "preparation": ingredient.preparation
-        }
-      }),
-      rawIngredients,
+        ingredients: rawIngredients
+            .split("\n")
+            .map(it => it.trim())
+            .filter(it => it.length > 0)
+            // since this a Recipe, these should be IngredientRef, but
+            // `RecipeApi.addRecipe` assume they aren't.
+            .map(raw => ({raw})),
       directions
     });
     RecipeApi.addRecipe(recipe);
