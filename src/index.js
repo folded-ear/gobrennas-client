@@ -6,6 +6,11 @@ import * as serviceWorker from './serviceWorker';
 import debounce from "./util/debounce";
 import Dispatcher from "./data/dispatcher";
 import WindowActions from "./data/WindowActions";
+import logAction from "./util/logAction";
+
+if (process.env.NODE_ENV !== "production") {
+    Dispatcher.register(logAction);
+}
 
 ReactDOM.render(<Router><App /></Router>, document.getElementById('root'));
 

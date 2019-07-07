@@ -5,7 +5,6 @@ import LoadObject from "../util/LoadObject";
 import LibraryActions from './LibraryActions'
 import LibraryApi from "./LibraryApi";
 import hotLoadObject from "../util/hotLoadObject";
-import logAction from "../util/logAction";
 import RecipeActions from "./RecipeActions";
 
 class LibraryStore extends ReduceStore {
@@ -21,9 +20,6 @@ class LibraryStore extends ReduceStore {
     }
     
     reduce(state, action) {
-        
-        logAction(action);
-        
         switch (action.type) {
             
             case LibraryActions.LOAD_LIBRARY:
