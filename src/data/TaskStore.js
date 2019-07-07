@@ -380,14 +380,18 @@ const selectDelta = (state, id, delta) => {
     }
 };
 
+// complete/delete are the "same" action as far as the client is concerned, at
+// least for now. That is, they both say "hey server, delete me" and then forget
+// about the task. The server does a little more processing for a complete than
+// a delete, but the end result is the same: DELETE FROM task WHERE id = ?
 const completeTask = (state, id) => {
-    return deleteTask(state, id);
+    return deleteTask(state, id, true);
 };
 
-const deleteTask = (state, id) => {
+const deleteTask = (state, id, asCompletion = false) => {
     const t = taskForId(state, id);
     if (t.parentId == null) {
-        throw new Error(`Can't delete root-level task '${id}'`)
+        throw new Error(`Can't ${asCompletion ? "complete" : "delete"} root-level task '${id}'`)
     }
     state = {
         ...state,
@@ -399,6 +403,8 @@ const deleteTask = (state, id) => {
     };
     if (ClientId.is(id)) {
         state = taskDeleted(state, id);
+    } else if (asCompletion) {
+        TaskApi.completeTask(id);
     } else {
         TaskApi.deleteTask(id);
     }
@@ -718,6 +724,8 @@ class TaskStore extends ReduceStore {
                 return taskDeleted(state, action.id);
             case TaskActions.MARK_COMPLETE:
                 return completeTask(state, action.id);
+            case TaskActions.TASK_COMPLETED:
+                return taskDeleted(state, action.id);
             case TaskActions.SELECT_NEXT:
                 return selectDelta(state, action.id, 1);
             case TaskActions.SELECT_PREVIOUS:

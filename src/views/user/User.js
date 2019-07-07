@@ -9,13 +9,13 @@ const User = ({
                   size = "small",
               }) =>
     <span title={email}>
-        <Avatar src={imageUrl} size={size}>{(name || "U").charAt(0).toUpperCase()}</Avatar>
+        <Avatar src={imageUrl} size={size}>{(name || email || "U").charAt(0).toUpperCase()}</Avatar>
         {" "}
-        {name}
+        {name || email}
     </span>;
 
 User.propTypes = {
-    name: PropTypes.string.isRequired,
+    name: PropTypes.string,
     email: PropTypes.string,
     imageUrl: PropTypes.string,
     size: PropTypes.oneOfType([
