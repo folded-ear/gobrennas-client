@@ -14,7 +14,14 @@ window.addEventListener("resize", debounce(() =>
         type: WindowActions.RESIZE,
     }), 500));
 
-// If you want your app to work offline and load faster, you can change
-// unregister() to register() below. Note this comes with some pitfalls.
 // Learn more about service workers: https://bit.ly/CRA-PWA
-serviceWorker.unregister();
+serviceWorker.register({
+    // called when the cache is populated (i.e., offline will work)
+    onSuccess: registration => Dispatcher.dispatch({
+        type: WindowActions.PWA_CACHE_HOT,
+    }),
+    // called when there is a new version of the app available
+    onUpdate: registation => Dispatcher.dispatch({
+        type: WindowActions.NEW_VERSION_AVAILABLE,
+    }),
+});
