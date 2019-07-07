@@ -23,8 +23,19 @@ class DraftRecipeStore extends ReduceStore {
             }
             
             case RecipeActions.DRAFT_RECIPE_UPDATED: {
-                console.log(action.data);
-                return state;
+                let {key, value} = action.data;
+                if (key === "rawIngredients") {
+                    state = state.map(draft =>
+                        draft.set("ingredients", value
+                            .split("\n")
+                            .map(it => it.trim())
+                            .filter(it => it.length > 0)
+                            // since this a Recipe, these should be IngredientRef, but
+                            // `RecipeApi.addRecipe` assume they aren't.
+                            .map(raw => ({raw}))))
+                }
+                return state.map(draft =>
+                    draft.set(key, value));
             }
             
             case RecipeActions.DRAFT_RECIPE_SAVED: {

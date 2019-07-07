@@ -10,10 +10,10 @@ import RecipeActions from "../data/RecipeActions";
 
 
 const handleUpdate = (e) => {
-    const { name, value } = e.target;
+    const { name: key, value } = e.target;
     Dispatcher.dispatch({
         type: RecipeActions.DRAFT_RECIPE_UPDATED,
-        data: {[name] : value}
+        data: { key, value}
     });
 };
 
