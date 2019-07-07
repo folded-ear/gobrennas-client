@@ -7,7 +7,14 @@ const IngredientItem = ({ingredient}) => {
     }
 
   return (
-    <div>{ ingredient.quantity } { ingredient.ingredient.name }, {ingredient.preparation}</div>
+    <div>
+        {ingredient.quantity}
+        {ingredient.ingredient.name}
+        {ingredient.preparation && <React.Fragment>
+            {", "}
+            {ingredient.preparation}
+        </React.Fragment>}
+    </div>
   )
 };
 
