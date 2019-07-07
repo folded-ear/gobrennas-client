@@ -20,20 +20,11 @@ class RecipeAdd extends Component {
     };
   }
   
-  componentDidMount() {
-    PantryItemApi.fetchPantryItems()
-  }
-  
   handleUpdate = (e) => {
     const { name, value } = e.target;
     this.setState({ [name] : value})
   };
-  
-  addIngredient = (ingredient) => {
-    const { ingredients } = this.state;
-    this.setState({ ingredients: [...ingredients, ingredient]})
-  };
-  
+
   handleSave = () => {
       const {name, externalUrl, rawIngredients, directions} = this.state;
     
@@ -51,24 +42,8 @@ class RecipeAdd extends Component {
             .map(raw => ({raw})),
       directions
     });
-    RecipeApi.addRecipe(recipe);
+      RecipeApi.addRecipe(recipe);
   };
-  
-  getIngredientName(id) {
-    const {pantryItems} = this.props;
-    const item = pantryItems.find( item => item.get('id') === parseInt(id));
-    if(item) {
-      return item.name;
-    }
-  }
-  
-  renderIngredients() {
-    const { ingredients } = this.state;
-    
-    return ingredients.map( ingredient => {
-      return <p key={ingredient.selectedIngredient}>{ingredient.quantity} {this.getIngredientName(ingredient.selectedIngredient)} {ingredient.preparation}</p>
-    })
-  }
   
   render() {
     const {name, externalUrl, rawIngredients, directions } = this.state;
