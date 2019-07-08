@@ -1,3 +1,5 @@
+import invariant from "invariant";
+
 const AccessLevel = {
     // VIEW: "VIEW",
     CHANGE: "CHANGE",
@@ -9,15 +11,15 @@ const levels = Object.keys(AccessLevel);
 
 export const includesLevel = (levelGranted, levelToCheck) => {
     if (levelGranted == null) return false;
-    if (levelToCheck == null) {
-        throw new Error(`There is no 'null' access level`)
-    }
-    if (! AccessLevel.hasOwnProperty(levelGranted)) {
-        throw new Error(`Unknown '${levelGranted}' access level`)
-    }
-    if (! AccessLevel.hasOwnProperty(levelToCheck)) {
-        throw new Error(`Unknown '${levelToCheck}' access level`)
-    }
+    invariant(levelToCheck != null, "There is no 'null' access level");
+    invariant(
+        AccessLevel.hasOwnProperty(levelGranted),
+        `Unknown '${levelGranted}' access level`,
+    );
+    invariant(
+        AccessLevel.hasOwnProperty(levelToCheck),
+        `Unknown '${levelToCheck}' access level`,
+    );
     return levels.indexOf(levelToCheck) <= levels.indexOf(levelGranted);
 };
 

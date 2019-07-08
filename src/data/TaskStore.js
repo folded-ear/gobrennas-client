@@ -14,6 +14,7 @@ import typedStore from "../util/typedStore";
 import loadObjectOf from "../util/loadObjectOf";
 import AccessLevel from "./AccessLevel";
 import RecipeActions from "./RecipeActions";
+import invariant from "invariant";
 
 /*
  * This store is way too muddled. But leaving it that way for the moment, to
@@ -110,9 +111,10 @@ const selectList = (state, id) => {
     if (state.activeListId === id) return state;
     // only valid ids, please
     const list = taskForId(state, id);
-    if (state.topLevelIds.getValueEnforcing().every(it => it !== id)) {
-        throw new Error(`Task '${id}' is not a list.`);
-    }
+    invariant(
+        state.topLevelIds.getValueEnforcing().some(it => it === id),
+        `Task '${id}' is not a list.`,
+    );
     state = {
         ...state,
         activeListId: id,
@@ -130,13 +132,9 @@ const taskForId = (state, id) =>
     loForId(state, id).getValueEnforcing();
 
 const loForId = (state, id) => {
-    if (id == null) {
-        throw new Error(`No task has a null id.`);
-    }
+    invariant(id != null, "No task has a null id.");
     const lo = state.byId[id];
-    if (lo == null) {
-        throw new Error(`No task '${id}' is known. You have a load race!`);
-    }
+    invariant(lo != null, `No task '${id}' is known. You have a load race!`);
     lo.id = id; // kludge for pre-load react keys
     return lo;
 };
@@ -188,18 +186,20 @@ const addTask = (state, parentId, name, after = AT_END) => {
 
 const createTaskAfter = (state, id) => {
     const t = taskForId(state, id);
-    if (t.parentId == null) {
-        throw new Error(`Can't create a task after root-level '${id}'`)
-    }
+    invariant(
+        t.parentId != null,
+        `Can't create a task after root-level '${id}'`,
+    );
     state = addTask(state, t.parentId, "", id);
     return state;
 };
 
 const createTaskBefore = (state, id) => {
     const t = taskForId(state, id);
-    if (t.parentId == null) {
-        throw new Error(`Can't create a task after root-level '${id}'`)
-    }
+    invariant(
+        t.parentId != null,
+        `Can't create a task before root-level '${id}'`,
+    );
     const p = taskForId(state, t.parentId);
     let afterId = null; // implied first
     if (p.subtaskIds != null) {
@@ -299,9 +299,10 @@ const getNeighborIds = (state, id, distance = 1) => {
         ? state.topLevelIds
         : taskForId(state, t.parentId).subtaskIds;
     const idx = siblingIds.indexOf(id);
-    if (idx < 0) {
-        throw new Error(`Task '${t.id}' isn't a child of it's parent ('${t.parentId}')?`)
-    }
+    invariant(
+        idx >= 0,
+        `Task '${t.id}' isn't a child of it's parent ('${t.parentId}')?`,
+    );
     return {
         before: atIndexOrNull(siblingIds, idx - distance),
         after: atIndexOrNull(siblingIds, idx + distance),
@@ -348,9 +349,10 @@ const selectDelta = (state, id, delta) => {
         console.warn("Select by a delta of zero?");
         return state;
     }
-    if (delta !== 1 && delta !== -1) {
-        throw new Error("Selection can't expand by more than one item at a time");
-    }
+    invariant(
+        delta === 1 || delta === -1,
+        "Selection can't expand by more than one item at a time",
+    );
     const {
         after: next,
     } = getNeighborIds(state, id, delta);
@@ -390,9 +392,12 @@ const completeTask = (state, id) => {
 
 const deleteTask = (state, id, asCompletion = false) => {
     const t = taskForId(state, id);
-    if (t.parentId == null) {
-        throw new Error(`Can't ${asCompletion ? "complete" : "delete"} root-level task '${id}'`)
-    }
+    invariant(
+        t.parentId != null,
+        "Can't %s root-level task '%s'",
+        asCompletion ? "complete" : "delete",
+        id,
+    );
     state = {
         ...state,
         activeTaskId: state.activeTaskId === id ? null : state.activeTaskId,
@@ -682,9 +687,10 @@ class TaskStore extends ReduceStore {
             case TaskActions.SUBTASKS_LOADED:
                 return action.data.reduce(taskLoaded, state);
             case TaskActions.RENAME_TASK:
-                if (action.id !== state.activeTaskId) {
-                    throw new Error("Renaming a non-active task is a bug.");
-                }
+                invariant(
+                    action.id === state.activeTaskId,
+                    "Renaming a non-active task is a bug.",
+                );
                 return renameTask(state, action.id, action.name);
             case TaskActions.TASK_RENAMED:
                 return taskRenamed(state, action.id, action.name);
@@ -711,14 +717,16 @@ class TaskStore extends ReduceStore {
                 state = flushTasksToRename(state);
                 return flushParentsToReset(state);
             case TaskActions.DELETE_TASK_FORWARD:
-                if (action.id !== state.activeTaskId) {
-                    throw new Error("Deleting a non-active task is a bug.");
-                }
+                invariant(
+                    action.id === state.activeTaskId,
+                    "Deleting a non-active task is a bug."
+                );
                 return forwardDeleteTask(state, action.id);
             case TaskActions.DELETE_TASK_BACKWARDS:
-                if (action.id !== state.activeTaskId) {
-                    throw new Error("Deleting a non-active task is a bug.");
-                }
+                invariant(
+                    action.id === state.activeTaskId,
+                    "Deleting a non-active task is a bug."
+                );
                 return backwardsDeleteTask(state, action.id);
             case TaskActions.TASK_DELETED:
                 return taskDeleted(state, action.id);

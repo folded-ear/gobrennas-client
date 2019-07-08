@@ -1,3 +1,4 @@
+import invariant from "invariant";
 import LoadObject from "./LoadObject";
 
 /**
@@ -25,10 +26,19 @@ const hotLoadObject = (
          * don't make a bunch of new hot LOs in a single dispatch cycle. Each
          * one will be loaded as a separate dispatch, likely requeuing all the
          * subsequent items already in the queue. :) There is no "bulk queue",
-         * which would address the problem.
+         * which would address the problem. The second `shouldLoad` check inside
+         * the thunk will make all subsequent thunks do nothing, but they are
+         * still triggered.
          */
-        setTimeout(() =>
-            shouldLoad(getLO()) && doLoad());
+        setTimeout(() => {
+            let nextLO = getLO();
+            if (nextLO == null || shouldLoad(nextLO)) {
+                doLoad();
+                nextLO = getLO();
+                invariant(nextLO != null, "doLoad must warm up getLO's cache");
+                invariant(!shouldLoad(lo), "doLoad must create a pending LO");
+            }
+        });
         lo = lo.loading();
     }
     return lo;

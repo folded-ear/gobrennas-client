@@ -1,12 +1,14 @@
 import PropTypes from "prop-types";
+import invariant from "invariant";
 
 const builder = (self, method, typesKey, initial) => {
     const name = self.constructor.name;
     method = method.bind(self);
     let typeSpecs = self.constructor[typesKey];
-    if (typeSpecs == null) {
-        throw new Error(`No ${typesKey} defined for ${name}; can't activate type checking.`);
-    }
+    invariant(
+        typeSpecs != null,
+        `No ${typesKey} defined for ${name}; can't activate type checking.`
+    );
     // PropTypes doesn't allow you to declare type information where the
     // top-level properties are anonymous, which is exactly what is needed for
     // an "id lookup"-style Store. Rather than forcing the Store to deal with
@@ -32,16 +34,13 @@ const builder = (self, method, typesKey, initial) => {
 
 const typedStore = self => {
     if (process.env.NODE_ENV !== "production") {
-        if (self.reduce) {
-            self.reduce = builder(
-                self,
-                self.reduce,
-                "stateTypes",
-                self.getInitialState(),
-            );
-        } else {
-            throw new Error("No 'reduce' method found on store.");
-        }
+        invariant(self.reduce, "No 'reduce' method found on store.");
+        self.reduce = builder(
+            self,
+            self.reduce,
+            "stateTypes",
+            self.getInitialState(),
+        );
     }
     return self;
 };

@@ -6,6 +6,7 @@ import LibraryActions from './LibraryActions'
 import LibraryApi from "./LibraryApi";
 import hotLoadObject from "../util/hotLoadObject";
 import RecipeActions from "./RecipeActions";
+import invariant from "invariant";
 
 class LibraryStore extends ReduceStore {
     
@@ -50,9 +51,10 @@ class LibraryStore extends ReduceStore {
     }
     
     getRecipeById(selectedRecipe) {
-        if( typeof selectedRecipe != "number") {
-            throw new Error("That is not a valid integer");
-        }
+        invariant(
+            typeof selectedRecipe === "number",
+            "That is not a valid integer",
+        );
 
         const lo = this.getLibraryLO();
         if(lo.hasValue()) {
