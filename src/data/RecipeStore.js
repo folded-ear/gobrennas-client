@@ -20,15 +20,15 @@ class RecipeStore extends ReduceStore {
     reduce(state, action) {
         switch (action.type) {
             
-            case RecipeActions.SEND_RAW_INGREDIENTS_TO_TASK_LIST: {
-                RecipeApi.addTasksFromRawIngredients(
+            case RecipeActions.SEND_INGREDIENTS_TO_TASK_LIST: {
+                RecipeApi.addTasksFromIngredients(
                     action.recipeId,
                     action.listId,
                 );
                 return state.set("sendState", LoadObject.updating());
             }
             
-            case RecipeActions.RAW_INGREDIENTS_SENT_TO_TASK_LIST: {
+            case RecipeActions.INGREDIENTS_SENT_TO_TASK_LIST: {
                 return state.set("sendState", LoadObject.empty());
             }
             
