@@ -15,6 +15,9 @@ const UserActions = {
     }),
     PROFILE_LOAD_ERROR: "user/profile-load-error",
     RESTORE_PREFERENCES: "user/restore-preferences",
+    SET_DEV_MODE: typedAction("user/set-dev-mode", {
+        enabled: PropTypes.bool.isRequired,
+    }),
 };
 
 export default UserActions;

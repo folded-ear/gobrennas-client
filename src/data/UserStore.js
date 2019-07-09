@@ -91,6 +91,14 @@ class UserStore extends ReduceStore {
         );
     }
 
+    isDeveloper() {
+        const lo = this.getProfileLO();
+        if (! lo.hasValue()) return false;
+        if (! lo.isDone()) return false; // in-flight means "gotta wait"
+        const profile = lo.getValueEnforcing();
+        return profile.roles && profile.roles.indexOf("DEVELOPER") >= 0;
+    }
+
 }
 
 export default new UserStore();
