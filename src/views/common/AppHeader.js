@@ -31,7 +31,7 @@ const AppHeader = ({authenticated, onLogout, location}) => {
                 style={{lineHeight: '64px'}}
                 selectedKeys={[location.pathname.split("/")[1]]}
                 mode="horizontal">
-                <Menu.Item>
+                <Menu.Item title={"Foodinger " + process.env.REACT_APP_VERSION}>
                     <NavLink to="/" className="logo">FOODINGER</NavLink>
                 </Menu.Item>
                 <Menu.Item key="library">
