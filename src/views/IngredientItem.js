@@ -8,7 +8,10 @@ const IngredientItem = ({ingredient}) => {
 
   return (
     <span>
-        {ingredient.quantity}
+        {ingredient.quantity && <React.Fragment>
+            {ingredient.quantity}
+            {" "}
+        </React.Fragment>}
         {ingredient.ingredient.name}
         {ingredient.preparation && <React.Fragment>
             {", "}
