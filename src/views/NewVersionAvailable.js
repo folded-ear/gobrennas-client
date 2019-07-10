@@ -14,10 +14,9 @@ const NewVersionAvailable = () =>
             {" "}
             <Button
                 size="small"
-                onClick={e => {
-                    e.preventDefault();
-                    window.location.reload();
-                }}>
+                onClick={() => Dispatcher.dispatch({
+                    type: WindowActions.LAUNCH_NEW_VERSION,
+                })}>
                 Relaunch
             </Button>
         </div>}

@@ -26,12 +26,8 @@ serviceWorker.register({
         type: WindowActions.PWA_CACHE_HOT,
     }),
     // called when there is a new version of the app available
-    onUpdate: registration => {
-        if (registration.waiting) {
-            registration.waiting.postMessage({type: 'SKIP_WAITING'});
-        }
-        Dispatcher.dispatch({
-            type: WindowActions.NEW_VERSION_AVAILABLE,
-        });
-    },
+    onUpdate: registration => Dispatcher.dispatch({
+        type: WindowActions.NEW_VERSION_AVAILABLE,
+        registration,
+    }),
 });
