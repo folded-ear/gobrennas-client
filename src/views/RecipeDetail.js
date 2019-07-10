@@ -17,6 +17,7 @@ import TaskStore from "../data/TaskStore";
 import RecipeActions from "../data/RecipeActions";
 import RecipeStore from "../data/RecipeStore";
 import Directions from "./common/Directions";
+import IngredientEdit from "./IngredientEdit";
 
 const handleDelete = (id) => {
     RecipeApi.deleteRecipe(id);
@@ -28,7 +29,7 @@ const handleAddToList = (recipeId, listId) => Dispatcher.dispatch({
     listId,
 });
 
-const RecipeDetail = ({recipeLO}) => {
+const RecipeDetail = ({recipeLO, isDevMode}) => {
 
     if (!recipeLO.hasValue()) {
         if (recipeLO.isLoading()) {
@@ -53,9 +54,19 @@ const RecipeDetail = ({recipeLO}) => {
                 <h5>Ingredients</h5>
                 <List
                     dataSource={recipe.ingredients}
-                    renderItem={it => <IngredientItem ingredient={it} />}
+                    renderItem={isDevMode
+                        ? (it, offset) => <List.Item>
+                            <IngredientEdit
+                                ingredient={it}
+                                recipeId={recipe.ingredientId}
+                                offset={offset}
+                            />
+                        </List.Item>
+                        : it => <List.Item>
+                            <IngredientItem ingredient={it} />
+                        </List.Item>}
                     size="small"
-                    split={false}
+                    split={isDevMode}
                     footer={<AddToList onClick={listId => handleAddToList(recipe.ingredientId, listId)} />}
                 />
             </React.Fragment>}
