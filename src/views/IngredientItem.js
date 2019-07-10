@@ -1,5 +1,9 @@
 import React from 'react'
 
+const Augment = ({text, prefix, suffix}) => text
+    ? <React.Fragment>{prefix}{text}{suffix}</React.Fragment>
+    : null;
+
 const IngredientItem = ({ingredient}) => {
 
     if (ingredient.ingredient == null) {
@@ -8,15 +12,13 @@ const IngredientItem = ({ingredient}) => {
 
   return (
     <span>
-        {ingredient.quantity && <React.Fragment>
-            {ingredient.quantity}
-            {" "}
-        </React.Fragment>}
+        <Augment text={ingredient.quantity}
+                 suffix=" " />
+        <Augment text={ingredient.units}
+                 suffix=" " />
         {ingredient.ingredient.name}
-        {ingredient.preparation && <React.Fragment>
-            {", "}
-            {ingredient.preparation}
-        </React.Fragment>}
+        <Augment text={ingredient.preparation}
+                 prefix=", " />
     </span>
   )
 };

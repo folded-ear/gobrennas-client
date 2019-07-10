@@ -3,6 +3,7 @@ import Ingredient from "./Ingredient";
 
 const IngredientRef = Record({
   quantity: '',
+  units: '',
   preparation: '',
   ingredient: Ingredient,
     raw: '',
