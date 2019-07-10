@@ -20,6 +20,7 @@
   "scripts": {
     "start": "PORT=3001 react-scripts start",
     "build": "react-scripts build",
+    "postbuild": "node munge_sw.js build/service-worker.js",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "lint": "eslint ./src",
