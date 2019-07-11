@@ -17,7 +17,7 @@ import TaskStore from "../data/TaskStore";
 import RecipeActions from "../data/RecipeActions";
 import RecipeStore from "../data/RecipeStore";
 import Directions from "./common/Directions";
-import IngredientEdit from "./IngredientEdit";
+import IngredientParseUI from "./IngredientParseUI";
 
 const handleDelete = (id) => {
     RecipeApi.deleteRecipe(id);
@@ -56,7 +56,7 @@ const RecipeDetail = ({recipeLO, isDevMode}) => {
                     dataSource={recipe.ingredients}
                     renderItem={isDevMode
                         ? (it, offset) => <List.Item>
-                            <IngredientEdit
+                            <IngredientParseUI
                                 ingredient={it}
                                 recipeId={recipe.ingredientId}
                                 offset={offset}

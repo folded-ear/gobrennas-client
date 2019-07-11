@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { Button } from "antd";
 import IngredientItem from "./IngredientItem";
-import "./IngredientEdit.scss";
+import "./IngredientParseUI.scss";
 import PropTypes from "prop-types";
 
 const SECTION_NAMES = ["quantity", "units", "name"];
@@ -12,7 +12,7 @@ const initialState = {
     prep: null,
 };
 
-class IngredientEdit extends Component {
+class IngredientParseUI extends Component {
 
     constructor(...args) {
         super(...args);
@@ -213,7 +213,7 @@ class IngredientEdit extends Component {
     }
 }
 
-IngredientEdit.propTypes = {
+IngredientParseUI.propTypes = {
     ingredient: PropTypes.shape({
         ingredient: PropTypes.object,
         raw: PropTypes.string,
@@ -222,4 +222,4 @@ IngredientEdit.propTypes = {
     offset: PropTypes.number.isRequired,
 };
 
-export default IngredientEdit;
+export default IngredientParseUI;
