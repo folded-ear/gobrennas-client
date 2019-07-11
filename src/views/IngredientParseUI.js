@@ -89,6 +89,7 @@ class IngredientParseUI extends Component {
                     if (v.start > pos) {
                         prepSegments.push(raw.substring(pos, v.start));
                     }
+                    v.text = raw.substring(v.start, v.end);
                     pos = v.end;
                 });
             if (pos < raw.length) {
@@ -123,8 +124,9 @@ class IngredientParseUI extends Component {
         const data = Object.keys(sections)
             .reduce((d, n) => ({
                 ...d,
-                [n]: raw.substring(sections[n].start, sections[n].end),
+                [n]: sections[n],
             }), {
+                raw,
                 prep,
             });
         console.log("SAVE PARSED", data);
@@ -201,7 +203,7 @@ class IngredientParseUI extends Component {
                     {" "}
                     {sections.hasOwnProperty(n)
                         ? <code className={"parse parse-" + n}>
-                            {raw.substring(sections[n].start, sections[n].end)}
+                            {sections[n].text}
                         </code>
                         : ""}
                 </div>)}
