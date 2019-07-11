@@ -49,11 +49,12 @@ class IngredientParseUI extends Component {
                 end,
             }]);
             // sort by start index
-            secArr.sort(([ak, av], [bk, bv]) =>
-                av.start - bv.start);
+            secArr.sort((a, b) =>
+                a[1].start - b[1].start);
             // ensure there are no overlaps
             let last = 0;
-            secArr.forEach(([k, v], i) => {
+            secArr.forEach((it, i) => {
+                const v = it[1];
                 if (v.start < last) {
                     const prev = secArr[i - 1][1];
                     prev.end = v.start;
@@ -71,7 +72,10 @@ class IngredientParseUI extends Component {
             });
             // reduce back to key:value pairs
             sections = secArr
-                .filter(([k, v]) => v.start < v.end)
+                .filter((it) => {
+                    const v = it[1];
+                    return v.start < v.end;
+                })
                 .reduce((o, [k, v]) => ({
                     ...o,
                     [k]: v,

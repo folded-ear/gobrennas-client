@@ -54,15 +54,15 @@ const RecipeDetail = ({recipeLO, isDevMode}) => {
                 <h5>Ingredients</h5>
                 <List
                     dataSource={recipe.ingredients}
-                    renderItem={isDevMode
-                        ? (it, offset) => <List.Item>
+                    renderItem={(it, offset) => isDevMode
+                        ? <List.Item>
                             <IngredientParseUI
                                 ingredient={it}
                                 recipeId={recipe.ingredientId}
                                 offset={offset}
                             />
                         </List.Item>
-                        : it => <List.Item>
+                        : <List.Item>
                             <IngredientItem ingredient={it} />
                         </List.Item>}
                     size="small"
