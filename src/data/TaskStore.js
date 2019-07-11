@@ -765,7 +765,7 @@ class TaskStore extends ReduceStore {
             case TaskActions.FLUSH_REORDERS:
                 return flushParentsToReset(state);
 
-            case RecipeActions.RAW_INGREDIENTS_SENT_TO_TASK_LIST: {
+            case RecipeActions.INGREDIENTS_SENT_TO_TASK_LIST: {
                 // todo: this is stupid. not wrong though.
                 return {
                     ...state,

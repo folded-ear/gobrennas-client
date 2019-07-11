@@ -23,7 +23,7 @@ const handleDelete = (id) => {
 };
 
 const handleAddToList = (recipeId, listId) => Dispatcher.dispatch({
-    type: RecipeActions.SEND_RAW_INGREDIENTS_TO_TASK_LIST,
+    type: RecipeActions.SEND_INGREDIENTS_TO_TASK_LIST,
     recipeId,
     listId,
 });
