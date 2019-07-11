@@ -36,14 +36,14 @@ class TaskListHeader extends React.PureComponent {
             type: TaskActions.LIST_DETAIL_VISIBILITY,
             visible: true,
         });
-    };
+    }
 
     onCloseDrawer() {
         Dispatcher.dispatch({
             type: TaskActions.LIST_DETAIL_VISIBILITY,
             visible: false,
         });
-    };
+    }
 
     onNameChange(e) {
         const {value} = e.target;
@@ -142,6 +142,7 @@ TaskListHeader.propTypes = {
     allLists: PropTypes.array.isRequired,
     activeList: PropTypes.object,
     listDetailVisible: PropTypes.bool.isRequired,
+    windowWidth: PropTypes.number.isRequired,
 };
 
 export default Container.createFunctional(

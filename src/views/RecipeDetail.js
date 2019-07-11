@@ -82,7 +82,7 @@ const AddToList = Container.createFunctional(
             onClick={() => onClick(list.id)}
             disabled={isSending}
             >
-                Add to "{list.name}"
+                Add to &quot;{list.name}&quot;
                 <Icon type={isSending ? "loading" : "arrow-right"} />
             </Button>;
     },
