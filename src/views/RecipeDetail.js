@@ -17,6 +17,7 @@ import RecipeActions from "../data/RecipeActions";
 import RecipeStore from "../data/RecipeStore";
 import Directions from "./common/Directions";
 import IngredientParseUI from "./IngredientParseUI";
+import DeleteButton from "./common/DeleteButton";
 
 const handleDelete = (id) => {
     RecipeApi.deleteRecipe(id);
@@ -68,8 +69,11 @@ const RecipeDetail = ({recipeLO}) => {
 
             <h5>Preparation</h5>
             <Directions text={recipe.directions} />
-            
-            <Button type="danger" onClick={() => handleDelete(recipe.ingredientId)}>Delete Recipe</Button>
+
+            <DeleteButton
+                type="recipe"
+                onConfirm={() => handleDelete(recipe.ingredientId)}
+            />
         </div>
     )
 };
