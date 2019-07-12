@@ -8,6 +8,7 @@ import IngredientItem from "./IngredientItem";
 import "./IngredientParseUI.scss";
 import PropTypes from "prop-types";
 import RecipeActions from "../data/RecipeActions";
+import capitalize from "../util/capitalize";
 
 const SECTION_NAMES = ["quantity", "units", "name"];
 
@@ -232,7 +233,7 @@ class IngredientParseUI extends Component {
             <br />
             {SECTION_NAMES.map(n =>
                 <div key={n}>
-                    {n.charAt(0).toUpperCase() + n.substring(1)}:
+                    {capitalize(n)}:
                     {" "}
                     {sections.hasOwnProperty(n)
                         ? <code className={"parse parse-" + n}>
