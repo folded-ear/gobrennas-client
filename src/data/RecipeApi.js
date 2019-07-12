@@ -37,14 +37,14 @@ const RecipeApi = {
       })
   },
     
-    addTasksFromIngredients(recipeId, listId) {
+    assembleShoppingList(recipeId, listId) {
         promiseFlux(
             axios.post(`/recipe/${recipeId}/_actions`, {
                 type: "ASSEMBLE_SHOPPING_LIST",
                 listId,
             }),
             () => ({
-                type: RecipeActions.INGREDIENTS_SENT_TO_TASK_LIST,
+                type: RecipeActions.SHOPPING_LIST_ASSEMBLED,
                 recipeId,
                 listId,
             }),

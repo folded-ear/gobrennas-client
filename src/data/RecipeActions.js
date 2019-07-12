@@ -8,8 +8,8 @@ const sendShape = {
 const RecipeActions = {
     RECIPE_CREATED: 'recipe/recipe-created',
     RECIPE_DELETED: 'recipe/recipe-deleted',
-    SEND_INGREDIENTS_TO_TASK_LIST: typedAction("recipe/send-raw-ingredients-to-task-list", sendShape),
-    INGREDIENTS_SENT_TO_TASK_LIST: typedAction("recipe/raw-ingredients-sent-to-task-list", sendShape)
+    ASSEMBLE_SHOPPING_LIST: typedAction("recipe/assemble-shopping-list", sendShape),
+    SHOPPING_LIST_ASSEMBLED: typedAction("recipe/shopping-list-assembled", sendShape),
 };
 
 export default RecipeActions;
