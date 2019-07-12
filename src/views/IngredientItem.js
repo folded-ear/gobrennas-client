@@ -1,20 +1,25 @@
 import React from 'react'
 
+const Augment = ({text, prefix, suffix}) => text
+    ? <React.Fragment>{prefix}{text}{suffix}</React.Fragment>
+    : null;
+
 const IngredientItem = ({ingredient}) => {
 
     if (ingredient.ingredient == null) {
-        return <div>{ingredient.raw}</div>
+        return <span>{ingredient.raw}</span>
     }
 
   return (
-    <div>
-        {ingredient.quantity}
+    <span>
+        <Augment text={ingredient.quantity}
+                 suffix=" " />
+        <Augment text={ingredient.units}
+                 suffix=" " />
         {ingredient.ingredient.name}
-        {ingredient.preparation && <React.Fragment>
-            {", "}
-            {ingredient.preparation}
-        </React.Fragment>}
-    </div>
+        <Augment text={ingredient.preparation}
+                 prefix=", " />
+    </span>
   )
 };
 

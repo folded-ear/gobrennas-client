@@ -17,18 +17,19 @@ import TaskStore from "../data/TaskStore";
 import RecipeActions from "../data/RecipeActions";
 import RecipeStore from "../data/RecipeStore";
 import Directions from "./common/Directions";
+import IngredientParseUI from "./IngredientParseUI";
 
 const handleDelete = (id) => {
     RecipeApi.deleteRecipe(id);
 };
 
 const handleAddToList = (recipeId, listId) => Dispatcher.dispatch({
-    type: RecipeActions.SEND_INGREDIENTS_TO_TASK_LIST,
+    type: RecipeActions.ASSEMBLE_SHOPPING_LIST,
     recipeId,
     listId,
 });
 
-const RecipeDetail = ({recipeLO}) => {
+const RecipeDetail = ({recipeLO, isDevMode}) => {
 
     if (!recipeLO.hasValue()) {
         if (recipeLO.isLoading()) {
@@ -53,9 +54,19 @@ const RecipeDetail = ({recipeLO}) => {
                 <h5>Ingredients</h5>
                 <List
                     dataSource={recipe.ingredients}
-                    renderItem={it => <IngredientItem ingredient={it} />}
+                    renderItem={(it, offset) => isDevMode
+                        ? <List.Item>
+                            <IngredientParseUI
+                                ingredient={it}
+                                recipeId={recipe.ingredientId}
+                                offset={offset}
+                            />
+                        </List.Item>
+                        : <List.Item>
+                            <IngredientItem ingredient={it} />
+                        </List.Item>}
                     size="small"
-                    split={false}
+                    split={isDevMode}
                     footer={<AddToList onClick={listId => handleAddToList(recipe.ingredientId, listId)} />}
                 />
             </React.Fragment>}

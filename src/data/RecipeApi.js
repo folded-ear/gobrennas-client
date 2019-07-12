@@ -37,20 +37,39 @@ const RecipeApi = {
       })
   },
     
-    addTasksFromIngredients(recipeId, listId) {
+    assembleShoppingList(recipeId, listId) {
         promiseFlux(
             axios.post(`/recipe/${recipeId}/_actions`, {
                 type: "ASSEMBLE_SHOPPING_LIST",
                 listId,
             }),
             () => ({
-                type: RecipeActions.INGREDIENTS_SENT_TO_TASK_LIST,
+                type: RecipeActions.SHOPPING_LIST_ASSEMBLED,
                 recipeId,
                 listId,
             }),
         );
     },
 
+    recordIngredientDissection(recipeId, raw, quantity, units, name, prep) {
+        promiseFlux(
+            axios.post(`/recipe/${recipeId}/_actions`, {
+                type: "DISSECT_RAW_INGREDIENT",
+                dissection: {
+                    raw,
+                    quantity,
+                    units,
+                    name,
+                    prep,
+                },
+            }),
+            () => ({
+                type: RecipeActions.DISSECTION_RECORDED,
+                recipeId,
+                raw,
+            }),
+        );
+    },
 };
 
 export default RecipeApi;

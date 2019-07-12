@@ -5,11 +5,30 @@ const sendShape = {
     listId: PropTypes.number,
     recipeId: PropTypes.number,
 };
+
+const dissectionComponentType = PropTypes.shape({
+    start: PropTypes.number.isRequired,
+    end: PropTypes.number.isRequired,
+    text: PropTypes.string.isRequired,
+});
+
 const RecipeActions = {
     RECIPE_CREATED: 'recipe/recipe-created',
     RECIPE_DELETED: 'recipe/recipe-deleted',
-    SEND_INGREDIENTS_TO_TASK_LIST: typedAction("recipe/send-raw-ingredients-to-task-list", sendShape),
-    INGREDIENTS_SENT_TO_TASK_LIST: typedAction("recipe/raw-ingredients-sent-to-task-list", sendShape)
+    ASSEMBLE_SHOPPING_LIST: typedAction("recipe/assemble-shopping-list", sendShape),
+    SHOPPING_LIST_ASSEMBLED: typedAction("recipe/shopping-list-assembled", sendShape),
+    RAW_INGREDIENT_DISSECTED: typedAction("recipe/raw-ingredient-dissected", {
+        recipeId: PropTypes.number.isRequired,
+        raw: PropTypes.string.isRequired,
+        prep: PropTypes.string,
+        quantity: dissectionComponentType,
+        units: dissectionComponentType,
+        name: dissectionComponentType.isRequired,
+    }),
+    DISSECTION_RECORDED: typedAction("recipe/dissection-recorded", {
+        recipeId: PropTypes.number.isRequired,
+        raw: PropTypes.string.isRequired,
+    }),
 };
 
 export default RecipeActions;

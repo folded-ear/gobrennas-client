@@ -8,9 +8,11 @@ import {
     getJsonItem,
     setJsonItem,
 } from "../util/storage";
+import UserStore from "./UserStore";
 
 const Prefs = {
     ACTIVE_TASK_LIST: "activeTaskList",
+    DEV_MODE: "devMode",
 };
 
 const setPref = (state, key, value) => {
@@ -36,6 +38,10 @@ class PreferencesStore extends ReduceStore {
             case TaskActions.SELECT_LIST: {
                 return setPref(state, Prefs.ACTIVE_TASK_LIST, action.id);
             }
+            case UserActions.SET_DEV_MODE: {
+                if (!UserStore.isDeveloper()) return state;
+                return setPref(state, Prefs.DEV_MODE, action.enabled);
+            }
             default:
                 return state;
         }
@@ -43,6 +49,10 @@ class PreferencesStore extends ReduceStore {
 
     getActiveTaskList() {
         return this.getState().get(Prefs.ACTIVE_TASK_LIST);
+    }
+
+    isDevMode() {
+        return this.getState().get(Prefs.DEV_MODE);
     }
 }
 

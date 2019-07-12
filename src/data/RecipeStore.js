@@ -20,16 +20,28 @@ class RecipeStore extends ReduceStore {
     reduce(state, action) {
         switch (action.type) {
             
-            case RecipeActions.SEND_INGREDIENTS_TO_TASK_LIST: {
-                RecipeApi.addTasksFromIngredients(
+            case RecipeActions.ASSEMBLE_SHOPPING_LIST: {
+                RecipeApi.assembleShoppingList(
                     action.recipeId,
                     action.listId,
                 );
                 return state.set("sendState", LoadObject.updating());
             }
             
-            case RecipeActions.INGREDIENTS_SENT_TO_TASK_LIST: {
+            case RecipeActions.SHOPPING_LIST_ASSEMBLED: {
                 return state.set("sendState", LoadObject.empty());
+            }
+
+            case RecipeActions.RAW_INGREDIENT_DISSECTED: {
+                RecipeApi.recordIngredientDissection(
+                    action.recipeId,
+                    action.raw,
+                    action.quantity,
+                    action.units,
+                    action.name,
+                    action.prep,
+                );
+                return state;
             }
             
             default:

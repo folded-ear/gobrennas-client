@@ -25,7 +25,8 @@ class LibraryStore extends ReduceStore {
             
             case LibraryActions.LOAD_LIBRARY:
             case RecipeActions.RECIPE_CREATED:
-            case RecipeActions.RECIPE_DELETED: {
+            case RecipeActions.RECIPE_DELETED:
+            case RecipeActions.DISSECTION_RECORDED: {
                 LibraryApi.loadLibrary();
                 return state.set('recipes', state.get('recipes').loading())
             }
