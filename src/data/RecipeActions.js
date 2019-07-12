@@ -25,6 +25,10 @@ const RecipeActions = {
         units: dissectionComponentType,
         name: dissectionComponentType.isRequired,
     }),
+    DISSECTION_RECORDED: typedAction("recipe/dissection-recorded", {
+        recipeId: PropTypes.number.isRequired,
+        raw: PropTypes.string.isRequired,
+    }),
 };
 
 export default RecipeActions;

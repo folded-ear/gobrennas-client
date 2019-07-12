@@ -51,6 +51,25 @@ const RecipeApi = {
         );
     },
 
+    recordIngredientDissection(recipeId, raw, quantity, units, name, prep) {
+        promiseFlux(
+            axios.post(`/recipe/${recipeId}/_actions`, {
+                type: "DISSECT_RAW_INGREDIENT",
+                dissection: {
+                    raw,
+                    quantity,
+                    units,
+                    name,
+                    prep,
+                },
+            }),
+            () => ({
+                type: RecipeActions.DISSECTION_RECORDED,
+                recipeId,
+                raw,
+            }),
+        );
+    },
 };
 
 export default RecipeApi;

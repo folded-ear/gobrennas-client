@@ -33,7 +33,14 @@ class RecipeStore extends ReduceStore {
             }
 
             case RecipeActions.RAW_INGREDIENT_DISSECTED: {
-                console.log("DISSECTED!", action);
+                RecipeApi.recordIngredientDissection(
+                    action.recipeId,
+                    action.raw,
+                    action.quantity,
+                    action.units,
+                    action.name,
+                    action.prep,
+                );
                 return state;
             }
             
