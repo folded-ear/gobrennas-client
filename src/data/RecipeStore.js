@@ -31,6 +31,11 @@ class RecipeStore extends ReduceStore {
             case RecipeActions.SHOPPING_LIST_ASSEMBLED: {
                 return state.set("sendState", LoadObject.empty());
             }
+
+            case RecipeActions.RAW_INGREDIENT_DISSECTED: {
+                console.log("DISSECTED!", action);
+                return state;
+            }
             
             default:
                 return state;

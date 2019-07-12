@@ -1,15 +1,43 @@
 import React, { Component } from 'react'
-import { Button } from "antd";
+import Dispatcher from "../data/dispatcher";
+import {
+    Button,
+    Icon,
+} from "antd";
 import IngredientItem from "./IngredientItem";
 import "./IngredientParseUI.scss";
 import PropTypes from "prop-types";
+import RecipeActions from "../data/RecipeActions";
 
 const SECTION_NAMES = ["quantity", "units", "name"];
 
-const initialState = {
-    parsing: false,
-    sections: {},
-    prep: null,
+const rebuildPrep = (raw, sections) => {
+    const prepSegments = [];
+    let pos = 0;
+    Object.keys(sections)
+        .forEach(name => {
+            const v = sections[name];
+            if (v.start > pos) {
+                prepSegments.push(raw.substring(pos, v.start));
+            }
+            pos = v.end;
+        });
+    if (pos < raw.length) {
+        prepSegments.push(raw.substring(pos));
+    }
+    return prepSegments
+        .map(s => s.trim())
+        .filter(s => s.length > 0)
+        .map(s => {
+            const c = s.charAt(0);
+            if (c.toUpperCase() === c.toLowerCase()) {
+                // not alphabetic?
+                return s;
+            }
+            return " " + s;
+        })
+        .join("")
+        .replace(/(^[^a-z0-9]+)|([^a-z0-9]+$)/i, "");
 };
 
 class IngredientParseUI extends Component {
@@ -17,10 +45,19 @@ class IngredientParseUI extends Component {
     constructor(...args) {
         super(...args);
         this.rawRef = React.createRef();
-        this.state = initialState;
+        this.state = this.getInitialState();
         this.onParse = this.onParse.bind(this);
         this.onCancel = this.onCancel.bind(this);
         this.onSave = this.onSave.bind(this);
+    }
+
+    getInitialState() {
+        const {ingredient: {raw: prep}} = this.props;
+        return {
+            parsing: false,
+            sections: {},
+            prep,
+        };
     }
 
     onParse() {
@@ -78,63 +115,54 @@ class IngredientParseUI extends Component {
                 })
                 .reduce((o, [k, v]) => ({
                     ...o,
-                    [k]: v,
+                    [k]: {
+                        ...v,
+                        text: raw.substring(v.start, v.end),
+                    },
                 }), {});
-            // find all the "leftovers"
-            let pos = 0;
-            const prepSegments = [];
-            Object.keys(sections)
-                .forEach(name => {
-                    const v = sections[name];
-                    if (v.start > pos) {
-                        prepSegments.push(raw.substring(pos, v.start));
-                    }
-                    v.text = raw.substring(v.start, v.end);
-                    pos = v.end;
-                });
-            if (pos < raw.length) {
-                prepSegments.push(raw.substring(pos));
-            }
-            const prep = prepSegments
-                .map(s => s.trim())
-                .filter(s => s.length > 0)
-                .map(s => {
-                    const c = s.charAt(0);
-                    if (c.toUpperCase() === c.toLowerCase()) {
-                        // not alphabetic?
-                        return s;
-                    }
-                    return " " + s;
-                })
-                .join("")
-                .replace(/(^[^a-z0-9]+)|([^a-z0-9]+$)/i, "");
             return {
                 sections,
-                prep,
+                prep: rebuildPrep(raw, sections),
+            };
+        })
+    }
+
+    removeSection(section) {
+        this.setState(s => {
+            if (!s.sections.hasOwnProperty(section)) return s;
+            const {ingredient: {raw}} = this.props;
+            const sections = {...s.sections};
+            delete sections[section];
+            return {
+                sections,
+                prep: rebuildPrep(raw, sections),
             };
         })
     }
 
     onSave() {
-        const {ingredient: {raw}} = this.props;
         const {
+            recipeId,
+            ingredient: {raw},
+        } = this.props;
+        const {
+            parsing,
             sections,
             prep,
         } = this.state;
-        const data = Object.keys(sections)
-            .reduce((d, n) => ({
-                ...d,
-                [n]: sections[n],
-            }), {
-                raw,
-                prep,
-            });
-        console.log("SAVE PARSED", data);
-        this.setState(initialState);
+        if (! parsing) throw new Error("Save while not parsing?!");
+        Dispatcher.dispatch({
+            type: RecipeActions.RAW_INGREDIENT_DISSECTED,
+            recipeId,
+            raw,
+            ...sections,
+            prep,
+        });
+        this.setState(this.getInitialState());
     }
 
     onCancel() {
-        this.setState(initialState);
+        this.setState(this.getInitialState());
     }
 
     render() {
@@ -145,25 +173,30 @@ class IngredientParseUI extends Component {
             prep,
         } = this.state;
 
-        if (ingredient.ingredient) {
-            // already parsed
-            return <IngredientItem ingredient={ingredient} />;
-        }
-
         if (!parsing) {
             return <React.Fragment>
                 <IngredientItem ingredient={ingredient} />
-                {" "}
-                <Button size="small"
-                        onClick={this.onParse}>parse</Button>
+                <div style={{
+                    marginLeft: "auto",
+                }}>
+                    {ingredient.ingredient
+                        ? <Icon type="check"
+                                style={{
+                                    color: "green",
+                                    paddingRight: "1.5em",
+                                }} />
+                        : <Button size="small"
+                                  onClick={this.onParse}>
+                            parse
+                        </Button>}
+                </div>
             </React.Fragment>;
         }
 
         const raw = ingredient.raw;
         let pos = 0;
         let segments = [];
-        const sectionKeys = Object.keys(sections);
-        sectionKeys
+        Object.keys(sections)
             .map(name => {
                 const s = sections[name];
                 return {
@@ -171,11 +204,11 @@ class IngredientParseUI extends Component {
                     name,
                 };
             })
-            .forEach(({name, start, end}) => {
+            .forEach(({name: n, start, end}) => {
                 if (start > pos) {
                     segments.push(raw.substring(pos, start));
                 }
-                segments.push(<span key={name} className={"parse parse-" + name}>
+                segments.push(<span key={n} className={"parse parse-" + n}>
                     {raw.substring(start, end)}
                 </span>);
                 pos = end;
@@ -186,7 +219,7 @@ class IngredientParseUI extends Component {
 
         return <div>
             <em>
-                highlight some text and hit the button for what it is
+                highlight some text and click what type it is
             </em>
             <br />
             <span ref={this.rawRef}>{segments}</span>
@@ -199,18 +232,23 @@ class IngredientParseUI extends Component {
             <br />
             {SECTION_NAMES.map(n =>
                 <div key={n}>
-                    {n.charAt(0).toUpperCase()}{n.substring(1)}:
+                    {n.charAt(0).toUpperCase() + n.substring(1)}:
                     {" "}
                     {sections.hasOwnProperty(n)
                         ? <code className={"parse parse-" + n}>
                             {sections[n].text}
+                            {" "}
+                            <Icon size="small"
+                                  type="close"
+                                  onClick={() => this.removeSection(n)}
+                            />
                         </code>
                         : ""}
                 </div>)}
             <div>Prep: <code>{prep}</code></div>
             <Button size="small"
                     type="primary"
-                    disabled={sectionKeys.length === 0}
+                    disabled={!sections.hasOwnProperty("name") || !sections.name.text}
                     onClick={this.onSave}>save</Button>
             <Button size="small"
                     type="danger"
