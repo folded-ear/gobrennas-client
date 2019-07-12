@@ -3,12 +3,10 @@ import PropTypes from "prop-types";
 import Dispatcher from "../data/dispatcher";
 import TaskActions from "../data/TaskActions";
 import {
-    Button,
     Form,
     Icon,
     Input,
     List,
-    Popconfirm,
     Select,
     Spin,
 } from "antd";
@@ -17,6 +15,7 @@ import UserStore from "../data/UserStore";
 import FriendStore from "../data/FriendStore";
 import AccessLevel, { includesLevel } from "../data/AccessLevel";
 import User from "./user/User";
+import DeleteButton from "./common/DeleteButton";
 
 const LEVEL_NO_ACCESS = "NO_ACCESS";
 
@@ -171,18 +170,10 @@ class TaskListSidebar extends React.PureComponent {
                 {isAdministrator && <Form.Item
                     label="Danger Zone"
                 >
-                    <Popconfirm
-                        title="Irrevocably delete this list?"
-                        icon={<Icon type="exclamation-circle" style={{color: "red"}} />}
-                        okType="danger"
+                    <DeleteButton
+                        type="list"
                         onConfirm={this.onDelete}
-                    >
-                    <Button
-                        type="danger"
-                    >
-                        Delete List
-                    </Button>
-                    </Popconfirm>
+                    />
                 </Form.Item>}
             </React.Fragment>}
         </Form>;
