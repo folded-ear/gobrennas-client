@@ -11,7 +11,6 @@ import {
     List,
     Spin,
 } from "antd";
-import IngredientItem from "./IngredientItem";
 import RecipeApi from "../data/RecipeApi";
 import TaskStore from "../data/TaskStore";
 import RecipeActions from "../data/RecipeActions";
@@ -29,7 +28,7 @@ const handleAddToList = (recipeId, listId) => Dispatcher.dispatch({
     listId,
 });
 
-const RecipeDetail = ({recipeLO, isDevMode}) => {
+const RecipeDetail = ({recipeLO}) => {
 
     if (!recipeLO.hasValue()) {
         if (recipeLO.isLoading()) {
@@ -54,19 +53,15 @@ const RecipeDetail = ({recipeLO, isDevMode}) => {
                 <h5>Ingredients</h5>
                 <List
                     dataSource={recipe.ingredients}
-                    renderItem={(it, offset) => isDevMode
-                        ? <List.Item>
-                            <IngredientParseUI
-                                ingredient={it}
-                                recipeId={recipe.ingredientId}
-                                offset={offset}
-                            />
-                        </List.Item>
-                        : <List.Item>
-                            <IngredientItem ingredient={it} />
-                        </List.Item>}
+                    renderItem={(it, offset) => <List.Item>
+                        <IngredientParseUI
+                            ingredient={it}
+                            recipeId={recipe.ingredientId}
+                            offset={offset}
+                        />
+                    </List.Item>}
                     size="small"
-                    split={isDevMode}
+                    split
                     footer={<AddToList onClick={listId => handleAddToList(recipe.ingredientId, listId)} />}
                 />
             </React.Fragment>}
