@@ -15,7 +15,7 @@ const RecipesList = (props: {}) => {
             <h1>Recipes</h1>
             {[...library].reverse().map(recipe => (
                 <h2 key={recipe.ingredientId}>
-                    <Link to={`/library/recipe/${recipe.ingredientId}`}>{recipe.displayTitle}</Link>
+                    <Link to={`/library/recipe/${recipe.ingredientId}`}>{recipe.name}</Link>
                 </h2>
             ))}
             {library.length === 0  && <em>No recipes yet...</em>}
