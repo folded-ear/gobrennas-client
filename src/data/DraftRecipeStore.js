@@ -25,6 +25,10 @@ class DraftRecipeStore extends ReduceStore {
                 return state.setValue(new Recipe()).creating()
             }
             
+            case RecipeActions.LOAD_RECIPE_DRAFT: {
+                return state.setValue(new Recipe(action.data)).updating()
+            }
+            
             case RecipeActions.DRAFT_RECIPE_UPDATED: {
                 let {key, value} = action.data
                 if (key === "rawIngredients") {
@@ -62,6 +66,10 @@ class DraftRecipeStore extends ReduceStore {
                 type: RecipeActions.LOAD_EMPTY_RECIPE,
             }),
         )
+    }
+    
+    shouldLoadDraft(id) {
+        return !this.getDraftRecipeLO().hasValue() || !this.getDraftRecipeLO().getValueEnforcing().ingredientId === id
     }
 }
 

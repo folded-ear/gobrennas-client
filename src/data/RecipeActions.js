@@ -16,6 +16,7 @@ const RecipeActions = {
     RECIPE_CREATED: 'recipe/recipe-created',
     RECIPE_DELETED: 'recipe/recipe-deleted',
     LOAD_EMPTY_RECIPE: 'recipe/load-empty-recipe',
+    LOAD_RECIPE_DRAFT: 'recipe/load-recipe/draft',
     DRAFT_RECIPE_UPDATED: 'recipe/draft-recipe-updated',
     SAVE_DRAFT_RECIPE: 'recipe/save-draft-recipe',
     ASSEMBLE_SHOPPING_LIST: typedAction("recipe/assemble-shopping-list", sendShape),
