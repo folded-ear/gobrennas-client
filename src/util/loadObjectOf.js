@@ -1,10 +1,10 @@
-import RPTSecret from "prop-types/lib/ReactPropTypesSecret";
+import RPTSecret from "prop-types/lib/ReactPropTypesSecret"
 import {
     createChainableTypeChecker,
     getClassName,
     PropTypeError,
-} from "./typeHelpers";
-import LoadObject from "./LoadObject";
+} from "./typeHelpers"
+import LoadObject from "./LoadObject"
 
 const loadObjectOf = (valueTypeChecker, optionalErrorTypeChecker) =>
     createChainableTypeChecker((
@@ -15,11 +15,11 @@ const loadObjectOf = (valueTypeChecker, optionalErrorTypeChecker) =>
         propFullName,
     ) => {
         if (typeof valueTypeChecker !== 'function' || (optionalErrorTypeChecker != null && typeof optionalErrorTypeChecker !== 'function')) {
-            return new PropTypeError('Property `' + propFullName + '` of component `' + componentName + '` has invalid PropType notation inside loadObjectOf.');
+            return new PropTypeError('Property `' + propFullName + '` of component `' + componentName + '` has invalid PropType notation inside loadObjectOf.')
         }
-        const lo = props[propName];
+        const lo = props[propName]
         if (!(lo instanceof LoadObject)) {
-            return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` of type `' + getClassName(lo) + '` supplied to `' + componentName + '`, expected instance of `LoadObject`.');
+            return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` of type `' + getClassName(lo) + '` supplied to `' + componentName + '`, expected instance of `LoadObject`.')
         }
         if (lo.hasValue()) {
             const error = valueTypeChecker(
@@ -29,8 +29,8 @@ const loadObjectOf = (valueTypeChecker, optionalErrorTypeChecker) =>
                 location,
                 propFullName + ".value",
                 RPTSecret,
-            );
-            if (error != null) return error;
+            )
+            if (error != null) return error
         }
         if (optionalErrorTypeChecker != null && lo.hasError()) {
             const error = valueTypeChecker(
@@ -40,10 +40,10 @@ const loadObjectOf = (valueTypeChecker, optionalErrorTypeChecker) =>
                 location,
                 propFullName + ".error",
                 RPTSecret,
-            );
-            if (error != null) return error;
+            )
+            if (error != null) return error
         }
-        return null;
-    });
+        return null
+    })
 
-export default loadObjectOf;
+export default loadObjectOf

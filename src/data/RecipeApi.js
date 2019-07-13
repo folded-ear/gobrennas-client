@@ -1,12 +1,12 @@
-import Dispatcher from './dispatcher';
-import BaseAxios from 'axios';
-import RecipeActions from './RecipeActions';
-import { API_BASE_URL } from "../constants/index";
-import promiseFlux from "../util/promiseFlux";
+import Dispatcher from './dispatcher'
+import BaseAxios from 'axios'
+import RecipeActions from './RecipeActions'
+import { API_BASE_URL } from "../constants/index"
+import promiseFlux from "../util/promiseFlux"
 
 const axios = BaseAxios.create({
     baseURL: `${API_BASE_URL}/api`,
-});
+})
 
 const RecipeApi = {
   
@@ -16,14 +16,14 @@ const RecipeApi = {
       .then((response) => {
       //TODO: handle response back from API if there are errors, etc
       if (response.status && response.status === 201) {
-        const { data } = response;
+        const { data } = response
 
         Dispatcher.dispatch({
           type: RecipeActions.RECIPE_CREATED,
           data,
-        });
+        })
       }
-    });
+    })
   },
   
   deleteRecipe(id) {
@@ -48,7 +48,7 @@ const RecipeApi = {
                 recipeId,
                 listId,
             }),
-        );
+        )
     },
 
     recordIngredientDissection(recipeId, raw, quantity, units, name, prep) {
@@ -68,8 +68,8 @@ const RecipeApi = {
                 recipeId,
                 raw,
             }),
-        );
+        )
     },
-};
+}
 
-export default RecipeApi;
+export default RecipeApi

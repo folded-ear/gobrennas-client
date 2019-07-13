@@ -1,14 +1,14 @@
-import PropTypes from "prop-types";
-import invariant from "invariant";
+import PropTypes from "prop-types"
+import invariant from "invariant"
 
 const builder = (self, method, typesKey, initial) => {
-    const name = self.constructor.name;
-    method = method.bind(self);
-    let typeSpecs = self.constructor[typesKey];
+    const name = self.constructor.name
+    method = method.bind(self)
+    let typeSpecs = self.constructor[typesKey]
     invariant(
         typeSpecs != null,
         `No ${typesKey} defined for ${name}; can't activate type checking.`
-    );
+    )
     // PropTypes doesn't allow you to declare type information where the
     // top-level properties are anonymous, which is exactly what is needed for
     // an "id lookup"-style Store. Rather than forcing the Store to deal with
@@ -21,28 +21,28 @@ const builder = (self, method, typesKey, initial) => {
         state: typeof typeSpecs === "function"
             ? typeSpecs
             : PropTypes.exact(typeSpecs),
-    };
+    }
     const check = next =>
-        PropTypes.checkPropTypes(typeSpecs, {state: next}, typesKey, name);
-    if (initial != null) check(initial);
+        PropTypes.checkPropTypes(typeSpecs, {state: next}, typesKey, name)
+    if (initial != null) check(initial)
     return (curr, action) => {
-        const next = method(curr, action);
-        if (!self.areEqual(curr, next)) check(next);
-        return next;
-    };
-};
+        const next = method(curr, action)
+        if (!self.areEqual(curr, next)) check(next)
+        return next
+    }
+}
 
 const typedStore = self => {
     if (process.env.NODE_ENV !== "production") {
-        invariant(self.reduce, "No 'reduce' method found on store.");
+        invariant(self.reduce, "No 'reduce' method found on store.")
         self.reduce = builder(
             self,
             self.reduce,
             "stateTypes",
             self.getInitialState(),
-        );
+        )
     }
-    return self;
-};
+    return self
+}
 
-export default typedStore;
+export default typedStore

@@ -1,10 +1,10 @@
 import {
     Alert,
     Button,
-} from "antd";
-import Dispatcher from "../data/dispatcher";
-import WindowActions from "../data/WindowActions";
-import React from "react";
+} from "antd"
+import Dispatcher from "../data/dispatcher"
+import WindowActions from "../data/WindowActions"
+import React from "react"
 
 const NewVersionAvailable = () =>
     <Alert
@@ -25,6 +25,6 @@ const NewVersionAvailable = () =>
         onClose={() => Dispatcher.dispatch({
             type: WindowActions.IGNORE_NEW_VERSION,
         })}
-    />;
+    />
 
-export default NewVersionAvailable;
+export default NewVersionAvailable

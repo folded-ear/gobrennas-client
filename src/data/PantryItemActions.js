@@ -3,6 +3,6 @@ const PantryItemActions = {
     PANTRYITEMS_LOADED: 'PANTRYITEMS_LOADED',
     ADD_PANTRYITEM: 'ADD_PANTRYITEM',
     PANTRYITEMS_ADDED: 'PANTRYITEMS_ADDED'
-};
+}
 
-export default PantryItemActions;
+export default PantryItemActions

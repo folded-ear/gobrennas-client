@@ -1,5 +1,5 @@
-import React, { Component } from 'react';
-import RecipeForm from "../containers/RecipeForm";
+import React, { Component } from 'react'
+import RecipeForm from "../containers/RecipeForm"
 
 class RecipeAdd extends Component {
   
@@ -11,8 +11,8 @@ class RecipeAdd extends Component {
           <RecipeForm />
         </div>
       </div>
-    );
+    )
   }
 }
 
-export default RecipeAdd;
+export default RecipeAdd

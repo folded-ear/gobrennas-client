@@ -1,33 +1,33 @@
-import React from 'react';
-import { Container } from "flux/utils";
-import Dispatcher from "../data/dispatcher";
+import React from 'react'
+import { Container } from "flux/utils"
+import Dispatcher from "../data/dispatcher"
 import {
     Link,
     Redirect,
-} from "react-router-dom";
+} from "react-router-dom"
 import {
     Button,
     Icon,
     List,
     Spin,
-} from "antd";
-import RecipeApi from "../data/RecipeApi";
-import TaskStore from "../data/TaskStore";
-import RecipeActions from "../data/RecipeActions";
-import RecipeStore from "../data/RecipeStore";
-import Directions from "./common/Directions";
-import IngredientParseUI from "./IngredientParseUI";
-import DeleteButton from "./common/DeleteButton";
+} from "antd"
+import RecipeApi from "../data/RecipeApi"
+import TaskStore from "../data/TaskStore"
+import RecipeActions from "../data/RecipeActions"
+import RecipeStore from "../data/RecipeStore"
+import Directions from "./common/Directions"
+import IngredientParseUI from "./IngredientParseUI"
+import DeleteButton from "./common/DeleteButton"
 
 const handleDelete = (id) => {
-    RecipeApi.deleteRecipe(id);
-};
+    RecipeApi.deleteRecipe(id)
+}
 
 const handleAddToList = (recipeId, listId) => Dispatcher.dispatch({
     type: RecipeActions.ASSEMBLE_SHOPPING_LIST,
     recipeId,
     listId,
-});
+})
 
 const RecipeDetail = ({recipeLO}) => {
 
@@ -38,7 +38,7 @@ const RecipeDetail = ({recipeLO}) => {
         return <Redirect to="/library" />
     }
     
-    const recipe = recipeLO.getValueEnforcing();
+    const recipe = recipeLO.getValueEnforcing()
 
     return (
         <div>
@@ -76,7 +76,7 @@ const RecipeDetail = ({recipeLO}) => {
             />
         </div>
     )
-};
+}
 
 const AddToList = Container.createFunctional(
     ({
@@ -84,8 +84,8 @@ const AddToList = Container.createFunctional(
          onClick,
          isSending,
      }) => {
-        if (! listLO.hasValue()) return null;
-        const list = listLO.getValueEnforcing();
+        if (! listLO.hasValue()) return null
+        const list = listLO.getValueEnforcing()
         return <Button
             shape="round"
             size="small"
@@ -94,21 +94,21 @@ const AddToList = Container.createFunctional(
             >
                 Add to &quot;{list.name}&quot;
                 <Icon type={isSending ? "loading" : "arrow-right"} />
-            </Button>;
+            </Button>
     },
     () => [
         TaskStore,
         RecipeStore,
     ],
     (prevState, props) => {
-        const sendState = RecipeStore.getSendState();
+        const sendState = RecipeStore.getSendState()
         return {
             onClick: props.onClick,
             listLO: TaskStore.getActiveListLO(),
             isSending: sendState != null && !sendState.isDone(),
-        };
+        }
     },
     {withProps: true},
-);
+)
 
-export default RecipeDetail;
+export default RecipeDetail

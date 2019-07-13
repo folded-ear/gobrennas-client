@@ -5,7 +5,7 @@
 // via module exports, so we have to duplicate...
 //////////////////////////////////////////////////////////////////////
 
-const ANONYMOUS = "<<anonymous>>";
+const ANONYMOUS = "<<anonymous>>"
 
 /**
  * We use an Error-like object for backward compatibility as people may call
@@ -15,12 +15,12 @@ const ANONYMOUS = "<<anonymous>>";
  * happens in oneOfType() for any type before the one that matched.
  */
 export function PropTypeError(message) {
-    this.message = message;
-    this.stack = "";
+    this.message = message
+    this.stack = ""
 }
 
 // Make `instanceof Error` still work for returned errors.
-PropTypeError.prototype = Error.prototype;
+PropTypeError.prototype = Error.prototype
 
 export function createChainableTypeChecker(validate) {
     function checkType(
@@ -31,17 +31,17 @@ export function createChainableTypeChecker(validate) {
         location,
         propFullName,
     ) {
-        componentName = componentName || ANONYMOUS;
-        propFullName = propFullName || propName;
+        componentName = componentName || ANONYMOUS
+        propFullName = propFullName || propName
 
         if (props[propName] == null) {
             if (isRequired) {
                 if (props[propName] === null) {
-                    return new PropTypeError(`The ${location} \`${propFullName}\` is marked as required in \`${componentName}\`, but its value is \`null\`.`);
+                    return new PropTypeError(`The ${location} \`${propFullName}\` is marked as required in \`${componentName}\`, but its value is \`null\`.`)
                 }
-                return new PropTypeError(`The ${location} \`${propFullName}\` is marked as required in \`${componentName}\`, but its value is \`undefined\`.`);
+                return new PropTypeError(`The ${location} \`${propFullName}\` is marked as required in \`${componentName}\`, but its value is \`undefined\`.`)
             }
-            return null;
+            return null
         } else {
             return validate(
                 props,
@@ -49,20 +49,20 @@ export function createChainableTypeChecker(validate) {
                 componentName,
                 location,
                 propFullName,
-            );
+            )
         }
     }
 
-    const chainedCheckType = checkType.bind(null, false);
-    chainedCheckType.isRequired = checkType.bind(null, true);
+    const chainedCheckType = checkType.bind(null, false)
+    chainedCheckType.isRequired = checkType.bind(null, true)
 
-    return chainedCheckType;
+    return chainedCheckType
 }
 
 // Returns class name of the object, if any.
 export  function getClassName(propValue) {
     if (!propValue.constructor || !propValue.constructor.name) {
-        return ANONYMOUS;
+        return ANONYMOUS
     }
-    return propValue.constructor.name;
+    return propValue.constructor.name
 }

@@ -4,6 +4,6 @@ const WindowActions = {
     NEW_VERSION_AVAILABLE: "window/new-version-available",
     IGNORE_NEW_VERSION: "window/ignore-new-version",
     LAUNCH_NEW_VERSION: "window/launch-new-version",
-};
+}
 
-export default WindowActions;
+export default WindowActions

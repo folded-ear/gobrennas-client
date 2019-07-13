@@ -1,11 +1,11 @@
-import React, { Component } from 'react';
+import React, { Component } from 'react'
 import {
     GOOGLE_AUTH_URL,
     SESSION_STORAGE_POST_LOGIN,
-} from '../../constants';
+} from '../../constants'
 import { Redirect } from 'react-router-dom'
 import { Button } from 'antd'
-import { setJsonItem } from "../../util/storage";
+import { setJsonItem } from "../../util/storage"
 
 class Login extends Component {
     
@@ -13,7 +13,7 @@ class Login extends Component {
         // If the OAuth2 login encounters an error, the user is redirected to the /login page with an error.
         // Here we display the error and then remove the error query parameter from the location.
         if (this.props.location.state && this.props.location.state.error) {
-            console.log(this.props.location.state.error);
+            console.log(this.props.location.state.error)
         }
     }
     
@@ -21,14 +21,14 @@ class Login extends Component {
         const {
             authenticated,
             location,
-        } = this.props;
+        } = this.props
 
         if (authenticated) {
             return <Redirect
                 to={{
                     pathname: "/",
                     state: {from: this.props.location}
-                }}/>;
+                }}/>
         }
 
         if (location != null && location.state != null && location.state.from != null) {
@@ -38,7 +38,7 @@ class Login extends Component {
                 sessionStorage,
                 (k, v) => // omit Router's internal key value
                     k === "key" ? undefined : v
-            );
+            )
         }
         return (
             <div className="login-container">
@@ -48,8 +48,8 @@ class Login extends Component {
                     <Button type="primary" icon="google" href={GOOGLE_AUTH_URL}>Login</Button>
                 </div>
             </div>
-        );
+        )
     }
 }
 
-export default Login;
+export default Login

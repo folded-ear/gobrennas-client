@@ -2,15 +2,15 @@ export const getJsonItem = (
     key,
     storage = localStorage,
 ) => {
-    const value = storage.getItem(key);
-    if (value == null) return null;
+    const value = storage.getItem(key)
+    if (value == null) return null
     try {
-        return JSON.parse(value);
+        return JSON.parse(value)
     } catch (e) {
-        console.warn(`Error deserializing '${key}' storage value`, e, value);
-        return null;
+        console.warn(`Error deserializing '${key}' storage value`, e, value)
+        return null
     }
-};
+}
 
 export const setJsonItem = (
     key,
@@ -18,4 +18,4 @@ export const setJsonItem = (
     storage = localStorage,
     replacer = null,
 ) =>
-    storage.setItem(key, JSON.stringify(value, replacer));
+    storage.setItem(key, JSON.stringify(value, replacer))

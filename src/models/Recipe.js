@@ -1,6 +1,6 @@
-import { Record } from 'immutable';
-import { arrayOf } from "prop-types";
-import IngredientRef from "./IngredientRef";
+import { Record } from 'immutable'
+import { arrayOf } from "prop-types"
+import IngredientRef from "./IngredientRef"
 
 const Recipe = Record({
   id: '',
@@ -11,6 +11,6 @@ const Recipe = Record({
   externalUrl: '',
   ingredients: arrayOf(IngredientRef),
   directions: ''
-});
+})
 
-export default Recipe;
+export default Recipe

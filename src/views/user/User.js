@@ -1,6 +1,6 @@
-import React from "react";
-import PropTypes from "prop-types";
-import { Avatar } from "antd";
+import React from "react"
+import PropTypes from "prop-types"
+import { Avatar } from "antd"
 
 const User = ({
                   name,
@@ -12,7 +12,7 @@ const User = ({
         <Avatar src={imageUrl} size={size}>{(name || email || "U").charAt(0).toUpperCase()}</Avatar>
         {" "}
         {name || email}
-    </span>;
+    </span>
 
 User.propTypes = {
     name: PropTypes.string,
@@ -26,6 +26,6 @@ User.propTypes = {
         ]),
         PropTypes.number,
     ]),
-};
+}
 
 export default User

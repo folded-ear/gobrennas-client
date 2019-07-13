@@ -1,10 +1,10 @@
-import Profile from "./views/user/Profile";
-import Library from "./containers/Library";
-import RecipeAdd from "./views/RecipeAdd";
-import Landing from "./views/Landing";
-import Tasks from "./containers/Tasks";
-import OAuth2RedirectHandler from "./views/user/OAuth2RedirectHandler";
-import Recipe from "./containers/Recipe";
+import Profile from "./views/user/Profile"
+import Library from "./containers/Library"
+import RecipeAdd from "./views/RecipeAdd"
+import Landing from "./views/Landing"
+import Tasks from "./containers/Tasks"
+import OAuth2RedirectHandler from "./views/user/OAuth2RedirectHandler"
+import Recipe from "./containers/Recipe"
 
 const routes = {
     public: [
@@ -18,6 +18,6 @@ const routes = {
         {path: "/add",      component: RecipeAdd},
         {path: "/tasks", component: Tasks}
     ]
-};
+}
 
-export default routes;
+export default routes

@@ -1,6 +1,6 @@
-import PropTypes from "prop-types";
+import PropTypes from "prop-types"
 
-export const CONTAINER_KEY = "payload";
+export const CONTAINER_KEY = "payload"
 
 /*
  * This function uses a bit of JS trickery in order to "hide" a proptypes def
@@ -15,7 +15,7 @@ export const CONTAINER_KEY = "payload";
 const typedAction = (name, shape) => {
     if (process.env.NODE_ENV !== "production" && shape != null) {
         // noinspection JSPrimitiveTypeWrapperUsage
-        name = new String(name); // eslint-disable-line no-new-wrappers
+        name = new String(name) // eslint-disable-line no-new-wrappers
         // noinspection JSPrimitiveTypeWrapperUsage
         name.actionTypes = {
             [CONTAINER_KEY]: PropTypes.exact({
@@ -23,9 +23,9 @@ const typedAction = (name, shape) => {
                 // PropTypes.string does primitives
                 type: PropTypes.instanceOf(String).isRequired,
             }).isRequired,
-        };
+        }
     }
-    return name;
-};
+    return name
+}
 
-export default typedAction;
+export default typedAction

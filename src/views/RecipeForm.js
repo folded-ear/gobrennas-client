@@ -1,4 +1,4 @@
-import React from 'react';
+import React from 'react'
 import Dispatcher from '../data/dispatcher'
 import {
     Button,
@@ -6,23 +6,23 @@ import {
     Input,
     message,
     Spin
-} from "antd";
-import RecipeActions from "../data/RecipeActions";
+} from "antd"
+import RecipeActions from "../data/RecipeActions"
 
 
 const handleUpdate = (e) => {
-    const { name: key, value } = e.target;
+    const { name: key, value } = e.target
     Dispatcher.dispatch({
         type: RecipeActions.DRAFT_RECIPE_UPDATED,
         data: { key, value}
-    });
-};
+    })
+}
 
 const handleSave = () => {
     Dispatcher.dispatch({
         type: RecipeActions.SAVE_DRAFT_RECIPE,
-    });
-};
+    })
+}
 
 const RecipeForm = ({recipeLO}) => {
     if(!recipeLO.hasValue()) {
@@ -30,11 +30,11 @@ const RecipeForm = ({recipeLO}) => {
     }
     
     if(recipeLO.isDone()) {
-        message.success('Your recipe has been saved.');
+        message.success('Your recipe has been saved.')
     }
     
-    const {TextArea} = Input;
-    const draft = recipeLO.getValueEnforcing();
+    const {TextArea} = Input
+    const draft = recipeLO.getValueEnforcing()
 
     return (
         <Form layout="vertical">
@@ -80,6 +80,6 @@ const RecipeForm = ({recipeLO}) => {
         </Form>
 
     )
-};
+}
 
-export default RecipeForm;
+export default RecipeForm

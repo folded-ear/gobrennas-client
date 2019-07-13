@@ -27,7 +27,8 @@
     ],
     "rules": {
         "react/prop-types": 1,
-        "no-console": 1
+        "no-console": 1,
+        "semi": ["error", "never"]
     },
     "settings": {
         "react": {

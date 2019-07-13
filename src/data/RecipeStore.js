@@ -1,20 +1,20 @@
-import { OrderedMap } from 'immutable';
-import { ReduceStore } from 'flux/utils';
-import RecipeActions from './RecipeActions';
-import Dispatcher from './dispatcher';
-import RecipeApi from "./RecipeApi";
-import LoadObject from "../util/LoadObject";
+import { OrderedMap } from 'immutable'
+import { ReduceStore } from 'flux/utils'
+import RecipeActions from './RecipeActions'
+import Dispatcher from './dispatcher'
+import RecipeApi from "./RecipeApi"
+import LoadObject from "../util/LoadObject"
 
 class RecipeStore extends ReduceStore {
     
     constructor() {
-        super(Dispatcher);
+        super(Dispatcher)
     }
     
     getInitialState() {
         return new OrderedMap({
             sendState: null,
-        });
+        })
     }
     
     reduce(state, action) {
@@ -24,12 +24,12 @@ class RecipeStore extends ReduceStore {
                 RecipeApi.assembleShoppingList(
                     action.recipeId,
                     action.listId,
-                );
-                return state.set("sendState", LoadObject.updating());
+                )
+                return state.set("sendState", LoadObject.updating())
             }
             
             case RecipeActions.SHOPPING_LIST_ASSEMBLED: {
-                return state.set("sendState", LoadObject.empty());
+                return state.set("sendState", LoadObject.empty())
             }
 
             case RecipeActions.RAW_INGREDIENT_DISSECTED: {
@@ -40,19 +40,19 @@ class RecipeStore extends ReduceStore {
                     action.units,
                     action.name,
                     action.prep,
-                );
-                return state;
+                )
+                return state
             }
             
             default:
-                return state;
+                return state
         }
     }
     
     getSendState() {
-        return this.getState().get("sendState");
+        return this.getState().get("sendState")
     }
 
 }
 
-export default new RecipeStore();
+export default new RecipeStore()

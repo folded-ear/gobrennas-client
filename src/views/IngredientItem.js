@@ -2,7 +2,7 @@ import React from 'react'
 
 const Augment = ({text, prefix, suffix}) => text
     ? <React.Fragment>{prefix}{text}{suffix}</React.Fragment>
-    : null;
+    : null
 
 const IngredientItem = ({ingredient}) => {
 
@@ -21,6 +21,6 @@ const IngredientItem = ({ingredient}) => {
                  prefix=", " />
     </span>
   )
-};
+}
 
-export default IngredientItem;
+export default IngredientItem

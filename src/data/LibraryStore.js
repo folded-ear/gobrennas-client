@@ -1,12 +1,12 @@
 import { ReduceStore } from 'flux/utils'
 import Dispatcher from './dispatcher'
-import { OrderedMap } from "immutable";
-import LoadObject from "../util/LoadObject";
+import { OrderedMap } from "immutable"
+import LoadObject from "../util/LoadObject"
 import LibraryActions from './LibraryActions'
-import LibraryApi from "./LibraryApi";
-import hotLoadObject from "../util/hotLoadObject";
-import RecipeActions from "./RecipeActions";
-import invariant from "invariant";
+import LibraryApi from "./LibraryApi"
+import hotLoadObject from "../util/hotLoadObject"
+import RecipeActions from "./RecipeActions"
+import invariant from "invariant"
 
 class LibraryStore extends ReduceStore {
     
@@ -27,7 +27,7 @@ class LibraryStore extends ReduceStore {
             case RecipeActions.RECIPE_CREATED:
             case RecipeActions.RECIPE_DELETED:
             case RecipeActions.DISSECTION_RECORDED: {
-                LibraryApi.loadLibrary();
+                LibraryApi.loadLibrary()
                 return state.set('recipes', state.get('recipes').loading())
             }
             
@@ -48,21 +48,21 @@ class LibraryStore extends ReduceStore {
                 Dispatcher.dispatch({
                     type: LibraryActions.LOAD_LIBRARY
                 })
-        );
+        )
     }
     
     getRecipeById(selectedRecipe) {
         invariant(
             typeof selectedRecipe === "number",
             "That is not a valid integer",
-        );
+        )
 
-        const lo = this.getLibraryLO();
+        const lo = this.getLibraryLO()
         if(lo.hasValue()) {
-            const recipe = lo.getValueEnforcing().find( recipe => recipe.ingredientId === selectedRecipe);
-            return recipe != null ? LoadObject.withValue(recipe) : LoadObject.empty();
+            const recipe = lo.getValueEnforcing().find( recipe => recipe.ingredientId === selectedRecipe)
+            return recipe != null ? LoadObject.withValue(recipe) : LoadObject.empty()
         }
-        return lo;
+        return lo
     }
 }
 

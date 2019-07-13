@@ -1,12 +1,12 @@
-import { ReduceStore } from "flux/utils";
-import Dispatcher from "./dispatcher";
-import WindowActions from "./WindowActions";
+import { ReduceStore } from "flux/utils"
+import Dispatcher from "./dispatcher"
+import WindowActions from "./WindowActions"
 
 
 const getSize = () => ({
     width: window.innerWidth,
     height: window.innerHeight,
-});
+})
 
 class WindowStore extends ReduceStore {
 
@@ -24,7 +24,7 @@ class WindowStore extends ReduceStore {
             },
             newVersionAvailable: false,
             newVersionIgnored: false,
-        };
+        }
     }
 
     reduce(state, action) {
@@ -34,7 +34,7 @@ class WindowStore extends ReduceStore {
                 return {
                     ...state,
                     ...getSize(),
-                };
+                }
             case WindowActions.NEW_VERSION_AVAILABLE:
                 return {
                     ...state,
@@ -43,7 +43,7 @@ class WindowStore extends ReduceStore {
                         waitingWorker: action.registration.waiting,
                         ignored: false,
                     },
-                };
+                }
             case WindowActions.IGNORE_NEW_VERSION:
                 return {
                     ...state,
@@ -51,32 +51,32 @@ class WindowStore extends ReduceStore {
                         ...state.newVersion,
                         ignored: true,
                     },
-                };
+                }
 
             case WindowActions.LAUNCH_NEW_VERSION: {
                 // this dance is based on:
                 // https://github.com/facebook/create-react-app/issues/5316#issuecomment-496292914
-                const waitingWorker = state.newVersion.waitingWorker;
+                const waitingWorker = state.newVersion.waitingWorker
                 if (waitingWorker) {
                     waitingWorker.addEventListener("statechange", event => {
                         if (event.target.state === "activated") {
-                            window.location.reload();
+                            window.location.reload()
                         }
-                    });
-                    waitingWorker.postMessage({type: 'SKIP_WAITING'});
+                    })
+                    waitingWorker.postMessage({type: 'SKIP_WAITING'})
                 }
-                return state;
+                return state
             }
 
             default:
-                return state;
+                return state
         }
     }
 
     isNewVersionAvailable() {
-        const s = this.getState().newVersion;
-        return s.available && !s.ignored;
+        const s = this.getState().newVersion
+        return s.available && !s.ignored
     }
 }
 
-export default new WindowStore();
+export default new WindowStore()

@@ -1,23 +1,23 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import { BrowserRouter as Router } from 'react-router-dom';
-import App from './App';
-import * as serviceWorker from './serviceWorker';
-import debounce from "./util/debounce";
-import Dispatcher from "./data/dispatcher";
-import WindowActions from "./data/WindowActions";
-import logAction from "./util/logAction";
+import React from 'react'
+import ReactDOM from 'react-dom'
+import { BrowserRouter as Router } from 'react-router-dom'
+import App from './App'
+import * as serviceWorker from './serviceWorker'
+import debounce from "./util/debounce"
+import Dispatcher from "./data/dispatcher"
+import WindowActions from "./data/WindowActions"
+import logAction from "./util/logAction"
 
 if (process.env.NODE_ENV !== "production") {
-    Dispatcher.register(logAction);
+    Dispatcher.register(logAction)
 }
 
-ReactDOM.render(<Router><App /></Router>, document.getElementById('root'));
+ReactDOM.render(<Router><App /></Router>, document.getElementById('root'))
 
 window.addEventListener("resize", debounce(() =>
     Dispatcher.dispatch({
         type: WindowActions.RESIZE,
-    }), 500));
+    }), 500))
 
 // Learn more about service workers: https://bit.ly/CRA-PWA
 serviceWorker.register({
@@ -31,4 +31,4 @@ serviceWorker.register({
         type: WindowActions.NEW_VERSION_AVAILABLE,
         registration,
     }),
-});
+})

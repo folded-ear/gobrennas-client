@@ -1,34 +1,34 @@
-import React, { Component } from 'react';
+import React, { Component } from 'react'
 import {
     Route,
     Switch,
-} from 'react-router-dom';
-import Dispatcher from './data/dispatcher';
-import { Container } from "flux/utils";
-import AppHeader from './views/common/AppHeader';
-import Login from './views/user/Login';
-import NotFound from './views/common/NotFound';
-import LoadingIndicator from './views/common/LoadingIndicator';
-import PrivateRoute from './views/common/PrivateRoute';
-import { Layout } from "antd";
-import UserActions from "./data/UserActions";
-import UserStore from "./data/UserStore";
+} from 'react-router-dom'
+import Dispatcher from './data/dispatcher'
+import { Container } from "flux/utils"
+import AppHeader from './views/common/AppHeader'
+import Login from './views/user/Login'
+import NotFound from './views/common/NotFound'
+import LoadingIndicator from './views/common/LoadingIndicator'
+import PrivateRoute from './views/common/PrivateRoute'
+import { Layout } from "antd"
+import UserActions from "./data/UserActions"
+import UserStore from "./data/UserStore"
 import routes from './routes'
 
-import './App.scss';
-import WindowStore from "./data/WindowStore";
-import NewVersionAvailable from "./views/NewVersionAvailable";
+import './App.scss'
+import WindowStore from "./data/WindowStore"
+import NewVersionAvailable from "./views/NewVersionAvailable"
 
 class App extends Component {
     constructor(props) {
-        super(props);
-        this.handleLogout = this.handleLogout.bind(this);
+        super(props)
+        this.handleLogout = this.handleLogout.bind(this)
     }
     
     handleLogout() {
         Dispatcher.dispatch({
             type: UserActions.LOGOUT,
-        });
+        })
     }
     
     render() {
@@ -36,15 +36,15 @@ class App extends Component {
             authenticated,
             userLO,
             newVersionAvailable,
-        } = this.props;
-        const {Content} = Layout;
+        } = this.props
+        const {Content} = Layout
 
         if (!userLO.isDone()) {
             return <LoadingIndicator/>
         }
         const currentUser = authenticated
             ? userLO.getValueEnforcing()
-            : null;
+            : null
         
         return (
             <div>
@@ -82,7 +82,7 @@ class App extends Component {
                 
                 </Content>
             </div>
-        );
+        )
     }
 }
 
@@ -97,4 +97,4 @@ export default Container.createFunctional(
         userLO: UserStore.getProfileLO(),
         newVersionAvailable: WindowStore.isNewVersionAvailable(),
     }),
-);
+)

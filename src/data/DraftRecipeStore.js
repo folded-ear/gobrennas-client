@@ -1,19 +1,19 @@
 import { ReduceStore } from 'flux/utils'
-import Dispatcher from './dispatcher';
-import LoadObject from "../util/LoadObject";
-import hotLoadObject from "../util/hotLoadObject";
-import RecipeActions from "./RecipeActions";
-import RecipeApi from "./RecipeApi";
-import Recipe from "../models/Recipe";
+import Dispatcher from './dispatcher'
+import LoadObject from "../util/LoadObject"
+import hotLoadObject from "../util/hotLoadObject"
+import RecipeActions from "./RecipeActions"
+import RecipeApi from "./RecipeApi"
+import Recipe from "../models/Recipe"
 
 class DraftRecipeStore extends ReduceStore {
     
     constructor() {
-        super(Dispatcher);
+        super(Dispatcher)
     }
     
     getInitialState() {
-        return LoadObject.empty();
+        return LoadObject.empty()
     }
     
     reduce(state, action) {
@@ -22,11 +22,11 @@ class DraftRecipeStore extends ReduceStore {
         
         switch (action.type) {
             case RecipeActions.LOAD_DRAFT_RECIPE: {
-                return state.setValue(new Recipe()).creating();
+                return state.setValue(new Recipe()).creating()
             }
             
             case RecipeActions.DRAFT_RECIPE_UPDATED: {
-                let {key, value} = action.data;
+                let {key, value} = action.data
                 if (key === "rawIngredients") {
                     state = state.map(draft =>
                         draft.set("ingredients", value
@@ -38,20 +38,20 @@ class DraftRecipeStore extends ReduceStore {
                             .map(raw => ({raw}))))
                 }
                 return state.map(draft =>
-                    draft.set(key, value)).updating();
+                    draft.set(key, value)).updating()
             }
             
             case RecipeActions.SAVE_DRAFT_RECIPE: {
-                RecipeApi.addRecipe(state.getValueEnforcing());
-                return state.updating();
+                RecipeApi.addRecipe(state.getValueEnforcing())
+                return state.updating()
             }
 
             case RecipeActions.RECIPE_CREATED: {
-                return state.done();
+                return state.done()
             }
             
             default:
-                return state;
+                return state
         }
     }
     
@@ -61,8 +61,8 @@ class DraftRecipeStore extends ReduceStore {
             () => Dispatcher.dispatch({
                 type: RecipeActions.LOAD_DRAFT_RECIPE,
             }),
-        );
+        )
     }
 }
 
-export default new DraftRecipeStore();
+export default new DraftRecipeStore()

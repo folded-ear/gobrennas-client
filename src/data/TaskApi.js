@@ -1,12 +1,12 @@
-import BaseAxios from "axios";
-import promiseFlux from "../util/promiseFlux";
-import TaskActions from "./TaskActions";
-import { API_BASE_URL } from "../constants/index";
-import serializePromiseFn from "../util/serializePromiseFn";
+import BaseAxios from "axios"
+import promiseFlux from "../util/promiseFlux"
+import TaskActions from "./TaskActions"
+import { API_BASE_URL } from "../constants/index"
+import serializePromiseFn from "../util/serializePromiseFn"
 
 const axios = BaseAxios.create({
     baseURL: `${API_BASE_URL}/api/tasks`,
-});
+})
 
 const TaskApi = {
 
@@ -21,7 +21,7 @@ const TaskApi = {
                 id: data.data.id,
                 data: data.data,
             }),
-        );
+        )
     },
 
     loadLists() {
@@ -31,7 +31,7 @@ const TaskApi = {
                 type: TaskActions.LISTS_LOADED,
                 data: data.data,
             }),
-        );
+        )
     },
 
     loadSubtasks(id) {
@@ -79,7 +79,7 @@ const TaskApi = {
                 type: TaskActions.LIST_DELETED,
                 id,
             }),
-        );
+        )
     },
 
     completeTask(id) {
@@ -91,7 +91,7 @@ const TaskApi = {
                 type: TaskActions.TASK_COMPLETED,
                 id,
             }),
-        );
+        )
     },
 
     deleteTask(id) {
@@ -101,7 +101,7 @@ const TaskApi = {
                 type: TaskActions.TASK_DELETED,
                 id,
             }),
-        );
+        )
     },
 
     resetSubtasks(id, subtaskIds) {
@@ -113,7 +113,7 @@ const TaskApi = {
                 type: TaskActions.SUBTASKS_RESET,
                 id,
             })
-        );
+        )
     },
 
     setListGrant(id, userId, level) {
@@ -142,6 +142,6 @@ const TaskApi = {
         )
     },
 
-};
+}
 
-export default TaskApi;
+export default TaskApi

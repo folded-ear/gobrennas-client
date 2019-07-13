@@ -1,11 +1,18 @@
-import React, { Component} from 'react'
-import {AutoComplete, Button, Col, Form, Input, Row} from "antd";
-import * as PropTypes from "prop-types";
+import React, { Component } from 'react'
+import {
+    AutoComplete,
+    Button,
+    Col,
+    Form,
+    Input,
+    Row
+} from "antd"
+import * as PropTypes from "prop-types"
 
 class IngredientAdd extends Component<{ onSelect: PropTypes.func }> {
   
   constructor(props) {
-    super(props);
+    super(props)
     this.state = {
       quantity: '',
       preparation: '',
@@ -31,7 +38,7 @@ class IngredientAdd extends Component<{ onSelect: PropTypes.func }> {
   }
   
   handleChange = (e) => {
-    const {name, value} = e.target;
+    const {name, value} = e.target
     this.setState({ [name]: value })
   };
   
@@ -40,21 +47,21 @@ class IngredientAdd extends Component<{ onSelect: PropTypes.func }> {
   };
   
   handleSearch = value => {
-    const { data: items } = this.props;
-    this.setState({ items: items.filter( item => item.name.includes(value)), value });
+    const { data: items } = this.props
+    this.setState({ items: items.filter( item => item.name.includes(value)), value })
   };
   
   handleSave = () => {
-    const {onSave} = this.props;
-    const { quantity, preparation, selectedIngredient } = this.state;
-    onSave({quantity, preparation, selectedIngredient});
-    this.reset();
+    const {onSave} = this.props
+    const { quantity, preparation, selectedIngredient } = this.state
+    onSave({quantity, preparation, selectedIngredient})
+    this.reset()
   };
   
   render() {
-    const { quantity, preparation, items, value } = this.state;
-    const Option = AutoComplete.Option;
-    const pantryItems = items.map(item => <Option key={item.id}>{item.name}</Option>);
+    const { quantity, preparation, items, value } = this.state
+    const Option = AutoComplete.Option
+    const pantryItems = items.map(item => <Option key={item.id}>{item.name}</Option>)
     
     return (
         <Row>
@@ -103,6 +110,6 @@ class IngredientAdd extends Component<{ onSelect: PropTypes.func }> {
   }
 }
 
-IngredientAdd.propTypes = {onSelect: PropTypes.func};
+IngredientAdd.propTypes = {onSelect: PropTypes.func}
 
-export default IngredientAdd;
+export default IngredientAdd

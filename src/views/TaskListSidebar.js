@@ -1,7 +1,7 @@
-import React from "react";
-import PropTypes from "prop-types";
-import Dispatcher from "../data/dispatcher";
-import TaskActions from "../data/TaskActions";
+import React from "react"
+import PropTypes from "prop-types"
+import Dispatcher from "../data/dispatcher"
+import TaskActions from "../data/TaskActions"
 import {
     Form,
     Icon,
@@ -9,65 +9,65 @@ import {
     List,
     Select,
     Spin,
-} from "antd";
-import { Container } from "flux/utils";
-import UserStore from "../data/UserStore";
-import FriendStore from "../data/FriendStore";
-import AccessLevel, { includesLevel } from "../data/AccessLevel";
-import User from "./user/User";
-import DeleteButton from "./common/DeleteButton";
+} from "antd"
+import { Container } from "flux/utils"
+import UserStore from "../data/UserStore"
+import FriendStore from "../data/FriendStore"
+import AccessLevel, { includesLevel } from "../data/AccessLevel"
+import User from "./user/User"
+import DeleteButton from "./common/DeleteButton"
 
-const LEVEL_NO_ACCESS = "NO_ACCESS";
+const LEVEL_NO_ACCESS = "NO_ACCESS"
 
 class TaskListSidebar extends React.PureComponent {
 
     constructor(...args) {
-        super(...args);
-        this.onRename = this.onRename.bind(this);
-        this.onGrantChange = this.onGrantChange.bind(this);
-        this.onDelete = this.onDelete.bind(this);
+        super(...args)
+        this.onRename = this.onRename.bind(this)
+        this.onGrantChange = this.onGrantChange.bind(this)
+        this.onDelete = this.onDelete.bind(this)
     }
 
     onRename(e) {
-        const {value} = e.target;
+        const {value} = e.target
         const {
             list: {id},
-        } = this.props;
+        } = this.props
         Dispatcher.dispatch({
             type: TaskActions.RENAME_LIST,
             id,
             name: value,
-        });
+        })
     }
 
     onGrantChange(userId, level) {
         const {
             list: {id},
-        } = this.props;
+        } = this.props
         if (level === LEVEL_NO_ACCESS) {
             Dispatcher.dispatch({
                 type: TaskActions.CLEAR_LIST_GRANT,
                 id,
                 userId,
-            });
+            })
         } else {
             Dispatcher.dispatch({
                 type: TaskActions.SET_LIST_GRANT,
                 id,
                 userId,
                 level,
-            });
+            })
         }
     }
 
     onDelete() {
         const {
             list: {id},
-        } = this.props;
+        } = this.props
         Dispatcher.dispatch({
             type: TaskActions.DELETE_LIST,
             id,
-        });
+        })
     }
 
     render() {
@@ -77,7 +77,7 @@ class TaskListSidebar extends React.PureComponent {
             friendsLoading,
             friendList,
             friendsById,
-        } = this.props;
+        } = this.props
 
         // blindly copied - side by side when big, stacked when small
         const formItemLayout = {
@@ -89,17 +89,17 @@ class TaskListSidebar extends React.PureComponent {
                 xs: {span: 24},
                 sm: {span: 18},
             },
-        };
+        }
 
-        const grants = list.acl.grants || {};
-        const isMine = list.acl.ownerId === me.id;
+        const grants = list.acl.grants || {}
+        const isMine = list.acl.ownerId === me.id
         const owner = isMine
             ? me
-            : friendsById[list.acl.ownerId];
+            : friendsById[list.acl.ownerId]
         const isAdministrator = isMine || includesLevel(
             grants[me.id],
             AccessLevel.ADMINISTER,
-        );
+        )
         return <Form {...formItemLayout}>
             <Form.Item
                 label="Name"
@@ -176,14 +176,14 @@ class TaskListSidebar extends React.PureComponent {
                     />
                 </Form.Item>}
             </React.Fragment>}
-        </Form>;
+        </Form>
     }
 
 }
 
 TaskListSidebar.propTypes = {
     list: PropTypes.object,
-};
+}
 
 export default Container.createFunctional(
     props => <TaskListSidebar {...props} />,
@@ -192,8 +192,8 @@ export default Container.createFunctional(
         FriendStore,
     ],
     (prevState, {list}) => {
-        const flo = FriendStore.getFriendsLO();
-        const loading = !flo.hasValue();
+        const flo = FriendStore.getFriendsLO()
+        const loading = !flo.hasValue()
         return {
             list,
             me: UserStore.getProfileLO().getValueEnforcing(),
@@ -207,7 +207,7 @@ export default Container.createFunctional(
                     ...idx,
                     [f.id]: f,
                 }), {}),
-        };
+        }
     },
     {withProps: true},
-);
+)
