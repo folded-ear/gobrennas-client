@@ -1,9 +1,7 @@
 import React from 'react'
 import { Link } from "react-router-dom"
-import {
-    Button,
-    List
-} from "antd"
+import { List } from "antd"
+import EditButton from "./common/EditButton"
 
 const RecipeListItem = ({recipe}) => {
     
@@ -11,11 +9,7 @@ const RecipeListItem = ({recipe}) => {
     
     return (
         <Item actions={[
-            <Link to={`/library/recipe/${recipe.ingredientId}/edit`}>
-                <Button type="primary" shape="circle"
-                    icon="edit"
-                    size="small"/>
-        </Link>]}>
+            <Link to={`/library/recipe/${recipe.ingredientId}/edit`}><EditButton /></Link>]}>
             <List.Item.Meta
                 title={<Link to={`/library/recipe/${recipe.ingredientId}`}>{recipe.name}</Link>}
             />
