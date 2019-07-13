@@ -1,5 +1,8 @@
 import React from 'react'
-import { Spin } from "antd"
+import {
+    List,
+    Spin
+} from "antd"
 import RecipeListItem from "./RecipeListItem"
 
 const RecipesList = (props: {}) => {
@@ -13,7 +16,12 @@ const RecipesList = (props: {}) => {
     return (
         <div className="recipes-list">
             <h1>Recipe Library</h1>
-            {[...library].reverse().map(recipe => <RecipeListItem key={recipe.ingredientId} recipe={recipe} />)}
+            <List
+                dataSource={library}
+                itemLayout="horizontal"
+                renderItem={recipe => <RecipeListItem recipe={recipe}/>}
+            />
+                
             {library.length === 0  && <em>No recipes yet...</em>}
         </div>
     )
