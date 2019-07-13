@@ -5,6 +5,7 @@ import Landing from "./views/Landing"
 import Tasks from "./containers/Tasks"
 import OAuth2RedirectHandler from "./views/user/OAuth2RedirectHandler"
 import Recipe from "./containers/Recipe"
+import RecipeEdit from "./views/RecipeEdit"
 
 const routes = {
     public: [
@@ -13,6 +14,7 @@ const routes = {
     ],
     private: [
         {path: "/profile",  component: Profile},
+        {path: "/library/recipe/:id/edit", component: RecipeEdit},
         {path: "/library/recipe/:id",   component: Recipe },
         {path: "/library",  component: Library},
         {path: "/add",      component: RecipeAdd},
