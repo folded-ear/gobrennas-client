@@ -8,8 +8,11 @@ const RecipeListItem = ({recipe}) => {
     const {Item} = List
     
     return (
-        <Item actions={[
-            <Link to={`/library/recipe/${recipe.ingredientId}/edit`}><EditButton /></Link>]}>
+        <Item
+            key={recipe.ingredientId}
+            actions={[
+                <Link key={recipe.ingredientId} to={`/library/recipe/${recipe.ingredientId}/edit`}><EditButton /></Link>]
+            }>
             <List.Item.Meta
                 title={<Link to={`/library/recipe/${recipe.ingredientId}`}>{recipe.name}</Link>}
             />
@@ -17,4 +20,4 @@ const RecipeListItem = ({recipe}) => {
     )
 }
 
-export default RecipeListItem;
+export default RecipeListItem
