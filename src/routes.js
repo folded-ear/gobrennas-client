@@ -1,11 +1,11 @@
 import Profile from "./views/user/Profile"
 import Library from "./containers/Library"
-import RecipeAdd from "./views/RecipeAdd"
-import Landing from "./views/Landing"
-import Tasks from "./containers/Tasks"
-import OAuth2RedirectHandler from "./views/user/OAuth2RedirectHandler"
 import Recipe from "./containers/Recipe"
-import RecipeEdit from "./views/RecipeEdit"
+import RecipeEdit from "./containers/RecipeEdit"
+import RecipeAdd from "./views/RecipeAdd"
+import Tasks from "./containers/Tasks"
+import Landing from "./views/Landing"
+import OAuth2RedirectHandler from "./views/user/OAuth2RedirectHandler"
 
 const routes = {
     public: [
