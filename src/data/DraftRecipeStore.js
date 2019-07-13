@@ -17,6 +17,9 @@ class DraftRecipeStore extends ReduceStore {
     }
     
     reduce(state, action) {
+        
+        //TODO: This seems to mostly work (ish) although it's more convoluted than it needs to be. Refactoring is definitely in order.
+        
         switch (action.type) {
             case RecipeActions.LOAD_DRAFT_RECIPE: {
                 return state.setValue(new Recipe()).creating();
