@@ -21,7 +21,7 @@ class DraftRecipeStore extends ReduceStore {
         //TODO: This seems to mostly work (ish) although it's more convoluted than it needs to be. Refactoring is definitely in order.
         
         switch (action.type) {
-            case RecipeActions.LOAD_DRAFT_RECIPE: {
+            case RecipeActions.LOAD_EMPTY_RECIPE: {
                 return state.setValue(new Recipe()).creating()
             }
             
@@ -59,7 +59,7 @@ class DraftRecipeStore extends ReduceStore {
         return hotLoadObject(
             () => this.getState(),
             () => Dispatcher.dispatch({
-                type: RecipeActions.LOAD_DRAFT_RECIPE,
+                type: RecipeActions.LOAD_EMPTY_RECIPE,
             }),
         )
     }
