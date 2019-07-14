@@ -28,7 +28,7 @@ class PantryItemStore extends ReduceStore {
             case PantryItemActions.PANTRYITEMS_LOADED: {
                 let items = List(action.data.map( item => {
                     return (new PantryItem({
-                        id: item.ingredientId,
+                        id: item.id,
                         name: item.name,
                         aisle: item.aisle
                     }))

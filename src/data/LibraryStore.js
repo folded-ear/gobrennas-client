@@ -60,7 +60,7 @@ class LibraryStore extends ReduceStore {
 
         const lo = this.getLibraryLO()
         if(lo.hasValue()) {
-            const recipe = lo.getValueEnforcing().find( recipe => recipe.ingredientId === selectedRecipe)
+            const recipe = lo.getValueEnforcing().find( recipe => recipe.id === selectedRecipe)
             return recipe != null ? LoadObject.withValue(recipe) : LoadObject.empty()
         }
         return lo

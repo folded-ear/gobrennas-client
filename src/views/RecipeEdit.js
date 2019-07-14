@@ -36,7 +36,7 @@ class RecipeEdit extends Component<{ recipeLO: any }> {
                 <hr />
                 <DeleteButton
                     type="recipe"
-                    onConfirm={() => handleDelete(recipeLO.getValueEnforcing().ingredientId)}
+                    onConfirm={() => handleDelete(recipeLO.getValueEnforcing().id)}
                 />
 
             </div>

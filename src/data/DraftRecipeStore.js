@@ -25,9 +25,7 @@ class DraftRecipeStore extends ReduceStore {
             }
     
             case RecipeActions.LOAD_RECIPE_DRAFT: {
-                // this is a temporary kludge until ingredientId is deprecated and pulled out of the client codebase
                 const recipe = new Recipe(action.data)
-                    .set("id", action.data.ingredientId)
                     .set("rawIngredients", action.data.ingredients.map(item => item.raw).join("\n"))
                 return state.setValue(recipe).updating()
             }

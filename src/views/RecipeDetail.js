@@ -51,13 +51,13 @@ const RecipeDetail = ({recipeLO}) => {
                     renderItem={(it, offset) => <List.Item>
                         <IngredientParseUI
                             ingredient={it}
-                            recipeId={recipe.ingredientId}
+                            recipeId={recipe.id}
                             offset={offset}
                         />
                     </List.Item>}
                     size="small"
                     split
-                    footer={<AddToList onClick={listId => handleAddToList(recipe.ingredientId, listId)} />}
+                    footer={<AddToList onClick={listId => handleAddToList(recipe.id, listId)} />}
                 />
             </React.Fragment>}
 
