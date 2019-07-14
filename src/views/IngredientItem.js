@@ -12,8 +12,11 @@ const IngredientItem = ({ingredient}) => {
 
   return (
     <span>
-        <Augment text={ingredient.quantity}
-                 suffix=" " />
+        {ingredient.amount != null
+            ? <Augment text={ingredient.amount}
+                       suffix=" " />
+            : <Augment text={ingredient.quantity}
+                       suffix=" " />}
         <Augment text={ingredient.units}
                  suffix=" " />
         {ingredient.ingredient.name}
