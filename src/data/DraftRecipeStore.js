@@ -67,11 +67,6 @@ class DraftRecipeStore extends ReduceStore {
     }
     
     shouldLoadDraft(id) {
-        console.log(this.getDraftRecipeLO())
-        if(this.getDraftRecipeLO().hasValue()) {
-            console.log("the ID in the draft store: ", this.getDraftRecipeLO().getValueEnforcing().id)
-            console.log("the ID that I want to edit", id);
-        }
         return !this.getDraftRecipeLO().hasValue() || !this.getDraftRecipeLO().getValueEnforcing().id === id
     }
 }
