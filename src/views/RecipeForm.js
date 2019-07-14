@@ -18,9 +18,10 @@ const handleUpdate = (e) => {
     })
 }
 
-const handleSave = () => {
+const handleSave = (recipe) => {
     Dispatcher.dispatch({
-        type: RecipeActions.SAVE_DRAFT_RECIPE,
+        type: RecipeActions.CREATE_RECIPE,
+        data: recipe
     })
 }
 
@@ -35,7 +36,7 @@ const RecipeForm = ({recipeLO}) => {
     
     const {TextArea} = Input
     const draft = recipeLO.getValueEnforcing()
-
+    
     return (
         <Form layout="vertical">
             <Form.Item>
@@ -58,7 +59,7 @@ const RecipeForm = ({recipeLO}) => {
                 <TextArea
                     name="rawIngredients"
                     placeholder="Add Ingredients List"
-                    value={draft.ingredients.map( item => item.raw).join("\n")}
+                    value={draft.rawIngredients}
                     onChange={handleUpdate}
                     rows={10}
                 />
@@ -75,7 +76,7 @@ const RecipeForm = ({recipeLO}) => {
             <Form.Item>
                 <Button
                     type="primary"
-                    onClick={handleSave}>Save</Button>
+                    onClick={() => handleSave(draft)}>Save</Button>
             </Form.Item>
         </Form>
 

@@ -3,7 +3,6 @@ import Dispatcher from './dispatcher'
 import LoadObject from "../util/LoadObject"
 import hotLoadObject from "../util/hotLoadObject"
 import RecipeActions from "./RecipeActions"
-import RecipeApi from "./RecipeApi"
 import Recipe from "../models/Recipe"
 
 class DraftRecipeStore extends ReduceStore {
@@ -24,10 +23,13 @@ class DraftRecipeStore extends ReduceStore {
             case RecipeActions.LOAD_EMPTY_RECIPE: {
                 return state.setValue(new Recipe()).creating()
             }
-            
+    
             case RecipeActions.LOAD_RECIPE_DRAFT: {
                 // this is a temporary kludge until ingredientId is deprecated and pulled out of the client codebase
-                return state.setValue(new Recipe(action.data).set("id", action.data.ingredientId)).updating()
+                const recipe = new Recipe(action.data)
+                    .set("id", action.data.ingredientId)
+                    .set("rawIngredients", action.data.ingredients.map(item => item.raw).join("\n"))
+                return state.setValue(recipe).updating()
             }
             
             case RecipeActions.DRAFT_RECIPE_UPDATED: {
@@ -46,14 +48,8 @@ class DraftRecipeStore extends ReduceStore {
                     draft.set(key, value)).updating()
             }
             
-            case RecipeActions.SAVE_DRAFT_RECIPE: {
-                const recipe = state.getValueEnforcing();
-                recipe.id ? RecipeApi.updateRecipe(recipe) : RecipeApi.addRecipe(recipe)
-                return state.updating()
-            }
-    
-            case RecipeActions.RECIPE_CREATED: {
-                return state.done()
+            case RecipeActions.CREATE_RECIPE: {
+                return this.getInitialState()
             }
             
             default:
