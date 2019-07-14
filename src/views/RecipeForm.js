@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from "prop-types"
 import Dispatcher from '../data/dispatcher'
 import {
     Button,
@@ -8,6 +9,8 @@ import {
     Spin
 } from "antd"
 import RecipeActions from "../data/RecipeActions"
+import loadObjectOf from "../util/loadObjectOf"
+import { Recipe } from "../data/RecipeTypes"
 
 
 const handleUpdate = (e) => {
@@ -75,6 +78,11 @@ const RecipeForm = ({recipeLO, onSave}) => {
         </Form>
 
     )
+}
+
+RecipeForm.propTypes = {
+    onSave: PropTypes.func,
+    recipeLO: loadObjectOf(Recipe)
 }
 
 export default RecipeForm
