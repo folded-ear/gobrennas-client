@@ -29,6 +29,15 @@ class RecipeStore extends ReduceStore {
                 return state
             }
             
+            case RecipeActions.UPDATE_RECIPE: {
+                RecipeApi.updateRecipe(action.data)
+                return state
+            }
+            
+            case RecipeActions.RECIPE_UPDATED: {
+                return state
+            }
+            
             case RecipeActions.ASSEMBLE_SHOPPING_LIST: {
                 RecipeApi.assembleShoppingList(
                     action.recipeId,
@@ -50,11 +59,6 @@ class RecipeStore extends ReduceStore {
                     action.name,
                     action.prep,
                 )
-                return state
-            }
-            
-            case RecipeActions.RECIPE_UPDATED: {
-                console.log("My Recipe was updated", action.data)
                 return state
             }
             
