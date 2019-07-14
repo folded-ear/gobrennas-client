@@ -1,6 +1,9 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
-import { Spin } from "antd"
+import {
+    List,
+    Spin
+} from "antd"
+import RecipeListItem from "./RecipeListItem"
 
 const RecipesList = (props: {}) => {
     const {libraryLO} = props
@@ -12,12 +15,13 @@ const RecipesList = (props: {}) => {
     const library = libraryLO.getValueEnforcing()
     return (
         <div className="recipes-list">
-            <h1>Recipes</h1>
-            {[...library].reverse().map(recipe => (
-                <h2 key={recipe.ingredientId}>
-                    <Link to={`/library/recipe/${recipe.ingredientId}`}>{recipe.name}</Link>
-                </h2>
-            ))}
+            <h1>Recipe Library</h1>
+            <List
+                dataSource={library}
+                itemLayout="horizontal"
+                renderItem={recipe => <RecipeListItem recipe={recipe}/>}
+            />
+                
             {library.length === 0  && <em>No recipes yet...</em>}
         </div>
     )

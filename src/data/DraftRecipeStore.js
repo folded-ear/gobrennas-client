@@ -3,7 +3,6 @@ import Dispatcher from './dispatcher'
 import LoadObject from "../util/LoadObject"
 import hotLoadObject from "../util/hotLoadObject"
 import RecipeActions from "./RecipeActions"
-import RecipeApi from "./RecipeApi"
 import Recipe from "../models/Recipe"
 
 class DraftRecipeStore extends ReduceStore {
@@ -21,8 +20,16 @@ class DraftRecipeStore extends ReduceStore {
         //TODO: This seems to mostly work (ish) although it's more convoluted than it needs to be. Refactoring is definitely in order.
         
         switch (action.type) {
-            case RecipeActions.LOAD_DRAFT_RECIPE: {
+            case RecipeActions.LOAD_EMPTY_RECIPE: {
                 return state.setValue(new Recipe()).creating()
+            }
+    
+            case RecipeActions.LOAD_RECIPE_DRAFT: {
+                // this is a temporary kludge until ingredientId is deprecated and pulled out of the client codebase
+                const recipe = new Recipe(action.data)
+                    .set("id", action.data.ingredientId)
+                    .set("rawIngredients", action.data.ingredients.map(item => item.raw).join("\n"))
+                return state.setValue(recipe).updating()
             }
             
             case RecipeActions.DRAFT_RECIPE_UPDATED: {
@@ -41,13 +48,8 @@ class DraftRecipeStore extends ReduceStore {
                     draft.set(key, value)).updating()
             }
             
-            case RecipeActions.SAVE_DRAFT_RECIPE: {
-                RecipeApi.addRecipe(state.getValueEnforcing())
-                return state.updating()
-            }
-
             case RecipeActions.RECIPE_CREATED: {
-                return state.done()
+                return this.getInitialState()
             }
             
             default:
@@ -59,9 +61,13 @@ class DraftRecipeStore extends ReduceStore {
         return hotLoadObject(
             () => this.getState(),
             () => Dispatcher.dispatch({
-                type: RecipeActions.LOAD_DRAFT_RECIPE,
+                type: RecipeActions.LOAD_EMPTY_RECIPE,
             }),
         )
+    }
+    
+    shouldLoadDraft(id) {
+        return !this.getDraftRecipeLO().hasValue() || !this.getDraftRecipeLO().getValueEnforcing().id === id
     }
 }
 

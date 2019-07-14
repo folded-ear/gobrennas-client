@@ -18,13 +18,8 @@ const handleUpdate = (e) => {
     })
 }
 
-const handleSave = () => {
-    Dispatcher.dispatch({
-        type: RecipeActions.SAVE_DRAFT_RECIPE,
-    })
-}
-
-const RecipeForm = ({recipeLO}) => {
+const RecipeForm = ({recipeLO, onSave}) => {
+    
     if(!recipeLO.hasValue()) {
       return <Spin />
     }
@@ -35,7 +30,7 @@ const RecipeForm = ({recipeLO}) => {
     
     const {TextArea} = Input
     const draft = recipeLO.getValueEnforcing()
-
+    
     return (
         <Form layout="vertical">
             <Form.Item>
@@ -75,7 +70,7 @@ const RecipeForm = ({recipeLO}) => {
             <Form.Item>
                 <Button
                     type="primary"
-                    onClick={handleSave}>Save</Button>
+                    onClick={() => onSave(draft)}>Save</Button>
             </Form.Item>
         </Form>
 

@@ -13,9 +13,13 @@ const dissectionComponentType = PropTypes.shape({
 })
 
 const RecipeActions = {
+    CREATE_RECIPE: 'recipe/create-recipe',
     RECIPE_CREATED: 'recipe/recipe-created',
+    UPDATE_RECIPE: 'recipe/update-recipe',
+    RECIPE_UPDATED: 'recipe/recipe-updated',
     RECIPE_DELETED: 'recipe/recipe-deleted',
-    LOAD_DRAFT_RECIPE: 'recipe/load-draft-recipe',
+    LOAD_EMPTY_RECIPE: 'recipe/load-empty-recipe',
+    LOAD_RECIPE_DRAFT: 'recipe/load-recipe/draft',
     DRAFT_RECIPE_UPDATED: 'recipe/draft-recipe-updated',
     SAVE_DRAFT_RECIPE: 'recipe/save-draft-recipe',
     ASSEMBLE_SHOPPING_LIST: typedAction("recipe/assemble-shopping-list", sendShape),

@@ -20,6 +20,24 @@ class RecipeStore extends ReduceStore {
     reduce(state, action) {
         switch (action.type) {
             
+            case RecipeActions.CREATE_RECIPE: {
+                RecipeApi.addRecipe(action.data)
+                return state
+            }
+            
+            case RecipeActions.RECIPE_CREATED: {
+                return state
+            }
+            
+            case RecipeActions.UPDATE_RECIPE: {
+                RecipeApi.updateRecipe(action.data)
+                return state
+            }
+            
+            case RecipeActions.RECIPE_UPDATED: {
+                return state
+            }
+            
             case RecipeActions.ASSEMBLE_SHOPPING_LIST: {
                 RecipeApi.assembleShoppingList(
                     action.recipeId,
