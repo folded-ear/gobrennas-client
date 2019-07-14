@@ -47,7 +47,8 @@ class DraftRecipeStore extends ReduceStore {
             }
             
             case RecipeActions.SAVE_DRAFT_RECIPE: {
-                RecipeApi.addRecipe(state.getValueEnforcing())
+                const recipe = state.getValueEnforcing();
+                recipe.id ? RecipeApi.updateRecipe(recipe) : RecipeApi.addRecipe(recipe)
                 return state.updating()
             }
     
