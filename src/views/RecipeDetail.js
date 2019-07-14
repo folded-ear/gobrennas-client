@@ -11,17 +11,11 @@ import {
     List,
     Spin,
 } from "antd"
-import RecipeApi from "../data/RecipeApi"
 import TaskStore from "../data/TaskStore"
 import RecipeActions from "../data/RecipeActions"
 import RecipeStore from "../data/RecipeStore"
 import Directions from "./common/Directions"
 import IngredientParseUI from "./IngredientParseUI"
-import DeleteButton from "./common/DeleteButton"
-
-const handleDelete = (id) => {
-    RecipeApi.deleteRecipe(id)
-}
 
 const handleAddToList = (recipeId, listId) => Dispatcher.dispatch({
     type: RecipeActions.ASSEMBLE_SHOPPING_LIST,
@@ -70,10 +64,6 @@ const RecipeDetail = ({recipeLO}) => {
             <h5>Preparation</h5>
             <Directions text={recipe.directions} />
 
-            <DeleteButton
-                type="recipe"
-                onConfirm={() => handleDelete(recipe.ingredientId)}
-            />
         </div>
     )
 }
