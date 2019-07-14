@@ -26,7 +26,8 @@ class DraftRecipeStore extends ReduceStore {
             }
             
             case RecipeActions.LOAD_RECIPE_DRAFT: {
-                return state.setValue(new Recipe(action.data)).updating()
+                // this is a temporary kludge until ingredientId is deprecated and pulled out of the client codebase
+                return state.setValue(new Recipe(action.data).set("id", action.data.ingredientId)).updating()
             }
             
             case RecipeActions.DRAFT_RECIPE_UPDATED: {
@@ -49,7 +50,7 @@ class DraftRecipeStore extends ReduceStore {
                 RecipeApi.addRecipe(state.getValueEnforcing())
                 return state.updating()
             }
-
+    
             case RecipeActions.RECIPE_CREATED: {
                 return state.done()
             }

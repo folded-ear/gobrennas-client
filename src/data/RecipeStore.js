@@ -44,6 +44,11 @@ class RecipeStore extends ReduceStore {
                 return state
             }
             
+            case RecipeActions.RECIPE_UPDATED: {
+                console.log("My Recipe was updated", action.data)
+                return state
+            }
+            
             default:
                 return state
         }
