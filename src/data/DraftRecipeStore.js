@@ -48,7 +48,8 @@ class DraftRecipeStore extends ReduceStore {
                     draft.set(key, value)).updating()
             }
             
-            case RecipeActions.CREATE_RECIPE: {
+            case RecipeActions.RECIPE_CREATED:
+            case RecipeActions.RECIPE_UPDATED: {
                 return this.getInitialState()
             }
             
@@ -67,7 +68,7 @@ class DraftRecipeStore extends ReduceStore {
     }
     
     shouldLoadDraft(id) {
-        return !this.getDraftRecipeLO().hasValue() || !this.getDraftRecipeLO().getValueEnforcing().ingredientId === id
+        return !this.getDraftRecipeLO().hasValue() || !this.getDraftRecipeLO().getValueEnforcing().id === id
     }
 }
 
