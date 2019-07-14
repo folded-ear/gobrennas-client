@@ -58,7 +58,7 @@ const RecipeForm = ({recipeLO}) => {
                 <TextArea
                     name="rawIngredients"
                     placeholder="Add Ingredients List"
-                    value={draft.rawIngredients}
+                    value={draft.ingredients.map( item => item.raw).join("\n")}
                     onChange={handleUpdate}
                     rows={10}
                 />
