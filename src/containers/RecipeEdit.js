@@ -20,7 +20,7 @@ export default withRouter(Container.createFunctional(
         const recipeLO = LibraryStore.getRecipeById(parseInt(match.params.id, 10))
         
         if(recipeLO.hasValue()) {
-            const id = recipeLO.getValueEnforcing().ingredientId
+            const id = recipeLO.getValueEnforcing().id
             if(DraftStore.shouldLoadDraft(id)){
                 setTimeout(() => {
                     Dispatcher.dispatch({

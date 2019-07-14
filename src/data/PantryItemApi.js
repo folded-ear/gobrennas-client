@@ -30,7 +30,7 @@ const PantryItemApi = {
                     Dispatcher.dispatch({
                         type: PantryItemActions.PANTRYITEMS_ADDED,
                         data: new PantryItem({
-                            id: item.ingredientId,
+                            id: item.id,
                             name: item.name,
                             aisle: item.aisle
                         })

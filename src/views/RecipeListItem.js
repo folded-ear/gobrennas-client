@@ -9,12 +9,12 @@ const RecipeListItem = ({recipe}) => {
     
     return (
         <Item
-            key={recipe.ingredientId}
+            key={recipe.id}
             actions={[
-                <Link key={recipe.ingredientId} to={`/library/recipe/${recipe.ingredientId}/edit`}><EditButton /></Link>]
+                <Link key={recipe.id} to={`/library/recipe/${recipe.id}/edit`}><EditButton /></Link>]
             }>
             <List.Item.Meta
-                title={<Link to={`/library/recipe/${recipe.ingredientId}`}>{recipe.name}</Link>}
+                title={<Link to={`/library/recipe/${recipe.id}`}>{recipe.name}</Link>}
             />
         </Item>
     )
