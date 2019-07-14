@@ -12,7 +12,7 @@ const RecipeApi = {
     
     addRecipe(recipe) {
         axios
-            .post('/recipe', recipe.toJSON())
+            .post('/recipe', recipe)
             .then((response) => {
                 //TODO: handle response back from API if there are errors, etc
                 if (response.status && response.status === 201) {
@@ -25,7 +25,7 @@ const RecipeApi = {
     
     updateRecipe(recipe) {
         axios
-            .put(`/recipe/${recipe.id}`, recipe.toJSON())
+            .put(`/recipe/${recipe.id}`, recipe)
             .then((response) => {
                 if (response.status && response.status === 200) {
                     Dispatcher.dispatch({

@@ -17,11 +17,24 @@ class RecipeStore extends ReduceStore {
         })
     }
     
+    buildRecipe(recipe) {
+        recipe.type = "Recipe"
+        recipe.ingredients = recipe.rawIngredients
+            .split("\n")
+            .map(it => it.trim())
+            .filter(it => it.length > 0)
+            // since this a Recipe, these should be IngredientRef, but
+            // `RecipeApi.addRecipe` assume they aren't.
+            .map(raw => ({raw}))
+    
+        return recipe
+    }
+    
     reduce(state, action) {
         switch (action.type) {
             
             case RecipeActions.CREATE_RECIPE: {
-                RecipeApi.addRecipe(action.data)
+                RecipeApi.addRecipe(this.buildRecipe(action.data))
                 return state
             }
             
@@ -30,7 +43,7 @@ class RecipeStore extends ReduceStore {
             }
             
             case RecipeActions.UPDATE_RECIPE: {
-                RecipeApi.updateRecipe(action.data)
+                RecipeApi.updateRecipe(this.buildRecipe(action.data))
                 return state
             }
             

@@ -5,11 +5,8 @@ import {
     Button,
     Form,
     Input,
-    message,
-    Spin
 } from "antd"
 import RecipeActions from "../data/RecipeActions"
-import loadObjectOf from "../util/loadObjectOf"
 import { Recipe } from "../data/RecipeTypes"
 
 
@@ -21,18 +18,9 @@ const handleUpdate = (e) => {
     })
 }
 
-const RecipeForm = ({recipeLO, onSave}) => {
-    
-    if(!recipeLO.hasValue()) {
-      return <Spin />
-    }
-    
-    if(recipeLO.isDone()) {
-        message.success('Your recipe has been saved.')
-    }
+const RecipeForm = ({draft, onSave}) => {
     
     const {TextArea} = Input
-    const draft = recipeLO.getValueEnforcing()
     
     return (
         <Form layout="vertical">
@@ -82,7 +70,7 @@ const RecipeForm = ({recipeLO, onSave}) => {
 
 RecipeForm.propTypes = {
     onSave: PropTypes.func,
-    recipeLO: loadObjectOf(Recipe)
+    draft: Recipe
 }
 
 export default RecipeForm
