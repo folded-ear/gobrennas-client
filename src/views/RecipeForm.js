@@ -18,14 +18,8 @@ const handleUpdate = (e) => {
     })
 }
 
-const handleSave = (recipe) => {
-    Dispatcher.dispatch({
-        type: RecipeActions.CREATE_RECIPE,
-        data: recipe
-    })
-}
-
-const RecipeForm = ({recipeLO}) => {
+const RecipeForm = ({recipeLO, onSave}) => {
+    
     if(!recipeLO.hasValue()) {
       return <Spin />
     }
@@ -76,7 +70,7 @@ const RecipeForm = ({recipeLO}) => {
             <Form.Item>
                 <Button
                     type="primary"
-                    onClick={() => handleSave(draft)}>Save</Button>
+                    onClick={() => onSave(draft)}>Save</Button>
             </Form.Item>
         </Form>
 

@@ -2,6 +2,15 @@ import React, { Component } from 'react'
 import RecipeForm from '../containers/RecipeForm'
 import { Redirect } from 'react-router-dom'
 import { Spin } from 'antd'
+import Dispatcher from "../data/dispatcher"
+import RecipeActions from "../data/RecipeActions"
+
+const handleSave = (recipe) => {
+    Dispatcher.dispatch({
+        type: RecipeActions.UPDATE_RECIPE,
+        data: recipe
+    })
+}
 
 class RecipeEdit extends Component<{ recipeLO: any }> {
     render() {
@@ -15,7 +24,7 @@ class RecipeEdit extends Component<{ recipeLO: any }> {
         }
         
         return (
-            <RecipeForm />
+            <RecipeForm onSave={handleSave}/>
         )
     }
 }
