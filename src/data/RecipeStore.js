@@ -38,16 +38,8 @@ class RecipeStore extends ReduceStore {
                 return state
             }
             
-            case RecipeActions.RECIPE_CREATED: {
-                return state
-            }
-            
             case RecipeActions.UPDATE_RECIPE: {
                 RecipeApi.updateRecipe(this.buildRecipe(action.data))
-                return state
-            }
-            
-            case RecipeActions.RECIPE_UPDATED: {
                 return state
             }
             
