@@ -16,10 +16,12 @@ class DraftRecipeStore extends ReduceStore {
     
     reduce(state, action) {
         
-        //TODO: This seems to mostly work (ish) although it's more convoluted than it needs to be. Refactoring is definitely in order.
-        
         switch (action.type) {
     
+            case RecipeActions.LOAD_EMPTY_RECIPE: {
+                return this.getInitialState()
+            }
+            
             case RecipeActions.LOAD_RECIPE_DRAFT: {
                 const recipe = action.data
                 recipe.rawIngredients = action.data.ingredients.map(item => item.raw).join("\n")
