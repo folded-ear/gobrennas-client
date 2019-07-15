@@ -1,4 +1,3 @@
-import Dispatcher from './dispatcher'
 import BaseAxios from 'axios'
 import RecipeActions from './RecipeActions'
 import { API_BASE_URL } from "../constants/index"
@@ -11,40 +10,31 @@ const axios = BaseAxios.create({
 const RecipeApi = {
     
     addRecipe(recipe) {
-        axios
-            .post('/recipe', recipe.toJSON())
-            .then((response) => {
-                //TODO: handle response back from API if there are errors, etc
-                if (response.status && response.status === 201) {
-                    Dispatcher.dispatch({
-                        type: RecipeActions.RECIPE_CREATED
-                    })
-                }
+        promiseFlux(
+            axios.post('/recipe', recipe),
+            () => ({
+                type: RecipeActions.RECIPE_CREATED
             })
+        )
     },
     
     updateRecipe(recipe) {
-        axios
-            .put(`/recipe/${recipe.id}`, recipe.toJSON())
-            .then((response) => {
-                if (response.status && response.status === 200) {
-                    Dispatcher.dispatch({
-                        type: RecipeActions.RECIPE_UPDATED
-                    })
-                }
+        promiseFlux(
+            axios.put(`/recipe/${recipe.id}`, recipe),
+            () => ({
+                type: RecipeActions.RECIPE_UPDATED
             })
+        )
     },
     
-    
     deleteRecipe(id) {
-        axios
-            .delete(`/recipe/${id}`)
-            .then(() => {
-                Dispatcher.dispatch({
-                    type: RecipeActions.RECIPE_DELETED,
-                    id
-                })
+        promiseFlux(
+            axios.delete(`/recipe/${id}`),
+            () => ({
+                type: RecipeActions.RECIPE_DELETED,
+                id
             })
+        )
     },
     
     assembleShoppingList(recipeId, listId) {

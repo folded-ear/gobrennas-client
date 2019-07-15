@@ -1,13 +1,13 @@
 import React from 'react'
+import PropTypes from "prop-types"
 import Dispatcher from '../data/dispatcher'
 import {
     Button,
     Form,
     Input,
-    message,
-    Spin
 } from "antd"
 import RecipeActions from "../data/RecipeActions"
+import { Recipe } from "../data/RecipeTypes"
 
 
 const handleUpdate = (e) => {
@@ -18,18 +18,9 @@ const handleUpdate = (e) => {
     })
 }
 
-const RecipeForm = ({recipeLO, onSave}) => {
-    
-    if(!recipeLO.hasValue()) {
-      return <Spin />
-    }
-    
-    if(recipeLO.isDone()) {
-        message.success('Your recipe has been saved.')
-    }
+const RecipeForm = ({draft, onSave}) => {
     
     const {TextArea} = Input
-    const draft = recipeLO.getValueEnforcing()
     
     return (
         <Form layout="vertical">
@@ -75,6 +66,11 @@ const RecipeForm = ({recipeLO, onSave}) => {
         </Form>
 
     )
+}
+
+RecipeForm.propTypes = {
+    onSave: PropTypes.func,
+    draft: Recipe
 }
 
 export default RecipeForm

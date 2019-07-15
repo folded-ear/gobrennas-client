@@ -16,6 +16,8 @@ import RecipeActions from "../data/RecipeActions"
 import RecipeStore from "../data/RecipeStore"
 import Directions from "./common/Directions"
 import IngredientParseUI from "./IngredientParseUI"
+import loadObjectOf from "../util/loadObjectOf"
+import { Recipe } from "../data/RecipeTypes"
 
 const handleAddToList = (recipeId, listId) => Dispatcher.dispatch({
     type: RecipeActions.ASSEMBLE_SHOPPING_LIST,
@@ -100,5 +102,9 @@ const AddToList = Container.createFunctional(
     },
     {withProps: true},
 )
+
+RecipeDetail.propTypes = {
+    recipeLO: loadObjectOf(Recipe)
+}
 
 export default RecipeDetail

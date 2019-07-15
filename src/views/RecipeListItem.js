@@ -2,9 +2,9 @@ import React from 'react'
 import { Link } from "react-router-dom"
 import { List } from "antd"
 import EditButton from "./common/EditButton"
+import { Recipe } from "../data/RecipeTypes"
 
 const RecipeListItem = ({recipe}) => {
-    
     const {Item} = List
     
     return (
@@ -18,6 +18,10 @@ const RecipeListItem = ({recipe}) => {
             />
         </Item>
     )
+}
+
+RecipeListItem.propTypes = {
+    recipe: Recipe
 }
 
 export default RecipeListItem
