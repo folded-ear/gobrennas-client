@@ -11,7 +11,7 @@ const LibraryApi = {
     
     loadLibrary: () => {
         promiseFlux(
-            axios.get(`/all`),
+            axios.get(`/`),
             data => ({
                 type: LibraryActions.LIBRARY_LOADED,
                 data: data.data,
