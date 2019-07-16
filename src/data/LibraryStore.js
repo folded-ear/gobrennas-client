@@ -51,6 +51,11 @@ class LibraryStore extends ReduceStore {
                 })
         )
     }
+
+    getIngredientById(id) {
+        // for now...
+        return this.getRecipeById(id)
+    }
     
     getRecipeById(selectedRecipe) {
         invariant(

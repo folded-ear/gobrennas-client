@@ -9,6 +9,7 @@ import "./IngredientParseUI.scss"
 import PropTypes from "prop-types"
 import RecipeActions from "../data/RecipeActions"
 import capitalize from "../util/capitalize"
+import { refType } from "../models/IngredientRef"
 
 const SECTION_NAMES = ["quantity", "units", "name"]
 
@@ -180,7 +181,7 @@ class IngredientParseUI extends Component {
                 <div style={{
                     marginLeft: "auto",
                 }}>
-                    {ingredient.ingredient
+                    {ingredient.ingredientId
                         ? <Icon type="check"
                                 style={{
                                     color: "green",
@@ -259,10 +260,7 @@ class IngredientParseUI extends Component {
 }
 
 IngredientParseUI.propTypes = {
-    ingredient: PropTypes.shape({
-        ingredient: PropTypes.object,
-        raw: PropTypes.string,
-    }).isRequired,
+    ingredient: refType.isRequired,
     recipeId: PropTypes.number.isRequired,
     offset: PropTypes.number.isRequired,
 }
