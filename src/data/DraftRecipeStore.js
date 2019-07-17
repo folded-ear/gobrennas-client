@@ -57,6 +57,7 @@ class DraftRecipeStore extends ReduceStore {
                 }
             }
 
+            case LibraryActions.INGREDIENT_LOADED:
             case LibraryActions.LIBRARY_LOADED: {
                 Dispatcher.waitFor([
                     LibraryStore.getDispatchToken(),

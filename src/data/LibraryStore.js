@@ -31,6 +31,16 @@ class LibraryStore extends ReduceStore {
                 LibraryApi.loadLibrary()
                 return state.set('recipes', state.get('recipes').loading())
             }
+
+            case LibraryActions.LOAD_INGREDIENT: {
+                LibraryApi.getIngredient(action.id)
+                return state.set('recipes', state.get('recipes').loading())
+            }
+
+            case LibraryActions.INGREDIENT_LOADED: {
+                return state.set("recipes", state.get("recipes").map(rs =>
+                    rs.concat(action.data)))
+            }
             
             case LibraryActions.LIBRARY_LOADED: {
                 return state.set('recipes', state.get('recipes').done().setValue(action.data))
@@ -54,7 +64,17 @@ class LibraryStore extends ReduceStore {
 
     getIngredientById(id) {
         // for now...
-        return this.getRecipeById(id)
+        const lo = this.getRecipeById(id)
+        if (lo.hasValue()) return lo
+        if (lo.isLoading()) return lo
+        return hotLoadObject(
+            () => this.getRecipeById(id),
+            () =>
+                Dispatcher.dispatch({
+                    type: LibraryActions.LOAD_INGREDIENT,
+                    id,
+                })
+        )
     }
     
     getRecipeById(selectedRecipe) {
