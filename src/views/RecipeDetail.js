@@ -38,7 +38,17 @@ const RecipeDetail = ({recipeLO}) => {
 
     return (
         <div>
-            <Link to="/library">X Close</Link>
+            <Link to="/library">
+                <Button
+                    icon="close"
+                >Close</Button>
+            </Link>
+            <Link to={`/library/recipe/${recipe.id}/edit`}>
+                <Button
+                    icon="edit"
+                >Edit</Button>
+            </Link>
+
             <h3>{recipe.name}</h3>
 
             {recipe.externalUrl && <React.Fragment>
