@@ -4,6 +4,8 @@ const WindowActions = {
     NEW_VERSION_AVAILABLE: "window/new-version-available",
     IGNORE_NEW_VERSION: "window/ignore-new-version",
     LAUNCH_NEW_VERSION: "window/launch-new-version",
+    VISIBILITY_CHANGE: "window/visibility-change",
+    FOCUS_CHANGE: "window/focus-change",
 }
 
 export default WindowActions

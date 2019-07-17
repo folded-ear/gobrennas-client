@@ -153,7 +153,7 @@ export default Container.createFunctional(
     (prev, props) => {
         return {
             ...props,
-            windowWidth: WindowStore.getState().width,
+            windowWidth: WindowStore.getSize().width,
         }
     },
     { withProps: true }

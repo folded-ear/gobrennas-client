@@ -2,12 +2,6 @@ import { ReduceStore } from "flux/utils"
 import Dispatcher from "./dispatcher"
 import WindowActions from "./WindowActions"
 
-
-const getSize = () => ({
-    width: window.innerWidth,
-    height: window.innerHeight,
-})
-
 class WindowStore extends ReduceStore {
 
     constructor() {
@@ -16,14 +10,17 @@ class WindowStore extends ReduceStore {
 
     getInitialState() {
         return {
-            ...getSize(),
+            size: {
+                width: window.innerWidth,
+                height: window.innerHeight,
+            },
+            focused: true,
+            visible: true,
             newVersion: {
                 available: false,
                 ignored: false,
                 waitingWorker: null,
             },
-            newVersionAvailable: false,
-            newVersionIgnored: false,
         }
     }
 
@@ -33,7 +30,17 @@ class WindowStore extends ReduceStore {
             case WindowActions.RESIZE:
                 return {
                     ...state,
-                    ...getSize(),
+                    size: action.size,
+                }
+            case WindowActions.VISIBILITY_CHANGE:
+                return {
+                    ...state,
+                    visible: action.visible,
+                }
+            case WindowActions.FOCUS_CHANGE:
+                return {
+                    ...state,
+                    focused: action.focused,
                 }
             case WindowActions.NEW_VERSION_AVAILABLE:
                 return {
@@ -73,10 +80,23 @@ class WindowStore extends ReduceStore {
         }
     }
 
+    getSize() {
+        return this.getState().size
+    }
+
+    isVisible() {
+        return this.getState().visible
+    }
+
+    isFocused() {
+        return this.getState().focused
+    }
+
     isNewVersionAvailable() {
         const s = this.getState().newVersion
         return s.available && !s.ignored
     }
+
 }
 
 export default new WindowStore()
