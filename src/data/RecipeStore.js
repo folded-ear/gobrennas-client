@@ -5,6 +5,37 @@ import Dispatcher from './dispatcher'
 import RecipeApi from "./RecipeApi"
 import LoadObject from "../util/LoadObject"
 
+const buildRecipe = recipe => {
+    recipe.type = "Recipe"
+    const rawMap = {} // this is a MULTI-map, because there's no guarantee that raw ingredients are unique
+    if (recipe.ingredients) {
+        recipe.ingredients.forEach(i => {
+            if (rawMap.hasOwnProperty(i.raw)) {
+                rawMap[i.raw].push(i)
+            } else {
+                rawMap[i.raw] = [i]
+            }
+        })
+    }
+    recipe.ingredients = recipe.rawIngredients
+        .split("\n")
+        .map(it => it.trim())
+        .filter(it => it.length > 0)
+        .map(raw => {
+            if (rawMap.hasOwnProperty(raw)) {
+                const i = rawMap[raw].shift()
+                if (rawMap[raw].length === 0) {
+                    delete rawMap[raw]
+                }
+                return i
+            } else {
+                return { raw }
+            }
+        })
+
+    return recipe
+}
+
 class RecipeStore extends ReduceStore {
     
     constructor() {
@@ -17,29 +48,16 @@ class RecipeStore extends ReduceStore {
         })
     }
     
-    buildRecipe(recipe) {
-        recipe.type = "Recipe"
-        recipe.ingredients = recipe.rawIngredients
-            .split("\n")
-            .map(it => it.trim())
-            .filter(it => it.length > 0)
-            // since this a Recipe, these should be IngredientRef, but
-            // `RecipeApi.addRecipe` assume they aren't.
-            .map(raw => ({raw}))
-    
-        return recipe
-    }
-    
     reduce(state, action) {
         switch (action.type) {
             
             case RecipeActions.CREATE_RECIPE: {
-                RecipeApi.addRecipe(this.buildRecipe(action.data))
+                RecipeApi.addRecipe(buildRecipe(action.data))
                 return state
             }
             
             case RecipeActions.UPDATE_RECIPE: {
-                RecipeApi.updateRecipe(this.buildRecipe(action.data))
+                RecipeApi.updateRecipe(buildRecipe(action.data))
                 return state
             }
             
