@@ -1,12 +1,10 @@
 import React from 'react'
-import {
-    Redirect,
-    Route
-} from "react-router-dom"
+import { Redirect } from "react-router-dom"
+import FluxRoute from "./FluxRoute"
 
 
 const PrivateRoute = ({ component: Component, authenticated, ...rest }) => (
-    <Route
+    <FluxRoute
       {...rest}
       render={props =>
         authenticated ? (

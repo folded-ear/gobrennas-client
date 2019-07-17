@@ -1,8 +1,5 @@
 import React, { Component } from 'react'
-import {
-    Route,
-    Switch,
-} from 'react-router-dom'
+import { Switch } from 'react-router-dom'
 import Dispatcher from './data/dispatcher'
 import { Container } from "flux/utils"
 import AppHeader from './views/common/AppHeader'
@@ -14,10 +11,10 @@ import { Layout } from "antd"
 import UserActions from "./data/UserActions"
 import UserStore from "./data/UserStore"
 import routes from './routes'
-
 import './App.scss'
 import WindowStore from "./data/WindowStore"
 import NewVersionAvailable from "./views/NewVersionAvailable"
+import FluxRoute from "./views/common/FluxRoute"
 
 class App extends Component {
     constructor(props) {
@@ -55,7 +52,7 @@ class App extends Component {
                     <Switch>
                         {routes.public.map(route => {
                             return (
-                                <Route
+                                <FluxRoute
                                     key={route.path}
                                     path={route.path}
                                     render={ props => <route.component authenticated={authenticated} {...props} />}
@@ -76,8 +73,9 @@ class App extends Component {
                             )
                         })}
 
-                        <Route path="/login" render={(props) => <Login authenticated={authenticated} {...props} />}/>
-                        <Route component={NotFound}/>
+                        <FluxRoute path="/login" render={(props) => <Login
+                            authenticated={authenticated} {...props} />} />
+                        <FluxRoute component={NotFound} />
                     </Switch>
                 
                 </Content>
