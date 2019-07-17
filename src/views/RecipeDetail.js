@@ -6,6 +6,7 @@ import {
     Redirect,
 } from "react-router-dom"
 import {
+    Affix,
     Button,
     Icon,
     List,
@@ -49,7 +50,11 @@ const RecipeDetail = ({recipeLO}) => {
                 >Edit</Button>
             </Link>
 
-            <h3>{recipe.name}</h3>
+            <Affix offsetTop={0}>
+                <h2 style={{
+                    backgroundColor: "white",
+                }}>{recipe.name}</h2>
+            </Affix>
 
             {recipe.externalUrl && <React.Fragment>
                 <h5>Source</h5>
