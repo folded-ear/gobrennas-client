@@ -4,6 +4,8 @@ import { Container } from "flux/utils"
 import LibraryStore from "../data/LibraryStore"
 import loadObjectOf from "../util/loadObjectOf"
 import { refType } from "../models/IngredientRef"
+import { Link } from "react-router-dom"
+import { Icon } from "antd"
 
 const Augment = ({text, prefix, suffix}) => text
     ? <React.Fragment>{prefix}{text}{suffix}</React.Fragment>
@@ -30,13 +32,27 @@ const IngredientItem = ({ingredient: ref, iLO}) => {
         </span>
     }
 
-  return (
+    const ingredient = iLO.getValueEnforcing()
+    const isRecipe = ingredient.type === "Recipe"
+    return (
     <span>
-        <Augment text={ref.quantity}
-                 suffix=" " />
-        <Augment text={ref.units}
-                 suffix=" " />
-        {iLO.getValueEnforcing().name}
+        {isRecipe && ref.quantity === 1
+            ? null
+            : <React.Fragment>
+                <Augment text={ref.quantity}
+                         suffix=" " />
+                <Augment text={ref.units}
+                         suffix=" " />
+            </React.Fragment>}
+        {isRecipe
+            ? <React.Fragment>
+                {ingredient.name}
+                {" "}
+                <Link to={`/library/recipe/${ingredient.id}`}>
+                    <Icon type="link" />
+                </Link>
+            </React.Fragment>
+            : ingredient.name}
         <Augment text={ref.preparation}
                  prefix=", " />
     </span>
