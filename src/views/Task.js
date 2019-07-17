@@ -25,6 +25,7 @@ class Task extends React.PureComponent {
         this.onKeyDown = this.onKeyDown.bind(this)
         this.onClick = this.onClick.bind(this)
         this.onComplete = this.onComplete.bind(this)
+        this.onDelete = this.onDelete.bind(this)
         this.inputRef = React.createRef()
     }
 
@@ -95,10 +96,7 @@ class Task extends React.PureComponent {
                 // if the value is empty, delete the task and focus next
                 if (value.length === 0 || shiftKey) {
                     e.preventDefault()
-                    Dispatcher.dispatch({
-                        type: TaskActions.DELETE_TASK_FORWARD,
-                        id: this.props.task.id
-                    })
+                    this.onDelete()
                 }
                 break
             case "Tab":
@@ -148,6 +146,13 @@ class Task extends React.PureComponent {
                 }
                 break
         }
+    }
+
+    onDelete() {
+        Dispatcher.dispatch({
+            type: TaskActions.DELETE_TASK_FORWARD,
+            id: this.props.task.id,
+        })
     }
 
     onClick(e) {
@@ -206,11 +211,19 @@ class Task extends React.PureComponent {
                 addonBefore: <Button icon="check"
                                      shape="circle"
                                      size="small"
+                                     className="complete"
                                      onClick={this.onComplete}
                 />,
             }
         }
         const input = <Input {...layoutProps}
+                             addonAfter={<Button icon="delete"
+                                                 shape="circle"
+                                                 size="small"
+                                                 type="danger"
+                                                 disabled={lo.isDeleting()}
+                                                 onClick={this.onDelete}
+                             />}
                              value={task.name}
                              placeholder="Write a task name"
                              className={classnames({

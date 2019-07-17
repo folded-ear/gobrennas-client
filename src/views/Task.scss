@@ -16,10 +16,12 @@
     .ant-input-group-addon {
       border-width: 0;
 
-      button {
-        color: #ccc;
+      button.complete {
+        color: #52c41a;
         &:hover {
-          color: inherit;
+          color: #fff;
+          background-color: #52c41a;
+          border-color: #52c41a;
         }
       }
     }

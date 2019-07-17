@@ -400,7 +400,8 @@ const deleteTask = (state, id, asCompletion = false) => {
     )
     state = {
         ...state,
-        activeTaskId: state.activeTaskId === id ? null : state.activeTaskId,
+        activeTaskId: null,
+        selectedTaskIds: null,
         byId: {
             ...state.byId,
             [id]: state.byId[id].deleting(),
@@ -717,16 +718,8 @@ class TaskStore extends ReduceStore {
                 state = flushTasksToRename(state)
                 return flushParentsToReset(state)
             case TaskActions.DELETE_TASK_FORWARD:
-                invariant(
-                    action.id === state.activeTaskId,
-                    "Deleting a non-active task is a bug."
-                )
                 return forwardDeleteTask(state, action.id)
             case TaskActions.DELETE_TASK_BACKWARDS:
-                invariant(
-                    action.id === state.activeTaskId,
-                    "Deleting a non-active task is a bug."
-                )
                 return backwardsDeleteTask(state, action.id)
             case TaskActions.TASK_DELETED:
                 return taskDeleted(state, action.id)
