@@ -5,6 +5,7 @@ import {
     Button,
     Form,
     Input,
+    Spin,
 } from "antd"
 import RecipeActions from "../data/RecipeActions"
 import { Recipe } from "../data/RecipeTypes"
@@ -18,11 +19,12 @@ const handleUpdate = (e) => {
     })
 }
 
-const RecipeForm = ({draft, onSave}) => {
-    
+const RecipeForm = ({draft: lo, onSave}) => {
+
     const {TextArea} = Input
-    
-    return (
+    const draft = lo.getValueEnforcing()
+
+    const form = (
         <Form layout="vertical">
             <Form.Item>
                 <Input
@@ -64,8 +66,11 @@ const RecipeForm = ({draft, onSave}) => {
                     onClick={() => onSave(draft)}>Save</Button>
             </Form.Item>
         </Form>
-
     )
+
+    return lo.isDone()
+        ? form
+        : <Spin>{form}</Spin>
 }
 
 RecipeForm.propTypes = {

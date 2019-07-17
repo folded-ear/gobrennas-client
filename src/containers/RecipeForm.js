@@ -10,7 +10,7 @@ export default Container.createFunctional(
     ],
     (prevState, props) => {
         return {
-            draft: DraftRecipeStore.getDraft(),
+            draft: DraftRecipeStore.getDraftLO(),
             ...props
         }
     },

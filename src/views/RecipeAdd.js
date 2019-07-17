@@ -11,16 +11,6 @@ const handleSave = (recipe) => {
 }
 
 class RecipeAdd extends Component<{}> {
-    
-    // TODO: This lifecycle method is temporary! The correct option is to make any store aware of router state
-    componentDidMount(): void {
-        setTimeout(() => {
-            Dispatcher.dispatch({
-                type: RecipeActions.LOAD_EMPTY_RECIPE
-            })
-        })
-    }
-    
     render() {
         return (
             <div>

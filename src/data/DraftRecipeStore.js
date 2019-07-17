@@ -1,6 +1,26 @@
 import { ReduceStore } from 'flux/utils'
 import Dispatcher from './dispatcher'
 import RecipeActions from "./RecipeActions"
+import RouteActions from "./RouteActions"
+import LibraryActions from "./LibraryActions"
+import LibraryStore from "./LibraryStore"
+import LoadObject from "../util/LoadObject"
+
+const loadRecipeIfPossible = draftLO => {
+    if (draftLO.isDone()) return draftLO
+    const state = draftLO.getValueEnforcing()
+    if (!state.id) return draftLO
+    const lo = LibraryStore.getRecipeById(state.id)
+    if (!lo.hasValue()) return draftLO
+    const recipe = lo.getValueEnforcing()
+    return draftLO.setValue({
+        ...state,
+        ...recipe,
+        rawIngredients: recipe.ingredients
+            .map(item => item.raw)
+            .join("\n"),
+    }).done()
+}
 
 class DraftRecipeStore extends ReduceStore {
     
@@ -9,52 +29,78 @@ class DraftRecipeStore extends ReduceStore {
     }
     
     getInitialState() {
-        return {
+        return LoadObject.withValue({
             id: null
-        }
+        })
     }
     
     reduce(state, action) {
         
         switch (action.type) {
-    
-            case RecipeActions.LOAD_EMPTY_RECIPE: {
-                return this.getInitialState()
-            }
-            
-            case RecipeActions.LOAD_RECIPE_DRAFT: {
-                const recipe = action.data
-                recipe.rawIngredients = action.data.ingredients.map(item => item.raw).join("\n")
-                return {
-                    ...state,
-                    ...recipe
+
+            case RouteActions.MATCH: {
+                const match = action.match
+                switch (match.path) {
+                    case "/library/recipe/:id/edit": {
+                        state = state.setValue({
+                            id: parseInt(match.params.id),
+                        }).loading()
+                        return loadRecipeIfPossible(state)
+                    }
+
+                    case "/add": {
+                        return this.getInitialState()
+                    }
+
+                    default:
+                        return state
                 }
             }
-            
+
+            case LibraryActions.LIBRARY_LOADED: {
+                Dispatcher.waitFor([
+                    LibraryStore.getDispatchToken(),
+                ])
+                return loadRecipeIfPossible(state)
+            }
+
             case RecipeActions.DRAFT_RECIPE_UPDATED: {
                 let {key, value} = action.data
-                return {
-                    ...state,
-                    [key]: value
-                }
+                return state.map(s => ({
+                    ...s,
+                    [key]: value,
+                }))
             }
-            
+
+            case RecipeActions.CREATE_RECIPE: {
+                return state.creating()
+            }
+
+            case RecipeActions.UPDATE_RECIPE: {
+                return state.updating()
+            }
+
             case RecipeActions.RECIPE_CREATED: {
                 return this.getInitialState()
             }
-            
+
+            case RecipeActions.RECIPE_UPDATED: {
+                return state.done()
+            }
+
             default:
                 return state
         }
     }
-    
-    getDraft() {
+
+    getDraftLO() {
         return this.getState()
     }
-    
-    shouldLoadDraft(id) {
-        return this.getState().id == null || this.getState().id !== id
+
+    getDraft() {
+        return this.getState().getValueEnforcing()
     }
+    
 }
 
 export default new DraftRecipeStore()
