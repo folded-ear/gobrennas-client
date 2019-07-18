@@ -1,20 +1,17 @@
 import React from 'react'
-import { Container } from "flux/utils"
 import Dispatcher from "../data/dispatcher"
 import { Redirect } from "react-router-dom"
 import {
     Affix,
     Button,
-    Icon,
     List,
     Spin,
 } from "antd"
-import TaskStore from "../data/TaskStore"
 import RecipeActions from "../data/RecipeActions"
-import RecipeStore from "../data/RecipeStore"
 import Directions from "./common/Directions"
 import IngredientParseUI from "./IngredientParseUI"
 import loadObjectOf from "../util/loadObjectOf"
+import AddToList from "./AddToList"
 import { Recipe } from "../data/RecipeTypes"
 import history from "../util/history"
 
@@ -82,39 +79,6 @@ const RecipeDetail = ({recipeLO}) => {
         </div>
     )
 }
-
-const AddToList = Container.createFunctional(
-    ({
-         listLO,
-         onClick,
-         isSending,
-     }) => {
-        if (! listLO.hasValue()) return null
-        const list = listLO.getValueEnforcing()
-        return <Button
-            shape="round"
-            size="small"
-            onClick={() => onClick(list.id)}
-            disabled={isSending}
-            >
-                Add to &quot;{list.name}&quot;
-                <Icon type={isSending ? "loading" : "arrow-right"} />
-            </Button>
-    },
-    () => [
-        TaskStore,
-        RecipeStore,
-    ],
-    (prevState, props) => {
-        const sendState = RecipeStore.getSendState()
-        return {
-            onClick: props.onClick,
-            listLO: TaskStore.getActiveListLO(),
-            isSending: sendState != null && !sendState.isDone(),
-        }
-    },
-    {withProps: true},
-)
 
 RecipeDetail.propTypes = {
     recipeLO: loadObjectOf(Recipe)
