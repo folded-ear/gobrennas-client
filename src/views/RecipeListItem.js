@@ -3,7 +3,7 @@ import { Link } from "react-router-dom"
 import { List } from "antd"
 import EditButton from "./common/EditButton"
 import { Recipe } from "../data/RecipeTypes"
-import { history } from "../data/RouteStore"
+import history from "../util/history"
 
 const {Item} = List
 

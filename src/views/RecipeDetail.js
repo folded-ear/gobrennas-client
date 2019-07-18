@@ -16,7 +16,7 @@ import Directions from "./common/Directions"
 import IngredientParseUI from "./IngredientParseUI"
 import loadObjectOf from "../util/loadObjectOf"
 import { Recipe } from "../data/RecipeTypes"
-import { history } from "../data/RouteStore"
+import history from "../util/history"
 
 const handleAddToList = (recipeId, listId) => Dispatcher.dispatch({
     type: RecipeActions.ASSEMBLE_SHOPPING_LIST,

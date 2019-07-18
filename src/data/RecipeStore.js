@@ -4,7 +4,7 @@ import RecipeActions from './RecipeActions'
 import Dispatcher from './dispatcher'
 import RecipeApi from "./RecipeApi"
 import LoadObject from "../util/LoadObject"
-import { history } from "./RouteStore"
+import history from "../util/history"
 
 const buildRecipe = recipe => {
     recipe.type = "Recipe"

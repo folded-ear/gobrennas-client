@@ -8,7 +8,7 @@ import Dispatcher from "./data/dispatcher"
 import WindowActions from "./data/WindowActions"
 import logAction from "./util/logAction"
 import TemporalActions from "./data/TemporalActions"
-import { history } from "./data/RouteStore"
+import history from "./util/history"
 
 if (process.env.NODE_ENV !== "production") {
     Dispatcher.register(logAction)
