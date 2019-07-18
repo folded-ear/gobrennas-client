@@ -15,6 +15,10 @@ import loadObjectOf from "../util/loadObjectOf"
 import AccessLevel from "./AccessLevel"
 import RecipeActions from "./RecipeActions"
 import invariant from "invariant"
+import TemporalActions from "./TemporalActions"
+import RouteStore from "./RouteStore"
+import WindowStore from "./WindowStore"
+import WindowActions from "./WindowActions"
 
 /*
  * This store is way too muddled. But leaving it that way for the moment, to
@@ -336,7 +340,6 @@ const selectTo = (state, id) => {
         i = j
         j = temp
     }
-    console.log("selectTo", parent.subtaskIds, i, j, parent.subtaskIds.slice(i, j))
     return {
         ...state,
         activeTaskId: id,
@@ -520,18 +523,24 @@ const moveDelta = (state, delta) => {
     }
 }
 
+const loadSubtasks = (state, id) => {
+    TaskApi.loadSubtasks(id)
+    return dotProp.set(
+        state,
+        ["byId", id],
+        lo => lo.updating())
+}
+
 const taskLoaded = (state, task) => {
+    state = dotProp.set(
+        state,
+        ["byId", task.id],
+        LoadObject.withValue(task))
     if (task.subtaskIds && task.subtaskIds.length > 0) {
-        TaskApi.loadSubtasks(task.id)
+        state = loadSubtasks(state, task.id)
         state = task.subtaskIds.reduce(taskLoading, state)
     }
-    return {
-        ...state,
-        byId: {
-            ...state.byId,
-            [task.id]: LoadObject.withValue(task),
-        },
-    }
+    return state
 }
 
 const taskLoading = (state, id) => {
@@ -685,8 +694,17 @@ class TaskStore extends ReduceStore {
                 ], lo => lo.done())
             }
 
-            case TaskActions.SUBTASKS_LOADED:
-                return action.data.reduce(taskLoaded, state)
+            case TaskActions.SUBTASKS_LOADED: {
+                return dotProp.set(
+                    action.data.reduce(taskLoaded, state),
+                    ["byId", action.id],
+                    lo => lo.map(task => ({
+                        ...task,
+                        subtaskIds: action.data.map(it => it.id),
+                    })).done()
+                )
+            }
+
             case TaskActions.RENAME_TASK:
                 invariant(
                     action.id === state.activeTaskId,
@@ -764,6 +782,15 @@ class TaskStore extends ReduceStore {
                     ...state,
                     topLevelIds: LoadObject.empty(),
                 }
+            }
+
+            case TemporalActions.EVERY_15_SECONDS:
+            case WindowActions.VISIBILITY_CHANGE: {
+                if (state.activeListId == null) return state
+                if (RouteStore.getMatch().path !== "/tasks") return state
+                if (!WindowStore.isVisible()) return state
+                if (!WindowStore.isFocused()) return state
+                return loadSubtasks(state, state.activeListId)
             }
 
             default:
