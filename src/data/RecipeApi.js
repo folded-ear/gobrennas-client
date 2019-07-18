@@ -21,8 +21,9 @@ const RecipeApi = {
     updateRecipe(recipe) {
         promiseFlux(
             axios.put(`/recipe/${recipe.id}`, recipe),
-            () => ({
-                type: RecipeActions.RECIPE_UPDATED
+            data => ({
+                type: RecipeActions.RECIPE_UPDATED,
+                data: data.data,
             })
         )
     },

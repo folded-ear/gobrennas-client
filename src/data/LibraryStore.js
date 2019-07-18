@@ -28,7 +28,6 @@ class LibraryStore extends ReduceStore {
             
             case LibraryActions.LOAD_LIBRARY:
             case RecipeActions.RECIPE_CREATED:
-            case RecipeActions.RECIPE_UPDATED:
             case RecipeActions.RECIPE_DELETED:
             case RecipeActions.DISSECTION_RECORDED: {
                 LibraryApi.loadLibrary()
@@ -36,6 +35,22 @@ class LibraryStore extends ReduceStore {
                     ...state,
                     recipeIds: state.recipeIds.loading(),
                 }
+            }
+
+            case RecipeActions.UPDATE_RECIPE: {
+                return dotProp.set(
+                    state,
+                    ["byId", action.data.id],
+                    lo => lo.setValue(action.data).updating()
+                )
+            }
+
+            case RecipeActions.RECIPE_UPDATED: {
+                return dotProp.set(
+                    state,
+                    ["byId", action.data.id],
+                    lo => lo.setValue(action.data).done()
+                )
             }
 
             case LibraryActions.LOAD_INGREDIENT: {
