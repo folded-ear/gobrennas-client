@@ -1,6 +1,6 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import { BrowserRouter as Router } from 'react-router-dom'
+import { Router } from 'react-router-dom'
 import App from './App'
 import * as serviceWorker from './serviceWorker'
 import debounce from "./util/debounce"
@@ -8,12 +8,13 @@ import Dispatcher from "./data/dispatcher"
 import WindowActions from "./data/WindowActions"
 import logAction from "./util/logAction"
 import TemporalActions from "./data/TemporalActions"
+import history from "./util/history"
 
 if (process.env.NODE_ENV !== "production") {
     Dispatcher.register(logAction)
 }
 
-ReactDOM.render(<Router><App /></Router>, document.getElementById('root'))
+ReactDOM.render(<Router history={history}><App /></Router>, document.getElementById('root'))
 
 /*
  * From here on down, we're wiring up the environment as an actor on the system.

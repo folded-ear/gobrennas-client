@@ -27,13 +27,27 @@ class LibraryStore extends ReduceStore {
         switch (action.type) {
             
             case LibraryActions.LOAD_LIBRARY:
-            case RecipeActions.RECIPE_DELETED:
             case RecipeActions.DISSECTION_RECORDED: {
                 LibraryApi.loadLibrary()
                 return {
                     ...state,
                     recipeIds: state.recipeIds.loading(),
                 }
+            }
+
+            case RecipeActions.RECIPE_DELETED: {
+                state = dotProp.delete(
+                    state,
+                    ["byId", action.id]
+                )
+                state.recipeIds = state.recipeIds.map(ids => {
+                    const i = ids.indexOf(action.id)
+                    if (i < 0) return ids
+                    ids = ids.slice()
+                    ids.splice(i, 1)
+                    return ids
+                })
+                return state
             }
 
             case RecipeActions.CREATE_RECIPE: {
