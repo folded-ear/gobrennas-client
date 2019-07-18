@@ -7,6 +7,10 @@ import hotLoadObject from "../util/hotLoadObject"
 import RecipeActions from "./RecipeActions"
 import invariant from "invariant"
 import dotProp from "dot-prop-immutable"
+import {
+    addDistinct,
+    removeDistinct,
+} from "../util/arrayAsSet"
 
 class LibraryStore extends ReduceStore {
     
@@ -20,6 +24,7 @@ class LibraryStore extends ReduceStore {
             byId: {}, // Map<ID, LoadObject<Ingredient>>
             // used for bootstrapping (at the moment)
             recipeIds: LoadObject.empty(), // LoadObject<ID[]>
+            stagedIds: [], // ID[]
         }
     }
     
@@ -114,6 +119,32 @@ class LibraryStore extends ReduceStore {
                 }
             }
 
+            case LibraryActions.STAGE_RECIPE: {
+                const stagedIds = addDistinct(state.stagedIds, action.id)
+                if (state.stagedIds === stagedIds) return state
+                return {
+                    ...state,
+                    stagedIds,
+                }
+            }
+
+            case LibraryActions.UNSTAGE_RECIPE: {
+                const stagedIds = removeDistinct(state.stagedIds, action.id)
+                if (state.stagedIds === stagedIds) return state
+                return {
+                    ...state,
+                    stagedIds,
+                }
+            }
+
+            case LibraryActions.UNSTAGE_ALL_RECIPES: {
+                if (state.stagedIds.length === 0) return state
+                return {
+                    ...state,
+                    stagedIds: [],
+                }
+            }
+
             default: {
                 return state
             }
@@ -150,6 +181,18 @@ class LibraryStore extends ReduceStore {
         )
         return this.getIngredientById(selectedRecipe)
     }
+
+    getStagedIds() {
+        return this.getState().stagedIds
+    }
+
+    getStagedRecipes() {
+        return this.getStagedIds()
+            .map(id => this.getIngredientById(id))
+            .filter(lo => lo.hasValue())
+            .map(lo => lo.getValueEnforcing())
+    }
+
 }
 
 export default new LibraryStore()

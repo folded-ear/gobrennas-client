@@ -15,7 +15,8 @@ export default Container.createFunctional(
       return {
         recipes: RecipeStore.getState(),
         libraryLO: LibraryStore.getLibraryLO()
-            .map(rs => rs.sort(humanStringComparator))
+            .map(rs => rs.sort(humanStringComparator)),
+          stagedRecipes: LibraryStore.getStagedRecipes(),
       }
     }
 )

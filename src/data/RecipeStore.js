@@ -69,7 +69,7 @@ class RecipeStore extends ReduceStore {
             
             case RecipeActions.ASSEMBLE_SHOPPING_LIST: {
                 RecipeApi.assembleShoppingList(
-                    action.recipeId,
+                    action.recipeIds,
                     action.listId,
                 )
                 return state.set("sendState", LoadObject.updating())
