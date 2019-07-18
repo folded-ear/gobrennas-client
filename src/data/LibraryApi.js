@@ -11,14 +11,24 @@ const LibraryApi = {
     
     loadLibrary: () => {
         promiseFlux(
-            axios.get(`/all`),
+            axios.get(`/`),
             data => ({
                 type: LibraryActions.LIBRARY_LOADED,
                 data: data.data,
             }),
         )
-    }
-    
+    },
+
+    getIngredient(id) {
+        promiseFlux(
+            axios.get(`/or-ingredient/${id}`),
+            data => ({
+                type: LibraryActions.INGREDIENT_LOADED,
+                id,
+                data: data.data,
+            })
+        )
+    },
 }
 
 export default LibraryApi

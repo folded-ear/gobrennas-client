@@ -1,12 +1,12 @@
 import { ReduceStore } from 'flux/utils'
 import Dispatcher from './dispatcher'
-import { OrderedMap } from "immutable"
 import LoadObject from "../util/LoadObject"
 import LibraryActions from './LibraryActions'
 import LibraryApi from "./LibraryApi"
 import hotLoadObject from "../util/hotLoadObject"
 import RecipeActions from "./RecipeActions"
 import invariant from "invariant"
+import dotProp from "dot-prop-immutable"
 
 class LibraryStore extends ReduceStore {
     
@@ -15,27 +15,91 @@ class LibraryStore extends ReduceStore {
     }
     
     getInitialState() {
-        return new OrderedMap({
-            recipes: LoadObject.empty() // LoadObject<Array<Recipe>
-        })
+        return {
+            // the real goodies
+            byId: {}, // Map<ID, LoadObject<Ingredient>>
+            // used for bootstrapping (at the moment)
+            recipeIds: LoadObject.empty(), // LoadObject<ID[]>
+        }
     }
     
     reduce(state, action) {
         switch (action.type) {
             
             case LibraryActions.LOAD_LIBRARY:
-            case RecipeActions.RECIPE_CREATED:
-            case RecipeActions.RECIPE_UPDATED:
             case RecipeActions.RECIPE_DELETED:
             case RecipeActions.DISSECTION_RECORDED: {
                 LibraryApi.loadLibrary()
-                return state.set('recipes', state.get('recipes').loading())
+                return {
+                    ...state,
+                    recipeIds: state.recipeIds.loading(),
+                }
+            }
+
+            case RecipeActions.CREATE_RECIPE: {
+                return dotProp.set(
+                    state,
+                    ["byId", action.data.id],
+                    LoadObject.withValue(action.data).creating(),
+                )
+            }
+
+            case RecipeActions.RECIPE_CREATED: {
+                state = dotProp.set(
+                    state,
+                    ["byId", action.data.id],
+                    LoadObject.withValue(action.data),
+                )
+                delete state.byId[action.id]
+                state.recipeIds = state.recipeIds.map(ids =>
+                    ids.concat(action.data.id))
+                return state
+            }
+
+            case RecipeActions.UPDATE_RECIPE: {
+                return dotProp.set(
+                    state,
+                    ["byId", action.data.id],
+                    lo => lo.updating(),
+                )
+            }
+
+            case RecipeActions.RECIPE_UPDATED: {
+                return dotProp.set(
+                    state,
+                    ["byId", action.id],
+                    LoadObject.withValue(action.data).done(),
+                )
+            }
+
+            case LibraryActions.LOAD_INGREDIENT: {
+                LibraryApi.getIngredient(action.id)
+                return dotProp.set(state, ["byId", action.id], lo =>
+                    lo instanceof LoadObject
+                        ? lo.loading()
+                        : LoadObject.loading())
+            }
+
+            case LibraryActions.INGREDIENT_LOADED: {
+                return dotProp.set(
+                    state,
+                    ["byId", action.id],
+                    LoadObject.withValue(action.data),
+                )
             }
             
             case LibraryActions.LIBRARY_LOADED: {
-                return state.set('recipes', state.get('recipes').done().setValue(action.data))
+                return {
+                    ...state,
+                    recipeIds: LoadObject.withValue(action.data.map(r => r.id)),
+                    // use the "pure function implemented with mutable local state" methodology
+                    byId: action.data.reduce((idx, r) => {
+                        idx[r.id] = LoadObject.withValue(r)
+                        return idx
+                    }, state.byId),
+                }
             }
-            
+
             default: {
                 return state
             }
@@ -44,10 +108,23 @@ class LibraryStore extends ReduceStore {
     
     getLibraryLO() {
         return hotLoadObject(
-            () => this.getState().get('recipes'),
+            () => this.getState().recipeIds,
             () =>
                 Dispatcher.dispatch({
                     type: LibraryActions.LOAD_LIBRARY
+                })
+        ).map(ids =>
+            ids.map(id =>
+                this.getIngredientById(id).getValueEnforcing()))
+    }
+
+    getIngredientById(id) {
+        return hotLoadObject(
+            () => this.getState().byId[id],
+            () =>
+                Dispatcher.dispatch({
+                    type: LibraryActions.LOAD_INGREDIENT,
+                    id,
                 })
         )
     }
@@ -57,13 +134,7 @@ class LibraryStore extends ReduceStore {
             typeof selectedRecipe === "number",
             "That is not a valid integer",
         )
-
-        const lo = this.getLibraryLO()
-        if(lo.hasValue()) {
-            const recipe = lo.getValueEnforcing().find( recipe => recipe.id === selectedRecipe)
-            return recipe != null ? LoadObject.withValue(recipe) : LoadObject.empty()
-        }
-        return lo
+        return this.getIngredientById(selectedRecipe)
     }
 }
 
