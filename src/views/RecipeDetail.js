@@ -15,12 +15,6 @@ import AddToList from "./AddToList"
 import { Recipe } from "../data/RecipeTypes"
 import history from "../util/history"
 
-const handleAddToList = (recipeId, listId) => Dispatcher.dispatch({
-    type: RecipeActions.ASSEMBLE_SHOPPING_LIST,
-    recipeId,
-    listId,
-})
-
 const RecipeDetail = ({recipeLO}) => {
 
     if (!recipeLO.hasValue()) {
@@ -69,7 +63,11 @@ const RecipeDetail = ({recipeLO}) => {
                     </List.Item>}
                     size="small"
                     split
-                    footer={<AddToList onClick={listId => handleAddToList(recipe.id, listId)} />}
+                    footer={<AddToList onClick={listId => Dispatcher.dispatch({
+                        type: RecipeActions.ASSEMBLE_SHOPPING_LIST,
+                        recipeIds: [recipe.id],
+                        listId,
+                    })} />}
                 />
             </React.Fragment>}
 

@@ -46,15 +46,16 @@ const RecipeApi = {
         )
     },
     
-    assembleShoppingList(recipeId, listId) {
+    assembleShoppingList(recipeIds, listId) {
         promiseFlux(
-            axios.post(`/recipe/${recipeId}/_actions`, {
+            axios.post(`/recipe/${recipeIds[0]}/_actions`, {
                 type: "ASSEMBLE_SHOPPING_LIST",
+                additionalRecipeIds: recipeIds.slice(1),
                 listId,
             }),
             () => ({
                 type: RecipeActions.SHOPPING_LIST_ASSEMBLED,
-                recipeId,
+                recipeIds,
                 listId,
             }),
         )

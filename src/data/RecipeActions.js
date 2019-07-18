@@ -3,7 +3,7 @@ import PropTypes from "prop-types"
 
 const sendShape = {
     listId: PropTypes.number,
-    recipeId: PropTypes.number,
+    recipeIds: PropTypes.arrayOf(PropTypes.number),
 }
 
 const dissectionComponentType = PropTypes.shape({
