@@ -1,19 +1,5 @@
 @import '~antd/dist/antd.css';
 
-.recipes-list {
-  padding-top: 20px;
-
-  h2 {
-    color: dodgerblue;
-    cursor: pointer;
-
-    &:hover {
-      color: royalblue;
-      text-decoration: underline;
-    }
-  }
-}
-
 .logo {
   width: 120px;
   height: 31px;
