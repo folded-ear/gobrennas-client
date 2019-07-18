@@ -5,6 +5,7 @@ import RouteActions from "./RouteActions"
 import LibraryActions from "./LibraryActions"
 import LibraryStore from "./LibraryStore"
 import LoadObject from "../util/LoadObject"
+import ClientId from "../util/ClientId"
 
 const loadRecipeIfPossible = draftLO => {
     if (draftLO.isDone()) return draftLO
@@ -30,7 +31,7 @@ class DraftRecipeStore extends ReduceStore {
     
     getInitialState() {
         return LoadObject.withValue({
-            id: null
+            id: ClientId.next(),
         })
     }
     

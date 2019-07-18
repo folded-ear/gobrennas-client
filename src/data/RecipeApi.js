@@ -10,10 +10,17 @@ const axios = BaseAxios.create({
 const RecipeApi = {
     
     addRecipe(recipe) {
+        // save this for later
+        const id = recipe.id
+        recipe = {...recipe}
+        // the clientId gives the server grief
+        delete recipe.id
         promiseFlux(
             axios.post('/recipe', recipe),
-            () => ({
-                type: RecipeActions.RECIPE_CREATED
+            data => ({
+                type: RecipeActions.RECIPE_CREATED,
+                id, // need this for translation
+                data: data.data,
             })
         )
     },
@@ -23,6 +30,7 @@ const RecipeApi = {
             axios.put(`/recipe/${recipe.id}`, recipe),
             data => ({
                 type: RecipeActions.RECIPE_UPDATED,
+                id: recipe.id,
                 data: data.data,
             })
         )

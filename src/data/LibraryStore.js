@@ -27,7 +27,6 @@ class LibraryStore extends ReduceStore {
         switch (action.type) {
             
             case LibraryActions.LOAD_LIBRARY:
-            case RecipeActions.RECIPE_CREATED:
             case RecipeActions.RECIPE_DELETED:
             case RecipeActions.DISSECTION_RECORDED: {
                 LibraryApi.loadLibrary()
@@ -37,19 +36,35 @@ class LibraryStore extends ReduceStore {
                 }
             }
 
+            case RecipeActions.CREATE_RECIPE: {
+                return dotProp.set(
+                    state,
+                    ["byId", action.data.id],
+                    LoadObject.creating(),
+                )
+            }
+
+            case RecipeActions.RECIPE_CREATED: {
+                return dotProp.set(
+                    dotProp.delete(state, ["byId", action.id]),
+                    ["byId", action.data.id],
+                    LoadObject.withValue(action.data),
+                )
+            }
+
             case RecipeActions.UPDATE_RECIPE: {
                 return dotProp.set(
                     state,
                     ["byId", action.data.id],
-                    lo => lo.setValue(action.data).updating()
+                    lo => lo.updating(),
                 )
             }
 
             case RecipeActions.RECIPE_UPDATED: {
                 return dotProp.set(
                     state,
-                    ["byId", action.data.id],
-                    lo => lo.setValue(action.data).done()
+                    ["byId", action.id],
+                    LoadObject.withValue(action.data).done(),
                 )
             }
 
