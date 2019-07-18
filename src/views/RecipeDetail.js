@@ -1,10 +1,7 @@
 import React from 'react'
 import { Container } from "flux/utils"
 import Dispatcher from "../data/dispatcher"
-import {
-    Link,
-    Redirect,
-} from "react-router-dom"
+import { Redirect } from "react-router-dom"
 import {
     Affix,
     Button,
@@ -19,6 +16,7 @@ import Directions from "./common/Directions"
 import IngredientParseUI from "./IngredientParseUI"
 import loadObjectOf from "../util/loadObjectOf"
 import { Recipe } from "../data/RecipeTypes"
+import { history } from "../data/RouteStore"
 
 const handleAddToList = (recipeId, listId) => Dispatcher.dispatch({
     type: RecipeActions.ASSEMBLE_SHOPPING_LIST,
@@ -39,16 +37,16 @@ const RecipeDetail = ({recipeLO}) => {
 
     return (
         <div>
-            <Link to="/library">
+            <Button.Group>
                 <Button
                     icon="close"
+                    onClick={() => history.push("/library")}
                 >Close</Button>
-            </Link>
-            <Link to={`/library/recipe/${recipe.id}/edit`}>
                 <Button
                     icon="edit"
+                    onClick={() => history.push(`/library/recipe/${recipe.id}/edit`)}
                 >Edit</Button>
-            </Link>
+            </Button.Group>
 
             <Affix offsetTop={0}>
                 <h2 style={{
