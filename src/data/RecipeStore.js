@@ -4,6 +4,7 @@ import RecipeActions from './RecipeActions'
 import Dispatcher from './dispatcher'
 import RecipeApi from "./RecipeApi"
 import LoadObject from "../util/LoadObject"
+import { history } from "./RouteStore"
 
 const buildRecipe = recipe => {
     recipe.type = "Recipe"
@@ -58,6 +59,11 @@ class RecipeStore extends ReduceStore {
             
             case RecipeActions.UPDATE_RECIPE: {
                 RecipeApi.updateRecipe(buildRecipe(action.data))
+                return state
+            }
+
+            case RecipeActions.RECIPE_DELETED: {
+                history.push("/library")
                 return state
             }
             
