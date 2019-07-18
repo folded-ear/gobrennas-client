@@ -1,6 +1,9 @@
 import { ReduceStore } from "flux/utils"
 import Dispatcher from "./dispatcher"
+import { createBrowserHistory } from "history"
 import RouteActions from "./RouteActions"
+
+export const history = createBrowserHistory()
 
 class RouteStore extends ReduceStore {
     constructor() {
