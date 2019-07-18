@@ -40,16 +40,20 @@ class LibraryStore extends ReduceStore {
                 return dotProp.set(
                     state,
                     ["byId", action.data.id],
-                    LoadObject.creating(),
+                    LoadObject.withValue(action.data).creating(),
                 )
             }
 
             case RecipeActions.RECIPE_CREATED: {
-                return dotProp.set(
-                    dotProp.delete(state, ["byId", action.id]),
+                state = dotProp.set(
+                    state,
                     ["byId", action.data.id],
                     LoadObject.withValue(action.data),
                 )
+                delete state.byId[action.id]
+                state.recipeIds = state.recipeIds.map(ids =>
+                    ids.concat(action.data.id))
+                return state
             }
 
             case RecipeActions.UPDATE_RECIPE: {
