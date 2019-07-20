@@ -734,15 +734,12 @@ class TaskStore extends ReduceStore {
             case TaskActions.TASK_RENAMED:
                 return taskRenamed(state, action.id, action.name)
             case TaskActions.FOCUS:
-                userAction()
                 state = focusTask(state, action.id)
                 return flushTasksToRename(state)
             case TaskActions.FOCUS_NEXT:
-                userAction()
                 state = focusDelta(state, action.id, 1)
                 return flushTasksToRename(state)
             case TaskActions.FOCUS_PREVIOUS:
-                userAction()
                 state = focusDelta(state, action.id, -1)
                 return flushTasksToRename(state)
             case TaskActions.CREATE_TASK_AFTER:
