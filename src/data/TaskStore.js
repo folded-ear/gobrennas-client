@@ -590,6 +590,13 @@ const listsLoaded = (state, lists) => {
     return state
 }
 
+let lastUseActionTS = null
+const userAction = () =>
+    lastUseActionTS = Date.now()
+const msSinceUseAction = () =>
+    Date.now() - lastUseActionTS
+userAction() // loading the app!
+
 class TaskStore extends ReduceStore {
     constructor() {
         super(Dispatcher)
@@ -609,6 +616,7 @@ class TaskStore extends ReduceStore {
     reduce(state, action) {
         switch (action.type) {
             case TaskActions.CREATE_LIST:
+                userAction()
                 return createList(state, action.name)
             case TaskActions.LIST_CREATED:
                 return listCreated(
@@ -620,6 +628,7 @@ class TaskStore extends ReduceStore {
 
             case TaskActions.LIST_DETAIL_VISIBILITY: {
                 if (state.listDetailVisible === action.visible) return state
+                userAction()
                 return {
                     ...state,
                     listDetailVisible: action.visible,
@@ -627,6 +636,7 @@ class TaskStore extends ReduceStore {
             }
 
             case TaskActions.DELETE_LIST: {
+                userAction()
                 TaskApi.deleteList(action.id)
                 const next = dotProp.set(state, [
                     "byId",
@@ -660,11 +670,14 @@ class TaskStore extends ReduceStore {
             case TaskActions.LISTS_LOADED:
                 return listsLoaded(state, action.data)
             case TaskActions.SELECT_LIST:
+                userAction()
                 return selectList(state, action.id)
             case TaskActions.RENAME_LIST:
+                userAction()
                 return renameTask(state, action.id, action.name)
 
             case TaskActions.SET_LIST_GRANT: {
+                userAction()
                 TaskApi.setListGrant(action.id, action.userId, action.level)
                 return dotProp.set(state, [
                     "byId",
@@ -676,6 +689,7 @@ class TaskStore extends ReduceStore {
             }
 
             case TaskActions.CLEAR_LIST_GRANT: {
+                userAction()
                 TaskApi.clearListGrant(action.id, action.userId)
                 return dotProp.set(state, [
                     "byId",
@@ -710,21 +724,27 @@ class TaskStore extends ReduceStore {
                     action.id === state.activeTaskId,
                     "Renaming a non-active task is a bug.",
                 )
+                userAction()
                 return renameTask(state, action.id, action.name)
             case TaskActions.TASK_RENAMED:
                 return taskRenamed(state, action.id, action.name)
             case TaskActions.FOCUS:
+                userAction()
                 state = focusTask(state, action.id)
                 return flushTasksToRename(state)
             case TaskActions.FOCUS_NEXT:
+                userAction()
                 state = focusDelta(state, action.id, 1)
                 return flushTasksToRename(state)
             case TaskActions.FOCUS_PREVIOUS:
+                userAction()
                 state = focusDelta(state, action.id, -1)
                 return flushTasksToRename(state)
             case TaskActions.CREATE_TASK_AFTER:
+                userAction()
                 return createTaskAfter(state, action.id)
             case TaskActions.CREATE_TASK_BEFORE:
+                userAction()
                 return createTaskBefore(state, action.id)
             case TaskActions.TASK_CREATED:
                 state = taskCreated(
@@ -736,27 +756,36 @@ class TaskStore extends ReduceStore {
                 state = flushTasksToRename(state)
                 return flushParentsToReset(state)
             case TaskActions.DELETE_TASK_FORWARD:
+                userAction()
                 return forwardDeleteTask(state, action.id)
             case TaskActions.DELETE_TASK_BACKWARDS:
+                userAction()
                 return backwardsDeleteTask(state, action.id)
             case TaskActions.TASK_DELETED:
                 return taskDeleted(state, action.id)
             case TaskActions.MARK_COMPLETE:
+                userAction()
                 return completeTask(state, action.id)
             case TaskActions.TASK_COMPLETED:
                 return taskDeleted(state, action.id)
             case TaskActions.SELECT_NEXT:
+                userAction()
                 return selectDelta(state, action.id, 1)
             case TaskActions.SELECT_PREVIOUS:
+                userAction()
                 return selectDelta(state, action.id, -1)
             case TaskActions.SELECT_TO:
+                userAction()
                 return selectTo(state, action.id)
             case TaskActions.MOVE_NEXT:
+                userAction()
                 return moveDelta(state, 1)
             case TaskActions.MOVE_PREVIOUS:
+                userAction()
                 return moveDelta(state, -1)
 
             case TaskActions.MULTI_LINE_PASTE: {
+                userAction()
                 const lines = action.text.split("\n")
                     .map(l => l.trim())
                     .filter(l => l.length > 0)
@@ -786,6 +815,7 @@ class TaskStore extends ReduceStore {
 
             case TemporalActions.EVERY_15_SECONDS:
             case WindowActions.VISIBILITY_CHANGE: {
+                if (msSinceUseAction() < 1000 * 15) return state
                 if (state.activeListId == null) return state
                 if (RouteStore.getMatch().path !== "/tasks") return state
                 if (!WindowStore.isVisible()) return state
