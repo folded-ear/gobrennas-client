@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { Component } from "react"
 import Dispatcher from "../data/dispatcher"
 import {
     Button,
@@ -219,19 +219,33 @@ class IngredientParseUI extends Component {
             segments.push(raw.substring(pos))
         }
 
-        return <div>
+        return <div className={"parse-ui"}>
             <em>
                 highlight some text and click what type it is
             </em>
-            <br />
-            <span ref={this.rawRef}>{segments}</span>
-            {" "}
-            {SECTION_NAMES.map(n =>
+            <div>
+                <span ref={this.rawRef}
+                      className={"raw-string"}>
+                    {segments}
+                </span>
+                <br />
+                <Button.Group className={"block-button-group"}>
+                {SECTION_NAMES.map(n =>
+                    <Button size="small"
+                            key={n}
+                            onClick={() => this.onSelect(n)}>{n}</Button>)}
+                </Button.Group>
+                <br />
+                <Button.Group>
                 <Button size="small"
-                        key={n}
-                        onClick={() => this.onSelect(n)}>{n}</Button>)}
-
-            <br />
+                        type="primary"
+                        disabled={!sections.hasOwnProperty("name") || !sections.name.text}
+                        onClick={this.onSave}>save</Button>
+                <Button size="small"
+                        type="danger"
+                        onClick={this.onCancel}>cancel</Button>
+                </Button.Group>
+            </div>
             {SECTION_NAMES.map(n =>
                 <div key={n}>
                     {capitalize(n)}:
@@ -248,13 +262,6 @@ class IngredientParseUI extends Component {
                         : ""}
                 </div>)}
             <div>Prep: <code>{prep}</code></div>
-            <Button size="small"
-                    type="primary"
-                    disabled={!sections.hasOwnProperty("name") || !sections.name.text}
-                    onClick={this.onSave}>save</Button>
-            <Button size="small"
-                    type="danger"
-                    onClick={this.onCancel}>cancel</Button>
         </div>
     }
 }
