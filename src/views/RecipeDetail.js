@@ -89,8 +89,10 @@ const RecipeDetail = ({recipeLO, staged}) => {
                 />
             </React.Fragment>}
 
-            <h5>Preparation</h5>
-            <Directions text={recipe.directions} />
+            {recipe.directions && <React.Fragment>
+                <h5>Preparation</h5>
+                <Directions text={recipe.directions} />
+            </React.Fragment>}
 
         </div>
     )
