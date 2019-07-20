@@ -63,8 +63,6 @@ const RecipesList = (props: {}) => {
                 itemLayout="horizontal"
                 renderItem={recipe => <RecipeListItem recipe={recipe}/>}
             />
-
-            {library.length === 0  && <em>No recipes yet...</em>}
         </div>
     )
 }
