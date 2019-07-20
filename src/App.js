@@ -48,7 +48,9 @@ class App extends Component {
                 {newVersionAvailable && <NewVersionAvailable />}
                 <AppHeader authenticated={authenticated} onLogout={this.handleLogout}/>
                 
-                <Content className="content">
+                <Content className="content" style={{
+                    maxWidth: "970px",
+                }}>
                     <Switch>
                         {routes.public.map(route => {
                             return (
