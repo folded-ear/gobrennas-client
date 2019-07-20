@@ -34,13 +34,14 @@ const TaskApi = {
         )
     },
 
-    loadSubtasks(id) {
+    loadSubtasks(id, background = false) {
         promiseFlux(
             axios.get(`/${id}/subtasks`),
             data => ({
                 type: TaskActions.SUBTASKS_LOADED,
                 id,
                 data: data.data,
+                background,
             }),
         )
     },
