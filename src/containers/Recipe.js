@@ -13,9 +13,11 @@ export default withRouter(Container.createFunctional(
     ],
     (prevState, props) => {
         const { match } = props
-        const recipeLO = LibraryStore.getRecipeById(parseInt(match.params.id, 10))
+        const id = parseInt(match.params.id, 10)
+        const recipeLO = LibraryStore.getRecipeById(id)
         return {
             recipeLO,
+            staged: LibraryStore.isStaged(id),
         }
     },
     { withProps: true }

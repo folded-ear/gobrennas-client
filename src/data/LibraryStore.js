@@ -193,6 +193,9 @@ class LibraryStore extends ReduceStore {
             .map(lo => lo.getValueEnforcing())
     }
 
+    isStaged(id) {
+        return this.getState().stagedIds.indexOf(id) >= 0
+    }
 }
 
 export default new LibraryStore()

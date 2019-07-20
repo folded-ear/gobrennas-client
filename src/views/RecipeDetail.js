@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from "prop-types"
 import Dispatcher from "../data/dispatcher"
 import { Redirect } from "react-router-dom"
 import {
@@ -14,8 +15,9 @@ import loadObjectOf from "../util/loadObjectOf"
 import AddToList from "./AddToList"
 import { Recipe } from "../data/RecipeTypes"
 import history from "../util/history"
+import LibraryActions from "../data/LibraryActions"
 
-const RecipeDetail = ({recipeLO}) => {
+const RecipeDetail = ({recipeLO, staged}) => {
 
     if (!recipeLO.hasValue()) {
         if (recipeLO.isLoading()) {
@@ -33,6 +35,22 @@ const RecipeDetail = ({recipeLO}) => {
                     icon="close"
                     onClick={() => history.push("/library")}
                 >Close</Button>
+                {staged
+                    ? <Button
+                        icon="delete"
+                        onClick={() => Dispatcher.dispatch({
+                            type: LibraryActions.UNSTAGE_RECIPE,
+                            id: recipe.id,
+                        })}
+                    >Unstage</Button>
+                    : <Button
+                        icon="select"
+                        onClick={() => Dispatcher.dispatch({
+                            type: LibraryActions.STAGE_RECIPE,
+                            id: recipe.id,
+                        })}
+                    >Stage</Button>
+                }
                 <Button
                     icon="edit"
                     onClick={() => history.push(`/library/recipe/${recipe.id}/edit`)}
@@ -79,7 +97,8 @@ const RecipeDetail = ({recipeLO}) => {
 }
 
 RecipeDetail.propTypes = {
-    recipeLO: loadObjectOf(Recipe)
+    recipeLO: loadObjectOf(Recipe),
+    staged: PropTypes.bool.isRequired,
 }
 
 export default RecipeDetail
