@@ -523,8 +523,9 @@ const moveDelta = (state, delta) => {
     }
 }
 
-const loadSubtasks = (state, id) => {
-    TaskApi.loadSubtasks(id)
+const loadSubtasks = (state, id, background = false) => {
+    TaskApi.loadSubtasks(id, background)
+    if (background) return state
     return dotProp.set(
         state,
         ["byId", id],
@@ -709,6 +710,10 @@ class TaskStore extends ReduceStore {
             }
 
             case TaskActions.SUBTASKS_LOADED: {
+                if (action.background && msSinceUseAction() < 10 * 1000) {
+                    // they did something while in flight
+                    return state
+                }
                 return dotProp.set(
                     action.data.reduce(taskLoaded, state),
                     ["byId", action.id],
@@ -820,7 +825,7 @@ class TaskStore extends ReduceStore {
                 if (RouteStore.getMatch().path !== "/tasks") return state
                 if (!WindowStore.isVisible()) return state
                 if (!WindowStore.isFocused()) return state
-                return loadSubtasks(state, state.activeListId)
+                return loadSubtasks(state, state.activeListId, true)
             }
 
             default:
