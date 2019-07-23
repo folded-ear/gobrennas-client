@@ -6,6 +6,7 @@ import loadObjectOf from "../util/loadObjectOf"
 import { refType } from "../models/IngredientRef"
 import { Link } from "react-router-dom"
 import { Icon } from "antd"
+import Quantity from "./common/Quantity"
 
 const Augment = ({text, prefix, suffix}) => text
     ? <React.Fragment>{prefix}{text}{suffix}</React.Fragment>
@@ -36,14 +37,9 @@ const IngredientItem = ({ingredient: ref, iLO}) => {
     const isRecipe = ingredient.type === "Recipe"
     return (
     <span>
-        {isRecipe && ref.quantity === 1 && ref.units == null
-            ? null
-            : <React.Fragment>
-                <Augment text={ref.quantity}
-                         suffix=" " />
-                <Augment text={ref.units}
-                         suffix=" " />
-            </React.Fragment>}
+        <Quantity quantity={ref.quantity}
+                  units={ref.units}
+                  addSpace />
         {isRecipe
             ? <React.Fragment>
                 {ingredient.name}
