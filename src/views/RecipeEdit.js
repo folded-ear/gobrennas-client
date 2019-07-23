@@ -1,7 +1,7 @@
-import React, { Component } from 'react'
-import RecipeForm from '../containers/RecipeForm'
-import { Redirect } from 'react-router-dom'
-import { Spin } from 'antd'
+import React, { Component } from "react"
+import RecipeForm from "../containers/RecipeForm"
+import { Redirect } from "react-router-dom"
+import { Spin } from "antd"
 import Dispatcher from "../data/dispatcher"
 import RecipeApi from "../data/RecipeApi"
 import RecipeActions from "../data/RecipeActions"
@@ -18,6 +18,11 @@ const handleSave = (recipe) => {
     })
 }
 
+const handleCancel = recipe => Dispatcher.dispatch({
+    type: RecipeActions.CANCEL_EDIT,
+    id: recipe.id,
+})
+
 class RecipeEdit extends Component<{ recipeLO: any }> {
     render() {
         let {recipeLO} = this.props
@@ -32,7 +37,8 @@ class RecipeEdit extends Component<{ recipeLO: any }> {
         return (
             <div>
                 <h2>Editing {recipeLO.getValueEnforcing().name}</h2>
-                <RecipeForm onSave={handleSave}/>
+                <RecipeForm onSave={handleSave}
+                            onCancel={handleCancel}/>
                 <hr />
                 <DeleteButton
                     type="recipe"

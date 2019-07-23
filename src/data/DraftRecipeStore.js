@@ -1,11 +1,12 @@
-import { ReduceStore } from 'flux/utils'
-import Dispatcher from './dispatcher'
+import { ReduceStore } from "flux/utils"
+import Dispatcher from "./dispatcher"
 import RecipeActions from "./RecipeActions"
 import RouteActions from "./RouteActions"
 import LibraryActions from "./LibraryActions"
 import LibraryStore from "./LibraryStore"
 import LoadObject from "../util/LoadObject"
 import ClientId from "../util/ClientId"
+import history from "../util/history"
 
 const loadRecipeIfPossible = draftLO => {
     if (draftLO.isDone()) return draftLO
@@ -83,6 +84,16 @@ class DraftRecipeStore extends ReduceStore {
             }
 
             case RecipeActions.RECIPE_CREATED: {
+                return this.getInitialState()
+            }
+
+            case RecipeActions.CANCEL_ADD: {
+                history.push("/library")
+                return this.getInitialState()
+            }
+
+            case RecipeActions.CANCEL_EDIT: {
+                history.push(`/library/recipe/${action.id}`)
                 return this.getInitialState()
             }
 

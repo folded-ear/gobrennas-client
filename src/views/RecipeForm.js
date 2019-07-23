@@ -19,7 +19,7 @@ const handleUpdate = (e) => {
     })
 }
 
-const RecipeForm = ({draft: lo, onSave}) => {
+const RecipeForm = ({draft: lo, onSave, onCancel}) => {
 
     const {TextArea} = Input
     const draft = lo.getValueEnforcing()
@@ -61,9 +61,13 @@ const RecipeForm = ({draft: lo, onSave}) => {
                 />
             </Form.Item>
             <Form.Item>
-                <Button
-                    type="primary"
-                    onClick={() => onSave(draft)}>Save</Button>
+                <Button.Group>
+                    <Button
+                        type="primary"
+                        onClick={() => onSave(draft)}>Save</Button>
+                    <Button
+                        onClick={() => onCancel(draft)}>Cancel</Button>
+                </Button.Group>
             </Form.Item>
         </Form>
     )
@@ -75,6 +79,7 @@ const RecipeForm = ({draft: lo, onSave}) => {
 
 RecipeForm.propTypes = {
     onSave: PropTypes.func,
+    onCancel: PropTypes.func,
     draft: Recipe
 }
 

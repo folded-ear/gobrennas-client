@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { Component } from "react"
 import RecipeForm from "../containers/RecipeForm"
 import Dispatcher from "../data/dispatcher"
 import RecipeActions from "../data/RecipeActions"
@@ -10,13 +10,18 @@ const handleSave = (recipe) => {
     })
 }
 
+const handleCancel = () => Dispatcher.dispatch({
+    type: RecipeActions.CANCEL_ADD,
+})
+
 class RecipeAdd extends Component<{}> {
     render() {
         return (
             <div>
                 <h2>Add New Recipe</h2>
                 <div>
-                    <RecipeForm onSave={handleSave}/>
+                    <RecipeForm onSave={handleSave}
+                                onCancel={handleCancel}/>
                 </div>
             </div>
         )
