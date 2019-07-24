@@ -3,6 +3,7 @@ import PropTypes from "prop-types"
 import Dispatcher from "../data/dispatcher"
 import {
     Button,
+    Card,
     List,
     Spin,
 } from "antd"
@@ -14,7 +15,7 @@ import RecipeActions from "../data/RecipeActions"
 import LibraryActions from "../data/LibraryActions"
 
 const RecipesList = (props: {}) => {
-    const {libraryLO, stagedRecipes} = props
+    const {libraryLO, stagedRecipes, shoppingList} = props
 
     if (!libraryLO.hasValue()) {
         return <Spin tip="Loading recipe library..."/>
@@ -30,6 +31,21 @@ const RecipesList = (props: {}) => {
         <div className="recipes-list">
             <h1>Recipe Library</h1>
             {stagedRecipes.length > 0 && <React.Fragment>
+                <Card
+                    title="Shopping List"
+                    size="small"
+                    style={{
+                        float:"right",
+                        maxWidth: "50%",
+                        margin: "0 0 2em 2em",
+                    }}>
+                    {shoppingList.hasValue()
+                        ? <List dataSource={shoppingList.getValueEnforcing()}
+                                size="small"
+                                split={false}
+                                renderItem={it => <List.Item>{it}</List.Item>} />
+                        : <Spin tip="Generating list..." />}
+                </Card>
                 <h2>Staged</h2>
                 <List
                     dataSource={stagedRecipes}

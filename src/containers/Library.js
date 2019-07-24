@@ -11,12 +11,11 @@ export default Container.createFunctional(
         LibraryStore,
         RecipeStore
     ],
-    () => {
-      return {
+    () => ({
         recipes: RecipeStore.getState(),
         libraryLO: LibraryStore.getLibraryLO()
             .map(rs => rs.sort(humanStringComparator)),
-          stagedRecipes: LibraryStore.getStagedRecipes(),
-      }
-    }
+        stagedRecipes: LibraryStore.getStagedRecipes(),
+        shoppingList: LibraryStore.getShoppingList(),
+    })
 )
