@@ -250,7 +250,7 @@ class LibraryStore extends ReduceStore {
                     }
                     // gotta merge
                     Object.keys(packet[iid]).forEach(u => {
-                        result[iid][u] += packet[iid][u]
+                        result[iid][u] = (result[iid][u] || 0) + packet[iid][u]
                     })
                 })
                 return result
@@ -278,11 +278,13 @@ class LibraryStore extends ReduceStore {
                 Object.keys(items).map(id => {
                     const ing = this.getIngredientById(id).getValueEnforcing()
                     const unitMap = items[id]
-                    return Object.keys(unitMap).reduce(
-                        (str, u) =>
-                            str + ", " + unitMap[u] + (u === "null" ? "" : (" " + u)),
-                        ing.name,
-                    )
+                    return {
+                        ingredient: ing,
+                        quantities: Object.keys(unitMap).map(u => ({
+                            units: u === "null" ? null : u,
+                            quantity: unitMap[u]
+                        }))
+                    }
                 }).concat(raws))
     }
 
