@@ -13,6 +13,49 @@ import { refType } from "../models/IngredientRef"
 
 const SECTION_NAMES = ["quantity", "units", "name"]
 
+const autoparse = raw => {
+    if (raw !== raw.trim()) return null
+    const i = raw.indexOf(",")
+    if (i > 0) raw = raw.substring(0, i)
+    const words = raw.split(" ")
+    let names
+    if (!/[0-9]/.test(words[0])) {
+        names = ["name"]
+    } else {
+        if (words.length === 1) {
+            names = ["name"]
+        } else if (words.length === 2) {
+            names = ["quantity", "name"]
+        } else {
+            names = SECTION_NAMES
+        }
+    }
+    while (words.length > names.length) {
+        const last = words.pop()
+        words.push(words.pop() + " " + last)
+    }
+    let wIdx = 0 // so we can skip empty items
+    let pos = 0
+    return names.reduce((ss, n) => {
+        while (words[wIdx] === "") {
+            wIdx += 1
+            pos += 1
+        }
+        const w = words[wIdx]
+        const result = {
+            ...ss,
+            [n]: {
+                start: pos,
+                end: pos + w.length,
+                text: w,
+            }
+        }
+        wIdx += 1
+        pos += w.length + 1
+        return result
+    }, {})
+}
+
 const rebuildPrep = (raw, sections) => {
     const prepSegments = []
     let pos = 0
@@ -63,7 +106,13 @@ class IngredientParseUI extends Component {
     }
 
     onParse() {
-        this.setState({parsing: true})
+        const {ingredient: {raw}} = this.props
+        const sections = autoparse(raw)
+        this.setState({
+            parsing: true,
+            sections,
+            prep: rebuildPrep(raw, sections),
+        })
     }
 
     onSelect(section) {
