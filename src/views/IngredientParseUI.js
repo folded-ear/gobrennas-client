@@ -40,6 +40,7 @@ const autoparse = raw => {
             wIdx += 1
             pos += 1
         }
+        if (wIdx >= words.length) return ss
         const w = words[wIdx]
         const result = {
             ...ss,
