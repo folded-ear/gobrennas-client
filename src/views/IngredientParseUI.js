@@ -8,10 +8,52 @@ import IngredientItem from "./IngredientItem"
 import "./IngredientParseUI.scss"
 import PropTypes from "prop-types"
 import RecipeActions from "../data/RecipeActions"
-import capitalize from "../util/capitalize"
 import { refType } from "../models/IngredientRef"
 
 const SECTION_NAMES = ["quantity", "units", "name"]
+
+const autoparse = raw => {
+    if (raw !== raw.trim()) return null
+    const i = raw.indexOf(",")
+    if (i > 0) raw = raw.substring(0, i)
+    const words = raw.split(" ")
+    let names
+    if (!/[0-9]/.test(words[0])) {
+        names = ["name"]
+    } else {
+        if (words.length === 1) {
+            names = ["name"]
+        } else if (words.length === 2) {
+            names = ["quantity", "name"]
+        } else {
+            names = SECTION_NAMES
+        }
+    }
+    while (words.length > names.length) {
+        const last = words.pop()
+        words.push(words.pop() + " " + last)
+    }
+    let wIdx = 0 // so we can skip empty items
+    let pos = 0
+    return names.reduce((ss, n) => {
+        while (words[wIdx] === "") {
+            wIdx += 1
+            pos += 1
+        }
+        const w = words[wIdx]
+        const result = {
+            ...ss,
+            [n]: {
+                start: pos,
+                end: pos + w.length,
+                text: w,
+            }
+        }
+        wIdx += 1
+        pos += w.length + 1
+        return result
+    }, {})
+}
 
 const rebuildPrep = (raw, sections) => {
     const prepSegments = []
@@ -63,7 +105,13 @@ class IngredientParseUI extends Component {
     }
 
     onParse() {
-        this.setState({parsing: true})
+        const {ingredient: {raw}} = this.props
+        const sections = autoparse(raw)
+        this.setState({
+            parsing: true,
+            sections,
+            prep: rebuildPrep(raw, sections),
+        })
     }
 
     onSelect(section) {
@@ -172,30 +220,33 @@ class IngredientParseUI extends Component {
         const {
             parsing,
             sections,
-            prep,
         } = this.state
+        const raw = ingredient.raw
 
         if (!parsing) {
             return <React.Fragment>
                 <IngredientItem ingredient={ingredient} />
-                <div style={{
-                    marginLeft: "auto",
-                }}>
-                    {ingredient.ingredientId
-                        ? <Icon type="check"
-                                style={{
-                                    color: "green",
-                                    paddingRight: "1.5em",
-                                }} />
-                        : <Button size="small"
-                                  onClick={this.onParse}>
-                            parse
-                        </Button>}
-                </div>
+                {ingredient.ingredientId
+                    ? <Icon type="check"
+                            onClick={this.onParse}
+                            title={`Reparse '${raw}'`}
+                            style={{
+                                marginLeft: "auto",
+                                color: "green",
+                            }} />
+                    : <Button size="small"
+                              type="primary"
+                              shape="circle"
+                              icon="highlight"
+                              onClick={this.onParse}
+                              title={`Parse '${raw}'`}
+                              style={{
+                                  marginLeft: "auto",
+                              }}
+                    />}
             </React.Fragment>
         }
 
-        const raw = ingredient.raw
         let pos = 0
         let segments = []
         Object.keys(sections)
@@ -212,6 +263,10 @@ class IngredientParseUI extends Component {
                 }
                 segments.push(<span key={n} className={"parse parse-" + n}>
                     {raw.substring(start, end)}
+                    <Icon size="small"
+                          type="close-circle"
+                          onClick={() => this.removeSection(n)}
+                    />
                 </span>)
                 pos = end
             })
@@ -219,24 +274,22 @@ class IngredientParseUI extends Component {
             segments.push(raw.substring(pos))
         }
 
-        return <div className={"parse-ui"}>
-            <em>
-                highlight some text and click what type it is
-            </em>
-            <div>
-                <span ref={this.rawRef}
-                      className={"raw-string"}>
-                    {segments}
-                </span>
-                <br />
-                <Button.Group className={"block-button-group"}>
+        return <div className="parse-ui">
+            <em>highlight some text and click what type it is</em>
+            <br />
+            <span ref={this.rawRef}
+                  className={"raw-string"}>
+                {segments}
+            </span>
+            <br />
+            <Button.Group>
                 {SECTION_NAMES.map(n =>
                     <Button size="small"
                             key={n}
+                            className={"btn-" + n}
                             onClick={() => this.onSelect(n)}>{n}</Button>)}
-                </Button.Group>
-                <br />
-                <Button.Group>
+            </Button.Group>
+            <Button.Group>
                 <Button size="small"
                         type="primary"
                         disabled={!sections.hasOwnProperty("name") || !sections.name.text}
@@ -244,24 +297,7 @@ class IngredientParseUI extends Component {
                 <Button size="small"
                         type="danger"
                         onClick={this.onCancel}>cancel</Button>
-                </Button.Group>
-            </div>
-            {SECTION_NAMES.map(n =>
-                <div key={n}>
-                    {capitalize(n)}:
-                    {" "}
-                    {sections.hasOwnProperty(n)
-                        ? <code className={"parse parse-" + n}>
-                            {sections[n].text}
-                            {" "}
-                            <Icon size="small"
-                                  type="close"
-                                  onClick={() => this.removeSection(n)}
-                            />
-                        </code>
-                        : ""}
-                </div>)}
-            <div>Prep: <code>{prep}</code></div>
+            </Button.Group>
         </div>
     }
 }

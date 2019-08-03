@@ -48,7 +48,11 @@ const IngredientItem = ({ingredient: ref, iLO}) => {
                     <Icon type="link" />
                 </Link>
             </React.Fragment>
-            : ingredient.name}
+            : <span style={{
+                textDecoration: "#999 dotted underline",
+            }}>
+                {ingredient.name}
+            </span>}
         <Augment text={ref.preparation}
                  prefix=", " />
     </span>

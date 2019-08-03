@@ -1,8 +1,29 @@
 .parse-ui {
+
   .raw-string {
     display: inline-block;
-    margin: 10px;
     font-size: 120%;
+    margin: 0.4em 0 0.5em;
+
+    .anticon {
+      font-size: 80%;
+      margin-left: 0.5em;
+      color: #999;
+    }
+  }
+
+  .ant-btn-group {
+    margin-right: 1em;
+  }
+
+  .btn-quantity {
+    background-color: #f5fff5;
+  }
+  .btn-units {
+    background-color: #fff5f5;
+  }
+  .btn-name {
+    background-color: #f5f5ff;
   }
 
   .parse {
@@ -15,17 +36,16 @@
       border-color: #cfc;
       background-color: #e7ffe7;
     }
+
     &.parse-units {
       border-color: #fcc;
       background-color: #ffe7e7;
     }
+
     &.parse-name {
       border-color: #ccf;
       background-color: #e7e7ff;
     }
-    &.parse-prep {
-      border-color: #cff;
-      background-color: #e7ffff;
-    }
+
   }
 }
