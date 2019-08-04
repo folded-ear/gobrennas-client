@@ -35,7 +35,7 @@ const autoparse = raw => {
     if (i > 0) raw = raw.substring(0, i)
     const words = raw.split(" ")
     let names
-    if (!/[0-9]/.test(words[0])) {
+    if (!/[0-9¼½¾⅐⅑⅒⅓⅔⅕⅖⅗⅘⅙⅚⅛⅜⅝⅞]/.test(words[0])) {
         names = ["name"]
     } else {
         if (words.length === 1) {
