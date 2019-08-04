@@ -12,6 +12,23 @@ import { refType } from "../models/IngredientRef"
 
 const SECTION_NAMES = ["quantity", "units", "name"]
 
+/**
+ * I attempt to identify the quantity, units, and name in a raw ingredient
+ * string, returning a "sections" object as used for the rest of the UI. For a
+ * small set of happy-path strings. :) The algorithm is:
+ *
+ * 1. if there are leading or trailing spaces, return null
+ * 2. if the string contains a comma, ignore it and everything after it
+ * 3. if the first word DOES NOT contain a number, the whole string is the name
+ * 4. else the first word is the quantity
+ * 5. if there are exactly two words, the second word is the name (no units)
+ * 6. else the second word is the units, the rest is the name
+ *
+ * A "section" object is an object with any subset of quantity, units, and name
+ * keys, where each value is an object with exactly three keys: start, end, and
+ * text. The first two are character indexes in the raw string, and the third is
+ * the actual text (i.e., `raw.substring(start, end)`).
+ */
 const autoparse = raw => {
     if (raw !== raw.trim()) return null
     const i = raw.indexOf(",")
