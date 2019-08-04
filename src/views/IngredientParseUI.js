@@ -29,6 +29,14 @@ const NUM_RE = /[0-9¼½¾⅐⅑⅒⅓⅔⅕⅖⅗⅘⅙⅚⅛⅜⅝⅞]/
  * keys, where each value is an object with exactly three keys: start, end, and
  * text. The first two are character indexes in the raw string, and the third is
  * the actual text (i.e., `raw.substring(start, end)`).
+ *
+ * ---
+ *
+ * Subsequently augmented to include:
+ *
+ * 1. collapse all runs of spaces (including non-breaking spaces)
+ * 1. while the first and second words contain a number, combine them
+ *
  */
 const autoparse = raw => {
     if (raw !== raw.trim()) return null
