@@ -12,6 +12,7 @@ import { refType } from "../models/IngredientRef"
 
 const SECTION_NAMES = ["quantity", "units", "name"]
 
+const NUM_RE = /[0-9¼½¾⅐⅑⅒⅓⅔⅕⅖⅗⅘⅙⅚⅛⅜⅝⅞]/
 /**
  * I attempt to identify the quantity, units, and name in a raw ingredient
  * string, returning a "sections" object as used for the rest of the UI. For a
@@ -35,9 +36,12 @@ const autoparse = raw => {
     if (i > 0) raw = raw.substring(0, i)
     const words = raw.split(" ")
     let names
-    if (!/[0-9¼½¾⅐⅑⅒⅓⅔⅕⅖⅗⅘⅙⅚⅛⅜⅝⅞]/.test(words[0])) {
+    if (!NUM_RE.test(words[0])) {
         names = ["name"]
     } else {
+        while (NUM_RE.test(words[1])) {
+            words.unshift(words.shift() + " " + words.shift())
+        }
         if (words.length === 1) {
             names = ["name"]
         } else if (words.length === 2) {
