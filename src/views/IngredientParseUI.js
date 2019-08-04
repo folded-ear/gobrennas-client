@@ -34,7 +34,15 @@ const autoparse = raw => {
     if (raw !== raw.trim()) return null
     const i = raw.indexOf(",")
     if (i > 0) raw = raw.substring(0, i)
-    const words = raw.split(" ")
+    const words = raw
+        .replace(/\u00A0/g, " ")
+        .split(" ")
+    for (let i = words.length - 2; i > 0; i--) {
+        if (words[i] === "") {
+            words[i + 1] = " " + words[i + 1]
+            words.splice(i, 1)
+        }
+    }
     let names
     if (!NUM_RE.test(words[0])) {
         names = ["name"]
@@ -57,10 +65,6 @@ const autoparse = raw => {
     let wIdx = 0 // so we can skip empty items
     let pos = 0
     return names.reduce((ss, n) => {
-        while (words[wIdx] === "") {
-            wIdx += 1
-            pos += 1
-        }
         if (wIdx >= words.length) return ss
         const w = words[wIdx]
         const result = {
