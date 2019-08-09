@@ -81,7 +81,6 @@ class RecipeStore extends ReduceStore {
 
             case RecipeActions.RAW_INGREDIENT_DISSECTED: {
                 RecipeApi.recordIngredientDissection(
-                    action.recipeId,
                     action.raw,
                     action.quantity,
                     action.units,

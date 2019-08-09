@@ -6,7 +6,6 @@ import {
 } from "antd"
 import IngredientItem from "./IngredientItem"
 import "./IngredientParseUI.scss"
-import PropTypes from "prop-types"
 import RecipeActions from "../data/RecipeActions"
 import { refType } from "../models/IngredientRef"
 
@@ -226,7 +225,6 @@ class IngredientParseUI extends Component {
 
     onSave() {
         const {
-            recipeId,
             ingredient: {raw},
         } = this.props
         const {
@@ -237,7 +235,6 @@ class IngredientParseUI extends Component {
         if (! parsing) throw new Error("Save while not parsing?!")
         Dispatcher.dispatch({
             type: RecipeActions.RAW_INGREDIENT_DISSECTED,
-            recipeId,
             raw,
             ...sections,
             prep,
@@ -338,8 +335,6 @@ class IngredientParseUI extends Component {
 
 IngredientParseUI.propTypes = {
     ingredient: refType.isRequired,
-    recipeId: PropTypes.number.isRequired,
-    offset: PropTypes.number.isRequired,
 }
 
 export default IngredientParseUI

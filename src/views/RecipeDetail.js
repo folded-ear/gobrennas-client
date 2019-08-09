@@ -72,12 +72,8 @@ const RecipeDetail = ({recipeLO, staged}) => {
                 <h5>Ingredients</h5>
                 <List
                     dataSource={recipe.ingredients}
-                    renderItem={(it, offset) => <List.Item>
-                        <IngredientParseUI
-                            ingredient={it}
-                            recipeId={recipe.id}
-                            offset={offset}
-                        />
+                    renderItem={it => <List.Item>
+                        <IngredientParseUI ingredient={it} />
                     </List.Item>}
                     size="small"
                     split
