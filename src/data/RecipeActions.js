@@ -40,6 +40,7 @@ const RecipeActions = {
         recipeId: PropTypes.number.isRequired,
         raw: PropTypes.string.isRequired,
     }),
+    NEW_DRAFT_INGREDIENT_YO: "recipe/new-draft-ingredient-yo",
 }
 
 export default RecipeActions

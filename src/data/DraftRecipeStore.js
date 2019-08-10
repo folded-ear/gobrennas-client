@@ -7,6 +7,7 @@ import LibraryStore from "./LibraryStore"
 import LoadObject from "../util/LoadObject"
 import ClientId from "../util/ClientId"
 import history from "../util/history"
+import dotProp from "dot-prop-immutable"
 
 const loadRecipeIfPossible = draftLO => {
     if (draftLO.isDone()) return draftLO
@@ -69,9 +70,19 @@ class DraftRecipeStore extends ReduceStore {
 
             case RecipeActions.DRAFT_RECIPE_UPDATED: {
                 let {key, value} = action.data
+                state = state.map(s => dotProp.set(s, key, value))
+                // if (key === "rawIngredients") {
+                //     state = state.map(buildRecipe)
+                // }
+                return state
+            }
+
+            case RecipeActions.NEW_DRAFT_INGREDIENT_YO: {
                 return state.map(s => ({
                     ...s,
-                    [key]: value,
+                    ingredients: (s.ingredients || []).concat({
+                        raw: "",
+                    }),
                 }))
             }
 

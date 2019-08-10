@@ -4,7 +4,7 @@ const Recipe = Record({
   id: '',
   type: 'Recipe',
   name: '',
-  rawIngredients: '',
+  // rawIngredients: '',
   externalUrl: '',
   ingredients: [],
   directions: ''

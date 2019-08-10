@@ -5,10 +5,12 @@ import {
     Button,
     Form,
     Input,
+    List,
     Spin,
 } from "antd"
 import RecipeActions from "../data/RecipeActions"
 import { Recipe } from "../data/RecipeTypes"
+import ElEdit from "./ElEdit"
 
 
 const handleUpdate = (e) => {
@@ -43,12 +45,22 @@ const RecipeForm = ({draft: lo, onSave, onCancel}) => {
                 />
             </Form.Item>
             <Form.Item>
-                <TextArea
-                    name="rawIngredients"
-                    placeholder="Add Ingredients List"
-                    value={draft.rawIngredients}
-                    onChange={handleUpdate}
-                    rows={10}
+                <List
+                    dataSource={draft.ingredients}
+                    renderItem={(it, i) =>
+                        <ElEdit
+                            name={`ingredients.${i}`}
+                            value={it}
+                            onChange={handleUpdate}
+                        />}
+                    footer={<Button
+                        icon="plus"
+                        onClick={() => Dispatcher.dispatch({
+                            type: RecipeActions.NEW_DRAFT_INGREDIENT_YO,
+                        })}
+                    >
+                        New
+                    </Button>}
                 />
             </Form.Item>
             <Form.Item>
