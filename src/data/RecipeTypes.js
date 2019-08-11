@@ -19,7 +19,6 @@ export const Recipe = PropTypes.shape({
     id: PropTypes.number,
     type: PropTypes.string,
     name: PropTypes.string,
-    // rawIngredients: PropTypes.string,
     externalUrl: PropTypes.string,
     ingredients: PropTypes.arrayOf(IngredientRef),
     directions: PropTypes.string

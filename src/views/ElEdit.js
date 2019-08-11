@@ -1,10 +1,12 @@
 import React from "react"
 import PropTypes from "prop-types"
 import {
-    List,
+    Icon,
+    Input,
     Spin,
 } from "antd"
 import RecipeApi from "../data/RecipeApi"
+import debounce from "../util/debounce"
 
 class ElEdit extends React.PureComponent {
 
@@ -13,6 +15,7 @@ class ElEdit extends React.PureComponent {
         this.state = {
             recog: null,
         }
+        this.recognizeDebounced = debounce(this.recognize.bind(this))
     }
 
     componentDidMount() {
@@ -21,7 +24,7 @@ class ElEdit extends React.PureComponent {
 
     componentDidUpdate(prevProps) {
         if (this.props.value.raw === prevProps.value.raw) return
-        this.recognize()
+        this.recognizeDebounced()
     }
 
     recognize() {
@@ -30,39 +33,48 @@ class ElEdit extends React.PureComponent {
             value,
             onChange,
         } = this.props
-        const {
-            raw,
-        } = value
-        RecipeApi.recognizeElement(raw).then(
-            recog => {
-                if (recog.raw !== value.raw) return
-                const raw = recog.raw
-                const qr = recog.ranges.find(r => r.type === "AMOUNT")
-                const ur = recog.ranges.find(
-                    r => r.type === "UNIT" || r.type === "NEW_UNIT")
-                const nr = recog.ranges.find(
-                    r => r.type === "ITEM" || r.type === "NEW_ITEM")
-                const q = qr && raw.substring(qr.start, qr.end)
+        if (value.raw == null || value.raw.trim().length === 0) return
+        RecipeApi.recognizeElement(value.raw)
+            .then(recog => {
+                if (recog.raw !== this.props.value.raw) return
+                const qr = recog.ranges.find(r =>
+                    r.type === "AMOUNT")
+                const ur = recog.ranges.find(r =>
+                    r.type === "UNIT" || r.type === "NEW_UNIT")
+                const nr = recog.ranges.find(r =>
+                    r.type === "ITEM" || r.type === "NEW_ITEM")
+                const textFromRange = r =>
+                    r && recog.raw.substring(r.start, r.end)
+                const stripMarkers = s => {
+                    if (s == null) return s
+                    if (s.length < 3) return s
+                    const c = s.charAt(0).toLowerCase()
+                    if (c !== s.charAt(s.length - 1)) return s
+                    if (c >= 'a' && c <= 'z') return s
+                    if (c >= '0' && c <= '9') return s
+                    return s.substring(1, s.length - 1)
+                }
+                const q = textFromRange(qr)
                 const qv = qr && qr.value
-                const u = ur && raw.substring(ur.start, ur.end)
+                const u = textFromRange(ur)
                 const uv = ur && ur.value
-                const n = nr && raw.substring(nr.start, nr.end)
+                const n = textFromRange(nr)
                 const nv = nr && nr.value
                 const p = recog.ranges.reduce(
                     (p, r) =>
-                        p.replace(raw.substring(r.start, r.end), ''),
-                    raw,
+                        p.replace(recog.raw.substring(r.start, r.end), ''),
+                    recog.raw,
                 ).trim().replace(/\s+/g, ' ')
                 onChange({
                     target: {
                         name,
                         value: {
-                            raw: raw,
+                            raw: recog.raw,
                             quantity: qv,
-                            units: u, // todo: nope
                             uomId: uv,
-                            item: n, // todo: nope
+                            units: stripMarkers(u),
                             ingredientId: nv,
+                            ingredient: stripMarkers(n),
                             prep: p,
                         },
                     },
@@ -74,8 +86,7 @@ class ElEdit extends React.PureComponent {
                     n, nv,
                     p,
                 })
-            },
-            recog => this.setState({recog}))
+            })
     }
 
     render() {
@@ -86,42 +97,45 @@ class ElEdit extends React.PureComponent {
         } = this.props
         const {
             raw,
-            quantity,
-            uomId,
-            ingredientId,
-            prep,
-            // todo: not these...
-            units,
-            item,
         } = value
         const {
             recog,
-            q, qv, u, uv, n, nv, p,
+            q, u, uv, n, nv, p,
         } = this.state
-        return <List.Item>
-            <input name={`${name}.raw`} value={raw} onChange={onChange} />
-            <Hunk>
-                {quantity && <span style={{background: "#fde"}}>{quantity}</span>}
-                {units && <span style={{background: "#efd"}}>{units} (#{uomId})</span>}
-                {ingredientId && <span style={{background: "#def"}}>{item} (#{ingredientId})</span>}
-                {prep && <span>, {prep}</span>}
-            </Hunk>
+        return <React.Fragment>
+            <Input name={`${name}.raw`}
+                   value={raw}
+                   onChange={onChange}
+                   style={{
+                       width: "40vw"
+                   }}
+                   suffix={n == null
+                       ? <Icon type="warning"
+                               title="No Ingredient Found!"
+                               style={{
+                                   color: "red",
+                               }}
+                       />
+                       : <span />}
+            />
             {recog == null
-                ? <Spin />
+                ? <Hunk><Spin /></Hunk>
                 : <Hunk>
-                    {q && <span style={{background: "#fde"}}>{q} ({qv})</span>}
-                    {u && <span style={{background: "#efd"}}>{u} (#{uv})</span>}
-                    {n && <span style={{background: "#def"}}>{n} (#{nv})</span>}
-                    {p && <span>, {p}</span>}
+                    {q && <Hunk style={{backgroundColor: "#fde"}}>{q}</Hunk>}
+                    {u && <Hunk style={{backgroundColor: uv ? "#efd" : "#dfe"}}>{u}</Hunk>}
+                    {n && <Hunk style={{backgroundColor: nv ? "#def" : "#edf"}}>{n}</Hunk>}
+                    {p && <span>{n ? ", " : null}{p}</span>}
                 </Hunk>
             }
-        </List.Item>
+        </React.Fragment>
     }
 }
 
-const Hunk = ({children}) => <span style={{
-    marginLeft: "10px",
-}}>[ {children} ]</span>
+const Hunk = ({children, style}) => <span style={{
+    ...style,
+    marginLeft: "0.4em",
+    padding: "0 0.25em"
+}}>{children}</span>
 
 ElEdit.propTypes = {
     name: PropTypes.string.isRequired,

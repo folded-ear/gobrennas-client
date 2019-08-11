@@ -19,9 +19,6 @@ const loadRecipeIfPossible = draftLO => {
     return draftLO.setValue({
         ...state,
         ...recipe,
-        rawIngredients: recipe.ingredients
-            .map(item => item.raw)
-            .join("\n"),
     }).done()
 }
 
@@ -71,19 +68,45 @@ class DraftRecipeStore extends ReduceStore {
             case RecipeActions.DRAFT_RECIPE_UPDATED: {
                 let {key, value} = action.data
                 state = state.map(s => dotProp.set(s, key, value))
-                // if (key === "rawIngredients") {
-                //     state = state.map(buildRecipe)
-                // }
                 return state
             }
 
             case RecipeActions.NEW_DRAFT_INGREDIENT_YO: {
-                return state.map(s => ({
-                    ...s,
-                    ingredients: (s.ingredients || []).concat({
+                return state.map(s => {
+                    const ing = {
                         raw: "",
-                    }),
-                }))
+                    }
+                    const ingredients = s.ingredients == null
+                        ? []
+                        : s.ingredients.slice(0)
+                    const idx = action.hasOwnProperty("index")
+                        ? action.index
+                        : ingredients.length
+                    if (idx < 0 || idx >= ingredients.length) {
+                        ingredients.push(ing)
+                    } else {
+                        ingredients.splice(idx + 1, 0, ing)
+                    }
+                    return {
+                        ...s,
+                        ingredients,
+                    }
+                })
+            }
+
+            case RecipeActions.KILL_DRAFT_INGREDIENT_YO: {
+                return state.map(s => {
+                    if (s.ingredients == null) return s
+                    const idx = action.index
+                    if (idx == null || idx < 0) return s
+                    if (idx >= s.ingredients.length) return s
+                    const ingredients = s.ingredients.slice(0)
+                    ingredients.splice(idx, 1)
+                    return {
+                        ...s,
+                        ingredients,
+                    }
+                })
             }
 
             case RecipeActions.CREATE_RECIPE: {

@@ -41,6 +41,8 @@ const RecipeActions = {
         raw: PropTypes.string.isRequired,
     }),
     NEW_DRAFT_INGREDIENT_YO: "recipe/new-draft-ingredient-yo",
+    KILL_DRAFT_INGREDIENT_YO: "recipe/kill-draft-ingredient-yo",
+
 }
 
 export default RecipeActions
