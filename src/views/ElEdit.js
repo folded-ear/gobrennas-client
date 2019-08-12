@@ -107,7 +107,7 @@ class ElEdit extends React.PureComponent {
                    value={raw}
                    onChange={onChange}
                    style={{
-                       width: "40vw"
+                       width: "50%",
                    }}
                    suffix={n == null
                        ? <Icon type="warning"
