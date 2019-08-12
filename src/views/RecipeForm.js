@@ -5,11 +5,12 @@ import {
     Button,
     Form,
     Input,
+    List,
     Spin,
 } from "antd"
 import RecipeActions from "../data/RecipeActions"
 import { Recipe } from "../data/RecipeTypes"
-
+import ElEdit from "./ElEdit"
 
 const handleUpdate = (e) => {
     const { name: key, value } = e.target
@@ -19,11 +20,20 @@ const handleUpdate = (e) => {
     })
 }
 
+const NewIngredient = <Button
+    icon="plus"
+    onClick={() => Dispatcher.dispatch({
+        type: RecipeActions.NEW_DRAFT_INGREDIENT_YO,
+    })}
+>
+    New Ingredient
+</Button>
+
 const RecipeForm = ({draft: lo, onSave, onCancel}) => {
 
     const {TextArea} = Input
     const draft = lo.getValueEnforcing()
-
+    const hasIngredients = draft.ingredients && draft.ingredients.length > 0
     const form = (
         <Form layout="vertical">
             <Form.Item>
@@ -43,12 +53,37 @@ const RecipeForm = ({draft: lo, onSave, onCancel}) => {
                 />
             </Form.Item>
             <Form.Item>
-                <TextArea
-                    name="rawIngredients"
-                    placeholder="Add Ingredients List"
-                    value={draft.rawIngredients}
-                    onChange={handleUpdate}
-                    rows={10}
+                <List
+                    dataSource={draft.ingredients}
+                    renderItem={(it, i) => <List.Item>
+                        <ElEdit
+                            name={`ingredients.${i}`}
+                            value={it}
+                            onChange={handleUpdate}
+                        />
+                        <div style={{marginLeft: "auto"}}>
+                            <Button
+                                key="add"
+                                icon="plus"
+                                onClick={() => Dispatcher.dispatch({
+                                    type: RecipeActions.NEW_DRAFT_INGREDIENT_YO,
+                                    index: i,
+                                })}
+                            />
+                            <Button
+                                key="delete"
+                                icon="delete"
+                                onClick={() => Dispatcher.dispatch({
+                                    type: RecipeActions.KILL_DRAFT_INGREDIENT_YO,
+                                    index: i,
+                                })}
+                            />
+                        </div>
+                    </List.Item>}
+                    split={false}
+                    size="small"
+                    header={hasIngredients || NewIngredient}
+                    footer={hasIngredients && NewIngredient}
                 />
             </Form.Item>
             <Form.Item>

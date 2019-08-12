@@ -60,6 +60,15 @@ const RecipeApi = {
             }),
         )
     },
+
+    recognizeElement(raw) {
+        return axios.post(`/recipe/_actions`, {
+            type: "RECOGNIZE_ELEMENT",
+            rawElement: raw,
+        }).then(
+            data => data.data
+        )
+    },
     
     recordIngredientDissection(raw, quantity, units, name, prep) {
         promiseFlux(

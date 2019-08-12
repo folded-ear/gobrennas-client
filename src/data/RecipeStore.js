@@ -6,34 +6,9 @@ import RecipeApi from "./RecipeApi"
 import LoadObject from "../util/LoadObject"
 import history from "../util/history"
 
-const buildRecipe = recipe => {
+export const buildRecipe = recipe => {
     recipe.type = "Recipe"
-    const rawMap = {} // this is a MULTI-map, because there's no guarantee that raw ingredients are unique
-    if (recipe.ingredients) {
-        recipe.ingredients.forEach(i => {
-            if (rawMap.hasOwnProperty(i.raw)) {
-                rawMap[i.raw].push(i)
-            } else {
-                rawMap[i.raw] = [i]
-            }
-        })
-    }
-    recipe.ingredients = recipe.rawIngredients
-        .split("\n")
-        .map(it => it.trim())
-        .filter(it => it.length > 0)
-        .map(raw => {
-            if (rawMap.hasOwnProperty(raw)) {
-                const i = rawMap[raw].shift()
-                if (rawMap[raw].length === 0) {
-                    delete rawMap[raw]
-                }
-                return i
-            } else {
-                return { raw }
-            }
-        })
-
+    delete recipe.rawIngredients
     return recipe
 }
 
