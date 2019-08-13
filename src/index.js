@@ -20,7 +20,7 @@ window.React = React
 window.ReactDOM = ReactDOM
 {
     const s = document.createElement("script")
-    s.src = "ring-ui.js"
+    s.src = `${document.documentElement.dataset.publicUrl}/ring-ui.js`
     s.type = "text/javascript"
     s.onload = () => {
         Object.entries(window.RingUI)
