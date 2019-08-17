@@ -19,7 +19,15 @@ const loadRecipeIfPossible = draftLO => {
     return draftLO.setValue({
         ...state,
         ...recipe,
-    }).done()
+    }).done().map(s => {
+        if (s.ingredients == null || s.ingredients.length === 0) {
+            s = {
+                ...s,
+                ingredients: [{raw: ""}]
+            }
+        }
+        return s
+    })
 }
 
 class DraftRecipeStore extends ReduceStore {
@@ -31,6 +39,7 @@ class DraftRecipeStore extends ReduceStore {
     getInitialState() {
         return LoadObject.withValue({
             id: ClientId.next(),
+            ingredients: [{raw: ""}]
         })
     }
     
@@ -102,6 +111,33 @@ class DraftRecipeStore extends ReduceStore {
                     if (idx >= s.ingredients.length) return s
                     const ingredients = s.ingredients.slice(0)
                     ingredients.splice(idx, 1)
+                    return {
+                        ...s,
+                        ingredients,
+                    }
+                })
+            }
+
+            case RecipeActions.MULTI_LINE_DRAFT_INGREDIENT_PASTE_YO: {
+                return state.map(s => {
+                    const ingredients = s.ingredients == null
+                        ? []
+                        : s.ingredients.slice(0)
+                    let idx = action.index < 0
+                        ? 0
+                        : action.index < ingredients.length
+                            ? action.index
+                            : ingredients.length - 1
+                    if (ingredients[idx].raw.length === 0) {
+                        // if pasting into an empty on, delete it
+                        ingredients.splice(idx--, 1)
+                    }
+                    action.text
+                        .split("\n")
+                        .map(it => it.trim())
+                        .filter(it => it.length > 0)
+                        .forEach(raw =>
+                            ingredients.splice(++idx, 0, {raw}))
                     return {
                         ...s,
                         ingredients,

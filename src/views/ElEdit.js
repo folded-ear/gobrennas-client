@@ -16,6 +16,7 @@ class ElEdit extends React.PureComponent {
             recog: null,
         }
         this.recognizeDebounced = debounce(this.recognize.bind(this))
+        this.onPaste = this.onPaste.bind(this)
     }
 
     componentDidMount() {
@@ -89,6 +90,19 @@ class ElEdit extends React.PureComponent {
             })
     }
 
+    onPaste(e) {
+        const {
+            onMultilinePaste,
+        } = this.props
+        if (onMultilinePaste == null) return // don't care!
+        let text = e.clipboardData.getData("text")
+        if (text == null) return
+        text = text.trim()
+        if (text.indexOf("\n") < 0) return // default behaviour
+        e.preventDefault() // no default
+        onMultilinePaste(text)
+    }
+
     render() {
         const {
             name,
@@ -106,6 +120,7 @@ class ElEdit extends React.PureComponent {
             <Input name={`${name}.raw`}
                    value={raw}
                    onChange={onChange}
+                   onPaste={this.onPaste}
                    style={{
                        width: "50%",
                    }}
@@ -147,6 +162,7 @@ ElEdit.propTypes = {
         prep: PropTypes.string,
     }).isRequired,
     onChange: PropTypes.func.isRequired,
+    onMultilinePaste: PropTypes.func,
 }
 
 export default ElEdit

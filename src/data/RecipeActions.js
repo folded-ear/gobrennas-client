@@ -42,7 +42,7 @@ const RecipeActions = {
     }),
     NEW_DRAFT_INGREDIENT_YO: "recipe/new-draft-ingredient-yo",
     KILL_DRAFT_INGREDIENT_YO: "recipe/kill-draft-ingredient-yo",
-
+    MULTI_LINE_DRAFT_INGREDIENT_PASTE_YO: "recipe/multi-line-draft-ingredient-paste-yo",
 }
 
 export default RecipeActions
