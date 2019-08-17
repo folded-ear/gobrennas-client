@@ -19,7 +19,15 @@ const loadRecipeIfPossible = draftLO => {
     return draftLO.setValue({
         ...state,
         ...recipe,
-    }).done()
+    }).done().map(s => {
+        if (s.ingredients == null || s.ingredients.length === 0) {
+            s = {
+                ...s,
+                ingredients: [{raw: ""}]
+            }
+        }
+        return s
+    })
 }
 
 class DraftRecipeStore extends ReduceStore {
@@ -31,6 +39,7 @@ class DraftRecipeStore extends ReduceStore {
     getInitialState() {
         return LoadObject.withValue({
             id: ClientId.next(),
+            ingredients: [{raw: ""}]
         })
     }
     
