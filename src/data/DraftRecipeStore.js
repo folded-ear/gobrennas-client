@@ -109,6 +109,33 @@ class DraftRecipeStore extends ReduceStore {
                 })
             }
 
+            case RecipeActions.MULTI_LINE_DRAFT_INGREDIENT_PASTE_YO: {
+                return state.map(s => {
+                    const ingredients = s.ingredients == null
+                        ? []
+                        : s.ingredients.slice(0)
+                    let idx = action.index < 0
+                        ? 0
+                        : action.index < ingredients.length
+                            ? action.index
+                            : ingredients.length - 1
+                    if (ingredients[idx].raw.length === 0) {
+                        // if pasting into an empty on, delete it
+                        ingredients.splice(idx--, 1)
+                    }
+                    action.text
+                        .split("\n")
+                        .map(it => it.trim())
+                        .filter(it => it.length > 0)
+                        .forEach(raw =>
+                            ingredients.splice(++idx, 0, {raw}))
+                    return {
+                        ...s,
+                        ingredients,
+                    }
+                })
+            }
+
             case RecipeActions.CREATE_RECIPE: {
                 return state.creating()
             }

@@ -60,6 +60,11 @@ const RecipeForm = ({draft: lo, onSave, onCancel}) => {
                             name={`ingredients.${i}`}
                             value={it}
                             onChange={handleUpdate}
+                            onMultilinePaste={text => Dispatcher.dispatch({
+                                type: RecipeActions.MULTI_LINE_DRAFT_INGREDIENT_PASTE_YO,
+                                index: i,
+                                text,
+                            })}
                         />
                         <div style={{marginLeft: "auto"}}>
                             <Button
