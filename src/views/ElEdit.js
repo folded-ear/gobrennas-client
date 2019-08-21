@@ -76,7 +76,7 @@ class ElEdit extends React.PureComponent {
                             units: stripMarkers(u),
                             ingredientId: nv,
                             ingredient: stripMarkers(n),
-                            prep: p,
+                            preparation: p,
                         },
                     },
                 })
@@ -159,7 +159,7 @@ ElEdit.propTypes = {
         quantity: PropTypes.number,
         units: PropTypes.string,
         ingredientId: PropTypes.number,
-        prep: PropTypes.string,
+        preparation: PropTypes.string,
     }).isRequired,
     onChange: PropTypes.func.isRequired,
     onMultilinePaste: PropTypes.func,
