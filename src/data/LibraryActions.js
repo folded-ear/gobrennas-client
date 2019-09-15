@@ -6,6 +6,7 @@ const LibraryActions = {
     STAGE_RECIPE: "library/stage-recipe",
     UNSTAGE_RECIPE: "library/unstage-recipe",
     UNSTAGE_ALL_RECIPES: "library/unstage-all-recipes",
+    SET_SCOPE: "library/set-scope",
 }
 
 export default LibraryActions

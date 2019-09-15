@@ -12,28 +12,42 @@ import {
     removeDistinct,
 } from "../util/arrayAsSet"
 
+export const SCOPE_MINE = "mine"
+export const SCOPE_EVERYONE = "everyone"
+
 class LibraryStore extends ReduceStore {
-    
+
     constructor() {
         super(Dispatcher)
     }
-    
+
     getInitialState() {
         return {
             // the real goodies
             byId: {}, // Map<ID, LoadObject<Ingredient>>
             // used for bootstrapping (at the moment)
             recipeIds: LoadObject.empty(), // LoadObject<ID[]>
+            scope: SCOPE_MINE,
             stagedIds: [], // ID[]
         }
     }
     
     reduce(state, action) {
         switch (action.type) {
+
+            case LibraryActions.SET_SCOPE: {
+                if (action.scope === state.scope) return state
+                LibraryApi.loadLibrary(action.scope)
+                return {
+                    ...state,
+                    scope: action.scope,
+                    recipeIds: LoadObject.loading(),
+                }
+            }
             
             case LibraryActions.LOAD_LIBRARY:
             case RecipeActions.DISSECTION_RECORDED: {
-                LibraryApi.loadLibrary()
+                LibraryApi.loadLibrary(state.scope)
                 return {
                     ...state,
                     recipeIds: state.recipeIds.loading(),

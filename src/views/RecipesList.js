@@ -6,6 +6,7 @@ import {
     Card,
     List,
     Spin,
+    Switch,
 } from "antd"
 import RecipeListItem from "./RecipeListItem"
 import loadObjectOf from "../util/loadObjectOf"
@@ -14,6 +15,10 @@ import AddToList from "./AddToList"
 import RecipeActions from "../data/RecipeActions"
 import LibraryActions from "../data/LibraryActions"
 import Quantity from "./common/Quantity"
+import {
+    SCOPE_EVERYONE,
+    SCOPE_MINE,
+} from "../data/LibraryStore"
 
 const ShoppingListItem = it =>
     typeof it === "string"
@@ -31,7 +36,7 @@ const ShoppingListItem = it =>
         </List.Item>
 
 const RecipesList = (props: {}) => {
-    const {libraryLO, stagedRecipes, shoppingList} = props
+    const {scope, libraryLO, stagedRecipes, shoppingList} = props
 
     if (!libraryLO.hasValue()) {
         return <Spin tip="Loading recipe library..."/>
@@ -45,6 +50,16 @@ const RecipesList = (props: {}) => {
         .filter(r => !stagedIds.has(r.id))
     return (
         <div className="recipes-list">
+            <div style={{float: "right"}}>
+                <Switch checked={scope === SCOPE_EVERYONE}
+                        checkedChildren="Everyone"
+                        unCheckedChildren="Mine"
+                        onChange={everyone => Dispatcher.dispatch({
+                            type: LibraryActions.SET_SCOPE,
+                            scope: everyone ? SCOPE_EVERYONE : SCOPE_MINE,
+                        })}
+                />
+            </div>
             <h1>Recipe Library</h1>
             {stagedRecipes.length > 0 && <React.Fragment>
                 <Card

@@ -9,9 +9,9 @@ const axios = BaseAxios.create({
 
 const LibraryApi = {
     
-    loadLibrary: () => {
+    loadLibrary: (scope) => {
         promiseFlux(
-            axios.get(`/`),
+            axios.get(`/?scope=${encodeURIComponent(scope)}`),
             data => ({
                 type: LibraryActions.LIBRARY_LOADED,
                 data: data.data,

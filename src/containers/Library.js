@@ -13,6 +13,7 @@ export default Container.createFunctional(
     ],
     () => ({
         recipes: RecipeStore.getState(),
+        scope: LibraryStore.getState().scope,
         libraryLO: LibraryStore.getLibraryLO()
             .map(rs => rs.sort(humanStringComparator)),
         stagedRecipes: LibraryStore.getStagedRecipes(),
