@@ -8,9 +8,11 @@ import {
     List,
     Spin,
 } from "antd"
+import RecipeActions from "../data/RecipeActions"
 import Directions from "./common/Directions"
 import IngredientParseUI from "./IngredientParseUI"
 import loadObjectOf from "../util/loadObjectOf"
+import AddToList from "./AddToList"
 import { Recipe } from "../data/RecipeTypes"
 import history from "../util/history"
 import LibraryActions from "../data/LibraryActions"
@@ -75,6 +77,11 @@ const RecipeDetail = ({recipeLO, staged}) => {
                     </List.Item>}
                     size="small"
                     split
+                    footer={<AddToList onClick={listId => Dispatcher.dispatch({
+                        type: RecipeActions.ASSEMBLE_SHOPPING_LIST,
+                        recipeIds: [recipe.id],
+                        listId,
+                    })} />}
                 />
             </React.Fragment>}
 
