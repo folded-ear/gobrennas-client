@@ -49,8 +49,17 @@ class RecipeStore extends ReduceStore {
                 )
                 return state.set("sendState", LoadObject.updating())
             }
-            
-            case RecipeActions.SHOPPING_LIST_ASSEMBLED: {
+
+            case RecipeActions.SEND_TO_SHOPPING_LIST: {
+                RecipeApi.sendToShoppingList(
+                    action.recipeId,
+                    action.listId,
+                )
+                return state.set("sendState", LoadObject.updating())
+            }
+
+            case RecipeActions.SHOPPING_LIST_ASSEMBLED:
+            case RecipeActions.SHOPPING_LIST_SENT: {
                 return state.set("sendState", LoadObject.empty())
             }
 

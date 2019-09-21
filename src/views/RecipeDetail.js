@@ -78,8 +78,8 @@ const RecipeDetail = ({recipeLO, staged}) => {
                     size="small"
                     split
                     footer={<AddToList onClick={listId => Dispatcher.dispatch({
-                        type: RecipeActions.ASSEMBLE_SHOPPING_LIST,
-                        recipeIds: [recipe.id],
+                        type: RecipeActions.SEND_TO_SHOPPING_LIST,
+                        recipeId: recipe.id,
                         listId,
                     })} />}
                 />

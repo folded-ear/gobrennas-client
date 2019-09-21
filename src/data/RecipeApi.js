@@ -61,6 +61,20 @@ const RecipeApi = {
         )
     },
 
+    sendToShoppingList(recipeId, listId) {
+        promiseFlux(
+            axios.post(`/recipe/${recipeId}/_actions`, {
+                type: "SEND_TO_SHOPPING_LIST",
+                listId,
+            }),
+            () => ({
+                type: RecipeActions.SHOPPING_LIST_SENT,
+                recipeId,
+                listId,
+            }),
+        )
+    },
+
     recognizeElement(raw) {
         return axios.post(`/recipe/_actions`, {
             type: "RECOGNIZE_ELEMENT",
