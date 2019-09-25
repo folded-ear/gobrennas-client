@@ -61,11 +61,17 @@ class ElEdit extends React.PureComponent {
                 const uv = ur && ur.value
                 const n = textFromRange(nr)
                 const nv = nr && nr.value
-                const p = recog.ranges.reduce(
-                    (p, r) =>
-                        p.replace(recog.raw.substring(r.start, r.end), ''),
-                    recog.raw,
-                ).trim().replace(/\s+/g, ' ')
+                const p = [qr, ur, nr]
+                    .filter(it => it != null)
+                    .sort((a, b) => b.start - a.start)
+                    .reduce(
+                        (p, r) =>
+                            p.substr(0, r.start) + p.substr(r.end),
+                        recog.raw,
+                    )
+                    .trim()
+                    .replace(/\s+/g, ' ')
+                    .replace(/^\s*,/, '')
                 onChange({
                     target: {
                         name,
