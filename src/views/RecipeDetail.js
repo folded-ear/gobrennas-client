@@ -16,6 +16,7 @@ import AddToList from "./AddToList"
 import { Recipe } from "../data/RecipeTypes"
 import history from "../util/history"
 import LibraryActions from "../data/LibraryActions"
+import LabelItem from "./LabelItem"
 
 const RecipeDetail = ({recipeLO, staged}) => {
 
@@ -89,6 +90,8 @@ const RecipeDetail = ({recipeLO, staged}) => {
                 <h3>Preparation</h3>
                 <Directions text={recipe.directions} />
             </React.Fragment>}
+            
+            {recipe.labels && recipe.labels.map( label => <LabelItem key={label} label={label} />)}
 
         </div>
     )

@@ -14,30 +14,34 @@ import { Recipe } from "../data/RecipeTypes"
 import AddToList from "./AddToList"
 import RecipeActions from "../data/RecipeActions"
 import LibraryActions from "../data/LibraryActions"
-import Quantity from "./common/Quantity"
+import ShoppingListItem from "./ShoppingListItem"
+import SearchFilter from "./SearchFilter"
 import {
     SCOPE_EVERYONE,
     SCOPE_MINE,
 } from "../data/LibraryStore"
 
-const ShoppingListItem = it =>
-    typeof it === "string"
-        ? <List.Item>&quot;{it}&quot;</List.Item>
-        : <List.Item>
-            {it.ingredient.name} ({it.quantities.map((q, i, a) =>
-            <span key={q.units}>
-                {i > 0 && ", "}
-                {i > 0 && i === a.length - 1 && " and"}
-                <Quantity
-                    quantity={q.quantity}
-                    units={q.units}/>
-        </span>,
-        )})
-        </List.Item>
+const updateFilter = (e) => {
+    const {value: filter} = e.target
+    Dispatcher.dispatch({
+        type: LibraryActions.UPDATE_FILTER,
+        filter
+    })
+}
+
+const sendFilter = (e) => {
+    if (e.key === 'Enter') {
+        const {value: filter} = e.target
+        Dispatcher.dispatch({
+            type: LibraryActions.FILTER_LIBRARY,
+            filter
+        })
+    }
+}
 
 const RecipesList = (props: {}) => {
-    const {scope, libraryLO, stagedRecipes, shoppingList} = props
-
+    const {filter, scope, libraryLO, stagedRecipes, shoppingList} = props
+    
     if (!libraryLO.hasValue()) {
         return <Spin tip="Loading recipe library..."/>
     }
@@ -60,7 +64,15 @@ const RecipesList = (props: {}) => {
                         })}
                 />
             </div>
+            
             <h1>Recipe Library</h1>
+    
+            <SearchFilter
+                onChange={updateFilter}
+                onFilter={sendFilter}
+                term={filter}
+                />
+            
             {stagedRecipes.length > 0 && <React.Fragment>
                 <Card
                     title="Shopping List"
@@ -114,9 +126,16 @@ const RecipesList = (props: {}) => {
     )
 }
 
+RecipesList.defaultProps = {
+    filter: "",
+    scope: "mine"
+}
+
 RecipesList.propTypes = {
     libraryLO: loadObjectOf(PropTypes.arrayOf(Recipe)).isRequired,
     stagedRecipes: PropTypes.arrayOf(Recipe).isRequired,
+    filter: PropTypes.string,
+    scope: PropTypes.string
 }
 
 export default RecipesList

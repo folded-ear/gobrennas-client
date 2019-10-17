@@ -39,7 +39,8 @@ class DraftRecipeStore extends ReduceStore {
     getInitialState() {
         return LoadObject.withValue({
             id: ClientId.next(),
-            ingredients: [{raw: ""}]
+            ingredients: [{raw: ""}],
+            labels: []
         })
     }
     
@@ -77,6 +78,17 @@ class DraftRecipeStore extends ReduceStore {
             case RecipeActions.DRAFT_RECIPE_UPDATED: {
                 let {key, value} = action.data
                 state = state.map(s => dotProp.set(s, key, value))
+                return state
+            }
+    
+            case RecipeActions.NEW_DRAFT_LABEL: {
+                state = state.map( s => dotProp.set(s, "labels", s.labels.concat([action.data])))
+                return state
+            }
+            
+            case RecipeActions.REMOVE_DRAFT_LABEL: {
+                const { index } = action.data
+                state = state.map( s => dotProp.delete(s, `labels.${index}`))
                 return state
             }
 

@@ -25,6 +25,8 @@ const RecipeActions = {
     LOAD_EMPTY_RECIPE: 'recipe/load-empty-recipe',
     LOAD_RECIPE_DRAFT: 'recipe/load-recipe/draft',
     DRAFT_RECIPE_UPDATED: 'recipe/draft-recipe-updated',
+    NEW_DRAFT_LABEL: 'recipe/new-draft-label',
+    REMOVE_DRAFT_LABEL: 'recipe/remove-draft-label',
     SAVE_DRAFT_RECIPE: 'recipe/save-draft-recipe',
     ASSEMBLE_SHOPPING_LIST: typedAction("recipe/assemble-shopping-list", sendShape),
     SHOPPING_LIST_ASSEMBLED: typedAction("recipe/shopping-list-assembled", sendShape),

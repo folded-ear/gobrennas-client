@@ -29,6 +29,7 @@ class LibraryStore extends ReduceStore {
             recipeIds: LoadObject.empty(), // LoadObject<ID[]>
             scope: SCOPE_MINE,
             stagedIds: [], // ID[]
+            filter: ""
         }
     }
     
@@ -37,7 +38,7 @@ class LibraryStore extends ReduceStore {
 
             case LibraryActions.SET_SCOPE: {
                 if (action.scope === state.scope) return state
-                LibraryApi.loadLibrary(action.scope)
+                LibraryApi.loadLibrary(action.scope, state.filter)
                 return {
                     ...state,
                     scope: action.scope,
@@ -45,9 +46,24 @@ class LibraryStore extends ReduceStore {
                 }
             }
             
+            case LibraryActions.UPDATE_FILTER: {
+                return {
+                    ...state,
+                    filter: action.filter
+                }
+            }
+            
+            case LibraryActions.FILTER_LIBRARY: {
+                LibraryApi.loadLibrary(state.scope, state.filter)
+                return {
+                    ...state,
+                    recipeIds: LoadObject.loading(),
+                }
+            }
+            
             case LibraryActions.LOAD_LIBRARY:
             case RecipeActions.DISSECTION_RECORDED: {
-                LibraryApi.loadLibrary(state.scope)
+                LibraryApi.loadLibrary(state.scope, state.filter)
                 return {
                     ...state,
                     recipeIds: state.recipeIds.loading(),

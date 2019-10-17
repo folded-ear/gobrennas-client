@@ -1,5 +1,6 @@
 import React from 'react'
 import PropTypes from "prop-types"
+import ChipInput from "material-ui-chip-input"
 import Dispatcher from '../data/dispatcher'
 import {
     Button,
@@ -20,6 +21,20 @@ const handleUpdate = (e) => {
     })
 }
 
+const addLabel = (label) => {
+    Dispatcher.dispatch({
+        type: RecipeActions.NEW_DRAFT_LABEL,
+        data: label
+    })
+}
+
+const removeLabel = (label, index) => {
+    Dispatcher.dispatch({
+        type: RecipeActions.REMOVE_DRAFT_LABEL,
+        data: {label, index}
+    })
+}
+
 const NewIngredient = <Button
     icon="plus"
     onClick={() => Dispatcher.dispatch({
@@ -34,6 +49,7 @@ const RecipeForm = ({draft: lo, onSave, onCancel}) => {
     const {TextArea} = Input
     const draft = lo.getValueEnforcing()
     const hasIngredients = draft.ingredients && draft.ingredients.length > 0
+    
     const form = (
         <Form layout="vertical">
             <Form.Item>
@@ -98,6 +114,17 @@ const RecipeForm = ({draft: lo, onSave, onCancel}) => {
                     value={draft.directions}
                     onChange={handleUpdate}
                     rows={10}
+                />
+            </Form.Item>
+            <Form.Item>
+                <ChipInput
+                    name="labels"
+                    value={draft.labels}
+                    onAdd={addLabel}
+                    onDelete={removeLabel}
+                    fullWidth
+                    label='Labels'
+                    placeholder='Type and press enter to add labels'
                 />
             </Form.Item>
             <Form.Item>
