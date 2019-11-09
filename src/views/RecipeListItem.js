@@ -53,6 +53,7 @@ const RecipeListItem = ({recipe, staged}) => {
             ]}>
             <List.Item.Meta
                 title={recipe.name}
+                description={recipe.labels && recipe.labels.length ? recipe.labels.sort().join(", ") : null}
             />
         </Item>
     )
