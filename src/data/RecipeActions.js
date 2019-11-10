@@ -47,6 +47,15 @@ const RecipeActions = {
     NEW_DRAFT_INGREDIENT_YO: "recipe/new-draft-ingredient-yo",
     KILL_DRAFT_INGREDIENT_YO: "recipe/kill-draft-ingredient-yo",
     MULTI_LINE_DRAFT_INGREDIENT_PASTE_YO: "recipe/multi-line-draft-ingredient-paste-yo",
+
+    LABEL_ADDED: typedAction("recipe/label-added", {
+        id: PropTypes.number.isRequired,
+        label: PropTypes.string.isRequired,
+    }),
+    LABEL_REMOVED: typedAction("recipe/label-removed", {
+        id: PropTypes.number.isRequired,
+        label: PropTypes.string.isRequired,
+    }),
 }
 
 export default RecipeActions

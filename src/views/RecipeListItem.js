@@ -10,10 +10,16 @@ import EditButton from "./common/EditButton"
 import { Recipe } from "../data/RecipeTypes"
 import history from "../util/history"
 import LibraryActions from "../data/LibraryActions"
+import { LABEL_STAGED_INDICATOR } from "../data/LibraryStore"
 
 const {Item} = List
 
 const RecipeListItem = ({recipe, staged}) => {
+    const labelString = (recipe.labels || [])
+        .filter(l =>
+            l !== LABEL_STAGED_INDICATOR)
+        .sort()
+        .join(", ")
     return (
         <Item
             key={recipe.id}
@@ -53,7 +59,7 @@ const RecipeListItem = ({recipe, staged}) => {
             ]}>
             <List.Item.Meta
                 title={recipe.name}
-                description={recipe.labels && recipe.labels.length ? recipe.labels.sort().join(", ") : null}
+                description={labelString}
             />
         </Item>
     )

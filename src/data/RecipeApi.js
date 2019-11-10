@@ -101,8 +101,32 @@ const RecipeApi = {
                 raw,
             }),
         )
-    }
-    
+    },
+
+    addLabel(id, label) {
+        promiseFlux(
+            // this endpoint wants a plain-text post body containing the label
+            axios.post(`/recipe/${id}/labels`, label, {
+                headers: { 'Content-Type': 'text/plain' }
+            }),
+            () => ({
+                type: RecipeActions.LABEL_ADDED,
+                id,
+                label,
+            }),
+        )
+    },
+
+    removeLabel(id, label) {
+        promiseFlux(
+            axios.delete(`/recipe/${id}/labels/${encodeURIComponent(label)}`),
+            () => ({
+                type: RecipeActions.LABEL_REMOVED,
+                id,
+                label,
+            }),
+        )
+    },
 }
 
 export default RecipeApi
