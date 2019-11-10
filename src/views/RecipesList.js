@@ -19,7 +19,6 @@ import LibraryActions from "../data/LibraryActions"
 import ShoppingListItem from "./ShoppingListItem"
 import SearchFilter from "./SearchFilter"
 import {
-    isRecipeStaged,
     SCOPE_EVERYONE,
     SCOPE_MINE,
 } from "../data/LibraryStore"
@@ -43,18 +42,9 @@ const sendFilter = (e) => {
 }
 
 const RecipesList = (props: {}) => {
-    const {me, filter, scope, libraryLO, shoppingList} = props
-    
-    if (!libraryLO.hasValue()) {
-        return <Spin tip="Loading recipe library..."/>
-    }
-
-    const [library, stagedRecipes] = libraryLO.getValueEnforcing()
-        .reduce((part, r) => {
-            part[r.ownerId === me.id && isRecipeStaged(r) ? 1 : 0].push(r)
-            return part
-        }, [[], []])
+    const {me, filter, scope, libraryLO, stagedRecipes, shoppingList} = props
     const hasStage = stagedRecipes.length > 0
+    const stagedIds = new Set(stagedRecipes.map(r => r.id))
 
     const list = hasStage && <Card
         title="Shopping List"
@@ -82,41 +72,43 @@ const RecipesList = (props: {}) => {
                 key="add-to-list"
                 onClick={listId => Dispatcher.dispatch({
                     type: RecipeActions.ASSEMBLE_SHOPPING_LIST,
-                    recipeIds: stagedRecipes.map(r => r.id),
+                    recipeIds: [...stagedIds],
                     listId,
                 })}
             />
         </Button.Group>}
     />
 
-    const content = <React.Fragment>
-        <SearchFilter
-            onChange={updateFilter}
-            onFilter={sendFilter}
-            term={filter}
-        />
+    const content = !libraryLO.hasValue()
+        ? <Spin tip="Loading recipe library..."/>
+        : <React.Fragment>
+            <div style={{float: "right"}}>
+                <Switch checked={scope === SCOPE_EVERYONE}
+                        checkedChildren="Everyone"
+                        unCheckedChildren="Mine"
+                        onChange={everyone => Dispatcher.dispatch({
+                            type: LibraryActions.SET_SCOPE,
+                            scope: everyone ? SCOPE_EVERYONE : SCOPE_MINE,
+                        })}
+                />
+            </div>
+            <SearchFilter
+                onChange={updateFilter}
+                onFilter={sendFilter}
+                term={filter}
+            />
 
-        <List
-            dataSource={library}
-            itemLayout="horizontal"
-            renderItem={recipe =>
-                <RecipeListItem recipe={recipe}
-                                mine={recipe.ownerId === me.id} />}
-        />
-    </React.Fragment>
+            <List
+                dataSource={libraryLO.getValueEnforcing()
+                    .filter(r => !stagedIds.has(r.id))}
+                itemLayout="horizontal"
+                renderItem={recipe =>
+                    <RecipeListItem recipe={recipe}
+                                    mine={recipe.ownerId === me.id} />}
+            />
+        </React.Fragment>
 
     return <React.Fragment>
-        <div style={{float: "right"}}>
-            <Switch checked={scope === SCOPE_EVERYONE}
-                    checkedChildren="Everyone"
-                    unCheckedChildren="Mine"
-                    onChange={everyone => Dispatcher.dispatch({
-                        type: LibraryActions.SET_SCOPE,
-                        scope: everyone ? SCOPE_EVERYONE : SCOPE_MINE,
-                    })}
-            />
-        </div>
-
         <h1>Recipe Library</h1>
         <Row>
             <Col span={hasStage ? 18 : 24}>
@@ -140,6 +132,7 @@ RecipesList.defaultProps = {
 RecipesList.propTypes = {
     me: PropTypes.object.isRequired,
     libraryLO: loadObjectOf(PropTypes.arrayOf(Recipe)).isRequired,
+    stagedRecipes: PropTypes.arrayOf(Recipe).isRequired,
     filter: PropTypes.string,
     scope: PropTypes.string,
     shoppingList: loadObjectOf(PropTypes.array),

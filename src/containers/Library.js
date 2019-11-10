@@ -19,6 +19,7 @@ export default Container.createFunctional(
         filter: LibraryStore.getState().filter,
         libraryLO: LibraryStore.getLibraryLO()
             .map(rs => rs.sort(humanStringComparator)),
+        stagedRecipes: LibraryStore.getStagedRecipes(),
         shoppingList: LibraryStore.getShoppingList(),
     })
 )

@@ -224,12 +224,20 @@ class LibraryStore extends ReduceStore {
     }
 
     getStagedRecipes() {
-        const lo = this.getLibraryLO()
-        if (!lo.hasValue()) return []
+        // don't use the list of recipes, use all recipe ingredients, so it's
+        // exempt from filtering.
+        const map = this.getState().byId
+        const result = []
         const me = UserStore.getProfileLO().getValueEnforcing()
-        return lo.getValueEnforcing()
-            .filter(r =>
-                r.ownerId === me.id && isRecipeStaged(r))
+        for (const id of Object.keys(map)) {
+            const lo = map[id]
+            if (!lo.hasValue()) continue
+            const r = lo.getValueEnforcing()
+            if (r.ownerId === me.id && isRecipeStaged(r)) {
+                result.push(r)
+            }
+        }
+        return result
     }
 
     isStaged(id) {
