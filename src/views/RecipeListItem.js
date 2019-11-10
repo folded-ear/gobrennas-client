@@ -20,14 +20,13 @@ const RecipeListItem = ({recipe, mine, staged}) => {
             l !== LABEL_STAGED_INDICATOR)
         .sort()
         .join(", ")
-    const actions = []
-    if (mine) {
-        actions.push(staged
-            ? <Button key="unstage"
-                      shape="circle"
-                      icon="delete"
-                      size="small"
-                      title="Unstage recipe"
+    const actions = mine
+        ? [staged
+            ? <Button key={"unstage"}
+                      shape={"circle"}
+                      icon={"export"}
+                      size={"small"}
+                      title={"Unstage recipe"}
                       onClick={e => {
                           e.preventDefault()
                           Dispatcher.dispatch({
@@ -36,11 +35,11 @@ const RecipeListItem = ({recipe, mine, staged}) => {
                           })
                       }}
             />
-            : <Button key="stage"
-                      shape="circle"
-                      icon="select"
-                      size="small"
-                      title="Stage recipe"
+            : <Button key={"stage"}
+                      shape={"circle"}
+                      icon={"import"}
+                      size={"small"}
+                      title={"Stage recipe"}
                       onClick={e => {
                           e.preventDefault()
                           Dispatcher.dispatch({
@@ -48,10 +47,11 @@ const RecipeListItem = ({recipe, mine, staged}) => {
                               id: recipe.id,
                           })
                       }}
-            />)
-    }
-    actions.push(<Link key="edit"
-                       to={`/library/recipe/${recipe.id}/edit`}><EditButton /></Link>)
+            />,
+            <Link key="edit"
+                  to={`/library/recipe/${recipe.id}/edit`}><EditButton /></Link>,
+        ]
+        : null
     return (
         <Item
             key={recipe.id}
@@ -60,7 +60,7 @@ const RecipeListItem = ({recipe, mine, staged}) => {
             style={{cursor: "pointer"}}
             actions={actions}>
             <List.Item.Meta
-                title={recipe.name + " (" + (mine ? "ME" : "OTHER") + ")"}
+                title={recipe.name}
                 description={labelString}
             />
         </Item>

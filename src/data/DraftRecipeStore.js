@@ -13,12 +13,13 @@ const loadRecipeIfPossible = draftLO => {
     if (draftLO.isDone()) return draftLO
     const state = draftLO.getValueEnforcing()
     if (!state.id) return draftLO
-    const lo = LibraryStore.getRecipeById(state.id)
+    const lo = LibraryStore.getRecipeById(state.sourceId || state.id)
     if (!lo.hasValue()) return draftLO
     const recipe = lo.getValueEnforcing()
     return draftLO.setValue({
         ...state,
         ...recipe,
+        id: state.id, // in case it's a copy
     }).done().map(s => {
         if (s.ingredients == null || s.ingredients.length === 0) {
             s = {
@@ -54,6 +55,14 @@ class DraftRecipeStore extends ReduceStore {
                     case "/library/recipe/:id/edit": {
                         state = state.setValue({
                             id: parseInt(match.params.id),
+                        }).loading()
+                        return loadRecipeIfPossible(state)
+                    }
+
+                    case "/library/recipe/:id/make-copy": {
+                        state = state.setValue({
+                            id: ClientId.next(),
+                            sourceId: parseInt(match.params.id),
                         }).loading()
                         return loadRecipeIfPossible(state)
                     }

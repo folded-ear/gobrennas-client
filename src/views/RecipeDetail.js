@@ -17,8 +17,10 @@ import { Recipe } from "../data/RecipeTypes"
 import history from "../util/history"
 import LibraryActions from "../data/LibraryActions"
 import LabelItem from "./LabelItem"
+import DeleteButton from "./common/DeleteButton"
+import RecipeApi from "../data/RecipeApi"
 
-const RecipeDetail = ({recipeLO, staged}) => {
+const RecipeDetail = ({recipeLO, mine, staged}) => {
 
     if (!recipeLO.hasValue()) {
         if (recipeLO.isLoading()) {
@@ -36,26 +38,35 @@ const RecipeDetail = ({recipeLO, staged}) => {
                     icon="close"
                     onClick={() => history.push("/library")}
                 >Close</Button>
-                {staged
+                {mine && (staged
                     ? <Button
-                        icon="delete"
+                        icon="export"
                         onClick={() => Dispatcher.dispatch({
                             type: LibraryActions.UNSTAGE_RECIPE,
                             id: recipe.id,
                         })}
                     >Unstage</Button>
                     : <Button
-                        icon="select"
+                        icon="import"
                         onClick={() => Dispatcher.dispatch({
                             type: LibraryActions.STAGE_RECIPE,
                             id: recipe.id,
                         })}
                     >Stage</Button>
-                }
+                )}
                 <Button
+                    icon="copy"
+                    onClick={() => history.push(`/library/recipe/${recipe.id}/make-copy`)}
+                >{mine ? "Copy" : "Duplicate to My Library"}</Button>
+                {mine && <Button
                     icon="edit"
                     onClick={() => history.push(`/library/recipe/${recipe.id}/edit`)}
-                >Edit</Button>
+                >Edit</Button>}
+                {mine && <DeleteButton
+                    type="recipe"
+                    label={"Delete"}
+                    onConfirm={() => RecipeApi.deleteRecipe(recipe.id)}
+                />}
             </Button.Group>
 
             <Affix offsetTop={0}>
@@ -91,15 +102,19 @@ const RecipeDetail = ({recipeLO, staged}) => {
                 <Directions text={recipe.directions} />
             </React.Fragment>}
             
-            {recipe.labels && recipe.labels.map( label => <LabelItem key={label} label={label} />)}
+            {recipe.labels && recipe.labels
+                .filter(label => label.indexOf("--") !== 0)
+                .map(label =>
+                    <LabelItem key={label} label={label} />)}
 
         </div>
     )
 }
 
 RecipeDetail.propTypes = {
-    recipeLO: loadObjectOf(Recipe),
-    staged: PropTypes.bool.isRequired,
+    recipeLO: loadObjectOf(Recipe).isRequired,
+    mine: PropTypes.bool,
+    staged: PropTypes.bool,
 }
 
 export default RecipeDetail

@@ -12,6 +12,7 @@ import {
     removeDistinct,
 } from "../util/arrayAsSet"
 import RecipeApi from "./RecipeApi"
+import UserStore from "./UserStore"
 
 export const SCOPE_MINE = "mine"
 export const SCOPE_EVERYONE = "everyone"
@@ -36,7 +37,7 @@ export const isRecipeStaged = r => {
         if (!r.hasValue()) return false
         r = r.getValueEnforcing()
     }
-    if (!r.labels) return false
+    if (r.labels == null) return false
     return r.labels.indexOf(LABEL_STAGED_INDICATOR) >= 0
 }
 
@@ -223,11 +224,12 @@ class LibraryStore extends ReduceStore {
     }
 
     getStagedRecipes() {
-        if (this.getState().scope !== SCOPE_MINE) return []
         const lo = this.getLibraryLO()
         if (!lo.hasValue()) return []
+        const me = UserStore.getProfileLO().getValueEnforcing()
         return lo.getValueEnforcing()
-            .filter(isRecipeStaged)
+            .filter(r =>
+                r.ownerId === me.id && isRecipeStaged(r))
     }
 
     isStaged(id) {

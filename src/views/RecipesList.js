@@ -49,13 +49,11 @@ const RecipesList = (props: {}) => {
         return <Spin tip="Loading recipe library..."/>
     }
 
-    const [library, stagedRecipes] = scope === SCOPE_MINE
-        ? libraryLO.getValueEnforcing()
-            .reduce((part, r) => {
-                part[isRecipeStaged(r) ? 1 : 0].push(r)
-                return part
-            }, [[], []])
-        : [libraryLO.getValueEnforcing(), []]
+    const [library, stagedRecipes] = libraryLO.getValueEnforcing()
+        .reduce((part, r) => {
+            part[r.ownerId === me.id && isRecipeStaged(r) ? 1 : 0].push(r)
+            return part
+        }, [[], []])
     const hasStage = stagedRecipes.length > 0
 
     const list = hasStage && <Card
@@ -77,7 +75,7 @@ const RecipesList = (props: {}) => {
         itemLayout="horizontal"
         renderItem={recipe =>
             <RecipeListItem recipe={recipe}
-                            mine={recipe.ownerId === me.id}
+                            mine
                             staged />}
         footer={<Button.Group>
             <AddToList
