@@ -17,6 +17,7 @@ const DeleteButton = ({type, onConfirm, label = "Delete " + capitalize(type), on
     >
         <Button
             type="danger"
+            icon={"delete"}
             onClick={onClick}
         >{label}</Button>
     </Popconfirm>

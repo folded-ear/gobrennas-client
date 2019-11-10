@@ -8,11 +8,12 @@ export const Ingredient = PropTypes.shape({
 })
 
 export const IngredientRef = PropTypes.shape({
-    amount: PropTypes.number,
+    quantity: PropTypes.number,
     preparation: PropTypes.string,
     units: PropTypes.string,
     raw: PropTypes.string,
-    ingredient: Ingredient
+    ingredient: PropTypes.string,
+    ingredientId: PropTypes.number,
 })
 
 export const Recipe = PropTypes.shape({

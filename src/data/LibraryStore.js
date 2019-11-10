@@ -11,9 +11,35 @@ import {
     addDistinct,
     removeDistinct,
 } from "../util/arrayAsSet"
+import RecipeApi from "./RecipeApi"
+import UserStore from "./UserStore"
 
 export const SCOPE_MINE = "mine"
 export const SCOPE_EVERYONE = "everyone"
+export const LABEL_STAGED_INDICATOR = "--on-stage"
+
+const workOnLabels = (state, recipeId, work) => {
+    const lo = state.byId[recipeId]
+    if (lo == null || !lo.hasValue()) return state
+    const r = lo.getValueEnforcing()
+    const labels = work(r.labels)
+    if (labels === r.labels) return state
+    return dotProp.set(state, ["byId", recipeId], lo =>
+        lo.map(r => ({
+            ...r,
+            labels,
+        })))
+}
+
+export const isRecipeStaged = r => {
+    if (r == null) return false
+    if (r instanceof LoadObject) {
+        if (!r.hasValue()) return false
+        r = r.getValueEnforcing()
+    }
+    if (r.labels == null) return false
+    return r.labels.indexOf(LABEL_STAGED_INDICATOR) >= 0
+}
 
 class LibraryStore extends ReduceStore {
 
@@ -28,7 +54,6 @@ class LibraryStore extends ReduceStore {
             // used for bootstrapping (at the moment)
             recipeIds: LoadObject.empty(), // LoadObject<ID[]>
             scope: SCOPE_MINE,
-            stagedIds: [], // ID[]
             filter: ""
         }
     }
@@ -150,29 +175,15 @@ class LibraryStore extends ReduceStore {
             }
 
             case LibraryActions.STAGE_RECIPE: {
-                const stagedIds = addDistinct(state.stagedIds, action.id)
-                if (state.stagedIds === stagedIds) return state
-                return {
-                    ...state,
-                    stagedIds,
-                }
+                RecipeApi.addLabel(action.id, LABEL_STAGED_INDICATOR)
+                return workOnLabels(state, action.id, labels =>
+                    addDistinct(labels, LABEL_STAGED_INDICATOR))
             }
 
             case LibraryActions.UNSTAGE_RECIPE: {
-                const stagedIds = removeDistinct(state.stagedIds, action.id)
-                if (state.stagedIds === stagedIds) return state
-                return {
-                    ...state,
-                    stagedIds,
-                }
-            }
-
-            case LibraryActions.UNSTAGE_ALL_RECIPES: {
-                if (state.stagedIds.length === 0) return state
-                return {
-                    ...state,
-                    stagedIds: [],
-                }
+                RecipeApi.removeLabel(action.id, LABEL_STAGED_INDICATOR)
+                return workOnLabels(state, action.id, labels =>
+                    removeDistinct(labels, LABEL_STAGED_INDICATOR))
             }
 
             default: {
@@ -212,24 +223,30 @@ class LibraryStore extends ReduceStore {
         return this.getIngredientById(selectedRecipe)
     }
 
-    getStagedIds() {
-        return this.getState().stagedIds
-    }
-
     getStagedRecipes() {
-        return this.getStagedIds()
-            .map(id => this.getIngredientById(id))
-            .filter(lo => lo.hasValue())
-            .map(lo => lo.getValueEnforcing())
+        // don't use the list of recipes, use all recipe ingredients, so it's
+        // exempt from filtering.
+        const map = this.getState().byId
+        const result = []
+        const me = UserStore.getProfileLO().getValueEnforcing()
+        for (const id of Object.keys(map)) {
+            const lo = map[id]
+            if (!lo.hasValue()) continue
+            const r = lo.getValueEnforcing()
+            if (r.ownerId === me.id && isRecipeStaged(r)) {
+                result.push(r)
+            }
+        }
+        return result
     }
 
     isStaged(id) {
-        return this.getState().stagedIds.indexOf(id) >= 0
+        return isRecipeStaged(this.getState().byId[id])
     }
 
     getShoppingList() {
-        const s = this.getState()
-        if (s.stagedIds.length === 0) return LoadObject.empty()
+        const recipes = this.getStagedRecipes()
+        if (recipes.length === 0) return LoadObject.empty()
         // i convert an IngredientRef to LoadObject<Map<id, Map<unit, amount>>>
         const raws = []
         const convert = ref => {
@@ -289,19 +306,14 @@ class LibraryStore extends ReduceStore {
         // this is a kludge, because currently when staging there is an implicit
         // "1 count" of the recipe. which will have to change, but for now we'll
         // just hard code it so the data structures are right. woo!
-        return s.stagedIds
-            .map(id => {
-                const lo = this.getIngredientById(id)
-                return {
-                    // an IngredientRef!
-                    ingredientId: id,
-                    quantity: 1,
-                    units: null,
-                    raw: lo.hasValue()
-                        ? "1 " + lo.getValueEnforcing().name
-                        : "staged ing " + id,
-                }
-            })
+        return recipes
+            .map(r => ({
+                // an IngredientRef!
+                ingredientId: r.id,
+                quantity: 1,
+                units: null,
+                raw: "1 " + r.name,
+            }))
             .map(convert)
             .reduce(merge)
             .map(items =>

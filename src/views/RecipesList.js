@@ -4,7 +4,9 @@ import Dispatcher from "../data/dispatcher"
 import {
     Button,
     Card,
+    Col,
     List,
+    Row,
     Spin,
     Switch,
 } from "antd"
@@ -40,20 +42,46 @@ const sendFilter = (e) => {
 }
 
 const RecipesList = (props: {}) => {
-    const {filter, scope, libraryLO, stagedRecipes, shoppingList} = props
-    
-    if (!libraryLO.hasValue()) {
-        return <Spin tip="Loading recipe library..."/>
-    }
+    const {me, filter, scope, libraryLO, stagedRecipes, shoppingList} = props
+    const hasStage = stagedRecipes.length > 0
+    const stagedIds = new Set(stagedRecipes.map(r => r.id))
 
-    const stagedIds = new Set()
-    for (const r of stagedRecipes) {
-        stagedIds.add(r.id)
-    }
-    const library = libraryLO.getValueEnforcing()
-        .filter(r => !stagedIds.has(r.id))
-    return (
-        <div className="recipes-list">
+    const list = hasStage && <Card
+        title="Shopping List"
+        size="small"
+        style={{
+            marginLeft: "1em",
+        }}>
+        {shoppingList.hasValue()
+            ? <List dataSource={shoppingList.getValueEnforcing()}
+                    size="small"
+                    split={false}
+                    renderItem={ShoppingListItem} />
+            : <Spin tip="Generating list..." />}
+    </Card>
+
+    const stage = hasStage && <List
+        dataSource={stagedRecipes}
+        itemLayout="horizontal"
+        renderItem={recipe =>
+            <RecipeListItem recipe={recipe}
+                            mine
+                            staged />}
+        footer={<Button.Group>
+            <AddToList
+                key="add-to-list"
+                onClick={listId => Dispatcher.dispatch({
+                    type: RecipeActions.ASSEMBLE_SHOPPING_LIST,
+                    recipeIds: [...stagedIds],
+                    listId,
+                })}
+            />
+        </Button.Group>}
+    />
+
+    const content = !libraryLO.hasValue()
+        ? <Spin tip="Loading recipe library..."/>
+        : <React.Fragment>
             <div style={{float: "right"}}>
                 <Switch checked={scope === SCOPE_EVERYONE}
                         checkedChildren="Everyone"
@@ -64,66 +92,36 @@ const RecipesList = (props: {}) => {
                         })}
                 />
             </div>
-            
-            <h1>Recipe Library</h1>
-    
             <SearchFilter
                 onChange={updateFilter}
                 onFilter={sendFilter}
                 term={filter}
-                />
-            
-            {stagedRecipes.length > 0 && <React.Fragment>
-                <Card
-                    title="Shopping List"
-                    size="small"
-                    style={{
-                        float:"right",
-                        maxWidth: "50%",
-                        margin: "0 0 2em 2em",
-                    }}>
-                    {shoppingList.hasValue()
-                        ? <List dataSource={shoppingList.getValueEnforcing()}
-                                size="small"
-                                split={false}
-                                renderItem={ShoppingListItem}/>
-                        : <Spin tip="Generating list..." />}
-                </Card>
-                <h2>Staged</h2>
-                <List
-                    dataSource={stagedRecipes}
-                    itemLayout="horizontal"
-                    renderItem={recipe => <RecipeListItem recipe={recipe}
-                                                          staged />}
-                    footer={<Button.Group>
-                        <Button
-                            key="unstage-all"
-                            shape="round"
-                            size="small"
-                            icon="delete"
-                            onClick={() => Dispatcher.dispatch({
-                                type: LibraryActions.UNSTAGE_ALL_RECIPES,
-                            })}
-                        >Unstage All</Button>
-                        <AddToList
-                            key="add-to-list"
-                            onClick={listId => Dispatcher.dispatch({
-                                type: RecipeActions.ASSEMBLE_SHOPPING_LIST,
-                                recipeIds: [...stagedIds],
-                                listId,
-                            })}
-                        />
-                    </Button.Group>}
-                />
-                <h2>Everything Else</h2>
-            </React.Fragment>}
-            <List
-                dataSource={library}
-                itemLayout="horizontal"
-                renderItem={recipe => <RecipeListItem recipe={recipe}/>}
             />
-        </div>
-    )
+
+            <List
+                dataSource={libraryLO.getValueEnforcing()
+                    .filter(r => !stagedIds.has(r.id))}
+                itemLayout="horizontal"
+                renderItem={recipe =>
+                    <RecipeListItem recipe={recipe}
+                                    mine={recipe.ownerId === me.id} />}
+            />
+        </React.Fragment>
+
+    return <React.Fragment>
+        <h1>Recipe Library</h1>
+        <Row>
+            <Col span={hasStage ? 18 : 24}>
+                {hasStage && <React.Fragment>
+                    <h2>Staged</h2>
+                    {stage}
+                    <h2>Everything Else</h2>
+                </React.Fragment>}
+                {content}
+            </Col>
+            {hasStage && <Col span={6}>{list}</Col>}
+        </Row>
+    </React.Fragment>
 }
 
 RecipesList.defaultProps = {
@@ -132,10 +130,12 @@ RecipesList.defaultProps = {
 }
 
 RecipesList.propTypes = {
+    me: PropTypes.object.isRequired,
     libraryLO: loadObjectOf(PropTypes.arrayOf(Recipe)).isRequired,
     stagedRecipes: PropTypes.arrayOf(Recipe).isRequired,
     filter: PropTypes.string,
-    scope: PropTypes.string
+    scope: PropTypes.string,
+    shoppingList: loadObjectOf(PropTypes.array),
 }
 
 export default RecipesList

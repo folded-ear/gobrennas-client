@@ -15,6 +15,7 @@ const routes = {
     private: [
         {path: "/profile",  component: Profile},
         {path: "/library/recipe/:id/edit", component: RecipeEdit},
+        {path: "/library/recipe/:id/make-copy", component: RecipeAdd},
         {path: "/library/recipe/:id",   component: Recipe },
         {path: "/library",  component: Library},
         {path: "/add",      component: RecipeAdd},

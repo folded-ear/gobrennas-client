@@ -5,10 +5,9 @@ const LibraryActions = {
     INGREDIENT_LOADED: "library/ingredient-loaded",
     STAGE_RECIPE: "library/stage-recipe",
     UNSTAGE_RECIPE: "library/unstage-recipe",
-    UNSTAGE_ALL_RECIPES: "library/unstage-all-recipes",
     SET_SCOPE: "library/set-scope",
     UPDATE_FILTER: "library/update-filter",
-    FILTER_LIBRARY: "library/filter-library"
+    FILTER_LIBRARY: "library/filter-library",
 }
 
 export default LibraryActions

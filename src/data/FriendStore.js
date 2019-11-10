@@ -52,6 +52,11 @@ class FriendStore extends ReduceStore {
         )
     }
 
+    getFriendLO(id) {
+        return this.getFriendsLO()
+            .map(fs => fs.find(f => f.id === id))
+    }
+
 }
 
 export default new FriendStore()
