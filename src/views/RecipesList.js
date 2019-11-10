@@ -43,7 +43,7 @@ const sendFilter = (e) => {
 }
 
 const RecipesList = (props: {}) => {
-    const {filter, scope, libraryLO, shoppingList} = props
+    const {me, filter, scope, libraryLO, shoppingList} = props
     
     if (!libraryLO.hasValue()) {
         return <Spin tip="Loading recipe library..."/>
@@ -75,8 +75,10 @@ const RecipesList = (props: {}) => {
     const stage = hasStage && <List
         dataSource={stagedRecipes}
         itemLayout="horizontal"
-        renderItem={recipe => <RecipeListItem recipe={recipe}
-                                              staged />}
+        renderItem={recipe =>
+            <RecipeListItem recipe={recipe}
+                            mine={recipe.ownerId === me.id}
+                            staged />}
         footer={<Button.Group>
             <AddToList
                 key="add-to-list"
@@ -99,7 +101,9 @@ const RecipesList = (props: {}) => {
         <List
             dataSource={library}
             itemLayout="horizontal"
-            renderItem={recipe => <RecipeListItem recipe={recipe} />}
+            renderItem={recipe =>
+                <RecipeListItem recipe={recipe}
+                                mine={recipe.ownerId === me.id} />}
         />
     </React.Fragment>
 
@@ -136,6 +140,7 @@ RecipesList.defaultProps = {
 }
 
 RecipesList.propTypes = {
+    me: PropTypes.object.isRequired,
     libraryLO: loadObjectOf(PropTypes.arrayOf(Recipe)).isRequired,
     filter: PropTypes.string,
     scope: PropTypes.string,

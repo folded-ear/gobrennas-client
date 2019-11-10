@@ -14,51 +14,53 @@ import { LABEL_STAGED_INDICATOR } from "../data/LibraryStore"
 
 const {Item} = List
 
-const RecipeListItem = ({recipe, staged}) => {
+const RecipeListItem = ({recipe, mine, staged}) => {
     const labelString = (recipe.labels || [])
         .filter(l =>
             l !== LABEL_STAGED_INDICATOR)
         .sort()
         .join(", ")
+    const actions = []
+    if (mine) {
+        actions.push(staged
+            ? <Button key="unstage"
+                      shape="circle"
+                      icon="delete"
+                      size="small"
+                      title="Unstage recipe"
+                      onClick={e => {
+                          e.preventDefault()
+                          Dispatcher.dispatch({
+                              type: LibraryActions.UNSTAGE_RECIPE,
+                              id: recipe.id,
+                          })
+                      }}
+            />
+            : <Button key="stage"
+                      shape="circle"
+                      icon="select"
+                      size="small"
+                      title="Stage recipe"
+                      onClick={e => {
+                          e.preventDefault()
+                          Dispatcher.dispatch({
+                              type: LibraryActions.STAGE_RECIPE,
+                              id: recipe.id,
+                          })
+                      }}
+            />)
+    }
+    actions.push(<Link key="edit"
+                       to={`/library/recipe/${recipe.id}/edit`}><EditButton /></Link>)
     return (
         <Item
             key={recipe.id}
             onClick={event =>
                 event.defaultPrevented || history.push(`/library/recipe/${recipe.id}`)}
             style={{cursor: "pointer"}}
-            actions={[
-                staged
-                    ? <Button key="unstage"
-                              shape="circle"
-                              icon="delete"
-                              size="small"
-                              title="Unstage recipe"
-                              onClick={e => {
-                                  e.preventDefault()
-                                  Dispatcher.dispatch({
-                                      type: LibraryActions.UNSTAGE_RECIPE,
-                                      id: recipe.id,
-                                  })
-                              }}
-                    />
-                    : <Button key="stage"
-                              shape="circle"
-                              icon="select"
-                              size="small"
-                              title="Stage recipe"
-                              onClick={e => {
-                                  e.preventDefault()
-                                  Dispatcher.dispatch({
-                                      type: LibraryActions.STAGE_RECIPE,
-                                      id: recipe.id,
-                                  })
-                              }}
-                    />,
-                <Link key="edit"
-                      to={`/library/recipe/${recipe.id}/edit`}><EditButton /></Link>,
-            ]}>
+            actions={actions}>
             <List.Item.Meta
-                title={recipe.name}
+                title={recipe.name + " (" + (mine ? "ME" : "OTHER") + ")"}
                 description={labelString}
             />
         </Item>
@@ -67,6 +69,7 @@ const RecipeListItem = ({recipe, staged}) => {
 
 RecipeListItem.propTypes = {
     recipe: Recipe,
+    mine: PropTypes.bool,
     staged: PropTypes.bool,
 }
 
