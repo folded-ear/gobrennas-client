@@ -19,8 +19,9 @@ import LibraryActions from "../data/LibraryActions"
 import LabelItem from "./LabelItem"
 import DeleteButton from "./common/DeleteButton"
 import RecipeApi from "../data/RecipeApi"
+import User from "./user/User"
 
-const RecipeDetail = ({recipeLO, mine, staged}) => {
+const RecipeDetail = ({recipeLO, mine, staged, ownerLO}) => {
 
     if (!recipeLO.hasValue()) {
         if (recipeLO.isLoading()) {
@@ -69,7 +70,11 @@ const RecipeDetail = ({recipeLO, mine, staged}) => {
                 />}
             </Button.Group>
 
+
             <Affix offsetTop={0}>
+                {!mine && ownerLO.hasValue() && <p style={{float: "right"}}>
+                    <User {...ownerLO.getValueEnforcing()} />
+                </p>}
                 <h2 style={{
                     backgroundColor: "white",
                 }}>{recipe.name}</h2>
@@ -114,6 +119,7 @@ const RecipeDetail = ({recipeLO, mine, staged}) => {
 RecipeDetail.propTypes = {
     recipeLO: loadObjectOf(Recipe).isRequired,
     mine: PropTypes.bool,
+    ownerLO: loadObjectOf(PropTypes.object),
     staged: PropTypes.bool,
 }
 

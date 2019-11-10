@@ -7,11 +7,14 @@ const User = ({
                   email,
                   imageUrl,
                   size = "small",
+    iconOnly = false,
               }) =>
-    <span title={email}>
+    <span title={iconOnly ? name ? `${name} <${email}>` : email : email}>
         <Avatar src={imageUrl} size={size}>{(name || email || "U").charAt(0).toUpperCase()}</Avatar>
-        {" "}
-        {name || email}
+        {!iconOnly && <React.Fragment>
+            {" "}
+            {name || email}
+        </React.Fragment>}
     </span>
 
 User.propTypes = {
@@ -26,6 +29,7 @@ User.propTypes = {
         ]),
         PropTypes.number,
     ]),
+    iconOnly: PropTypes.bool,
 }
 
 export default User

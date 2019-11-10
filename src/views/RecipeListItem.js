@@ -1,5 +1,6 @@
 import React from 'react'
 import PropTypes from "prop-types"
+import { Container } from "flux/utils"
 import Dispatcher from "../data/dispatcher"
 import { Link } from "react-router-dom"
 import {
@@ -11,10 +12,14 @@ import { Recipe } from "../data/RecipeTypes"
 import history from "../util/history"
 import LibraryActions from "../data/LibraryActions"
 import { LABEL_STAGED_INDICATOR } from "../data/LibraryStore"
+import User from "./user/User"
+import loadObjectOf from "../util/loadObjectOf"
+import FriendStore from "../data/FriendStore"
+import UserStore from "../data/UserStore"
 
 const {Item} = List
 
-const RecipeListItem = ({recipe, mine, staged}) => {
+const RecipeListItem = ({recipe, mine, staged, ownerLO}) => {
     const labelString = (recipe.labels || [])
         .filter(l =>
             l !== LABEL_STAGED_INDICATOR)
@@ -51,7 +56,11 @@ const RecipeListItem = ({recipe, mine, staged}) => {
             <Link key="edit"
                   to={`/library/recipe/${recipe.id}/edit`}><EditButton /></Link>,
         ]
-        : null
+        : ownerLO.hasValue()
+            ? [<User key={"user"}
+                     {...ownerLO.getValueEnforcing()}
+                     iconOnly />]
+            : null
     return (
         <Item
             key={recipe.id}
@@ -70,7 +79,20 @@ const RecipeListItem = ({recipe, mine, staged}) => {
 RecipeListItem.propTypes = {
     recipe: Recipe,
     mine: PropTypes.bool,
+    ownerLO: loadObjectOf(PropTypes.object),
     staged: PropTypes.bool,
 }
 
-export default RecipeListItem
+export default Container.createFunctional(
+    RecipeListItem,
+    () => [
+        FriendStore,
+    ],
+    (prevState, props) => ({
+        ...props,
+        ownerLO: props.mine
+            ? UserStore.getProfileLO()
+            : FriendStore.getFriendLO(props.recipe.ownerId),
+    }),
+    {withProps: true},
+)
