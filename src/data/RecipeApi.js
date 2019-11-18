@@ -75,10 +75,11 @@ const RecipeApi = {
         )
     },
 
-    recognizeElement(raw) {
+    recognizeElement(rawElement, cursorPosition = rawElement.length) {
         return axios.post(`/recipe/_actions`, {
             type: "RECOGNIZE_ELEMENT",
-            rawElement: raw,
+            rawElement,
+            cursorPosition,
         }).then(
             data => data.data
         )

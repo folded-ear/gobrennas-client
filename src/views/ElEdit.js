@@ -1,12 +1,17 @@
 import React from "react"
 import PropTypes from "prop-types"
 import {
+    AutoComplete,
     Icon,
     Input,
+    Select,
     Spin,
 } from "antd"
 import RecipeApi from "../data/RecipeApi"
 import debounce from "../util/debounce"
+
+const doRecog = raw =>
+    raw != null && raw.trim().length >= 3
 
 class ElEdit extends React.PureComponent {
 
@@ -16,6 +21,7 @@ class ElEdit extends React.PureComponent {
             recog: null,
         }
         this.recognizeDebounced = debounce(this.recognize.bind(this))
+        this.handleChange = this.handleChange.bind(this)
         this.onPaste = this.onPaste.bind(this)
     }
 
@@ -34,8 +40,9 @@ class ElEdit extends React.PureComponent {
             value,
             onChange,
         } = this.props
-        if (value.raw == null || value.raw.trim().length === 0) return
-        RecipeApi.recognizeElement(value.raw)
+        if (!doRecog(value.raw)) return
+        // todo: get the actual cursor position
+        RecipeApi.recognizeElement(value.raw, value.raw.length)
             .then(recog => {
                 if (recog.raw !== this.props.value.raw) return
                 const qr = recog.ranges.find(r =>
@@ -86,14 +93,48 @@ class ElEdit extends React.PureComponent {
                         },
                     },
                 })
+                const suggestions = recog.suggestions.map(s => {
+                    const prefix = recog.raw.substr(0, s.target.start)
+                    const suffix = recog.raw.substr(s.target.end)
+                    const quote = s.name.indexOf(' ') >= 0 ||
+                        recog.raw.charAt(s.target.start) === '"' ||
+                        recog.raw.charAt(s.target.end - 1) === '"'
+                    const value = quote
+                        ? `"${s.name}"`
+                        : s.name
+                    return {
+                        prefix,
+                        value,
+                        suffix,
+                        result: prefix + value + suffix,
+                    }
+                })
                 return this.setState({
                     recog,
                     q, qv,
                     u, uv,
                     n, nv,
                     p,
+                    suggestions,
                 })
             })
+    }
+
+    handleChange(v) {
+        const {
+            name,
+            onChange,
+        } = this.props
+        // suggestions are always made stale by change
+        this.setState({suggestions: null})
+        onChange({
+            target: {
+                name,
+                value: {
+                    raw: v,
+                },
+            },
+        })
     }
 
     onPaste(e) {
@@ -113,7 +154,6 @@ class ElEdit extends React.PureComponent {
         const {
             name,
             value,
-            onChange,
         } = this.props
         const {
             raw,
@@ -121,26 +161,37 @@ class ElEdit extends React.PureComponent {
         const {
             recog,
             q, u, uv, n, nv, p,
+            suggestions,
         } = this.state
         return <React.Fragment>
-            <Input name={`${name}.raw`}
-                   value={raw}
-                   onChange={onChange}
-                   onPaste={this.onPaste}
-                   style={{
-                       width: "50%",
-                   }}
-                   suffix={n == null
-                       ? <Icon type="warning"
-                               title="No Ingredient Found!"
-                               style={{
-                                   color: "red",
-                               }}
-                       />
-                       : <span />}
-            />
+            <AutoComplete name={`${name}.raw`}
+                          value={raw}
+                          onChange={this.handleChange}
+                          dataSource={suggestions && suggestions.map(
+                              s => <Select.Option key={s.result}
+                                                  value={s.result}
+                              >
+                                  <span style={{color: "#999"}}>{s.prefix}</span>
+                                  <strong>{s.value}</strong>
+                                  <span style={{color: "#999"}}>{s.suffix}</span>
+                              </Select.Option>)}
+                          style={{
+                              width: "50%",
+                          }}
+            >
+                <Input onPaste={this.onPaste}
+                       autoComplete={"off"}
+                       suffix={n == null
+                           ? <Icon type="warning"
+                                   title="No Ingredient Found!"
+                                   style={{
+                                       color: "red",
+                                   }}
+                           />
+                           : <span />} />
+            </AutoComplete>
             {recog == null
-                ? <Hunk><Spin /></Hunk>
+                ? doRecog(raw) ? <Hunk><Spin /></Hunk> : null
                 : <Hunk>
                     {q && <Hunk style={{backgroundColor: "#fde"}}>{q}</Hunk>}
                     {u && <Hunk style={{backgroundColor: uv ? "#efd" : "#dfe"}}>{u}</Hunk>}
