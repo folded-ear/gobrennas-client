@@ -23,6 +23,7 @@ class ElEdit extends React.PureComponent {
         this.recognizeDebounced = debounce(this.recognize.bind(this))
         this.handleChange = this.handleChange.bind(this)
         this.onPaste = this.onPaste.bind(this)
+        this.onKeyDown = this.onKeyDown.bind(this)
     }
 
     componentDidMount() {
@@ -125,8 +126,6 @@ class ElEdit extends React.PureComponent {
             name,
             onChange,
         } = this.props
-        // suggestions are always made stale by change
-        this.setState({suggestions: null})
         onChange({
             target: {
                 name,
@@ -135,6 +134,8 @@ class ElEdit extends React.PureComponent {
                 },
             },
         })
+        // suggestions are always made stale by change
+        this.setState({suggestions: null})
     }
 
     onPaste(e) {
@@ -150,10 +151,33 @@ class ElEdit extends React.PureComponent {
         onMultilinePaste(text)
     }
 
+    onKeyDown(e) {
+        const {
+            value,
+        } = e.target
+        const {
+            key,
+        } = e
+        const {
+            onDelete,
+        } = this.props
+        switch (key) { // eslint-disable-line default-case
+            case "Backspace":
+            case "Delete":
+                // if the value is empty, delete the task and focus previous
+                if (value.length === 0) {
+                    e.preventDefault()
+                    onDelete && onDelete()
+                }
+                break
+        }
+    }
+
     render() {
         const {
             name,
             value,
+            onPressEnter,
         } = this.props
         const {
             raw,
@@ -163,11 +187,12 @@ class ElEdit extends React.PureComponent {
             q, u, uv, n, nv, p,
             suggestions,
         } = this.state
+        const hasSuggestions = suggestions && suggestions.length > 0
         return <React.Fragment>
             <AutoComplete name={`${name}.raw`}
                           value={raw}
                           onChange={this.handleChange}
-                          dataSource={suggestions && suggestions.map(
+                          dataSource={hasSuggestions && suggestions.map(
                               s => <Select.Option key={s.result}
                                                   value={s.result}
                               >
@@ -180,6 +205,8 @@ class ElEdit extends React.PureComponent {
                           }}
             >
                 <Input onPaste={this.onPaste}
+                       onPressEnter={hasSuggestions ? null : onPressEnter}
+                       onKeyDown={this.onKeyDown}
                        autoComplete={"off"}
                        suffix={n == null
                            ? <Icon type="warning"
@@ -219,6 +246,8 @@ ElEdit.propTypes = {
         preparation: PropTypes.string,
     }).isRequired,
     onChange: PropTypes.func.isRequired,
+    onPressEnter: PropTypes.func,
+    onDelete: PropTypes.func,
     onMultilinePaste: PropTypes.func,
 }
 
