@@ -10,6 +10,8 @@ import {
 import RecipeApi from "../data/RecipeApi"
 import debounce from "../util/debounce"
 
+let seq = 0
+
 const doRecog = raw =>
     raw != null && raw.trim().length >= 3
 
@@ -17,6 +19,7 @@ class ElEdit extends React.PureComponent {
 
     constructor(...args) {
         super(...args)
+        this._domId = "el-edit-" + (++seq)
         this.state = {
             recog: null,
         }
@@ -35,6 +38,14 @@ class ElEdit extends React.PureComponent {
         this.recognizeDebounced()
     }
 
+    getCursorPosition() {
+        const el = document.getElementById(this._domId)
+        if (el == null) return 0
+        const c = el.selectionStart
+        const raw = el.value || ""
+        return Math.min(Math.max(c, 0), raw.length)
+    }
+
     recognize() {
         const {
             name,
@@ -42,10 +53,11 @@ class ElEdit extends React.PureComponent {
             onChange,
         } = this.props
         if (!doRecog(value.raw)) return
-        // todo: get the actual cursor position
-        RecipeApi.recognizeElement(value.raw, value.raw.length)
+        const cursor = this.getCursorPosition()
+        RecipeApi.recognizeElement(value.raw, cursor)
             .then(recog => {
                 if (recog.raw !== this.props.value.raw) return
+                if (recog.cursor !== this.getCursorPosition()) return
                 const qr = recog.ranges.find(r =>
                     r.type === "AMOUNT")
                 const ur = recog.ranges.find(r =>
@@ -170,6 +182,10 @@ class ElEdit extends React.PureComponent {
                     onDelete && onDelete()
                 }
                 break
+            case "ArrowLeft":
+            case "ArrowRight":
+                this.recognizeDebounced()
+                break
         }
     }
 
@@ -204,7 +220,8 @@ class ElEdit extends React.PureComponent {
                               width: "50%",
                           }}
             >
-                <Input onPaste={this.onPaste}
+                <Input id={this._domId}
+                       onPaste={this.onPaste}
                        onPressEnter={hasSuggestions ? null : onPressEnter}
                        onKeyDown={this.onKeyDown}
                        autoComplete={"off"}
