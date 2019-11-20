@@ -81,11 +81,20 @@ const RecipeForm = ({draft: lo, onSave, onCancel}) => {
                                 index: i,
                                 text,
                             })}
+                            onPressEnter={() => Dispatcher.dispatch({
+                                type: RecipeActions.NEW_DRAFT_INGREDIENT_YO,
+                                index: i,
+                            })}
+                            onDelete={() => Dispatcher.dispatch({
+                                type: RecipeActions.KILL_DRAFT_INGREDIENT_YO,
+                                index: i,
+                            })}
                         />
                         <div style={{marginLeft: "auto"}}>
                             <Button
                                 key="add"
                                 icon="plus"
+                                tabIndex={-1}
                                 onClick={() => Dispatcher.dispatch({
                                     type: RecipeActions.NEW_DRAFT_INGREDIENT_YO,
                                     index: i,
@@ -94,6 +103,7 @@ const RecipeForm = ({draft: lo, onSave, onCancel}) => {
                             <Button
                                 key="delete"
                                 icon="delete"
+                                tabIndex={-1}
                                 onClick={() => Dispatcher.dispatch({
                                     type: RecipeActions.KILL_DRAFT_INGREDIENT_YO,
                                     index: i,
