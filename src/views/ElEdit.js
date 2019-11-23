@@ -20,6 +20,7 @@ class ElEdit extends React.PureComponent {
     constructor(...args) {
         super(...args)
         this._domId = "el-edit-" + (++seq)
+        this._mounted = false
         this.state = {
             recog: null,
         }
@@ -30,7 +31,12 @@ class ElEdit extends React.PureComponent {
     }
 
     componentDidMount() {
+        this._mounted = true
         this.recognize()
+    }
+
+    componentWillUnmount() {
+        this._mounted = false
     }
 
     componentDidUpdate(prevProps) {
@@ -47,6 +53,7 @@ class ElEdit extends React.PureComponent {
     }
 
     recognize() {
+        if (!this._mounted) return
         const {
             name,
             value,
@@ -56,6 +63,7 @@ class ElEdit extends React.PureComponent {
         const cursor = this.getCursorPosition()
         RecipeApi.recognizeElement(value.raw, cursor)
             .then(recog => {
+                if (!this._mounted) return
                 if (recog.raw !== this.props.value.raw) return
                 if (recog.cursor !== this.getCursorPosition()) return
                 const qr = recog.ranges.find(r =>
@@ -208,9 +216,9 @@ class ElEdit extends React.PureComponent {
             <AutoComplete name={`${name}.raw`}
                           value={raw}
                           onChange={this.handleChange}
-                          dataSource={hasSuggestions && suggestions.map(
-                              s => <Select.Option key={s.result}
-                                                  value={s.result}
+                          dataSource={hasSuggestions && suggestions.map(s =>
+                              <Select.Option key={s.result}
+                                             value={s.result}
                               >
                                   <span style={{color: "#999"}}>{s.prefix}</span>
                                   <strong>{s.value}</strong>
