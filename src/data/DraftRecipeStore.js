@@ -6,7 +6,6 @@ import LibraryActions from "./LibraryActions"
 import LibraryStore from "./LibraryStore"
 import LoadObject from "../util/LoadObject"
 import ClientId from "../util/ClientId"
-import history from "../util/history"
 import dotProp from "dot-prop-immutable"
 
 const loadRecipeIfPossible = draftLO => {
@@ -179,17 +178,15 @@ class DraftRecipeStore extends ReduceStore {
             }
 
             case RecipeActions.CANCEL_ADD: {
-                history.push("/library")
                 return this.getInitialState()
             }
 
             case RecipeActions.CANCEL_EDIT: {
-                history.push(`/library/recipe/${action.id}`)
                 return this.getInitialState()
             }
 
             case RecipeActions.RECIPE_UPDATED: {
-                return state.done()
+                return this.getInitialState()
             }
 
             default:

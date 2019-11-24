@@ -6,22 +6,33 @@ import Dispatcher from "../data/dispatcher"
 import RecipeApi from "../data/RecipeApi"
 import RecipeActions from "../data/RecipeActions"
 import DeleteButton from "./common/DeleteButton"
+import history from "../util/history"
+import onNextActionThat from "../util/onNextActionThat"
 
 const handleDelete = (id) => {
     RecipeApi.deleteRecipe(id)
 }
 
-const handleSave = (recipe) => {
+const handleSave = recipe => {
     Dispatcher.dispatch({
         type: RecipeActions.UPDATE_RECIPE,
         data: recipe
     })
+    onNextActionThat(action =>
+        action.type === RecipeActions.RECIPE_UPDATED,
+        (action) => {
+            if (action.id !== recipe.id) return
+            history.push(`/library/recipe/${recipe.id}`)
+        })
 }
 
-const handleCancel = recipe => Dispatcher.dispatch({
-    type: RecipeActions.CANCEL_EDIT,
-    id: recipe.id,
-})
+const handleCancel = recipe => {
+    Dispatcher.dispatch({
+        type: RecipeActions.CANCEL_EDIT,
+        id: recipe.id,
+    })
+    history.push(`/library/recipe/${recipe.id}`)
+}
 
 class RecipeEdit extends Component<{ recipeLO: any }> {
     render() {
