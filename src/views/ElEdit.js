@@ -13,7 +13,7 @@ import debounce from "../util/debounce"
 let seq = 0
 
 const doRecog = raw =>
-    raw != null && raw.trim().length >= 3
+    raw != null && raw.trim().length >= 2
 
 class ElEdit extends React.PureComponent {
 
@@ -130,6 +130,7 @@ class ElEdit extends React.PureComponent {
                         result: prefix + value + suffix,
                     }
                 })
+                    .filter(s => s.result !== recog.raw)
                 return this.setState({
                     recog,
                     q, qv,
