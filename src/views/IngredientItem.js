@@ -21,7 +21,7 @@ Augment.propTypes = {
     suffix: PropTypes.string,
 }
 
-const IngredientItem = ({ingredient: ref, iLO}) => {
+const IngredientItem = ({ingredient: ref, iLO, uLO}) => {
 
     if (iLO == null || !iLO.hasValue()) {
         return <span>
@@ -35,10 +35,11 @@ const IngredientItem = ({ingredient: ref, iLO}) => {
 
     const ingredient = iLO.getValueEnforcing()
     const isRecipe = ingredient.type === "Recipe"
+    const units = uLO && uLO.hasValue() ? uLO.getValueEnforcing().name : ref.units
     return (
     <span>
         <Quantity quantity={ref.quantity}
-                  units={ref.units}
+                  units={units}
                   addSpace />
         {isRecipe
             ? <React.Fragment>
@@ -64,6 +65,9 @@ IngredientItem.propTypes = {
     iLO: loadObjectOf(PropTypes.shape({
         name: PropTypes.string.isRequired,
     })),
+    uLO: loadObjectOf(PropTypes.shape({
+        name: PropTypes.string.isRequired,
+    })),
 }
 
 const IngCon = Container.createFunctional(
@@ -76,6 +80,9 @@ const IngCon = Container.createFunctional(
             ingredient: ref,
             iLO: ref.ingredientId != null
                 ? LibraryStore.getIngredientById(ref.ingredientId)
+                : null,
+            uLO: ref.uomId != null
+                ? null // todo: set up canonical unit names!
                 : null,
         }
     },
