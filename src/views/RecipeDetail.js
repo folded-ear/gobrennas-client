@@ -10,7 +10,7 @@ import {
 } from "antd"
 import RecipeActions from "../data/RecipeActions"
 import Directions from "./common/Directions"
-import IngredientParseUI from "./IngredientParseUI"
+import IngredientItem from "./IngredientItem"
 import loadObjectOf from "../util/loadObjectOf"
 import AddToList from "./AddToList"
 import { Recipe } from "../data/RecipeTypes"
@@ -90,7 +90,7 @@ const RecipeDetail = ({recipeLO, mine, staged, ownerLO}) => {
                 <List
                     dataSource={recipe.ingredients}
                     renderItem={it => <List.Item>
-                        <IngredientParseUI ingredient={it} />
+                        <IngredientItem ingredient={it} />
                     </List.Item>}
                     size="small"
                     split
