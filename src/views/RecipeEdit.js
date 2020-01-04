@@ -8,6 +8,7 @@ import RecipeActions from "../data/RecipeActions"
 import DeleteButton from "./common/DeleteButton"
 import history from "../util/history"
 import onNextActionThat from "../util/onNextActionThat"
+import {handleSave as handleSaveCopy} from "./RecipeAdd"
 
 const handleDelete = (id) => {
     RecipeApi.deleteRecipe(id)
@@ -49,6 +50,7 @@ class RecipeEdit extends Component<{ recipeLO: any }> {
             <div>
                 <h2>Editing {recipeLO.getValueEnforcing().name}</h2>
                 <RecipeForm onSave={handleSave}
+                            onSaveCopy={handleSaveCopy}
                             onCancel={handleCancel}/>
                 <hr />
                 <DeleteButton

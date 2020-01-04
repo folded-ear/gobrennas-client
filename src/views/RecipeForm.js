@@ -44,7 +44,7 @@ const NewIngredient = <Button
     New Ingredient
 </Button>
 
-const RecipeForm = ({draft: lo, onSave, onCancel}) => {
+const RecipeForm = ({draft: lo, onSave, onSaveCopy, onCancel}) => {
 
     const {TextArea} = Input
     const draft = lo.getValueEnforcing()
@@ -142,6 +142,8 @@ const RecipeForm = ({draft: lo, onSave, onCancel}) => {
                     <Button
                         type="primary"
                         onClick={() => onSave(draft)}>Save</Button>
+                    {onSaveCopy && <Button
+                        onClick={() => onSaveCopy(draft)}>Save as Copy</Button>}
                     <Button
                         onClick={() => onCancel(draft)}>Cancel</Button>
                 </Button.Group>
@@ -156,6 +158,7 @@ const RecipeForm = ({draft: lo, onSave, onCancel}) => {
 
 RecipeForm.propTypes = {
     onSave: PropTypes.func,
+    onSaveCopy: PropTypes.func,
     onCancel: PropTypes.func,
     draft: Recipe
 }

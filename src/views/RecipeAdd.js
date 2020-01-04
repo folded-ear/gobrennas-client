@@ -6,7 +6,7 @@ import history from "../util/history"
 import onNextActionThat from "../util/onNextActionThat"
 import DraftRecipeStore from "../data/DraftRecipeStore"
 
-const handleSave = (recipe) => {
+export const handleSave = (recipe) => {
     Dispatcher.dispatch({
         type: RecipeActions.CREATE_RECIPE,
         data: recipe
