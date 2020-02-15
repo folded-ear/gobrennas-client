@@ -2,10 +2,46 @@
     const GATEWAY_PROP = "foodinger_import_bookmarklet_gateway_Ch8LF4wGvsRHN3nM0jFv";
     const CONTAINER_ID = "foodinger-import-bookmarklet-container-Ch8LF4wGvsRHN3nM0jFv";
     const store = {
+        mode: "form",
+        grabTarget: null,
+        grabStyle: null,
         title: "",
         url: window.location.toString(),
         ingredients: [],
         directions: [],
+    };
+    const debounce = (fn, delay = 100) => {
+        let timeout = null;
+        return (...args) => {
+            if (timeout != null) {
+                clearTimeout(timeout)
+            }
+            timeout = setTimeout(() => {
+                timeout = null;
+                fn(...args)
+            }, delay)
+        }
+    };
+    const grabSelectHandler = debounce(() => {
+        if (document.getSelection().isCollapsed) return;
+        store[store.grabTarget] = (store.grabStyle === "string"
+            ? grabString()
+            : grabList());
+        tearDownGrab();
+    }, 250);
+    const setUpGrab = (target, style) => {
+        store.mode = "grab";
+        store.grabTarget = target;
+        store.grabStyle = style;
+        document.addEventListener('selectionchange', grabSelectHandler);
+        render();
+    };
+    const tearDownGrab = () => {
+        store.mode = "form";
+        store.grabTarget = null;
+        store.grabStyle = null;
+        document.removeEventListener('selectionchange', grabSelectHandler);
+        render();
     };
     const grabSelectedNode = () => {
         const sel = document.getSelection();
@@ -50,7 +86,8 @@
         right: 0,
         zIndex: 99999,
         backgroundColor: "white",
-        border: "1px solid #963"
+        border: "1px solid #963",
+        width: "50%",
     });
     const headerStyle = toStyle({
         fontSize: "14pt",
@@ -59,38 +96,83 @@
         backgroundColor: "#fed",
     });
     const formItemStyle = toStyle({});
-    const labelStyle = toStyle({});
+    const labelStyle = toStyle({
+        display: "inline-block",
+        textAlign: "right",
+        verticalAlign: "top",
+        paddingTop: "0.3em",
+        marginRight: "0.5em",
+        width: "6em",
+        fontSize: "90%",
+        fontWeight: "bold",
+    });
+    const grabBtnStyle = toStyle({
+        display: "inline-block",
+        verticalAlign: "top",
+    });
     const valueStyle = toStyle({});
-    let listRules = {
-        listStylePosition: "inside",
-        paddingLeft: "0.5em",
-        marginLeft: "0.5em",
+    const blockRules = {
+        minWidth: "20em",
+        minHeight: "12em",
     };
     const ingStyle = toStyle({
-        ...listRules,
-        listStyleType: "circle",
+        ...blockRules,
+        whiteSpace: "nowrap",
     });
     const dirStyle = toStyle({
-        ...listRules,
-        listStyleType: "decimal",
+        ...blockRules,
     });
-    const itemStyle = toStyle({});
-    const render = () => {
-        console.log("RENDER", store);
-        window[GATEWAY_PROP] = {
+    const renderForm = ($div) => {
+        $div.innerHTML = `<h1 style="${headerStyle}">Foodinger Import</h1>
+        <div style="${formItemStyle}">
+            <label style="${labelStyle}">Title:</label>
+            <input style="${valueStyle}" name="title" />
+            <button style="${grabBtnStyle}" onclick="${GATEWAY_PROP}.grabTitle()">Grab</button>
+        </div>
+        <div style="${formItemStyle}">
+            <label style="${labelStyle}">URL:</label>
+            <input style="${valueStyle}" name="url" />
+        </div>
+        <div style="${formItemStyle}">
+            <label style="${labelStyle}">Ingredients:</label>
+            <textarea style="${ingStyle}" name="ingredients"></textarea>
+            <button style="${grabBtnStyle}" onclick="${GATEWAY_PROP}.grabIngredients()">Grab</button>
+        </div>
+        <div style="${formItemStyle}">
+            <label style="${labelStyle}">Directions:</label>
+            <textarea style="${dirStyle}" name="directions"></textarea>
+            <button style="${grabBtnStyle}" onclick="${GATEWAY_PROP}.grabDirections()">Grab</button>
+        </div>`;
+        $div.querySelector("input[name=title]").setAttribute("value", store.title);
+        $div.querySelector("input[name=url]").setAttribute("value", store.url);
+        $div.querySelector("textarea[name=ingredients]").innerHTML = store.ingredients.join("\n");
+        $div.querySelector("textarea[name=directions]").innerHTML = store.directions
+            .map((l, i) => `${i + 1}.  ${l}`)
+            .join("\n");
+        return {
             grabTitle: () => {
-                store.title = grabString();
-                render();
+                setUpGrab("title", "string");
             },
             grabIngredients: () => {
-                store.ingredients = grabList();
-                render();
+                setUpGrab("ingredients", "list");
             },
             grabDirections: () => {
-                store.directions = grabList();
-                render();
+                setUpGrab("directions", "list");
             },
         };
+    };
+    const renderGrab = ($div) => {
+        $div.innerHTML = `<h1 style="${headerStyle}">Grabbing '${store.grabTarget}'</h1>
+        Select some of the ${store.grabTarget}. Doesn't have to be perfect.
+        <button onclick="${GATEWAY_PROP}.cancel()">Cancel</button>`;
+        return {
+            cancel: () => {
+                tearDownGrab();
+            },
+        };
+    };
+    const render = () => {
+        console.log("RENDER", store);
         let $div = document.getElementById(CONTAINER_ID);
         if ($div == null) {
             $div = document.createElement('div');
@@ -98,34 +180,12 @@
             document.body.append($div);
         }
         $div.style = containerStyle;
-        $div.innerHTML = `<h1 style="${headerStyle}">Foodinger Import</h1>
-        <div style="${formItemStyle}">
-            <label style="${labelStyle}">Title:</label>
-            <span style="${valueStyle}" name="title"></span>
-            <button onclick="${GATEWAY_PROP}.grabTitle()">Grab</button>
-        </div>
-        <div style="${formItemStyle}">
-            <label style="${labelStyle}">URL:</label>
-            <span style="${valueStyle}" name="url"></span>
-        </div>
-        <div style="${formItemStyle}">
-            <label style="${labelStyle}">Ingredients:</label>
-            <ul style="${ingStyle}" name="ingredients"></ul>
-            <button onclick="${GATEWAY_PROP}.grabIngredients()">Grab</button>
-        </div>
-        <div style="${formItemStyle}">
-            <label style="${labelStyle}">Directions:</label>
-            <ol style="${dirStyle}" name="directions"></ol>
-            <button onclick="${GATEWAY_PROP}.grabDirections()">Grab</button>
-        </div>`;
-        $div.querySelector("span[name=title]").innerHTML = store.title;
-        $div.querySelector("span[name=url]").innerHTML = store.url;
-        $div.querySelector("ul[name=ingredients]").innerHTML = store.ingredients
-            .map(i => `<li style="${itemStyle}">${i}</li>`)
-            .join("\n");
-        $div.querySelector("ol[name=directions]").innerHTML = store.directions
-            .map(i => `<li style="${itemStyle}">${i}</li>`)
-            .join("\n");
+        const rfn = store.mode === "form"
+            ? renderForm
+            : store.mode === "grab"
+            ? renderGrab
+            : () => {throw new Error(`Unrecognized '${store.mode}' mode`)};
+        window[GATEWAY_PROP] = rfn($div);
     };
     render();
 })();
