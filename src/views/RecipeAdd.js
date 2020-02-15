@@ -33,7 +33,7 @@ class RecipeAdd extends Component<{}> {
     render() {
         return (
             <div>
-                <h2>Add New Recipe</h2>
+                <h2>Add A New Recipe</h2>
                 <div>
                     <RecipeForm onSave={handleSave}
                                 onCancel={handleCancel}/>
