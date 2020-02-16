@@ -40,7 +40,8 @@
                 externalUrl: store.url,
                 ingredients: store.ingredients.map(i => ({raw: i})),
                 directions: store.directions
-                    .map(d => `1.  ${d}`)
+                    .map(d => d.trim())
+                    .map(d => d.length === 0 ? d : `1.  ${d}`)
                     .join("\n"),
             }),
         })
@@ -158,9 +159,9 @@
         width: "50%",
     });
     const headerStyle = toStyle({
-        fontSize: "14pt",
+        fontSize: "2rem",
         fontWeight: "bold",
-        padding: "3px 5px",
+        padding: "0.2em 0.4em",
         backgroundColor: "#fed",
     });
     const formItemStyle = toStyle({});
@@ -170,8 +171,8 @@
         verticalAlign: "top",
         paddingTop: "0.3em",
         marginRight: "0.5em",
-        width: "6em",
-        fontSize: "90%",
+        width: "6.5em",
+        fontSize: "0.9em",
         fontWeight: "bold",
     });
     const grabBtnStyle = toStyle({
@@ -181,15 +182,19 @@
     });
     const importBtnStyle = toStyle({
         display: "inline-block",
-        borderRadius: "3px",
+        borderRadius: "0.2em",
+        color: "#030",
         backgroundColor: "#ded",
         border: "1px solid #090",
         fontWeight: "bold",
         padding: "0.2em 1em",
         cursor: "pointer",
     });
-    const valueStyle = toStyle({});
+    const valueStyle = toStyle({
+        width: "auto",
+    });
     const blockRules = {
+        width: "auto",
         minWidth: "20em",
         minHeight: "12em",
     };
@@ -226,12 +231,25 @@
             <button style="${importBtnStyle}" onclick="${GATEWAY_PROP}.doImport()">Import</button>
         </div>
         `;
-        $div.querySelector("input[name=title]").setAttribute("value", store.title);
-        $div.querySelector("input[name=url]").setAttribute("value", store.url);
-        $div.querySelector("textarea[name=ingredients]").innerHTML = store.ingredients.join("\n");
-        $div.querySelector("textarea[name=directions]").innerHTML = store.directions
-            .map((l, i) => `${i + 1}.  ${l}`)
-            .join("\n");
+        const title = $div.querySelector("input[name=title]")
+        title.setAttribute("value", store.title);
+        title.addEventListener("change", e => store.title = e.target.value)
+        const url = $div.querySelector("input[name=url]")
+        url.setAttribute("value", store.url);
+        url.addEventListener("change", e => store.url = e.target.value)
+        const ings = $div.querySelector("textarea[name=ingredients]")
+        ings.innerHTML = store.ingredients.join("\n");
+        ings.addEventListener("change", e =>
+            store.ingredients = e.target.value
+                .split("\n")
+                .map(l => l.trim())
+                .filter(l => l.length > 0))
+        const dirs = $div.querySelector("textarea[name=directions]")
+        dirs.innerHTML = store.directions.join("\n");
+        dirs.addEventListener("change", e =>
+            store.directions = e.target.value
+                .split("\n")
+                .map(l => l.trim()))
         return {
             grabTitle: () => {
                 setUpGrab("title", "string");
