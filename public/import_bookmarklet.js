@@ -67,6 +67,7 @@
         store.mode = "importing";
         render();
     };
+
     const GATEWAY_PROP = "foodinger_import_bookmarklet_gateway_Ch8LF4wGvsRHN3nM0jFv";
     const CONTAINER_ID = "foodinger-import-bookmarklet-container-Ch8LF4wGvsRHN3nM0jFv";
     const store = {
@@ -79,6 +80,8 @@
         directions: [],
         id: null,
     };
+
+    // copied verbatim from the in-app library
     const debounce = (fn, delay = 100) => {
         let timeout = null;
         return (...args) => {
@@ -91,11 +94,12 @@
             }, delay)
         }
     };
+
     const grabSelectHandler = debounce(() => {
         if (document.getSelection().isCollapsed) return;
         store[store.grabTarget] = (store.grabStyle === "string"
-            ? grabString()
-            : grabList());
+            ? grabString(grabSelectedNode())
+            : grabList(grabSelectedNode()));
         tearDownGrab();
     }, 250);
     const setUpGrab = (target, style) => {
@@ -131,17 +135,13 @@
     const collapseWS = n => n == null ? "" : n.textContent
         .replace(/\s+/g, ' ')
         .trim();
-    const grabString = () => {
-        const node = grabSelectedNode();
-        return collapseWS(node);
-    };
-    const grabList = () => {
-        const node = grabSelectedNode();
-        if (!node) return [];
-        return Array.from(node.childNodes)
+    const grabString = node =>
+        collapseWS(node);
+    const grabList = node =>
+        node ? Array.from(node.childNodes)
             .map(collapseWS)
-            .filter(s => s.length > 0);
-    };
+            .filter(s => s.length > 0) : [];
+
     const camelToDashed = n =>
         n.replace(/([a-z0-9])([A-Z])/g, (match, a, b) =>
             `${a}-${b.toLowerCase()}`);
@@ -296,7 +296,7 @@
         `;
     };
     const render = () => {
-        console.log("RENDER", store); // todo: remove
+        console.log("FOODINGER", store);
         let $div = document.getElementById(CONTAINER_ID);
         if ($div == null) {
             $div = document.createElement('div');
@@ -314,4 +314,41 @@
         )($div);
     };
     render();
+
+    for (const auto of [
+        // return truthy to indicate autoprocessing did it's thing.
+        () => {
+            if (!store.url.includes("foodnetwork.com")) return;
+            const r = document.querySelector(".o-Recipe");
+            if (r == null) return;
+            store.title = grabString(r.querySelector(".o-AssetTitle"));
+            store.ingredients = grabList(r.querySelector(".o-Ingredients .o-Ingredients__m-Body"));
+            store.directions = grabList(r.querySelector(".o-Method ol"));
+            return true;
+        },
+        () => {
+            if (!store.url.includes("cooking.nytimes.com")) return;
+            const r = document.querySelector("#content .recipe");
+            store.title = grabString(r.querySelector(".recipe-title"));
+            store.ingredients = grabList(r.querySelector(".recipe-ingredients"));
+            store.directions = grabList(r.querySelector(".recipe-steps"));
+            return true;
+        },
+        () => {
+            // derived from happymoneysaver.com, hopefully for all WPRM sites?
+            const rs = document.querySelectorAll(".wprm-recipe-container");
+            if (rs.length !== 1) return;
+            const r = rs[0];
+            store.title = grabString(r.querySelector(".wprm-recipe-name"));
+            store.ingredients = grabList(r.querySelector(".wprm-recipe-ingredients"));
+            store.directions = grabList(r.querySelector(".wprm-recipe-instructions"));
+            const notes = r.querySelector(".wprm-recipe-notes");
+            if (notes != null) store.directions.push(grabString(notes));
+            return true;
+        },
+    ]) try {
+        if (auto()) { render(); break; }
+    } catch (e) {
+        console.warn("auto-import error", e)
+    }
 })();
