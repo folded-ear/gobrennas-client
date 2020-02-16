@@ -1,4 +1,71 @@
+/* eslint-disable */
 (function() {
+    const scripts = document.getElementsByTagName("script");
+    const parts = scripts[scripts.length - 1].src.split("?");
+    let appRoot = parts[0].split("/");
+    appRoot.pop();
+    appRoot = appRoot.join('/');
+    let apiRoot = appRoot.replace(/^https?:\/\/localhost:3001(\/|$)/, "http://localhost:8080$1") + "/api";
+    const QS = parts[1].split("&")
+        .map(p => p.split("="))
+        .reduce((m, a) => ({
+            ...m,
+            [a.shift()]: a.join("="),
+        }), {});
+    const authHeaders = {
+        "Authorization": `Bearer ${QS.token || "garbage"}`,
+    };
+    fetch(apiRoot + "/user/me", {
+        headers: authHeaders,
+    })
+        .then(r => {
+            if (!r.ok) {
+                throw new Error("stale token")
+            }
+        })
+        .catch(() => {
+            store.mode = "stale";
+            render();
+        });
+    const sendToFoodinger = () => {
+        fetch(apiRoot + "/recipe", {
+            method: "POST",
+            headers: {
+                ...authHeaders,
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                type: "Recipe",
+                name: store.title,
+                externalUrl: store.url,
+                ingredients: store.ingredients.map(i => ({raw: i})),
+                directions: store.directions
+                    .map(d => `1.  ${d}`)
+                    .join("\n"),
+            }),
+        })
+            .then(r => {
+                if (r.status === 401) {
+                    store.mode = "stale";
+                    render();
+                    throw new Error("stale token");
+                }
+                if (r.status !== 201) {
+                    throw new Error(`${r.status} ${r.statusText}`)
+                }
+                return r.json();
+            })
+            .then(r => {
+                store.mode = "imported";
+                store.id = r.id;
+                render();
+            })
+            .catch(e => {
+                alert(`Something went wrong: ${e}\n\nTry it again?`)
+            })
+        store.mode = "importing";
+        render();
+    };
     const GATEWAY_PROP = "foodinger_import_bookmarklet_gateway_Ch8LF4wGvsRHN3nM0jFv";
     const CONTAINER_ID = "foodinger-import-bookmarklet-container-Ch8LF4wGvsRHN3nM0jFv";
     const store = {
@@ -9,6 +76,7 @@
         url: window.location.toString(),
         ingredients: [],
         directions: [],
+        id: null,
     };
     const debounce = (fn, delay = 100) => {
         let timeout = null;
@@ -109,6 +177,16 @@
     const grabBtnStyle = toStyle({
         display: "inline-block",
         verticalAlign: "top",
+        cursor: "pointer",
+    });
+    const importBtnStyle = toStyle({
+        display: "inline-block",
+        borderRadius: "3px",
+        backgroundColor: "#ded",
+        border: "1px solid #090",
+        fontWeight: "bold",
+        padding: "0.2em 1em",
+        cursor: "pointer",
     });
     const valueStyle = toStyle({});
     const blockRules = {
@@ -122,7 +200,7 @@
     const dirStyle = toStyle({
         ...blockRules,
     });
-    const renderForm = ($div) => {
+    const renderForm = $div => {
         $div.innerHTML = `<h1 style="${headerStyle}">Foodinger Import</h1>
         <div style="${formItemStyle}">
             <label style="${labelStyle}">Title:</label>
@@ -142,7 +220,12 @@
             <label style="${labelStyle}">Directions:</label>
             <textarea style="${dirStyle}" name="directions"></textarea>
             <button style="${grabBtnStyle}" onclick="${GATEWAY_PROP}.grabDirections()">Grab</button>
-        </div>`;
+        </div>
+        <div style="${formItemStyle}">
+            <label style="${labelStyle}"></label>
+            <button style="${importBtnStyle}" onclick="${GATEWAY_PROP}.doImport()">Import</button>
+        </div>
+        `;
         $div.querySelector("input[name=title]").setAttribute("value", store.title);
         $div.querySelector("input[name=url]").setAttribute("value", store.url);
         $div.querySelector("textarea[name=ingredients]").innerHTML = store.ingredients.join("\n");
@@ -159,9 +242,12 @@
             grabDirections: () => {
                 setUpGrab("directions", "list");
             },
+            doImport: () => {
+                sendToFoodinger();
+            },
         };
     };
-    const renderGrab = ($div) => {
+    const renderGrab = $div => {
         $div.innerHTML = `<h1 style="${headerStyle}">Grabbing '${store.grabTarget}'</h1>
         Select some of the ${store.grabTarget}. Doesn't have to be perfect.
         <button onclick="${GATEWAY_PROP}.cancel()">Cancel</button>`;
@@ -171,8 +257,28 @@
             },
         };
     };
+    const renderStale = $div => {
+        $div.innerHTML = `<h1 style="${headerStyle}">Stale Bookmarklet</h1>
+        <p>Your import bookmarklet is stale. Go update it from
+        <a href="${appRoot}/profile" target="_blank">your Profile</a>,
+        and then return to this page and click it!</p>
+        `;
+    };
+    const renderImporting = $div => {
+        $div.innerHTML = `<h1 style="${headerStyle}">Importing...</h1>
+        <p>Your recipe is being imported. Hang tight...</p>
+        `;
+    };
+    const renderImported = $div => {
+        $div.innerHTML = `<h1 style="${headerStyle}">Success!</h1>
+        <p>Your recipe was successfully imported!</p>
+        <p>You can <a href="${appRoot}/library/recipe/${store.id}">view it</a>
+        or <a href="${appRoot}/library/recipe/${store.id}/edit">edit it</a>, or
+        just continue on your merry way.</p>
+        `;
+    };
     const render = () => {
-        console.log("RENDER", store);
+        console.log("RENDER", store); // todo: remove
         let $div = document.getElementById(CONTAINER_ID);
         if ($div == null) {
             $div = document.createElement('div');
@@ -180,12 +286,14 @@
             document.body.append($div);
         }
         $div.style = containerStyle;
-        const rfn = store.mode === "form"
-            ? renderForm
-            : store.mode === "grab"
-            ? renderGrab
-            : () => {throw new Error(`Unrecognized '${store.mode}' mode`)};
-        window[GATEWAY_PROP] = rfn($div);
+        window[GATEWAY_PROP] = (
+            store.mode === "form" ? renderForm
+                : store.mode === "grab" ? renderGrab
+                : store.mode === "stale" ? renderStale
+                : store.mode === "importing" ? renderImporting
+                : store.mode === "imported" ? renderImported
+                : () => {throw new Error(`Unrecognized '${store.mode}' mode`)}
+        )($div);
     };
     render();
 })();
