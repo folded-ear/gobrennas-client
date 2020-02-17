@@ -9,6 +9,7 @@ import User from "./User"
 import UserStore from "../../data/UserStore"
 import PreferencesStore from "../../data/PreferencesStore"
 import UserActions from "../../data/UserActions"
+import { APP_BASE_URL } from "../../constants"
 
 class Profile extends Component {
 
@@ -27,6 +28,7 @@ class Profile extends Component {
     render() {
         const {
             currentUser: user,
+            token,
             isDeveloper,
             isDevMode,
         } = this.props
@@ -45,6 +47,15 @@ class Profile extends Component {
                         <div className="profile-name">
                             <h2>{user.name}</h2>
                             <p className="profile-email">{user.email}</p>
+                        </div>
+                        <Divider />
+                        <h2>Import Bookmarklet</h2>
+                        Drag to this link to your bookmarks bar, and then while viewing a recipe online, click it to
+                        launch the import helper. Note that for the moment you have to do this each time you log
+                        into Foodinger (deleting the old one first). Sorry, man.
+                        <div style={{textAlign: "center"}}>
+                            {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
+                            <a href={`javascript:var s=document.createElement('script');s.src='${APP_BASE_URL}/import_bookmarklet.js?token=${encodeURIComponent(token)}&_='+Date.now();s.id='foodinger-import-bookmarklet';document.body.appendChild(s);`}>Import to Foodinger</a>
                         </div>
                         <Divider />
                         <div><User {...user} /></div>
@@ -74,6 +85,7 @@ export default Container.createFunctional(
     ],
     (prevState, props) => ({
         ...props,
+        token: UserStore.getToken(),
         isDeveloper: UserStore.isDeveloper(),
         isDevMode: PreferencesStore.isDevMode(),
     }),

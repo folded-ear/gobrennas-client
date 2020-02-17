@@ -82,6 +82,10 @@ class UserStore extends ReduceStore {
         return s.get("token") != null && s.get("profile").hasValue()
     }
 
+    getToken() {
+        return this.getState().get("token")
+    }
+
     getProfileLO() {
         return hotLoadObject(
             () => this.getState().get("profile"),
