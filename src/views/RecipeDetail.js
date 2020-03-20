@@ -93,7 +93,7 @@ const RecipeDetail = ({recipeLO, mine, staged, ownerLO}) => {
                         <IngredientItem ingredient={it} />
                     </List.Item>}
                     size="small"
-                    split
+                    split={false}
                     footer={<AddToList onClick={listId => Dispatcher.dispatch({
                         type: RecipeActions.SEND_TO_SHOPPING_LIST,
                         recipeId: recipe.id,

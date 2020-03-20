@@ -25,11 +25,13 @@ const IngredientItem = ({ingredient: ref, iLO, uLO}) => {
 
     if (iLO == null || !iLO.hasValue()) {
         return <span>
+            <div style={{marginLeft: "7em"}}>
             {ref.raw}
             {ref.ingredientId && <span>
                 {" "}
                 ({ref.ingredientId})
             </span>}
+            </div>
         </span>
     }
 
@@ -38,9 +40,11 @@ const IngredientItem = ({ingredient: ref, iLO, uLO}) => {
     const units = uLO && uLO.hasValue() ? uLO.getValueEnforcing().name : ref.units
     return (
     <span>
+        <div style={{float: "left", width: "6em"}}>
         <Quantity quantity={ref.quantity}
-                  units={units}
-                  addSpace />
+                  units={units} />
+        </div>
+        <div style={{marginLeft: "7em"}}>
         {isRecipe
             ? <React.Fragment>
                 {ingredient.name}
@@ -56,6 +60,7 @@ const IngredientItem = ({ingredient: ref, iLO, uLO}) => {
             </span>}
         <Augment text={ref.preparation}
                  prefix=", " />
+        </div>
     </span>
   )
 }
