@@ -1,14 +1,14 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 import { Router } from 'react-router-dom'
-import history from "./util/history"
 import App from './App'
+import Dispatcher from "./data/dispatcher"
+import TemporalActions from "./data/TemporalActions"
+import WindowActions from "./data/WindowActions"
 import * as serviceWorker from './serviceWorker'
 import debounce from "./util/debounce"
-import Dispatcher from "./data/dispatcher"
-import WindowActions from "./data/WindowActions"
+import history from "./util/history"
 import logAction from "./util/logAction"
-import TemporalActions from "./data/TemporalActions"
 import RingUI from "./util/ring-ui"
 
 if (process.env.NODE_ENV !== "production") {
@@ -113,3 +113,13 @@ serviceWorker.register({
         registration,
     }),
 })
+
+if (process.env.NODE_ENV !== "production") {
+    document.body.style.setProperty("background-image", "repeating-linear-gradient(\n" +
+        "20deg,\n" +
+        "transparent,\n" +
+        "transparent 85px,\n" +
+        "hsl(300, 100%, 90%) 85px,\n" +
+        "hsl(250, 100%, 90%) 90px\n" +
+        ")")
+}
