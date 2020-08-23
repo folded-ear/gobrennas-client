@@ -1,26 +1,26 @@
-import { ReduceStore } from "flux/utils"
-import Dispatcher from './dispatcher'
+import { ReduceStore } from "flux/utils";
 import {
     List,
-    OrderedMap
-} from "immutable"
-import PantryItemActions from "./PantryItemActions"
-import PantryItem from "../models/PantryItem"
+    OrderedMap,
+} from "immutable";
+import PantryItem from "../models/PantryItem";
+import Dispatcher from './dispatcher';
+import PantryItemActions from "./PantryItemActions";
 
 class PantryItemStore extends ReduceStore {
     
     constructor() {
-        super(Dispatcher)
+        super(Dispatcher);
     }
     
     getInitialState() {
         return new OrderedMap({
             pantry_items: new List(),
-        })
+        });
     }
     
     getPantryItems() {
-        return this.getState().get('pantry_items')
+        return this.getState().get('pantry_items');
     }
     
     reduce(state, action) {
@@ -31,24 +31,24 @@ class PantryItemStore extends ReduceStore {
                         id: item.id,
                         name: item.name,
                         aisle: item.aisle
-                    }))
-                }))
+                    }));
+                }));
         
-                return state.setIn(['pantry_items'], items)
+                return state.setIn(['pantry_items'], items);
             }
     
             case PantryItemActions.PANTRYITEMS_ADDED: {
                 if(!action.data) {
-                    return state
+                    return state;
                 }
-                return state.set('pantry_items', state.get('pantry_items').push(action.data))
+                return state.set('pantry_items', state.get('pantry_items').push(action.data));
             }
     
             default: {
-                return state
+                return state;
             }
         }
     }
 }
 
-export default new PantryItemStore()
+export default new PantryItemStore();

@@ -1,41 +1,41 @@
-import React, { Component } from 'react'
 import {
     Button,
     Form,
     Input,
-} from "antd"
-import PantryItem from "../models/PantryItem"
-import PantryItemApi from "../data/PantryItemApi"
+} from "antd";
+import React, { Component } from 'react';
+import PantryItemApi from "../data/PantryItemApi";
+import PantryItem from "../models/PantryItem";
 
 class PantryItemAdd extends Component {
   constructor(props) {
-   super(props)
+   super(props);
    this.state = {
      name: '',
      aisle: ''
-   }
+   };
   }
   
   handleSave = () => {
-    const { name, aisle } = this.state
+    const { name, aisle } = this.state;
   
     const item = new PantryItem({
       type: "PantryItem",
       name,
       aisle
-    })
+    });
   
-    PantryItemApi.addPantryItem(item)
+    PantryItemApi.addPantryItem(item);
   };
   
   handleUpdate = (e) => {
-    const { name, value } = e.target
-    this.setState({ [name] : value})
+    const { name, value } = e.target;
+    this.setState({ [name] : value});
   };
   
   
   render() {
-    const { name, aisle } = this.state
+    const { name, aisle } = this.state;
     
     return (
       <div>
@@ -63,8 +63,8 @@ class PantryItemAdd extends Component {
           </Form.Item>
         </Form>
       </div>
-    )
+    );
   }
 }
 
-export default PantryItemAdd
+export default PantryItemAdd;

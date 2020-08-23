@@ -1,31 +1,31 @@
-import React, { Component } from 'react'
-import { Switch } from 'react-router-dom'
-import Dispatcher from './data/dispatcher'
-import { Container } from "flux/utils"
-import AppHeader from './views/common/AppHeader'
-import Login from './views/user/Login'
-import NotFound from './views/common/NotFound'
-import LoadingIndicator from './views/common/LoadingIndicator'
-import PrivateRoute from './views/common/PrivateRoute'
-import { Layout } from "antd"
-import UserActions from "./data/UserActions"
-import UserStore from "./data/UserStore"
-import routes from './routes'
-import './App.scss'
-import WindowStore from "./data/WindowStore"
-import NewVersionAvailable from "./views/NewVersionAvailable"
-import FluxRoute from "./views/common/FluxRoute"
+import { Layout } from "antd";
+import { Container } from "flux/utils";
+import React, { Component } from 'react';
+import { Switch } from 'react-router-dom';
+import './App.scss';
+import Dispatcher from './data/dispatcher';
+import UserActions from "./data/UserActions";
+import UserStore from "./data/UserStore";
+import WindowStore from "./data/WindowStore";
+import routes from './routes';
+import AppHeader from './views/common/AppHeader';
+import FluxRoute from "./views/common/FluxRoute";
+import LoadingIndicator from './views/common/LoadingIndicator';
+import NotFound from './views/common/NotFound';
+import PrivateRoute from './views/common/PrivateRoute';
+import NewVersionAvailable from "./views/NewVersionAvailable";
+import Login from './views/user/Login';
 
 class App extends Component {
     constructor(props) {
-        super(props)
-        this.handleLogout = this.handleLogout.bind(this)
+        super(props);
+        this.handleLogout = this.handleLogout.bind(this);
     }
     
     handleLogout() {
         Dispatcher.dispatch({
             type: UserActions.LOGOUT,
-        })
+        });
     }
     
     render() {
@@ -33,15 +33,15 @@ class App extends Component {
             authenticated,
             userLO,
             newVersionAvailable,
-        } = this.props
-        const {Content} = Layout
+        } = this.props;
+        const {Content} = Layout;
 
         if (!userLO.isDone()) {
-            return <LoadingIndicator/>
+            return <LoadingIndicator/>;
         }
         const currentUser = authenticated
             ? userLO.getValueEnforcing()
-            : null
+            : null;
         
         return (
             <div>
@@ -60,7 +60,7 @@ class App extends Component {
                                     render={ props => <route.component authenticated={authenticated} {...props} />}
                                     exact={route.exact}
                                 />
-                            )
+                            );
                         })}
 
                         {routes.private.map(route => {
@@ -72,7 +72,7 @@ class App extends Component {
                                     currentUser={currentUser}
                                     authenticated={authenticated}
                                 />
-                            )
+                            );
                         })}
 
                         <FluxRoute path="/login" render={(props) => <Login
@@ -82,7 +82,7 @@ class App extends Component {
                 
                 </Content>
             </div>
-        )
+        );
     }
 }
 
@@ -97,4 +97,4 @@ export default Container.createFunctional(
         userLO: UserStore.getProfileLO(),
         newVersionAvailable: WindowStore.isNewVersionAvailable(),
     }),
-)
+);

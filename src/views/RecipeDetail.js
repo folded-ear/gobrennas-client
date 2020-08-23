@@ -1,36 +1,36 @@
-import React from 'react'
-import PropTypes from "prop-types"
-import Dispatcher from "../data/dispatcher"
-import { Redirect } from "react-router-dom"
 import {
     Affix,
     Button,
     List,
     Spin,
-} from "antd"
-import RecipeActions from "../data/RecipeActions"
-import Directions from "./common/Directions"
-import IngredientItem from "./IngredientItem"
-import loadObjectOf from "../util/loadObjectOf"
-import AddToList from "./AddToList"
-import { Recipe } from "../data/RecipeTypes"
-import history from "../util/history"
-import LibraryActions from "../data/LibraryActions"
-import LabelItem from "./LabelItem"
-import DeleteButton from "./common/DeleteButton"
-import RecipeApi from "../data/RecipeApi"
-import User from "./user/User"
+} from "antd";
+import PropTypes from "prop-types";
+import React from 'react';
+import { Redirect } from "react-router-dom";
+import Dispatcher from "../data/dispatcher";
+import LibraryActions from "../data/LibraryActions";
+import RecipeActions from "../data/RecipeActions";
+import RecipeApi from "../data/RecipeApi";
+import { Recipe } from "../data/RecipeTypes";
+import history from "../util/history";
+import loadObjectOf from "../util/loadObjectOf";
+import AddToList from "./AddToList";
+import DeleteButton from "./common/DeleteButton";
+import Directions from "./common/Directions";
+import IngredientItem from "./IngredientItem";
+import LabelItem from "./LabelItem";
+import User from "./user/User";
 
 const RecipeDetail = ({recipeLO, mine, staged, ownerLO}) => {
 
     if (!recipeLO.hasValue()) {
         if (recipeLO.isLoading()) {
-            return <Spin tip="Recipe is loading..."/>
+            return <Spin tip="Recipe is loading..."/>;
         }
-        return <Redirect to="/library" />
+        return <Redirect to="/library" />;
     }
     
-    const recipe = recipeLO.getValueEnforcing()
+    const recipe = recipeLO.getValueEnforcing();
 
     return (
         <div>
@@ -113,14 +113,14 @@ const RecipeDetail = ({recipeLO, mine, staged, ownerLO}) => {
                     <LabelItem key={label} label={label} />)}
 
         </div>
-    )
-}
+    );
+};
 
 RecipeDetail.propTypes = {
     recipeLO: loadObjectOf(Recipe).isRequired,
     mine: PropTypes.bool,
     ownerLO: loadObjectOf(PropTypes.object),
     staged: PropTypes.bool,
-}
+};
 
-export default RecipeDetail
+export default RecipeDetail;

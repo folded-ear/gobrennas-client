@@ -1,12 +1,12 @@
-import React from 'react'
-import PropTypes from 'prop-types'
 import {
     FormControl,
     Input,
+    InputAdornment,
     InputLabel,
-    InputAdornment
-} from '@material-ui/core'
-import { Search } from '@material-ui/icons'
+} from '@material-ui/core';
+import { Search } from '@material-ui/icons';
+import PropTypes from 'prop-types';
+import React from 'react';
 
 const SearchFilter = ({term, onFilter, onChange}) => {
     return(<FormControl>
@@ -22,13 +22,13 @@ const SearchFilter = ({term, onFilter, onChange}) => {
                 </InputAdornment>
             }
         />
-    </FormControl>)
-}
+    </FormControl>);
+};
 
 SearchFilter.propTypes = {
     term: PropTypes.string,
     onFilter: PropTypes.func,
     onChange: PropTypes.func
-}
+};
 
-export default SearchFilter
+export default SearchFilter;

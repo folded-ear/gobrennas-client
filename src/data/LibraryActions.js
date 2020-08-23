@@ -8,6 +8,6 @@ const LibraryActions = {
     SET_SCOPE: "library/set-scope",
     UPDATE_FILTER: "library/update-filter",
     FILTER_LIBRARY: "library/filter-library",
-}
+};
 
-export default LibraryActions
+export default LibraryActions;

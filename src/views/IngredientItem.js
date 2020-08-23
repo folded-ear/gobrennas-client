@@ -1,16 +1,16 @@
-import React from 'react'
-import PropTypes from "prop-types"
-import { Container } from "flux/utils"
-import LibraryStore from "../data/LibraryStore"
-import loadObjectOf from "../util/loadObjectOf"
-import { refType } from "../models/IngredientRef"
-import { Link } from "react-router-dom"
-import { Icon } from "antd"
-import Quantity from "./common/Quantity"
+import { Icon } from "antd";
+import { Container } from "flux/utils";
+import PropTypes from "prop-types";
+import React from 'react';
+import { Link } from "react-router-dom";
+import LibraryStore from "../data/LibraryStore";
+import { refType } from "../models/IngredientRef";
+import loadObjectOf from "../util/loadObjectOf";
+import Quantity from "./common/Quantity";
 
 const Augment = ({text, prefix, suffix}) => text
     ? <React.Fragment>{prefix}{text}{suffix}</React.Fragment>
-    : null
+    : null;
 
 Augment.propTypes = {
     text: PropTypes.oneOfType([
@@ -19,7 +19,7 @@ Augment.propTypes = {
     ]),
     prefix: PropTypes.string,
     suffix: PropTypes.string,
-}
+};
 
 const IngredientItem = ({ingredient: ref, iLO, uLO}) => {
 
@@ -32,12 +32,12 @@ const IngredientItem = ({ingredient: ref, iLO, uLO}) => {
                 ({ref.ingredientId})
             </span>}
             </div>
-        </span>
+        </span>;
     }
 
-    const ingredient = iLO.getValueEnforcing()
-    const isRecipe = ingredient.type === "Recipe"
-    const units = uLO && uLO.hasValue() ? uLO.getValueEnforcing().name : ref.units
+    const ingredient = iLO.getValueEnforcing();
+    const isRecipe = ingredient.type === "Recipe";
+    const units = uLO && uLO.hasValue() ? uLO.getValueEnforcing().name : ref.units;
     return (
     <span>
         <div style={{float: "left", width: "6em"}}>
@@ -62,8 +62,8 @@ const IngredientItem = ({ingredient: ref, iLO, uLO}) => {
                  prefix=", " />
         </div>
     </span>
-  )
-}
+  );
+};
 
 IngredientItem.propTypes = {
     ingredient: refType.isRequired,
@@ -73,7 +73,7 @@ IngredientItem.propTypes = {
     uLO: loadObjectOf(PropTypes.shape({
         name: PropTypes.string.isRequired,
     })),
-}
+};
 
 const IngCon = Container.createFunctional(
     IngredientItem,
@@ -89,13 +89,13 @@ const IngCon = Container.createFunctional(
             uLO: ref.uomId != null
                 ? null // todo: set up canonical unit names!
                 : null,
-        }
+        };
     },
     {withProps: true},
-)
+);
 
 IngCon.propTypes = {
     ingredient: refType.isRequired,
-}
+};
 
-export default IngCon
+export default IngCon;

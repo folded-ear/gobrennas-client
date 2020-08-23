@@ -1,94 +1,94 @@
-import React from "react"
-import PropTypes from "prop-types"
 import {
     AutoComplete,
     Icon,
     Input,
     Select,
     Spin,
-} from "antd"
-import RecipeApi from "../data/RecipeApi"
-import debounce from "../util/debounce"
+} from "antd";
+import PropTypes from "prop-types";
+import React from "react";
+import RecipeApi from "../data/RecipeApi";
+import debounce from "../util/debounce";
 
-let seq = 0
+let seq = 0;
 
 const doRecog = raw =>
-    raw != null && raw.trim().length >= 2
+    raw != null && raw.trim().length >= 2;
 
 class ElEdit extends React.PureComponent {
 
     constructor(...args) {
-        super(...args)
-        this._domId = "el-edit-" + (++seq)
-        this._mounted = false
+        super(...args);
+        this._domId = "el-edit-" + (++seq);
+        this._mounted = false;
         this.state = {
             recog: null,
-        }
-        this.recognizeDebounced = debounce(this.recognize.bind(this))
-        this.handleChange = this.handleChange.bind(this)
-        this.onPaste = this.onPaste.bind(this)
-        this.onKeyDown = this.onKeyDown.bind(this)
+        };
+        this.recognizeDebounced = debounce(this.recognize.bind(this));
+        this.handleChange = this.handleChange.bind(this);
+        this.onPaste = this.onPaste.bind(this);
+        this.onKeyDown = this.onKeyDown.bind(this);
     }
 
     componentDidMount() {
-        this._mounted = true
-        this.recognize()
+        this._mounted = true;
+        this.recognize();
     }
 
     componentWillUnmount() {
-        this._mounted = false
+        this._mounted = false;
     }
 
     componentDidUpdate(prevProps) {
-        if (this.props.value.raw === prevProps.value.raw) return
-        this.recognizeDebounced()
+        if (this.props.value.raw === prevProps.value.raw) return;
+        this.recognizeDebounced();
     }
 
     getCursorPosition() {
-        const el = document.getElementById(this._domId)
-        if (el == null) return 0
-        const c = el.selectionStart
-        const raw = el.value || ""
-        return Math.min(Math.max(c, 0), raw.length)
+        const el = document.getElementById(this._domId);
+        if (el == null) return 0;
+        const c = el.selectionStart;
+        const raw = el.value || "";
+        return Math.min(Math.max(c, 0), raw.length);
     }
 
     recognize() {
-        if (!this._mounted) return
+        if (!this._mounted) return;
         const {
             name,
             value,
             onChange,
-        } = this.props
-        if (!doRecog(value.raw)) return
-        const cursor = this.getCursorPosition()
+        } = this.props;
+        if (!doRecog(value.raw)) return;
+        const cursor = this.getCursorPosition();
         RecipeApi.recognizeElement(value.raw, cursor)
             .then(recog => {
-                if (!this._mounted) return
-                if (recog.raw !== this.props.value.raw) return
-                if (recog.cursor !== this.getCursorPosition()) return
+                if (!this._mounted) return;
+                if (recog.raw !== this.props.value.raw) return;
+                if (recog.cursor !== this.getCursorPosition()) return;
                 const qr = recog.ranges.find(r =>
-                    r.type === "AMOUNT")
+                    r.type === "AMOUNT");
                 const ur = recog.ranges.find(r =>
-                    r.type === "UNIT" || r.type === "NEW_UNIT")
+                    r.type === "UNIT" || r.type === "NEW_UNIT");
                 const nr = recog.ranges.find(r =>
-                    r.type === "ITEM" || r.type === "NEW_ITEM")
+                    r.type === "ITEM" || r.type === "NEW_ITEM");
                 const textFromRange = r =>
-                    r && recog.raw.substring(r.start, r.end)
+                    r && recog.raw.substring(r.start, r.end);
                 const stripMarkers = s => {
-                    if (s == null) return s
-                    if (s.length < 3) return s
-                    const c = s.charAt(0).toLowerCase()
-                    if (c !== s.charAt(s.length - 1)) return s
-                    if (c >= 'a' && c <= 'z') return s
-                    if (c >= '0' && c <= '9') return s
-                    return s.substring(1, s.length - 1)
-                }
-                const q = textFromRange(qr)
-                const qv = qr && qr.value
-                const u = textFromRange(ur)
-                const uv = ur && ur.value
-                const n = textFromRange(nr)
-                const nv = nr && nr.value
+                    if (s == null) return s;
+                    if (s.length < 3) return s;
+                    const c = s.charAt(0).toLowerCase();
+                    if (c !== s.charAt(s.length - 1)) return s;
+                    if (c >= 'a' && c <= 'z') return s;
+                    if (c >= '0' && c <= '9') return s;
+                    return s.substring(1, s.length - 1);
+                };
+                const q = textFromRange(qr);
+                const qv = qr && qr.value;
+                const u = textFromRange(ur);
+                const uv = ur && ur.value;
+                const n = textFromRange(nr);
+                const nv = nr && nr.value;
                 const p = [qr, ur, nr]
                     .filter(it => it != null)
                     .sort((a, b) => b.start - a.start)
@@ -99,7 +99,7 @@ class ElEdit extends React.PureComponent {
                     )
                     .trim()
                     .replace(/\s+/g, ' ')
-                    .replace(/^\s*,/, '')
+                    .replace(/^\s*,/, '');
                 onChange({
                     target: {
                         name,
@@ -113,24 +113,24 @@ class ElEdit extends React.PureComponent {
                             preparation: p,
                         },
                     },
-                })
+                });
                 const suggestions = recog.suggestions.map(s => {
-                    const prefix = recog.raw.substr(0, s.target.start)
-                    const suffix = recog.raw.substr(s.target.end)
+                    const prefix = recog.raw.substr(0, s.target.start);
+                    const suffix = recog.raw.substr(s.target.end);
                     const quote = s.name.indexOf(' ') >= 0 ||
                         recog.raw.charAt(s.target.start) === '"' ||
-                        recog.raw.charAt(s.target.end - 1) === '"'
+                        recog.raw.charAt(s.target.end - 1) === '"';
                     const value = quote
                         ? `"${s.name}"`
-                        : s.name
+                        : s.name;
                     return {
                         prefix,
                         value,
                         suffix,
                         result: prefix + value + suffix,
-                    }
+                    };
                 })
-                    .filter(s => s.result !== recog.raw)
+                    .filter(s => s.result !== recog.raw);
                 return this.setState({
                     recog,
                     q, qv,
@@ -138,15 +138,15 @@ class ElEdit extends React.PureComponent {
                     n, nv,
                     p,
                     suggestions,
-                })
-            })
+                });
+            });
     }
 
     handleChange(v) {
         const {
             name,
             onChange,
-        } = this.props
+        } = this.props;
         onChange({
             target: {
                 name,
@@ -154,47 +154,47 @@ class ElEdit extends React.PureComponent {
                     raw: v,
                 },
             },
-        })
+        });
         // suggestions are always made stale by change
-        this.setState({suggestions: null})
+        this.setState({suggestions: null});
     }
 
     onPaste(e) {
         const {
             onMultilinePaste,
-        } = this.props
-        if (onMultilinePaste == null) return // don't care!
-        let text = e.clipboardData.getData("text")
-        if (text == null) return
-        text = text.trim()
-        if (text.indexOf("\n") < 0) return // default behaviour
-        e.preventDefault() // no default
-        onMultilinePaste(text)
+        } = this.props;
+        if (onMultilinePaste == null) return; // don't care!
+        let text = e.clipboardData.getData("text");
+        if (text == null) return;
+        text = text.trim();
+        if (text.indexOf("\n") < 0) return; // default behaviour
+        e.preventDefault(); // no default
+        onMultilinePaste(text);
     }
 
     onKeyDown(e) {
         const {
             value,
-        } = e.target
+        } = e.target;
         const {
             key,
-        } = e
+        } = e;
         const {
             onDelete,
-        } = this.props
+        } = this.props;
         switch (key) { // eslint-disable-line default-case
             case "Backspace":
             case "Delete":
                 // if the value is empty, delete the task and focus previous
                 if (value.length === 0) {
-                    e.preventDefault()
-                    onDelete && onDelete()
+                    e.preventDefault();
+                    onDelete && onDelete();
                 }
-                break
+                break;
             case "ArrowLeft":
             case "ArrowRight":
-                this.recognizeDebounced()
-                break
+                this.recognizeDebounced();
+                break;
         }
     }
 
@@ -203,16 +203,16 @@ class ElEdit extends React.PureComponent {
             name,
             value,
             onPressEnter,
-        } = this.props
+        } = this.props;
         const {
             raw,
-        } = value
+        } = value;
         const {
             recog,
             q, u, uv, n, nv, p,
             suggestions,
-        } = this.state
-        const hasSuggestions = suggestions && suggestions.length > 0
+        } = this.state;
+        const hasSuggestions = suggestions && suggestions.length > 0;
         return <React.Fragment>
             <AutoComplete name={`${name}.raw`}
                           value={raw}
@@ -252,7 +252,7 @@ class ElEdit extends React.PureComponent {
                     {p && <span>{n ? ", " : null}{p}</span>}
                 </Hunk>
             }
-        </React.Fragment>
+        </React.Fragment>;
     }
 }
 
@@ -260,7 +260,7 @@ const Hunk = ({children, style}) => <span style={{
     ...style,
     marginLeft: "0.4em",
     padding: "0 0.25em"
-}}>{children}</span>
+}}>{children}</span>;
 
 ElEdit.propTypes = {
     name: PropTypes.string.isRequired,
@@ -275,6 +275,6 @@ ElEdit.propTypes = {
     onPressEnter: PropTypes.func,
     onDelete: PropTypes.func,
     onMultilinePaste: PropTypes.func,
-}
+};
 
-export default ElEdit
+export default ElEdit;

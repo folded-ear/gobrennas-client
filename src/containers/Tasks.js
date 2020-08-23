@@ -1,7 +1,7 @@
-import React from "react"
-import { Container } from "flux/utils"
-import TaskList from "../views/TaskList"
-import TaskStore from "../data/TaskStore"
+import { Container } from "flux/utils";
+import React from "react";
+import TaskStore from "../data/TaskStore";
+import TaskList from "../views/TaskList";
 
 export default Container.createFunctional(
     props => <TaskList {...props} />,
@@ -9,10 +9,10 @@ export default Container.createFunctional(
         TaskStore,
     ],
     () => {
-        const allLists = TaskStore.getLists()
-        const activeListLO = TaskStore.getActiveListLO()
-        const activeTask = TaskStore.getActiveTask()
-        const selectedTasks = TaskStore.getSelectedTasks()
+        const allLists = TaskStore.getLists();
+        const activeListLO = TaskStore.getActiveListLO();
+        const activeTask = TaskStore.getActiveTask();
+        const selectedTasks = TaskStore.getSelectedTasks();
         return {
             allLists,
             activeListLO,
@@ -26,6 +26,6 @@ export default Container.createFunctional(
             isTaskSelected: selectedTasks == null
                 ? () => false
                 : taskOrId => selectedTasks.some(t => (taskOrId.id || taskOrId) === t.id),
-        }
+        };
     }
-)
+);

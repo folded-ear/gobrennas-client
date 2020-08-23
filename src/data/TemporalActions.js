@@ -7,6 +7,6 @@ const TemporalActions = {
     EVERY_EVENING: "temporal/every-evening",
     EVERY_NIGHT: "temporal/every-night",
     EVERY_DAY: "temporal/every-day",
-}
+};
 
-export default TemporalActions
+export default TemporalActions;

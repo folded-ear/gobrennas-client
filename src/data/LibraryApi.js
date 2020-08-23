@@ -1,11 +1,11 @@
-import BaseAxios from "axios"
-import { API_BASE_URL } from "../constants"
-import LibraryActions from "./LibraryActions"
-import promiseFlux from "../util/promiseFlux"
+import BaseAxios from "axios";
+import { API_BASE_URL } from "../constants";
+import promiseFlux from "../util/promiseFlux";
+import LibraryActions from "./LibraryActions";
 
 const axios = BaseAxios.create({
     baseURL: `${API_BASE_URL}/api/recipe`,
-})
+});
 
 const LibraryApi = {
     
@@ -16,7 +16,7 @@ const LibraryApi = {
                 type: LibraryActions.LIBRARY_LOADED,
                 data: data.data,
             }),
-        )
+        );
     },
 
     getIngredient(id) {
@@ -27,8 +27,8 @@ const LibraryApi = {
                 id,
                 data: data.data,
             })
-        )
+        );
     },
-}
+};
 
-export default LibraryApi
+export default LibraryApi;

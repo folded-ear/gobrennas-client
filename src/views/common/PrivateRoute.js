@@ -1,6 +1,6 @@
-import React from 'react'
-import { Redirect } from "react-router-dom"
-import FluxRoute from "./FluxRoute"
+import React from 'react';
+import { Redirect } from "react-router-dom";
+import FluxRoute from "./FluxRoute";
 
 
 const PrivateRoute = ({ component: Component, authenticated, ...rest }) => (
@@ -19,6 +19,6 @@ const PrivateRoute = ({ component: Component, authenticated, ...rest }) => (
         )
       }
     />
-)
+);
   
-export default PrivateRoute
+export default PrivateRoute;

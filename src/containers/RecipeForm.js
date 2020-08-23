@@ -1,7 +1,7 @@
-import React from 'react'
-import { Container } from 'flux/utils'
-import RecipeForm from '../views/RecipeForm'
-import DraftRecipeStore from '../data/DraftRecipeStore'
+import { Container } from 'flux/utils';
+import React from 'react';
+import DraftRecipeStore from '../data/DraftRecipeStore';
+import RecipeForm from '../views/RecipeForm';
 
 export default Container.createFunctional(
     (props) => <RecipeForm {...props}/>,
@@ -12,7 +12,7 @@ export default Container.createFunctional(
         return {
             draft: DraftRecipeStore.getDraftLO(),
             ...props
-        }
+        };
     },
     { withProps: true}
-)
+);

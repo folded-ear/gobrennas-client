@@ -1,4 +1,4 @@
-import Dispatcher from "../data/dispatcher"
+import Dispatcher from "../data/dispatcher";
 
 /*
  * I am an attempt to provide a graceful way to hook actions from w/in action
@@ -54,10 +54,10 @@ import Dispatcher from "../data/dispatcher"
 const onNextActionThat = (test, work) => {
     const token = Dispatcher.register(actPay => {
         if (test(actPay)) {
-            Dispatcher.unregister(token)
-            work(actPay)
+            Dispatcher.unregister(token);
+            work(actPay);
         }
-    })
-}
+    });
+};
 
-export default onNextActionThat
+export default onNextActionThat;

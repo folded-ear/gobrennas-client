@@ -1,30 +1,30 @@
-import React from 'react'
-import PropTypes from "prop-types"
-import { Container } from "flux/utils"
-import Dispatcher from "../data/dispatcher"
-import { Link } from "react-router-dom"
 import {
     Button,
     List,
-} from "antd"
-import EditButton from "./common/EditButton"
-import { Recipe } from "../data/RecipeTypes"
-import history from "../util/history"
-import LibraryActions from "../data/LibraryActions"
-import { LABEL_STAGED_INDICATOR } from "../data/LibraryStore"
-import User from "./user/User"
-import loadObjectOf from "../util/loadObjectOf"
-import FriendStore from "../data/FriendStore"
-import UserStore from "../data/UserStore"
+} from "antd";
+import { Container } from "flux/utils";
+import PropTypes from "prop-types";
+import React from 'react';
+import { Link } from "react-router-dom";
+import Dispatcher from "../data/dispatcher";
+import FriendStore from "../data/FriendStore";
+import LibraryActions from "../data/LibraryActions";
+import { LABEL_STAGED_INDICATOR } from "../data/LibraryStore";
+import { Recipe } from "../data/RecipeTypes";
+import UserStore from "../data/UserStore";
+import history from "../util/history";
+import loadObjectOf from "../util/loadObjectOf";
+import EditButton from "./common/EditButton";
+import User from "./user/User";
 
-const {Item} = List
+const {Item} = List;
 
 const RecipeListItem = ({recipe, mine, staged, ownerLO}) => {
     const labelString = (recipe.labels || [])
         .filter(l =>
             l !== LABEL_STAGED_INDICATOR)
         .sort()
-        .join(", ")
+        .join(", ");
     const actions = mine
         ? [staged
             ? <Button key={"unstage"}
@@ -33,11 +33,11 @@ const RecipeListItem = ({recipe, mine, staged, ownerLO}) => {
                       size={"small"}
                       title={"Unstage recipe"}
                       onClick={e => {
-                          e.preventDefault()
+                          e.preventDefault();
                           Dispatcher.dispatch({
                               type: LibraryActions.UNSTAGE_RECIPE,
                               id: recipe.id,
-                          })
+                          });
                       }}
             />
             : <Button key={"stage"}
@@ -46,11 +46,11 @@ const RecipeListItem = ({recipe, mine, staged, ownerLO}) => {
                       size={"small"}
                       title={"Stage recipe"}
                       onClick={e => {
-                          e.preventDefault()
+                          e.preventDefault();
                           Dispatcher.dispatch({
                               type: LibraryActions.STAGE_RECIPE,
                               id: recipe.id,
-                          })
+                          });
                       }}
             />,
             <Link key="edit"
@@ -60,7 +60,7 @@ const RecipeListItem = ({recipe, mine, staged, ownerLO}) => {
             ? [<User key={"user"}
                      {...ownerLO.getValueEnforcing()}
                      iconOnly />]
-            : null
+            : null;
     return (
         <Item
             key={recipe.id}
@@ -73,15 +73,15 @@ const RecipeListItem = ({recipe, mine, staged, ownerLO}) => {
                 description={labelString}
             />
         </Item>
-    )
-}
+    );
+};
 
 RecipeListItem.propTypes = {
     recipe: Recipe,
     mine: PropTypes.bool,
     ownerLO: loadObjectOf(PropTypes.object),
     staged: PropTypes.bool,
-}
+};
 
 export default Container.createFunctional(
     RecipeListItem,
@@ -95,4 +95,4 @@ export default Container.createFunctional(
             : FriendStore.getFriendLO(props.recipe.ownerId),
     }),
     {withProps: true},
-)
+);

@@ -1,16 +1,16 @@
-import typedAction from "../util/typedAction"
-import PropTypes from "prop-types"
+import PropTypes from "prop-types";
+import typedAction from "../util/typedAction";
 
 const sendShape = {
     listId: PropTypes.number,
     recipeIds: PropTypes.arrayOf(PropTypes.number),
-}
+};
 
 const dissectionComponentType = PropTypes.shape({
     start: PropTypes.number.isRequired,
     end: PropTypes.number.isRequired,
     text: PropTypes.string.isRequired,
-})
+});
 
 const RecipeActions = {
     CREATE_RECIPE: 'recipe/create-recipe',
@@ -56,6 +56,6 @@ const RecipeActions = {
         id: PropTypes.number.isRequired,
         label: PropTypes.string.isRequired,
     }),
-}
+};
 
-export default RecipeActions
+export default RecipeActions;

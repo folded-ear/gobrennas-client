@@ -1,10 +1,10 @@
-import React from 'react'
-import { Button } from "antd"
+import { Button } from "antd";
+import React from 'react';
 
 const EditButton = () => {
     return <Button shape="circle"
                    icon="edit"
-                   size="small"/>
-}
+                   size="small"/>;
+};
 
-export default EditButton
+export default EditButton;

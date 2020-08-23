@@ -1,6 +1,6 @@
-import React from "react"
-import PropTypes from "prop-types"
-import { Avatar } from "antd"
+import { Avatar } from "antd";
+import PropTypes from "prop-types";
+import React from "react";
 
 const User = ({
                   name,
@@ -15,7 +15,7 @@ const User = ({
             {" "}
             {name || email}
         </React.Fragment>}
-    </span>
+    </span>;
 
 User.propTypes = {
     name: PropTypes.string,
@@ -30,6 +30,6 @@ User.propTypes = {
         PropTypes.number,
     ]),
     iconOnly: PropTypes.bool,
-}
+};
 
-export default User
+export default User;

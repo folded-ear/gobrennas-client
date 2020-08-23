@@ -1,8 +1,8 @@
-import React from "react"
 import {
     Button,
     Input,
-} from "antd"
+} from "antd";
+import React from "react";
 
 class LoadingTask extends React.PureComponent {
 
@@ -13,9 +13,9 @@ class LoadingTask extends React.PureComponent {
                                            size="small"
                                            disabled
                       />}
-        />
+        />;
     }
 
 }
 
-export default LoadingTask
+export default LoadingTask;

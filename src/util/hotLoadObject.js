@@ -1,5 +1,5 @@
-import invariant from "invariant"
-import LoadObject from "./LoadObject"
+import invariant from "invariant";
+import LoadObject from "./LoadObject";
 
 /**
  * I am for use in a selector which returns a LoadObject that might need to have
@@ -19,7 +19,7 @@ const hotLoadObject = (
     doLoad,
     shouldLoad = lo => lo.isEmpty(),
 ) => {
-    let lo = getLO() || LoadObject.empty()
+    let lo = getLO() || LoadObject.empty();
     if (shouldLoad(lo)) {
         /*
          * This queuing will end up unwinding in a very graceless manner, so
@@ -31,17 +31,17 @@ const hotLoadObject = (
          * still triggered.
          */
         setTimeout(() => {
-            let nextLO = getLO()
+            let nextLO = getLO();
             if (nextLO == null || shouldLoad(nextLO)) {
-                doLoad()
-                nextLO = getLO()
-                invariant(nextLO != null, "doLoad must warm up getLO's cache")
-                invariant(!shouldLoad(lo), "doLoad must create a pending LO")
+                doLoad();
+                nextLO = getLO();
+                invariant(nextLO != null, "doLoad must warm up getLO's cache");
+                invariant(!shouldLoad(lo), "doLoad must create a pending LO");
             }
-        })
-        lo = lo.loading()
+        });
+        lo = lo.loading();
     }
-    return lo
-}
+    return lo;
+};
 
-export default hotLoadObject
+export default hotLoadObject;

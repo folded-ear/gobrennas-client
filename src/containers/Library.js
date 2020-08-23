@@ -1,10 +1,10 @@
-import React from 'react'
-import { Container } from 'flux/utils'
-import RecipesList from '../views/RecipesList'
-import RecipeStore from '../data/RecipeStore'
-import LibraryStore from '../data/LibraryStore'
-import { humanStringComparator } from "../util/comparators"
-import UserStore from "../data/UserStore"
+import { Container } from 'flux/utils';
+import React from 'react';
+import LibraryStore from '../data/LibraryStore';
+import RecipeStore from '../data/RecipeStore';
+import UserStore from "../data/UserStore";
+import { humanStringComparator } from "../util/comparators";
+import RecipesList from '../views/RecipesList';
 
 export default Container.createFunctional(
     (props) => <RecipesList {...props}/>,
@@ -22,4 +22,4 @@ export default Container.createFunctional(
         stagedRecipes: LibraryStore.getStagedRecipes(),
         shoppingList: LibraryStore.getShoppingList(),
     })
-)
+);

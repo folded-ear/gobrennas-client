@@ -1,19 +1,19 @@
-import React from 'react'
-import Dispatcher from '../../data/dispatcher'
-import { Redirect } from 'react-router-dom'
-import UserActions from "../../data/UserActions"
+import React from 'react';
+import { Redirect } from 'react-router-dom';
+import Dispatcher from '../../data/dispatcher';
+import UserActions from "../../data/UserActions";
 
 function getUrlParameter(name, location) {
-    name = name.replace(/[[]/, '\\[').replace(/[\]]/, '\\]')
-    var regex = new RegExp('[\\?&]' + name + '=([^&#]*)')
+    name = name.replace(/[[]/, '\\[').replace(/[\]]/, '\\]');
+    var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
     
-    var results = regex.exec(location.search)
-    return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '))
+    var results = regex.exec(location.search);
+    return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
 }
 
 const OAuth2RedirectHandler = ({location}) => {
-    const token = getUrlParameter('token', location)
-    const error = getUrlParameter('error', location)
+    const token = getUrlParameter('token', location);
+    const error = getUrlParameter('error', location);
 
     if (token) {
         // This has to be deferred to avoid reentrant dispatch. It seems kinda
@@ -23,11 +23,11 @@ const OAuth2RedirectHandler = ({location}) => {
         setTimeout(() => Dispatcher.dispatch({
             type: UserActions.LOGGED_IN,
             token,
-        }))
+        }));
         return <Redirect to={{
             pathname: "/",
             state: {from: location}
-        }}/>
+        }}/>;
     } else {
         return <Redirect to={{
             pathname: "/login",
@@ -35,8 +35,8 @@ const OAuth2RedirectHandler = ({location}) => {
                 from: location,
                 error: error
             }
-        }}/>
+        }}/>;
     }
-}
+};
 
-export default OAuth2RedirectHandler
+export default OAuth2RedirectHandler;

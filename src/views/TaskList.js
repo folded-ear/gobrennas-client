@@ -1,13 +1,13 @@
-import React from "react"
-import PropTypes from "prop-types"
-import TaskListHeader from "./TaskListHeader"
-import Task from "./Task"
-import LoadObject from "../util/LoadObject"
 import {
     List,
     Spin,
-} from "antd"
-import LoadingTask from "./LoadingTask"
+} from "antd";
+import PropTypes from "prop-types";
+import React from "react";
+import LoadObject from "../util/LoadObject";
+import LoadingTask from "./LoadingTask";
+import Task from "./Task";
+import TaskListHeader from "./TaskListHeader";
 
 class TaskList extends React.PureComponent {
 
@@ -19,9 +19,9 @@ class TaskList extends React.PureComponent {
             taskLOs,
             isTaskActive,
             isTaskSelected,
-        } = this.props
+        } = this.props;
         if (!allLists.hasValue()) {
-            return <Spin tip="Loading task lists..." />
+            return <Spin tip="Loading task lists..." />;
         }
         return <List
             size="small"
@@ -35,25 +35,25 @@ class TaskList extends React.PureComponent {
             />}
             dataSource={taskLOs}
             renderItem={lo => {
-                let body
+                let body;
                 if (lo.hasValue()) {
-                    const t = lo.getValueEnforcing()
+                    const t = lo.getValueEnforcing();
                     body = <Task key={t.id}
                                  task={t}
                                  loadObject={lo}
                                  active={isTaskActive(t)}
                                  selected={isTaskSelected(t)}
-                    />
+                    />;
                 } else {
-                    body = <LoadingTask key={lo.id} />
+                    body = <LoadingTask key={lo.id} />;
                 }
                 return <List.Item
                     className="task"
                 >
                     {body}
-                </List.Item>
+                </List.Item>;
             }}
-        />
+        />;
     }
 
 }
@@ -66,6 +66,6 @@ TaskList.propTypes = {
         PropTypes.instanceOf(LoadObject)),
     isTaskActive: PropTypes.func.isRequired,
     isTaskSelected: PropTypes.func.isRequired,
-}
+};
 
-export default TaskList
+export default TaskList;

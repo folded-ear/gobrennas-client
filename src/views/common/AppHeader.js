@@ -1,14 +1,14 @@
-import React from 'react'
-import {
-    NavLink,
-    withRouter,
-} from 'react-router-dom'
 import {
     Layout,
     Menu,
-} from "antd"
+} from "antd";
+import React from 'react';
+import {
+    NavLink,
+    withRouter,
+} from 'react-router-dom';
 
-const {Header} = Layout
+const {Header} = Layout;
 
 const AppHeader = ({authenticated, onLogout, location}) => {
 
@@ -21,7 +21,7 @@ const AppHeader = ({authenticated, onLogout, location}) => {
                     mode="horizontal">
                 </Menu>
             </Header>
-        )
+        );
     }
 
     return (
@@ -49,7 +49,7 @@ const AppHeader = ({authenticated, onLogout, location}) => {
                 <Menu.Item onClick={onLogout}>Logout</Menu.Item>
             </Menu>
         </Header>
-    )
-}
+    );
+};
 
-export default withRouter(AppHeader)
+export default withRouter(AppHeader);

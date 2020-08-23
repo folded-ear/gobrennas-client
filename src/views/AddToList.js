@@ -1,11 +1,11 @@
-import { Container } from "flux/utils"
 import {
     Button,
     Icon,
-} from "antd"
-import TaskStore from "../data/TaskStore"
-import RecipeStore from "../data/RecipeStore"
-import React from "react"
+} from "antd";
+import { Container } from "flux/utils";
+import React from "react";
+import RecipeStore from "../data/RecipeStore";
+import TaskStore from "../data/TaskStore";
 
 const AddToList = Container.createFunctional(
     ({
@@ -13,8 +13,8 @@ const AddToList = Container.createFunctional(
          onClick,
          isSending,
      }) => {
-        if (! listLO.hasValue()) return null
-        const list = listLO.getValueEnforcing()
+        if (! listLO.hasValue()) return null;
+        const list = listLO.getValueEnforcing();
         return <Button
             shape="round"
             size="small"
@@ -23,21 +23,21 @@ const AddToList = Container.createFunctional(
         >
             Add to &quot;{list.name}&quot;
             <Icon type={isSending ? "loading" : "arrow-right"} />
-        </Button>
+        </Button>;
     },
     () => [
         TaskStore,
         RecipeStore,
     ],
     (prevState, props) => {
-        const sendState = RecipeStore.getSendState()
+        const sendState = RecipeStore.getSendState();
         return {
             onClick: props.onClick,
             listLO: TaskStore.getActiveListLO(),
             isSending: sendState != null && !sendState.isDone(),
-        }
+        };
     },
     {withProps: true},
-)
+);
 
-export default AddToList
+export default AddToList;

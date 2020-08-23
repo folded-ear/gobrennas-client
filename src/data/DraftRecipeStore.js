@@ -1,20 +1,20 @@
-import { ReduceStore } from "flux/utils"
-import Dispatcher from "./dispatcher"
-import RecipeActions from "./RecipeActions"
-import RouteActions from "./RouteActions"
-import LibraryActions from "./LibraryActions"
-import LibraryStore from "./LibraryStore"
-import LoadObject from "../util/LoadObject"
-import ClientId from "../util/ClientId"
-import dotProp from "dot-prop-immutable"
+import dotProp from "dot-prop-immutable";
+import { ReduceStore } from "flux/utils";
+import ClientId from "../util/ClientId";
+import LoadObject from "../util/LoadObject";
+import Dispatcher from "./dispatcher";
+import LibraryActions from "./LibraryActions";
+import LibraryStore from "./LibraryStore";
+import RecipeActions from "./RecipeActions";
+import RouteActions from "./RouteActions";
 
 const loadRecipeIfPossible = draftLO => {
-    if (draftLO.isDone()) return draftLO
-    const state = draftLO.getValueEnforcing()
-    if (!state.id) return draftLO
-    const lo = LibraryStore.getRecipeById(state.sourceId || state.id)
-    if (!lo.hasValue()) return draftLO
-    const recipe = lo.getValueEnforcing()
+    if (draftLO.isDone()) return draftLO;
+    const state = draftLO.getValueEnforcing();
+    if (!state.id) return draftLO;
+    const lo = LibraryStore.getRecipeById(state.sourceId || state.id);
+    if (!lo.hasValue()) return draftLO;
+    const recipe = lo.getValueEnforcing();
     return draftLO.setValue({
         ...state,
         ...recipe,
@@ -24,16 +24,16 @@ const loadRecipeIfPossible = draftLO => {
             s = {
                 ...s,
                 ingredients: [{raw: ""}]
-            }
+            };
         }
-        return s
-    })
-}
+        return s;
+    });
+};
 
 class DraftRecipeStore extends ReduceStore {
     
     constructor() {
-        super(Dispatcher)
+        super(Dispatcher);
     }
     
     getInitialState() {
@@ -41,7 +41,7 @@ class DraftRecipeStore extends ReduceStore {
             id: ClientId.next(),
             ingredients: [{raw: ""}],
             labels: []
-        })
+        });
     }
     
     reduce(state, action) {
@@ -49,29 +49,29 @@ class DraftRecipeStore extends ReduceStore {
         switch (action.type) {
 
             case RouteActions.MATCH: {
-                const match = action.match
+                const match = action.match;
                 switch (match.path) {
                     case "/library/recipe/:id/edit": {
                         state = state.setValue({
                             id: parseInt(match.params.id),
-                        }).loading()
-                        return loadRecipeIfPossible(state)
+                        }).loading();
+                        return loadRecipeIfPossible(state);
                     }
 
                     case "/library/recipe/:id/make-copy": {
                         state = state.setValue({
                             id: ClientId.next(),
                             sourceId: parseInt(match.params.id),
-                        }).loading()
-                        return loadRecipeIfPossible(state)
+                        }).loading();
+                        return loadRecipeIfPossible(state);
                     }
 
                     case "/add": {
-                        return this.getInitialState()
+                        return this.getInitialState();
                     }
 
                     default:
-                        return state
+                        return state;
                 }
             }
 
@@ -79,129 +79,129 @@ class DraftRecipeStore extends ReduceStore {
             case LibraryActions.LIBRARY_LOADED: {
                 Dispatcher.waitFor([
                     LibraryStore.getDispatchToken(),
-                ])
-                return loadRecipeIfPossible(state)
+                ]);
+                return loadRecipeIfPossible(state);
             }
 
             case RecipeActions.DRAFT_RECIPE_UPDATED: {
-                let {key, value} = action.data
-                state = state.map(s => dotProp.set(s, key, value))
-                return state
+                let {key, value} = action.data;
+                state = state.map(s => dotProp.set(s, key, value));
+                return state;
             }
     
             case RecipeActions.NEW_DRAFT_LABEL: {
-                state = state.map( s => dotProp.set(s, "labels", s.labels.concat([action.data])))
-                return state
+                state = state.map( s => dotProp.set(s, "labels", s.labels.concat([action.data])));
+                return state;
             }
             
             case RecipeActions.REMOVE_DRAFT_LABEL: {
-                const { index } = action.data
-                state = state.map( s => dotProp.delete(s, `labels.${index}`))
-                return state
+                const { index } = action.data;
+                state = state.map( s => dotProp.delete(s, `labels.${index}`));
+                return state;
             }
 
             case RecipeActions.NEW_DRAFT_INGREDIENT_YO: {
                 return state.map(s => {
                     const ing = {
                         raw: "",
-                    }
+                    };
                     const ingredients = s.ingredients == null
                         ? []
-                        : s.ingredients.slice(0)
+                        : s.ingredients.slice(0);
                     const idx = action.hasOwnProperty("index")
                         ? action.index
-                        : ingredients.length
+                        : ingredients.length;
                     if (idx < 0 || idx >= ingredients.length) {
-                        ingredients.push(ing)
+                        ingredients.push(ing);
                     } else {
-                        ingredients.splice(idx + 1, 0, ing)
+                        ingredients.splice(idx + 1, 0, ing);
                     }
                     return {
                         ...s,
                         ingredients,
-                    }
-                })
+                    };
+                });
             }
 
             case RecipeActions.KILL_DRAFT_INGREDIENT_YO: {
                 return state.map(s => {
-                    if (s.ingredients == null) return s
-                    const idx = action.index
-                    if (idx == null || idx < 0) return s
-                    if (idx >= s.ingredients.length) return s
-                    const ingredients = s.ingredients.slice(0)
-                    ingredients.splice(idx, 1)
+                    if (s.ingredients == null) return s;
+                    const idx = action.index;
+                    if (idx == null || idx < 0) return s;
+                    if (idx >= s.ingredients.length) return s;
+                    const ingredients = s.ingredients.slice(0);
+                    ingredients.splice(idx, 1);
                     return {
                         ...s,
                         ingredients,
-                    }
-                })
+                    };
+                });
             }
 
             case RecipeActions.MULTI_LINE_DRAFT_INGREDIENT_PASTE_YO: {
                 return state.map(s => {
                     const ingredients = s.ingredients == null
                         ? []
-                        : s.ingredients.slice(0)
+                        : s.ingredients.slice(0);
                     let idx = action.index < 0
                         ? 0
                         : action.index < ingredients.length
                             ? action.index
-                            : ingredients.length - 1
+                            : ingredients.length - 1;
                     if (ingredients[idx].raw.length === 0) {
                         // if pasting into an empty on, delete it
-                        ingredients.splice(idx--, 1)
+                        ingredients.splice(idx--, 1);
                     }
                     action.text
                         .split("\n")
                         .map(it => it.trim())
                         .filter(it => it.length > 0)
                         .forEach(raw =>
-                            ingredients.splice(++idx, 0, {raw}))
+                            ingredients.splice(++idx, 0, {raw}));
                     return {
                         ...s,
                         ingredients,
-                    }
-                })
+                    };
+                });
             }
 
             case RecipeActions.CREATE_RECIPE: {
-                return state.creating()
+                return state.creating();
             }
 
             case RecipeActions.UPDATE_RECIPE: {
-                return state.updating()
+                return state.updating();
             }
 
             case RecipeActions.RECIPE_CREATED: {
-                return this.getInitialState()
+                return this.getInitialState();
             }
 
             case RecipeActions.CANCEL_ADD: {
-                return this.getInitialState()
+                return this.getInitialState();
             }
 
             case RecipeActions.CANCEL_EDIT: {
-                return this.getInitialState()
+                return this.getInitialState();
             }
 
             case RecipeActions.RECIPE_UPDATED: {
-                return this.getInitialState()
+                return this.getInitialState();
             }
 
             default:
-                return state
+                return state;
         }
     }
 
     getDraftLO() {
-        return this.getState()
+        return this.getState();
     }
 
     getDraft() {
-        return this.getState().getValueEnforcing()
+        return this.getState().getValueEnforcing();
     }
     
 }
 
-export default new DraftRecipeStore()
+export default new DraftRecipeStore();

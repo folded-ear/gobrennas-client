@@ -1,11 +1,11 @@
-import PropTypes from "prop-types"
+import PropTypes from "prop-types";
 
 export const Ingredient = PropTypes.shape({
     aisle: PropTypes.string,
     id: PropTypes.number,
     name: PropTypes.string,
     type: PropTypes.string
-})
+});
 
 export const IngredientRef = PropTypes.shape({
     quantity: PropTypes.number,
@@ -14,7 +14,7 @@ export const IngredientRef = PropTypes.shape({
     raw: PropTypes.string,
     ingredient: PropTypes.string,
     ingredientId: PropTypes.number,
-})
+});
 
 export const Recipe = PropTypes.shape({
     id: PropTypes.number,
@@ -23,4 +23,4 @@ export const Recipe = PropTypes.shape({
     externalUrl: PropTypes.string,
     ingredients: PropTypes.arrayOf(IngredientRef),
     directions: PropTypes.string
-})
+});

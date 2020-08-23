@@ -1,7 +1,7 @@
-import Dispatcher from "../data/dispatcher"
+import Dispatcher from "../data/dispatcher";
 
 // this will be given jitter of up to 50% in either direction
-const ARTIFICIAL_SETTLEMENT_DELAY = 150
+const ARTIFICIAL_SETTLEMENT_DELAY = 150;
 
 let helper = (settleKey, typeTemplateOrCallback) => data => {
     Dispatcher.dispatch(
@@ -10,18 +10,18 @@ let helper = (settleKey, typeTemplateOrCallback) => data => {
             : typeof typeTemplateOrCallback === "string"
             ? {[settleKey]: data, type: typeTemplateOrCallback}
             : {[settleKey]: data, ...typeTemplateOrCallback},
-    )
-}
+    );
+};
 
 if (process.env.NODE_ENV !== "production" && ARTIFICIAL_SETTLEMENT_DELAY > 0) {
-    const oldHelper = helper
+    const oldHelper = helper;
     helper = (k, ttc) => {
-        const fast = oldHelper(k, ttc)
+        const fast = oldHelper(k, ttc);
         return data => {
-            const delay = ARTIFICIAL_SETTLEMENT_DELAY * (0.5 + Math.random())
-            return setTimeout(() => fast(data), delay)
-        }
-    }
+            const delay = ARTIFICIAL_SETTLEMENT_DELAY * (0.5 + Math.random());
+            return setTimeout(() => fast(data), delay);
+        };
+    };
 }
 
 /**
@@ -49,16 +49,16 @@ const promiseFlux = (
     promise,
     resolver,
     rejector = error => {
-        console.error("Error in Promise", error)
-        alert("Error in Promise; your state is jacked.\n\nCheck the console.")
+        console.error("Error in Promise", error);
+        alert("Error in Promise; your state is jacked.\n\nCheck the console.");
         return {
             type: "promise-flux/error-fallthrough",
             error,
-        }
+        };
     },
 ) => promise.then(
     helper("data", resolver),
     helper("error", rejector),
-)
+);
 
-export default promiseFlux
+export default promiseFlux;

@@ -1,16 +1,16 @@
 const logAction = action => {
-    const temp = {...action}
-    delete temp.type
-    const keys = Object.keys(temp)
+    const temp = {...action};
+    delete temp.type;
+    const keys = Object.keys(temp);
     const args = ["FLUX>", typeof action.type === "string"
         ? action.type
-        : action.type.toString()]
+        : action.type.toString()];
     if (keys.length === 1) {
-        args.push(keys[0], action[keys[0]])
+        args.push(keys[0], action[keys[0]]);
     } else {
-        args.push(temp)
+        args.push(temp);
     }
-    console.log(...args)
-}
+    console.log(...args);
+};
 
-export default logAction
+export default logAction;

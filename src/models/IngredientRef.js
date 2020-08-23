@@ -1,6 +1,6 @@
-import { Record } from "immutable"
-import Ingredient from "./Ingredient"
-import PropTypes from "prop-types"
+import { Record } from "immutable";
+import PropTypes from "prop-types";
+import Ingredient from "./Ingredient";
 
 const IngredientRef = Record({
   quantity: '',
@@ -8,7 +8,7 @@ const IngredientRef = Record({
   preparation: '',
   ingredient: Ingredient,
     raw: '',
-})
+});
 
 export const refType = PropTypes.shape({
     raw: PropTypes.string.isRequired,
@@ -16,6 +16,6 @@ export const refType = PropTypes.shape({
     units: PropTypes.string,
     ingredientId: PropTypes.number,
     preparation: PropTypes.string,
-})
+});
 
-export default IngredientRef
+export default IngredientRef;

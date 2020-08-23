@@ -1,4 +1,4 @@
-import { Record } from 'immutable'
+import { Record } from 'immutable';
 
 const Recipe = Record({
   id: '',
@@ -7,6 +7,6 @@ const Recipe = Record({
   externalUrl: '',
   ingredients: [],
   directions: ''
-})
+});
 
-export default Recipe
+export default Recipe;

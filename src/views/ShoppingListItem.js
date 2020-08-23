@@ -1,6 +1,6 @@
-import React from 'react'
-import { List } from "antd"
-import Quantity from "./common/Quantity"
+import { List } from "antd";
+import React from 'react';
+import Quantity from "./common/Quantity";
 
 const ShoppingListItem = it =>
     typeof it === "string"
@@ -15,6 +15,6 @@ const ShoppingListItem = it =>
                     units={q.units}/>
         </span>,
         )})
-        </List.Item>
+        </List.Item>;
 
-export default ShoppingListItem
+export default ShoppingListItem;

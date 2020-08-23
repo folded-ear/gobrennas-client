@@ -1,20 +1,20 @@
-import BaseAxios from 'axios'
-import RecipeActions from './RecipeActions'
-import { API_BASE_URL } from "../constants/index"
-import promiseFlux from "../util/promiseFlux"
+import BaseAxios from 'axios';
+import { API_BASE_URL } from "../constants/index";
+import promiseFlux from "../util/promiseFlux";
+import RecipeActions from './RecipeActions';
 
 const axios = BaseAxios.create({
     baseURL: `${API_BASE_URL}/api`,
-})
+});
 
 const RecipeApi = {
     
     addRecipe(recipe) {
         // save this for later
-        const id = recipe.id
-        recipe = {...recipe}
+        const id = recipe.id;
+        recipe = {...recipe};
         // the clientId gives the server grief
-        delete recipe.id
+        delete recipe.id;
         promiseFlux(
             axios.post('/recipe', recipe),
             data => ({
@@ -22,7 +22,7 @@ const RecipeApi = {
                 id, // need this for translation
                 data: data.data,
             })
-        )
+        );
     },
     
     updateRecipe(recipe) {
@@ -33,7 +33,7 @@ const RecipeApi = {
                 id: recipe.id,
                 data: data.data,
             })
-        )
+        );
     },
     
     deleteRecipe(id) {
@@ -43,7 +43,7 @@ const RecipeApi = {
                 type: RecipeActions.RECIPE_DELETED,
                 id
             })
-        )
+        );
     },
     
     assembleShoppingList(recipeIds, listId) {
@@ -58,7 +58,7 @@ const RecipeApi = {
                 recipeIds,
                 listId,
             }),
-        )
+        );
     },
 
     sendToShoppingList(recipeId, listId) {
@@ -72,7 +72,7 @@ const RecipeApi = {
                 recipeId,
                 listId,
             }),
-        )
+        );
     },
 
     recognizeElement(rawElement, cursorPosition = rawElement.length) {
@@ -82,7 +82,7 @@ const RecipeApi = {
             cursorPosition,
         }).then(
             data => data.data
-        )
+        );
     },
     
     recordIngredientDissection(raw, quantity, units, name, prep) {
@@ -101,7 +101,7 @@ const RecipeApi = {
                 type: RecipeActions.DISSECTION_RECORDED,
                 raw,
             }),
-        )
+        );
     },
 
     addLabel(id, label) {
@@ -115,7 +115,7 @@ const RecipeApi = {
                 id,
                 label,
             }),
-        )
+        );
     },
 
     removeLabel(id, label) {
@@ -126,8 +126,8 @@ const RecipeApi = {
                 id,
                 label,
             }),
-        )
+        );
     },
-}
+};
 
-export default RecipeApi
+export default RecipeApi;

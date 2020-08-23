@@ -1,4 +1,4 @@
-const RingUI = {}
+const RingUI = {};
 
 /**
  * I provide access to the modules exported by the RingUI builder module. Yes,
@@ -14,4 +14,4 @@ const RingUI = {}
  * }
  * ```
  */
-export default RingUI
+export default RingUI;

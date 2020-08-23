@@ -1,6 +1,3 @@
-import React from "react"
-import PropTypes from "prop-types"
-import Dispatcher from "../data/dispatcher"
 import {
     Button,
     Card,
@@ -9,42 +6,45 @@ import {
     Row,
     Spin,
     Switch,
-} from "antd"
-import RecipeListItem from "./RecipeListItem"
-import loadObjectOf from "../util/loadObjectOf"
-import { Recipe } from "../data/RecipeTypes"
-import AddToList from "./AddToList"
-import RecipeActions from "../data/RecipeActions"
-import LibraryActions from "../data/LibraryActions"
-import ShoppingListItem from "./ShoppingListItem"
-import SearchFilter from "./SearchFilter"
+} from "antd";
+import PropTypes from "prop-types";
+import React from "react";
+import Dispatcher from "../data/dispatcher";
+import LibraryActions from "../data/LibraryActions";
 import {
     SCOPE_EVERYONE,
     SCOPE_MINE,
-} from "../data/LibraryStore"
+} from "../data/LibraryStore";
+import RecipeActions from "../data/RecipeActions";
+import { Recipe } from "../data/RecipeTypes";
+import loadObjectOf from "../util/loadObjectOf";
+import AddToList from "./AddToList";
+import RecipeListItem from "./RecipeListItem";
+import SearchFilter from "./SearchFilter";
+import ShoppingListItem from "./ShoppingListItem";
 
 const updateFilter = (e) => {
-    const {value: filter} = e.target
+    const {value: filter} = e.target;
     Dispatcher.dispatch({
         type: LibraryActions.UPDATE_FILTER,
         filter
-    })
-}
+    });
+};
 
 const sendFilter = (e) => {
     if (e.key === 'Enter') {
-        const {value: filter} = e.target
+        const {value: filter} = e.target;
         Dispatcher.dispatch({
             type: LibraryActions.FILTER_LIBRARY,
             filter
-        })
+        });
     }
-}
+};
 
 const RecipesList = (props: {}) => {
-    const {me, filter, scope, libraryLO, stagedRecipes, shoppingList} = props
-    const hasStage = stagedRecipes.length > 0
-    const stagedIds = new Set(stagedRecipes.map(r => r.id))
+    const {me, filter, scope, libraryLO, stagedRecipes, shoppingList} = props;
+    const hasStage = stagedRecipes.length > 0;
+    const stagedIds = new Set(stagedRecipes.map(r => r.id));
 
     const list = hasStage && <Card
         title="Shopping List"
@@ -58,7 +58,7 @@ const RecipesList = (props: {}) => {
                     split={false}
                     renderItem={ShoppingListItem} />
             : <Spin tip="Generating list..." />}
-    </Card>
+    </Card>;
 
     const stage = hasStage && <List
         dataSource={stagedRecipes}
@@ -77,7 +77,7 @@ const RecipesList = (props: {}) => {
                 })}
             />
         </Button.Group>}
-    />
+    />;
 
     const content = !libraryLO.hasValue()
         ? <Spin tip="Loading recipe library..."/>
@@ -106,7 +106,7 @@ const RecipesList = (props: {}) => {
                     <RecipeListItem recipe={recipe}
                                     mine={recipe.ownerId === me.id} />}
             />
-        </React.Fragment>
+        </React.Fragment>;
 
     return <React.Fragment>
         <h1>Recipe Library</h1>
@@ -121,13 +121,13 @@ const RecipesList = (props: {}) => {
             </Col>
             {hasStage && <Col span={6}>{list}</Col>}
         </Row>
-    </React.Fragment>
-}
+    </React.Fragment>;
+};
 
 RecipesList.defaultProps = {
     filter: "",
     scope: "mine"
-}
+};
 
 RecipesList.propTypes = {
     me: PropTypes.object.isRequired,
@@ -136,6 +136,6 @@ RecipesList.propTypes = {
     filter: PropTypes.string,
     scope: PropTypes.string,
     shoppingList: loadObjectOf(PropTypes.array),
-}
+};
 
-export default RecipesList
+export default RecipesList;

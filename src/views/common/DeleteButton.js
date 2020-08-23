@@ -1,11 +1,11 @@
-import React from "react"
-import PropTypes from "prop-types"
 import {
     Button,
     Icon,
     Popconfirm,
-} from "antd"
-import capitalize from "../../util/capitalize"
+} from "antd";
+import PropTypes from "prop-types";
+import React from "react";
+import capitalize from "../../util/capitalize";
 
 const DeleteButton = ({type, onConfirm, label = "Delete " + capitalize(type), onClick, onCancel}) =>
     <Popconfirm
@@ -20,7 +20,7 @@ const DeleteButton = ({type, onConfirm, label = "Delete " + capitalize(type), on
             icon={"delete"}
             onClick={onClick}
         >{label}</Button>
-    </Popconfirm>
+    </Popconfirm>;
 
 DeleteButton.propTypes = {
     type: PropTypes.string.isRequired,
@@ -28,6 +28,6 @@ DeleteButton.propTypes = {
     label: PropTypes.string,
     onClick: PropTypes.func,
     onCancel: PropTypes.func,
-}
+};
 
-export default DeleteButton
+export default DeleteButton;

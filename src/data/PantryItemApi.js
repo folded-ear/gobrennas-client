@@ -1,12 +1,12 @@
-import Dispatcher from "./dispatcher"
-import BaseAxios from 'axios'
-import PantryItemActions from "./PantryItemActions"
-import PantryItem from "../models/PantryItem"
-import { API_BASE_URL } from "../constants/index"
+import BaseAxios from 'axios';
+import { API_BASE_URL } from "../constants/index";
+import PantryItem from "../models/PantryItem";
+import Dispatcher from "./dispatcher";
+import PantryItemActions from "./PantryItemActions";
 
 const axios = BaseAxios.create({
     baseURL: `${API_BASE_URL}/api/pantryitem`,
-})
+});
 
 const PantryItemApi = {
     fetchPantryItems() {
@@ -15,8 +15,8 @@ const PantryItemApi = {
                 Dispatcher.dispatch({
                     type: PantryItemActions.PANTRYITEMS_LOADED,
                     data: res.data
-                })
-            })
+                });
+            });
     },
     
     addPantryItem(item) {
@@ -25,7 +25,7 @@ const PantryItemApi = {
             .then( response => {
                 // TODO: Add error handling and logging
                 if(response.status && response.status === 201) {
-                    const { data: item} = response
+                    const { data: item} = response;
                     
                     Dispatcher.dispatch({
                         type: PantryItemActions.PANTRYITEMS_ADDED,
@@ -34,10 +34,10 @@ const PantryItemApi = {
                             name: item.name,
                             aisle: item.aisle
                         })
-                    })
+                    });
                 }
-            })
+            });
     }
-}
+};
 
-export default PantryItemApi
+export default PantryItemApi;
