@@ -1,55 +1,61 @@
-import {
-    Layout,
-    Menu,
-} from "antd";
 import React from "react";
+import {Link, withRouter} from "react-router-dom";
 import {
-    NavLink,
-    withRouter,
-} from "react-router-dom";
+    AppBar,
+    Box,
+    IconButton,
+    Tab,
+    Toolbar
+} from "@material-ui/core"
+import {
+    AccountCircle,
+    EventNote,
+    ExitToApp,
+    MenuBook,
+    PostAdd
+} from "@material-ui/icons";
+import {makeStyles} from "@material-ui/core/styles"
+import clsx from "clsx";
+import Logo from "./Logo";
 
-const {Header} = Layout;
-
-const AppHeader = ({authenticated, onLogout, location}) => {
-
-    if (!authenticated) {
-        return (
-            <Header>
-                <Menu
-                    theme="dark"
-                    style={{lineHeight: "10px"}}
-                    mode="horizontal">
-                </Menu>
-            </Header>
-        );
+const styles = makeStyles(theme => ({
+    root: {
+        flexGrow: 1
+    },
+    bar: {
+        flexGrow: 1
     }
+}));
+
+const AppHeader = ({authenticated, onLogout}) => {
+    const classes = styles();
 
     return (
-        <Header>
-            <Menu
-                theme="dark"
-                style={{lineHeight: "64px"}}
-                selectedKeys={[location.pathname.split("/")[1]]}
-                mode="horizontal">
-                <Menu.Item title={("Foodinger " + process.env.REACT_APP_VERSION).substr(0,23)}>
-                    <NavLink to="/" className="logo">FOODINGER</NavLink>
-                </Menu.Item>
-                <Menu.Item key="library">
-                    <NavLink to="/library">Recipe Library</NavLink>
-                </Menu.Item>
-                <Menu.Item key="add">
-                    <NavLink to="/add">Add New Recipe</NavLink>
-                </Menu.Item>
-                <Menu.Item key="tasks">
-                    <NavLink to="/tasks">Tasks</NavLink>
-                </Menu.Item>
-                <Menu.Item key="profile">
-                    <NavLink to="/profile">Profile</NavLink>
-                </Menu.Item>
-                <Menu.Item onClick={onLogout}>Logout</Menu.Item>
-            </Menu>
-        </Header>
-    );
-};
+        <>
+            <React.Fragment>
+                <AppBar
+                    position="sticky"
+                    className={classes.root}
+                >
+                    {
+                        authenticated ?
+                            <Toolbar>
+                                <Logo />
+                                <Box className={classes.bar}>
+                                <Tab icon={<MenuBook />} label="Library" component={Link} to="library" />
+                                <Tab icon={<PostAdd />} label="Add Recipe" component={Link} to="add" />
+                                <Tab icon={<EventNote />} label="Tasks" component={Link} to="tasks" />
+                                </Box>
+                                <IconButton component={Link} to="profile" value="profile" title="Profile"><AccountCircle /></IconButton>
+                                <IconButton onClick={onLogout} title="Logout"><ExitToApp /></IconButton>
+                            </Toolbar>
+                            :
+                            <div>&nbsp;</div>
+                    }
+                </AppBar>
+            </React.Fragment>
+        </>
+    )
+}
 
-export default withRouter(AppHeader);
+export default withRouter(AppHeader)
