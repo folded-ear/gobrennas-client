@@ -4,6 +4,7 @@ import {
     AppBar,
     Box,
     IconButton,
+    Tabs,
     Tab,
     Toolbar,
     useMediaQuery
@@ -23,25 +24,34 @@ import Logo from "./Logo"
 
 const styles = makeStyles(theme => ({
     root: {
-        flexGrow: 1
+        flexGrow: 1,
+        height: 75
     },
     bar: {
         flexGrow: 1
-    }
+    },
+    indicator: {
+        backgroundColor: "white",
+        height: "4px",
+        bottom: 0
+    },
 }))
 
-const AppHeader = ({authenticated, onLogout}) => {
+const AppHeader = ({authenticated, onLogout, location}) => {
     const classes = styles()
     const theme = useTheme()
     const mobile = useMediaQuery(theme.breakpoints.down('sm'))
 
     const renderMobile = () => {
         return (
-            <Box className={classes.bar}>
-                <IconButton component={Link} to="library" value="library"><MenuBook/></IconButton>
-                <IconButton component={Link} to="add" value="add recipe"><PostAdd/></IconButton>
-                <IconButton component={Link} to="tasks" value="tasks"><EventNote/></IconButton>
-            </Box>
+            <>
+                <Logo version="small"/>
+                <Box className={classes.bar}>
+                    <IconButton component={Link} to="library" value="library" color="inherit"><MenuBook/></IconButton>
+                    <IconButton component={Link} to="add" value="add" color="inherit"><PostAdd/></IconButton>
+                    <IconButton component={Link} to="tasks" value="tasks" color="inherit"><EventNote/></IconButton>
+                </Box>
+            </>
         )
     }
 
@@ -49,11 +59,36 @@ const AppHeader = ({authenticated, onLogout}) => {
         return (
             <>
                 <Logo/>
-                <Box className={classes.bar}>
-                    <Tab icon={<MenuBook/>} label="Library" component={Link} to="library"/>
-                    <Tab icon={<PostAdd/>} label="New" component={Link} to="add"/>
-                    <Tab icon={<EventNote/>} label="Tasks" component={Link} to="tasks"/>
-                </Box>
+                <Tabs
+                    selectionFollowsFocus
+                    className={classes.bar}
+                    value={location.pathname}
+                    textColor="white"
+                    TabIndicatorProps={{className: classes.indicator}}
+                >
+                    <Tab
+                        icon={<MenuBook/>}
+                        label="Library"
+                        component={Link}
+                        to="library"
+                        color="inherit"
+                        value="/library"
+                    />
+                    <Tab
+                        icon={<PostAdd/>}
+                        label="New Recipe"
+                        component={Link}
+                        to="add"
+                        value="/add"
+                    />
+                    <Tab
+                        icon={<EventNote/>}
+                        label="Tasks"
+                        component={Link}
+                        to="tasks"
+                        value="/tasks"
+                    />
+                </Tabs>
             </>
         )
     }
@@ -73,12 +108,16 @@ const AppHeader = ({authenticated, onLogout}) => {
                                     component={Link}
                                     to="profile"
                                     value="profile"
-                                    title="Profile">
+                                    title="Profile"
+                                    color="inherit"
+                                >
                                     <AccountCircle/>
                                 </IconButton>
                                 <IconButton
                                     onClick={onLogout}
-                                    title="Logout">
+                                    title="Logout"
+                                    color="inherit"
+                                >
                                     <ExitToApp/>
                                 </IconButton>
                             </Toolbar>
