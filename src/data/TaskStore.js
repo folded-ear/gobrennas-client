@@ -297,7 +297,12 @@ const atIndexOrNull = (items, idx) =>
         ? items[idx]
         : null;
 
-const getNeighborIds = (state, id, distance = 1) => {
+const getNeighborIds = (state, id, distance = 1) => ({
+    before: getNeighborId(state, id, -distance),
+    after: getNeighborId(state, id, distance),
+});
+
+const getNeighborId = (state, id, distance = 1) => {
     const t = taskForId(state, id);
     const siblingIds = t.parentId == null
         ? state.topLevelIds
@@ -307,10 +312,7 @@ const getNeighborIds = (state, id, distance = 1) => {
         idx >= 0,
         `Task '${t.id}' isn't a child of it's parent ('${t.parentId}')?`,
     );
-    return {
-        before: atIndexOrNull(siblingIds, idx - distance),
-        after: atIndexOrNull(siblingIds, idx + distance),
-    };
+    return atIndexOrNull(siblingIds, idx + distance);
 };
 
 const focusDelta = (state, id, delta) => {
@@ -318,11 +320,7 @@ const focusDelta = (state, id, delta) => {
         console.warn("Focus by a delta of zero?");
         return state;
     }
-    const {
-        before,
-        after,
-    } = getNeighborIds(state, id, Math.abs(delta));
-    const sid = delta < 0 ? before : after;
+    const sid = getNeighborId(state, id, delta);
     return sid == null ? state : focusTask(state, sid);
 };
 
@@ -356,9 +354,7 @@ const selectDelta = (state, id, delta) => {
         delta === 1 || delta === -1,
         "Selection can't expand by more than one item at a time",
     );
-    const {
-        after: next,
-    } = getNeighborIds(state, id, delta);
+    const next = getNeighborId(state, id, delta);
     if (next == null) return state; // there's no neighbor
     if (state.selectedTaskIds == null) {
         // starting to select
