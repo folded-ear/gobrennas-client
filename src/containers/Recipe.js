@@ -1,11 +1,11 @@
-import { Container } from 'flux/utils';
-import React from 'react';
-import { withRouter } from 'react-router-dom';
+import { Container } from "flux/utils";
+import React from "react";
+import { withRouter } from "react-router-dom";
 import FriendStore from "../data/FriendStore";
 import LibraryStore, { isRecipeStaged } from "../data/LibraryStore";
-import RecipeStore from '../data/RecipeStore';
+import RecipeStore from "../data/RecipeStore";
 import UserStore from "../data/UserStore";
-import RecipeDetail from '../views/RecipeDetail';
+import RecipeDetail from "../views/RecipeDetail";
 
 export default withRouter(Container.createFunctional(
     (props) => <RecipeDetail {...props}/>,

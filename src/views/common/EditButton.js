@@ -1,5 +1,5 @@
 import { Button } from "antd";
-import React from 'react';
+import React from "react";
 
 const EditButton = () => {
     return <Button shape="circle"

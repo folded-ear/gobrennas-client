@@ -1,10 +1,10 @@
-import { Button } from 'antd';
-import React, { Component } from 'react';
-import { Redirect } from 'react-router-dom';
+import { Button } from "antd";
+import React, { Component } from "react";
+import { Redirect } from "react-router-dom";
 import {
     GOOGLE_AUTH_URL,
     SESSION_STORAGE_POST_LOGIN,
-} from '../../constants';
+} from "../../constants";
 import { setJsonItem } from "../../util/storage";
 
 class Login extends Component {

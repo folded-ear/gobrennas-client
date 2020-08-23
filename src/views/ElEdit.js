@@ -79,8 +79,8 @@ class ElEdit extends React.PureComponent {
                     if (s.length < 3) return s;
                     const c = s.charAt(0).toLowerCase();
                     if (c !== s.charAt(s.length - 1)) return s;
-                    if (c >= 'a' && c <= 'z') return s;
-                    if (c >= '0' && c <= '9') return s;
+                    if (c >= "a" && c <= "z") return s;
+                    if (c >= "0" && c <= "9") return s;
                     return s.substring(1, s.length - 1);
                 };
                 const q = textFromRange(qr);
@@ -98,8 +98,8 @@ class ElEdit extends React.PureComponent {
                         recog.raw,
                     )
                     .trim()
-                    .replace(/\s+/g, ' ')
-                    .replace(/^\s*,/, '');
+                    .replace(/\s+/g, " ")
+                    .replace(/^\s*,/, "");
                 onChange({
                     target: {
                         name,
@@ -117,7 +117,7 @@ class ElEdit extends React.PureComponent {
                 const suggestions = recog.suggestions.map(s => {
                     const prefix = recog.raw.substr(0, s.target.start);
                     const suffix = recog.raw.substr(s.target.end);
-                    const quote = s.name.indexOf(' ') >= 0 ||
+                    const quote = s.name.indexOf(" ") >= 0 ||
                         recog.raw.charAt(s.target.start) === '"' ||
                         recog.raw.charAt(s.target.end - 1) === '"';
                     const value = quote

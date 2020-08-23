@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 import { Redirect } from "react-router-dom";
 import FluxRoute from "./FluxRoute";
 
@@ -12,7 +12,7 @@ const PrivateRoute = ({ component: Component, authenticated, ...rest }) => (
         ) : (
           <Redirect
             to={{
-              pathname: '/login',
+              pathname: "/login",
               state: { from: props.location }
             }}
           />

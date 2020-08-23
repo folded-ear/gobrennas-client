@@ -32,7 +32,7 @@ const updateFilter = (e) => {
 };
 
 const sendFilter = (e) => {
-    if (e.key === 'Enter') {
+    if (e.key === "Enter") {
         const {value: filter} = e.target;
         Dispatcher.dispatch({
             type: LibraryActions.FILTER_LIBRARY,

@@ -3,10 +3,10 @@ import {
     Input,
     InputAdornment,
     InputLabel,
-} from '@material-ui/core';
-import { Search } from '@material-ui/icons';
-import PropTypes from 'prop-types';
-import React from 'react';
+} from "@material-ui/core";
+import { Search } from "@material-ui/icons";
+import PropTypes from "prop-types";
+import React from "react";
 
 const SearchFilter = ({term, onFilter, onChange}) => {
     return(<FormControl>

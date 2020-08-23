@@ -7,27 +7,27 @@ import {
     Row,
 } from "antd";
 import * as PropTypes from "prop-types";
-import React, { Component } from 'react';
+import React, { Component } from "react";
 
 class IngredientAdd extends Component<{ onSelect: PropTypes.func }> {
   
   constructor(props) {
     super(props);
     this.state = {
-      quantity: '',
-      preparation: '',
-      value: '',
-      selectedIngredient: '',
+      quantity: "",
+      preparation: "",
+      value: "",
+      selectedIngredient: "",
       items: []
     };
   }
   
   reset = () => {
     this.setState({
-      quantity: '',
-      preparation: '',
-      selectedIngredient: '',
-      value: ''
+      quantity: "",
+      preparation: "",
+      selectedIngredient: "",
+      value: ""
     });
   };
   

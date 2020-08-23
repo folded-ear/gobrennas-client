@@ -7,8 +7,8 @@ import {
 } from "antd";
 import ChipInput from "material-ui-chip-input";
 import PropTypes from "prop-types";
-import React from 'react';
-import Dispatcher from '../data/dispatcher';
+import React from "react";
+import Dispatcher from "../data/dispatcher";
 import RecipeActions from "../data/RecipeActions";
 import { Recipe } from "../data/RecipeTypes";
 import ElEdit from "./ElEdit";

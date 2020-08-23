@@ -1,11 +1,11 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import { Router } from 'react-router-dom';
-import App from './App';
+import React from "react";
+import ReactDOM from "react-dom";
+import { Router } from "react-router-dom";
+import App from "./App";
 import Dispatcher from "./data/dispatcher";
 import TemporalActions from "./data/TemporalActions";
 import WindowActions from "./data/WindowActions";
-import * as serviceWorker from './serviceWorker';
+import * as serviceWorker from "./serviceWorker";
 import debounce from "./util/debounce";
 import history from "./util/history";
 import logAction from "./util/logAction";
@@ -26,7 +26,7 @@ window.ReactDOM = ReactDOM;
         Object.entries(window.RingUI)
             .forEach(([key, value]) =>
                 RingUI[key] = value);
-        ReactDOM.render(<Router history={history}><App /></Router>, document.getElementById('root'));
+        ReactDOM.render(<Router history={history}><App /></Router>, document.getElementById("root"));
         // ReactDOM.render(<div style={{
         //     margin: "30px",
         // }}><ElementBuilder /></div>, document.getElementById('root'))

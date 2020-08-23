@@ -8,7 +8,7 @@ import {
 import hotLoadObject from "../util/hotLoadObject";
 import LoadObject from "../util/LoadObject";
 import promiseFlux from "../util/promiseFlux";
-import Dispatcher from './dispatcher';
+import Dispatcher from "./dispatcher";
 import UserActions from "./UserActions";
 
 const initiateProfileLoad = state => {
@@ -32,7 +32,7 @@ const initiateProfileLoad = state => {
 };
 
 const setToken = (state, token) => {
-    axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+    axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
     return initiateProfileLoad(
         state.set("token", token)
     );

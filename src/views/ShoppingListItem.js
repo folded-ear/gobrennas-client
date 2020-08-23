@@ -1,5 +1,5 @@
 import { List } from "antd";
-import React from 'react';
+import React from "react";
 import Quantity from "./common/Quantity";
 
 const ShoppingListItem = it =>

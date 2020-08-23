@@ -3,11 +3,11 @@ import PropTypes from "prop-types";
 import Ingredient from "./Ingredient";
 
 const IngredientRef = Record({
-  quantity: '',
-  units: '',
-  preparation: '',
+  quantity: "",
+  units: "",
+  preparation: "",
   ingredient: Ingredient,
-    raw: '',
+    raw: "",
 });
 
 export const refType = PropTypes.shape({

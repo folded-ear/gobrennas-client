@@ -1,19 +1,19 @@
-import React from 'react';
-import { Redirect } from 'react-router-dom';
-import Dispatcher from '../../data/dispatcher';
+import React from "react";
+import { Redirect } from "react-router-dom";
+import Dispatcher from "../../data/dispatcher";
 import UserActions from "../../data/UserActions";
 
 function getUrlParameter(name, location) {
-    name = name.replace(/[[]/, '\\[').replace(/[\]]/, '\\]');
-    var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+    name = name.replace(/[[]/, "\\[").replace(/[\]]/, "\\]");
+    var regex = new RegExp("[\\?&]" + name + "=([^&#]*)");
     
     var results = regex.exec(location.search);
-    return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
+    return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
 }
 
 const OAuth2RedirectHandler = ({location}) => {
-    const token = getUrlParameter('token', location);
-    const error = getUrlParameter('error', location);
+    const token = getUrlParameter("token", location);
+    const error = getUrlParameter("error", location);
 
     if (token) {
         // This has to be deferred to avoid reentrant dispatch. It seems kinda

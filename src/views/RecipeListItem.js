@@ -4,7 +4,7 @@ import {
 } from "antd";
 import { Container } from "flux/utils";
 import PropTypes from "prop-types";
-import React from 'react';
+import React from "react";
 import { Link } from "react-router-dom";
 import Dispatcher from "../data/dispatcher";
 import FriendStore from "../data/FriendStore";

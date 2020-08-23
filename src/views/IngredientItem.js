@@ -1,7 +1,7 @@
 import { Icon } from "antd";
 import { Container } from "flux/utils";
 import PropTypes from "prop-types";
-import React from 'react';
+import React from "react";
 import { Link } from "react-router-dom";
 import LibraryStore from "../data/LibraryStore";
 import { refType } from "../models/IngredientRef";

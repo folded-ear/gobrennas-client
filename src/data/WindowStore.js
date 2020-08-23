@@ -70,7 +70,7 @@ class WindowStore extends ReduceStore {
                             window.location.reload();
                         }
                     });
-                    waitingWorker.postMessage({type: 'SKIP_WAITING'});
+                    waitingWorker.postMessage({type: "SKIP_WAITING"});
                 }
                 return state;
             }

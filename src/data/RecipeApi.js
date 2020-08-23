@@ -1,7 +1,7 @@
-import BaseAxios from 'axios';
+import BaseAxios from "axios";
 import { API_BASE_URL } from "../constants/index";
 import promiseFlux from "../util/promiseFlux";
-import RecipeActions from './RecipeActions';
+import RecipeActions from "./RecipeActions";
 
 const axios = BaseAxios.create({
     baseURL: `${API_BASE_URL}/api`,
@@ -16,7 +16,7 @@ const RecipeApi = {
         // the clientId gives the server grief
         delete recipe.id;
         promiseFlux(
-            axios.post('/recipe', recipe),
+            axios.post("/recipe", recipe),
             data => ({
                 type: RecipeActions.RECIPE_CREATED,
                 id, // need this for translation
@@ -108,7 +108,7 @@ const RecipeApi = {
         promiseFlux(
             // this endpoint wants a plain-text post body containing the label
             axios.post(`/recipe/${id}/labels`, label, {
-                headers: { 'Content-Type': 'text/plain' }
+                headers: { "Content-Type": "text/plain" }
             }),
             () => ({
                 type: RecipeActions.LABEL_ADDED,

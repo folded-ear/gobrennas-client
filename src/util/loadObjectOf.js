@@ -14,12 +14,12 @@ const loadObjectOf = (valueTypeChecker, optionalErrorTypeChecker) =>
         location,
         propFullName,
     ) => {
-        if (typeof valueTypeChecker !== 'function' || (optionalErrorTypeChecker != null && typeof optionalErrorTypeChecker !== 'function')) {
-            return new PropTypeError('Property `' + propFullName + '` of component `' + componentName + '` has invalid PropType notation inside loadObjectOf.');
+        if (typeof valueTypeChecker !== "function" || (optionalErrorTypeChecker != null && typeof optionalErrorTypeChecker !== "function")) {
+            return new PropTypeError("Property `" + propFullName + "` of component `" + componentName + "` has invalid PropType notation inside loadObjectOf.");
         }
         const lo = props[propName];
         if (!(lo instanceof LoadObject)) {
-            return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` of type `' + getClassName(lo) + '` supplied to `' + componentName + '`, expected instance of `LoadObject`.');
+            return new PropTypeError("Invalid " + location + " `" + propFullName + "` of type `" + getClassName(lo) + "` supplied to `" + componentName + "`, expected instance of `LoadObject`.");
         }
         if (lo.hasValue()) {
             const error = valueTypeChecker(

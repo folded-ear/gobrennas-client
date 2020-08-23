@@ -1,9 +1,9 @@
-import { ReduceStore } from 'flux/utils';
-import { OrderedMap } from 'immutable';
+import { ReduceStore } from "flux/utils";
+import { OrderedMap } from "immutable";
 import history from "../util/history";
 import LoadObject from "../util/LoadObject";
-import Dispatcher from './dispatcher';
-import RecipeActions from './RecipeActions';
+import Dispatcher from "./dispatcher";
+import RecipeActions from "./RecipeActions";
 import RecipeApi from "./RecipeApi";
 
 export const buildRecipe = recipe => {

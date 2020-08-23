@@ -1,4 +1,4 @@
-import BaseAxios from 'axios';
+import BaseAxios from "axios";
 import { API_BASE_URL } from "../constants/index";
 import PantryItem from "../models/PantryItem";
 import Dispatcher from "./dispatcher";
@@ -10,7 +10,7 @@ const axios = BaseAxios.create({
 
 const PantryItemApi = {
     fetchPantryItems() {
-        axios.get('/all')
+        axios.get("/all")
             .then( res => {
                 Dispatcher.dispatch({
                     type: PantryItemActions.PANTRYITEMS_LOADED,
@@ -21,7 +21,7 @@ const PantryItemApi = {
     
     addPantryItem(item) {
         axios
-            .post('/', item.toJSON())
+            .post("/", item.toJSON())
             .then( response => {
                 // TODO: Add error handling and logging
                 if(response.status && response.status === 201) {

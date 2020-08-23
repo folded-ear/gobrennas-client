@@ -5,7 +5,7 @@ import {
     Spin,
 } from "antd";
 import PropTypes from "prop-types";
-import React from 'react';
+import React from "react";
 import { Redirect } from "react-router-dom";
 import Dispatcher from "../data/dispatcher";
 import LibraryActions from "../data/LibraryActions";

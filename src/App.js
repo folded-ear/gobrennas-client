@@ -1,20 +1,20 @@
 import { Layout } from "antd";
 import { Container } from "flux/utils";
-import React, { Component } from 'react';
-import { Switch } from 'react-router-dom';
-import './App.scss';
-import Dispatcher from './data/dispatcher';
+import React, { Component } from "react";
+import { Switch } from "react-router-dom";
+import "./App.scss";
+import Dispatcher from "./data/dispatcher";
 import UserActions from "./data/UserActions";
 import UserStore from "./data/UserStore";
 import WindowStore from "./data/WindowStore";
-import routes from './routes';
-import AppHeader from './views/common/AppHeader';
+import routes from "./routes";
+import AppHeader from "./views/common/AppHeader";
 import FluxRoute from "./views/common/FluxRoute";
-import LoadingIndicator from './views/common/LoadingIndicator';
-import NotFound from './views/common/NotFound';
-import PrivateRoute from './views/common/PrivateRoute';
+import LoadingIndicator from "./views/common/LoadingIndicator";
+import NotFound from "./views/common/NotFound";
+import PrivateRoute from "./views/common/PrivateRoute";
 import NewVersionAvailable from "./views/NewVersionAvailable";
-import Login from './views/user/Login';
+import Login from "./views/user/Login";
 
 class App extends Component {
     constructor(props) {

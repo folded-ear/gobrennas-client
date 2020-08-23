@@ -1,5 +1,5 @@
 import dotProp from "dot-prop-immutable";
-import { ReduceStore } from 'flux/utils';
+import { ReduceStore } from "flux/utils";
 import invariant from "invariant";
 import {
     addDistinct,
@@ -7,8 +7,8 @@ import {
 } from "../util/arrayAsSet";
 import hotLoadObject from "../util/hotLoadObject";
 import LoadObject from "../util/LoadObject";
-import Dispatcher from './dispatcher';
-import LibraryActions from './LibraryActions';
+import Dispatcher from "./dispatcher";
+import LibraryActions from "./LibraryActions";
 import LibraryApi from "./LibraryApi";
 import RecipeActions from "./RecipeActions";
 import RecipeApi from "./RecipeApi";

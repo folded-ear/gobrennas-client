@@ -3,7 +3,7 @@ import {
     Switch,
 } from "antd";
 import { Container } from "flux/utils";
-import React, { Component } from 'react';
+import React, { Component } from "react";
 import { APP_BASE_URL } from "../../constants";
 import Dispatcher from "../../data/dispatcher";
 import PreferencesStore from "../../data/PreferencesStore";

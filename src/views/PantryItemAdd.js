@@ -3,7 +3,7 @@ import {
     Form,
     Input,
 } from "antd";
-import React, { Component } from 'react';
+import React, { Component } from "react";
 import PantryItemApi from "../data/PantryItemApi";
 import PantryItem from "../models/PantryItem";
 
@@ -11,8 +11,8 @@ class PantryItemAdd extends Component {
   constructor(props) {
    super(props);
    this.state = {
-     name: '',
-     aisle: ''
+     name: "",
+     aisle: ""
    };
   }
   

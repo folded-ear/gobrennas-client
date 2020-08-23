@@ -5,7 +5,7 @@ import {
     getJsonItem,
     setJsonItem,
 } from "../util/storage";
-import Dispatcher from './dispatcher';
+import Dispatcher from "./dispatcher";
 import TaskActions from "./TaskActions";
 import UserActions from "./UserActions";
 import UserStore from "./UserStore";

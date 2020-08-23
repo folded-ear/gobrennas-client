@@ -9,7 +9,7 @@ import LoadObject from "../util/LoadObject";
 import loadObjectOf from "../util/loadObjectOf";
 import typedStore from "../util/typedStore";
 import AccessLevel from "./AccessLevel";
-import Dispatcher from './dispatcher';
+import Dispatcher from "./dispatcher";
 import PreferencesStore from "./PreferencesStore";
 import RecipeActions from "./RecipeActions";
 import RouteStore from "./RouteStore";

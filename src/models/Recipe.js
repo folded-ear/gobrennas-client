@@ -1,12 +1,12 @@
-import { Record } from 'immutable';
+import { Record } from "immutable";
 
 const Recipe = Record({
-  id: '',
-  type: 'Recipe',
-  name: '',
-  externalUrl: '',
+  id: "",
+  type: "Recipe",
+  name: "",
+  externalUrl: "",
   ingredients: [],
-  directions: ''
+  directions: ""
 });
 
 export default Recipe;

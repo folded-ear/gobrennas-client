@@ -2,11 +2,11 @@ import {
     Layout,
     Menu,
 } from "antd";
-import React from 'react';
+import React from "react";
 import {
     NavLink,
     withRouter,
-} from 'react-router-dom';
+} from "react-router-dom";
 
 const {Header} = Layout;
 
@@ -17,7 +17,7 @@ const AppHeader = ({authenticated, onLogout, location}) => {
             <Header>
                 <Menu
                     theme="dark"
-                    style={{lineHeight: '10px'}}
+                    style={{lineHeight: "10px"}}
                     mode="horizontal">
                 </Menu>
             </Header>
@@ -28,7 +28,7 @@ const AppHeader = ({authenticated, onLogout, location}) => {
         <Header>
             <Menu
                 theme="dark"
-                style={{lineHeight: '64px'}}
+                style={{lineHeight: "64px"}}
                 selectedKeys={[location.pathname.split("/")[1]]}
                 mode="horizontal">
                 <Menu.Item title={("Foodinger " + process.env.REACT_APP_VERSION).substr(0,23)}>
