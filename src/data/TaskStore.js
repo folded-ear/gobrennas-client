@@ -523,6 +523,71 @@ const moveDelta = (state, delta) => {
     };
 };
 
+const nestTask = (state, id) => {
+    const t = taskForId(state, id);
+    const p = taskForId(state, t.parentId);
+    const idx = p.subtaskIds.indexOf(t.id);
+    if (idx === 0) {
+        // nothing to nest under
+        return state;
+    }
+    const np = taskForId(state, p.subtaskIds[idx - 1]);
+    return resetParent(state, t, p, np);
+};
+
+const unnestTask = (state, id) => {
+    const t = taskForId(state, id);
+    const p = taskForId(state, t.parentId);
+    if (p.id === state.activeListId) {
+        // nothing to unnest from
+        return state;
+    }
+    const np = taskForId(state, p.parentId);
+    return resetParent(state, t, p, np);
+};
+
+const resetParent = (state, task, parent, newParent) => {
+    TaskApi.resetParent(task.id, newParent.id);
+    return {
+        ...state,
+        byId: {
+            ...state.byId,
+            // update its parentId
+            [task.id]: state.byId[task.id].map(t => ({
+                ...t,
+                parentId: newParent.id,
+            })),
+            // remove it from its old parent
+            [parent.id]: state.byId[parent.id].map(t => {
+                const subtaskIds = t.subtaskIds.slice();
+                subtaskIds.splice(parent.subtaskIds.indexOf(task.id), 1);
+                return {
+                    ...t,
+                    subtaskIds,
+                };
+            }),
+            // add it to its new parent
+            [newParent.id]: state.byId[newParent.id].map(t => {
+                const subtaskIds = (t.subtaskIds || []).slice();
+                if (newParent.id === parent.parentId) {
+                    const idx = newParent.subtaskIds.indexOf(parent.id);
+                    if (idx >= 0) {
+                        subtaskIds.splice(idx + 1, 0, task.id);
+                    } else {
+                        subtaskIds.push(task.id);
+                    }
+                } else {
+                    subtaskIds.push(task.id);
+                }
+                return {
+                    ...t,
+                    subtaskIds,
+                };
+            }),
+        },
+    };
+};
+
 const loadSubtasks = (state, id, background = false) => {
     TaskApi.loadSubtasks(id, background);
     if (background) return state;
@@ -591,11 +656,11 @@ const listsLoaded = (state, lists) => {
     return state;
 };
 
-let lastUseActionTS = null;
+let lastUserActionTS = null;
 const userAction = () =>
-    lastUseActionTS = Date.now();
-const msSinceUseAction = () =>
-    Date.now() - lastUseActionTS;
+    lastUserActionTS = Date.now();
+const msSinceUserAction = () =>
+    Date.now() - lastUserActionTS;
 userAction(); // loading the app!
 
 class TaskStore extends ReduceStore {
@@ -710,7 +775,7 @@ class TaskStore extends ReduceStore {
             }
 
             case TaskActions.SUBTASKS_LOADED: {
-                if (action.background && msSinceUseAction() < 10 * 1000) {
+                if (action.background && msSinceUserAction() < 10 * 1000) {
                     // they did something while in flight
                     return state;
                 }
@@ -786,6 +851,24 @@ class TaskStore extends ReduceStore {
                 userAction();
                 return moveDelta(state, -1);
 
+            case TaskActions.NEST: {
+                if (state.selectedTaskIds != null) {
+                    alert("Can't nest/unnest multiple tasks (at the moment)");
+                    return state;
+                }
+                userAction();
+                return nestTask(state, action.id);
+            }
+
+            case TaskActions.UNNEST: {
+                if (state.selectedTaskIds != null) {
+                    alert("Can't nest/unnest multiple tasks (at the moment)");
+                    return state;
+                }
+                userAction();
+                return unnestTask(state, action.id);
+            }
+
             case TaskActions.MULTI_LINE_PASTE: {
                 userAction();
                 const lines = action.text.split("\n")
@@ -816,7 +899,7 @@ class TaskStore extends ReduceStore {
             }
 
             case TemporalActions.EVERY_15_SECONDS: {
-                if (msSinceUseAction() < 1000 * 15) return state;
+                if (msSinceUserAction() < 1000 * 15) return state;
                 if (state.activeListId == null) return state;
                 if (RouteStore.getMatch().path !== "/tasks") return state;
                 if (!WindowStore.isVisible()) return state;
