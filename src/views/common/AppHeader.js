@@ -1,25 +1,28 @@
-import React from "react";
-import {Link, withRouter} from "react-router-dom";
 import {
     AppBar,
     Box,
     IconButton,
-    Tabs,
     Tab,
+    Tabs,
     Toolbar,
-    useMediaQuery
+    useMediaQuery,
 } from "@material-ui/core";
+import {
+    makeStyles,
+    useTheme,
+} from "@material-ui/core/styles";
 import {
     AccountCircle,
     EventNote,
     ExitToApp,
     MenuBook,
-    PostAdd
+    PostAdd,
 } from "@material-ui/icons";
+import React from "react";
 import {
-    makeStyles,
-    useTheme
-} from "@material-ui/core/styles";
+    Link,
+    withRouter,
+} from "react-router-dom";
 import Logo from "./Logo";
 
 const styles = makeStyles(() => ({
@@ -45,11 +48,15 @@ const AppHeader = ({authenticated, onLogout, location}) => {
     const renderMobile = () => {
         return (
             <>
-                <Logo version="small"/>
+                <Logo
+                    version="small"
+                    component={Link}
+                    to="/library"
+                />
                 <Box className={classes.bar}>
-                    <IconButton component={Link} to="library" value="library" color="inherit"><MenuBook/></IconButton>
-                    <IconButton component={Link} to="add" value="add" color="inherit"><PostAdd/></IconButton>
-                    <IconButton component={Link} to="tasks" value="tasks" color="inherit"><EventNote/></IconButton>
+                    <IconButton component={Link} to="/library" value="library" color="inherit"><MenuBook/></IconButton>
+                    <IconButton component={Link} to="/add" value="add" color="inherit"><PostAdd/></IconButton>
+                    <IconButton component={Link} to="/tasks" value="tasks" color="inherit"><EventNote/></IconButton>
                 </Box>
             </>
         );
@@ -58,11 +65,14 @@ const AppHeader = ({authenticated, onLogout, location}) => {
     const renderDesktop = () => {
         return (
             <>
-                <Logo/>
+                <Logo
+                    component={Link}
+                    to="/library"
+                />
                 <Tabs
                     selectionFollowsFocus
                     className={classes.bar}
-                    value={location.pathname}
+                    value={location.pathname.split("/")[1]}
                     textColor="white"
                     TabIndicatorProps={{className: classes.indicator}}
                 >
@@ -70,23 +80,23 @@ const AppHeader = ({authenticated, onLogout, location}) => {
                         icon={<MenuBook/>}
                         label="Library"
                         component={Link}
-                        to="library"
+                        to="/library"
                         color="inherit"
-                        value="/library"
+                        value="library"
                     />
                     <Tab
                         icon={<PostAdd/>}
                         label="New Recipe"
                         component={Link}
-                        to="add"
-                        value="/add"
+                        to="/add"
+                        value="add"
                     />
                     <Tab
                         icon={<EventNote/>}
                         label="Tasks"
                         component={Link}
-                        to="tasks"
-                        value="/tasks"
+                        to="/tasks"
+                        value="tasks"
                     />
                 </Tabs>
             </>
