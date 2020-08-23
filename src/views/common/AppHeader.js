@@ -1,5 +1,5 @@
-import React from "react"
-import {Link, withRouter} from "react-router-dom"
+import React from "react";
+import {Link, withRouter} from "react-router-dom";
 import {
     AppBar,
     Box,
@@ -8,21 +8,21 @@ import {
     Tab,
     Toolbar,
     useMediaQuery
-} from "@material-ui/core"
+} from "@material-ui/core";
 import {
     AccountCircle,
     EventNote,
     ExitToApp,
     MenuBook,
     PostAdd
-} from "@material-ui/icons"
+} from "@material-ui/icons";
 import {
     makeStyles,
     useTheme
-} from "@material-ui/core/styles"
-import Logo from "./Logo"
+} from "@material-ui/core/styles";
+import Logo from "./Logo";
 
-const styles = makeStyles(theme => ({
+const styles = makeStyles(() => ({
     root: {
         flexGrow: 1,
         height: 75
@@ -35,12 +35,12 @@ const styles = makeStyles(theme => ({
         height: "4px",
         bottom: 0
     },
-}))
+}));
 
 const AppHeader = ({authenticated, onLogout, location}) => {
-    const classes = styles()
-    const theme = useTheme()
-    const mobile = useMediaQuery(theme.breakpoints.down('sm'))
+    const classes = styles();
+    const theme = useTheme();
+    const mobile = useMediaQuery(theme.breakpoints.down("sm"));
 
     const renderMobile = () => {
         return (
@@ -52,8 +52,8 @@ const AppHeader = ({authenticated, onLogout, location}) => {
                     <IconButton component={Link} to="tasks" value="tasks" color="inherit"><EventNote/></IconButton>
                 </Box>
             </>
-        )
-    }
+        );
+    };
 
     const renderDesktop = () => {
         return (
@@ -90,8 +90,8 @@ const AppHeader = ({authenticated, onLogout, location}) => {
                     />
                 </Tabs>
             </>
-        )
-    }
+        );
+    };
 
     return (
         <>
@@ -127,7 +127,7 @@ const AppHeader = ({authenticated, onLogout, location}) => {
                 </AppBar>
             </React.Fragment>
         </>
-    )
-}
+    );
+};
 
-export default withRouter(AppHeader)
+export default withRouter(AppHeader);
