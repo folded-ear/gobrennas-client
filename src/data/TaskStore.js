@@ -610,13 +610,13 @@ const taskLoaded = (state, task) => {
 };
 
 const taskLoading = (state, id) => {
-    return {
-        ...state,
-        byId: {
-            ...state.byId,
-            [id]: LoadObject.loading(),
-        },
-    };
+    return dotProp.set(
+        state,
+        ["byId", id],
+        lo => lo instanceof LoadObject
+            ? lo.loading()
+            : LoadObject.loading(),
+    );
 };
 
 // noinspection JSUnusedLocalSymbols
