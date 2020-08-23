@@ -292,35 +292,58 @@ const focusTask = (state, id) => {
     };
 };
 
-const atIndexOrNull = (items, idx) =>
-    idx >= 0 && idx < items.length
-        ? items[idx]
-        : null;
-
-const getNeighborIds = (state, id, distance = 1) => ({
-    before: getNeighborId(state, id, -distance),
-    after: getNeighborId(state, id, distance),
+const getNeighborIds = (state, id) => ({
+    before: getNeighborId(state, id, -1),
+    after: getNeighborId(state, id, 1),
 });
 
-const getNeighborId = (state, id, distance = 1) => {
+const getNeighborId = (state, id, delta = 1, crossGenerations=false, _searching=false) => {
+    invariant(
+        delta === 1 || delta === -1,
+        "Deltas must be either 1 or -1",
+    );
     const t = taskForId(state, id);
-    const siblingIds = t.parentId == null
-        ? state.topLevelIds
-        : taskForId(state, t.parentId).subtaskIds;
+    if (t.parentId == null) return null;
+    const siblingIds = taskForId(state, t.parentId).subtaskIds;
     const idx = siblingIds.indexOf(id);
     invariant(
         idx >= 0,
         `Task '${t.id}' isn't a child of it's parent ('${t.parentId}')?`,
     );
-    return atIndexOrNull(siblingIds, idx + distance);
+
+    if (delta > 0) {
+        // to first child
+        if (crossGenerations && t.subtaskIds) return t.subtaskIds[0];
+        // to next sibling
+        if (idx < siblingIds.length - 1) return siblingIds[idx + 1];
+        // to parent's next sibling (recurse)
+        if (crossGenerations || _searching) return getNeighborId(state, t.parentId, delta, false, true);
+        // can't move
+        return null;
+    } else {
+        // to prev sibling's last self-or-descendant
+        if (idx > 0) return crossGenerations
+            ? lastDescendantOf(state, siblingIds[idx - 1])
+            : siblingIds[idx - 1];
+        // to parent (null or not)
+        if (crossGenerations) return t.parentId;
+        return null;
+    }
+};
+
+const lastDescendantOf = (state, id) => {
+    for (;;) {
+        const desc = taskForId(state, id);
+        if (!desc.subtaskIds) return desc.id;
+        id = desc.subtaskIds[desc.subtaskIds.length - 1];
+    }
 };
 
 const focusDelta = (state, id, delta) => {
     if (delta === 0) {
-        console.warn("Focus by a delta of zero?");
         return state;
     }
-    const sid = getNeighborId(state, id, delta);
+    const sid = getNeighborId(state, id, delta, true);
     return sid == null ? state : focusTask(state, sid);
 };
 
@@ -346,15 +369,7 @@ const selectTo = (state, id) => {
 };
 
 const selectDelta = (state, id, delta) => {
-    if (delta === 0) {
-        console.warn("Select by a delta of zero?");
-        return state;
-    }
-    invariant(
-        delta === 1 || delta === -1,
-        "Selection can't expand by more than one item at a time",
-    );
-    const next = getNeighborId(state, id, delta);
+    const next = getNeighborId(state, id, delta, false);
     if (next == null) return state; // there's no neighbor
     if (state.selectedTaskIds == null) {
         // starting to select
