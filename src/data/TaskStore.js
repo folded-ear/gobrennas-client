@@ -292,37 +292,59 @@ const focusTask = (state, id) => {
     };
 };
 
-const atIndexOrNull = (items, idx) =>
-    idx >= 0 && idx < items.length
-        ? items[idx]
-        : null;
+const getNeighborIds = (state, id) => ({
+    before: getNeighborId(state, id, -1),
+    after: getNeighborId(state, id, 1),
+});
 
-const getNeighborIds = (state, id, distance = 1) => {
+const getNeighborId = (state, id, delta = 1, crossGenerations=false, _searching=false) => {
+    invariant(
+        delta === 1 || delta === -1,
+        "Deltas must be either 1 or -1",
+    );
     const t = taskForId(state, id);
-    const siblingIds = t.parentId == null
-        ? state.topLevelIds
-        : taskForId(state, t.parentId).subtaskIds;
+    if (t.parentId == null) return null;
+    const siblingIds = taskForId(state, t.parentId).subtaskIds;
     const idx = siblingIds.indexOf(id);
     invariant(
         idx >= 0,
         `Task '${t.id}' isn't a child of it's parent ('${t.parentId}')?`,
     );
-    return {
-        before: atIndexOrNull(siblingIds, idx - distance),
-        after: atIndexOrNull(siblingIds, idx + distance),
-    };
+
+    if (delta > 0) {
+        // to first child
+        if (crossGenerations && isParent(t)) return t.subtaskIds[0];
+        // to next sibling
+        if (idx < siblingIds.length - 1) return siblingIds[idx + 1];
+        // to parent's next sibling (recurse)
+        if (crossGenerations || _searching) return getNeighborId(state, t.parentId, delta, false, true);
+        // can't move
+        return null;
+    } else {
+        // to prev sibling's last self-or-descendant
+        if (idx > 0) return crossGenerations
+            ? lastDescendantIdOf(state, siblingIds[idx - 1])
+            : siblingIds[idx - 1];
+        // to parent (null or not)
+        if (crossGenerations) return t.parentId;
+        return null;
+    }
+};
+
+const lastDescendantIdOf = (state, id) => {
+    while (id != null) {
+        const desc = taskForId(state, id);
+        if (!isParent(desc)) return desc.id;
+        id = desc.subtaskIds[desc.subtaskIds.length - 1];
+    }
+    return null;
 };
 
 const focusDelta = (state, id, delta) => {
     if (delta === 0) {
-        console.warn("Focus by a delta of zero?");
         return state;
     }
-    const {
-        before,
-        after,
-    } = getNeighborIds(state, id, Math.abs(delta));
-    const sid = delta < 0 ? before : after;
+    const sid = getNeighborId(state, id, delta, true);
     return sid == null ? state : focusTask(state, sid);
 };
 
@@ -348,17 +370,7 @@ const selectTo = (state, id) => {
 };
 
 const selectDelta = (state, id, delta) => {
-    if (delta === 0) {
-        console.warn("Select by a delta of zero?");
-        return state;
-    }
-    invariant(
-        delta === 1 || delta === -1,
-        "Selection can't expand by more than one item at a time",
-    );
-    const {
-        after: next,
-    } = getNeighborIds(state, id, delta);
+    const next = getNeighborId(state, id, delta, false);
     if (next == null) return state; // there's no neighbor
     if (state.selectedTaskIds == null) {
         // starting to select
@@ -523,6 +535,71 @@ const moveDelta = (state, delta) => {
     };
 };
 
+const nestTask = (state, id) => {
+    const t = taskForId(state, id);
+    const p = taskForId(state, t.parentId);
+    const idx = p.subtaskIds.indexOf(t.id);
+    if (idx === 0) {
+        // nothing to nest under
+        return state;
+    }
+    const np = taskForId(state, p.subtaskIds[idx - 1]);
+    return resetParent(state, t, p, np);
+};
+
+const unnestTask = (state, id) => {
+    const t = taskForId(state, id);
+    const p = taskForId(state, t.parentId);
+    if (p.id === state.activeListId) {
+        // nothing to unnest from
+        return state;
+    }
+    const np = taskForId(state, p.parentId);
+    return resetParent(state, t, p, np);
+};
+
+const resetParent = (state, task, parent, newParent) => {
+    TaskApi.resetParent(task.id, newParent.id);
+    return {
+        ...state,
+        byId: {
+            ...state.byId,
+            // update its parentId
+            [task.id]: state.byId[task.id].map(t => ({
+                ...t,
+                parentId: newParent.id,
+            })),
+            // remove it from its old parent
+            [parent.id]: state.byId[parent.id].map(t => {
+                const subtaskIds = t.subtaskIds.slice();
+                subtaskIds.splice(parent.subtaskIds.indexOf(task.id), 1);
+                return {
+                    ...t,
+                    subtaskIds,
+                };
+            }),
+            // add it to its new parent
+            [newParent.id]: state.byId[newParent.id].map(t => {
+                const subtaskIds = (t.subtaskIds || []).slice();
+                if (newParent.id === parent.parentId) {
+                    const idx = newParent.subtaskIds.indexOf(parent.id);
+                    if (idx >= 0) {
+                        subtaskIds.splice(idx + 1, 0, task.id);
+                    } else {
+                        subtaskIds.push(task.id);
+                    }
+                } else {
+                    subtaskIds.push(task.id);
+                }
+                return {
+                    ...t,
+                    subtaskIds,
+                };
+            }),
+        },
+    };
+};
+
 const loadSubtasks = (state, id, background = false) => {
     TaskApi.loadSubtasks(id, background);
     if (background) return state;
@@ -532,12 +609,15 @@ const loadSubtasks = (state, id, background = false) => {
         lo => lo.updating());
 };
 
+const isParent = task =>
+    task.subtaskIds && task.subtaskIds.length > 0;
+
 const taskLoaded = (state, task) => {
     state = dotProp.set(
         state,
         ["byId", task.id],
         LoadObject.withValue(task));
-    if (task.subtaskIds && task.subtaskIds.length > 0) {
+    if (isParent(task)) {
         state = loadSubtasks(state, task.id);
         state = task.subtaskIds.reduce(taskLoading, state);
     }
@@ -545,13 +625,13 @@ const taskLoaded = (state, task) => {
 };
 
 const taskLoading = (state, id) => {
-    return {
-        ...state,
-        byId: {
-            ...state.byId,
-            [id]: LoadObject.loading(),
-        },
-    };
+    return dotProp.set(
+        state,
+        ["byId", id],
+        lo => lo instanceof LoadObject
+            ? lo.loading()
+            : LoadObject.loading(),
+    );
 };
 
 // noinspection JSUnusedLocalSymbols
@@ -591,11 +671,11 @@ const listsLoaded = (state, lists) => {
     return state;
 };
 
-let lastUseActionTS = null;
+let lastUserActionTS = null;
 const userAction = () =>
-    lastUseActionTS = Date.now();
-const msSinceUseAction = () =>
-    Date.now() - lastUseActionTS;
+    lastUserActionTS = Date.now();
+const msSinceUserAction = () =>
+    Date.now() - lastUserActionTS;
 userAction(); // loading the app!
 
 class TaskStore extends ReduceStore {
@@ -710,7 +790,7 @@ class TaskStore extends ReduceStore {
             }
 
             case TaskActions.SUBTASKS_LOADED: {
-                if (action.background && msSinceUseAction() < 10 * 1000) {
+                if (action.background && msSinceUserAction() < 10 * 1000) {
                     // they did something while in flight
                     return state;
                 }
@@ -786,6 +866,24 @@ class TaskStore extends ReduceStore {
                 userAction();
                 return moveDelta(state, -1);
 
+            case TaskActions.NEST: {
+                if (state.selectedTaskIds != null) {
+                    alert("Can't nest/unnest multiple tasks (at the moment)");
+                    return state;
+                }
+                userAction();
+                return nestTask(state, action.id);
+            }
+
+            case TaskActions.UNNEST: {
+                if (state.selectedTaskIds != null) {
+                    alert("Can't nest/unnest multiple tasks (at the moment)");
+                    return state;
+                }
+                userAction();
+                return unnestTask(state, action.id);
+            }
+
             case TaskActions.MULTI_LINE_PASTE: {
                 userAction();
                 const lines = action.text.split("\n")
@@ -816,7 +914,7 @@ class TaskStore extends ReduceStore {
             }
 
             case TemporalActions.EVERY_15_SECONDS: {
-                if (msSinceUseAction() < 1000 * 15) return state;
+                if (msSinceUserAction() < 1000 * 15) return state;
                 if (state.activeListId == null) return state;
                 if (RouteStore.getMatch().path !== "/tasks") return state;
                 if (!WindowStore.isVisible()) return state;

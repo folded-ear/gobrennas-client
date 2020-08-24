@@ -24,6 +24,8 @@ const TaskActions = {
     RENAME_TASK: "task/rename-task",
     SET_LIST_GRANT: "task/set-list-grant",
     CLEAR_LIST_GRANT: "task/clear-list-grant",
+    NEST: "task/nest",
+    UNNEST: "task/unnest",
     // ajax actions
     LOAD_LISTS: "task/load-lists",
     LISTS_LOADED: "task/lists-loaded",
@@ -33,6 +35,7 @@ const TaskActions = {
     TASK_CREATED: "task/task-created",
     TASK_RENAMED: "task/task-renamed",
     SUBTASKS_RESET: "task/subtasks-reset",
+    PARENT_RESET: "task/parent-reset",
     TASK_DELETED: "task/task-deleted",
     TASK_COMPLETED: "task/task-completed",
     LIST_GRANT_SET: "task/list-grant-set",

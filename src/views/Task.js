@@ -100,8 +100,11 @@ class Task extends React.PureComponent {
                 }
                 break;
             case "Tab":
-                // suppress the event (eventually nest)
                 e.preventDefault();
+                Dispatcher.dispatch({
+                    type: shiftKey ? TaskActions.UNNEST : TaskActions.NEST,
+                    id: this.props.task.id,
+                });
                 break;
             case "ArrowUp":
                 e.preventDefault();
@@ -216,28 +219,33 @@ class Task extends React.PureComponent {
                 />,
             };
         }
-        const input = <Input {...layoutProps}
-                             addonAfter={<Button icon="delete"
-                                                 shape="circle"
-                                                 size="small"
-                                                 type="danger"
-                                                 disabled={lo.isDeleting()}
-                                                 onClick={this.onDelete}
-                             />}
-                             value={task.name}
-                             placeholder="Write a task name"
-                             className={classnames({
-                                 "task-active": active,
-                                 "task-selected": selected,
-                                 "task-question": question,
-                                 "task-deleting": lo.isDeleting(),
-                             })}
-                             ref={this.inputRef}
-                             onClick={this.onClick}
-                             onChange={this.onChange}
-                             onPaste={this.onPaste}
-                             onCopy={this.onCopy}
-                             onKeyDown={this.onKeyDown}
+        let input = <Input
+            {...layoutProps}
+            addonAfter={<Button
+                icon="delete"
+                shape="circle"
+                size="small"
+                type="danger"
+                disabled={lo.isDeleting()}
+                onClick={this.onDelete}
+            />}
+            value={task.name}
+            placeholder="Write a task name"
+            className={classnames({
+                "task-active": active,
+                "task-selected": selected,
+                "task-question": question,
+                "task-deleting": lo.isDeleting(),
+            })}
+            style={{
+                marginLeft: task.depth * 2 + "em",
+            }}
+            ref={this.inputRef}
+            onClick={this.onClick}
+            onChange={this.onChange}
+            onPaste={this.onPaste}
+            onCopy={this.onCopy}
+            onKeyDown={this.onKeyDown}
         />;
         return section
             ? <Input.Group className={classnames("task-section", {

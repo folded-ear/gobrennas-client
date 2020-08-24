@@ -117,6 +117,18 @@ const TaskApi = {
         );
     },
 
+    resetParent(id, parentId) {
+        promiseFlux(
+            axios.put(`/${id}/parentId`, {
+                parentId,
+            }),
+            () => ({
+                type: TaskActions.PARENT_RESET,
+                id,
+            })
+        );
+    },
+
     setListGrant(id, userId, level) {
         // i was not thinking when i designed this endpoint. :)
         promiseFlux(
