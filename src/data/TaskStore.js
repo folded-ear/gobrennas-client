@@ -313,7 +313,7 @@ const getNeighborId = (state, id, delta = 1, crossGenerations=false, _searching=
 
     if (delta > 0) {
         // to first child
-        if (crossGenerations && t.subtaskIds) return t.subtaskIds[0];
+        if (crossGenerations && isParent(t)) return t.subtaskIds[0];
         // to next sibling
         if (idx < siblingIds.length - 1) return siblingIds[idx + 1];
         // to parent's next sibling (recurse)
@@ -323,7 +323,7 @@ const getNeighborId = (state, id, delta = 1, crossGenerations=false, _searching=
     } else {
         // to prev sibling's last self-or-descendant
         if (idx > 0) return crossGenerations
-            ? lastDescendantOf(state, siblingIds[idx - 1])
+            ? lastDescendantIdOf(state, siblingIds[idx - 1])
             : siblingIds[idx - 1];
         // to parent (null or not)
         if (crossGenerations) return t.parentId;
@@ -331,12 +331,13 @@ const getNeighborId = (state, id, delta = 1, crossGenerations=false, _searching=
     }
 };
 
-const lastDescendantOf = (state, id) => {
-    for (;;) {
+const lastDescendantIdOf = (state, id) => {
+    while (id != null) {
         const desc = taskForId(state, id);
-        if (!desc.subtaskIds) return desc.id;
+        if (!isParent(desc)) return desc.id;
         id = desc.subtaskIds[desc.subtaskIds.length - 1];
     }
+    return null;
 };
 
 const focusDelta = (state, id, delta) => {
@@ -608,12 +609,15 @@ const loadSubtasks = (state, id, background = false) => {
         lo => lo.updating());
 };
 
+const isParent = task =>
+    task.subtaskIds && task.subtaskIds.length > 0;
+
 const taskLoaded = (state, task) => {
     state = dotProp.set(
         state,
         ["byId", task.id],
         LoadObject.withValue(task));
-    if (task.subtaskIds && task.subtaskIds.length > 0) {
+    if (isParent(task)) {
         state = loadSubtasks(state, task.id);
         state = task.subtaskIds.reduce(taskLoading, state);
     }
