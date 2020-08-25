@@ -234,7 +234,7 @@ const flushTasksToRename = state => {
 
 const timeoutRegistry = new Map();
 
-const inTheFuture = action => {
+const inTheFuture = (action, delay = 2) => {
     if (timeoutRegistry.has(action)) {
         clearTimeout(timeoutRegistry.get(action));
     }
@@ -242,7 +242,7 @@ const inTheFuture = action => {
         Dispatcher.dispatch({
             type: action,
         });
-    }, 2000));
+    }, delay * 1000));
 };
 
 const renameTask = (state, id, name) => {
@@ -401,11 +401,27 @@ const selectDelta = (state, id, delta) => {
 // least for now. That is, they both say "hey server, delete me" and then forget
 // about the task. The server does a little more processing for a complete than
 // a delete, but the end result is the same: DELETE FROM task WHERE id = ?
+let tasksToDelete = new Map();
+
+const flushTasksToDelete = state => {
+    if (tasksToDelete.size === 0) return state;
+    for (const [id, asCompletion] of tasksToDelete) {
+        if(asCompletion) {
+            TaskApi.completeTask(id);
+        } else {
+            TaskApi.deleteTask(id);
+        }
+    }
+    tasksToDelete.clear();
+    return state;
+}
+
 const completeTask = (state, id) => {
     return deleteTask(state, id, true);
 };
 
 const deleteTask = (state, id, asCompletion = false) => {
+    let lo = loForId(state, id);
     const t = taskForId(state, id);
     invariant(
         t.parentId != null,
@@ -422,15 +438,32 @@ const deleteTask = (state, id, asCompletion = false) => {
             [id]: state.byId[id].deleting(),
         },
     };
+
     if (ClientId.is(id)) {
         state = taskDeleted(state, id);
     } else if (asCompletion) {
-        TaskApi.completeTask(id);
+        tasksToDelete.set(id, true);
+        inTheFuture(TaskActions.FLUSH_DELETES, 10);
     } else {
-        TaskApi.deleteTask(id);
+        tasksToDelete.set(id, false);
+        inTheFuture(TaskActions.FLUSH_DELETES, 10);
+        if (lo.isDone()) {
+            lo.deleting();
+        }
     }
     return state;
 };
+
+const taskUndoDelete = (state, id) => {
+    tasksToDelete.delete(id);
+    return {
+        ...state,
+        byId: {
+            ...state.byId,
+            [id]: state.byId[id].done(),
+        },
+    };
+}
 
 const taskDeleted = (state, id) => {
     const t = taskForId(state, id);
@@ -843,6 +876,8 @@ class TaskStore extends ReduceStore {
             case TaskActions.DELETE_TASK_BACKWARDS:
                 userAction();
                 return backwardsDeleteTask(state, action.id);
+            case TaskActions.TASK_UNDO_DELETE:
+                return taskUndoDelete(state, action.id);
             case TaskActions.TASK_DELETED:
                 return taskDeleted(state, action.id);
             case TaskActions.MARK_COMPLETE:
@@ -904,6 +939,8 @@ class TaskStore extends ReduceStore {
                 return flushTasksToRename(state);
             case TaskActions.FLUSH_REORDERS:
                 return flushParentsToReset(state);
+            case TaskActions.FLUSH_DELETES:
+                return flushTasksToDelete(state);
 
             case RecipeActions.SHOPPING_LIST_ASSEMBLED: {
                 // todo: this is stupid. not wrong though.
