@@ -38,6 +38,7 @@ const TaskActions = {
     PARENT_RESET: "task/parent-reset",
     TASK_DELETED: "task/task-deleted",
     TASK_COMPLETED: "task/task-completed",
+    TASK_UNDO_DELETE: "task/task-undo-delete",
     LIST_GRANT_SET: "task/list-grant-set",
     LIST_GRANT_CLEARED: "task/list-grant-cleared",
     // deferred actions

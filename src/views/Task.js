@@ -26,6 +26,7 @@ class Task extends React.PureComponent {
         this.onClick = this.onClick.bind(this);
         this.onComplete = this.onComplete.bind(this);
         this.onDelete = this.onDelete.bind(this);
+        this.onUndoDelete = this.onUndoDelete.bind(this);
         this.inputRef = React.createRef();
     }
 
@@ -158,6 +159,13 @@ class Task extends React.PureComponent {
         });
     }
 
+    onUndoDelete() {
+        Dispatcher.dispatch({
+            type: TaskActions.TASK_UNDO_DELETE,
+            id: this.props.task.id,
+        });
+    }
+
     onClick(e) {
         const {
             active,
@@ -221,14 +229,23 @@ class Task extends React.PureComponent {
         }
         let input = <Input
             {...layoutProps}
-            addonAfter={<Button
-                icon="delete"
-                shape="circle"
-                size="small"
-                type="danger"
-                disabled={lo.isDeleting()}
-                onClick={this.onDelete}
-            />}
+            addonAfter={
+                lo.isDeleting() ?
+                    <Button
+                        type="danger"
+                        onClick={this.onUndoDelete}
+                    >
+                        WAIT, NO!
+                    </Button>
+                    :
+                    <Button
+                    icon="delete"
+                    shape="circle"
+                    size="small"
+                    type="danger"
+                    onClick={this.onDelete}
+                />
+            }
             value={task.name}
             placeholder="Write a task name"
             className={classnames({

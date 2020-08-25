@@ -423,7 +423,6 @@ const completeTask = (state, id) => {
 const deleteTask = (state, id, asCompletion = false) => {
     let lo = loForId(state, id);
     const t = taskForId(state, id);
-    debugger
     invariant(
         t.parentId != null,
         "Can't %s root-level task '%s'",
@@ -454,6 +453,17 @@ const deleteTask = (state, id, asCompletion = false) => {
     }
     return state;
 };
+
+const taskUndoDelete = (state, id) => {
+    tasksToDelete.delete(id);
+    return {
+        ...state,
+        byId: {
+            ...state.byId,
+            [id]: state.byId[id].done(),
+        },
+    };
+}
 
 const taskDeleted = (state, id) => {
     const t = taskForId(state, id);
@@ -866,6 +876,8 @@ class TaskStore extends ReduceStore {
             case TaskActions.DELETE_TASK_BACKWARDS:
                 userAction();
                 return backwardsDeleteTask(state, action.id);
+            case TaskActions.TASK_UNDO_DELETE:
+                return taskUndoDelete(state, action.id);
             case TaskActions.TASK_DELETED:
                 return taskDeleted(state, action.id);
             case TaskActions.MARK_COMPLETE:
