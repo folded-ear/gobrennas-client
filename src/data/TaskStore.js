@@ -414,7 +414,7 @@ const flushTasksToDelete = state => {
     }
     tasksToDelete.clear();
     return state;
-}
+};
 
 const completeTask = (state, id) => {
     return deleteTask(state, id, true);
@@ -463,7 +463,7 @@ const taskUndoDelete = (state, id) => {
             [id]: state.byId[id].done(),
         },
     };
-}
+};
 
 const taskDeleted = (state, id) => {
     const t = taskForId(state, id);
@@ -712,9 +712,6 @@ const msSinceUserAction = () =>
 userAction(); // loading the app!
 
 class TaskStore extends ReduceStore {
-    constructor() {
-        super(Dispatcher);
-    }
 
     getInitialState() {
         return {
@@ -1064,4 +1061,4 @@ TaskStore.stateTypes = {
     ).isRequired,
 };
 
-export default typedStore(new TaskStore());
+export default typedStore(new TaskStore(Dispatcher));
