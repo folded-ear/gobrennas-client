@@ -592,7 +592,9 @@ const unnestTask = (state, id) => {
 };
 
 const resetParent = (state, task, parent, newParent) => {
-    TaskApi.resetParent(task.id, newParent.id);
+    if (!ClientId.is(task.id)) {
+        TaskApi.resetParent(task.id, newParent.id);
+    }
     return {
         ...state,
         byId: {
