@@ -73,7 +73,7 @@ const AppHeader = ({authenticated, onLogout, location}) => {
                     selectionFollowsFocus
                     className={classes.bar}
                     value={location.pathname.split("/")[1]}
-                    textColor="white"
+                    textColor="inherit"
                     TabIndicatorProps={{className: classes.indicator}}
                 >
                     <Tab
@@ -81,7 +81,6 @@ const AppHeader = ({authenticated, onLogout, location}) => {
                         label="Library"
                         component={Link}
                         to="/library"
-                        color="inherit"
                         value="library"
                     />
                     <Tab
