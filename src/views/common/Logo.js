@@ -9,6 +9,7 @@ const styles = makeStyles(theme => ({
             margin: theme.spacing(3),
             marginRight: theme.spacing(8),
             fontFamily: "Stint Ultra Condensed",
+            whiteSpace: "nowrap",
         },
         F: {
             transform: "scaleX(-1)",
@@ -21,7 +22,7 @@ const Logo = (props) => {
     const classes = styles();
     const {
         version,
-        component = 'div',
+        component = "div",
         ...ptps
     } = props;
     return React.createElement(component, {
