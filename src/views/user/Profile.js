@@ -1,10 +1,15 @@
 import {
+    Button,
     Divider,
+    Icon,
     Switch,
 } from "antd";
 import { Container } from "flux/utils";
 import React, { Component } from "react";
-import { APP_BASE_URL } from "../../constants";
+import {
+    API_IS_SECURE,
+    APP_BASE_URL,
+} from "../../constants";
 import Dispatcher from "../../data/dispatcher";
 import PreferencesStore from "../../data/PreferencesStore";
 import UserActions from "../../data/UserActions";
@@ -49,14 +54,26 @@ class Profile extends Component {
                             <p className="profile-email">{user.email}</p>
                         </div>
                         <Divider />
-                        <h2>Import Bookmarklet</h2>
-                        Drag to this link to your bookmarks bar, and then while viewing a recipe online, click it to
-                        launch the import helper. Note that for the moment you have to do this each time you log
-                        into Foodinger (deleting the old one first). Sorry, man.
-                        <div style={{textAlign: "center"}}>
+                        <h2>Cook This!</h2>
+                        <p>&quot;Cook This!&quot; is a simple tool for importing
+                            recipes into Foodinger. Drag it to your bookmarks bar,
+                            and then while viewing a recipe online, click it to
+                            launch the import helper.
+                        </p>
+                        <p style={{textAlign: "center"}}>
                             {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
-                            <a href={`javascript:var s=document.createElement('script');s.src='${APP_BASE_URL}/import_bookmarklet.js?token=${encodeURIComponent(token)}&_='+Date.now();s.id='foodinger-import-bookmarklet';document.body.appendChild(s);`}>Import to Foodinger</a>
-                        </div>
+                            <Button
+                                href={`javascript:var s=document.createElement('script');s.src='${APP_BASE_URL}/import_bookmarklet.js?token=${encodeURIComponent(token)}&_='+Date.now();s.id='foodinger-import-bookmarklet';document.body.appendChild(s);`}
+                            >
+                                Cook This!
+                            </Button>
+                        </p>
+                        {!API_IS_SECURE && <p>
+                            Note that since <Icon type="unlock" /> you&apos;re
+                            not using SSL <Icon type="unlock" />, you&apos;ll
+                            have to do this each time you log into Foodinger
+                            (deleting the old one first). Sorry, man.
+                        </p>}
                         <Divider />
                         <div><User {...user} /></div>
                         {isDeveloper && <React.Fragment>

@@ -1,10 +1,9 @@
-/* eslint-disable */
 (function() {
     const scripts = document.getElementsByTagName("script");
     const parts = scripts[scripts.length - 1].src.split("?");
     let appRoot = parts[0].split("/");
     appRoot.pop();
-    appRoot = appRoot.join('/');
+    appRoot = appRoot.join("/");
     let apiRoot = appRoot.replace(/^https?:\/\/localhost:3001(\/|$)/, "http://localhost:8080$1") + "/api";
     const QS = parts[1].split("&")
         .map(p => p.split("="))
@@ -16,11 +15,12 @@
         "Authorization": `Bearer ${QS.token || "garbage"}`,
     };
     fetch(apiRoot + "/user/me", {
+        credentials: "include",
         headers: authHeaders,
     })
         .then(r => {
             if (!r.ok) {
-                throw new Error("stale token")
+                throw new Error("stale token");
             }
         })
         .catch(() => {
@@ -30,6 +30,7 @@
     const sendToFoodinger = () => {
         fetch(apiRoot + "/recipe", {
             method: "POST",
+            credentials: "include",
             headers: {
                 ...authHeaders,
                 "Content-Type": "application/json"
@@ -52,7 +53,7 @@
                     throw new Error("stale token");
                 }
                 if (r.status !== 201) {
-                    throw new Error(`${r.status} ${r.statusText}`)
+                    throw new Error(`${r.status} ${r.statusText}`);
                 }
                 return r.json();
             })
@@ -62,14 +63,15 @@
                 render();
             })
             .catch(e => {
-                alert(`Something went wrong: ${e}\n\nTry it again?`)
-            })
+                alert(`Something went wrong: ${e}\n\nTry it again?`);
+            });
         store.mode = "importing";
         render();
     };
 
     const GATEWAY_PROP = "foodinger_import_bookmarklet_gateway_Ch8LF4wGvsRHN3nM0jFv";
     const CONTAINER_ID = "foodinger-import-bookmarklet-container-Ch8LF4wGvsRHN3nM0jFv";
+    const CONTENT_ID = CONTAINER_ID + "-content";
     const store = {
         mode: "form",
         grabTarget: null,
@@ -86,13 +88,13 @@
         let timeout = null;
         return (...args) => {
             if (timeout != null) {
-                clearTimeout(timeout)
+                clearTimeout(timeout);
             }
             timeout = setTimeout(() => {
                 timeout = null;
-                fn(...args)
-            }, delay)
-        }
+                fn(...args);
+            }, delay);
+        };
     };
 
     const grabSelectHandler = debounce(() => {
@@ -106,14 +108,14 @@
         store.mode = "grab";
         store.grabTarget = target;
         store.grabStyle = style;
-        document.addEventListener('selectionchange', grabSelectHandler);
+        document.addEventListener("selectionchange", grabSelectHandler);
         render();
     };
     const tearDownGrab = () => {
         store.mode = "form";
         store.grabTarget = null;
         store.grabStyle = null;
-        document.removeEventListener('selectionchange', grabSelectHandler);
+        document.removeEventListener("selectionchange", grabSelectHandler);
         render();
     };
     const grabSelectedNode = () => {
@@ -133,7 +135,7 @@
         return targetNode;
     };
     const collapseWS = n => n == null ? "" : n.textContent
-        .replace(/\s+/g, ' ')
+        .replace(/\s+/g, " ")
         .trim();
     const grabString = node =>
         collapseWS(node);
@@ -155,14 +157,20 @@
         right: 0,
         zIndex: 99999,
         backgroundColor: "white",
-        border: "1px solid #963",
+        border: "1px solid #bf360c",
+        borderRightWidth: 0,
+        borderTopWidth: 0,
+        boxShadow: "0 5px 5px #d3b8ae",
+        borderBottomLeftRadius: "5px",
         width: "50%",
+        paddingBottom: "1em",
     });
     const headerStyle = toStyle({
         fontSize: "2rem",
         fontWeight: "bold",
         padding: "0.2em 0.4em",
-        backgroundColor: "#fed",
+        backgroundColor: "#bf360c",
+        color: "#fff",
     });
     const formItemStyle = toStyle({});
     const labelStyle = toStyle({
@@ -206,6 +214,7 @@
         ...blockRules,
     });
     const renderForm = $div => {
+        // noinspection CheckTagEmptyBody
         $div.innerHTML = `<h1 style="${headerStyle}">Foodinger Import</h1>
         <div style="${formItemStyle}">
             <label style="${labelStyle}">Title:</label>
@@ -231,38 +240,34 @@
             <button style="${importBtnStyle}" onclick="${GATEWAY_PROP}.doImport()">Import</button>
         </div>
         `;
-        const title = $div.querySelector("input[name=title]")
+        const title = $div.querySelector("input[name=title]");
         title.setAttribute("value", store.title);
-        title.addEventListener("change", e => store.title = e.target.value)
-        const url = $div.querySelector("input[name=url]")
+        title.addEventListener("change", e => store.title = e.target.value);
+        const url = $div.querySelector("input[name=url]");
         url.setAttribute("value", store.url);
-        url.addEventListener("change", e => store.url = e.target.value)
-        const ings = $div.querySelector("textarea[name=ingredients]")
+        url.addEventListener("change", e => store.url = e.target.value);
+        const ings = $div.querySelector("textarea[name=ingredients]");
         ings.innerHTML = store.ingredients.join("\n");
         ings.addEventListener("change", e =>
             store.ingredients = e.target.value
                 .split("\n")
                 .map(l => l.trim())
-                .filter(l => l.length > 0))
-        const dirs = $div.querySelector("textarea[name=directions]")
+                .filter(l => l.length > 0));
+        const dirs = $div.querySelector("textarea[name=directions]");
         dirs.innerHTML = store.directions.join("\n");
         dirs.addEventListener("change", e =>
             store.directions = e.target.value
                 .split("\n")
-                .map(l => l.trim()))
+                .map(l => l.trim()));
         return {
-            grabTitle: () => {
-                setUpGrab("title", "string");
-            },
-            grabIngredients: () => {
-                setUpGrab("ingredients", "list");
-            },
-            grabDirections: () => {
-                setUpGrab("directions", "list");
-            },
-            doImport: () => {
-                sendToFoodinger();
-            },
+            grabTitle: () =>
+                setUpGrab("title", "string"),
+            grabIngredients: () =>
+                setUpGrab("ingredients", "list"),
+            grabDirections: () =>
+                setUpGrab("directions", "list"),
+            doImport: () =>
+                sendToFoodinger(),
         };
     };
     const renderGrab = $div => {
@@ -296,22 +301,34 @@
         `;
     };
     const render = () => {
+        // eslint-disable-next-line no-console
         console.log("FOODINGER", store);
         let $div = document.getElementById(CONTAINER_ID);
         if ($div == null) {
-            $div = document.createElement('div');
+            $div = document.createElement("div");
             $div.id = CONTAINER_ID;
+            $div.innerHTML = `<div style="position:relative">
+                <div id="${CONTENT_ID}"></div>
+                <a href="#" onclick="${GATEWAY_PROP}.__close()" style="position:absolute;top:0;right:10px;font-weight:bold;font-size:200%;color:#fff;">×</a>
+            </div>`;
+            $div.style = containerStyle;
             document.body.append($div);
         }
-        $div.style = containerStyle;
-        window[GATEWAY_PROP] = (
-            store.mode === "form" ? renderForm
+        window[GATEWAY_PROP] = {
+            ... ( store.mode === "form" ? renderForm
                 : store.mode === "grab" ? renderGrab
                 : store.mode === "stale" ? renderStale
                 : store.mode === "importing" ? renderImporting
                 : store.mode === "imported" ? renderImported
-                : () => {throw new Error(`Unrecognized '${store.mode}' mode`)}
-        )($div);
+                : () => {throw new Error(`Unrecognized '${store.mode}' mode`);}
+            )(document.getElementById(CONTENT_ID)),
+            __close: () => {
+                $div.parentNode.removeChild($div);
+                const $script = document.getElementById("foodinger-import-bookmarklet");
+                $script.parentNode.removeChild($script);
+                delete window[GATEWAY_PROP];
+            }
+        };
     };
     render();
 
@@ -349,6 +366,7 @@
     ]) try {
         if (auto()) { render(); break; }
     } catch (e) {
-        console.warn("auto-import error", e)
+        // eslint-disable-next-line no-console
+        console.warn("auto-import error", e);
     }
 })();
