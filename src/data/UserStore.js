@@ -3,13 +3,18 @@ import { ReduceStore } from "flux/utils";
 import { OrderedMap } from "immutable";
 import {
     API_BASE_URL,
+    COOKIE_AUTH_TOKEN,
     LOCAL_STORAGE_ACCESS_TOKEN,
 } from "../constants/index";
+import { getCookie } from "../util/cookies";
 import hotLoadObject from "../util/hotLoadObject";
 import LoadObject from "../util/LoadObject";
 import promiseFlux from "../util/promiseFlux";
 import Dispatcher from "./dispatcher";
 import UserActions from "./UserActions";
+
+// global side effect to ensure cookies are passed
+BaseAxios.defaults.withCredentials = true;
 
 const axios = BaseAxios.create({
     baseURL: API_BASE_URL,
@@ -18,10 +23,6 @@ const axios = BaseAxios.create({
 const initiateProfileLoad = state => {
     if (state.get("profile").isLoading()) {
         return state;
-    }
-    if (state.get("token") == null) {
-        return state.update("profile", lo =>
-            lo.setError("No Access Token Found").done());
     }
     promiseFlux(
         axios.get("/api/user/me"),
@@ -36,29 +37,24 @@ const initiateProfileLoad = state => {
 };
 
 const setToken = (state, token) => {
-    BaseAxios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
     return initiateProfileLoad(
         state.set("token", token)
     );
 };
 
 class UserStore extends ReduceStore {
-    constructor() {
-        super(Dispatcher);
-    }
 
     getInitialState() {
         const state = new OrderedMap({
             profile: LoadObject.empty(),
         });
-        const token = localStorage.getItem(LOCAL_STORAGE_ACCESS_TOKEN);
+        const token = getCookie(COOKIE_AUTH_TOKEN);
         return token ? setToken(state, token) : state;
     }
 
     reduce(state, action) {
         switch (action.type) {
             case UserActions.LOGGED_IN: {
-                localStorage.setItem(LOCAL_STORAGE_ACCESS_TOKEN, action.token);
                 return setToken(state, action.token);
             }
             case UserActions.LOAD_PROFILE: {
@@ -111,4 +107,4 @@ class UserStore extends ReduceStore {
 
 }
 
-export default new UserStore();
+export default new UserStore(Dispatcher);
