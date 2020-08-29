@@ -1,4 +1,4 @@
-import axios from "axios";
+import BaseAxios from "axios";
 import { ReduceStore } from "flux/utils";
 import { OrderedMap } from "immutable";
 import {
@@ -11,6 +11,10 @@ import promiseFlux from "../util/promiseFlux";
 import Dispatcher from "./dispatcher";
 import UserActions from "./UserActions";
 
+const axios = BaseAxios.create({
+    baseURL: API_BASE_URL,
+});
+
 const initiateProfileLoad = state => {
     if (state.get("profile").isLoading()) {
         return state;
@@ -20,7 +24,7 @@ const initiateProfileLoad = state => {
             lo.setError("No Access Token Found").done());
     }
     promiseFlux(
-        axios.get(API_BASE_URL + "/api/user/me"),
+        axios.get("/api/user/me"),
         data => ({
             type: UserActions.PROFILE_LOADED,
             data: data.data,
@@ -32,7 +36,7 @@ const initiateProfileLoad = state => {
 };
 
 const setToken = (state, token) => {
-    axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+    BaseAxios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
     return initiateProfileLoad(
         state.set("token", token)
     );
@@ -70,6 +74,8 @@ class UserStore extends ReduceStore {
             }
             case UserActions.LOGOUT: {
                 localStorage.removeItem(LOCAL_STORAGE_ACCESS_TOKEN);
+                // we need the server to close out too
+                window.location = API_BASE_URL + "/logout";
                 return this.getInitialState();
             }
             default:
