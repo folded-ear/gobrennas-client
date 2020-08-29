@@ -61,11 +61,13 @@ class Profile extends Component {
                             launch the import helper.
                         </p>
                         <p style={{textAlign: "center"}}>
-                            {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
                             <Button
                                 href={`javascript:var s=document.createElement('script');s.src='${APP_BASE_URL}/import_bookmarklet.js?token=${encodeURIComponent(token)}&_='+Date.now();s.id='foodinger-import-bookmarklet';document.body.appendChild(s);`}
+                                type={process.env.NODE_ENV === "production" ? "primary" : "danger"}
                             >
-                                Cook This!
+                                {process.env.NODE_ENV === "production"
+                                    ? "Cook This!"
+                                    : "DEV Cook This!"}
                             </Button>
                         </p>
                         {!API_IS_SECURE && <p>
