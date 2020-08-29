@@ -1,5 +1,6 @@
 (function() {
-    const scripts = document.getElementsByTagName("script");
+    const scripts = [...document.getElementsByTagName("script")]
+        .filter(el => el.id === "foodinger-import-bookmarklet");
     const parts = scripts[scripts.length - 1].src.split("?");
     let appRoot = parts[0].split("/");
     appRoot.pop();
