@@ -14,10 +14,19 @@ const NewVersionAvailable = () =>
             {" "}
             <Button
                 size="small"
+                type="primary"
                 onClick={() => Dispatcher.dispatch({
                     type: WindowActions.LAUNCH_NEW_VERSION,
                 })}>
-                Relaunch
+                Update
+            </Button>
+            {" "}
+            <Button
+                size="small"
+                onClick={() => Dispatcher.dispatch({
+                    type: WindowActions.IGNORE_NEW_VERSION,
+                })}>
+                Ignore
             </Button>
         </div>}
         banner
