@@ -44,6 +44,9 @@ const AppHeader = ({authenticated, onLogout, location}) => {
     const classes = styles();
     const theme = useTheme();
     const mobile = useMediaQuery(theme.breakpoints.down("sm"));
+    const topLevelNavSeg = location.pathname.split("/")[1];
+    const colorByHotness = val =>
+        topLevelNavSeg  === val ? "inherit" : "default";
 
     const renderMobile = () => {
         return (
@@ -54,9 +57,9 @@ const AppHeader = ({authenticated, onLogout, location}) => {
                     to="/library"
                 />
                 <Box className={classes.bar}>
-                    <IconButton component={Link} to="/library" value="library" color="inherit"><MenuBook/></IconButton>
-                    <IconButton component={Link} to="/add" value="add" color="inherit"><PostAdd/></IconButton>
-                    <IconButton component={Link} to="/tasks" value="tasks" color="inherit"><EventNote/></IconButton>
+                    <IconButton component={Link} to="/library" value="library" color={colorByHotness("library")}><MenuBook/></IconButton>
+                    <IconButton component={Link} to="/add" value="add" color={colorByHotness("add")}><PostAdd/></IconButton>
+                    <IconButton component={Link} to="/tasks" value="tasks" color={colorByHotness("tasks")}><EventNote/></IconButton>
                 </Box>
             </>
         );
@@ -72,7 +75,7 @@ const AppHeader = ({authenticated, onLogout, location}) => {
                 <Tabs
                     selectionFollowsFocus
                     className={classes.bar}
-                    value={location.pathname.split("/")[1]}
+                    value={topLevelNavSeg}
                     textColor="inherit"
                     TabIndicatorProps={{className: classes.indicator}}
                 >
@@ -118,14 +121,14 @@ const AppHeader = ({authenticated, onLogout, location}) => {
                                     to="profile"
                                     value="profile"
                                     title="Profile"
-                                    color="inherit"
+                                    color={colorByHotness("profile")}
                                 >
                                     <AccountCircle/>
                                 </IconButton>
                                 <IconButton
                                     onClick={onLogout}
                                     title="Logout"
-                                    color="inherit"
+                                    color={colorByHotness("__logout__")}
                                 >
                                     <ExitToApp/>
                                 </IconButton>
