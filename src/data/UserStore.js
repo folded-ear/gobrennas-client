@@ -71,7 +71,7 @@ class UserStore extends ReduceStore {
             case UserActions.LOGOUT: {
                 localStorage.removeItem(LOCAL_STORAGE_ACCESS_TOKEN);
                 // we need the server to close out too
-                window.location = API_BASE_URL + "/logout";
+                window.location = API_BASE_URL + "/oauth2/logout";
                 return this.getInitialState();
             }
             default:
