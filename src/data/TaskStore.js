@@ -500,36 +500,31 @@ const taskDeleted = (state, id) => {
     return state;
 };
 
-const forwardDeleteTask = (state, id, asCompletion = false) => {
-    let {
-        before,
-        after,
-    } = getNeighborIds(state, id);
-    if (before == null && after == null) {
-        // can't have a zero-task list, so make a blank one
-        state = createTaskAfter(state, id);
-        after = getNeighborId(state, id, 1);
-    }
-    return {
-        ...deleteTask(state, id, asCompletion),
-        activeTaskId: after != null ? after : before,
+const directionalDeleteTaskBuilder = delta =>
+    (state, id, asCompletion = false) => {
+        let {
+            before,
+            after,
+        } = getNeighborIds(state, id);
+        if (before == null && after == null) {
+            // can't have a zero-task list, so make a blank one
+            state = createTaskAfter(state, id);
+            after = getNeighborId(state, id, 1);
+        }
+        let activeTaskId = state.activeTaskId;
+        if (activeTaskId === id) {
+            activeTaskId = delta < 0
+                ? before != null ? before : after
+                : after != null ? after : before;
+        }
+        return {
+            ...deleteTask(state, id, asCompletion),
+            activeTaskId,
+        };
     };
-};
 
-const backwardsDeleteTask = (state, id) => {
-    const {
-        before,
-        after,
-    } = getNeighborIds(state, id);
-    if (before == null && after == null) {
-        // can't delete the only item on a list
-        return renameTask(state, id, "");
-    }
-    return {
-        ...deleteTask(state, id),
-        activeTaskId: before != null ? before : after,
-    };
-};
+const forwardDeleteTask = directionalDeleteTaskBuilder(1);
+const backwardsDeleteTask = directionalDeleteTaskBuilder(-1);
 
 let parentsToReset = new Set();
 
