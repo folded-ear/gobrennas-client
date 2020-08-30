@@ -60,7 +60,9 @@ const idFixerFactory = (cid, id) => {
                 v === cid ? id : v);
         }
         if (ids instanceof LoadObject) return ids.map(idFixer);
-        throw new Error("Unsupported value passed to replaceId");
+        if (typeof ids === "string") return ids;
+        if (typeof ids === "number") return ids;
+        throw new Error("Unsupported value passed to replaceId: " + ids);
     };
     return idFixer;
 };
@@ -99,7 +101,7 @@ const taskCreated = (state, clientId, id, task) => {
     }
     return {
         ...state,
-        activeTaskId: id,
+        activeTaskId: idFixer(state.activeTaskId),
         byId,
     };
 };
