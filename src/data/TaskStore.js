@@ -593,7 +593,12 @@ const nestTask = (state, id) => {
         return state;
     }
     const np = taskForId(state, p.subtaskIds[idx - 1]);
-    return resetParent(state, t, p, np);
+    state = resetParent(state, t, p, np);
+    // force the new parent to be expanded
+    return dotProp.set(state, ["byId", np.id], lo => lo.map(t => ({
+        ...t,
+        _expanded: true,
+    })));
 };
 
 const unnestTask = (state, id) => {
