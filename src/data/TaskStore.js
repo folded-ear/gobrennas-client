@@ -15,6 +15,7 @@ import RecipeActions from "./RecipeActions";
 import RouteStore from "./RouteStore";
 import TaskActions from "./TaskActions";
 import TaskApi from "./TaskApi";
+import { isParent } from "./tasks";
 import TemporalActions from "./TemporalActions";
 import UserStore from "./UserStore";
 import WindowActions from "./WindowActions";
@@ -655,9 +656,6 @@ const loadSubtasks = (state, id, background = false) => {
         ["byId", id],
         lo => lo.updating());
 };
-
-const isParent = task =>
-    task.subtaskIds && task.subtaskIds.length > 0;
 
 const taskLoaded = (state, task) => {
     state = dotProp.set(
