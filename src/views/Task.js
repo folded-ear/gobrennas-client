@@ -209,21 +209,23 @@ class Task extends React.PureComponent {
         let layoutProps;
         if (section) {
             layoutProps = {};
-        } else if (! lo.isDone()) {
+        } else if (! lo.isDone() || task.dead_child) {
             layoutProps = {
-                addonBefore: <Button icon="loading"
-                                     shape="circle"
-                                     size="small"
-                                     disabled
+                addonBefore: <Button
+                    icon="loading"
+                    shape="circle"
+                    size="small"
+                    disabled
                 />,
             };
         } else {
             layoutProps = {
-                addonBefore: <Button icon="check"
-                                     shape="circle"
-                                     size="small"
-                                     className="complete"
-                                     onClick={this.onComplete}
+                addonBefore: <Button
+                    icon="check"
+                    shape="circle"
+                    size="small"
+                    className="complete"
+                    onClick={this.onComplete}
                 />,
             };
         }
@@ -248,6 +250,7 @@ class Task extends React.PureComponent {
                         size="small"
                         type="danger"
                         onClick={this.onDelete}
+                        disabled={task.dead_child}
                     />
             }
             value={task.name}
@@ -258,6 +261,7 @@ class Task extends React.PureComponent {
                 "task-question": question,
                 "task-deleting": deleting,
                 "task-completing": completing,
+                "task-dead-child": task.dead_child,
             })}
             style={{
                 marginLeft: task.depth * 2 + "em",

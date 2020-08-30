@@ -3,17 +3,23 @@ import React from "react";
 import TaskStore from "../data/TaskStore";
 import TaskList from "../views/TaskList";
 
-const listTheTree = (id, depth=0) => {
+const listTheTree = (id, dead_child, depth=0) => {
     const list = TaskStore.getSubtaskLOs(id)
         .map(lo =>
-            lo.map(v =>
-                ({...v, depth})));
+            lo.map(v => ({
+                ...v,
+                dead_child,
+                depth
+            })));
     for (let i = list.length - 1; i >= 0; i--) {
         const lo = list[i];
         if (!lo.hasValue()) continue;
         const t = lo.getValueEnforcing();
         if (!t.subtaskIds) continue;
-        list.splice(i + 1, 0, ...listTheTree(t.id, depth + 1));
+        list.splice(i + 1, 0, ...listTheTree(
+            t.id,
+            dead_child || lo.isDeleting(),
+            depth + 1));
     }
     return list;
 };
