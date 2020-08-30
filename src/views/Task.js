@@ -227,24 +227,28 @@ class Task extends React.PureComponent {
                 />,
             };
         }
+        const deleting = lo.isDeleting() && !task._complete;
+        const completing = lo.isDeleting() && task._complete;
         let input = <Input
             {...layoutProps}
             addonAfter={
-                lo.isDeleting() ?
-                    <Button
+                lo.isDeleting()
+                    ? <Button
                         type="danger"
+                        className={classnames({
+                            "complete": completing,
+                        })}
                         onClick={this.onUndoDelete}
                     >
                         WAIT, NO!
                     </Button>
-                    :
-                    <Button
-                    icon="delete"
-                    shape="circle"
-                    size="small"
-                    type="danger"
-                    onClick={this.onDelete}
-                />
+                    : <Button
+                        icon="delete"
+                        shape="circle"
+                        size="small"
+                        type="danger"
+                        onClick={this.onDelete}
+                    />
             }
             value={task.name}
             placeholder="Write a task name"
@@ -252,7 +256,8 @@ class Task extends React.PureComponent {
                 "task-active": active,
                 "task-selected": selected,
                 "task-question": question,
-                "task-deleting": lo.isDeleting(),
+                "task-deleting": deleting,
+                "task-completing": completing,
             })}
             style={{
                 marginLeft: task.depth * 2 + "em",

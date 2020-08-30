@@ -430,7 +430,7 @@ const completeTask = (state, id) => {
 
 const deleteTask = (state, id, asCompletion = false) => {
     let lo = loForId(state, id);
-    const t = taskForId(state, id);
+    const t = lo.getValueEnforcing();
     invariant(
         t.parentId != null,
         "Can't %s root-level task '%s'",
@@ -443,21 +443,18 @@ const deleteTask = (state, id, asCompletion = false) => {
         selectedTaskIds: null,
         byId: {
             ...state.byId,
-            [id]: state.byId[id].deleting(),
+            [id]: lo.map(t => ({
+                ...t,
+                _complete: asCompletion,
+            })).deleting(),
         },
     };
 
     if (ClientId.is(id)) {
         state = taskDeleted(state, id);
-    } else if (asCompletion) {
-        tasksToDelete.set(id, true);
-        inTheFuture(TaskActions.FLUSH_DELETES, 10);
     } else {
-        tasksToDelete.set(id, false);
+        tasksToDelete.set(id, asCompletion);
         inTheFuture(TaskActions.FLUSH_DELETES, 10);
-        if (lo.isDone()) {
-            lo.deleting();
-        }
     }
     return state;
 };
@@ -468,7 +465,11 @@ const taskUndoDelete = (state, id) => {
         ...state,
         byId: {
             ...state.byId,
-            [id]: state.byId[id].done(),
+            [id]: state.byId[id].map(t => {
+                t = {...t};
+                delete t._complete;
+                return t;
+            }).done(),
         },
     };
 };
@@ -1067,6 +1068,7 @@ TaskStore.stateTypes = {
             }),
             parentId: PropTypes.number,
             subtaskIds: PropTypes.arrayOf(clientOrDatabaseIdType),
+            _complete: PropTypes.bool,
         }))
     ).isRequired,
 };
