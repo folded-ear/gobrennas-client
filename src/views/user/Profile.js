@@ -37,62 +37,51 @@ class Profile extends Component {
             isDeveloper,
             isDevMode,
         } = this.props;
-        return (
-            <div className="profile-container">
-                <div className="container">
-                    <div className="profile-info">
-                        <div className="profile-avatar">
-                            {user.imageUrl && <img
-                                src={user.imageUrl}
-                                alt={user.name}
-                                title="Holy moley, you're attractive!"
-                            />
-                            }
-                        </div>
-                        <div className="profile-name">
-                            <h2>{user.name}</h2>
-                            <p className="profile-email">{user.email}</p>
-                        </div>
-                        <Divider />
-                        <h2>Cook This!</h2>
-                        <p>&quot;Cook This!&quot; is a simple tool for importing
-                            recipes into Foodinger. Drag it to your bookmarks bar,
-                            and then while viewing a recipe online, click it to
-                            launch the import helper.
-                        </p>
-                        <p style={{textAlign: "center"}}>
-                            <Button
-                                href={`javascript:var s=document.createElement('script');s.src='${APP_BASE_URL}/import_bookmarklet.js?token=${encodeURIComponent(token)}&_='+Date.now();s.id='foodinger-import-bookmarklet';document.body.appendChild(s);`}
-                                type={process.env.NODE_ENV === "production" ? "primary" : "danger"}
-                            >
-                                {process.env.NODE_ENV === "production"
-                                    ? "Cook This!"
-                                    : "DEV Cook This!"}
-                            </Button>
-                        </p>
-                        {!API_IS_SECURE && <p>
-                            Note that since <Icon type="unlock" /> you&apos;re
-                            not using SSL <Icon type="unlock" />, you&apos;ll
-                            have to do this each time you log into Foodinger
-                            (deleting the old one first). Sorry, man.
-                        </p>}
-                        <Divider />
-                        <div><User {...user} /></div>
-                        {isDeveloper && <React.Fragment>
-                            <Divider />
-                            Dev Mode:
-                            {" "}
-                            <Switch
-                                checked={isDevMode}
-                                onChange={this.onDevModeChange}
-                                checkedChildren="ON"
-                                unCheckedChildren="off"
-                            />
-                        </React.Fragment>}
-                    </div>
-                </div>
+        return <>
+            {user.imageUrl && <img
+                src={user.imageUrl}
+                alt={user.name}
+                title="Holy moley, you're attractive!"
+            />}
+            <div className="profile-name">
+                <h2>{user.name}</h2>
+                <p className="profile-email">{user.email}</p>
             </div>
-        );
+            <Divider />
+            <h2>Cook This!</h2>
+            <p>&quot;Cook This!&quot; helps import recipes into Foodinger. Drag
+                it to your bookmarks bar, and then click it to when viewing a
+                recipe online.
+            </p>
+            <p style={{textAlign: "center"}}>
+                <Button
+                    href={`javascript:var s=document.createElement('script');s.src='${APP_BASE_URL}/import_bookmarklet.js?token=${encodeURIComponent(token)}&_='+Date.now();s.id='foodinger-import-bookmarklet';document.body.appendChild(s);`}
+                    type={process.env.NODE_ENV === "production" ? "primary" : "danger"}
+                >
+                    {process.env.NODE_ENV === "production"
+                        ? "Cook This!"
+                        : "DEV Cook This!"}
+                </Button>
+            </p>
+            {!API_IS_SECURE && <p>
+                Since <Icon type="unlock" /> you hate SSL <Icon type="unlock" />,
+                you&apos;ll have to do this each time you log into Foodinger
+                (deleting the old one first). Sorry, man.
+            </p>}
+            <Divider />
+            <div><User {...user} /></div>
+            {isDeveloper && <React.Fragment>
+                <Divider />
+                Dev Mode:
+                {" "}
+                <Switch
+                    checked={isDevMode}
+                    onChange={this.onDevModeChange}
+                    checkedChildren="ON"
+                    unCheckedChildren="off"
+                />
+            </React.Fragment>}
+        </>;
     }
 }
 
