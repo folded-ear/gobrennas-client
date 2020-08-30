@@ -8,7 +8,7 @@ const TaskActions = {
     SELECT_PREVIOUS: "task/select-previous",
     SELECT_TO: "task/select-to",
     MULTI_LINE_PASTE: "task/multi-line-paste",
-    TOGGLE_COLLAPSED: "task/toggle-collapsed",
+    TOGGLE_EXPANDED: "task/toggle-expanded",
     // user actions (with persistence)
     CREATE_LIST: "task/create-list",
     RENAME_LIST: "task/rename-list",

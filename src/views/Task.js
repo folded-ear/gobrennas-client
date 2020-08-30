@@ -194,7 +194,7 @@ class Task extends React.PureComponent {
 
     onCollapse() {
         Dispatcher.dispatch({
-            type: TaskActions.TOGGLE_COLLAPSED,
+            type: TaskActions.TOGGLE_EXPANDED,
             id: this.props.task.id,
         });
     }

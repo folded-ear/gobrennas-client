@@ -604,10 +604,10 @@ const unnestTask = (state, id) => {
     return resetParent(state, t, p, np);
 };
 
-const toggleCollapsed = (state, id) =>
+const toggleExpanded = (state, id) =>
     dotProp.set(state, ["byId", id], lo => lo.map(t => ({
         ...t,
-        _collapsed: !t._collapsed,
+        _expanded: !t._expanded,
     })));
 
 const resetParent = (state, task, parent, newParent) => {
@@ -940,9 +940,9 @@ class TaskStore extends ReduceStore {
                 return unnestTask(state, action.id);
             }
 
-            case TaskActions.TOGGLE_COLLAPSED: {
+            case TaskActions.TOGGLE_EXPANDED: {
                 userAction();
-                return toggleCollapsed(state, action.id);
+                return toggleExpanded(state, action.id);
             }
 
             case TaskActions.MULTI_LINE_PASTE: {
@@ -1086,7 +1086,7 @@ TaskStore.stateTypes = {
             }),
             parentId: PropTypes.number,
             subtaskIds: PropTypes.arrayOf(clientOrDatabaseIdType),
-            _collapsed: PropTypes.bool,
+            _expanded: PropTypes.bool,
             _complete: PropTypes.bool,
         }))
     ).isRequired,

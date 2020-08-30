@@ -17,4 +17,4 @@ export const isParent = task =>
     task.subtaskIds && task.subtaskIds.length > 0;
 
 export const isExpanded = task =>
-    isParent(task) && !task._collapsed;
+    isParent(task) && task._expanded;
