@@ -25,6 +25,12 @@
         }
       }
     }
+    button.collapse {
+      border-width: 0;
+      &.non-parent {
+        visibility: hidden;
+      }
+    }
   }
   .task-section {
     border-bottom: 1px solid #ccc;

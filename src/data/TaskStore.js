@@ -604,6 +604,12 @@ const unnestTask = (state, id) => {
     return resetParent(state, t, p, np);
 };
 
+const toggleCollapsed = (state, id) =>
+    dotProp.set(state, ["byId", id], lo => lo.map(t => ({
+        ...t,
+        _collapsed: !t._collapsed,
+    })));
+
 const resetParent = (state, task, parent, newParent) => {
     if (!ClientId.is(task.id)) {
         TaskApi.resetParent(task.id, newParent.id);
@@ -658,10 +664,16 @@ const loadSubtasks = (state, id, background = false) => {
 };
 
 const taskLoaded = (state, task) => {
+    let lo = state.byId[task.id] || LoadObject.empty();
+    if (lo.hasValue()) {
+        lo = lo.map(t => ({ ...t, ...task }));
+    } else {
+        lo = lo.setValue(task);
+    }
     state = dotProp.set(
         state,
         ["byId", task.id],
-        LoadObject.withValue(task));
+        lo.done());
     if (isParent(task)) {
         state = loadSubtasks(state, task.id);
         state = task.subtaskIds.reduce(taskLoading, state);
@@ -928,6 +940,11 @@ class TaskStore extends ReduceStore {
                 return unnestTask(state, action.id);
             }
 
+            case TaskActions.TOGGLE_COLLAPSED: {
+                userAction();
+                return toggleCollapsed(state, action.id);
+            }
+
             case TaskActions.MULTI_LINE_PASTE: {
                 userAction();
                 const lines = action.text.split("\n")
@@ -1069,6 +1086,7 @@ TaskStore.stateTypes = {
             }),
             parentId: PropTypes.number,
             subtaskIds: PropTypes.arrayOf(clientOrDatabaseIdType),
+            _collapsed: PropTypes.bool,
             _complete: PropTypes.bool,
         }))
     ).isRequired,

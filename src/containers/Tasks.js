@@ -1,5 +1,6 @@
 import { Container } from "flux/utils";
 import React from "react";
+import { isExpanded } from "../data/tasks";
 import TaskStore from "../data/TaskStore";
 import TaskList from "../views/TaskList";
 
@@ -15,7 +16,7 @@ const listTheTree = (id, dead_child, depth=0) => {
         const lo = list[i];
         if (!lo.hasValue()) continue;
         const t = lo.getValueEnforcing();
-        if (!t.subtaskIds) continue;
+        if (!isExpanded(t)) continue;
         list.splice(i + 1, 0, ...listTheTree(
             t.id,
             dead_child || lo.isDeleting(),
