@@ -427,7 +427,7 @@ const flushTasksToDelete = state => {
 };
 
 const completeTask = (state, id) => {
-    return deleteTask(state, id, true);
+    return forwardDeleteTask(state, id, true);
 };
 
 const deleteTask = (state, id, asCompletion = false) => {
@@ -478,34 +478,39 @@ const taskUndoDelete = (state, id) => {
 
 const taskDeleted = (state, id) => {
     const t = taskForId(state, id);
-    const plo = loForId(state, t.parentId);
-    const p = plo.getValueEnforcing();
+    let p = taskForId(state, t.parentId);
     const idx = p.subtaskIds.indexOf(id);
-    const byId = {
-        ...state.byId,
-        [p.id]: plo.map(p => ({
-            ...p,
-            subtaskIds: p.subtaskIds.slice(0, idx)
-                .concat(p.subtaskIds.slice(idx + 1)),
-        })),
+    p = {
+        ...p,
+        subtaskIds: p.subtaskIds.slice(0, idx)
+            .concat(p.subtaskIds.slice(idx + 1)),
     };
-    return {
+    state = {
         ...state,
-        byId,
+        byId: {
+            ...state.byId,
+            [p.id]: LoadObject.withValue(p),
+        },
     };
+    if (p.id === state.activeListId && !isParent(p)) {
+        // it was the last task on the list
+        state = addTask(state, p.id, "", AT_END);
+    }
+    return state;
 };
 
-const forwardDeleteTask = (state, id) => {
-    const {
+const forwardDeleteTask = (state, id, asCompletion = false) => {
+    let {
         before,
         after,
     } = getNeighborIds(state, id);
     if (before == null && after == null) {
-        // can't delete the only item on a list
-        return renameTask(state, id, "");
+        // can't have a zero-task list, so make a blank one
+        state = createTaskAfter(state, id);
+        after = getNeighborId(state, id, 1);
     }
     return {
-        ...deleteTask(state, id),
+        ...deleteTask(state, id, asCompletion),
         activeTaskId: after != null ? after : before,
     };
 };
