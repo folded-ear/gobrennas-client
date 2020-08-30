@@ -231,7 +231,7 @@ class Task extends React.PureComponent {
         }
         const deleting = lo.isDeleting() && !task._complete;
         const completing = lo.isDeleting() && task._complete;
-        let input = <Input
+        return <Input
             {...layoutProps}
             addonAfter={
                 lo.isDeleting()
@@ -256,6 +256,7 @@ class Task extends React.PureComponent {
             value={task.name}
             placeholder="Write a task name"
             className={classnames({
+                "task-section": section,
                 "task-active": active,
                 "task-selected": selected,
                 "task-question": question,
@@ -273,13 +274,6 @@ class Task extends React.PureComponent {
             onCopy={this.onCopy}
             onKeyDown={this.onKeyDown}
         />;
-        return section
-            ? <Input.Group className={classnames("task-section", {
-                "task-active": active,
-                "task-selected": selected,
-            })}
-            >{input}</Input.Group>
-            : input;
     }
 
 }
