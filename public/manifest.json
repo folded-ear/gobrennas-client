@@ -13,6 +13,7 @@
       "type": "image/png"
     }
   ],
+  "scope": "/",
   "start_url": ".",
   "display": "standalone",
   "theme_color": "#bf360c",
@@ -23,7 +24,8 @@
       "url": "/tasks"
     },
     {
-      "name": "Library",
+      "short_name": "Recipes",
+      "name": "Recipe Library",
       "url": "/library"
     }
   ]
