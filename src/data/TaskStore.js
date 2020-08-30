@@ -15,7 +15,10 @@ import RecipeActions from "./RecipeActions";
 import RouteStore from "./RouteStore";
 import TaskActions from "./TaskActions";
 import TaskApi from "./TaskApi";
-import { isParent } from "./tasks";
+import {
+    isExpanded,
+    isParent,
+} from "./tasks";
 import TemporalActions from "./TemporalActions";
 import UserStore from "./UserStore";
 import WindowActions from "./WindowActions";
@@ -324,7 +327,7 @@ const getNeighborId = (state, id, delta = 1, crossGenerations=false, _searching=
 
     if (delta > 0) {
         // to first child
-        if (crossGenerations && isParent(t)) return t.subtaskIds[0];
+        if (crossGenerations && isExpanded(t)) return t.subtaskIds[0];
         // to next sibling
         if (idx < siblingIds.length - 1) return siblingIds[idx + 1];
         // to parent's next sibling (recurse)
@@ -345,7 +348,7 @@ const getNeighborId = (state, id, delta = 1, crossGenerations=false, _searching=
 const lastDescendantIdOf = (state, id) => {
     while (id != null) {
         const desc = taskForId(state, id);
-        if (!isParent(desc)) return desc.id;
+        if (!isExpanded(desc)) return desc.id;
         id = desc.subtaskIds[desc.subtaskIds.length - 1];
     }
     return null;
