@@ -1,7 +1,7 @@
 import BaseAxios from "axios";
 import { API_BASE_URL } from "../constants/index";
 import promiseFlux from "../util/promiseFlux";
-import serializePromiseFn from "../util/serializePromiseFn";
+import serializeObjectOfPromiseFns from "../util/serializeObjectOfPromiseFns";
 import TaskActions from "./TaskActions";
 
 const axios = BaseAxios.create({
@@ -10,7 +10,7 @@ const axios = BaseAxios.create({
 
 const TaskApi = {
 
-    createList(name, clientId) {
+    createList: (name, clientId) =>
         promiseFlux(
             axios.post(`/`, {
                 name,
@@ -21,20 +21,18 @@ const TaskApi = {
                 id: data.data.id,
                 data: data.data,
             }),
-        );
-    },
+        ),
 
-    loadLists() {
+    loadLists: () =>
         promiseFlux(
             axios.get(`/`),
             data => ({
                 type: TaskActions.LISTS_LOADED,
                 data: data.data,
             }),
-        );
-    },
+        ),
 
-    loadSubtasks(id, background = false) {
+    loadSubtasks: (id, background = false) =>
         promiseFlux(
             axios.get(`/${id}/subtasks`),
             data => ({
@@ -43,10 +41,9 @@ const TaskApi = {
                 data: data.data,
                 background,
             }),
-        );
-    },
+        ),
 
-    createTask: serializePromiseFn((name, parentId, clientId) =>
+    createTask: (name, parentId, clientId) =>
         promiseFlux(
             axios.post(`/${parentId}/subtasks`, {
                 name,
@@ -58,9 +55,8 @@ const TaskApi = {
                 data: data,
             }),
         ),
-    ),
 
-    renameTask(id, name) {
+    renameTask: (id, name) =>
         promiseFlux(
             axios.put(`/${id}/name`, {
                 name,
@@ -70,20 +66,18 @@ const TaskApi = {
                 id,
                 name,
             }),
-        );
-    },
+        ),
 
-    deleteList(id) {
+    deleteList: (id) =>
         promiseFlux(
             axios.delete(`/${id}`),
             () => ({
                 type: TaskActions.LIST_DELETED,
                 id,
             }),
-        );
-    },
+        ),
 
-    completeTask(id) {
+    completeTask: (id) =>
         promiseFlux(
             axios.put(`/${id}/complete`, {
                 complete: true,
@@ -92,20 +86,18 @@ const TaskApi = {
                 type: TaskActions.TASK_COMPLETED,
                 id,
             }),
-        );
-    },
+        ),
 
-    deleteTask(id) {
+    deleteTask: (id) =>
         promiseFlux(
             axios.delete(`/${id}`),
             () => ({
                 type: TaskActions.TASK_DELETED,
                 id,
             }),
-        );
-    },
+        ),
 
-    resetSubtasks(id, subtaskIds) {
+    resetSubtasks: (id, subtaskIds) =>
         promiseFlux(
             axios.put(`/${id}/subtaskIds`, {
                 subtaskIds
@@ -114,10 +106,9 @@ const TaskApi = {
                 type: TaskActions.SUBTASKS_RESET,
                 id,
             })
-        );
-    },
+        ),
 
-    resetParent(id, parentId) {
+    resetParent: (id, parentId) =>
         promiseFlux(
             axios.put(`/${id}/parentId`, {
                 parentId,
@@ -126,10 +117,9 @@ const TaskApi = {
                 type: TaskActions.PARENT_RESET,
                 id,
             })
-        );
-    },
+        ),
 
-    setListGrant(id, userId, level) {
+    setListGrant: (id, userId, level) =>
         // i was not thinking when i designed this endpoint. :)
         promiseFlux(
             axios.post(`/${id}/acl/grants`, {
@@ -141,10 +131,9 @@ const TaskApi = {
                 id,
                 userId,
             })
-        );
-    },
+        ),
 
-    clearListGrant(id, userId) {
+    clearListGrant: (id, userId) =>
         promiseFlux(
             axios.delete(`/${id}/acl/grants/${userId}`),
             () => ({
@@ -152,9 +141,8 @@ const TaskApi = {
                 id,
                 userId,
             })
-        );
-    },
+        ),
 
 };
 
-export default TaskApi;
+export default serializeObjectOfPromiseFns(TaskApi);
