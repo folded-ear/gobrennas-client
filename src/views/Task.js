@@ -213,7 +213,7 @@ class Task extends React.PureComponent {
             loadObject: lo,
             active,
             selected,
-            deadChild,
+            ancestorDeleting,
         } = this.props;
         const section = isSection(task);
         const parent = isParent(task);
@@ -222,7 +222,7 @@ class Task extends React.PureComponent {
         let addonBefore;
         if (section) {
             addonBefore = [];
-        } else if (! lo.isDone() || deadChild) {
+        } else if (! lo.isDone() || ancestorDeleting) {
             addonBefore= [
                 <Button
                     key="action"
@@ -259,7 +259,7 @@ class Task extends React.PureComponent {
         return <Input
             addonBefore={addonBefore}
             addonAfter={
-                lo.isDeleting()
+                lo.isDeleting() && !ancestorDeleting
                     ? <Button
                         type="danger"
                         className={classnames({
@@ -275,7 +275,7 @@ class Task extends React.PureComponent {
                         size="small"
                         type="danger"
                         onClick={this.onDelete}
-                        disabled={deadChild}
+                        disabled={ancestorDeleting}
                     />
             }
             value={task.name}
@@ -287,7 +287,7 @@ class Task extends React.PureComponent {
                 "task-question": question,
                 "task-deleting": deleting,
                 "task-completing": completing,
-                "task-dead-child": deadChild,
+                "task-ancestor-deleting": ancestorDeleting,
             })}
             ref={this.inputRef}
             onClick={this.onClick}
@@ -304,7 +304,7 @@ Task.propTypes = {
     task: PropTypes.object.isRequired,
     loadObject: PropTypes.instanceOf(LoadObject).isRequired,
     active: PropTypes.bool.isRequired,
-    deadChild: PropTypes.bool,
+    ancestorDeleting: PropTypes.bool,
     selected: PropTypes.bool.isRequired,
 };
 

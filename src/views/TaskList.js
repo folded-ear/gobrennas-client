@@ -38,7 +38,7 @@ class TaskList extends React.PureComponent {
                 const {
                     lo,
                     depth,
-                    deadChild,
+                    ancestorDeleting,
                 } = item;
                 let body;
                 if (lo.hasValue()) {
@@ -46,7 +46,7 @@ class TaskList extends React.PureComponent {
                     body = <Task
                         key={t.id}
                         task={t}
-                        deadChild={deadChild}
+                        ancestorDeleting={ancestorDeleting}
                         loadObject={lo}
                         active={isTaskActive(t)}
                         selected={isTaskSelected(t)}
@@ -76,7 +76,7 @@ TaskList.propTypes = {
         PropTypes.shape({
             lo: PropTypes.instanceOf(LoadObject).isRequired,
             depth: PropTypes.number.isRequired,
-            deadChild: PropTypes.bool,
+            ancestorDeleting: PropTypes.bool,
         })),
     isTaskActive: PropTypes.func.isRequired,
     isTaskSelected: PropTypes.func.isRequired,

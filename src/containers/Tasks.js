@@ -4,10 +4,10 @@ import { isExpanded } from "../data/tasks";
 import TaskStore from "../data/TaskStore";
 import TaskList from "../views/TaskList";
 
-const listTheTree = (id, deadChild, depth=0) => {
+const listTheTree = (id, ancestorDeleting=false, depth=0) => {
     const list = TaskStore.getSubtaskLOs(id).map(lo => ({
         lo,
-        deadChild,
+        ancestorDeleting,
         depth
     }));
     for (let i = list.length - 1; i >= 0; i--) {
@@ -17,7 +17,7 @@ const listTheTree = (id, deadChild, depth=0) => {
         if (!isExpanded(t)) continue;
         list.splice(i + 1, 0, ...listTheTree(
             t.id,
-            deadChild || lo.isDeleting(),
+            ancestorDeleting || lo.isDeleting(),
             depth + 1));
     }
     return list;
