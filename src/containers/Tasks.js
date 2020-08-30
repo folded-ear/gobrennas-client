@@ -4,22 +4,20 @@ import { isExpanded } from "../data/tasks";
 import TaskStore from "../data/TaskStore";
 import TaskList from "../views/TaskList";
 
-const listTheTree = (id, dead_child, depth=0) => {
-    const list = TaskStore.getSubtaskLOs(id)
-        .map(lo =>
-            lo.map(v => ({
-                ...v,
-                dead_child,
-                depth
-            })));
+const listTheTree = (id, deadChild, depth=0) => {
+    const list = TaskStore.getSubtaskLOs(id).map(lo => ({
+        lo,
+        deadChild,
+        depth
+    }));
     for (let i = list.length - 1; i >= 0; i--) {
-        const lo = list[i];
+        const lo = list[i].lo;
         if (!lo.hasValue()) continue;
         const t = lo.getValueEnforcing();
         if (!isExpanded(t)) continue;
         list.splice(i + 1, 0, ...listTheTree(
             t.id,
-            dead_child || lo.isDeleting(),
+            deadChild || lo.isDeleting(),
             depth + 1));
     }
     return list;
@@ -39,7 +37,7 @@ export default Container.createFunctional(
             allLists,
             activeListLO,
             listDetailVisible: TaskStore.isListDetailVisible(),
-            taskLOs: activeListLO.hasValue()
+            taskTuples: activeListLO.hasValue()
                 ? listTheTree(activeListLO.getValueEnforcing().id)
                 : [],
             isTaskActive: activeTask == null
