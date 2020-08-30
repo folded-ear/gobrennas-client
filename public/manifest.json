@@ -16,5 +16,15 @@
   "start_url": ".",
   "display": "standalone",
   "theme_color": "#bf360c",
-  "background_color": "#ffffff"
+  "background_color": "#ffffff",
+  "shortcuts": [
+    {
+      "name": "Tasks",
+      "url": "/tasks"
+    },
+    {
+      "name": "Library",
+      "url": "/library"
+    }
+  ]
 }
