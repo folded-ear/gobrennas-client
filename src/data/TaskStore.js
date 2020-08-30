@@ -89,6 +89,14 @@ const taskCreated = (state, clientId, id, task) => {
             subtaskIds: idFixer(p.subtaskIds),
         }));
     }
+    if (isParent(task)) {
+        task.subtaskIds.forEach(sid => {
+            byId[sid] = byId[sid].map(s => ({
+                ...s,
+                parentId: id,
+            }));
+        });
+    }
     return {
         ...state,
         activeTaskId: id,
