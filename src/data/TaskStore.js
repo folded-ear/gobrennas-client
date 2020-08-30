@@ -465,6 +465,7 @@ const taskUndoDelete = (state, id) => {
     tasksToDelete.delete(id);
     return {
         ...state,
+        activeTaskId: id,
         byId: {
             ...state.byId,
             [id]: state.byId[id].map(t => {
