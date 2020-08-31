@@ -15,3 +15,6 @@ export const isQuestionable = taskOrName =>
 
 export const isParent = task =>
     task.subtaskIds && task.subtaskIds.length > 0;
+
+export const isExpanded = task =>
+    isParent(task) && task._expanded;

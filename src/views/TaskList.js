@@ -16,7 +16,7 @@ class TaskList extends React.PureComponent {
             allLists,
             activeListLO,
             listDetailVisible,
-            taskLOs,
+            taskTuples,
             isTaskActive,
             isTaskSelected,
         } = this.props;
@@ -33,22 +33,32 @@ class TaskList extends React.PureComponent {
                 activeList={activeListLO.getValue()}
                 listDetailVisible={listDetailVisible}
             />}
-            dataSource={taskLOs}
-            renderItem={lo => {
+            dataSource={taskTuples}
+            renderItem={item => {
+                const {
+                    lo,
+                    depth,
+                    ancestorDeleting,
+                } = item;
                 let body;
                 if (lo.hasValue()) {
                     const t = lo.getValueEnforcing();
-                    body = <Task key={t.id}
-                                 task={t}
-                                 loadObject={lo}
-                                 active={isTaskActive(t)}
-                                 selected={isTaskSelected(t)}
+                    body = <Task
+                        key={t.id}
+                        task={t}
+                        ancestorDeleting={ancestorDeleting}
+                        loadObject={lo}
+                        active={isTaskActive(t)}
+                        selected={isTaskSelected(t)}
                     />;
                 } else {
                     body = <LoadingTask key={lo.id} />;
                 }
                 return <List.Item
                     className="task"
+                    style={{
+                        marginLeft: depth * 2 + "em",
+                    }}
                 >
                     {body}
                 </List.Item>;
@@ -62,8 +72,12 @@ TaskList.propTypes = {
     allLists: PropTypes.instanceOf(LoadObject).isRequired,
     activeListLO: PropTypes.instanceOf(LoadObject),
     listDetailVisible: PropTypes.bool.isRequired,
-    taskLOs: PropTypes.arrayOf(
-        PropTypes.instanceOf(LoadObject)),
+    taskTuples: PropTypes.arrayOf(
+        PropTypes.shape({
+            lo: PropTypes.instanceOf(LoadObject).isRequired,
+            depth: PropTypes.number.isRequired,
+            ancestorDeleting: PropTypes.bool,
+        })),
     isTaskActive: PropTypes.func.isRequired,
     isTaskSelected: PropTypes.func.isRequired,
 };

@@ -15,7 +15,10 @@ import RecipeActions from "./RecipeActions";
 import RouteStore from "./RouteStore";
 import TaskActions from "./TaskActions";
 import TaskApi from "./TaskApi";
-import { isParent } from "./tasks";
+import {
+    isExpanded,
+    isParent,
+} from "./tasks";
 import TemporalActions from "./TemporalActions";
 import UserStore from "./UserStore";
 import WindowActions from "./WindowActions";
@@ -324,7 +327,7 @@ const getNeighborId = (state, id, delta = 1, crossGenerations=false, _searching=
 
     if (delta > 0) {
         // to first child
-        if (crossGenerations && isParent(t)) return t.subtaskIds[0];
+        if (crossGenerations && isExpanded(t)) return t.subtaskIds[0];
         // to next sibling
         if (idx < siblingIds.length - 1) return siblingIds[idx + 1];
         // to parent's next sibling (recurse)
@@ -345,7 +348,7 @@ const getNeighborId = (state, id, delta = 1, crossGenerations=false, _searching=
 const lastDescendantIdOf = (state, id) => {
     while (id != null) {
         const desc = taskForId(state, id);
-        if (!isParent(desc)) return desc.id;
+        if (!isExpanded(desc)) return desc.id;
         id = desc.subtaskIds[desc.subtaskIds.length - 1];
     }
     return null;
@@ -590,8 +593,17 @@ const nestTask = (state, id) => {
         return state;
     }
     const np = taskForId(state, p.subtaskIds[idx - 1]);
-    return resetParent(state, t, p, np);
+    state = resetParent(state, t, p, np);
+    // force the new parent to be expanded
+    return setExpansion(state, np.id, true);
 };
+
+// if expanded is null, it means "the other one"
+const setExpansion = (state, id, expanded=null) =>
+    dotProp.set(state, ["byId", id], lo => lo.map(t => ({
+        ...t,
+        _expanded: expanded == null ? !t._expanded : expanded,
+    })));
 
 const unnestTask = (state, id) => {
     const t = taskForId(state, id);
@@ -603,6 +615,26 @@ const unnestTask = (state, id) => {
     const np = taskForId(state, p.parentId);
     return resetParent(state, t, p, np);
 };
+
+const toggleExpanded = setExpansion;
+
+const forceExpansionBuilder = expanded => {
+    const work = (state, id) => {
+        const lo = loForId(state, id);
+        if (!lo.hasValue()) return state;
+        const t = lo.getValueEnforcing();
+        if (!isParent(t)) return state;
+        state = setExpansion(state, t.id, expanded);
+        return t.subtaskIds.reduce(work, state);
+    };
+    return state => {
+        if (state.activeListId == null) return state;
+        return work(state, state.activeListId);
+    };
+};
+
+const expandAll = forceExpansionBuilder(true);
+const collapseAll = forceExpansionBuilder(false);
 
 const resetParent = (state, task, parent, newParent) => {
     if (!ClientId.is(task.id)) {
@@ -658,10 +690,16 @@ const loadSubtasks = (state, id, background = false) => {
 };
 
 const taskLoaded = (state, task) => {
+    let lo = state.byId[task.id] || LoadObject.empty();
+    if (lo.hasValue()) {
+        lo = lo.map(t => ({ ...t, ...task }));
+    } else {
+        lo = lo.setValue(task);
+    }
     state = dotProp.set(
         state,
         ["byId", task.id],
-        LoadObject.withValue(task));
+        lo.done());
     if (isParent(task)) {
         state = loadSubtasks(state, task.id);
         state = task.subtaskIds.reduce(taskLoading, state);
@@ -928,6 +966,21 @@ class TaskStore extends ReduceStore {
                 return unnestTask(state, action.id);
             }
 
+            case TaskActions.TOGGLE_EXPANDED: {
+                userAction();
+                return toggleExpanded(state, action.id);
+            }
+
+            case TaskActions.EXPAND_ALL: {
+                userAction();
+                return expandAll(state);
+            }
+
+            case TaskActions.COLLAPSE_ALL: {
+                userAction();
+                return collapseAll(state);
+            }
+
             case TaskActions.MULTI_LINE_PASTE: {
                 userAction();
                 const lines = action.text.split("\n")
@@ -1069,6 +1122,7 @@ TaskStore.stateTypes = {
             }),
             parentId: PropTypes.number,
             subtaskIds: PropTypes.arrayOf(clientOrDatabaseIdType),
+            _expanded: PropTypes.bool,
             _complete: PropTypes.bool,
         }))
     ).isRequired,

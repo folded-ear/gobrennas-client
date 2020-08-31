@@ -8,6 +8,8 @@ import React from "react";
 import Dispatcher from "../data/dispatcher";
 import TaskActions from "../data/TaskActions";
 import {
+    isExpanded,
+    isParent,
     isQuestionable,
     isSection,
 } from "../data/tasks";
@@ -25,6 +27,7 @@ class Task extends React.PureComponent {
         this.onKeyDown = this.onKeyDown.bind(this);
         this.onClick = this.onClick.bind(this);
         this.onComplete = this.onComplete.bind(this);
+        this.onCollapse = this.onCollapse.bind(this);
         this.onDelete = this.onDelete.bind(this);
         this.onUndoDelete = this.onUndoDelete.bind(this);
         this.inputRef = React.createRef();
@@ -189,6 +192,13 @@ class Task extends React.PureComponent {
         });
     }
 
+    onCollapse() {
+        Dispatcher.dispatch({
+            type: TaskActions.TOGGLE_EXPANDED,
+            id: this.props.task.id,
+        });
+    }
+
     componentDidMount() {
         if (this.props.active) this.inputRef.current.focus();
     }
@@ -203,38 +213,53 @@ class Task extends React.PureComponent {
             loadObject: lo,
             active,
             selected,
+            ancestorDeleting,
         } = this.props;
         const section = isSection(task);
+        const parent = isParent(task);
+        const expanded = isExpanded(task);
         const question = isQuestionable(task);
-        let layoutProps;
+        let addonBefore;
         if (section) {
-            layoutProps = {};
-        } else if (! lo.isDone() || task.dead_child) {
-            layoutProps = {
-                addonBefore: <Button
+            addonBefore = [];
+        } else if (! lo.isDone() || ancestorDeleting) {
+            addonBefore= [
+                <Button
+                    key="action"
                     icon="loading"
                     shape="circle"
                     size="small"
                     disabled
                 />,
-            };
+            ];
         } else {
-            layoutProps = {
-                addonBefore: <Button
+            addonBefore = [
+                <Button
+                    key="action"
                     icon="check"
                     shape="circle"
                     size="small"
                     className="complete"
                     onClick={this.onComplete}
                 />,
-            };
+            ];
         }
+        addonBefore.unshift(<Button
+            key="collapse"
+            icon={parent ? expanded ? "caret-down" : "caret-right" : "none"}
+            size="small"
+            className={classnames("collapse", {
+                "non-parent": !parent,
+            })}
+            shape="circle"
+            onClick={this.onCollapse}
+        />);
         const deleting = lo.isDeleting() && !task._complete;
         const completing = lo.isDeleting() && task._complete;
         return <Input
-            {...layoutProps}
+            addonBefore={addonBefore}
             addonAfter={
-                lo.isDeleting()
+                lo.isDeleting() && !ancestorDeleting
                     ? <Button
                         type="danger"
                         className={classnames({
@@ -250,7 +275,7 @@ class Task extends React.PureComponent {
                         size="small"
                         type="danger"
                         onClick={this.onDelete}
-                        disabled={task.dead_child}
+                        disabled={ancestorDeleting}
                     />
             }
             value={task.name}
@@ -262,11 +287,8 @@ class Task extends React.PureComponent {
                 "task-question": question,
                 "task-deleting": deleting,
                 "task-completing": completing,
-                "task-dead-child": task.dead_child,
+                "task-ancestor-deleting": ancestorDeleting,
             })}
-            style={{
-                marginLeft: task.depth * 2 + "em",
-            }}
             ref={this.inputRef}
             onClick={this.onClick}
             onChange={this.onChange}
@@ -282,6 +304,7 @@ Task.propTypes = {
     task: PropTypes.object.isRequired,
     loadObject: PropTypes.instanceOf(LoadObject).isRequired,
     active: PropTypes.bool.isRequired,
+    ancestorDeleting: PropTypes.bool,
     selected: PropTypes.bool.isRequired,
 };
 

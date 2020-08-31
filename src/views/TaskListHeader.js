@@ -1,3 +1,4 @@
+import IconButton from "@material-ui/core/IconButton";
 import {
     Button,
     Drawer,
@@ -12,6 +13,10 @@ import Dispatcher from "../data/dispatcher";
 import TaskActions from "../data/TaskActions";
 import WindowStore from "../data/WindowStore";
 import { humanStringComparator } from "../util/comparators";
+import {
+    CollapseAll,
+    ExpandAll,
+} from "./common/icons";
 import TaskListSidebar from "./TaskListSidebar";
 
 const isValidName = name =>
@@ -29,6 +34,8 @@ class TaskListHeader extends React.PureComponent {
         this.onCreate = this.onCreate.bind(this);
         this.onSelect = this.onSelect.bind(this);
         this.onNameChange = this.onNameChange.bind(this);
+        this.onExpandAll = this.onExpandAll.bind(this);
+        this.onCollapseAll = this.onCollapseAll.bind(this);
     }
 
     onShowDrawer() {
@@ -71,6 +78,18 @@ class TaskListHeader extends React.PureComponent {
         });
     }
 
+    onExpandAll() {
+        Dispatcher.dispatch({
+            type: TaskActions.EXPAND_ALL,
+        });
+    }
+
+    onCollapseAll() {
+        Dispatcher.dispatch({
+            type: TaskActions.COLLAPSE_ALL,
+        });
+    }
+
     render() {
         const {
             activeList,
@@ -82,6 +101,20 @@ class TaskListHeader extends React.PureComponent {
             name,
         } = this.state;
         return <Form layout="inline">
+            {activeList && <Form.Item>
+                <IconButton
+                    aria-label="expand-all"
+                    onClick={this.onExpandAll}
+                >
+                    <ExpandAll />
+                </IconButton>
+                <IconButton
+                    aria-label="collapse-all"
+                    onClick={this.onCollapseAll}
+                >
+                    <CollapseAll />
+                </IconButton>
+            </Form.Item>}
             {allLists && allLists.length > 0 && <React.Fragment>
                 <Form.Item
                     label="Select a List">
@@ -114,6 +147,7 @@ class TaskListHeader extends React.PureComponent {
                         title="List Info"
                         width={Math.min(500, windowWidth - 50)}
                         onClose={this.onCloseDrawer}
+                        zIndex={99999}
                     >
                         <TaskListSidebar list={activeList} />
                     </Drawer>
