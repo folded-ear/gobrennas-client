@@ -9,6 +9,8 @@ const TaskActions = {
     SELECT_TO: "task/select-to",
     MULTI_LINE_PASTE: "task/multi-line-paste",
     TOGGLE_EXPANDED: "task/toggle-expanded",
+    EXPAND_ALL: "task/expand-all",
+    COLLAPSE_ALL: "task/collapse-all",
     // user actions (with persistence)
     CREATE_LIST: "task/create-list",
     RENAME_LIST: "task/rename-list",

@@ -595,11 +595,15 @@ const nestTask = (state, id) => {
     const np = taskForId(state, p.subtaskIds[idx - 1]);
     state = resetParent(state, t, p, np);
     // force the new parent to be expanded
-    return dotProp.set(state, ["byId", np.id], lo => lo.map(t => ({
-        ...t,
-        _expanded: true,
-    })));
+    return setExpansion(state, np.id, true);
 };
+
+// if expanded is null, it means "the other one"
+const setExpansion = (state, id, expanded=null) =>
+    dotProp.set(state, ["byId", id], lo => lo.map(t => ({
+        ...t,
+        _expanded: expanded == null ? !t._expanded : expanded,
+    })));
 
 const unnestTask = (state, id) => {
     const t = taskForId(state, id);
@@ -612,11 +616,25 @@ const unnestTask = (state, id) => {
     return resetParent(state, t, p, np);
 };
 
-const toggleExpanded = (state, id) =>
-    dotProp.set(state, ["byId", id], lo => lo.map(t => ({
-        ...t,
-        _expanded: !t._expanded,
-    })));
+const toggleExpanded = setExpansion;
+
+const forceExpansionBuilder = expanded => {
+    const work = (state, id) => {
+        const lo = loForId(state, id);
+        if (!lo.hasValue()) return state;
+        const t = lo.getValueEnforcing();
+        if (!isParent(t)) return state;
+        state = setExpansion(state, t.id, expanded);
+        return t.subtaskIds.reduce(work, state);
+    };
+    return state => {
+        if (state.activeListId == null) return state;
+        return work(state, state.activeListId);
+    };
+};
+
+const expandAll = forceExpansionBuilder(true);
+const collapseAll = forceExpansionBuilder(false);
 
 const resetParent = (state, task, parent, newParent) => {
     if (!ClientId.is(task.id)) {
@@ -951,6 +969,16 @@ class TaskStore extends ReduceStore {
             case TaskActions.TOGGLE_EXPANDED: {
                 userAction();
                 return toggleExpanded(state, action.id);
+            }
+
+            case TaskActions.EXPAND_ALL: {
+                userAction();
+                return expandAll(state);
+            }
+
+            case TaskActions.COLLAPSE_ALL: {
+                userAction();
+                return collapseAll(state);
             }
 
             case TaskActions.MULTI_LINE_PASTE: {
