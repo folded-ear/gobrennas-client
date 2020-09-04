@@ -70,11 +70,20 @@ class NumVis extends NumberVisitor {
 }
 
 export const parseNumberWithRange = str => {
-    const chars = new antlr4.InputStream(str);
-    const lexer = new NumberLexer(chars);
-    const tokens = new antlr4.CommonTokenStream(lexer);
-    const parser = new NumberParser(tokens);
-    return new NumVis().visitStart(parser.start());
+    if (str == null) return null;
+    if (str.trim().length === 0) return null;
+    try {
+        const chars = new antlr4.InputStream(str);
+        const lexer = new NumberLexer(chars);
+        const tokens = new antlr4.CommonTokenStream(lexer);
+        const parser = new NumberParser(tokens);
+        const result = new NumVis().visitStart(parser.start());
+        result.number = Math.round(result.number * 1000) / 1000.0;
+        return result;
+    } catch (e) {
+        console.log(`Failed to parseNumber("${str}")`);
+        return null;
+    }
 };
 
 export const parseNumber = (str, allowGarbageAfter=false) => {
