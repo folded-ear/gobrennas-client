@@ -44,6 +44,8 @@ const TaskActions = {
     TASK_UNDO_DELETE: "task/task-undo-delete",
     LIST_GRANT_SET: "task/list-grant-set",
     LIST_GRANT_CLEARED: "task/list-grant-cleared",
+    RECOGNIZE_TASK: "task/recognize-task",
+    TASK_RECOGNIZED: "task/task-recognized",
     // deferred actions
     FLUSH_RENAMES: "task/flush-renames",
     FLUSH_REORDERS: "task/flush-reorders",

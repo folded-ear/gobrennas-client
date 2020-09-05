@@ -240,6 +240,7 @@ const flushTasksToRename = state => {
             requeue.set(id, name);
         } else {
             TaskApi.renameTask(id, name);
+            state = dotProp.delete(state, ["itemsById", id]);
         }
     }
     tasksToRename = requeue;
@@ -729,6 +730,23 @@ const taskRenamed = (state, id) => ({
     },
 });
 
+const recognizeTask = (state, id) => {
+    const lo = loForId(state, id);
+    if (!lo.hasValue()) return state;
+    TaskApi.recognize(id, lo.getValueEnforcing().name);
+    return dotProp.set(state, ["itemsById", id],  LoadObject.loading());
+};
+
+const taskRecognized = (state, id, data) => {
+    if (data == null) return state;
+    return dotProp.set(state, ["itemsById", id], LoadObject.withValue({
+        quantity: data.quantity,
+        units: data.units,
+        ingredient: data.ingredient,
+        preparation: data.preparation,
+    }));
+};
+
 const loadLists = state => {
     TaskApi.loadLists();
     return {
@@ -771,6 +789,7 @@ class TaskStore extends ReduceStore {
             selectedTaskIds: null, // Array<ID>
             topLevelIds: LoadObject.empty(), // LoadObject<Array<ID>>
             byId: {}, // Map<ID, LoadObject<Task>>
+            itemsById: {}, // Map<ID, LoadObject<Item>>
         };
     }
 
@@ -891,8 +910,19 @@ class TaskStore extends ReduceStore {
                 );
                 userAction();
                 return renameTask(state, action.id, action.name);
-            case TaskActions.TASK_RENAMED:
+
+            case TaskActions.TASK_RENAMED: {
                 return taskRenamed(state, action.id, action.name);
+            }
+
+            case TaskActions.RECOGNIZE_TASK: {
+                return recognizeTask(state, action.id);
+            }
+
+            case TaskActions.TASK_RECOGNIZED: {
+                return taskRecognized(state, action.id, action.data);
+            }
+
             case TaskActions.FOCUS:
                 state = focusTask(state, action.id);
                 return flushTasksToRename(state);
@@ -1042,6 +1072,16 @@ class TaskStore extends ReduceStore {
         );
     }
 
+    getItemLO(id) {
+        return hotLoadObject(
+            () => this.getState().itemsById[id],
+            () => Dispatcher.dispatch({
+                type: TaskActions.RECOGNIZE_TASK,
+                id,
+            }),
+        );
+    }
+
     getLists() {
         const s = this.getState();
         return this.getListsLO().map(ids => losForIds(s, ids)
@@ -1124,6 +1164,14 @@ TaskStore.stateTypes = {
             subtaskIds: PropTypes.arrayOf(clientOrDatabaseIdType),
             _expanded: PropTypes.bool,
             _complete: PropTypes.bool,
+        }))
+    ).isRequired,
+    itemsById: PropTypes.objectOf(
+        loadObjectOf(PropTypes.exact({
+            quantity: PropTypes.number,
+            units: PropTypes.string,
+            ingredient: PropTypes.string,
+            preparation: PropTypes.string,
         }))
     ).isRequired,
 };

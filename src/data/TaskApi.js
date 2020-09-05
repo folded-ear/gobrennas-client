@@ -1,7 +1,9 @@
 import BaseAxios from "axios";
 import { API_BASE_URL } from "../constants/index";
+import processRecognizedElement from "../util/processRecognizedElement";
 import promiseFlux from "../util/promiseFlux";
 import serializeObjectOfPromiseFns from "../util/serializeObjectOfPromiseFns";
+import RecipeApi from "./RecipeApi";
 import TaskActions from "./TaskActions";
 
 const axios = BaseAxios.create({
@@ -9,6 +11,16 @@ const axios = BaseAxios.create({
 });
 
 const TaskApi = {
+
+    recognize: (id, name) =>
+        promiseFlux(
+            RecipeApi.recognizeElement(name),
+            recog => ({
+                type: TaskActions.TASK_RECOGNIZED,
+                id,
+                data: processRecognizedElement(recog),
+            }),
+        ),
 
     createList: (name, clientId) =>
         promiseFlux(
