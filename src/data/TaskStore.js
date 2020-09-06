@@ -549,20 +549,30 @@ const flushParentsToReset = state => {
     return state;
 };
 
-const moveDelta = (state, delta) => {
+function getOrderedBlock(state, ascending) {
     const block = [state.activeTaskId];
     if (state.selectedTaskIds != null) {
         block.push(...state.selectedTaskIds);
     }
+    return block
+        .map(id =>
+            taskForId(state, id))
+        .map(t =>
+            [t, taskForId(state, t.parentId)])
+        .map(([t, p]) =>
+            [t, p, p.subtaskIds.indexOf(t.id)])
+        .sort(ascending
+            ? (a, b) => a[2] - b[2]
+            : (a, b) => b[2] - a[2]);
+}
+
+const moveDelta = (state, delta) => {
     const t = taskForId(state, state.activeTaskId);
     const plo = loForId(state, t.parentId);
     const p = plo.getValueEnforcing();
     const sids = p.subtaskIds.slice();
-    const idxs = block
-        .map(id => sids.indexOf(id))
-        .sort(delta < 1
-            ? (a, b) => a - b
-            : (a, b) => b - a);
+    const idxs = getOrderedBlock(state, delta < 1)
+        .map(it => it[2]);
     if (idxs[0] === 0 && delta < 0) return state;
     if (idxs[0] === sids.length - 1 && delta > 0) return state;
     // this isn't terribly efficient. but whatever.
@@ -585,18 +595,21 @@ const moveDelta = (state, delta) => {
     };
 };
 
-const nestTask = (state, id) => {
-    const t = taskForId(state, id);
-    const p = taskForId(state, t.parentId);
-    const idx = p.subtaskIds.indexOf(t.id);
-    if (idx === 0) {
+const nestTask = state => {
+    const blocks = getOrderedBlock(state, true);
+    if (blocks.some(([t, p]) => p.subtaskIds.indexOf(t.id) === 0)) {
         // nothing to nest under
         return state;
     }
-    const np = taskForId(state, p.subtaskIds[idx - 1]);
-    state = resetParent(state, t, p, np);
-    // force the new parent to be expanded
-    return setExpansion(state, np.id, true);
+    return blocks
+        .reduce((s, [t]) => {
+            const p = taskForId(s, t.parentId);
+            const idx = p.subtaskIds.indexOf(t.id);
+            const np = taskForId(s, p.subtaskIds[idx - 1]);
+            s = resetParent(s, t, p, np);
+            // force the new parent to be expanded
+            return setExpansion(s, np.id, true);
+        }, state);
 };
 
 // if expanded is null, it means "the other one"
@@ -606,15 +619,17 @@ const setExpansion = (state, id, expanded=null) =>
         _expanded: expanded == null ? !t._expanded : expanded,
     })));
 
-const unnestTask = (state, id) => {
-    const t = taskForId(state, id);
-    const p = taskForId(state, t.parentId);
-    if (p.id === state.activeListId) {
+const unnestTask = state => {
+    const blocks = getOrderedBlock(state, false);
+    if (blocks.some(([t]) => t.parentId === state.activeListId)) {
         // nothing to unnest from
         return state;
     }
-    const np = taskForId(state, p.parentId);
-    return resetParent(state, t, p, np);
+    return blocks
+        .reduce((s, [t, p]) => {
+            const np = taskForId(s, p.parentId);
+            return resetParent(s, t, p, np);
+        }, state);
 };
 
 const toggleExpanded = setExpansion;
@@ -639,7 +654,9 @@ const collapseAll = forceExpansionBuilder(false);
 
 const resetParent = (state, task, parent, newParent) => {
     if (!ClientId.is(task.id)) {
-        TaskApi.resetParent(task.id, newParent.id);
+        parentsToReset.add(parent.id);
+        parentsToReset.add(newParent.id);
+        inTheFuture(TaskActions.FLUSH_REORDERS);
     }
     return {
         ...state,
@@ -981,21 +998,13 @@ class TaskStore extends ReduceStore {
                 return moveDelta(state, -1);
 
             case TaskActions.NEST: {
-                if (state.selectedTaskIds != null) {
-                    alert("Can't nest/unnest multiple tasks (at the moment)");
-                    return state;
-                }
                 userAction();
-                return nestTask(state, action.id);
+                return nestTask(state);
             }
 
             case TaskActions.UNNEST: {
-                if (state.selectedTaskIds != null) {
-                    alert("Can't nest/unnest multiple tasks (at the moment)");
-                    return state;
-                }
                 userAction();
-                return unnestTask(state, action.id);
+                return unnestTask(state);
             }
 
             case TaskActions.TOGGLE_EXPANDED: {
