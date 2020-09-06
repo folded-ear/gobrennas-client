@@ -1,38 +1,41 @@
 import { makeStyles } from "@material-ui/core/styles";
 import React from "react";
 
-const styles = makeStyles(theme => ({
+const useStyles = makeStyles(theme => ({
         root: {
             fontSize: "3em",
             color: "white",
             fontWeight: "bold",
-            margin: theme.spacing(3),
-            // marginRight: theme.spacing(8),
+            margin: ({small}) =>
+                theme.spacing(small ? 1 : 3),
+            marginRight: ({small}) =>
+                theme.spacing(small ? 2 : 8),
             fontFamily: "Stint Ultra Condensed",
             whiteSpace: "nowrap",
         },
         F: {
             transform: "scaleX(-1)",
             display: "inline-block",
-        }
+        },
     })
 );
 
 const Logo = (props) => {
-    const classes = styles();
     const {
         version,
         component = "div",
         ...ptps
     } = props;
+    const small = version === "small";
+    const classes = useStyles({
+        small,
+    });
     return React.createElement(component, {
         ...ptps,
-        className: ptps.hasOwnProperty("className")
-            ? ptps.className + " " + classes.root
-            : classes.root,
+        className: classes.root,
     }, [
         <span key="F" className={classes.F}>F</span>,
-        version && version === "small" ? "F" : "Foodinger",
+        small ? "F" : "Foodinger",
     ]);
 };
 
