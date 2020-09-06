@@ -7,7 +7,7 @@ const styles = makeStyles(theme => ({
             color: "white",
             fontWeight: "bold",
             margin: theme.spacing(3),
-            marginRight: theme.spacing(8),
+            // marginRight: theme.spacing(8),
             fontFamily: "Stint Ultra Condensed",
             whiteSpace: "nowrap",
         },

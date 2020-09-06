@@ -742,7 +742,9 @@ const taskRecognized = (state, id, data) => {
     return dotProp.set(state, ["itemsById", id], LoadObject.withValue({
         quantity: data.quantity,
         units: data.units,
+        uomId: data.uomId,
         ingredient: data.ingredient,
+        ingredientId: data.ingredientId,
         preparation: data.preparation,
     }));
 };
@@ -1170,7 +1172,9 @@ TaskStore.stateTypes = {
         loadObjectOf(PropTypes.exact({
             quantity: PropTypes.number,
             units: PropTypes.string,
+            uomId: PropTypes.number,
             ingredient: PropTypes.string,
+            ingredientId: PropTypes.number,
             preparation: PropTypes.string,
         }))
     ).isRequired,

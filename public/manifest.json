@@ -20,8 +20,8 @@
   "background_color": "#ffffff",
   "shortcuts": [
     {
-      "name": "Tasks",
-      "url": "/tasks"
+      "name": "Plan",
+      "url": "/plan"
     },
     {
       "short_name": "Recipes",

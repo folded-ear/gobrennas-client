@@ -15,6 +15,7 @@ import {
     AccountCircle,
     EventNote,
     ExitToApp,
+    ListAlt,
     MenuBook,
     PostAdd,
 } from "@material-ui/icons";
@@ -59,7 +60,8 @@ const AppHeader = ({authenticated, onLogout, location}) => {
                 <Box className={classes.bar}>
                     <IconButton component={Link} to="/library" value="library" color={colorByHotness("library")}><MenuBook/></IconButton>
                     <IconButton component={Link} to="/add" value="add" color={colorByHotness("add")}><PostAdd/></IconButton>
-                    <IconButton component={Link} to="/tasks" value="tasks" color={colorByHotness("tasks")}><EventNote/></IconButton>
+                    <IconButton component={Link} to="/plan" value="plan" color={colorByHotness("plan")}><EventNote/></IconButton>
+                    <IconButton component={Link} to="/shop" value="shop" color={colorByHotness("shop")}><ListAlt/></IconButton>
                 </Box>
             </>
         );
@@ -95,10 +97,17 @@ const AppHeader = ({authenticated, onLogout, location}) => {
                     />
                     <Tab
                         icon={<EventNote/>}
-                        label="Tasks"
+                        label="Plan"
                         component={Link}
-                        to="/tasks"
-                        value="tasks"
+                        to="/plan"
+                        value="plan"
+                    />
+                    <Tab
+                        icon={<ListAlt/>}
+                        label="Shop"
+                        component={Link}
+                        to="/shop"
+                        value="shop"
                     />
                 </Tabs>
             </>

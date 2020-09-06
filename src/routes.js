@@ -1,6 +1,9 @@
+import React from "react";
+import { Redirect } from "react-router-dom";
 import Library from "./containers/Library";
 import Recipe from "./containers/Recipe";
 import RecipeEdit from "./containers/RecipeEdit";
+import Shop from "./containers/Shop";
 import Tasks from "./containers/Tasks";
 import Landing from "./views/Landing";
 import RecipeAdd from "./views/RecipeAdd";
@@ -19,7 +22,10 @@ const routes = {
         {path: "/library/recipe/:id",   component: Recipe },
         {path: "/library",  component: Library},
         {path: "/add",      component: RecipeAdd},
-        {path: "/tasks", component: Tasks}
+        // eslint-disable-next-line react/display-name
+        {path: "/tasks", component: () => <Redirect to="/plan" />},
+        {path: "/plan", component: Tasks},
+        {path: "/shop", component: Shop},
     ]
 };
 
