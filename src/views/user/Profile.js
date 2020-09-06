@@ -14,6 +14,7 @@ import Dispatcher from "../../data/dispatcher";
 import PreferencesStore from "../../data/PreferencesStore";
 import UserActions from "../../data/UserActions";
 import UserStore from "../../data/UserStore";
+import WindowStore from "../../data/WindowStore";
 import User from "./User";
 
 class Profile extends Component {
@@ -36,6 +37,7 @@ class Profile extends Component {
             token,
             isDeveloper,
             isDevMode,
+            windowSize,
         } = this.props;
         return <>
             {user.imageUrl && <img
@@ -80,6 +82,8 @@ class Profile extends Component {
                     checkedChildren="ON"
                     unCheckedChildren="off"
                 />
+                {" "}
+                Window: {windowSize.width}x{windowSize.height}
             </React.Fragment>}
         </>;
     }
@@ -90,12 +94,14 @@ export default Container.createFunctional(
     () => [
         UserStore,
         PreferencesStore,
+        WindowStore,
     ],
     (prevState, props) => ({
         ...props,
         token: UserStore.getToken(),
         isDeveloper: UserStore.isDeveloper(),
         isDevMode: PreferencesStore.isDevMode(),
+        windowSize: WindowStore.getSize(),
     }),
     {withProps: true},
 );
