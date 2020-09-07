@@ -1,3 +1,4 @@
+// This is "duplicated" as RawIngredientDissection.fromRecognizedItem
 const processRecognizedItem = recog => {
     const qr = recog.ranges.find(r =>
         r.type === "AMOUNT");
