@@ -22,5 +22,8 @@ export const Recipe = PropTypes.shape({
     name: PropTypes.string,
     externalUrl: PropTypes.string,
     ingredients: PropTypes.arrayOf(IngredientRef),
-    directions: PropTypes.string
+    directions: PropTypes.string,
+    yield: PropTypes.number,
+    totalTime: PropTypes.number,
+    calories: PropTypes.number
 });

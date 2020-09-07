@@ -127,6 +127,30 @@ const RecipeForm = ({draft: lo, onSave, onSaveCopy, onCancel}) => {
                 />
             </Form.Item>
             <Form.Item>
+                <Input
+                    name="yield"
+                    placeholder="Yield (in servings)"
+                    value={draft.yield}
+                    onChange={handleUpdate}
+                />
+            </Form.Item>
+            <Form.Item>
+                <Input
+                    name="totalTime"
+                    placeholder="Total Time In Minutes"
+                    value={draft.totalTime}
+                    onChange={handleUpdate}
+                />
+            </Form.Item>
+            <Form.Item>
+                <Input
+                    name="calories"
+                    placeholder="Calories"
+                    value={draft.calories}
+                    onChange={handleUpdate}
+                />
+            </Form.Item>
+            <Form.Item>
                 <ChipInput
                     name="labels"
                     value={draft.labels}

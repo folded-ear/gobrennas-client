@@ -6,7 +6,10 @@ const Recipe = Record({
   name: "",
   externalUrl: "",
   ingredients: [],
-  directions: ""
+  directions: "",
+  yield: "",
+  totalTime: "",
+  calories: ""
 });
 
 export default Recipe;
