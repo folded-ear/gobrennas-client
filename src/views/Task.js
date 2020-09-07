@@ -27,7 +27,7 @@ class Task extends React.PureComponent {
         this.onKeyDown = this.onKeyDown.bind(this);
         this.onClick = this.onClick.bind(this);
         this.onComplete = this.onComplete.bind(this);
-        this.onCollapse = this.onCollapse.bind(this);
+        this.onToggleExpanded = this.onToggleExpanded.bind(this);
         this.onDelete = this.onDelete.bind(this);
         this.onUndoDelete = this.onUndoDelete.bind(this);
         this.inputRef = React.createRef();
@@ -152,6 +152,11 @@ class Task extends React.PureComponent {
                     });
                 }
                 break;
+            case ".":
+                if (ctrlKey) {
+                    this.onToggleExpanded();
+                }
+                break;
         }
     }
 
@@ -192,7 +197,7 @@ class Task extends React.PureComponent {
         });
     }
 
-    onCollapse() {
+    onToggleExpanded() {
         Dispatcher.dispatch({
             type: TaskActions.TOGGLE_EXPANDED,
             id: this.props.task.id,
@@ -252,7 +257,7 @@ class Task extends React.PureComponent {
                 "non-parent": !parent,
             })}
             shape="circle"
-            onClick={this.onCollapse}
+            onClick={this.onToggleExpanded}
         />);
         const deleting = lo.isDeleting() && !task._complete;
         const completing = lo.isDeleting() && task._complete;

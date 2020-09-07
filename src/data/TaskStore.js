@@ -612,7 +612,7 @@ const nestTask = state => {
         }, state);
 };
 
-// if expanded is null, it means "the other one"
+// if expanded is null, it means "toggle it"
 const setExpansion = (state, id, expanded=null) =>
     dotProp.set(state, ["byId", id], lo => lo.map(t => ({
         ...t,
@@ -632,7 +632,19 @@ const unnestTask = state => {
         }, state);
 };
 
-const toggleExpanded = setExpansion;
+const toggleExpanded = (state, id) => {
+    // if toggling a non-parent, that means "collapse my parent"
+    const t = taskForId(state, id);
+    if (!isParent(t)) {
+        if (t.parentId === state.activeListId) {
+            // we don't do the list
+            return state;
+        }
+        id = t.parentId;
+        state = focusTask(state, id);
+    }
+    return setExpansion(state, id);
+};
 
 const forceExpansionBuilder = expanded => {
     const work = (state, id) => {
