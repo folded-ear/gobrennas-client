@@ -103,10 +103,25 @@ const RecipeDetail = ({recipeLO, mine, staged, ownerLO}) => {
             </React.Fragment>}
 
             {recipe.directions && <React.Fragment>
-                <h3>Preparation</h3>
+                <h3>Directions</h3>
                 <Directions text={recipe.directions} />
             </React.Fragment>}
-            
+
+            {recipe.yield && <React.Fragment>
+                <h3>Yield</h3>
+                <p>{recipe.yield} servings</p>
+            </React.Fragment>}
+
+            {recipe.totalTime && <React.Fragment>
+                <h3>Total time</h3>
+                <p>{recipe.totalTime} minutes</p>
+            </React.Fragment>}
+
+            {recipe.calories && <React.Fragment>
+                <h3>Calories</h3>
+                <p>{recipe.calories} calories</p>
+            </React.Fragment>}
+
             {recipe.labels && recipe.labels
                 .filter(label => label.indexOf("--") !== 0)
                 .map(label =>

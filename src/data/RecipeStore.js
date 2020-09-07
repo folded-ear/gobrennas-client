@@ -5,9 +5,11 @@ import LoadObject from "../util/LoadObject";
 import Dispatcher from "./dispatcher";
 import RecipeActions from "./RecipeActions";
 import RecipeApi from "./RecipeApi";
+import {toMilliseconds} from "../util/time"
 
 export const buildRecipe = recipe => {
     recipe.type = "Recipe";
+    recipe.totalTime = toMilliseconds(recipe.totalTime);
     delete recipe.rawIngredients;
     return recipe;
 };

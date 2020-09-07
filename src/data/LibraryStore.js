@@ -13,10 +13,16 @@ import LibraryApi from "./LibraryApi";
 import RecipeActions from "./RecipeActions";
 import RecipeApi from "./RecipeApi";
 import UserStore from "./UserStore";
+import {fromMilliseconds} from "../util/time"
 
 export const SCOPE_MINE = "mine";
 export const SCOPE_EVERYONE = "everyone";
 export const LABEL_STAGED_INDICATOR = "--on-stage";
+
+const adaptTime = (recipe) => {
+    recipe.totalTime = fromMilliseconds(recipe.totalTime);
+    return recipe;
+}
 
 const workOnLabels = (state, recipeId, work) => {
     const lo = state.byId[recipeId];
@@ -122,7 +128,7 @@ class LibraryStore extends ReduceStore {
                 state = dotProp.set(
                     state,
                     ["byId", action.data.id],
-                    LoadObject.withValue(action.data),
+                    LoadObject.withValue(adaptTime(action.data)),
                 );
                 delete state.byId[action.id];
                 state.recipeIds = state.recipeIds.map(ids =>
@@ -142,7 +148,7 @@ class LibraryStore extends ReduceStore {
                 return dotProp.set(
                     state,
                     ["byId", action.id],
-                    LoadObject.withValue(action.data).done(),
+                    LoadObject.withValue(adaptTime(action.data)).done(),
                 );
             }
 
@@ -158,7 +164,7 @@ class LibraryStore extends ReduceStore {
                 return dotProp.set(
                     state,
                     ["byId", action.id],
-                    LoadObject.withValue(action.data),
+                    LoadObject.withValue(adaptTime(action.data)),
                 );
             }
             
@@ -168,7 +174,7 @@ class LibraryStore extends ReduceStore {
                     recipeIds: LoadObject.withValue(action.data.map(r => r.id)),
                     // use the "pure function implemented with mutable local state" methodology
                     byId: action.data.reduce((idx, r) => {
-                        idx[r.id] = LoadObject.withValue(r);
+                        idx[r.id] = LoadObject.withValue(adaptTime(r));
                         return idx;
                     }, state.byId),
                 };
