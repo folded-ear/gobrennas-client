@@ -33,7 +33,8 @@ const styles = makeStyles(() => ({
         height: 75
     },
     bar: {
-        flexGrow: 1
+        flexGrow: 1,
+        minWidth: "195px"
     },
     indicator: {
         backgroundColor: "white",
