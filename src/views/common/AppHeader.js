@@ -24,6 +24,7 @@ import {
     Link,
     withRouter,
 } from "react-router-dom";
+import classnames from 'classnames';
 import Logo from "./Logo";
 
 const styles = makeStyles(() => ({
@@ -32,14 +33,37 @@ const styles = makeStyles(() => ({
         height: 75
     },
     bar: {
-        flexGrow: 1
+        flexGrow: 1,
+        minWidth: "195px"
     },
     indicator: {
         backgroundColor: "white",
         height: "4px",
         bottom: 0
     },
+    icons: {
+        opacity: 0.6,
+        borderBottom: "4px solid transparent"
+    },
+    active: {
+        borderRadius: 0,
+        borderBottom: "4px solid white",
+        opacity: 1
+    }
 }));
+
+const TinyNav = ({children, navTo, location}) => {
+    const classes = styles();
+    const topLevelNavSeg = location.pathname.split("/")[1];
+    return (<IconButton
+        className={classnames([classes.icons],{[classes.active]: topLevelNavSeg === navTo})}
+        component={Link}
+        to={`/${navTo}`}
+        value={navTo}
+        color="inherit">
+        {children}
+    </IconButton>)
+}
 
 const AppHeader = ({authenticated, onLogout, location}) => {
     const classes = styles();
@@ -58,10 +82,10 @@ const AppHeader = ({authenticated, onLogout, location}) => {
                     to="/library"
                 />
                 <Box className={classes.bar}>
-                    <IconButton component={Link} to="/library" value="library" color={colorByHotness("library")}><MenuBook/></IconButton>
-                    <IconButton component={Link} to="/add" value="add" color={colorByHotness("add")}><PostAdd/></IconButton>
-                    <IconButton component={Link} to="/plan" value="plan" color={colorByHotness("plan")}><EventNote/></IconButton>
-                    <IconButton component={Link} to="/shop" value="shop" color={colorByHotness("shop")}><ListAlt/></IconButton>
+                    <TinyNav location={location} navTo="library"><MenuBook/></TinyNav>
+                    <TinyNav location={location} navTo="add"><PostAdd/></TinyNav>
+                    <TinyNav location={location} navTo="plan"><EventNote/></TinyNav>
+                    <TinyNav location={location} navTo="shop"><ListAlt/></TinyNav>
                 </Box>
             </>
         );
