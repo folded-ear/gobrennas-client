@@ -1,4 +1,5 @@
-const processRecognizedElement = recog => {
+// This is "duplicated" as RawIngredientDissection.fromRecognizedItem
+const processRecognizedItem = recog => {
     const qr = recog.ranges.find(r =>
         r.type === "AMOUNT");
     const ur = recog.ranges.find(r =>
@@ -47,4 +48,4 @@ const processRecognizedElement = recog => {
     };
 };
 
-export default processRecognizedElement;
+export default processRecognizedItem;

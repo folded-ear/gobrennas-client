@@ -9,7 +9,7 @@ import PropTypes from "prop-types";
 import React from "react";
 import RecipeApi from "../data/RecipeApi";
 import debounce from "../util/debounce";
-import processRecognizedElement from "../util/processRecognizedElement";
+import processRecognizedItem from "../util/processRecognizedItem";
 
 let seq = 0;
 
@@ -62,7 +62,7 @@ class ElEdit extends React.PureComponent {
         } = this.props;
         if (!doRecog(value.raw)) return;
         const cursor = this.getCursorPosition();
-        RecipeApi.recognizeElement(value.raw, cursor)
+        RecipeApi.recognizeItem(value.raw, cursor)
             .then(recog => {
                 if (!this._mounted) return;
                 if (recog.raw !== this.props.value.raw) return;
@@ -78,7 +78,7 @@ class ElEdit extends React.PureComponent {
                     ingredient,
                     ingredient_raw: n,
                     preparation: p,
-                } = processRecognizedElement(recog);
+                } = processRecognizedItem(recog);
                 onChange({
                     target: {
                         name,
