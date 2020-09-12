@@ -461,6 +461,9 @@ const deleteTask = (state, id, asCompletion = false) => {
         tasksToDelete.set(id, asCompletion);
         inTheFuture(TaskActions.FLUSH_DELETES, 10);
     }
+    if (isExpanded(t)) {
+        state = setExpansion(state, t.id, false);
+    }
     return state;
 };
 
