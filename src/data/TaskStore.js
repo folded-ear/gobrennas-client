@@ -72,17 +72,21 @@ const idFixerFactory = (cid, id) => {
     return idFixer;
 };
 
+const receiveTaskSave = (lo, task) =>
+    // Despite possibly thinking we'd want to save the name, we don't. If the
+    // user has made further changes while the save (creation or rename) was in
+    // flight, we don't want to lose those. It'll save again shortly.
+    lo.done().map(t => ({
+        ...t,
+        ...task,
+        name: t.name,
+    }));
+
 const taskCreated = (state, clientId, id, task) => {
     const idFixer = idFixerFactory(clientId, id);
     const byId = {
         ...state.byId,
-        // despite thinking we'd want to save the name, we don't, because if
-        // the user has made further changes while the save was in flight,
-        // we want to save those.
-        [id]: state.byId[clientId].done().map(t => ({
-            ...t,
-            id,
-        })),
+        [id]: receiveTaskSave(state.byId[clientId], task),
     };
     delete byId[clientId];
     if (tasksToRename.has(clientId)) {
@@ -742,15 +746,11 @@ const taskLoading = (state, id) => {
     );
 };
 
-// noinspection JSUnusedLocalSymbols
-const taskRenamed = (state, id) => ({
+const taskRenamed = (state, id, task) => ({
     ...state,
     byId: {
         ...state.byId,
-        // despite thinking we'd want to save the name, we don't, because if
-        // the user has made further changes while the save was in flight,
-        // we want to save those.
-        [id]: loForId(state, id).done(),
+        [id]: receiveTaskSave(state.byId[id], task),
     },
 });
 
@@ -920,7 +920,7 @@ class TaskStore extends ReduceStore {
                 return renameTask(state, action.id, action.name);
 
             case TaskActions.TASK_RENAMED: {
-                return taskRenamed(state, action.id, action.name);
+                return taskRenamed(state, action.id, action.data);
             }
 
             case TaskActions.FOCUS:
@@ -945,8 +945,7 @@ class TaskStore extends ReduceStore {
                     action.id,
                     action.data,
                 );
-                state = flushTasksToRename(state);
-                return flushParentsToReset(state);
+                return state;
             case TaskActions.DELETE_TASK_FORWARD:
                 userAction();
                 return forwardDeleteTask(state, action.id);

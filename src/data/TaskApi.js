@@ -26,19 +26,19 @@ const TaskApi = {
     loadLists: () =>
         promiseFlux(
             axios.get(`/`),
-            data => ({
+            ({data}) => ({
                 type: TaskActions.LISTS_LOADED,
-                data: data.data,
+                data,
             }),
         ),
 
     loadSubtasks: (id, background = false) =>
         promiseFlux(
             axios.get(`/${id}/subtasks`),
-            data => ({
+            ({data}) => ({
                 type: TaskActions.SUBTASKS_LOADED,
                 id,
-                data: data.data,
+                data,
                 background,
             }),
         ),
@@ -52,7 +52,7 @@ const TaskApi = {
                 type: TaskActions.TASK_CREATED,
                 clientId,
                 id: data.id,
-                data: data,
+                data,
             }),
         ),
 
@@ -61,10 +61,10 @@ const TaskApi = {
             axios.put(`/${id}/name`, {
                 name,
             }),
-            () => ({
+            ({data}) => ({
                 type: TaskActions.TASK_RENAMED,
                 id,
-                name,
+                data,
             }),
         ),
 
