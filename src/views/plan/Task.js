@@ -3,6 +3,7 @@ import {
     ListItemText,
 } from "@material-ui/core";
 import Input from "@material-ui/core/Input";
+import withStyles from "@material-ui/core/styles/withStyles";
 import {
     ArrowDropDown,
     ArrowRight,
@@ -231,6 +232,7 @@ class Task extends React.PureComponent {
             active,
             selected,
             ancestorDeleting,
+            classes,
         } = this.props;
         const section = isSection(task);
         const parent = isParent(task);
@@ -294,14 +296,14 @@ class Task extends React.PureComponent {
             depth={depth}
             prefix={addonBefore}
             suffix={addonAfter}
-            className={classnames({
-                "task-item-section": section,
-                "task-item-active": active,
-                "task-item-selected": selected,
-                "task-item-question": question,
-                "task-item-deleting": deleting,
-                "task-item-completing": completing,
-                "task-item-ancestor-deleting": ancestorDeleting,
+            selected={active}
+            className={classnames(classes.root, {
+                [classes.section]: section,
+                [classes.selected]: selected,
+                [classes.question]: question,
+                [classes.deleting]: deleting,
+                [classes.completing]: completing,
+                [classes.ancestorDeleting]: ancestorDeleting,
             })}
         >
             {active
@@ -333,6 +335,38 @@ Task.propTypes = {
     active: PropTypes.bool.isRequired,
     ancestorDeleting: PropTypes.bool,
     selected: PropTypes.bool.isRequired,
+    classes: PropTypes.object.isRequired,
 };
 
-export default Task;
+export default withStyles({
+    root: {
+        borderBottom: "1px solid #eee",
+    },
+    section: {
+        borderBottomColor: "#ccc",
+        "& input": {
+            fontWeight: "bold",
+        },
+        "& .MuiTypography-body1": {
+            fontWeight: "bold",
+        },
+    },
+    question: {
+        backgroundColor: "#ffd",
+    },
+    selected: {
+        backgroundColor: "#f0f7ff",
+    },
+    deleting: {
+        opacity: 0.8,
+        textDecoration: "line-through",
+    },
+    completing: {
+        opacity: 0.8,
+        backgroundColor: "#f0fff0",
+    },
+    ancestorDeleting: {
+        opacity: 0.6,
+        textDecoration: "line-through",
+    },
+})(Task);
