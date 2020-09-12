@@ -147,7 +147,6 @@ class TaskListHeader extends React.PureComponent {
                         title="List Info"
                         width={Math.min(500, windowWidth - 50)}
                         onClose={this.onCloseDrawer}
-                        zIndex={99999}
                     >
                         <TaskListSidebar list={activeList} />
                     </Drawer>
