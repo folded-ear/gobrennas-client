@@ -2,7 +2,7 @@ import { Container } from "flux/utils";
 import React from "react";
 import { isExpanded } from "../data/tasks";
 import TaskStore from "../data/TaskStore";
-import TaskList from "../views/TaskList";
+import TaskList from "../views/plan/TaskList";
 
 const listTheTree = (id, ancestorDeleting=false, depth=0) => {
     const list = TaskStore.getSubtaskLOs(id).map(lo => ({
