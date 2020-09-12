@@ -416,16 +416,20 @@ const selectDelta = (state, id, delta) => {
 // a delete, but the end result is the same: DELETE FROM task WHERE id = ?
 let tasksToDelete = new Map();
 
+const doTaskDelete = (id, asCompletion) => {
+    parentsToReset.delete(id);
+    tasksToRename.delete(id);
+    tasksToDelete.delete(id);
+    asCompletion
+        ? TaskApi.completeTask(id)
+        : TaskApi.deleteTask(id);
+};
+
 const flushTasksToDelete = state => {
     if (tasksToDelete.size === 0) return state;
-    for (const [id, asCompletion] of tasksToDelete) {
-        if(asCompletion) {
-            TaskApi.completeTask(id);
-        } else {
-            TaskApi.deleteTask(id);
-        }
+    for (const [id, asCompletion] of Array.from(tasksToDelete)) {
+        doTaskDelete(id, asCompletion);
     }
-    tasksToDelete.clear();
     return state;
 };
 
@@ -457,6 +461,8 @@ const deleteTask = (state, id, asCompletion = false) => {
 
     if (ClientId.is(id)) {
         state = taskDeleted(state, id);
+    } else if (t.name === "") {
+        doTaskDelete(id, asCompletion);
     } else {
         tasksToDelete.set(id, asCompletion);
         inTheFuture(TaskActions.FLUSH_DELETES, 10);
