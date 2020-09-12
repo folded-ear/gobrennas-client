@@ -172,14 +172,16 @@ class Task extends React.PureComponent {
         }
     }
 
-    onDelete() {
+    onDelete(e) {
+        if (e) e.preventDefault();
         Dispatcher.dispatch({
             type: TaskActions.DELETE_TASK_FORWARD,
             id: this.props.task.id,
         });
     }
 
-    onUndoDelete() {
+    onUndoDelete(e) {
+        e.preventDefault();
         Dispatcher.dispatch({
             type: TaskActions.TASK_UNDO_DELETE,
             id: this.props.task.id,
@@ -202,14 +204,16 @@ class Task extends React.PureComponent {
         });
     }
 
-    onComplete() {
+    onComplete(e) {
+        e.preventDefault();
         Dispatcher.dispatch({
             type: TaskActions.MARK_COMPLETE,
             id: this.props.task.id,
         });
     }
 
-    onToggleExpanded() {
+    onToggleExpanded(e) {
+        if (e) e.preventDefault();
         Dispatcher.dispatch({
             type: TaskActions.TOGGLE_EXPANDED,
             id: this.props.task.id,
