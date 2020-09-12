@@ -301,6 +301,7 @@ class Task extends React.PureComponent {
             prefix={addonBefore}
             suffix={addonAfter}
             selected={active}
+            onClick={this.onClick}
             className={classnames(classes.root, {
                 [classes.section]: section,
                 [classes.selected]: selected,
@@ -317,7 +318,6 @@ class Task extends React.PureComponent {
                     placeholder="Write a task name"
                     disableUnderline
                     inputRef={this.inputRef}
-                    onClick={this.onClick}
                     onChange={this.onChange}
                     onPaste={this.onPaste}
                     onCopy={this.onCopy}
@@ -326,7 +326,6 @@ class Task extends React.PureComponent {
                 : <ListItemText
                     primary={task.name}
                     className={classes.text}
-                    onClick={this.onClick}
                 />}
         </Item>;
     }
