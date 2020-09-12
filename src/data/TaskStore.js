@@ -340,7 +340,7 @@ const getNeighborId = (state, id, delta = 1, crossGenerations=false, _searching=
             ? lastDescendantIdOf(state, siblingIds[idx - 1])
             : siblingIds[idx - 1];
         // to parent (null or not)
-        if (crossGenerations) return t.parentId;
+        if (crossGenerations && t.parentId !== state.activeListId) return t.parentId;
         return null;
     }
 };
@@ -355,11 +355,10 @@ const lastDescendantIdOf = (state, id) => {
 };
 
 const focusDelta = (state, id, delta) => {
-    if (delta === 0) {
-        return state;
-    }
+    if (delta === 0) return state;
     const sid = getNeighborId(state, id, delta, true);
-    return sid == null ? state : focusTask(state, sid);
+    if (sid == null) return state;
+    return focusTask(state, sid);
 };
 
 const selectTo = (state, id) => {
