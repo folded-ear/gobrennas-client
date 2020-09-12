@@ -321,6 +321,7 @@ class Task extends React.PureComponent {
                 />
                 : <ListItemText
                     primary={task.name}
+                    className={classes.text}
                     onClick={this.onClick}
                 />}
         </Item>;
@@ -341,6 +342,11 @@ Task.propTypes = {
 export default withStyles({
     root: {
         borderBottom: "1px solid #eee",
+    },
+    text: {
+        whiteSpace: "nowrap",
+        overflow: "hidden",
+        textOverflow: "ellipsis",
     },
     section: {
         borderBottomColor: "#ccc",
