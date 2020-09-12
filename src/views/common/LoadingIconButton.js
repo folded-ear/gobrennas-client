@@ -14,10 +14,14 @@ const CircProg = withStyles({
 
 const LoadingIconButton = props => {
     // this is _weak_.
-    const cpProps = {};
+    const cpProps = {
+        style: {
+            width: "24px",
+        }
+    };
     // eslint-disable-next-line react/prop-types
     if (props.size === "small") {
-        cpProps.size = 22;
+        cpProps.size = 24;
     }
     // this is admittedly pretty silly. ok, really silly.
     return <IconButton
