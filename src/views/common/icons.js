@@ -37,3 +37,6 @@ export const CollapseAll = () =>
         <Bar y={12} />
         <Caret y={18} />
     </SvgIcon>;
+
+export const Blank = () =>
+    <SvgIcon />;
