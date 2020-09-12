@@ -1,11 +1,10 @@
 import List from "@material-ui/core/List";
-import ListItem from "@material-ui/core/ListItem";
-import { Spin } from "antd";
 import PropTypes from "prop-types";
 import React from "react";
 import LoadObject from "../../util/LoadObject";
-import LoadingTask from "./../LoadingTask";
-import TaskListHeader from "./../TaskListHeader";
+import LoadingIndicator from "../common/LoadingIndicator";
+import TaskListHeader from "../TaskListHeader";
+import LoadingTask from "./LoadingTask";
 import Task from "./Task";
 
 class TaskList extends React.PureComponent {
@@ -20,7 +19,9 @@ class TaskList extends React.PureComponent {
             isTaskSelected,
         } = this.props;
         if (!allLists.hasValue()) {
-            return <Spin tip="Loading task lists..." />;
+            return <LoadingIndicator
+                primary="Loading task lists..."
+            />;
         }
         return <>
             <TaskListHeader
@@ -35,11 +36,11 @@ class TaskList extends React.PureComponent {
                         depth,
                         ancestorDeleting,
                     } = item;
-                    let key, body;
                     if (lo.hasValue()) {
                         const t = lo.getValueEnforcing();
-                        key = t.id;
-                        body = <Task
+                        return <Task
+                            key={t.id}
+                            depth={depth}
                             task={t}
                             ancestorDeleting={ancestorDeleting}
                             loadObject={lo}
@@ -47,18 +48,11 @@ class TaskList extends React.PureComponent {
                             selected={isTaskSelected(t)}
                         />;
                     } else {
-                        key = lo.id;
-                        body = <LoadingTask />;
+                        return <LoadingTask
+                            key={lo.id}
+                            depth={depth}
+                        />;
                     }
-                    return <ListItem
-                        key={key}
-                        className="task"
-                        style={{
-                            marginLeft: depth * 2 + "em",
-                        }}
-                    >
-                        {body}
-                    </ListItem>;
                 })}
             </List>
         </>;

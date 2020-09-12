@@ -1,14 +1,12 @@
-import IconButton from "@material-ui/core/IconButton";
-import ListItemText from "@material-ui/core/ListItemText";
 import {
-    Autorenew,
-    Check,
-    Delete,
+    IconButton,
+    ListItemText,
+} from "@material-ui/core";
+import Input from "@material-ui/core/Input";
+import {
+    ArrowDropDown,
+    ArrowRight,
 } from "@material-ui/icons";
-import {
-    Button,
-    Input,
-} from "antd";
 import classnames from "classnames";
 import PropTypes from "prop-types";
 import React from "react";
@@ -22,6 +20,13 @@ import {
 } from "../../data/tasks";
 import TaskStore from "../../data/TaskStore";
 import LoadObject from "../../util/LoadObject";
+import CompleteIconButton from "../common/CompleteIconButton";
+import DeleteIconButton from "../common/DeleteIconButton";
+import DontCompleteButton from "../common/DontCompleteButton";
+import DontDeleteButton from "../common/DontDeleteButton";
+import LoadingIconButton from "../common/LoadingIconButton";
+import PlaceholderIconButton from "../common/PlaceholderIconButton";
+import Item from "./Item";
 
 class Task extends React.PureComponent {
 
@@ -221,6 +226,7 @@ class Task extends React.PureComponent {
     render() {
         const {
             task,
+            depth,
             loadObject: lo,
             active,
             selected,
@@ -230,104 +236,98 @@ class Task extends React.PureComponent {
         const parent = isParent(task);
         const expanded = isExpanded(task);
         const question = isQuestionable(task);
-        let addonBefore;
-        if (section) {
-            addonBefore = [];
-        } else if (! lo.isDone() || ancestorDeleting) {
-            addonBefore= [
+        let addonBefore = [];
+        if (parent) {
+            const CollapseIcon = expanded ? ArrowDropDown : ArrowRight;
+            addonBefore.push(
                 <IconButton
-                    key="action"
+                    key="collapse"
                     size="small"
-                    aria-label="collapse-all"
-                    disabled
+                    onClick={this.onToggleExpanded}
                 >
-                    <Autorenew />
-                </IconButton>,
-            ];
+                    <CollapseIcon />
+                </IconButton>);
         } else {
-            addonBefore = [
-                <IconButton
-                    key="action"
+            addonBefore.push(
+                <PlaceholderIconButton
+                    key="collapse"
                     size="small"
-                    aria-label="collapse-all"
-                    className="complete"
-                    onClick={this.onComplete}
-                >
-                    <Check />
-                </IconButton>,
-            ];
+                />);
         }
-        addonBefore.unshift(<Button
-            key="collapse"
-            icon={parent ? expanded ? "caret-down" : "caret-right" : "none"}
-            size="small"
-            className={classnames("collapse", {
-                "non-parent": !parent,
-            })}
-            shape="circle"
-            onClick={this.onToggleExpanded}
-        />);
+        if (section) {
+            addonBefore.push(
+                <PlaceholderIconButton
+                    key="complete"
+                    size="small"
+                />);
+        } else if (! lo.isDone() || ancestorDeleting) {
+            addonBefore.push(
+                <LoadingIconButton
+                    key="complete"
+                    size="small"
+                />);
+        } else {
+            addonBefore.push(
+                <CompleteIconButton
+                    key="complete"
+                    size="small"
+                    onClick={this.onComplete}
+                />);
+        }
         const deleting = lo.isDeleting() && !task._complete;
         const completing = lo.isDeleting() && task._complete;
+        const WaitNoButton = completing ? DontCompleteButton : DontDeleteButton;
         const addonAfter = lo.isDeleting() && !ancestorDeleting
-            ? <Button
-                type="danger"
-                className={classnames({
-                    "complete": completing,
-                })}
-                onClick={this.onUndoDelete}
-            >
-                WAIT, NO!
-            </Button>
-            : <IconButton
+            ? <WaitNoButton
                 key="delete"
                 size="small"
-                aria-label="collapse-all"
-                className="delete"
+                onClick={this.onUndoDelete}
+            />
+            : <DeleteIconButton
+                key="delete"
+                size="small"
                 onClick={this.onDelete}
                 disabled={ancestorDeleting}
-            >
-                <Delete />
-            </IconButton>;
-
-        if (active) {
-            return <Input
-                addonBefore={addonBefore}
-                addonAfter={addonAfter}
-                value={task.name}
-                placeholder="Write a task name"
-                className={classnames({
-                    "task-section": section,
-                    "task-active": active,
-                    "task-selected": selected,
-                    "task-question": question,
-                    "task-deleting": deleting,
-                    "task-completing": completing,
-                    "task-ancestor-deleting": ancestorDeleting,
-                })}
-                ref={this.inputRef}
-                onClick={this.onClick}
-                onChange={this.onChange}
-                onPaste={this.onPaste}
-                onCopy={this.onCopy}
-                onKeyDown={this.onKeyDown}
             />;
-        } else {
-            return <ListItemText>
-                {addonBefore}
-                <span
+
+        return <Item
+            depth={depth}
+            prefix={addonBefore}
+            suffix={addonAfter}
+            className={classnames({
+                "task-item-section": section,
+                "task-item-active": active,
+                "task-item-selected": selected,
+                "task-item-question": question,
+                "task-item-deleting": deleting,
+                "task-item-completing": completing,
+                "task-item-ancestor-deleting": ancestorDeleting,
+            })}
+        >
+            {active
+                ? <Input
+                    fullWidth
+                    value={task.name}
+                    placeholder="Write a task name"
+                    disableUnderline
+                    inputRef={this.inputRef}
                     onClick={this.onClick}
-                >
-                    {task.name}
-                </span>
-                {addonAfter}
-            </ListItemText>;
-        }
+                    onChange={this.onChange}
+                    onPaste={this.onPaste}
+                    onCopy={this.onCopy}
+                    onKeyDown={this.onKeyDown}
+                />
+                : <ListItemText
+                    primary={task.name}
+                    onClick={this.onClick}
+                />}
+        </Item>;
     }
 
 }
 
 Task.propTypes = {
+    depth: PropTypes.number.isRequired,
     task: PropTypes.object.isRequired,
     loadObject: PropTypes.instanceOf(LoadObject).isRequired,
     active: PropTypes.bool.isRequired,
