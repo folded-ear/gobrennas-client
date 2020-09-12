@@ -254,15 +254,15 @@ class Task extends React.PureComponent {
                     size="small"
                 />);
         }
-        if (section) {
+        if (!lo.isDone() || ancestorDeleting) {
             addonBefore.push(
-                <PlaceholderIconButton
+                <LoadingIconButton
                     key="complete"
                     size="small"
                 />);
-        } else if (! lo.isDone() || ancestorDeleting) {
+        } else if (section) {
             addonBefore.push(
-                <LoadingIconButton
+                <PlaceholderIconButton
                     key="complete"
                     size="small"
                 />);
