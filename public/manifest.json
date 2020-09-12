@@ -14,19 +14,44 @@
     }
   ],
   "scope": "/",
-  "start_url": ".",
+  "start_url": "/shop",
   "display": "standalone",
   "theme_color": "#bf360c",
   "background_color": "#ffffff",
   "shortcuts": [
     {
+      "name": "Shop",
+      "url": "/shop",
+      "icons": [
+        {
+          "src": "shop.png",
+          "sizes": "48x48",
+          "type": "image/png"
+        }
+      ]
+    },
+    {
       "name": "Plan",
-      "url": "/plan"
+      "url": "/plan",
+      "icons": [
+        {
+          "src": "plan.png",
+          "sizes": "48x48",
+          "type": "image/png"
+        }
+      ]
     },
     {
       "short_name": "Recipes",
       "name": "Recipe Library",
-      "url": "/library"
+      "url": "/library",
+      "icons": [
+        {
+          "src": "library.png",
+          "sizes": "48x48",
+          "type": "image/png"
+        }
+      ]
     }
   ]
 }
