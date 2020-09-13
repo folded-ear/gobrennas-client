@@ -308,9 +308,9 @@ Task.propTypes = {
     depth: PropTypes.number.isRequired,
     task: PropTypes.object.isRequired,
     loadObject: PropTypes.instanceOf(LoadObject).isRequired,
-    active: PropTypes.bool.isRequired,
+    active: PropTypes.bool,
     ancestorDeleting: PropTypes.bool,
-    selected: PropTypes.bool.isRequired,
+    selected: PropTypes.bool,
     classes: PropTypes.object.isRequired,
 };
 
