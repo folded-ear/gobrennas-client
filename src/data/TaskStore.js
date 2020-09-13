@@ -5,6 +5,7 @@ import PropTypes from "prop-types";
 import ClientId, { clientOrDatabaseIdType } from "../util/ClientId";
 import { humanStringComparator } from "../util/comparators";
 import hotLoadObject from "../util/hotLoadObject";
+import inTheFuture from "../util/inTheFuture";
 import LoadObject from "../util/LoadObject";
 import loadObjectOf from "../util/loadObjectOf";
 import typedStore from "../util/typedStore";
@@ -244,19 +245,6 @@ const flushTasksToRename = state => {
     }
     tasksToRename = requeue;
     return state;
-};
-
-const timeoutRegistry = new Map();
-
-const inTheFuture = (action, delay = 2) => {
-    if (timeoutRegistry.has(action)) {
-        clearTimeout(timeoutRegistry.get(action));
-    }
-    timeoutRegistry.set(action, setTimeout(() => {
-        Dispatcher.dispatch({
-            type: action,
-        });
-    }, delay * 1000));
 };
 
 const renameTask = (state, id, name) => {
