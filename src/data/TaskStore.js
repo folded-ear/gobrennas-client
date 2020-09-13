@@ -726,7 +726,7 @@ const loadSubtasks = (state, id, background = false) => {
         lo => lo.updating());
 };
 
-const taskLoaded = (state, task) => {
+const taskLoaded = (state, task, background=false) => {
     let lo = state.byId[task.id] || LoadObject.empty();
     if (lo.hasValue()) {
         lo = lo.map(t => ({ ...t, ...task }));
@@ -738,7 +738,7 @@ const taskLoaded = (state, task) => {
         ["byId", task.id],
         lo.done());
     if (isParent(task)) {
-        state = loadSubtasks(state, task.id);
+        state = loadSubtasks(state, task.id, background);
         state = task.subtaskIds.reduce(taskLoading, state);
     }
     return state;
@@ -776,7 +776,8 @@ const loadLists = state => {
 
 const listsLoaded = (state, lists) => {
     state = {
-        ...lists.reduce(taskLoaded, state),
+        ...lists.reduce((s, t) =>
+            taskLoaded(s, t), state),
         topLevelIds: LoadObject.withValue(lists.map(t => t.id)),
     };
     if (lists.length > 0) {
@@ -912,7 +913,8 @@ class TaskStore extends ReduceStore {
                     return state;
                 }
                 return dotProp.set(
-                    action.data.reduce(taskLoaded, state),
+                    action.data.reduce((s, t) =>
+                        taskLoaded(s, t, action.background), state),
                     ["byId", action.id],
                     lo => lo.map(task => ({
                         ...task,
