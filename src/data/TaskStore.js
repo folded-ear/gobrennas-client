@@ -143,7 +143,7 @@ const selectList = (state, id) => {
     } else {
         state = addTask(state, id, "");
     }
-    return state;
+    return loadSubtasks(state, id);
 };
 
 const taskForId = (state, id) =>
