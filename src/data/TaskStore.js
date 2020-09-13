@@ -1132,22 +1132,27 @@ TaskStore.stateTypes = {
     ),
     byId: PropTypes.objectOf(
         loadObjectOf(PropTypes.exact({
+            //  core
             id: clientOrDatabaseIdType.isRequired,
             name: PropTypes.string.isRequired,
+            status: PropTypes.string.isRequired,
+            parentId: PropTypes.number,
+            subtaskIds: PropTypes.arrayOf(clientOrDatabaseIdType),
+            // lists
             acl: PropTypes.exact({
                 ownerId: PropTypes.number.isRequired,
                 grants: PropTypes.objectOf(
                     PropTypes.oneOf(Object.values(AccessLevel))
                 ),
             }),
-            parentId: PropTypes.number,
-            subtaskIds: PropTypes.arrayOf(clientOrDatabaseIdType),
-            _expanded: PropTypes.bool,
-            _complete: PropTypes.bool,
+            // item
             quantity: PropTypes.number,
             uomId: PropTypes.number,
             ingredientId: PropTypes.number,
             preparation: PropTypes.string,
+            // client-side
+            _expanded: PropTypes.bool,
+            _complete: PropTypes.bool,
         }))
     ).isRequired,
 };
