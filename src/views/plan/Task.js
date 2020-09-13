@@ -173,7 +173,7 @@ class Task extends React.PureComponent {
     }
 
     onDelete(e) {
-        if (e) e.preventDefault();
+        if (e) e.stopPropagation();
         Dispatcher.dispatch({
             type: TaskActions.DELETE_TASK_FORWARD,
             id: this.props.task.id,
@@ -181,7 +181,7 @@ class Task extends React.PureComponent {
     }
 
     onUndoDelete(e) {
-        e.preventDefault();
+        e.stopPropagation();
         Dispatcher.dispatch({
             type: TaskActions.TASK_UNDO_DELETE,
             id: this.props.task.id,
@@ -205,7 +205,7 @@ class Task extends React.PureComponent {
     }
 
     onComplete(e) {
-        e.preventDefault();
+        e.stopPropagation();
         Dispatcher.dispatch({
             type: TaskActions.MARK_COMPLETE,
             id: this.props.task.id,
@@ -213,7 +213,7 @@ class Task extends React.PureComponent {
     }
 
     onToggleExpanded(e) {
-        if (e) e.preventDefault();
+        if (e) e.stopPropagation();
         Dispatcher.dispatch({
             type: TaskActions.TOGGLE_EXPANDED,
             id: this.props.task.id,
