@@ -4,33 +4,30 @@ import { toggleDistinct } from "../util/arrayAsSet";
 import { clientOrDatabaseIdType } from "../util/ClientId";
 import typedStore from "../util/typedStore";
 import Dispatcher from "./dispatcher";
+import PlanActions from "./PlanActions";
 import PlanStore from "./PlanStore";
+import PreferencesStore from "./PreferencesStore";
 import ShoppingActions from "./ShoppingActions";
 
 class ShoppingStore extends ReduceStore {
 
     getInitialState() {
+        const apid = PreferencesStore.getActivePlan();
         return {
-            selectedPlanIds: [], // Array<ID>
+            selectedPlanIds: apid ? [apid] : [], // Array<ID>
         };
     }
 
     reduce(state, action) {
-        if (state.selectedPlanIds.length === 0) {
-            this.__dispatcher.waitFor([
-                PlanStore.getDispatchToken(),
-            ]);
-            if (PlanStore.hasChanged()) {
-                const lo = PlanStore.getActivePlanLO();
-                if (lo.hasValue()) {
-                    state = {
-                        ...state,
-                        selectedPlanIds: [lo.getValueEnforcing().id],
-                    };
-                }
-            }
-        }
         switch (action.type) {
+
+            case PlanActions.SELECT_PLAN: {
+                return {
+                    ...state,
+                    selectedPlanIds: [action.id],
+                };
+            }
+
             case ShoppingActions.TOGGLE_PLAN: {
                 return {
                     ...state,
