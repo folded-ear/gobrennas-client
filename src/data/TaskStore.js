@@ -1047,7 +1047,7 @@ class TaskStore extends ReduceStore {
             case TemporalActions.EVERY_15_SECONDS: {
                 if (msSinceUserAction() < 1000 * 15) return state;
                 if (state.activeListId == null) return state;
-                if (RouteStore.getMatch().path !== "/tasks") return state;
+                if (RouteStore.getMatch().path !== "/plan") return state;
                 if (!WindowStore.isVisible()) return state;
                 if (!WindowStore.isFocused()) return state;
                 return loadSubtasks(state, state.activeListId, true);
@@ -1055,7 +1055,7 @@ class TaskStore extends ReduceStore {
 
             case WindowActions.VISIBILITY_CHANGE: {
                 if (state.activeListId == null) return state;
-                if (RouteStore.getMatch().path !== "/tasks") return state;
+                if (RouteStore.getMatch().path !== "/plan") return state;
                 if (!WindowStore.isVisible()) return state;
                 return loadSubtasks(state, state.activeListId, true);
             }
