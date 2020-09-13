@@ -4,12 +4,23 @@ export const addDistinct = (items, newItem) => {
     return items.concat(newItem);
 };
 
-export const removeDistinct = (items, oldItem) => {
-    if (items == null) return null;
-    const idx = items.indexOf(oldItem);
+const removeAtIndex = (items, idx) => {
     if (idx < 0) return items;
-    if (idx === 0) items.slice(1);
+    if (idx === 0) return items.slice(1);
     items = items.slice();
     items.splice(idx, 1);
     return items;
+};
+
+export const removeDistinct = (items, oldItem) => {
+    if (items == null) return null;
+    return removeAtIndex(items, items.indexOf(oldItem));
+};
+
+export const toggleDistinct = (items, theItem) => {
+    if (items == null) return [theItem];
+    const idx = items.indexOf(theItem);
+    return idx >= 0
+        ? removeAtIndex(items, idx)
+        : items.concat(theItem);
 };
