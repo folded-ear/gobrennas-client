@@ -92,6 +92,11 @@ class WindowStore extends ReduceStore {
         return this.getState().focused;
     }
 
+    isActive() {
+        const s = this.getState();
+        return s.visible && s.focused;
+    }
+
     isNewVersionAvailable() {
         const s = this.getState().newVersion;
         return s.available && !s.ignored;

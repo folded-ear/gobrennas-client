@@ -1037,8 +1037,7 @@ class TaskStore extends ReduceStore {
                 if (msSinceUserAction() < 1000 * 15) return state;
                 if (state.activeListId == null) return state;
                 if (RouteStore.getMatch().path !== "/plan") return state;
-                if (!WindowStore.isVisible()) return state;
-                if (!WindowStore.isFocused()) return state;
+                if (!WindowStore.isActive()) return state;
                 return loadSubtasks(state, state.activeListId, true);
             }
 
