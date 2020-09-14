@@ -2,7 +2,10 @@ import { Container } from "flux/utils";
 import React from "react";
 import PlanStore from "../data/PlanStore";
 import ShoppingStore from "../data/ShoppingStore";
-import { isParent } from "../data/tasks";
+import {
+    isParent,
+    isSection,
+} from "../data/tasks";
 import TaskStatus from "../data/TaskStatus";
 import groupBy from "../util/groupBy";
 import ShopList from "../views/shop/ShopList";
@@ -14,7 +17,11 @@ const gatherLeaves = item => {
     }];
     return PlanStore.getChildItemLOs(item.id)
         .filter(lo => lo.hasValue())
-        .map(lo => lo.getValueEnforcing())
+        .map(lo => ({
+            ...lo.getValueEnforcing(),
+            lo,
+        }))
+        .filter(it => !isSection(it))
         .flatMap(gatherLeaves)
         .map(it => ({
             ...it,
@@ -43,6 +50,7 @@ const groupItems = plans => {
             quantities.push({
                 quantity: byUnit.get(uomId)
                     .reduce((q, it) => q + it.quantity, 0),
+                // todo: get the uom name?
                 uomId,
             });
         }
@@ -50,8 +58,9 @@ const groupItems = plans => {
             _type: "ingredient",
             id: ingId,
             itemIds: items.map(it => it.id),
-            // todo: get the ing/uom names..
-            name: `ingredient#${ingId} (${quantities.map(q => `${q.quantity} u#${q.uomId}`).join(", ")})`,
+            // todo: get the ing name...
+            name: `ingredient#${ingId}`,
+            quantities,
         });
         // todo: if expanded...
         theTree.push(...items.map(it => ({
@@ -75,12 +84,16 @@ export default Container.createFunctional(
     ],
     () => {
         const allPlans = ShoppingStore.getAllPlans();
+        const activeItem = ShoppingStore.getActiveItem();
         return {
             allPlans,
             itemTuples: allPlans.hasValue()
                 ? groupItems(allPlans.getValueEnforcing()
                     .filter(p => p.selected))
                 : [],
+            isActive: activeItem == null
+                ? () => false
+                : itemOrId => (itemOrId.id || itemOrId) === activeItem.id,
         };
     }
 );

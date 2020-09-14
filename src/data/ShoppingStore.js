@@ -15,6 +15,7 @@ class ShoppingStore extends ReduceStore {
         const apid = PreferencesStore.getActivePlan();
         return {
             selectedPlanIds: apid ? [apid] : [], // Array<ID>
+            activeId: null, // ID
         };
     }
 
@@ -35,6 +36,20 @@ class ShoppingStore extends ReduceStore {
                 };
             }
 
+            case ShoppingActions.FOCUS: {
+                return {
+                    ...state,
+                    activeId: action.id,
+                };
+            }
+
+            case ShoppingActions.FOCUS_NEXT:
+            case ShoppingActions.FOCUS_PREVIOUS: {
+                // eslint-disable-next-line no-console
+                console.warn("Do relative focus things!", action);
+                return state;
+            }
+
             default:
                 return state;
         }
@@ -51,10 +66,19 @@ class ShoppingStore extends ReduceStore {
             })));
     }
 
+    getActiveItem() {
+        const s = this.getState();
+        // todo: make this not suck
+        return {
+            id: s.activeId,
+        };
+    }
+
 }
 
 ShoppingStore.stateTypes = {
     selectedPlanIds: PropTypes.arrayOf(clientOrDatabaseIdType).isRequired,
+    activeId: PropTypes.number,
 };
 
 export default typedStore(new ShoppingStore(Dispatcher));

@@ -18,6 +18,7 @@ import Dispatcher from "./dispatcher";
 import PreferencesStore from "./PreferencesStore";
 import RecipeActions from "./RecipeActions";
 import RouteStore from "./RouteStore";
+import ShoppingActions from "./ShoppingActions";
 import TaskActions from "./TaskActions";
 import TaskApi from "./TaskApi";
 import {
@@ -908,8 +909,11 @@ class TaskStore extends ReduceStore {
             }
 
             case TaskActions.FOCUS:
+            case ShoppingActions.FOCUS: {
                 state = focusTask(state, action.id);
                 return flushTasksToRename(state);
+            }
+
             case TaskActions.FOCUS_NEXT:
                 state = focusDelta(state, state.activeTaskId, 1);
                 return flushTasksToRename(state);
