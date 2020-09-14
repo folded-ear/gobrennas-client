@@ -3,7 +3,6 @@ import {
     ListItemText,
 } from "@material-ui/core";
 import Input from "@material-ui/core/Input";
-import withStyles from "@material-ui/core/styles/withStyles";
 import {
     ArrowDropDown,
     ArrowRight,
@@ -28,6 +27,7 @@ import DontDeleteButton from "../common/DontDeleteButton";
 import LoadingIconButton from "../common/LoadingIconButton";
 import PlaceholderIconButton from "../common/PlaceholderIconButton";
 import Item from "./Item";
+import withItemStyles from "./withItemStyles";
 
 class Task extends React.PureComponent {
 
@@ -338,40 +338,4 @@ Task.propTypes = {
     classes: PropTypes.object.isRequired,
 };
 
-export default withStyles({
-    root: {
-        borderBottom: "1px solid #eee",
-    },
-    text: {
-        whiteSpace: "nowrap",
-        overflow: "hidden",
-        textOverflow: "ellipsis",
-    },
-    section: {
-        borderBottomColor: "#ccc",
-        "& input": {
-            fontWeight: "bold",
-        },
-        "& .MuiTypography-body1": {
-            fontWeight: "bold",
-        },
-    },
-    question: {
-        backgroundColor: "#ffd",
-    },
-    selected: {
-        backgroundColor: "#f0f7ff",
-    },
-    deleting: {
-        opacity: 0.8,
-        textDecoration: "line-through",
-    },
-    completing: {
-        opacity: 0.8,
-        backgroundColor: "#f0fff0",
-    },
-    ancestorDeleting: {
-        opacity: 0.6,
-        textDecoration: "line-through",
-    },
-})(Task);
+export default withItemStyles(Task);

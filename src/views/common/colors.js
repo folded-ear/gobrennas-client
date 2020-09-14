@@ -27,6 +27,7 @@ export const coloredButton = palette =>
             color: theme.palette.getContrastText(palette[500]),
             backgroundColor: palette[500],
             "&:hover": {
+                color: theme.palette.getContrastText(palette[700]),
                 backgroundColor: palette[700],
             },
         },
