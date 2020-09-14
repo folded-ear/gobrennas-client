@@ -1,6 +1,7 @@
 import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
+import withStyles from "@material-ui/core/styles/withStyles";
 import PropTypes from "prop-types";
 import React from "react";
 
@@ -9,6 +10,8 @@ const Item = ({
     prefix,
     suffix,
     children,
+    classes,
+    className,
     ...props
 }) =>
     <ListItem
@@ -22,6 +25,7 @@ const Item = ({
             paddingTop: 0,
             paddingBottom: 0,
         }}
+        className={classes.root + (className ? " " + className : "")}
         {...props}
     >
         {prefix && <ListItemIcon>
@@ -38,6 +42,12 @@ Item.propTypes = {
     prefix: PropTypes.node,
     children: PropTypes.node.isRequired,
     suffix: PropTypes.node,
+    classes: PropTypes.object.isRequired,
+    className: PropTypes.string,
 };
 
-export default Item;
+export default withStyles({
+    root: {
+        borderBottom: "1px solid #eee",
+    },
+})(Item);

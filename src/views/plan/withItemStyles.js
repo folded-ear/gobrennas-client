@@ -1,9 +1,6 @@
 import withStyles from "@material-ui/core/styles/withStyles";
 
 const withItemStyles = withStyles({
-    root: {
-        borderBottom: "1px solid #eee",
-    },
     text: {
         whiteSpace: "nowrap",
         overflow: "hidden",
