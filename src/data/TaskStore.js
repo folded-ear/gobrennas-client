@@ -952,7 +952,7 @@ class TaskStore extends ReduceStore {
             case TaskActions.DELETE_TASK_BACKWARDS:
                 userAction();
                 return backwardsDeleteTask(state, action.id);
-            case TaskActions.TASK_UNDO_DELETE:
+            case TaskActions.UNDO_DELETE:
                 return taskUndoDelete(state, action.id);
             case TaskActions.TASK_DELETED:
                 return taskDeleted(state, action.id);
