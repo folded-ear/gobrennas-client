@@ -129,7 +129,6 @@ class Task extends React.PureComponent {
                     // select this task and the previous one
                     Dispatcher.dispatch({
                         type: TaskActions.SELECT_PREVIOUS,
-                        id: this.props.task.id,
                     });
                 } else if (ctrlKey) {
                     // move all selected tasks up one (if a predecessor exists)
@@ -139,7 +138,6 @@ class Task extends React.PureComponent {
                 } else {
                     Dispatcher.dispatch({
                         type: TaskActions.FOCUS_PREVIOUS,
-                        id: this.props.task.id,
                     });
                 }
                 break;
@@ -150,7 +148,6 @@ class Task extends React.PureComponent {
                     // select this task and the next one
                     Dispatcher.dispatch({
                         type: TaskActions.SELECT_NEXT,
-                        id: this.props.task.id,
                     });
                 } else if (ctrlKey) {
                     // move all selected tasks down one (if a follower exists)
@@ -160,7 +157,6 @@ class Task extends React.PureComponent {
                 } else {
                     Dispatcher.dispatch({
                         type: TaskActions.FOCUS_NEXT,
-                        id: this.props.task.id,
                     });
                 }
                 break;

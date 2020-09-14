@@ -927,10 +927,10 @@ class TaskStore extends ReduceStore {
                 state = focusTask(state, action.id);
                 return flushTasksToRename(state);
             case TaskActions.FOCUS_NEXT:
-                state = focusDelta(state, action.id, 1);
+                state = focusDelta(state, state.activeTaskId, 1);
                 return flushTasksToRename(state);
             case TaskActions.FOCUS_PREVIOUS:
-                state = focusDelta(state, action.id, -1);
+                state = focusDelta(state, state.activeTaskId, -1);
                 return flushTasksToRename(state);
             case TaskActions.CREATE_TASK_AFTER:
                 userAction();
@@ -963,10 +963,10 @@ class TaskStore extends ReduceStore {
                 return taskDeleted(state, action.id);
             case TaskActions.SELECT_NEXT:
                 userAction();
-                return selectDelta(state, action.id, 1);
+                return selectDelta(state, state.activeTaskId, 1);
             case TaskActions.SELECT_PREVIOUS:
                 userAction();
-                return selectDelta(state, action.id, -1);
+                return selectDelta(state, state.activeTaskId, -1);
             case TaskActions.SELECT_TO:
                 userAction();
                 return selectTo(state, action.id);
