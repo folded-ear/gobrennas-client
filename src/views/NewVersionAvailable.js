@@ -10,7 +10,7 @@ const NewVersionAvailable = () =>
     <Alert
         type="info"
         message={<div>
-            A newer version of Foodinger is available.
+            Foodinger has updated!
             {" "}
             <Button
                 size="small"
@@ -18,7 +18,7 @@ const NewVersionAvailable = () =>
                 onClick={() => Dispatcher.dispatch({
                     type: WindowActions.LAUNCH_NEW_VERSION,
                 })}>
-                Update
+                Upgrade
             </Button>
             {" "}
             <Button
