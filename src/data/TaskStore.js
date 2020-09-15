@@ -9,6 +9,10 @@ import inTheFuture from "../util/inTheFuture";
 import LoadObject from "../util/LoadObject";
 import loadObjectOf from "../util/loadObjectOf";
 import typedStore from "../util/typedStore";
+import {
+    userActedWithin,
+    userAction,
+} from "../util/userAction";
 import AccessLevel from "./AccessLevel";
 import Dispatcher from "./dispatcher";
 import PreferencesStore from "./PreferencesStore";
@@ -780,13 +784,6 @@ const listsLoaded = (state, lists) => {
     return state;
 };
 
-let lastUserActionTS = null;
-const userAction = () =>
-    lastUserActionTS = Date.now();
-const msSinceUserAction = () =>
-    Date.now() - lastUserActionTS;
-userAction(); // loading the app!
-
 class TaskStore extends ReduceStore {
 
     getInitialState() {
@@ -896,7 +893,7 @@ class TaskStore extends ReduceStore {
             }
 
             case TaskActions.SUBTASKS_LOADED: {
-                if (action.background && msSinceUserAction() < 10 * 1000) {
+                if (action.background && userActedWithin(10 * 1000)) {
                     // they did something while in flight
                     return state;
                 }
@@ -1034,7 +1031,7 @@ class TaskStore extends ReduceStore {
             }
 
             case TemporalActions.EVERY_15_SECONDS: {
-                if (msSinceUserAction() < 1000 * 15) return state;
+                if (userActedWithin(1000 * 15)) return state;
                 if (state.activeListId == null) return state;
                 if (RouteStore.getMatch().path !== "/plan") return state;
                 if (!WindowStore.isActive()) return state;
