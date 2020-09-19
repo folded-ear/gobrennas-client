@@ -276,13 +276,13 @@ class Task extends React.PureComponent {
                     onClick={this.onComplete}
                 />);
         }
-        const deleting = lo.isDeleting() && !task._complete;
-        const completing = lo.isDeleting() && task._complete;
+        const deleting = lo.isDeleting() && task._next_status === TaskStatus.DELETED;
+        const completing = lo.isDeleting() && task._next_status === TaskStatus.COMPLETED;
         const addonAfter = lo.isDeleting() && !ancestorDeleting
             ? <DontChangeStatusButton
                 key="delete"
                 size="small"
-                next={completing ? TaskStatus.COMPLETED : TaskStatus.DELETED}
+                next={task._next_status}
                 onClick={this.onUndoDelete}
             />
             : <StatusIconButton

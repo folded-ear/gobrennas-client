@@ -412,7 +412,7 @@ const selectDelta = (state, id, delta) => {
 // least for now. That is, they both say "hey server, delete me" and then forget
 // about the task. The server does a little more processing for a complete than
 // a delete, but the end result is the same: DELETE FROM task WHERE id = ?
-let tasksToDelete = new Map();
+let tasksToDelete = new Map(); // todo: rename
 
 const doTaskDelete = (id, asCompletion) => {
     parentsToReset.delete(id);
@@ -435,7 +435,7 @@ const completeTask = (state, id) => {
     return forwardDeleteTask(state, id, true);
 };
 
-const deleteTask = (state, id, asCompletion = false) => {
+const deleteTask = (state, id, asCompletion = false) => { // rename
     let lo = loForId(state, id);
     const t = lo.getValueEnforcing();
     invariant(
@@ -452,7 +452,7 @@ const deleteTask = (state, id, asCompletion = false) => {
             ...state.byId,
             [id]: lo.map(t => ({
                 ...t,
-                _complete: asCompletion,
+                _next_status: asCompletion ? TaskStatus.COMPLETED : TaskStatus.DELETED,
             })).deleting(),
         },
     };
@@ -471,7 +471,7 @@ const deleteTask = (state, id, asCompletion = false) => {
     return state;
 };
 
-const taskUndoDelete = (state, id) => {
+const taskUndoDelete = (state, id) => { // todo: rename
     tasksToDelete.delete(id);
     return {
         ...state,
@@ -480,7 +480,7 @@ const taskUndoDelete = (state, id) => {
             ...state.byId,
             [id]: state.byId[id].map(t => {
                 t = {...t};
-                delete t._complete;
+                delete t._next_status;
                 return t;
             }).done(),
         },
@@ -1158,7 +1158,7 @@ TaskStore.stateTypes = {
             preparation: PropTypes.string,
             // client-side
             _expanded: PropTypes.bool,
-            _complete: PropTypes.bool,
+            _next_status: PropTypes.string,
         }))
     ).isRequired,
 };

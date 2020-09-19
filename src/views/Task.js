@@ -13,6 +13,7 @@ import {
     isQuestionable,
     isSection,
 } from "../data/tasks";
+import TaskStatus from "../data/TaskStatus";
 import TaskStore from "../data/TaskStore";
 import LoadObject from "../util/LoadObject";
 import "./Task.scss";
@@ -259,8 +260,8 @@ class Task extends React.PureComponent {
             shape="circle"
             onClick={this.onToggleExpanded}
         />);
-        const deleting = lo.isDeleting() && !task._complete;
-        const completing = lo.isDeleting() && task._complete;
+        const deleting = lo.isDeleting() && task._next_status === TaskStatus.DELETED;
+        const completing = lo.isDeleting() && task._next_status === TaskStatus.COMPLETED;
         return <Input
             addonBefore={addonBefore}
             addonAfter={
