@@ -4,20 +4,14 @@ import {
     withStyles,
 } from "@material-ui/core";
 
-import {
+export {
+    yellow as questionColor,
+    lightBlue as selectionColor,
     green as completeColor,
-    grey as acquiredColor,
-    orange as neededColor,
+    grey as neededColor,
+    lime as acquiredColor,
     red as deleteColor,
 } from "@material-ui/core/colors";
-import TaskStatus from "../../data/TaskStatus";
-
-export const colorByStatus = {
-    [TaskStatus.NEEDED]: neededColor,
-    [TaskStatus.ACQUIRED]: acquiredColor,
-    [TaskStatus.COMPLETED]: completeColor,
-    [TaskStatus.DELETED]: deleteColor,
-};
 
 export const coloredIconButton = (palette, restingPalette=palette) =>
     withStyles(theme => ({

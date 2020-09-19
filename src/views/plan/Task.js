@@ -281,10 +281,10 @@ class Task extends React.PureComponent {
             depth={depth}
             prefix={addonBefore}
             suffix={addonAfter}
-            selected={active}
             onClick={this.onClick}
             className={classnames({
                 [classes.section]: section,
+                [classes.active]: active,
                 [classes.selected]: selected,
                 [classes.question]: question,
                 [classes.deleting]: deleting,

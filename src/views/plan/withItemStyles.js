@@ -1,4 +1,11 @@
 import withStyles from "@material-ui/core/styles/withStyles";
+import {
+    acquiredColor,
+    completeColor,
+    deleteColor,
+    questionColor,
+    selectionColor,
+} from "../common/colors";
 
 const withItemStyles = withStyles({
     text: {
@@ -16,18 +23,25 @@ const withItemStyles = withStyles({
         },
     },
     question: {
-        backgroundColor: "#ffd",
+        backgroundColor: questionColor[100],
+    },
+    active: {
+        backgroundColor: selectionColor[100],
     },
     selected: {
-        backgroundColor: "#f0f7ff",
+        backgroundColor: selectionColor[50],
+    },
+    acquiring: {
+        backgroundColor: acquiredColor[50],
     },
     deleting: {
         opacity: 0.8,
         textDecoration: "line-through",
+        backgroundColor: deleteColor[50],
     },
     completing: {
         opacity: 0.8,
-        backgroundColor: "#f0fff0",
+        backgroundColor: completeColor[50],
     },
     ancestorDeleting: {
         opacity: 0.6,
