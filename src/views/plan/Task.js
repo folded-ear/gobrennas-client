@@ -18,14 +18,13 @@ import {
     isQuestionable,
     isSection,
 } from "../../data/tasks";
+import TaskStatus from "../../data/TaskStatus";
 import TaskStore from "../../data/TaskStore";
 import LoadObject from "../../util/LoadObject";
-import CompleteIconButton from "../common/CompleteIconButton";
-import DeleteIconButton from "../common/DeleteIconButton";
-import DontCompleteButton from "../common/DontCompleteButton";
-import DontDeleteButton from "../common/DontDeleteButton";
+import DontChangeStatusButton from "../common/DontChangeStatusButton";
 import LoadingIconButton from "../common/LoadingIconButton";
 import PlaceholderIconButton from "../common/PlaceholderIconButton";
+import StatusIconButton from "../common/StatusIconButton";
 import Item from "./Item";
 import withItemStyles from "./withItemStyles";
 
@@ -270,24 +269,25 @@ class Task extends React.PureComponent {
                 />);
         } else {
             addonBefore.push(
-                <CompleteIconButton
+                <StatusIconButton
                     key="complete"
-                    size="small"
+                    current={parent ? null : task.status}
+                    next={TaskStatus.COMPLETED}
                     onClick={this.onComplete}
                 />);
         }
         const deleting = lo.isDeleting() && !task._complete;
         const completing = lo.isDeleting() && task._complete;
-        const WaitNoButton = completing ? DontCompleteButton : DontDeleteButton;
         const addonAfter = lo.isDeleting() && !ancestorDeleting
-            ? <WaitNoButton
+            ? <DontChangeStatusButton
                 key="delete"
                 size="small"
+                next={completing ? TaskStatus.COMPLETED : TaskStatus.DELETED}
                 onClick={this.onUndoDelete}
             />
-            : <DeleteIconButton
+            : <StatusIconButton
                 key="delete"
-                size="small"
+                next={TaskStatus.DELETED}
                 onClick={this.onDelete}
                 disabled={ancestorDeleting}
             />;
