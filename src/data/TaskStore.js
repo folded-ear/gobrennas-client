@@ -947,12 +947,6 @@ class TaskStore extends ReduceStore {
             case TaskActions.DELETE_TASK_BACKWARDS:
                 userAction();
                 return backwardsDeleteTask(state, action.id);
-            case TaskActions.UNDO_DELETE:
-            case TaskActions.UNDO_SET_STATUS:
-                return taskUndoDelete(state, action.id);
-            case TaskActions.MARK_COMPLETE:
-                userAction();
-                return forwardDeleteTask(state, action.id, true);
 
             case TaskActions.SET_STATUS: {
                 userAction();
@@ -964,6 +958,9 @@ class TaskStore extends ReduceStore {
                 }
                 return state;
             }
+
+            case TaskActions.UNDO_SET_STATUS:
+                return taskUndoDelete(state, action.id);
 
             case TaskActions.STATUS_UPDATED: {
                 if (action.status === TaskStatus.COMPLETED) {

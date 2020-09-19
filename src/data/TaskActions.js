@@ -29,9 +29,7 @@ const TaskActions = {
         status: PropTypes.string.isRequired,
         focusDelta: PropTypes.number, // maybe?
     }),
-    UNDO_DELETE: "task/task-undo-delete", // todo: remove
     UNDO_SET_STATUS: "task/undo-set-status",
-    MARK_COMPLETE: "task/mark-complete", // todo: remove
     MOVE_NEXT: "task/move-next",
     MOVE_PREVIOUS: "task/move-previous",
     RENAME_TASK: "task/rename-task",
