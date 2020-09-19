@@ -24,6 +24,7 @@ import {
     isExpanded,
     isParent,
 } from "./tasks";
+import TaskStatus from "./TaskStatus";
 import TemporalActions from "./TemporalActions";
 import UserStore from "./UserStore";
 import WindowActions from "./WindowActions";
@@ -40,6 +41,7 @@ const AT_END = Math.random();
 const _newTask = name => ({
     id: ClientId.next(),
     name,
+    status: TaskStatus.NEEDED,
 });
 
 const createList = (state, name) => {
@@ -416,9 +418,9 @@ const doTaskDelete = (id, asCompletion) => {
     parentsToReset.delete(id);
     tasksToRename.delete(id);
     tasksToDelete.delete(id);
-    asCompletion
-        ? TaskApi.completeTask(id)
-        : TaskApi.deleteTask(id);
+    TaskApi.setStatus(id, asCompletion
+        ? TaskStatus.COMPLETED
+        : TaskStatus.DELETED);
 };
 
 const flushTasksToDelete = state => {
@@ -951,13 +953,20 @@ class TaskStore extends ReduceStore {
                 return backwardsDeleteTask(state, action.id);
             case TaskActions.UNDO_DELETE:
                 return taskUndoDelete(state, action.id);
-            case TaskActions.TASK_DELETED:
-                return taskDeleted(state, action.id);
             case TaskActions.MARK_COMPLETE:
                 userAction();
                 return completeTask(state, action.id);
-            case TaskActions.TASK_COMPLETED:
-                return taskDeleted(state, action.id);
+
+            case TaskActions.STATUS_UPDATED: {
+                if (action.status === TaskStatus.COMPLETED) {
+                    return taskDeleted(state, action.id);
+                }
+                if (action.status === TaskStatus.DELETED) {
+                    return taskDeleted(state, action.id);
+                }
+                return state;
+            }
+
             case TaskActions.SELECT_NEXT:
                 userAction();
                 return selectDelta(state, state.activeTaskId, 1);

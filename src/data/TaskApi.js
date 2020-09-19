@@ -77,23 +77,16 @@ const TaskApi = {
             }),
         ),
 
-    completeTask: (id) =>
+    setStatus: (id, status) =>
         promiseFlux(
-            axios.put(`/${id}/complete`, {
-                complete: true,
+            axios.put(`/${id}/status`, {
+                status,
             }),
-            () => ({
-                type: TaskActions.TASK_COMPLETED,
+            ({data}) => ({
+                type: TaskActions.STATUS_UPDATED,
                 id,
-            }),
-        ),
-
-    deleteTask: (id) =>
-        promiseFlux(
-            axios.delete(`/${id}`),
-            () => ({
-                type: TaskActions.TASK_DELETED,
-                id,
+                status,
+                data,
             }),
         ),
 
