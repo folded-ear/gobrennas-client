@@ -294,7 +294,7 @@ const focusTask = (state, id) => {
     if (state.activeTaskId != null) {
         const prev = taskForId(state, state.activeTaskId);
         if (prev.name.trim() === "") {
-            state = queueStatusUpdate(state, state.activeTaskId, TaskStatus.DELETED);
+            state = queueDelete(state, state.activeTaskId);
         }
     }
     return {
@@ -423,13 +423,16 @@ const setTaskStatus = (id, status) => {
     TaskApi.setStatus(id, status);
 };
 
-const flushTasksToDelete = state => {
+const flushStatusUpdates = state => {
     if (statusUpdatesToFlush.size === 0) return state;
     for (const [id, status] of Array.from(statusUpdatesToFlush)) {
         setTaskStatus(id, status);
     }
     return state;
 };
+
+const queueDelete = (state, id) =>
+    queueStatusUpdate(state, id, TaskStatus.DELETED);
 
 const queueStatusUpdate = (state, id, status) => {
     let lo = loForId(state, id);
@@ -463,7 +466,7 @@ const queueStatusUpdate = (state, id, status) => {
         doTaskDelete(id);
     } else {
         statusUpdatesToFlush.set(id, status);
-        inTheFuture(TaskActions.FLUSH_DELETES, 10);
+        inTheFuture(TaskActions.FLUSH_STATUS_UPDATES, 10);
     }
     if (isExpanded(t) && isDelete) {
         state = setExpansion(state, t.id, false);
@@ -471,7 +474,7 @@ const queueStatusUpdate = (state, id, status) => {
     return state;
 };
 
-const taskUndoDelete = (state, id) => { // todo: rename
+const cancelStatusUpdate = (state, id) => {
     statusUpdatesToFlush.delete(id);
     return {
         ...state,
@@ -930,13 +933,13 @@ class TaskStore extends ReduceStore {
 
             case TaskActions.DELETE_TASK_FORWARD: {
                 userAction();
-                state = queueStatusUpdate(state, action.id, TaskStatus.DELETED);
+                state = queueDelete(state, action.id);
                 return focusDelta(state, action.id, 1);
             }
 
             case TaskActions.DELETE_TASK_BACKWARDS: {
                 userAction();
-                state = queueStatusUpdate(state, action.id, TaskStatus.DELETED);
+                state = queueDelete(state, action.id);
                 return focusDelta(state, action.id, -1);
             }
 
@@ -953,12 +956,12 @@ class TaskStore extends ReduceStore {
                 const tasks = getOrderedBlock(state)
                     .map(([t]) => t);
                 state = tasks
-                    .reduce((s, t) => queueStatusUpdate(s, t.id, TaskStatus.DELETED), state);
+                    .reduce((s, t) => queueDelete(s, t.id), state);
                 return focusDelta(state, tasks[0].id, 1);
             }
 
             case TaskActions.UNDO_SET_STATUS:
-                return taskUndoDelete(state, action.id);
+                return cancelStatusUpdate(state, action.id);
 
             case TaskActions.STATUS_UPDATED: {
                 return statusUpdated(state, action.id, action.status, action.data);
@@ -1029,8 +1032,8 @@ class TaskStore extends ReduceStore {
                 return flushTasksToRename(state);
             case TaskActions.FLUSH_REORDERS:
                 return flushParentsToReset(state);
-            case TaskActions.FLUSH_DELETES:
-                return flushTasksToDelete(state);
+            case TaskActions.FLUSH_STATUS_UPDATES:
+                return flushStatusUpdates(state);
 
             case RecipeActions.SHOPPING_LIST_ASSEMBLED: {
                 // todo: this is stupid. not wrong though.

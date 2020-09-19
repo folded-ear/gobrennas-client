@@ -24,6 +24,7 @@ const TaskActions = {
     CREATE_TASK_BEFORE: "task/create-task-before",
     DELETE_TASK_BACKWARDS: "task/delete-task-backwards",
     DELETE_TASK_FORWARD: "task/delete-task-forward",
+    DELETE_SELECTED: "task/delete-selected",
     SET_STATUS: typedAction("task/set-status", {
         id: clientOrDatabaseIdType.isRequired,
         status: PropTypes.string.isRequired,
@@ -54,8 +55,7 @@ const TaskActions = {
     // deferred actions
     FLUSH_RENAMES: "task/flush-renames",
     FLUSH_REORDERS: "task/flush-reorders",
-    FLUSH_DELETES: "task/flush-deletes",
-    DELETE_SELECTED: "task/delete-selected",
+    FLUSH_STATUS_UPDATES: "task/flush-status-updates",
 };
 
 export default TaskActions;
