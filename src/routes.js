@@ -13,7 +13,7 @@ import Profile from "./views/user/Profile";
 const routes = {
     public: [
         {path: "/", component: Landing, exact: true },
-        {path: "/oauth2/redirect", component: OAuth2RedirectHandler}
+        {path: "/post-oauth2/redirect", component: OAuth2RedirectHandler}
     ],
     private: [
         {path: "/profile",  component: Profile},
