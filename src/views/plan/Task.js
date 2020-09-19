@@ -102,15 +102,25 @@ class Task extends React.PureComponent {
                         type: TaskActions.DELETE_TASK_BACKWARDS,
                         id: this.props.task.id
                     });
+                } else if (shiftKey) {
+                    e.preventDefault();
+                    Dispatcher.dispatch({
+                        type: TaskActions.DELETE_SELECTED,
+                    });
                 }
                 break;
             case "Delete":
                 // if the value is empty, delete the task and focus next
-                if (value.length === 0 || shiftKey) {
+                if (value.length === 0) {
                     e.preventDefault();
                     Dispatcher.dispatch({
                         type: TaskActions.DELETE_TASK_FORWARD,
                         id: this.props.task.id,
+                    });
+                } else if (shiftKey) {
+                    e.preventDefault();
+                    Dispatcher.dispatch({
+                        type: TaskActions.DELETE_SELECTED,
                     });
                 }
                 break;

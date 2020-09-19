@@ -949,6 +949,14 @@ class TaskStore extends ReduceStore {
                 return state;
             }
 
+            case TaskActions.DELETE_SELECTED: {
+                const tasks = getOrderedBlock(state)
+                    .map(([t]) => t);
+                state = tasks
+                    .reduce((s, t) => queueStatusUpdate(s, t.id, TaskStatus.DELETED), state);
+                return focusDelta(state, tasks[0].id, 1);
+            }
+
             case TaskActions.UNDO_SET_STATUS:
                 return taskUndoDelete(state, action.id);
 

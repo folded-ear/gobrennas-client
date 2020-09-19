@@ -54,7 +54,8 @@ const TaskActions = {
     // deferred actions
     FLUSH_RENAMES: "task/flush-renames",
     FLUSH_REORDERS: "task/flush-reorders",
-    FLUSH_DELETES: "task/flush-deletes"
+    FLUSH_DELETES: "task/flush-deletes",
+    DELETE_SELECTED: "task/delete-selected",
 };
 
 export default TaskActions;
