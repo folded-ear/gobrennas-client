@@ -4,15 +4,25 @@ import {
     withStyles,
 } from "@material-ui/core";
 
-export {
-    red as deleteColor,
+import {
     green as completeColor,
+    grey as acquiredColor,
+    orange as neededColor,
+    red as deleteColor,
 } from "@material-ui/core/colors";
+import TaskStatus from "../../data/TaskStatus";
 
-export const coloredIconButton = palette =>
+export const colorByStatus = {
+    [TaskStatus.NEEDED]: neededColor,
+    [TaskStatus.ACQUIRED]: acquiredColor,
+    [TaskStatus.COMPLETED]: completeColor,
+    [TaskStatus.DELETED]: deleteColor,
+};
+
+export const coloredIconButton = (palette, restingPalette=palette) =>
     withStyles(theme => ({
         root: {
-            color: palette[500],
+            color: restingPalette[500],
             "&:hover": {
                 color: theme.palette.getContrastText(palette[500]),
                 backgroundColor: palette[500],
