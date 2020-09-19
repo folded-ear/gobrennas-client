@@ -5,4 +5,7 @@ const TaskStatus = {
     DELETED: "DELETED",
 };
 
+export const willStatusDelete = status =>
+    status === TaskStatus.COMPLETED || status === TaskStatus.DELETED;
+
 export default TaskStatus;

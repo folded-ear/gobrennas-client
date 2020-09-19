@@ -24,7 +24,7 @@ import {
     isExpanded,
     isParent,
 } from "./tasks";
-import TaskStatus from "./TaskStatus";
+import TaskStatus, { willStatusDelete } from "./TaskStatus";
 import TemporalActions from "./TemporalActions";
 import UserStore from "./UserStore";
 import WindowActions from "./WindowActions";
@@ -294,7 +294,7 @@ const focusTask = (state, id) => {
     if (state.activeTaskId != null) {
         const prev = taskForId(state, state.activeTaskId);
         if (prev.name.trim() === "") {
-            state = deleteTask(state, state.activeTaskId);
+            state = queueStatusUpdate(state, state.activeTaskId, TaskStatus.DELETED);
         }
     }
     return {
@@ -303,11 +303,6 @@ const focusTask = (state, id) => {
         selectedTaskIds: null,
     };
 };
-
-const getNeighborIds = (state, id) => ({
-    before: getNeighborId(state, id, -1),
-    after: getNeighborId(state, id, 1),
-});
 
 const getNeighborId = (state, id, delta = 1, crossGenerations=false, _searching=false) => {
     invariant(
@@ -408,67 +403,76 @@ const selectDelta = (state, id, delta) => {
     }
 };
 
-// complete/delete are the "same" action as far as the client is concerned, at
-// least for now. That is, they both say "hey server, delete me" and then forget
-// about the task. The server does a little more processing for a complete than
-// a delete, but the end result is the same: DELETE FROM task WHERE id = ?
-let tasksToDelete = new Map(); // todo: rename
+let statusUpdatesToFlush = new Map();
 
-const doTaskDelete = (id, asCompletion) => {
+const unqueueTaskId = id => {
     parentsToReset.delete(id);
     tasksToRename.delete(id);
-    tasksToDelete.delete(id);
-    TaskApi.setStatus(id, asCompletion
-        ? TaskStatus.COMPLETED
-        : TaskStatus.DELETED);
+    statusUpdatesToFlush.delete(id);
+};
+
+const doTaskDelete = id => {
+    unqueueTaskId(id);
+    TaskApi.deleteTask(id);
+};
+
+const setTaskStatus = (id, status) => {
+    if (willStatusDelete(status)) {
+        unqueueTaskId(id);
+    }
+    TaskApi.setStatus(id, status);
 };
 
 const flushTasksToDelete = state => {
-    if (tasksToDelete.size === 0) return state;
-    for (const [id, asCompletion] of Array.from(tasksToDelete)) {
-        doTaskDelete(id, asCompletion);
+    if (statusUpdatesToFlush.size === 0) return state;
+    for (const [id, status] of Array.from(statusUpdatesToFlush)) {
+        setTaskStatus(id, status);
     }
     return state;
 };
 
-const deleteTask = (state, id, asCompletion = false) => { // rename
+const queueStatusUpdate = (state, id, status) => {
     let lo = loForId(state, id);
     const t = lo.getValueEnforcing();
     invariant(
         t.parentId != null,
-        "Can't %s root-level task '%s'",
-        asCompletion ? "complete" : "delete",
+        "Can't change root-level task '%s' to %s",
         id,
+        status,
     );
+    const isDelete = willStatusDelete(status);
+    let nextLO = lo.map(t => ({
+        ...t,
+        _next_status: status,
+    }));
+    if (isDelete) nextLO = nextLO.deleting();
+    else nextLO = nextLO.updating();
     state = {
         ...state,
         activeTaskId: null,
         selectedTaskIds: null,
         byId: {
             ...state.byId,
-            [id]: lo.map(t => ({
-                ...t,
-                _next_status: asCompletion ? TaskStatus.COMPLETED : TaskStatus.DELETED,
-            })).deleting(),
+            [id]: nextLO,
         },
     };
 
     if (ClientId.is(id)) {
         state = taskDeleted(state, id);
     } else if (t.name === "") {
-        doTaskDelete(id, asCompletion);
+        doTaskDelete(id);
     } else {
-        tasksToDelete.set(id, asCompletion);
+        statusUpdatesToFlush.set(id, status);
         inTheFuture(TaskActions.FLUSH_DELETES, 10);
     }
-    if (isExpanded(t)) {
+    if (isExpanded(t) && isDelete) {
         state = setExpansion(state, t.id, false);
     }
     return state;
 };
 
 const taskUndoDelete = (state, id) => { // todo: rename
-    tasksToDelete.delete(id);
+    statusUpdatesToFlush.delete(id);
     return {
         ...state,
         activeTaskId: id,
@@ -506,31 +510,13 @@ const taskDeleted = (state, id) => {
     return state;
 };
 
-const directionalDeleteTaskBuilder = delta =>
-    (state, id, asCompletion = false) => {
-        let {
-            before,
-            after,
-        } = getNeighborIds(state, id);
-        if (before == null && after == null) {
-            // can't have a zero-task list, so make a blank one
-            state = createTaskAfter(state, id);
-            after = getNeighborId(state, id, 1);
-        }
-        let activeTaskId = state.activeTaskId;
-        if (activeTaskId === id) {
-            activeTaskId = delta < 0
-                ? before != null ? before : after
-                : after != null ? after : before;
-        }
-        return {
-            ...deleteTask(state, id, asCompletion),
-            activeTaskId,
-        };
-    };
-
-const forwardDeleteTask = directionalDeleteTaskBuilder(1);
-const backwardsDeleteTask = directionalDeleteTaskBuilder(-1);
+const statusUpdated = (state, id, status, data) => {
+    if (willStatusDelete(status)) {
+        return taskDeleted(state, id);
+    } else {
+        return taskUpdated(state, id, data);
+    }
+};
 
 let parentsToReset = new Set();
 
@@ -748,7 +734,7 @@ const taskLoading = (state, id) => {
     );
 };
 
-const taskRenamed = (state, id, task) => ({
+const taskUpdated = (state, id, task) => ({
     ...state,
     byId: {
         ...state.byId,
@@ -915,7 +901,7 @@ class TaskStore extends ReduceStore {
                 return renameTask(state, action.id, action.name);
 
             case TaskActions.TASK_RENAMED: {
-                return taskRenamed(state, action.id, action.data);
+                return taskUpdated(state, action.id, action.data);
             }
 
             case TaskActions.FOCUS:
@@ -941,20 +927,24 @@ class TaskStore extends ReduceStore {
                     action.data,
                 );
                 return state;
-            case TaskActions.DELETE_TASK_FORWARD:
+
+            case TaskActions.DELETE_TASK_FORWARD: {
                 userAction();
-                return forwardDeleteTask(state, action.id);
-            case TaskActions.DELETE_TASK_BACKWARDS:
+                state = queueStatusUpdate(state, action.id, TaskStatus.DELETED);
+                return focusDelta(state, action.id, 1);
+            }
+
+            case TaskActions.DELETE_TASK_BACKWARDS: {
                 userAction();
-                return backwardsDeleteTask(state, action.id);
+                state = queueStatusUpdate(state, action.id, TaskStatus.DELETED);
+                return focusDelta(state, action.id, -1);
+            }
 
             case TaskActions.SET_STATUS: {
                 userAction();
-                if (action.status === TaskStatus.COMPLETED) {
-                    return forwardDeleteTask(state, action.id, true);
-                }
-                if (action.status === TaskStatus.DELETED) {
-                    return forwardDeleteTask(state, action.id);
+                state = queueStatusUpdate(state, action.id, action.status);
+                if (action.status === TaskStatus.COMPLETED || action.status === TaskStatus.DELETED) {
+                    state = focusDelta(state, action.id, 1);
                 }
                 return state;
             }
@@ -963,13 +953,11 @@ class TaskStore extends ReduceStore {
                 return taskUndoDelete(state, action.id);
 
             case TaskActions.STATUS_UPDATED: {
-                if (action.status === TaskStatus.COMPLETED) {
-                    return taskDeleted(state, action.id);
-                }
-                if (action.status === TaskStatus.DELETED) {
-                    return taskDeleted(state, action.id);
-                }
-                return state;
+                return statusUpdated(state, action.id, action.status, action.data);
+            }
+
+            case TaskActions.TASK_DELETED: {
+                return taskDeleted(state, action.id);
             }
 
             case TaskActions.SELECT_NEXT:

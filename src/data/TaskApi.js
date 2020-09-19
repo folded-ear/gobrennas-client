@@ -90,6 +90,15 @@ const TaskApi = {
             }),
         ),
 
+    deleteTask: (id) =>
+        promiseFlux(
+            axios.delete(`/${id}`),
+            () => ({
+                type: TaskActions.TASK_DELETED,
+                id,
+            }),
+        ),
+
     resetSubtasks: (id, subtaskIds) =>
         promiseFlux(
             axios.put(`/${id}/subtaskIds`, {

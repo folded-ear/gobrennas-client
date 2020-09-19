@@ -47,6 +47,7 @@ const TaskActions = {
     TASK_RENAMED: "task/task-renamed",
     SUBTASKS_RESET: "task/subtasks-reset",
     PARENT_RESET: "task/parent-reset",
+    TASK_DELETED: "task/deleted",
     STATUS_UPDATED: "task/status-updated",
     LIST_GRANT_SET: "task/list-grant-set",
     LIST_GRANT_CLEARED: "task/list-grant-cleared",
