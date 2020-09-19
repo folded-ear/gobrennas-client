@@ -1,3 +1,7 @@
+import PropTypes from "prop-types";
+import { clientOrDatabaseIdType } from "../util/ClientId";
+import typedAction from "../util/typedAction";
+
 const TaskActions = {
     // user actions (client-only)
     FOCUS: "task/focus",
@@ -18,10 +22,16 @@ const TaskActions = {
     LIST_DETAIL_VISIBILITY: "task/list-detail-visibility",
     CREATE_TASK_AFTER: "task/create-task-after",
     CREATE_TASK_BEFORE: "task/create-task-before",
-    DELETE_TASK: "task/delete-task",
     DELETE_TASK_BACKWARDS: "task/delete-task-backwards",
     DELETE_TASK_FORWARD: "task/delete-task-forward",
-    MARK_COMPLETE: "task/mark-complete",
+    SET_STATUS: typedAction("task/set-status", {
+        id: clientOrDatabaseIdType.isRequired,
+        status: PropTypes.string.isRequired,
+        focusDelta: PropTypes.number, // maybe?
+    }),
+    UNDO_DELETE: "task/task-undo-delete", // todo: remove
+    UNDO_SET_STATUS: "task/undo-set-status",
+    MARK_COMPLETE: "task/mark-complete", // todo: remove
     MOVE_NEXT: "task/move-next",
     MOVE_PREVIOUS: "task/move-previous",
     RENAME_TASK: "task/rename-task",
@@ -40,7 +50,6 @@ const TaskActions = {
     SUBTASKS_RESET: "task/subtasks-reset",
     PARENT_RESET: "task/parent-reset",
     STATUS_UPDATED: "task/status-updated",
-    UNDO_DELETE: "task/task-undo-delete",
     LIST_GRANT_SET: "task/list-grant-set",
     LIST_GRANT_CLEARED: "task/list-grant-cleared",
     // deferred actions

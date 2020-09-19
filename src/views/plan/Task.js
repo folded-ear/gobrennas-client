@@ -21,11 +21,11 @@ import {
 import TaskStatus from "../../data/TaskStatus";
 import TaskStore from "../../data/TaskStore";
 import LoadObject from "../../util/LoadObject";
-import DontChangeStatusButton from "../common/DontChangeStatusButton";
 import LoadingIconButton from "../common/LoadingIconButton";
 import PlaceholderIconButton from "../common/PlaceholderIconButton";
-import StatusIconButton from "../common/StatusIconButton";
+import DontChangeStatusButton from "./DontChangeStatusButton";
 import Item from "./Item";
+import StatusIconButton from "./StatusIconButton";
 import withItemStyles from "./withItemStyles";
 
 class Task extends React.PureComponent {
@@ -37,10 +37,7 @@ class Task extends React.PureComponent {
         this.onPaste = this.onPaste.bind(this);
         this.onKeyDown = this.onKeyDown.bind(this);
         this.onClick = this.onClick.bind(this);
-        this.onComplete = this.onComplete.bind(this);
         this.onToggleExpanded = this.onToggleExpanded.bind(this);
-        this.onDelete = this.onDelete.bind(this);
-        this.onUndoDelete = this.onUndoDelete.bind(this);
         this.inputRef = React.createRef();
     }
 
@@ -111,7 +108,10 @@ class Task extends React.PureComponent {
                 // if the value is empty, delete the task and focus next
                 if (value.length === 0 || shiftKey) {
                     e.preventDefault();
-                    this.onDelete();
+                    Dispatcher.dispatch({
+                        type: TaskActions.DELETE_TASK_FORWARD,
+                        id: this.props.task.id,
+                    });
                 }
                 break;
             case "Tab":
@@ -167,22 +167,6 @@ class Task extends React.PureComponent {
         }
     }
 
-    onDelete(e) {
-        if (e) e.stopPropagation();
-        Dispatcher.dispatch({
-            type: TaskActions.DELETE_TASK_FORWARD,
-            id: this.props.task.id,
-        });
-    }
-
-    onUndoDelete(e) {
-        e.stopPropagation();
-        Dispatcher.dispatch({
-            type: TaskActions.UNDO_DELETE,
-            id: this.props.task.id,
-        });
-    }
-
     onClick(e) {
         const {
             active,
@@ -196,14 +180,6 @@ class Task extends React.PureComponent {
                 ? TaskActions.SELECT_TO
                 : TaskActions.FOCUS,
             id: task.id,
-        });
-    }
-
-    onComplete(e) {
-        e.stopPropagation();
-        Dispatcher.dispatch({
-            type: TaskActions.MARK_COMPLETE,
-            id: this.props.task.id,
         });
     }
 
@@ -271,9 +247,9 @@ class Task extends React.PureComponent {
             addonBefore.push(
                 <StatusIconButton
                     key="complete"
+                    id={task.id}
                     current={parent ? null : task.status}
                     next={TaskStatus.COMPLETED}
-                    onClick={this.onComplete}
                 />);
         }
         const deleting = lo.isDeleting() && task._next_status === TaskStatus.DELETED;
@@ -281,14 +257,13 @@ class Task extends React.PureComponent {
         const addonAfter = lo.isDeleting() && !ancestorDeleting
             ? <DontChangeStatusButton
                 key="delete"
-                size="small"
+                id={task.id}
                 next={task._next_status}
-                onClick={this.onUndoDelete}
             />
             : <StatusIconButton
                 key="delete"
+                id={task.id}
                 next={TaskStatus.DELETED}
-                onClick={this.onDelete}
                 disabled={ancestorDeleting}
             />;
 

@@ -431,10 +431,6 @@ const flushTasksToDelete = state => {
     return state;
 };
 
-const completeTask = (state, id) => {
-    return forwardDeleteTask(state, id, true);
-};
-
 const deleteTask = (state, id, asCompletion = false) => { // rename
     let lo = loForId(state, id);
     const t = lo.getValueEnforcing();
@@ -952,10 +948,22 @@ class TaskStore extends ReduceStore {
                 userAction();
                 return backwardsDeleteTask(state, action.id);
             case TaskActions.UNDO_DELETE:
+            case TaskActions.UNDO_SET_STATUS:
                 return taskUndoDelete(state, action.id);
             case TaskActions.MARK_COMPLETE:
                 userAction();
-                return completeTask(state, action.id);
+                return forwardDeleteTask(state, action.id, true);
+
+            case TaskActions.SET_STATUS: {
+                userAction();
+                if (action.status === TaskStatus.COMPLETED) {
+                    return forwardDeleteTask(state, action.id, true);
+                }
+                if (action.status === TaskStatus.DELETED) {
+                    return forwardDeleteTask(state, action.id);
+                }
+                return state;
+            }
 
             case TaskActions.STATUS_UPDATED: {
                 if (action.status === TaskStatus.COMPLETED) {

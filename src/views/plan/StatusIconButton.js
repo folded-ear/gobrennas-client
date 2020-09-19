@@ -5,11 +5,14 @@ import {
 } from "@material-ui/icons";
 import PropTypes from "prop-types";
 import React from "react";
+import Dispatcher from "../../data/dispatcher";
+import TaskActions from "../../data/TaskActions";
 import TaskStatus from "../../data/TaskStatus";
+import { clientOrDatabaseIdType } from "../../util/ClientId";
 import {
     colorByStatus,
     coloredIconButton,
-} from "./colors";
+} from "../common/colors";
 
 const buttonLookup = {}; // Map<next, Map<curr, Button>>
 const findButton = (next, curr) => {
@@ -30,18 +33,21 @@ const iconLookup = {
     [TaskStatus.DELETED]: DeleteForeverOutlined,
 };
 
-/*
-- button's at-rest color is based on current
-- button's hover color is based on next
-- icon is based on next
- */
-
 const StatusIconButton = props => {
     const Btn = findButton(props.next, props.current || props.next);
     const Icn = iconLookup[props.next] || QuestionAnswer;
     return <Btn
         aria-label={props.next.toLowerCase()}
         size="small"
+        onClick={e => {
+            e.stopPropagation();
+            Dispatcher.dispatch({
+                type: TaskActions.SET_STATUS,
+                id: props.id,
+                status: props.next,
+                focusDelta: 1,
+            });
+        }}
         {...props}
     >
         <Icn />
@@ -49,6 +55,7 @@ const StatusIconButton = props => {
 };
 
 StatusIconButton.propTypes = {
+    id: clientOrDatabaseIdType.isRequired,
     current: PropTypes.oneOf(Object.keys(TaskStatus)),
     next: PropTypes.oneOf(Object.keys(TaskStatus)).isRequired,
 };

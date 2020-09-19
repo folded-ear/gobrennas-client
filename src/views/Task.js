@@ -170,7 +170,7 @@ class Task extends React.PureComponent {
 
     onUndoDelete() {
         Dispatcher.dispatch({
-            type: TaskActions.TASK_UNDO_DELETE,
+            type: TaskActions.UNDO_DELETE,
             id: this.props.task.id,
         });
     }
