@@ -4,7 +4,6 @@ import PropTypes from "prop-types";
 import React from "react";
 import Dispatcher from "../../data/dispatcher";
 import ShoppingActions from "../../data/ShoppingActions";
-import TaskActions from "../../data/TaskActions";
 import TaskStatus from "../../data/TaskStatus";
 import { clientOrDatabaseIdType } from "../../util/ClientId";
 import LoadingIconButton from "../common/LoadingIconButton";
@@ -32,18 +31,32 @@ class IngredientItem extends React.PureComponent {
 
     onSetStatus(status, e) {
         if (e) e.preventDefault();
+        const {
+            item: {
+                id,
+                itemIds,
+            },
+        } = this.props;
         Dispatcher.dispatch({
-            type: TaskActions.MULTI_SET_STATUS,
-            ids: this.props.item.itemIds,
+            type: ShoppingActions.SET_INGREDIENT_STATUS,
+            id,
+            itemIds,
             status,
         });
     }
 
     onUndoSetStatus(e) {
         if (e) e.preventDefault();
+        const {
+            item: {
+                id,
+                itemIds,
+            },
+        } = this.props;
         Dispatcher.dispatch({
-            type: TaskActions.UNDO_MULTI_SET_STATUS,
-            ids: this.props.item.itemIds,
+            type: ShoppingActions.UNDO_SET_INGREDIENT_STATUS,
+            id,
+            itemIds,
         });
     }
 

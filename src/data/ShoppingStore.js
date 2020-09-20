@@ -1,6 +1,9 @@
 import { ReduceStore } from "flux/utils";
 import PropTypes from "prop-types";
-import { toggleDistinct } from "../util/arrayAsSet";
+import {
+    removeDistinct,
+    toggleDistinct,
+} from "../util/arrayAsSet";
 import { clientOrDatabaseIdType } from "../util/ClientId";
 import typedStore from "../util/typedStore";
 import Dispatcher from "./dispatcher";
@@ -52,6 +55,13 @@ class ShoppingStore extends ReduceStore {
                 return {
                     ...state,
                     expandedIds: toggleDistinct(state.expandedIds, action.id),
+                };
+            }
+
+            case ShoppingActions.SET_INGREDIENT_STATUS: {
+                return {
+                    ...state,
+                    expandedIds: removeDistinct(state.expandedIds, action.id),
                 };
             }
 

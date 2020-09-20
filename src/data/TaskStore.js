@@ -958,9 +958,9 @@ class TaskStore extends ReduceStore {
                 return state;
             }
 
-            case TaskActions.MULTI_SET_STATUS: {
+            case ShoppingActions.SET_INGREDIENT_STATUS: {
                 userAction();
-                return action.ids.reduce((s, id) =>
+                return action.itemIds.reduce((s, id) =>
                     queueStatusUpdate(s, id, action.status), state);
             }
 
@@ -977,9 +977,9 @@ class TaskStore extends ReduceStore {
                 return cancelStatusUpdate(state, action.id);
             }
 
-            case TaskActions.UNDO_MULTI_SET_STATUS: {
+            case ShoppingActions.UNDO_SET_INGREDIENT_STATUS: {
                 userAction();
-                return action.ids.reduce((s, id) =>
+                return action.itemIds.reduce((s, id) =>
                     cancelStatusUpdate(s, id), state);
             }
 

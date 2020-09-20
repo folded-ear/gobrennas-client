@@ -30,8 +30,6 @@ const TaskActions = {
         status: PropTypes.string.isRequired,
     }),
     UNDO_SET_STATUS: "task/undo-set-status",
-    MULTI_SET_STATUS: "task/multi-set-status",
-    UNDO_MULTI_SET_STATUS: "task/undo-multi-set-status",
     MOVE_NEXT: "task/move-next",
     MOVE_PREVIOUS: "task/move-previous",
     RENAME_TASK: "task/rename-task",

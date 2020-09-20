@@ -8,6 +8,8 @@ const ShoppingActions = {
     DELETE_ITEM: TaskActions.DELETE_TASK_FORWARD,
     UNDO_DELETE: TaskActions.UNDO_DELETE,
     TOGGLE_EXPANDED: "shopping/toggle-expanded",
+    SET_INGREDIENT_STATUS: "shopping/set-ingredient-status",
+    UNDO_SET_INGREDIENT_STATUS: "shopping/undo-set-ingredient-status",
 };
 
 export default ShoppingActions;
