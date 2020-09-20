@@ -46,7 +46,13 @@ const groupItems = plans => {
             l.path.splice(l.path.length - 1, 1);
         }
     }
-    const byIngredient = groupBy(leaves, it => it.ingredientId);
+    const ingLookup = new Map();
+    const byIngredient = groupBy(leaves, it => {
+        if (it.ingredientId) {
+            ingLookup.set(it.ingredientId, it.ingredient);
+        }
+        return it.ingredientId;
+    });
     let unparsed = [];
     if (byIngredient.has(undefined)) {
         unparsed = byIngredient.get(undefined)
@@ -58,14 +64,20 @@ const groupItems = plans => {
     for (const [ingId, items] of byIngredient) {
         const neededItems = items.filter(it => it.status === TaskStatus.NEEDED);
         if (neededItems.length === 0) continue;
-        const byUnit = groupBy(neededItems, it => it.uomId);
+        const unitLookup = new Map();
+        const byUnit = groupBy(neededItems, it => {
+            if (it.uomId) {
+                unitLookup.set(it.uomId, it.units);
+            }
+            return it.uomId;
+        });
         const quantities = [];
         for (const uomId of byUnit.keys()) {
             quantities.push({
                 quantity: byUnit.get(uomId)
                     .reduce((q, it) => q + it.quantity, 0),
-                // todo: get the uom name?
                 uomId,
+                units: unitLookup.get(uomId),
             });
         }
         const expanded = ShoppingStore.isIngredientExpanded(ingId);
@@ -73,8 +85,7 @@ const groupItems = plans => {
             _type: "ingredient",
             id: ingId,
             itemIds: items.map(it => it.id),
-            // todo: get the ing name...
-            name: `ingredient#${ingId}`,
+            name: ingLookup.get(ingId),
             quantities,
             expanded,
             pending: items.some(it => it.pending),

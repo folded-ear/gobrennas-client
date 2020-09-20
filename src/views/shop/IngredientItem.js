@@ -129,7 +129,6 @@ class IngredientItem extends React.PureComponent {
                 next={TaskStatus.DELETED}
                 onClick={e => this.onSetStatus(TaskStatus.DELETED, e)}
             />;
-        addonBefore.push();
         return <Item
             prefix={addonBefore}
             suffix={addonAfter}
@@ -150,15 +149,9 @@ class IngredientItem extends React.PureComponent {
                         <Quantity
                             key={q.uomId || "count"}
                             quantity={q.quantity}
-                            units={q.uomId ? `u#${q.uomId}` : null}
+                            units={q.units}
                         />)
                     }
-                </OxfordList>
-                <OxfordList
-                    prefix=" ["
-                    suffix="]"
-                >
-                    {item.itemIds}
                 </OxfordList>
             </ListItemText>
         </Item>;

@@ -1178,7 +1178,9 @@ TaskStore.stateTypes = {
             // item
             quantity: PropTypes.number,
             uomId: PropTypes.number,
+            units: PropTypes.string,
             ingredientId: PropTypes.number,
+            ingredient: PropTypes.string,
             preparation: PropTypes.string,
             // client-side
             _expanded: PropTypes.bool,
