@@ -4,6 +4,7 @@ import PropTypes from "prop-types";
 import React from "react";
 import Dispatcher from "../../data/dispatcher";
 import ShoppingActions from "../../data/ShoppingActions";
+import TaskActions from "../../data/TaskActions";
 import TaskStatus from "../../data/TaskStatus";
 import { clientOrDatabaseIdType } from "../../util/ClientId";
 import LoadingIconButton from "../common/LoadingIconButton";
@@ -23,7 +24,26 @@ class IngredientItem extends React.PureComponent {
 
     constructor(props) {
         super(props);
+        this.onSetStatus = this.onSetStatus.bind(this);
+        this.onUndoSetStatus = this.onUndoSetStatus.bind(this);
         this.onToggleExpanded = this.onToggleExpanded.bind(this);
+    }
+
+    onSetStatus(status, e) {
+        if (e) e.preventDefault();
+        Dispatcher.dispatch({
+            type: TaskActions.MULTI_SET_STATUS,
+            ids: this.props.item.itemIds,
+            status,
+        });
+    }
+
+    onUndoSetStatus(e) {
+        if (e) e.preventDefault();
+        Dispatcher.dispatch({
+            type: TaskActions.UNDO_MULTI_SET_STATUS,
+            ids: this.props.item.itemIds,
+        });
     }
 
     onToggleExpanded(e) {
@@ -33,7 +53,6 @@ class IngredientItem extends React.PureComponent {
             id: this.props.item.id,
         });
     }
-
 
     render() {
         const {
@@ -45,7 +64,6 @@ class IngredientItem extends React.PureComponent {
             expanded,
             pending,
             deleting,
-            completing,
             acquiring,
         } = item;
         let addonBefore = [
@@ -65,21 +83,21 @@ class IngredientItem extends React.PureComponent {
             addonBefore.push(
                 <StatusIconButton
                     key="acquire"
-                    id={item.id}
                     current={TaskStatus.NEEDED}
                     next={TaskStatus.ACQUIRED}
+                    onClick={e => this.onSetStatus(TaskStatus.ACQUIRED, e)}
                 />);
         }
-        const addonAfter = deleting || completing || acquiring
+        const addonAfter = deleting || acquiring
             ? <DontChangeStatusButton
                 key="delete"
-                id={item.id}
-                next={item._next_status}
+                next={deleting ? TaskStatus.DELETED : TaskStatus.ACQUIRED}
+                onClick={e => this.onUndoSetStatus(e)}
             />
             : <StatusIconButton
                 key="delete"
-                id={item.id}
                 next={TaskStatus.DELETED}
+                onClick={e => this.onSetStatus(TaskStatus.DELETED, e)}
             />;
         addonBefore.push();
         return <Item
@@ -88,7 +106,6 @@ class IngredientItem extends React.PureComponent {
             selected={active}
             className={classnames({
                 [classes.acquiring]: acquiring,
-                [classes.completing]: completing,
                 [classes.deleting]: deleting,
             })}
         >

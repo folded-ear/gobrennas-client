@@ -28,7 +28,6 @@ class TaskItem extends React.PureComponent {
             question,
             pending,
             deleting,
-            completing,
             acquiring,
         } = item;
         let addonBefore = [
@@ -58,7 +57,7 @@ class TaskItem extends React.PureComponent {
                     next={TaskStatus.ACQUIRED}
                 />);
         }
-        const addonAfter = deleting || completing || acquiring
+        const addonAfter = deleting || acquiring
             ? <DontChangeStatusButton
                 key="delete"
                 id={item.id}
@@ -77,7 +76,6 @@ class TaskItem extends React.PureComponent {
             className={classnames({
                 [classes.question]: question,
                 [classes.acquiring]: acquiring,
-                [classes.completing]: completing,
                 [classes.deleting]: deleting,
             })}
         >

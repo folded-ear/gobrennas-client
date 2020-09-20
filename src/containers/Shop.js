@@ -72,9 +72,8 @@ const groupItems = plans => {
             quantities,
             expanded,
             pending: items.some(it => it.pending),
-            deleting: items.every(it => it.deleting),
-            completing: items.every(it => it.completing),
-            acquiring: items.every(it => it.acquiring),
+            acquiring: items.every(it => it.acquiring || it.status === TaskStatus.ACQUIRED),
+            deleting: items.every(it => it.deleting || it.status === TaskStatus.DELETED),
         });
         if (expanded) {
             theTree.push(...items.map(it => ({

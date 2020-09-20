@@ -34,7 +34,6 @@ const StatusIconButton = props => {
                 type: TaskActions.SET_STATUS,
                 id: props.id,
                 status: props.next,
-                focusDelta: 1,
             });
         }}
         {...props}
@@ -44,7 +43,7 @@ const StatusIconButton = props => {
 };
 
 StatusIconButton.propTypes = {
-    id: clientOrDatabaseIdType.isRequired,
+    id: clientOrDatabaseIdType,
     current: PropTypes.oneOf(Object.keys(TaskStatus)),
     next: PropTypes.oneOf(Object.keys(TaskStatus)).isRequired,
 };

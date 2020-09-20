@@ -96,7 +96,6 @@ class Raw extends React.PureComponent {
             question,
             pending,
             deleting,
-            completing,
             acquiring,
         } = item;
         let addonBefore = [
@@ -120,7 +119,7 @@ class Raw extends React.PureComponent {
                     next={TaskStatus.ACQUIRED}
                 />);
         }
-        const addonAfter = deleting || completing || acquiring
+        const addonAfter = deleting || acquiring
             ? <DontChangeStatusButton
                 key="delete"
                 id={item.id}

@@ -444,6 +444,8 @@ const queueStatusUpdate = (state, id, status) => {
         id,
         status,
     );
+    if (t._next_status == null && t.status === status) return state;
+    if (t._next_statu === status) return state;
     const isDelete = willStatusDelete(status);
     let nextLO = lo.map(t => ({
         ...t,
@@ -476,6 +478,7 @@ const queueStatusUpdate = (state, id, status) => {
 };
 
 const cancelStatusUpdate = (state, id) => {
+    if (!statusUpdatesToFlush.has(id)) return state;
     statusUpdatesToFlush.delete(id);
     return {
         ...state,
@@ -956,6 +959,12 @@ class TaskStore extends ReduceStore {
                 return state;
             }
 
+            case TaskActions.MULTI_SET_STATUS: {
+                userAction();
+                return action.ids.reduce((s, id) =>
+                    queueStatusUpdate(s, id, action.status), state);
+            }
+
             case TaskActions.DELETE_SELECTED: {
                 const tasks = getOrderedBlock(state)
                     .map(([t]) => t);
@@ -964,8 +973,16 @@ class TaskStore extends ReduceStore {
                 return focusDelta(state, tasks[0].id, 1);
             }
 
-            case TaskActions.UNDO_SET_STATUS:
+            case TaskActions.UNDO_SET_STATUS: {
+                userAction();
                 return cancelStatusUpdate(state, action.id);
+            }
+
+            case TaskActions.UNDO_MULTI_SET_STATUS: {
+                userAction();
+                return action.ids.reduce((s, id) =>
+                    cancelStatusUpdate(s, id), state);
+            }
 
             case TaskActions.STATUS_UPDATED: {
                 return statusUpdated(state, action.id, action.status, action.data);

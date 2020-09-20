@@ -15,6 +15,5 @@ export const itemPropTypes = {
     ...baseItemPropTypes,
     pending: PropTypes.bool.isRequired,
     deleting: PropTypes.bool.isRequired,
-    completing: PropTypes.bool.isRequired,
     acquiring: PropTypes.bool.isRequired,
 };

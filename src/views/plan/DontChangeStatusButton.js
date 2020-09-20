@@ -34,7 +34,7 @@ const DontChangeStatusButton = props => {
 };
 
 DontChangeStatusButton.propTypes = {
-    id: clientOrDatabaseIdType.isRequired,
+    id: clientOrDatabaseIdType,
     next: PropTypes.oneOf(Object.keys(TaskStatus)).isRequired,
 };
 
