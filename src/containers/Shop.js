@@ -4,6 +4,7 @@ import PlanStore from "../data/PlanStore";
 import ShoppingStore from "../data/ShoppingStore";
 import {
     isParent,
+    isQuestionable,
     isSection,
 } from "../data/tasks";
 import TaskStatus from "../data/TaskStatus";
@@ -17,10 +18,17 @@ const gatherLeaves = item => {
     }];
     return PlanStore.getChildItemLOs(item.id)
         .filter(lo => lo.hasValue())
-        .map(lo => ({
-            ...lo.getValueEnforcing(),
-            lo,
-        }))
+        .map(lo => {
+            const item = lo.getValueEnforcing();
+            return {
+                ...item,
+                question: isQuestionable(item),
+                pending: !lo.isDone(),
+                deleting: lo.isDeleting() && item._next_status === TaskStatus.DELETED,
+                completing: lo.isDeleting() && item._next_status === TaskStatus.COMPLETED,
+                acquiring: lo.isUpdating() && item._next_status === TaskStatus.ACQUIRED,
+            };
+        })
         .filter(it => !isSection(it))
         .flatMap(gatherLeaves)
         .map(it => ({
@@ -42,9 +50,9 @@ const groupItems = plans => {
     const theTree = [];
     // todo: sort by ingredient order...
     for (const [ingId, items] of byIngredient) {
-        const byUnit = groupBy(
-            items.filter(it => it.status === TaskStatus.NEEDED),
-            it => it.uomId);
+        const neededItems = items.filter(it => it.status === TaskStatus.NEEDED);
+        if (neededItems.length === 0) continue;
+        const byUnit = groupBy(neededItems, it => it.uomId);
         const quantities = [];
         for (const uomId of byUnit.keys()) {
             quantities.push({
@@ -54,6 +62,7 @@ const groupItems = plans => {
                 uomId,
             });
         }
+        const expanded = ShoppingStore.isIngredientExpanded(ingId);
         theTree.push({
             _type: "ingredient",
             id: ingId,
@@ -61,12 +70,18 @@ const groupItems = plans => {
             // todo: get the ing name...
             name: `ingredient#${ingId}`,
             quantities,
+            expanded,
+            pending: items.some(it => it.pending),
+            deleting: items.every(it => it.deleting),
+            completing: items.every(it => it.completing),
+            acquiring: items.every(it => it.acquiring),
         });
-        // todo: if expanded...
-        theTree.push(...items.map(it => ({
-            _type: "item",
-            ...it,
-        })));
+        if (expanded) {
+            theTree.push(...items.map(it => ({
+                _type: "item",
+                ...it,
+            })));
+        }
     }
     // add the garbage at the bottom
     theTree.push(...unparsed.map(it => ({

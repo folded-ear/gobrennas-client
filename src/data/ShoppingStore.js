@@ -16,6 +16,7 @@ class ShoppingStore extends ReduceStore {
         return {
             selectedPlanIds: apid ? [apid] : [], // Array<ID>
             activeId: null, // ID
+            expandedIds: [], // Array<ID>
         };
     }
 
@@ -50,6 +51,13 @@ class ShoppingStore extends ReduceStore {
                 return state;
             }
 
+            case ShoppingActions.TOGGLE_EXPANDED: {
+                return {
+                    ...state,
+                    expandedIds: toggleDistinct(state.expandedIds, action.id),
+                };
+            }
+
             default:
                 return state;
         }
@@ -74,11 +82,16 @@ class ShoppingStore extends ReduceStore {
         };
     }
 
+    isIngredientExpanded(id) {
+        return this.getState().expandedIds.indexOf(id) >= 0;
+    }
+
 }
 
 ShoppingStore.stateTypes = {
     selectedPlanIds: PropTypes.arrayOf(clientOrDatabaseIdType).isRequired,
     activeId: PropTypes.number,
+    expandedIds: PropTypes.arrayOf(PropTypes.number).isRequired,
 };
 
 export default typedStore(new ShoppingStore(Dispatcher));

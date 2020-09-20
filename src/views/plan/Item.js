@@ -6,7 +6,7 @@ import PropTypes from "prop-types";
 import React from "react";
 
 const Item = ({
-    depth,
+    depth = 0,
     prefix,
     suffix,
     children,
@@ -38,7 +38,7 @@ const Item = ({
     </ListItem>;
 
 Item.propTypes = {
-    depth: PropTypes.number.isRequired,
+    depth: PropTypes.number,
     prefix: PropTypes.node,
     children: PropTypes.node.isRequired,
     suffix: PropTypes.node,

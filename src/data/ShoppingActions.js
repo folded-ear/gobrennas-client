@@ -9,6 +9,7 @@ const ShoppingActions = {
     FOCUS_NEXT: "shopping/focus-next",
     DELETE_ITEM: TaskActions.DELETE_TASK_FORWARD,
     UNDO_DELETE: TaskActions.UNDO_DELETE,
+    TOGGLE_EXPANDED: "shopping/toggle-expanded",
 };
 
 export default ShoppingActions;

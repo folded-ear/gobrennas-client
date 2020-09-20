@@ -5,7 +5,6 @@ import PropTypes from "prop-types";
 import React from "react";
 import Dispatcher from "../../data/dispatcher";
 import ShoppingActions from "../../data/ShoppingActions";
-import { isQuestionable } from "../../data/tasks";
 import TaskStatus from "../../data/TaskStatus";
 import LoadingIconButton from "../common/LoadingIconButton";
 import PlaceholderIconButton from "../common/PlaceholderIconButton";
@@ -13,6 +12,10 @@ import DontChangeStatusButton from "../plan/DontChangeStatusButton";
 import Item from "../plan/Item";
 import StatusIconButton from "../plan/StatusIconButton";
 import withItemStyles from "../plan/withItemStyles";
+import {
+    itemPropTypes,
+    tuplePropTypes,
+} from "./types";
 
 class Raw extends React.PureComponent {
 
@@ -86,19 +89,23 @@ class Raw extends React.PureComponent {
     render() {
         const {
             item,
-            depth,
             active,
             classes,
         } = this.props;
-        const lo = item.lo;
-        const question = isQuestionable(item);
+        const {
+            question,
+            pending,
+            deleting,
+            completing,
+            acquiring,
+        } = item;
         let addonBefore = [
             <PlaceholderIconButton
                 key="collapse"
                 size="small"
             />
         ];
-        if (!lo.isDone()) {
+        if (pending) {
             addonBefore.push(
                 <LoadingIconButton
                     key="complete"
@@ -113,9 +120,6 @@ class Raw extends React.PureComponent {
                     next={TaskStatus.ACQUIRED}
                 />);
         }
-        const deleting = lo.isDeleting() && item._next_status === TaskStatus.DELETED;
-        const completing = lo.isDeleting() && item._next_status === TaskStatus.COMPLETED;
-        const acquiring = lo.isUpdating() && item._next_status === TaskStatus.ACQUIRED;
         const addonAfter = deleting || completing || acquiring
             ? <DontChangeStatusButton
                 key="delete"
@@ -129,15 +133,14 @@ class Raw extends React.PureComponent {
             />;
 
         return <Item
-            depth={depth}
             prefix={addonBefore}
             suffix={addonAfter}
-            selected={active}
             onClick={this.onClick}
             className={classnames({
                 [classes.question]: question,
+                [classes.active]: active,
+                [classes.acquiring]: acquiring,
                 [classes.deleting]: deleting,
-                [classes.completing]: completing,
             })}
         >
             {active
@@ -160,10 +163,11 @@ class Raw extends React.PureComponent {
 }
 
 Raw.propTypes = {
-    depth: PropTypes.number.isRequired,
-    item: PropTypes.object.isRequired,
-    active: PropTypes.bool,
-    classes: PropTypes.object.isRequired,
+    ...tuplePropTypes,
+    item: PropTypes.shape({
+        ...itemPropTypes,
+        question: PropTypes.bool.isRequired,
+    }).isRequired,
 };
 
 export default withItemStyles(Raw);
