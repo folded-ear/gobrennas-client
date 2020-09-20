@@ -1,12 +1,5 @@
-import {
-    IconButton,
-    ListItemText,
-} from "@material-ui/core";
+import { ListItemText } from "@material-ui/core";
 import Input from "@material-ui/core/Input";
-import {
-    ArrowDropDown,
-    ArrowRight,
-} from "@material-ui/icons";
 import classnames from "classnames";
 import PropTypes from "prop-types";
 import React from "react";
@@ -23,6 +16,7 @@ import TaskStore from "../../data/TaskStore";
 import LoadObject from "../../util/LoadObject";
 import LoadingIconButton from "../common/LoadingIconButton";
 import PlaceholderIconButton from "../common/PlaceholderIconButton";
+import CollapseIconButton from "./CollapseIconButton";
 import DontChangeStatusButton from "./DontChangeStatusButton";
 import Item from "./Item";
 import StatusIconButton from "./StatusIconButton";
@@ -225,15 +219,12 @@ class Task extends React.PureComponent {
         const question = isQuestionable(task);
         let addonBefore = [];
         if (parent) {
-            const CollapseIcon = expanded ? ArrowDropDown : ArrowRight;
             addonBefore.push(
-                <IconButton
+                <CollapseIconButton
                     key="collapse"
-                    size="small"
+                    expanded={expanded}
                     onClick={this.onToggleExpanded}
-                >
-                    <CollapseIcon />
-                </IconButton>);
+                />);
         } else {
             addonBefore.push(
                 <PlaceholderIconButton
