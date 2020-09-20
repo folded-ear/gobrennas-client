@@ -40,6 +40,12 @@ const gatherLeaves = item => {
 const groupItems = plans => {
     const leaves = plans
         .flatMap(gatherLeaves);
+    if (plans.length === 1) {
+        // kill the final path item; it's pointless
+        for (const l of leaves) {
+            l.path.splice(l.path.length - 1, 1);
+        }
+    }
     const byIngredient = groupBy(leaves, it => it.ingredientId);
     let unparsed = [];
     if (byIngredient.has(undefined)) {
@@ -78,6 +84,7 @@ const groupItems = plans => {
         if (expanded) {
             theTree.push(...items.map(it => ({
                 _type: "item",
+                depth: 1,
                 ...it,
             })));
         }
@@ -85,6 +92,7 @@ const groupItems = plans => {
     // add the garbage at the bottom
     theTree.push(...unparsed.map(it => ({
         _type: "raw",
+        depth: 0,
         ...it,
     })));
     return theTree;

@@ -8,8 +8,7 @@ import ShoppingActions from "../../data/ShoppingActions";
 import { clientOrDatabaseIdType } from "../../util/ClientId";
 import loadObjectOf from "../../util/loadObjectOf";
 import LoadingIndicator from "../common/LoadingIndicator";
-import Ingredient from "./Ingredient";
-import Raw from "./Raw";
+import Ingredient from "./IngredientItem";
 import TaskItem from "./TaskItem";
 import {
     baseItemPropTypes,
@@ -63,15 +62,10 @@ class ShopList extends React.PureComponent {
                             item={it}
                             active={isActive(it)}
                         />;
-                    } else if (it._type === "item") {
+                    } else {
                         return <TaskItem
-                            key={it.id + it._type}
-                            item={it}
-                            active={isActive(it)}
-                        />;
-                    } else { // raw (or anything else)
-                        return <Raw
-                            key={it.id + it._type}
+                            key={it.id}
+                            depth={it.depth}
                             item={it}
                             active={isActive(it)}
                         />;
