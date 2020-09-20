@@ -44,13 +44,6 @@ class ShoppingStore extends ReduceStore {
                 };
             }
 
-            case ShoppingActions.FOCUS_NEXT:
-            case ShoppingActions.FOCUS_PREVIOUS: {
-                // eslint-disable-next-line no-console
-                console.warn("Do relative focus things!", action);
-                return state;
-            }
-
             case ShoppingActions.TOGGLE_EXPANDED: {
                 return {
                     ...state,
