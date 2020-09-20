@@ -15,7 +15,7 @@ class ShoppingStore extends ReduceStore {
         const apid = PreferencesStore.getActivePlan();
         return {
             selectedPlanIds: apid ? [apid] : [], // Array<ID>
-            activeId: null, // ID
+            activeItem: null, // {id: ID, type: String}
             expandedIds: [], // Array<ID>
         };
     }
@@ -40,7 +40,11 @@ class ShoppingStore extends ReduceStore {
             case ShoppingActions.FOCUS: {
                 return {
                     ...state,
-                    activeId: action.id,
+                    activeItem: {
+                        id: action.id,
+                        type: action.itemType,
+                    },
+
                 };
             }
 
@@ -68,11 +72,7 @@ class ShoppingStore extends ReduceStore {
     }
 
     getActiveItem() {
-        const s = this.getState();
-        // todo: make this not suck
-        return {
-            id: s.activeId,
-        };
+        return this.getState().activeItem;
     }
 
     isIngredientExpanded(id) {
@@ -83,7 +83,10 @@ class ShoppingStore extends ReduceStore {
 
 ShoppingStore.stateTypes = {
     selectedPlanIds: PropTypes.arrayOf(clientOrDatabaseIdType).isRequired,
-    activeId: PropTypes.number,
+    activeItem: PropTypes.shape({
+        id: PropTypes.number.isRequired,
+        type: PropTypes.oneOf(["ingredient", "task"]).isRequired,
+    }),
     expandedIds: PropTypes.arrayOf(PropTypes.number).isRequired,
 };
 

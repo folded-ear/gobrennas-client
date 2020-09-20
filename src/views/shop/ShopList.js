@@ -87,7 +87,7 @@ ShopList.propTypes = {
             }))).isRequired,
     itemTuples: PropTypes.arrayOf(
         PropTypes.shape({
-            _type: PropTypes.oneOf(["ingredient", "item", "raw"]).isRequired,
+            _type: PropTypes.oneOf(["ingredient", "task"]),
             ...itemPropTypes,
             // for ingredient
             itemIds: PropTypes.arrayOf(clientOrDatabaseIdType),

@@ -52,6 +52,7 @@ class TaskItem extends React.PureComponent {
         Dispatcher.dispatch({
             type: ShoppingActions.FOCUS,
             id: item.id,
+            itemType: "task",
         });
     }
 

@@ -83,7 +83,7 @@ const groupItems = plans => {
         });
         if (expanded) {
             theTree.push(...items.map(it => ({
-                _type: "item",
+                _type: "task",
                 depth: 1,
                 ...it,
             })));
@@ -91,7 +91,7 @@ const groupItems = plans => {
     }
     // add the garbage at the bottom
     theTree.push(...unparsed.map(it => ({
-        _type: "raw",
+        _type: "task",
         depth: 0,
         ...it,
     })));
@@ -115,7 +115,7 @@ export default Container.createFunctional(
                 : [],
             isActive: activeItem == null
                 ? () => false
-                : itemOrId => (itemOrId.id || itemOrId) === activeItem.id,
+                : it => it.id === activeItem.id && it._type === activeItem.type,
         };
     }
 );

@@ -27,6 +27,7 @@ class IngredientItem extends React.PureComponent {
         this.onSetStatus = this.onSetStatus.bind(this);
         this.onUndoSetStatus = this.onUndoSetStatus.bind(this);
         this.onToggleExpanded = this.onToggleExpanded.bind(this);
+        this.onClick = this.onClick.bind(this);
     }
 
     onSetStatus(status, e) {
@@ -51,6 +52,22 @@ class IngredientItem extends React.PureComponent {
         Dispatcher.dispatch({
             type: ShoppingActions.TOGGLE_EXPANDED,
             id: this.props.item.id,
+        });
+    }
+
+    onClick(e) {
+        const {
+            active,
+            item,
+        } = this.props;
+        if (active) return;
+        e.preventDefault();
+        e.stopPropagation();
+        if (e.shiftKey) return;
+        Dispatcher.dispatch({
+            type: ShoppingActions.FOCUS,
+            id: item.id,
+            itemType: "ingredient",
         });
     }
 
@@ -104,6 +121,7 @@ class IngredientItem extends React.PureComponent {
             prefix={addonBefore}
             suffix={addonAfter}
             selected={active}
+            onClick={this.onClick}
             className={classnames({
                 [classes.acquiring]: acquiring,
                 [classes.deleting]: deleting,

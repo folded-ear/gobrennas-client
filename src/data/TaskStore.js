@@ -900,10 +900,6 @@ class TaskStore extends ReduceStore {
             }
 
             case TaskActions.RENAME_TASK:
-                invariant(
-                    action.id === state.activeTaskId,
-                    "Renaming a non-active task is a bug.",
-                );
                 userAction();
                 return renameTask(state, action.id, action.name);
 
@@ -911,9 +907,12 @@ class TaskStore extends ReduceStore {
                 return taskUpdated(state, action.id, action.data);
             }
 
-            case TaskActions.FOCUS:
-            case ShoppingActions.FOCUS: {
+            case TaskActions.FOCUS: {
                 state = focusTask(state, action.id);
+                return flushTasksToRename(state);
+            }
+
+            case ShoppingActions.FOCUS: {
                 return flushTasksToRename(state);
             }
 
