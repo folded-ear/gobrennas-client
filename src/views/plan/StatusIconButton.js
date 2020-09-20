@@ -1,13 +1,11 @@
-import {
-    Check,
-    DeleteForeverOutlined,
-    QuestionAnswer,
-} from "@material-ui/icons";
 import PropTypes from "prop-types";
 import React from "react";
 import Dispatcher from "../../data/dispatcher";
 import TaskActions from "../../data/TaskActions";
-import TaskStatus, { colorByStatus } from "../../data/TaskStatus";
+import TaskStatus, {
+    getColorForStatus,
+    getIconForStatus,
+} from "../../data/TaskStatus";
 import { clientOrDatabaseIdType } from "../../util/ClientId";
 import { coloredIconButton } from "../common/colors";
 
@@ -18,21 +16,15 @@ const findButton = (next, curr) => {
     }
     if (!buttonLookup[next].hasOwnProperty(curr)) {
         buttonLookup[next][curr] = coloredIconButton(
-            colorByStatus[next],
-            colorByStatus[curr]);
+            getColorForStatus(next),
+            getColorForStatus(curr));
     }
     return buttonLookup[next][curr];
 };
 
-const iconLookup = {
-    [TaskStatus.ACQUIRED]: Check,
-    [TaskStatus.COMPLETED]: Check,
-    [TaskStatus.DELETED]: DeleteForeverOutlined,
-};
-
 const StatusIconButton = props => {
     const Btn = findButton(props.next, props.current || props.next);
-    const Icn = iconLookup[props.next] || QuestionAnswer;
+    const Icn = getIconForStatus(props.next);
     return <Btn
         aria-label={props.next.toLowerCase()}
         size="small"

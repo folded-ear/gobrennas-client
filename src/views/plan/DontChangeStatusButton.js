@@ -2,14 +2,14 @@ import PropTypes from "prop-types";
 import React from "react";
 import Dispatcher from "../../data/dispatcher";
 import TaskActions from "../../data/TaskActions";
-import TaskStatus, { colorByStatus } from "../../data/TaskStatus";
+import TaskStatus, { getColorForStatus } from "../../data/TaskStatus";
 import { clientOrDatabaseIdType } from "../../util/ClientId";
 import { coloredButton } from "../common/colors";
 
 const buttonLookup = {}; // Map<next, Button>
 const findButton = next => {
     if (!buttonLookup.hasOwnProperty(next)) {
-        buttonLookup[next] = coloredButton(colorByStatus[next]);
+        buttonLookup[next] = coloredButton(getColorForStatus(next));
     }
     return buttonLookup[next];
 };

@@ -1,3 +1,9 @@
+import { deepPurple } from "@material-ui/core/colors";
+import {
+    Check,
+    DeleteForeverOutlined,
+    QuestionAnswer,
+} from "@material-ui/icons";
 import {
     acquiredColor,
     completeColor,
@@ -15,11 +21,21 @@ const TaskStatus = {
 export const willStatusDelete = status =>
     status === TaskStatus.COMPLETED || status === TaskStatus.DELETED;
 
-export const colorByStatus = {
+const colorByStatus = {
     [TaskStatus.NEEDED]: neededColor,
     [TaskStatus.ACQUIRED]: acquiredColor,
     [TaskStatus.COMPLETED]: completeColor,
     [TaskStatus.DELETED]: deleteColor,
 };
+export const getColorForStatus = status =>
+    colorByStatus[status] || deepPurple;
+
+const iconByStatus = {
+    [TaskStatus.ACQUIRED]: Check,
+    [TaskStatus.COMPLETED]: Check,
+    [TaskStatus.DELETED]: DeleteForeverOutlined,
+};
+export const getIconForStatus = status =>
+    iconByStatus[status] || QuestionAnswer;
 
 export default TaskStatus;

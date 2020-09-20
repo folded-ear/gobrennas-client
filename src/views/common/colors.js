@@ -3,6 +3,7 @@ import {
     IconButton,
     withStyles,
 } from "@material-ui/core";
+import { deepPurple } from "@material-ui/core/colors";
 
 export {
     yellow as questionColor,
@@ -12,6 +13,18 @@ export {
     lime as acquiredColor,
     red as deleteColor,
 } from "@material-ui/core/colors";
+
+export const coloredIconNoOp = palette =>
+    withStyles({
+        root: {
+            color: palette[600],
+            cursor: "not-allowed",
+            "&:hover": {
+                color: palette[600],
+                backgroundColor: "transparent",
+            },
+        }
+    })(IconButton);
 
 export const coloredIconButton = (palette, restingPalette=palette) =>
     withStyles(theme => ({
@@ -24,7 +37,7 @@ export const coloredIconButton = (palette, restingPalette=palette) =>
         },
     }))(IconButton);
 
-export const coloredButton = palette =>
+export const coloredButton = (palette = deepPurple) =>
     // this blindly copied from https://v4-5-2.material-ui.com/components/buttons/#customized-buttons
     withStyles(theme => ({
         root: {

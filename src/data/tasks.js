@@ -14,7 +14,7 @@ export const isQuestionable = taskOrName =>
     endsWith(taskOrName, "?");
 
 export const isParent = task =>
-    task.subtaskIds && task.subtaskIds.length > 0;
+    !!(task.subtaskIds && task.subtaskIds.length > 0);
 
 export const isExpanded = task =>
-    isParent(task) && task._expanded;
+    isParent(task) && !!task._expanded;
