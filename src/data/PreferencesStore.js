@@ -51,6 +51,10 @@ class PreferencesStore extends ReduceStore {
         return this.getState().get(Prefs.ACTIVE_TASK_LIST);
     }
 
+    getActivePlan() {
+        return this.getActiveTaskList();
+    }
+
     isDevMode() {
         return this.getState().get(Prefs.DEV_MODE);
     }

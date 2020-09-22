@@ -28,7 +28,6 @@ const TaskActions = {
     SET_STATUS: typedAction("task/set-status", {
         id: clientOrDatabaseIdType.isRequired,
         status: PropTypes.string.isRequired,
-        focusDelta: PropTypes.number, // maybe?
     }),
     UNDO_SET_STATUS: "task/undo-set-status",
     MOVE_NEXT: "task/move-next",

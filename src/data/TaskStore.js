@@ -18,6 +18,7 @@ import Dispatcher from "./dispatcher";
 import PreferencesStore from "./PreferencesStore";
 import RecipeActions from "./RecipeActions";
 import RouteStore from "./RouteStore";
+import ShoppingActions from "./ShoppingActions";
 import TaskActions from "./TaskActions";
 import TaskApi from "./TaskApi";
 import {
@@ -443,6 +444,8 @@ const queueStatusUpdate = (state, id, status) => {
         id,
         status,
     );
+    if (t._next_status == null && t.status === status) return state;
+    if (t._next_statu === status) return state;
     const isDelete = willStatusDelete(status);
     let nextLO = lo.map(t => ({
         ...t,
@@ -475,6 +478,7 @@ const queueStatusUpdate = (state, id, status) => {
 };
 
 const cancelStatusUpdate = (state, id) => {
+    if (!statusUpdatesToFlush.has(id)) return state;
     statusUpdatesToFlush.delete(id);
     return {
         ...state,
@@ -896,10 +900,6 @@ class TaskStore extends ReduceStore {
             }
 
             case TaskActions.RENAME_TASK:
-                invariant(
-                    action.id === state.activeTaskId,
-                    "Renaming a non-active task is a bug.",
-                );
                 userAction();
                 return renameTask(state, action.id, action.name);
 
@@ -907,9 +907,15 @@ class TaskStore extends ReduceStore {
                 return taskUpdated(state, action.id, action.data);
             }
 
-            case TaskActions.FOCUS:
+            case TaskActions.FOCUS: {
                 state = focusTask(state, action.id);
                 return flushTasksToRename(state);
+            }
+
+            case ShoppingActions.FOCUS: {
+                return flushTasksToRename(state);
+            }
+
             case TaskActions.FOCUS_NEXT:
                 state = focusDelta(state, state.activeTaskId, 1);
                 return flushTasksToRename(state);
@@ -952,6 +958,12 @@ class TaskStore extends ReduceStore {
                 return state;
             }
 
+            case ShoppingActions.SET_INGREDIENT_STATUS: {
+                userAction();
+                return action.itemIds.reduce((s, id) =>
+                    queueStatusUpdate(s, id, action.status), state);
+            }
+
             case TaskActions.DELETE_SELECTED: {
                 const tasks = getOrderedBlock(state)
                     .map(([t]) => t);
@@ -960,8 +972,16 @@ class TaskStore extends ReduceStore {
                 return focusDelta(state, tasks[0].id, 1);
             }
 
-            case TaskActions.UNDO_SET_STATUS:
+            case TaskActions.UNDO_SET_STATUS: {
+                userAction();
                 return cancelStatusUpdate(state, action.id);
+            }
+
+            case ShoppingActions.UNDO_SET_INGREDIENT_STATUS: {
+                userAction();
+                return action.itemIds.reduce((s, id) =>
+                    cancelStatusUpdate(s, id), state);
+            }
 
             case TaskActions.STATUS_UPDATED: {
                 return statusUpdated(state, action.id, action.status, action.data);
@@ -1158,7 +1178,9 @@ TaskStore.stateTypes = {
             // item
             quantity: PropTypes.number,
             uomId: PropTypes.number,
+            units: PropTypes.string,
             ingredientId: PropTypes.number,
+            ingredient: PropTypes.string,
             preparation: PropTypes.string,
             // client-side
             _expanded: PropTypes.bool,
