@@ -8,10 +8,10 @@ import WindowActions from "./data/WindowActions";
 import * as serviceWorker from "./serviceWorker";
 import debounce from "./util/debounce";
 import history from "./util/history";
-import logAction from "./util/logAction";
 
-if (process.env.NODE_ENV !== "production") {
-    Dispatcher.register(logAction);
+if (process.env.NODE_ENV === "development") {
+    require("react-error-overlay").stopReportingRuntimeErrors(); // disables error overlays
+    Dispatcher.register(require("./util/logAction").default);
 }
 
 ReactDOM.render(<Router history={history}><App /></Router>, document.getElementById("root"));
