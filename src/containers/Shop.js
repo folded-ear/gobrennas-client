@@ -60,6 +60,7 @@ const groupItems = plans => {
         byIngredient.delete(undefined);
     }
     const theTree = [];
+    const expandedId = ShoppingStore.getExpandedIngredientId();
     // todo: sort by ingredient order...
     for (const [ingId, items] of byIngredient) {
         const neededItems = items.filter(it => it.status === TaskStatus.NEEDED);
@@ -80,7 +81,7 @@ const groupItems = plans => {
                 units: unitLookup.get(uomId),
             });
         }
-        const expanded = ShoppingStore.isIngredientExpanded(ingId);
+        const expanded = ingId === expandedId;
         theTree.push({
             _type: "ingredient",
             id: ingId,

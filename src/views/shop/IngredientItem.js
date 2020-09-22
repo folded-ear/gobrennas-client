@@ -30,7 +30,7 @@ class IngredientItem extends React.PureComponent {
     }
 
     onSetStatus(status, e) {
-        if (e) e.preventDefault();
+        if (e) e.stopPropagation();
         const {
             item: {
                 id,
@@ -46,7 +46,7 @@ class IngredientItem extends React.PureComponent {
     }
 
     onUndoSetStatus(e) {
-        if (e) e.preventDefault();
+        if (e) e.stopPropagation();
         const {
             item: {
                 id,
@@ -61,7 +61,7 @@ class IngredientItem extends React.PureComponent {
     }
 
     onToggleExpanded(e) {
-        if (e) e.preventDefault();
+        if (e) e.stopPropagation();
         Dispatcher.dispatch({
             type: ShoppingActions.TOGGLE_EXPANDED,
             id: this.props.item.id,
@@ -70,10 +70,8 @@ class IngredientItem extends React.PureComponent {
 
     onClick(e) {
         const {
-            active,
             item,
         } = this.props;
-        if (active) return;
         e.preventDefault();
         e.stopPropagation();
         if (e.shiftKey) return;

@@ -1,9 +1,6 @@
 import { ReduceStore } from "flux/utils";
 import PropTypes from "prop-types";
-import {
-    removeDistinct,
-    toggleDistinct,
-} from "../util/arrayAsSet";
+import { toggleDistinct } from "../util/arrayAsSet";
 import { clientOrDatabaseIdType } from "../util/ClientId";
 import typedStore from "../util/typedStore";
 import Dispatcher from "./dispatcher";
@@ -19,7 +16,7 @@ class ShoppingStore extends ReduceStore {
         return {
             selectedPlanIds: apid ? [apid] : [], // Array<ID>
             activeItem: null, // {id: ID, type: String}
-            expandedIds: [], // Array<ID>
+            expandedId: null, // ID
         };
     }
 
@@ -41,27 +38,36 @@ class ShoppingStore extends ReduceStore {
             }
 
             case ShoppingActions.FOCUS: {
-                return {
+                state = {
                     ...state,
                     activeItem: {
                         id: action.id,
                         type: action.itemType,
                     },
-
                 };
+                if (action.itemType === "ingredient") {
+                    state.expandedId = state.expandedId === action.id
+                        ? null
+                        : action.id;
+                }
+                return state;
             }
 
             case ShoppingActions.TOGGLE_EXPANDED: {
                 return {
                     ...state,
-                    expandedIds: toggleDistinct(state.expandedIds, action.id),
+                    expandedId: state.expandedId === action.id
+                        ? null
+                        : action.id,
                 };
             }
 
             case ShoppingActions.SET_INGREDIENT_STATUS: {
                 return {
                     ...state,
-                    expandedIds: removeDistinct(state.expandedIds, action.id),
+                    expandedId: state.expandedId === action.id
+                        ? null
+                        : state.expandedId,
                 };
             }
 
@@ -85,8 +91,8 @@ class ShoppingStore extends ReduceStore {
         return this.getState().activeItem;
     }
 
-    isIngredientExpanded(id) {
-        return this.getState().expandedIds.indexOf(id) >= 0;
+    getExpandedIngredientId() {
+        return this.getState().expandedId;
     }
 
 }
@@ -97,7 +103,7 @@ ShoppingStore.stateTypes = {
         id: PropTypes.number.isRequired,
         type: PropTypes.oneOf(["ingredient", "task"]).isRequired,
     }),
-    expandedIds: PropTypes.arrayOf(PropTypes.number).isRequired,
+    expandedId: PropTypes.number,
 };
 
 export default typedStore(new ShoppingStore(Dispatcher));
