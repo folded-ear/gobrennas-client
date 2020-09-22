@@ -294,7 +294,7 @@ const focusTask = (state, id) => {
     if (state.activeTaskId === id) return state;
     if (state.activeTaskId != null) {
         const prev = taskForId(state, state.activeTaskId);
-        if (prev.name.trim() === "") {
+        if (prev.name && prev.name.trim() === "") {
             state = queueDelete(state, state.activeTaskId);
         }
     }
@@ -469,7 +469,7 @@ const queueStatusUpdate = (state, id, status) => {
         doTaskDelete(id);
     } else {
         statusUpdatesToFlush.set(id, status);
-        inTheFuture(TaskActions.FLUSH_STATUS_UPDATES, 10);
+        inTheFuture(TaskActions.FLUSH_STATUS_UPDATES, 9);
     }
     if (isExpanded(t) && isDelete) {
         state = setExpansion(state, t.id, false);
@@ -1056,11 +1056,13 @@ class TaskStore extends ReduceStore {
                 return flushStatusUpdates(state);
 
             case RecipeActions.SHOPPING_LIST_ASSEMBLED: {
-                // todo: this is stupid. not wrong though.
-                return {
-                    ...state,
-                    topLevelIds: LoadObject.empty(),
-                };
+                TaskApi.loadSubtasks(action.listId, false);
+                return state;
+            }
+
+            case RecipeActions.SENT_TO_PLAN: {
+                TaskApi.loadSubtasks(action.planId, false);
+                return state;
             }
 
             case TemporalActions.EVERY_15_SECONDS: {

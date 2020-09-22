@@ -2,10 +2,10 @@ import { ReduceStore } from "flux/utils";
 import { OrderedMap } from "immutable";
 import history from "../util/history";
 import LoadObject from "../util/LoadObject";
+import { toMilliseconds } from "../util/time";
 import Dispatcher from "./dispatcher";
 import RecipeActions from "./RecipeActions";
 import RecipeApi from "./RecipeApi";
-import {toMilliseconds} from "../util/time"
 
 export const buildRecipe = recipe => {
     recipe.type = "Recipe";
@@ -60,7 +60,16 @@ class RecipeStore extends ReduceStore {
                 return state.set("sendState", LoadObject.updating());
             }
 
+            case RecipeActions.SEND_TO_PLAN: {
+                RecipeApi.sendToPlan(
+                    action.recipeId,
+                    action.planId,
+                );
+                return state.set("sendState", LoadObject.updating());
+            }
+
             case RecipeActions.SHOPPING_LIST_ASSEMBLED:
+            case RecipeActions.SENT_TO_PLAN:
             case RecipeActions.SHOPPING_LIST_SENT: {
                 return state.set("sendState", LoadObject.empty());
             }

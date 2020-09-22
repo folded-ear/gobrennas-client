@@ -75,6 +75,20 @@ const RecipeApi = {
         );
     },
 
+    sendToPlan(recipeId, planId) {
+        promiseFlux(
+            axios.post(`/recipe/${recipeId}/_actions`, {
+                type: "SEND_TO_PLAN",
+                planId,
+            }),
+            () => ({
+                type: RecipeActions.SENT_TO_PLAN,
+                recipeId,
+                planId,
+            }),
+        );
+    },
+
     recognizeItem(raw, cursorPosition = raw.length) {
         return axios.post(`/recipe/_actions`, {
             type: "RECOGNIZE_ITEM",

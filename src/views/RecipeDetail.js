@@ -94,10 +94,10 @@ const RecipeDetail = ({recipeLO, mine, staged, ownerLO}) => {
                     </List.Item>}
                     size="small"
                     split={false}
-                    footer={<AddToList onClick={listId => Dispatcher.dispatch({
-                        type: RecipeActions.SEND_TO_SHOPPING_LIST,
+                    footer={<AddToList onClick={planId => Dispatcher.dispatch({
+                        type: RecipeActions.SEND_TO_PLAN,
                         recipeId: recipe.id,
-                        listId,
+                        planId,
                     })} />}
                 />
             </React.Fragment>}

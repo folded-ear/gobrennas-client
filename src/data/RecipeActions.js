@@ -56,6 +56,14 @@ const RecipeActions = {
         id: PropTypes.number.isRequired,
         label: PropTypes.string.isRequired,
     }),
+    SEND_TO_PLAN: typedAction("recipe/send-to-plan", {
+        recipeId: PropTypes.number.isRequired,
+        planId: PropTypes.number.isRequired,
+    }),
+    SENT_TO_PLAN: typedAction("recipe/sent-to-plan", {
+        recipeId: PropTypes.number.isRequired,
+        planId: PropTypes.number.isRequired,
+    }),
 };
 
 export default RecipeActions;
