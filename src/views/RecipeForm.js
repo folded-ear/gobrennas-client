@@ -13,6 +13,17 @@ import RecipeActions from "../data/RecipeActions";
 import { Recipe } from "../data/RecipeTypes";
 import ElEdit from "./ElEdit";
 
+const handleFileUpdate = (e) => {
+    const { name: key, files } = e.target;
+    if(files.length){
+        const value = files[0]
+        Dispatcher.dispatch({
+            type: RecipeActions.DRAFT_RECIPE_UPDATED,
+            data: { key, value }
+        });
+    }
+}
+
 const handleUpdate = (e) => {
     const { name: key, value } = e.target;
     Dispatcher.dispatch({
@@ -160,6 +171,10 @@ const RecipeForm = ({draft: lo, onSave, onSaveCopy, onCancel}) => {
                     label='Labels'
                     placeholder='Type and press enter to add labels'
                 />
+            </Form.Item>
+            <Form.Item>
+                <label>Upload Image</label>
+                <input type="file" name="photo" onChange={handleFileUpdate}/>
             </Form.Item>
             <Form.Item>
                 <Button.Group>

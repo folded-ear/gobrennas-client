@@ -10,13 +10,21 @@ const axios = BaseAxios.create({
 const RecipeApi = {
     
     addRecipe(recipe) {
-        // save this for later
+        let recipeData = new FormData();
         const id = recipe.id;
-        recipe = {...recipe};
+        const info = {...recipe};
         // the clientId gives the server grief
-        delete recipe.id;
+        delete info.id;
+        delete info.photo;
+        recipeData.append('info', JSON.stringify(info));
+        recipeData.append('photo', recipe.photo);
         promiseFlux(
-            axios.post("/recipe", recipe),
+            BaseAxios.create({
+                baseURL: `${API_BASE_URL}/api`,
+                headers: {
+                    "Content-Type": "multipart/form-data",
+                }
+            }).post("/recipe", recipeData),
             data => ({
                 type: RecipeActions.RECIPE_CREATED,
                 id, // need this for translation
@@ -26,6 +34,7 @@ const RecipeApi = {
     },
     
     updateRecipe(recipe) {
+        // Form Data Object build thing here
         promiseFlux(
             axios.put(`/recipe/${recipe.id}`, recipe),
             data => ({
