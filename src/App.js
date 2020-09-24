@@ -1,22 +1,22 @@
+import { ThemeProvider } from "@material-ui/core/styles";
+import { Layout } from "antd";
+import { Container } from "flux/utils";
 import React, { Component } from "react";
 import { Switch } from "react-router-dom";
+import "./App.scss";
 import Dispatcher from "./data/dispatcher";
-import { Container } from "flux/utils";
-import AppHeader from "./views/common/AppHeader";
-import Login from "./views/user/Login";
-import NotFound from "./views/common/NotFound";
-import LoadingIndicator from "./views/common/LoadingIndicator";
-import PrivateRoute from "./views/common/PrivateRoute";
-import { Layout } from "antd";
 import UserActions from "./data/UserActions";
 import UserStore from "./data/UserStore";
-import routes from "./routes";
-import "./App.scss";
 import WindowStore from "./data/WindowStore";
-import NewVersionAvailable from "./views/NewVersionAvailable";
-import FluxRoute from "./views/common/FluxRoute";
-import { ThemeProvider } from "@material-ui/core/styles";
+import routes from "./routes";
 import theme from "./theme";
+import AppHeader from "./views/common/AppHeader";
+import FluxRoute from "./views/common/FluxRoute";
+import LoadingIndicator from "./views/common/LoadingIndicator";
+import NotFound from "./views/common/NotFound";
+import PrivateRoute from "./views/common/PrivateRoute";
+import NewVersionAvailable from "./views/NewVersionAvailable";
+import Login from "./views/user/Login";
 
 class App extends Component {
     constructor(props) {
@@ -39,7 +39,10 @@ class App extends Component {
         const {Content} = Layout;
 
         if (!userLO.isDone()) {
-            return <LoadingIndicator/>;
+            return <ThemeProvider theme={theme}>
+                <AppHeader authenticated={false} />
+                <LoadingIndicator/>
+            </ThemeProvider>;
         }
         const currentUser = authenticated
             ? userLO.getValueEnforcing()

@@ -5,12 +5,8 @@ import {
     Tab,
     Tabs,
     Toolbar,
-    useMediaQuery,
 } from "@material-ui/core";
-import {
-    makeStyles,
-    useTheme,
-} from "@material-ui/core/styles";
+import { makeStyles } from "@material-ui/core/styles";
 import {
     AccountCircle,
     EventNote,
@@ -19,12 +15,13 @@ import {
     MenuBook,
     PostAdd,
 } from "@material-ui/icons";
+import classnames from "classnames";
 import React from "react";
 import {
     Link,
     withRouter,
 } from "react-router-dom";
-import classnames from 'classnames';
+import WindowStore from "../../data/WindowStore";
 import Logo from "./Logo";
 
 const styles = makeStyles(() => ({
@@ -67,8 +64,7 @@ const TinyNav = ({children, navTo, location}) => {
 
 const AppHeader = ({authenticated, onLogout, location}) => {
     const classes = styles();
-    const theme = useTheme();
-    const mobile = useMediaQuery(theme.breakpoints.down("sm"));
+    const mobile = WindowStore.getSize().width <= 600;
     const topLevelNavSeg = location.pathname.split("/")[1];
     const colorByHotness = val =>
         topLevelNavSeg  === val ? "inherit" : "default";
@@ -81,12 +77,12 @@ const AppHeader = ({authenticated, onLogout, location}) => {
                     component={Link}
                     to="/library"
                 />
-                <Box className={classes.bar}>
+                {authenticated && <Box className={classes.bar}>
                     <TinyNav location={location} navTo="library"><MenuBook/></TinyNav>
                     <TinyNav location={location} navTo="add"><PostAdd/></TinyNav>
                     <TinyNav location={location} navTo="plan"><EventNote/></TinyNav>
                     <TinyNav location={location} navTo="shop"><ListAlt/></TinyNav>
-                </Box>
+                </Box>}
             </>
         );
     };
@@ -98,7 +94,7 @@ const AppHeader = ({authenticated, onLogout, location}) => {
                     component={Link}
                     to="/library"
                 />
-                <Tabs
+                {authenticated && <Tabs
                     selectionFollowsFocus
                     className={classes.bar}
                     value={topLevelNavSeg}
@@ -133,7 +129,7 @@ const AppHeader = ({authenticated, onLogout, location}) => {
                         to="/shop"
                         value="shop"
                     />
-                </Tabs>
+                </Tabs>}
             </>
         );
     };
@@ -145,30 +141,25 @@ const AppHeader = ({authenticated, onLogout, location}) => {
                     position="sticky"
                     className={classes.root}
                 >
-                    {
-                        authenticated ?
-                            <Toolbar>
-                                {mobile ? renderMobile() : renderDesktop()}
-                                <IconButton
-                                    component={Link}
-                                    to="profile"
-                                    value="profile"
-                                    title="Profile"
-                                    color={colorByHotness("profile")}
-                                >
-                                    <AccountCircle/>
-                                </IconButton>
-                                <IconButton
-                                    onClick={onLogout}
-                                    title="Logout"
-                                    color={colorByHotness("__logout__")}
-                                >
-                                    <ExitToApp/>
-                                </IconButton>
-                            </Toolbar>
-                            :
-                            <div>&nbsp;</div>
-                    }
+                    <Toolbar>
+                        {mobile ? renderMobile() : renderDesktop()}
+                        {authenticated && <IconButton
+                            component={Link}
+                            to="profile"
+                            value="profile"
+                            title="Profile"
+                            color={colorByHotness("profile")}
+                        >
+                            <AccountCircle/>
+                        </IconButton>}
+                        {authenticated && <IconButton
+                            onClick={onLogout}
+                            title="Logout"
+                            color={colorByHotness("__logout__")}
+                        >
+                            <ExitToApp/>
+                        </IconButton>}
+                    </Toolbar>
                 </AppBar>
             </React.Fragment>
         </>
