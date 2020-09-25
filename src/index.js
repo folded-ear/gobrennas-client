@@ -10,7 +10,6 @@ import debounce from "./util/debounce";
 import history from "./util/history";
 
 if (process.env.NODE_ENV === "development") {
-    require("react-error-overlay").stopReportingRuntimeErrors(); // disables error overlays
     Dispatcher.register(require("./util/logAction").default);
 }
 
