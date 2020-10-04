@@ -110,11 +110,7 @@ class TaskItem extends React.PureComponent {
                 id={item.id}
                 next={item._next_status}
             />
-            : <StatusIconButton
-                key="delete"
-                id={item.id}
-                next={TaskStatus.DELETED}
-            />;
+            : null;
         return <Item
             depth={depth}
             prefix={addonBefore}

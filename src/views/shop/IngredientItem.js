@@ -122,11 +122,7 @@ class IngredientItem extends React.PureComponent {
                 next={deleting ? TaskStatus.DELETED : TaskStatus.ACQUIRED}
                 onClick={e => this.onUndoSetStatus(e)}
             />
-            : <StatusIconButton
-                key="delete"
-                next={TaskStatus.DELETED}
-                onClick={e => this.onSetStatus(TaskStatus.DELETED, e)}
-            />;
+            : null;
         return <Item
             prefix={addonBefore}
             suffix={addonAfter}
