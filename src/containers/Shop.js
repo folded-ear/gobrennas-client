@@ -1,5 +1,6 @@
 import { Container } from "flux/utils";
 import React from "react";
+import LibraryStore from "../data/LibraryStore";
 import PlanStore from "../data/PlanStore";
 import ShoppingStore from "../data/ShoppingStore";
 import {
@@ -48,23 +49,35 @@ const groupItems = plans => {
             l.path.splice(l.path.length - 1, 1);
         }
     }
-    const ingLookup = new Map();
-    const byIngredient = groupBy(leaves, it => {
-        if (it.ingredientId) {
-            ingLookup.set(it.ingredientId, it.ingredient);
-        }
-        return it.ingredientId;
-    });
+    const byIngredient = groupBy(leaves, it => it.ingredientId);
     let unparsed = [];
     if (byIngredient.has(undefined)) {
         unparsed = byIngredient.get(undefined)
             .filter(it => it.status === TaskStatus.NEEDED);
         byIngredient.delete(undefined);
     }
+    const orderedIngredients = [];
+    for (const [ingId, items] of byIngredient) {
+        orderedIngredients.push({
+            id: ingId,
+            items: items,
+            lo: LibraryStore.getIngredientById(ingId)});
+    }
+    orderedIngredients.sort(({lo: alo}, {lo: blo}) => {
+        if (!alo.hasValue()) return blo.hasValue() ? 1 : 0;
+        if (!blo.hasValue()) return -1;
+        const a = alo.getValueEnforcing();
+        const b = blo.getValueEnforcing();
+        if (a.storeOrder == null) return b.storeOrder != null ? 1 : 0;
+        if (b.storeOrder == null) return -1;
+        if (a.storeOrder !== b.storeOrder) return a.storeOrder - b.storeOrder;
+        if (a.name < b.name) return -1;
+        if (a.name > b.name) return 1;
+        return 0;
+    });
     const theTree = [];
     const expandedId = ShoppingStore.getExpandedIngredientId();
-    // todo: sort by ingredient order...
-    for (const [ingId, items] of byIngredient) {
+    for (const {id: ingId, items, lo} of orderedIngredients) {
         const neededItems = items.filter(it => it.status === TaskStatus.NEEDED);
         if (neededItems.length === 0) continue;
         const unitLookup = new Map();
@@ -88,10 +101,10 @@ const groupItems = plans => {
             _type: "ingredient",
             id: ingId,
             itemIds: items.map(it => it.id),
-            name: ingLookup.get(ingId),
+            name: lo.hasValue() ? lo.getValueEnforcing().name : items[0].name,
             quantities,
             expanded,
-            pending: items.some(it => it.pending),
+            pending: lo.hasOperation() || items.some(it => it.pending),
             acquiring: items.every(it => it.acquiring || it.status === TaskStatus.ACQUIRED),
             deleting: items.every(it => it.deleting || it.status === TaskStatus.DELETED),
         });
@@ -117,6 +130,7 @@ export default Container.createFunctional(
     () => [
         PlanStore,
         ShoppingStore,
+        LibraryStore,
     ],
     () => {
         const allPlans = ShoppingStore.getAllPlans();
