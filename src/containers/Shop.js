@@ -12,10 +12,13 @@ import groupBy from "../util/groupBy";
 import ShopList from "../views/shop/ShopList";
 
 const gatherLeaves = item => {
-    if (!isParent(item)) return [{
-        ...item,
-        path: [],
-    }];
+    if (!isParent(item)) {
+        if (isSection(item)) return [];
+        return [{
+            ...item,
+            path: [],
+        }];
+    }
     return PlanStore.getChildItemLOs(item.id)
         .filter(lo => lo.hasValue())
         .map(lo => {
@@ -29,7 +32,6 @@ const gatherLeaves = item => {
                 acquiring: lo.isUpdating() && item._next_status === TaskStatus.ACQUIRED,
             };
         })
-        .filter(it => !isSection(it))
         .flatMap(gatherLeaves)
         .map(it => ({
             ...it,
