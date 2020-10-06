@@ -1,25 +1,20 @@
-import {
-    Affix,
-    Button,
-    List,
-    Spin,
-} from "antd";
-import PropTypes from "prop-types";
-import React from "react";
-import { Redirect } from "react-router-dom";
-import Dispatcher from "../data/dispatcher";
-import LibraryActions from "../data/LibraryActions";
-import RecipeActions from "../data/RecipeActions";
-import RecipeApi from "../data/RecipeApi";
-import { Recipe } from "../data/RecipeTypes";
-import history from "../util/history";
-import loadObjectOf from "../util/loadObjectOf";
-import AddToList from "./AddToList";
-import DeleteButton from "./common/DeleteButton";
-import Directions from "./common/Directions";
-import IngredientItem from "./IngredientItem";
-import LabelItem from "./LabelItem";
-import User from "./user/User";
+import {Affix, Button, List, Spin,} from "antd"
+import PropTypes from "prop-types"
+import React from "react"
+import {Redirect} from "react-router-dom"
+import Dispatcher from "../data/dispatcher"
+import LibraryActions from "../data/LibraryActions"
+import RecipeActions from "../data/RecipeActions"
+import RecipeApi from "../data/RecipeApi"
+import {Recipe} from "../data/RecipeTypes"
+import history from "../util/history"
+import loadObjectOf from "../util/loadObjectOf"
+import AddToList from "./AddToList"
+import DeleteButton from "./common/DeleteButton"
+import Directions from "./common/Directions"
+import IngredientItem from "./IngredientItem"
+import LabelItem from "./LabelItem"
+import User from "./user/User"
 
 const RecipeDetail = ({recipeLO, mine, staged, ownerLO}) => {
 
@@ -79,6 +74,10 @@ const RecipeDetail = ({recipeLO, mine, staged, ownerLO}) => {
                     backgroundColor: "white",
                 }}>{recipe.name}</h2>
             </Affix>
+
+            {recipe.photo && <React.Fragment>
+                <p><img src={recipe.photo} /></p>
+            </React.Fragment>}
 
             {recipe.externalUrl && <React.Fragment>
                 <h5>Source</h5>
