@@ -29,24 +29,28 @@
             render();
         });
     const sendToFoodinger = () => {
+        let recipeData = new FormData();
+        recipeData.append('info', JSON.stringify({
+            type: 'Recipe',
+            name: store.title,
+            externalUrl: store.url,
+            ingredients: store.ingredients.map(i => ({raw: i})),
+            directions: store.directions
+                .map(d => d.trim())
+                .map(d => d.length === 0 ? d : `1.  ${d}`)
+                .join("\n"),
+            cookThis: true,
+        }));
+        if(store.photo) {
+            recipeData.append('photo', null)
+        }
         fetch(apiRoot + "/recipe", {
             method: "POST",
             credentials: "include",
             headers: {
-                ...authHeaders,
-                "Content-Type": "application/json"
+                ...authHeaders
             },
-            body: JSON.stringify({
-                type: "Recipe",
-                name: store.title,
-                externalUrl: store.url,
-                ingredients: store.ingredients.map(i => ({raw: i})),
-                directions: store.directions
-                    .map(d => d.trim())
-                    .map(d => d.length === 0 ? d : `1.  ${d}`)
-                    .join("\n"),
-                cookThis: true,
-            }),
+            body: recipeData,
         })
             .then(r => {
                 if (r.status === 401) {
@@ -82,6 +86,10 @@
         url: window.location.toString(),
         ingredients: [],
         directions: [],
+        yield: null,
+        totalTime: null,
+        calories: null,
+        photo: null,
         id: null,
     };
 
@@ -158,7 +166,7 @@
         top: 0,
         right: 0,
         zIndex: 99999,
-        backgroundColor: "white",
+        backgroundColor: "whitesmoke",
         border: "1px solid #bf360c",
         borderRightWidth: 0,
         borderTopWidth: 0,
@@ -174,7 +182,9 @@
         backgroundColor: "#bf360c",
         color: "#fff",
     });
-    const formItemStyle = toStyle({});
+    const formItemStyle = toStyle({
+        marginTop: "5px"
+    });
     const labelStyle = toStyle({
         display: "inline-block",
         textAlign: "right",
@@ -193,18 +203,23 @@
     const importBtnStyle = toStyle({
         display: "inline-block",
         borderRadius: "0.2em",
-        color: "#030",
-        backgroundColor: "#ded",
-        border: "1px solid #090",
+        color: "white",
+        textTransform: "uppercase",
+        backgroundColor: "#bf360c",
+        border: "1px solid #ddd",
         fontWeight: "bold",
-        padding: "0.2em 1em",
+        padding: "0.5em 1em",
         cursor: "pointer",
     });
     const valueStyle = toStyle({
-        width: "auto",
+        width: "75%",
+        backgroundColor: "white",
+        border: "1px solid #ddd"
     });
     const blockRules = {
-        width: "auto",
+        border: "1px solid #ddd",
+        backgroundColor: "white",
+        width: "75%",
         minWidth: "20em",
         minHeight: "12em",
     };
@@ -236,6 +251,21 @@
             <label style="${labelStyle}">Directions:</label>
             <textarea style="${dirStyle}" name="directions"></textarea>
             <button style="${grabBtnStyle}" onclick="${GATEWAY_PROP}.grabDirections()">Grab</button>
+        </div>
+        <div style="${formItemStyle}">
+            <label style="${labelStyle}">Yield:</label>
+            <input style="${valueStyle}" name="yield" />
+            <button style="${grabBtnStyle}" onclick="${GATEWAY_PROP}.grabYield()">Grab</button>
+        </div>
+        <div style="${formItemStyle}">
+            <label style="${labelStyle}">Prep:</label>
+            <input style="${valueStyle}" name="totalTime" />
+            <button style="${grabBtnStyle}" onclick="${GATEWAY_PROP}.grabTotalTime()">Grab</button>
+        </div>
+        <div style="${formItemStyle}">
+            <label style="${labelStyle}">Calories:</label>
+            <input style="${valueStyle}" name="calories" />
+            <button style="${grabBtnStyle}" onclick="${GATEWAY_PROP}.grabCalories()">Grab</button>
         </div>
         <div style="${formItemStyle}">
             <label style="${labelStyle}"></label>

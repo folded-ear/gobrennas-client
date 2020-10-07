@@ -75,10 +75,6 @@ const RecipeDetail = ({recipeLO, mine, staged, ownerLO}) => {
                 }}>{recipe.name}</h2>
             </Affix>
 
-            {recipe.photo && <React.Fragment>
-                <p><img src={recipe.photo} /></p>
-            </React.Fragment>}
-
             {recipe.externalUrl && <React.Fragment>
                 <h5>Source</h5>
                 <p><a href={recipe.externalUrl}>{recipe.externalUrl}</a></p>
