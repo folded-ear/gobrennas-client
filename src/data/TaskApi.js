@@ -43,9 +43,13 @@ const TaskApi = {
             }),
         ),
 
-    createTask: (name, parentId, clientId) =>
-        promiseFlux(
-            axios.post(`/${parentId}/subtasks`, {
+    createTask: (name, parentId, clientId, afterId) => {
+        let url = `/${parentId}/subtasks`;
+        if (afterId) {
+            url += `?after=${afterId}`;
+        }
+        return promiseFlux(
+            axios.post(url, {
                 name,
             }),
             ({data}) => ({
@@ -54,7 +58,8 @@ const TaskApi = {
                 id: data.id,
                 data,
             }),
-        ),
+        );
+    },
 
     renameTask: (id, name) =>
         promiseFlux(
