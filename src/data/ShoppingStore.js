@@ -8,6 +8,8 @@ import PlanActions from "./PlanActions";
 import PlanStore from "./PlanStore";
 import PreferencesStore from "./PreferencesStore";
 import ShoppingActions from "./ShoppingActions";
+import TaskActions from "./TaskActions";
+import TaskStore from "./TaskStore";
 
 class ShoppingStore extends ReduceStore {
 
@@ -22,6 +24,16 @@ class ShoppingStore extends ReduceStore {
 
     reduce(state, action) {
         switch (action.type) {
+            case TaskActions.LISTS_LOADED: {
+                if (state.selectedPlanIds.length) return state;
+                this.__dispatcher.waitFor([
+                    TaskStore.getDispatchToken(),
+                ]);
+                return {
+                    ...state,
+                    selectedPlanIds: [TaskStore.getActiveListLO().getValueEnforcing().id],
+                };
+            }
 
             case PlanActions.SELECT_PLAN: {
                 return {

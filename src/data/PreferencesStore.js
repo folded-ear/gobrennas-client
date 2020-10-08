@@ -7,6 +7,7 @@ import {
 } from "../util/storage";
 import Dispatcher from "./dispatcher";
 import TaskActions from "./TaskActions";
+import TaskStore from "./TaskStore";
 import UserActions from "./UserActions";
 import UserStore from "./UserStore";
 
@@ -22,9 +23,6 @@ const setPref = (state, key, value) => {
 };
 
 class PreferencesStore extends ReduceStore {
-    constructor() {
-        super(Dispatcher);
-    }
 
     getInitialState() {
         return new Map(getJsonItem(LOCAL_STORAGE_PREFERENCES));
@@ -34,6 +32,15 @@ class PreferencesStore extends ReduceStore {
         switch (action.type) {
             case UserActions.RESTORE_PREFERENCES: {
                 return new Map(action.preferences);
+            }
+            case TaskActions.LISTS_LOADED: {
+                this.__dispatcher.waitFor([
+                    TaskStore.getDispatchToken(),
+                ]);
+                const lo = TaskStore.getActiveListLO();
+                return lo.hasValue()
+                    ? setPref(state, Prefs.ACTIVE_TASK_LIST, lo.getValueEnforcing().id)
+                    : state;
             }
             case TaskActions.SELECT_LIST: {
                 return setPref(state, Prefs.ACTIVE_TASK_LIST, action.id);
@@ -60,4 +67,4 @@ class PreferencesStore extends ReduceStore {
     }
 }
 
-export default new PreferencesStore();
+export default new PreferencesStore(Dispatcher);
