@@ -16,6 +16,7 @@ import {
     PostAdd,
 } from "@material-ui/icons";
 import classnames from "classnames";
+import { Container } from "flux/utils";
 import React from "react";
 import {
     Link,
@@ -59,12 +60,12 @@ const TinyNav = ({children, navTo, location}) => {
         value={navTo}
         color="inherit">
         {children}
-    </IconButton>)
-}
+    </IconButton>);
+};
 
-const AppHeader = ({authenticated, onLogout, location}) => {
+const AppHeader = ({authenticated, onLogout, location, windowSize}) => {
     const classes = styles();
-    const mobile = WindowStore.getSize().width <= 600;
+    const mobile = windowSize.width <= 1000;
     const topLevelNavSeg = location.pathname.split("/")[1];
     const colorByHotness = val =>
         topLevelNavSeg  === val ? "inherit" : "default";
@@ -73,7 +74,7 @@ const AppHeader = ({authenticated, onLogout, location}) => {
         return (
             <>
                 <Logo
-                    version="small"
+                    version={windowSize.width <= 550 ? "small" : null}
                     component={Link}
                     to="/library"
                 />
@@ -166,4 +167,14 @@ const AppHeader = ({authenticated, onLogout, location}) => {
     );
 };
 
-export default withRouter(AppHeader);
+export default withRouter(Container.createFunctional(
+    props => <AppHeader {...props} />,
+    () => [
+        WindowStore,
+    ],
+    (prevState, props) => ({
+        ...props,
+        windowSize: WindowStore.getSize(),
+    }),
+    { withProps: true }
+));
