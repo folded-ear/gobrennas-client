@@ -7,13 +7,14 @@ import {
 } from "../util/arrayAsSet";
 import hotLoadObject from "../util/hotLoadObject";
 import LoadObject from "../util/LoadObject";
+import { fromMilliseconds } from "../util/time";
 import Dispatcher from "./dispatcher";
 import LibraryActions from "./LibraryActions";
 import LibraryApi from "./LibraryApi";
+import PantryItemActions from "./PantryItemActions";
 import RecipeActions from "./RecipeActions";
 import RecipeApi from "./RecipeApi";
 import UserStore from "./UserStore";
-import {fromMilliseconds} from "../util/time"
 
 export const SCOPE_MINE = "mine";
 export const SCOPE_EVERYONE = "everyone";
@@ -22,7 +23,7 @@ export const LABEL_STAGED_INDICATOR = "--on-stage";
 const adaptTime = (recipe) => {
     recipe.totalTime = fromMilliseconds(recipe.totalTime);
     return recipe;
-}
+};
 
 const workOnLabels = (state, recipeId, work) => {
     const lo = state.byId[recipeId];
@@ -192,6 +193,49 @@ class LibraryStore extends ReduceStore {
                     removeDistinct(labels, LABEL_STAGED_INDICATOR));
             }
 
+            case PantryItemActions.ORDER_FOR_STORE: {
+                let it = state.byId[action.id];
+                if (!it || !it.hasValue()) return state;
+                it = it.getValueEnforcing();
+                let target = state.byId[action.targetId];
+                if (!target || !target.hasValue()) return state;
+                target = target.getValueEnforcing();
+                let a = it.storeOrder;
+                let b = target.storeOrder;
+                if (a === b) return state;
+                if (action.after) b += 1;
+                let min, max, delta;
+                if (a < b) {
+                    min = a + 1;
+                    max = b;
+                    delta = -1;
+                } else {
+                    min = b;
+                    max = a - 1;
+                    delta = 1;
+                }
+                const byId = {...state.byId};
+                for (const id of Object.keys(byId)) {
+                    const lo = byId[id];
+                    if (!lo.hasValue()) continue;
+                    const ing = lo.getValueEnforcing();
+                    if (ing.type !== "PantryItem") continue;
+                    if (ing.storeOrder < min || ing.storeOrder > max) continue;
+                    byId[id] = lo.map(v => ({
+                        ...v,
+                        storeOrder: v.storeOrder + delta,
+                    }));
+                }
+                byId[action.id] = byId[action.id].map(v => ({
+                    ...v,
+                    storeOrder: b,
+                }));
+                return {
+                    ...state,
+                    byId,
+                };
+            }
+
             default: {
                 return state;
             }
@@ -282,6 +326,7 @@ class LibraryStore extends ReduceStore {
                 ...im,
                 [i]: Object.keys(packet[i]).reduce((um, u) => {
                     if (ref.units != null && u !== "null") {
+                        // eslint-disable-next-line no-console
                         console.warn(`Multiplying '${ref.units}' by '${u}', which is weird.`);
                     }
                     return {

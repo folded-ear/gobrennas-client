@@ -3,6 +3,7 @@ import classnames from "classnames";
 import PropTypes from "prop-types";
 import React from "react";
 import Dispatcher from "../../data/dispatcher";
+import PantryItemActions from "../../data/PantryItemActions";
 import ShoppingActions from "../../data/ShoppingActions";
 import TaskStatus from "../../data/TaskStatus";
 import { clientOrDatabaseIdType } from "../../util/ClientId";
@@ -27,6 +28,7 @@ class IngredientItem extends React.PureComponent {
         this.onUndoSetStatus = this.onUndoSetStatus.bind(this);
         this.onToggleExpanded = this.onToggleExpanded.bind(this);
         this.onClick = this.onClick.bind(this);
+        this.onDragDrop = this.onDragDrop.bind(this);
     }
 
     onSetStatus(status, e) {
@@ -82,6 +84,15 @@ class IngredientItem extends React.PureComponent {
         });
     }
 
+    onDragDrop(id, targetId, v) {
+        Dispatcher.dispatch({
+            type: PantryItemActions.ORDER_FOR_STORE,
+            id,
+            targetId,
+            after: v !== "above",
+        });
+    }
+
     render() {
         const {
             item,
@@ -132,6 +143,8 @@ class IngredientItem extends React.PureComponent {
                 [classes.acquiring]: acquiring,
                 [classes.deleting]: deleting,
             })}
+            dragId={item.id}
+            onDragDrop={this.onDragDrop}
         >
             <ListItemText>
                 {item.name}
