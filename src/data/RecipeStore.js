@@ -44,22 +44,6 @@ class RecipeStore extends ReduceStore {
                 return state;
             }
             
-            case RecipeActions.ASSEMBLE_SHOPPING_LIST: {
-                RecipeApi.assembleShoppingList(
-                    action.recipeIds,
-                    action.listId,
-                );
-                return state.set("sendState", LoadObject.updating());
-            }
-
-            case RecipeActions.SEND_TO_SHOPPING_LIST: {
-                RecipeApi.sendToShoppingList(
-                    action.recipeId,
-                    action.listId,
-                );
-                return state.set("sendState", LoadObject.updating());
-            }
-
             case RecipeActions.SEND_TO_PLAN: {
                 RecipeApi.sendToPlan(
                     action.recipeId,
@@ -68,9 +52,7 @@ class RecipeStore extends ReduceStore {
                 return state.set("sendState", LoadObject.updating());
             }
 
-            case RecipeActions.SHOPPING_LIST_ASSEMBLED:
-            case RecipeActions.SENT_TO_PLAN:
-            case RecipeActions.SHOPPING_LIST_SENT: {
+            case RecipeActions.SENT_TO_PLAN: {
                 return state.set("sendState", LoadObject.empty());
             }
 

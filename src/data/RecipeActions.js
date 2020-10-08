@@ -1,11 +1,6 @@
 import PropTypes from "prop-types";
 import typedAction from "../util/typedAction";
 
-const sendShape = {
-    listId: PropTypes.number,
-    recipeIds: PropTypes.arrayOf(PropTypes.number),
-};
-
 const dissectionComponentType = PropTypes.shape({
     start: PropTypes.number.isRequired,
     end: PropTypes.number.isRequired,
@@ -28,10 +23,6 @@ const RecipeActions = {
     NEW_DRAFT_LABEL: "recipe/new-draft-label",
     REMOVE_DRAFT_LABEL: "recipe/remove-draft-label",
     SAVE_DRAFT_RECIPE: "recipe/save-draft-recipe",
-    ASSEMBLE_SHOPPING_LIST: typedAction("recipe/assemble-shopping-list", sendShape),
-    SHOPPING_LIST_ASSEMBLED: typedAction("recipe/shopping-list-assembled", sendShape),
-    SEND_TO_SHOPPING_LIST: "recipe/send-to-shopping-list",
-    SHOPPING_LIST_SENT: "recipe/shopping-list-sent",
     RAW_INGREDIENT_DISSECTED: typedAction("recipe/raw-ingredient-dissected", {
         recipeId: PropTypes.number.isRequired,
         raw: PropTypes.string.isRequired,
