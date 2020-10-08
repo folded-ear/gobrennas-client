@@ -1,6 +1,7 @@
 import BaseAxios from "axios";
 import { API_BASE_URL } from "../constants";
 import promiseFlux from "../util/promiseFlux";
+import socket from "../util/socket";
 import LibraryActions from "./LibraryActions";
 
 const axios = BaseAxios.create({
@@ -29,6 +30,15 @@ const LibraryApi = {
             })
         );
     },
+
+    orderForStore(id, targetId, after) {
+        socket.publish("/app/pantry-item/order-for-store", {
+            id,
+            targetId,
+            after: !!after,
+        });
+    },
+
 };
 
 export default LibraryApi;

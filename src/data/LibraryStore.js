@@ -50,10 +50,6 @@ export const isRecipeStaged = r => {
 
 class LibraryStore extends ReduceStore {
 
-    constructor() {
-        super(Dispatcher);
-    }
-
     getInitialState() {
         return {
             // the real goodies
@@ -162,6 +158,11 @@ class LibraryStore extends ReduceStore {
             }
 
             case LibraryActions.INGREDIENT_LOADED: {
+                if (action.background && !state.byId.hasOwnProperty(action.id)) {
+                    // background update to something we don't have info about,
+                    // so just ignore it.
+                    return state;
+                }
                 return dotProp.set(
                     state,
                     ["byId", action.id],
@@ -194,46 +195,16 @@ class LibraryStore extends ReduceStore {
             }
 
             case PantryItemActions.ORDER_FOR_STORE: {
-                let it = state.byId[action.id];
+                const it = state.byId[action.id];
                 if (!it || !it.hasValue()) return state;
-                it = it.getValueEnforcing();
-                let target = state.byId[action.targetId];
+                const target = state.byId[action.targetId];
                 if (!target || !target.hasValue()) return state;
-                target = target.getValueEnforcing();
-                let a = it.storeOrder;
-                let b = target.storeOrder;
-                if (a === b) return state;
-                if (action.after) b += 1;
-                let min, max, delta;
-                if (a < b) {
-                    min = a + 1;
-                    max = b;
-                    delta = -1;
-                } else {
-                    min = b;
-                    max = a - 1;
-                    delta = 1;
-                }
-                const byId = {...state.byId};
-                for (const id of Object.keys(byId)) {
-                    const lo = byId[id];
-                    if (!lo.hasValue()) continue;
-                    const ing = lo.getValueEnforcing();
-                    if (ing.type !== "PantryItem") continue;
-                    if (ing.storeOrder < min || ing.storeOrder > max) continue;
-                    byId[id] = lo.map(v => ({
-                        ...v,
-                        storeOrder: v.storeOrder + delta,
-                    }));
-                }
-                byId[action.id] = byId[action.id].map(v => ({
+                LibraryApi.orderForStore(action.id, action.targetId, action.after);
+                return dotProp.set(state, ["byId", action.id], it.map(v => ({
                     ...v,
-                    storeOrder: b,
-                }));
-                return {
-                    ...state,
-                    byId,
-                };
+                    storeOrder: target.getValueEnforcing().storeOrder +
+                        (action.after ? 0.5 : -0.5)
+                })));
             }
 
             default: {
@@ -383,4 +354,4 @@ class LibraryStore extends ReduceStore {
 
 }
 
-export default new LibraryStore();
+export default new LibraryStore(Dispatcher);
