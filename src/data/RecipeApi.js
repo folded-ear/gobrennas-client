@@ -1,22 +1,36 @@
-import BaseAxios from "axios";
-import { API_BASE_URL } from "../constants/index";
-import promiseFlux from "../util/promiseFlux";
-import RecipeActions from "./RecipeActions";
+import BaseAxios from "axios"
+import {API_BASE_URL} from "../constants/index"
+import promiseFlux from "../util/promiseFlux"
+import RecipeActions from "./RecipeActions"
 
 const axios = BaseAxios.create({
     baseURL: `${API_BASE_URL}/api`,
 });
 
+function build(recipe) {
+    let recipeData = new FormData()
+    const info = {...recipe}
+    delete info.photo
+    recipeData.append('info', JSON.stringify(info))
+    if(recipe.photo) {
+        recipeData.append('photo', recipe.photo)
+    }
+    return recipeData
+}
+
 const RecipeApi = {
     
     addRecipe(recipe) {
-        // save this for later
         const id = recipe.id;
-        recipe = {...recipe};
-        // the clientId gives the server grief
         delete recipe.id;
+        let recipeData = build(recipe)
         promiseFlux(
-            axios.post("/recipe", recipe),
+            BaseAxios.create({
+                baseURL: `${API_BASE_URL}/api`,
+                headers: {
+                    "Content-Type": "multipart/form-data",
+                }
+            }).post("/recipe", recipeData),
             data => ({
                 type: RecipeActions.RECIPE_CREATED,
                 id, // need this for translation
@@ -27,7 +41,7 @@ const RecipeApi = {
     
     updateRecipe(recipe) {
         promiseFlux(
-            axios.put(`/recipe/${recipe.id}`, recipe),
+            axios.put(`/recipe/${recipe.id}`, build(recipe)),
             data => ({
                 type: RecipeActions.RECIPE_UPDATED,
                 id: recipe.id,

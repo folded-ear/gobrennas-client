@@ -1,15 +1,15 @@
-import { ReduceStore } from "flux/utils";
-import PropTypes from "prop-types";
-import { toggleDistinct } from "../util/arrayAsSet";
-import { clientOrDatabaseIdType } from "../util/ClientId";
-import typedStore from "../util/typedStore";
-import Dispatcher from "./dispatcher";
-import PlanActions from "./PlanActions";
-import PlanStore from "./PlanStore";
-import PreferencesStore from "./PreferencesStore";
-import ShoppingActions from "./ShoppingActions";
-import TaskActions from "./TaskActions";
-import TaskStore from "./TaskStore";
+import {ReduceStore} from "flux/utils"
+import PropTypes from "prop-types"
+import {toggleDistinct} from "../util/arrayAsSet"
+import {clientOrDatabaseIdType} from "../util/ClientId"
+import typedStore from "../util/typedStore"
+import Dispatcher from "./dispatcher"
+import PlanActions from "./PlanActions"
+import PlanStore from "./PlanStore"
+import PreferencesStore from "./PreferencesStore"
+import ShoppingActions from "./ShoppingActions"
+import TaskActions from "./TaskActions"
+import TaskStore from "./TaskStore"
 
 class ShoppingStore extends ReduceStore {
 
@@ -25,13 +25,17 @@ class ShoppingStore extends ReduceStore {
     reduce(state, action) {
         switch (action.type) {
             case TaskActions.LISTS_LOADED: {
-                if (state.selectedPlanIds.length) return state;
+                if (state.selectedPlanIds.length) return state
                 this.__dispatcher.waitFor([
                     TaskStore.getDispatchToken(),
                 ]);
+                let activeListLO = TaskStore.getActiveListLO()
+                if(!activeListLO.hasValue()) {
+                    return state
+                }
                 return {
                     ...state,
-                    selectedPlanIds: [TaskStore.getActiveListLO().getValueEnforcing().id],
+                    selectedPlanIds: [activeListLO.getValueEnforcing().id],
                 };
             }
 

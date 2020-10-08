@@ -1,17 +1,12 @@
-import {
-    Affix,
-    Button,
-    List,
-    Spin,
-} from "antd";
+import {Affix, Button, List, Spin,} from "antd";
 import PropTypes from "prop-types";
 import React from "react";
-import { Redirect } from "react-router-dom";
+import {Redirect} from "react-router-dom";
 import Dispatcher from "../data/dispatcher";
 import LibraryActions from "../data/LibraryActions";
 import RecipeActions from "../data/RecipeActions";
 import RecipeApi from "../data/RecipeApi";
-import { Recipe } from "../data/RecipeTypes";
+import {Recipe} from "../data/RecipeTypes";
 import history from "../util/history";
 import loadObjectOf from "../util/loadObjectOf";
 import AddToList from "./AddToList";
@@ -27,7 +22,7 @@ const RecipeDetail = ({recipeLO, mine, staged, ownerLO}) => {
         if (recipeLO.isLoading()) {
             return <Spin tip="Recipe is loading..."/>;
         }
-        return <Redirect to="/library" />;
+        return <Redirect to="/library"/>;
     }
     
     const recipe = recipeLO.getValueEnforcing();
@@ -79,6 +74,10 @@ const RecipeDetail = ({recipeLO, mine, staged, ownerLO}) => {
                     backgroundColor: "white",
                 }}>{recipe.name}</h2>
             </Affix>
+
+            {recipe.photo && <React.Fragment>
+                <p><img src={recipe.photo} alt={`${recipe.name}`}/></p>
+            </React.Fragment>}
 
             {recipe.externalUrl && <React.Fragment>
                 <h5>Source</h5>
