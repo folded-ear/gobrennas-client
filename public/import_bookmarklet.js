@@ -29,50 +29,52 @@
             render();
         });
     const sendToFoodinger = () => {
-        let recipeData = new FormData();
-        recipeData.append('info', JSON.stringify({
-            type: 'Recipe',
-            name: store.title,
-            externalUrl: store.url,
-            ingredients: store.ingredients.map(i => ({raw: i})),
-            directions: store.directions
-                .map(d => d.trim())
-                .map(d => d.length === 0 ? d : `1.  ${d}`)
-                .join("\n"),
-            cookThis: true,
-        }));
-        if(store.photo) {
-            recipeData.append('photo', null)
-        }
-        fetch(apiRoot + "/recipe", {
-            method: "POST",
-            credentials: "include",
-            headers: {
-                ...authHeaders
-            },
-            body: recipeData,
-        })
-            .then(r => {
-                if (r.status === 401) {
-                    store.mode = "stale";
+        fetchImage().then( result => {
+            let recipeData = new FormData();
+            recipeData.append('info', JSON.stringify({
+                type: 'Recipe',
+                name: store.title,
+                externalUrl: store.url,
+                ingredients: store.ingredients.map(i => ({raw: i})),
+                directions: store.directions
+                    .map(d => d.trim())
+                    .map(d => d.length === 0 ? d : `1.  ${d}`)
+                    .join("\n"),
+                cookThis: true,
+            }));
+            if(result) {
+                recipeData.append('photo', result)
+            }
+            fetch(apiRoot + "/recipe", {
+                method: "POST",
+                credentials: "include",
+                headers: {
+                    ...authHeaders
+                },
+                body: recipeData,
+            })
+                .then(r => {
+                    if (r.status === 401) {
+                        store.mode = "stale";
+                        render();
+                        throw new Error("stale token");
+                    }
+                    if (r.status !== 201) {
+                        throw new Error(`${r.status} ${r.statusText}`);
+                    }
+                    return r.json();
+                })
+                .then(r => {
+                    store.mode = "imported";
+                    store.id = r.id;
                     render();
-                    throw new Error("stale token");
-                }
-                if (r.status !== 201) {
-                    throw new Error(`${r.status} ${r.statusText}`);
-                }
-                return r.json();
-            })
-            .then(r => {
-                store.mode = "imported";
-                store.id = r.id;
-                render();
-            })
-            .catch(e => {
-                alert(`Something went wrong: ${e}\n\nTry it again?`);
-            });
-        store.mode = "importing";
-        render();
+                })
+                .catch(e => {
+                    alert(`Something went wrong: ${e}\n\nTry it again?`);
+                });
+            store.mode = "importing";
+            render();
+        })
     };
 
     const GATEWAY_PROP = "foodinger_import_bookmarklet_gateway_Ch8LF4wGvsRHN3nM0jFv";
@@ -90,6 +92,7 @@
         totalTime: null,
         calories: null,
         photo: null,
+        photoURL: "",
         id: null,
     };
 
@@ -114,6 +117,12 @@
             : grabList(grabSelectedNode()));
         tearDownGrab();
     }, 250);
+    const findSelectHandler = (e) => {
+        e.preventDefault()
+        if(!e.target.src) return;
+        store.photoURL = e.target.src;
+        tearDownGrab();
+    }
     const setUpGrab = (target, style) => {
         store.mode = "grab";
         store.grabTarget = target;
@@ -121,11 +130,20 @@
         document.addEventListener("selectionchange", grabSelectHandler);
         render();
     };
+    const setUpFind = (target,style) => {
+        store.mode = "find";
+        store.grabTarget = target;
+        store.grabStyle = style;
+        setTimeout( () => document.addEventListener("click", findSelectHandler), 500);
+        render();
+    }
     const tearDownGrab = () => {
-        store.mode = "form";
         store.grabTarget = null;
         store.grabStyle = null;
-        document.removeEventListener("selectionchange", grabSelectHandler);
+        store.mode === "find"
+            ? document.removeEventListener("click", findSelectHandler)
+            : document.removeEventListener("selectionchange", grabSelectHandler);
+        store.mode = "form";
         render();
     };
     const grabSelectedNode = () => {
@@ -153,7 +171,24 @@
         node ? Array.from(node.childNodes)
             .map(collapseWS)
             .filter(s => s.length > 0) : [];
-
+    const findImage = node => {
+        if(!node.src) return;
+        store.photoURL = node.src;
+    }
+    const fetchImage = () => {
+        if(!store.photoURL) {
+            return Promise.resolve(null)
+        }
+        const filename = store.photoURL.split("/").pop()
+        return fetch(store.photoURL)
+            .then(response => {
+                return response.blob()
+            })
+            .then(blob => {
+                return new File([blob], filename, {type: blob.type})
+            })
+            .catch( e => null)
+    }
     const camelToDashed = n =>
         n.replace(/([a-z0-9])([A-Z])/g, (match, a, b) =>
             `${a}-${b.toLowerCase()}`);
@@ -216,6 +251,11 @@
         backgroundColor: "white",
         border: "1px solid #ddd"
     });
+    const photoStyle = toStyle({
+        width: "85px",
+        height: "auto",
+        margin: "10px"
+    })
     const blockRules = {
         border: "1px solid #ddd",
         backgroundColor: "white",
@@ -255,17 +295,19 @@
         <div style="${formItemStyle}">
             <label style="${labelStyle}">Yield:</label>
             <input style="${valueStyle}" name="yield" />
-            <button style="${grabBtnStyle}" onclick="${GATEWAY_PROP}.grabYield()">Grab</button>
         </div>
         <div style="${formItemStyle}">
             <label style="${labelStyle}">Prep:</label>
             <input style="${valueStyle}" name="totalTime" />
-            <button style="${grabBtnStyle}" onclick="${GATEWAY_PROP}.grabTotalTime()">Grab</button>
         </div>
         <div style="${formItemStyle}">
             <label style="${labelStyle}">Calories:</label>
             <input style="${valueStyle}" name="calories" />
-            <button style="${grabBtnStyle}" onclick="${GATEWAY_PROP}.grabCalories()">Grab</button>
+        </div>
+        <div style="${formItemStyle}">
+            <label style="${labelStyle}"></label>
+            <button style="${importBtnStyle}" onclick="${GATEWAY_PROP}.findPhoto()">Find Photo</button>
+            <img id="photo" src="${store.photoURL}" style="${photoStyle}"/>
         </div>
         <div style="${formItemStyle}">
             <label style="${labelStyle}"></label>
@@ -291,6 +333,8 @@
             store.directions = e.target.value
                 .split("\n")
                 .map(l => l.trim()));
+        const photo = $div.querySelector("#photo");
+        photo.setAttribute("src", store.photoURL);
         return {
             grabTitle: () =>
                 setUpGrab("title", "string"),
@@ -298,6 +342,8 @@
                 setUpGrab("ingredients", "list"),
             grabDirections: () =>
                 setUpGrab("directions", "list"),
+            findPhoto: () =>
+                setUpFind("photo","image"),
             doImport: () =>
                 sendToFoodinger(),
         };
@@ -312,6 +358,16 @@
             },
         };
     };
+    const renderFind = $div => {
+        $div.innerHTML = `<h1 style="${headerStyle}">Finding '${store.grabTarget}'</h1>
+        Click on the ${store.grabTarget} you would like to import.
+        <button onclick="${GATEWAY_PROP}.cancel()">Cancel</button>`;
+        return {
+            cancel: () => {
+                tearDownGrab();
+            },
+        };
+    }
     const renderStale = $div => {
         $div.innerHTML = `<h1 style="${headerStyle}">Stale Bookmarklet</h1>
         <p>Your import bookmarklet is stale. Go update it from
@@ -349,6 +405,7 @@
         window[GATEWAY_PROP] = {
             ... ( store.mode === "form" ? renderForm
                 : store.mode === "grab" ? renderGrab
+                : store.mode === "find" ? renderFind
                 : store.mode === "stale" ? renderStale
                 : store.mode === "importing" ? renderImporting
                 : store.mode === "imported" ? renderImported
@@ -381,6 +438,7 @@
             store.title = grabString(r.querySelector(".recipe-title"));
             store.ingredients = grabList(r.querySelector(".recipe-ingredients"));
             store.directions = grabList(r.querySelector(".recipe-steps"));
+            store.photo = findImage(r.querySelector(".media-container img"));
             return true;
         },
         () => {
