@@ -1,10 +1,10 @@
-import { Icon } from "antd";
-import { Container } from "flux/utils";
+import {Icon} from "antd";
+import {Container} from "flux/utils";
 import PropTypes from "prop-types";
 import React from "react";
-import { Link } from "react-router-dom";
+import {Link} from "react-router-dom";
 import LibraryStore from "../data/LibraryStore";
-import { refType } from "../models/IngredientRef";
+import {refType} from "../models/IngredientRef";
 import loadObjectOf from "../util/loadObjectOf";
 import Quantity from "./common/Quantity";
 
@@ -40,9 +40,9 @@ const IngredientItem = ({ingredient: ref, iLO, uLO}) => {
     const units = uLO && uLO.hasValue() ? uLO.getValueEnforcing().name : ref.units;
     return (
     <span>
-        <div style={{float: "left", width: "6em"}}>
+        <div style={{float: "left", width: "6em", textAlign: "right"}}>
         <Quantity quantity={ref.quantity}
-                  units={units} />
+                  units={units}/>
         </div>
         <div style={{marginLeft: "7em"}}>
         {isRecipe
@@ -50,7 +50,7 @@ const IngredientItem = ({ingredient: ref, iLO, uLO}) => {
                 {ingredient.name}
                 {" "}
                 <Link to={`/library/recipe/${ingredient.id}`}>
-                    <Icon type="link" />
+                    <Icon type="link"/>
                 </Link>
             </React.Fragment>
             : <span style={{

@@ -1,34 +1,17 @@
-import {
-    AppBar,
-    Box,
-    IconButton,
-    Tab,
-    Tabs,
-    Toolbar,
-} from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
-import {
-    AccountCircle,
-    EventNote,
-    ExitToApp,
-    ListAlt,
-    MenuBook,
-    PostAdd,
-} from "@material-ui/icons";
+import {AppBar, Box, IconButton, Tab, Tabs, Toolbar,} from "@material-ui/core";
+import {makeStyles} from "@material-ui/core/styles";
+import {AccountCircle, EventNote, ExitToApp, ListAlt, MenuBook, PostAdd,} from "@material-ui/icons";
 import classnames from "classnames";
-import { Container } from "flux/utils";
+import {Container} from "flux/utils";
 import React from "react";
-import {
-    Link,
-    withRouter,
-} from "react-router-dom";
+import {Link, withRouter,} from "react-router-dom";
 import WindowStore from "../../data/WindowStore";
 import Logo from "./Logo";
 
-const styles = makeStyles(() => ({
+const styles = makeStyles(theme => ({
     root: {
         flexGrow: 1,
-        height: 75
+        height: theme.header.height
     },
     bar: {
         flexGrow: 1,

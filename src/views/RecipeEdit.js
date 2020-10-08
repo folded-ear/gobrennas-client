@@ -9,6 +9,7 @@ import history from "../util/history";
 import onNextActionThat from "../util/onNextActionThat";
 import DeleteButton from "./common/DeleteButton";
 import { handleSave as handleSaveCopy } from "./RecipeAdd";
+import {any} from "prop-types";
 
 const handleDelete = (id) => {
     RecipeApi.deleteRecipe(id);
@@ -55,6 +56,7 @@ class RecipeEdit extends Component<{ recipeLO: any }> {
                 <hr />
                 <DeleteButton
                     type="recipe"
+                    label="Delete Recipe"
                     onConfirm={() => handleDelete(recipeLO.getValueEnforcing().id)}
                 />
 

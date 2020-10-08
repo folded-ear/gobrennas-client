@@ -1,8 +1,8 @@
-import { ThemeProvider } from "@material-ui/core/styles";
-import { Layout } from "antd";
-import { Container } from "flux/utils";
-import React, { Component } from "react";
-import { Switch } from "react-router-dom";
+import {ThemeProvider} from "@material-ui/core/styles";
+import {Container as Content} from "@material-ui/core";
+import {Container} from "flux/utils";
+import React, {Component} from "react";
+import {Switch} from "react-router-dom";
 import "./App.scss";
 import Dispatcher from "./data/dispatcher";
 import UserActions from "./data/UserActions";
@@ -36,7 +36,6 @@ class App extends Component {
             userLO,
             newVersionAvailable,
         } = this.props;
-        const {Content} = Layout;
 
         if (!userLO.isDone()) {
             return <ThemeProvider theme={theme}>
@@ -52,17 +51,15 @@ class App extends Component {
             <ThemeProvider theme={theme}>
                 {newVersionAvailable && <NewVersionAvailable />}
                 <AppHeader authenticated={authenticated} onLogout={this.handleLogout}/>
-                
-                <Content className="content" style={{
-                    maxWidth: "970px",
-                }}>
+
+                <Content style={{paddingBottom: "3em"}}>
                     <Switch>
                         {routes.public.map(route => {
                             return (
                                 <FluxRoute
                                     key={route.path}
                                     path={route.path}
-                                    render={ props => <route.component authenticated={authenticated} {...props} />}
+                                    render={props => <route.component authenticated={authenticated} {...props} />}
                                     exact={route.exact}
                                 />
                             );
