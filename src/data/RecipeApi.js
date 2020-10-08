@@ -1,21 +1,21 @@
-import BaseAxios from "axios"
-import {API_BASE_URL} from "../constants/index"
-import promiseFlux from "../util/promiseFlux"
-import RecipeActions from "./RecipeActions"
+import BaseAxios from "axios";
+import { API_BASE_URL } from "../constants/index";
+import promiseFlux from "../util/promiseFlux";
+import RecipeActions from "./RecipeActions";
 
 const axios = BaseAxios.create({
     baseURL: `${API_BASE_URL}/api`,
 });
 
 function build(recipe) {
-    let recipeData = new FormData()
-    const info = {...recipe}
-    delete info.photo
-    recipeData.append('info', JSON.stringify(info))
+    let recipeData = new FormData();
+    const info = {...recipe};
+    delete info.photo;
+    recipeData.append("info", JSON.stringify(info));
     if(recipe.photo) {
-        recipeData.append('photo', recipe.photo)
+        recipeData.append("photo", recipe.photo);
     }
-    return recipeData
+    return recipeData;
 }
 
 const RecipeApi = {
@@ -23,7 +23,7 @@ const RecipeApi = {
     addRecipe(recipe) {
         const id = recipe.id;
         delete recipe.id;
-        let recipeData = build(recipe)
+        let recipeData = build(recipe);
         promiseFlux(
             BaseAxios.create({
                 baseURL: `${API_BASE_URL}/api`,
@@ -60,35 +60,6 @@ const RecipeApi = {
         );
     },
     
-    assembleShoppingList(recipeIds, listId) {
-        promiseFlux(
-            axios.post(`/recipe/${recipeIds[0]}/_actions`, {
-                type: "ASSEMBLE_SHOPPING_LIST",
-                additionalRecipeIds: recipeIds.slice(1),
-                listId,
-            }),
-            () => ({
-                type: RecipeActions.SHOPPING_LIST_ASSEMBLED,
-                recipeIds,
-                listId,
-            }),
-        );
-    },
-
-    sendToShoppingList(recipeId, listId) {
-        promiseFlux(
-            axios.post(`/recipe/${recipeId}/_actions`, {
-                type: "SEND_TO_SHOPPING_LIST",
-                listId,
-            }),
-            () => ({
-                type: RecipeActions.SHOPPING_LIST_SENT,
-                recipeId,
-                listId,
-            }),
-        );
-    },
-
     sendToPlan(recipeId, planId) {
         promiseFlux(
             axios.post(`/recipe/${recipeId}/_actions`, {

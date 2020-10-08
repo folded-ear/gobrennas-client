@@ -7,13 +7,14 @@ import {
 } from "../util/arrayAsSet";
 import hotLoadObject from "../util/hotLoadObject";
 import LoadObject from "../util/LoadObject";
+import { fromMilliseconds } from "../util/time";
 import Dispatcher from "./dispatcher";
 import LibraryActions from "./LibraryActions";
 import LibraryApi from "./LibraryApi";
+import PantryItemActions from "./PantryItemActions";
 import RecipeActions from "./RecipeActions";
 import RecipeApi from "./RecipeApi";
 import UserStore from "./UserStore";
-import {fromMilliseconds} from "../util/time"
 
 export const SCOPE_MINE = "mine";
 export const SCOPE_EVERYONE = "everyone";
@@ -22,7 +23,7 @@ export const LABEL_STAGED_INDICATOR = "--on-stage";
 const adaptTime = (recipe) => {
     recipe.totalTime = fromMilliseconds(recipe.totalTime);
     return recipe;
-}
+};
 
 const workOnLabels = (state, recipeId, work) => {
     const lo = state.byId[recipeId];
@@ -48,10 +49,6 @@ export const isRecipeStaged = r => {
 };
 
 class LibraryStore extends ReduceStore {
-
-    constructor() {
-        super(Dispatcher);
-    }
 
     getInitialState() {
         return {
@@ -161,6 +158,11 @@ class LibraryStore extends ReduceStore {
             }
 
             case LibraryActions.INGREDIENT_LOADED: {
+                if (action.background && !state.byId.hasOwnProperty(action.id)) {
+                    // background update to something we don't have info about,
+                    // so just ignore it.
+                    return state;
+                }
                 return dotProp.set(
                     state,
                     ["byId", action.id],
@@ -190,6 +192,19 @@ class LibraryStore extends ReduceStore {
                 RecipeApi.removeLabel(action.id, LABEL_STAGED_INDICATOR);
                 return workOnLabels(state, action.id, labels =>
                     removeDistinct(labels, LABEL_STAGED_INDICATOR));
+            }
+
+            case PantryItemActions.ORDER_FOR_STORE: {
+                const it = state.byId[action.id];
+                if (!it || !it.hasValue()) return state;
+                const target = state.byId[action.targetId];
+                if (!target || !target.hasValue()) return state;
+                LibraryApi.orderForStore(action.id, action.targetId, action.after);
+                return dotProp.set(state, ["byId", action.id], it.map(v => ({
+                    ...v,
+                    storeOrder: target.getValueEnforcing().storeOrder +
+                        (action.after ? 0.5 : -0.5)
+                })));
             }
 
             default: {
@@ -250,92 +265,6 @@ class LibraryStore extends ReduceStore {
         return isRecipeStaged(this.getState().byId[id]);
     }
 
-    getShoppingList() {
-        const recipes = this.getStagedRecipes();
-        if (recipes.length === 0) return LoadObject.empty();
-        // i convert an IngredientRef to LoadObject<Map<id, Map<unit, amount>>>
-        const raws = [];
-        const convert = ref => {
-            if (!ref.ingredientId) {
-                raws.push(ref.raw);
-                return LoadObject.withValue({});
-            }
-            const lo = this.getIngredientById(ref.ingredientId);
-            if (!lo.hasValue()) return lo;
-            const ing = lo.getValueEnforcing();
-            if (ing.ingredients == null || ing.ingredients.length === 0) {
-                // not an aggregate, and this is how you spell that
-                return LoadObject.withValue({
-                    [ing.id]: {
-                        [ref.units]: ref.quantity || 1,
-                    },
-                });
-            }
-            return ing.ingredients
-                .map(convert)
-                .map(scale(ref))
-                .reduce(merge);
-        };
-        // i scale a LoadObject<Map<id, Map<unit, amount>>> by an IngredientRef
-        const scale = ref => lo => lo.map(packet =>
-            Object.keys(packet).reduce((im, i) => ({
-                ...im,
-                [i]: Object.keys(packet[i]).reduce((um, u) => {
-                    if (ref.units != null && u !== "null") {
-                        console.warn(`Multiplying '${ref.units}' by '${u}', which is weird.`);
-                    }
-                    return {
-                        ...um,
-                        [ref.units || u]: packet[i][u] * (ref.quantity || 1),
-                    };
-                }, {}),
-            }), {}));
-        // i merge a pair of LoadObject<Map<id, Map<unit, amount>>>
-        const merge = (a, b) => {
-            if (!a.hasValue()) return a;
-            if (!b.hasValue()) return b;
-            return a.map(packet => {
-                const result = b.getValueEnforcing();
-                Object.keys(packet).forEach(iid => {
-                    if (!result.hasOwnProperty(iid)) {
-                        result[iid] = packet[iid];
-                        return;
-                    }
-                    // gotta merge
-                    Object.keys(packet[iid]).forEach(u => {
-                        result[iid][u] = (result[iid][u] || 0) + packet[iid][u];
-                    });
-                });
-                return result;
-            });
-        };
-        // this is a kludge, because currently when staging there is an implicit
-        // "1 count" of the recipe. which will have to change, but for now we'll
-        // just hard code it so the data structures are right. woo!
-        return recipes
-            .map(r => ({
-                // an IngredientRef!
-                ingredientId: r.id,
-                quantity: 1,
-                units: null,
-                raw: "1 " + r.name,
-            }))
-            .map(convert)
-            .reduce(merge)
-            .map(items =>
-                Object.keys(items).map(id => {
-                    const ing = this.getIngredientById(id).getValueEnforcing();
-                    const unitMap = items[id];
-                    return {
-                        ingredient: ing,
-                        quantities: Object.keys(unitMap).map(u => ({
-                            units: u === "null" ? null : u,
-                            quantity: unitMap[u]
-                        }))
-                    };
-                }).concat(raws));
-    }
-
 }
 
-export default new LibraryStore();
+export default new LibraryStore(Dispatcher);

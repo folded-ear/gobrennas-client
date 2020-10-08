@@ -20,6 +20,5 @@ export default Container.createFunctional(
         libraryLO: LibraryStore.getLibraryLO()
             .map(rs => rs.sort(humanStringComparator)),
         stagedRecipes: LibraryStore.getStagedRecipes(),
-        shoppingList: LibraryStore.getShoppingList(),
     })
 );

@@ -1055,11 +1055,6 @@ class TaskStore extends ReduceStore {
             case TaskActions.FLUSH_STATUS_UPDATES:
                 return flushStatusUpdates(state);
 
-            case RecipeActions.SHOPPING_LIST_ASSEMBLED: {
-                TaskApi.loadSubtasks(action.listId, false);
-                return state;
-            }
-
             case RecipeActions.SENT_TO_PLAN: {
                 TaskApi.loadSubtasks(action.planId, false);
                 return state;

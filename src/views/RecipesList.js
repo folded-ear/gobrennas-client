@@ -1,6 +1,4 @@
 import {
-    Button,
-    Card,
     Col,
     List,
     Row,
@@ -15,13 +13,10 @@ import {
     SCOPE_EVERYONE,
     SCOPE_MINE,
 } from "../data/LibraryStore";
-import RecipeActions from "../data/RecipeActions";
 import { Recipe } from "../data/RecipeTypes";
 import loadObjectOf from "../util/loadObjectOf";
-import AddToList from "./AddToList";
 import RecipeListItem from "./RecipeListItem";
 import SearchFilter from "./SearchFilter";
-import ShoppingListItem from "./ShoppingListItem";
 
 const updateFilter = (e) => {
     const {value: filter} = e.target;
@@ -42,23 +37,9 @@ const sendFilter = (e) => {
 };
 
 const RecipesList = (props: {}) => {
-    const {me, filter, scope, libraryLO, stagedRecipes, shoppingList} = props;
+    const {me, filter, scope, libraryLO, stagedRecipes} = props;
     const hasStage = stagedRecipes.length > 0;
     const stagedIds = new Set(stagedRecipes.map(r => r.id));
-
-    const list = hasStage && <Card
-        title="Shopping List"
-        size="small"
-        style={{
-            marginLeft: "1em",
-        }}>
-        {shoppingList.hasValue()
-            ? <List dataSource={shoppingList.getValueEnforcing()}
-                    size="small"
-                    split={false}
-                    renderItem={ShoppingListItem} />
-            : <Spin tip="Generating list..." />}
-    </Card>;
 
     const stage = hasStage && <List
         dataSource={stagedRecipes}
@@ -67,16 +48,6 @@ const RecipesList = (props: {}) => {
             <RecipeListItem recipe={recipe}
                             mine
                             staged />}
-        footer={<Button.Group>
-            <AddToList
-                key="add-to-list"
-                onClick={listId => Dispatcher.dispatch({
-                    type: RecipeActions.ASSEMBLE_SHOPPING_LIST,
-                    recipeIds: [...stagedIds],
-                    listId,
-                })}
-            />
-        </Button.Group>}
     />;
 
     const content = !libraryLO.hasValue()
@@ -111,7 +82,7 @@ const RecipesList = (props: {}) => {
     return <React.Fragment>
         <h1>Recipe Library</h1>
         <Row>
-            <Col span={hasStage ? 18 : 24}>
+            <Col span={24}>
                 {hasStage && <React.Fragment>
                     <h2>Staged</h2>
                     {stage}
@@ -119,7 +90,6 @@ const RecipesList = (props: {}) => {
                 </React.Fragment>}
                 {content}
             </Col>
-            {hasStage && <Col span={6}>{list}</Col>}
         </Row>
     </React.Fragment>;
 };
@@ -135,7 +105,6 @@ RecipesList.propTypes = {
     stagedRecipes: PropTypes.arrayOf(Recipe).isRequired,
     filter: PropTypes.string,
     scope: PropTypes.string,
-    shoppingList: loadObjectOf(PropTypes.array),
 };
 
 export default RecipesList;
