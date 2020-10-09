@@ -115,11 +115,11 @@ const taskCreated = (state, clientId, id, task) => {
             }));
         });
     }
-    return {
+    return flushTasksToRename({
         ...state,
         activeTaskId: idFixer(state.activeTaskId),
         byId,
-    };
+    });
 };
 
 const listCreated = (state, clientId, id, list) => {
@@ -267,6 +267,7 @@ const flushTasksToRename = state => {
         TaskApi.createTask(task.name, task.parentId, id, afterId);
     }
     tasksToRename = requeue;
+    if (requeue.size > 0) inTheFuture(TaskActions.FLUSH_RENAMES);
     return state;
 };
 
@@ -433,6 +434,7 @@ const flushStatusUpdates = state => {
     for (const [id, status] of Array.from(statusUpdatesToFlush)) {
         setTaskStatus(id, status);
     }
+    statusUpdatesToFlush.clear();
     return state;
 };
 
@@ -544,6 +546,7 @@ const flushParentsToReset = state => {
         }
     }
     parentsToReset = requeue;
+    if (requeue.size > 0) inTheFuture(TaskActions.FLUSH_REORDERS, 1);
     return state;
 };
 
@@ -1045,11 +1048,12 @@ class TaskStore extends ReduceStore {
                 if (active.name == null || active.name.trim().length === 0) {
                     state = renameTask(state, active.id, lines.shift());
                 }
-                return lines.reduce((s, l) => {
+                state = lines.reduce((s, l) => {
                     s = createTaskAfter(s, s.activeTaskId);
                     s = renameTask(s, s.activeTaskId, l);
                     return s;
                 }, state);
+                return flushTasksToRename(state);
             }
 
             case TaskActions.FLUSH_RENAMES:
