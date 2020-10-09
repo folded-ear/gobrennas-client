@@ -19,10 +19,20 @@ const Item = ({
         const onDragDrop = props.onDragDrop;
         delete props.dragId;
         delete props.onDragDrop;
+        // for drag sources
+        props.draggable = true;
         props.onDragStart = e => {
             e.dataTransfer.setData("app/foodinger-data", itemId);
+            const dragRect = e.currentTarget.getBoundingClientRect();
+            e.dataTransfer.setData("app/foodinger-x-pos", (e.clientX - dragRect.x) / dragRect.width);
+            e.dataTransfer.setData("app/foodinger-opacity", e.target.style.opacity);
+            e.target.style.opacity = "0.3";
             e.dataTransfer.effectAllowed = "move";
         };
+        props.onDragEnd = e => {
+            e.target.style.opacity = e.dataTransfer.getData("app/foodinger-opacity");
+        };
+        // for drop targets
         props.onDragOver = e => {
             e.preventDefault();
             e.dataTransfer.dropEffect = "move";
@@ -35,15 +45,16 @@ const Item = ({
             }
             if (droppedId === itemId) return;
             const dropRect = e.currentTarget.getBoundingClientRect();
-            const dropMidY = dropRect.y + (dropRect.height / 2);
-            const dropMidX = dropRect.x + (dropRect.width / 2);
+            const dragPos = parseFloat(e.dataTransfer.getData("app/foodinger-x-pos"));
+            const dropPos = (e.clientX - dropRect.x) / dropRect.width;
+            const dx = dropPos - dragPos;
             onDragDrop(
                 droppedId,
                 itemId,
-                e.clientY > dropMidY ? "below" : "above",
-                e.clientX > dropMidX ? "right" : "left");
+                e.clientY > dropRect.y + (dropRect.height / 2) ? "below" : "above",
+                // require 5% delta to count as a horizontal change
+                dx > 0.05 ? "right" : dx < -0.05 ? "left" : null);
         };
-        props.draggable = true;
     }
     return <ListItem
         disableGutters
