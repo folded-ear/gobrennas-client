@@ -550,7 +550,10 @@ const flushParentsToReset = state => {
     return state;
 };
 
-function getOrderedBlock(state, ascending) {
+/**
+ * I return an array of [task, parent, index] tuples for the active task(s).
+ */
+const getOrderedBlock = state => {
     const block = [state.activeTaskId];
     if (state.selectedTaskIds != null) {
         block.push(...state.selectedTaskIds);
@@ -562,55 +565,104 @@ function getOrderedBlock(state, ascending) {
             [t, taskForId(state, t.parentId)])
         .map(([t, p]) =>
             [t, p, p.subtaskIds.indexOf(t.id)])
-        .sort(ascending
-            ? (a, b) => a[2] - b[2]
-            : (a, b) => b[2] - a[2]);
-}
+        .sort((a, b) => a[2] - b[2]);
+};
 
 const moveDelta = (state, delta) => {
-    const t = taskForId(state, state.activeTaskId);
-    const plo = loForId(state, t.parentId);
-    const p = plo.getValueEnforcing();
-    const sids = p.subtaskIds.slice();
-    const idxs = getOrderedBlock(state, delta < 1)
-        .map(it => it[2]);
-    if (idxs[0] === 0 && delta < 0) return state;
-    if (idxs[0] === sids.length - 1 && delta > 0) return state;
-    // this isn't terribly efficient. but whatever.
-    idxs.forEach(i => {
-        const temp = sids[i + delta];
-        sids[i + delta] = sids[i];
-        sids[i] = temp;
+    const upward = delta < 1;
+    const block = getOrderedBlock(state);
+    // eslint-disable-next-line no-unused-vars
+    const [ignored, p, idx] = block[upward ? 0 : block.length - 1];
+    if (upward && idx === 0) return state;
+    if (!upward && idx === p.subtaskIds.length - 1) return state;
+    const afterId = p.subtaskIds[idx + delta + (upward ? -1 : 0)];
+    return moveSubtreeInternal(state, {
+        ids: block.map(([t]) => t.id),
+        parentId: p.id,
+        afterId,
     });
-    parentsToReset.add(t.parentId);
-    inTheFuture(TaskActions.FLUSH_REORDERS);
+};
+
+const moveSubtreeInternal = (state, spec) => {
+    /*
+    Spec is {ids, parentId, afterId}
+     */
+    // ensure no client IDs
+    if (spec.ids.some(id => ClientId.is(id))) return state;
+    if (ClientId.is(spec.parentId)) return state;
+    if (ClientId.is(spec.afterId)) return state;
+    // ensure we're not going to create a cycle
+    for (let id = spec.parentId; id; id = taskForId(state, id).parentId){
+        if (spec.ids.includes(id)) return state;
+    }
+    // Woo! GO GO GO!
+    const byId = {...state.byId};
+    for (const id of spec.ids.reverse()) {
+        const lo = byId[id];
+        // remove the task from its old parent
+        const oldPid = byId[id].getValueEnforcing().parentId;
+        byId[oldPid] = byId[oldPid].map(t => {
+            const idx = t.subtaskIds.indexOf(id);
+            if (idx < 0) return t;
+            const subtaskIds = t.subtaskIds.slice();
+            subtaskIds.splice(idx, 1);
+            return {
+                ...t,
+                subtaskIds,
+            };
+        });
+        // update the tasks' parents
+        byId[id] = lo.map(t => ({
+            ...t,
+            parentId: spec.parentId,
+        }));
+        // add the task to its new parent
+        byId[spec.parentId] = byId[spec.parentId].map(t => {
+            let subtaskIds = t.subtaskIds;
+            if (subtaskIds) {
+                const afterIdx = spec.afterId == null
+                    ? 0
+                    : subtaskIds.indexOf(spec.afterId) + 1;
+                const currIdx = subtaskIds.indexOf(id);
+                if (currIdx < 0 || currIdx !== afterIdx + 1) {
+                    subtaskIds = subtaskIds.slice();
+                    if (currIdx >= 0) {
+                        subtaskIds.splice(currIdx, 1);
+                    }
+                    subtaskIds.splice(afterIdx, 0, id);
+                }
+            } else {
+                subtaskIds = [id];
+            }
+            return {
+                ...t,
+                subtaskIds,
+            };
+        });
+    }
     return {
         ...state,
-        byId: {
-            ...state.byId,
-            [p.id]: plo.map(p => ({
-                ...p,
-                subtaskIds: sids,
-            })),
-        },
+        byId,
     };
 };
 
 const nestTask = state => {
-    const blocks = getOrderedBlock(state, true);
-    if (blocks.some(([t, p]) => p.subtaskIds.indexOf(t.id) === 0)) {
+    const block = getOrderedBlock(state);
+    if (block.some(([t, p]) => p.subtaskIds.indexOf(t.id) === 0)) {
         // nothing to nest under
         return state;
     }
-    return blocks
-        .reduce((s, [t]) => {
-            const p = taskForId(s, t.parentId);
-            const idx = p.subtaskIds.indexOf(t.id);
-            const np = taskForId(s, p.subtaskIds[idx - 1]);
-            s = resetParent(s, t, p, np);
-            // force the new parent to be expanded
-            return setExpansion(s, np.id, true);
-        }, state);
+    const [t, p] = block[0];
+    const idx = p.subtaskIds.indexOf(t.id);
+    const np = taskForId(state, p.subtaskIds[idx - 1]);
+    state = moveSubtreeInternal(state, {
+        ids: block.map(([t]) => t.id),
+        parentId: np.id,
+        afterId: np.subtaskIds && np.subtaskIds.length
+            ? np.subtaskIds[np.subtaskIds.length - 1]
+            : null,
+    });
+    return setExpansion(state, np.id, true);
 };
 
 // if expanded is null, it means "toggle it"
@@ -621,16 +673,17 @@ const setExpansion = (state, id, expanded=null) =>
     })));
 
 const unnestTask = state => {
-    const blocks = getOrderedBlock(state, false);
-    if (blocks.some(([t]) => t.parentId === state.activeListId)) {
+    const block = getOrderedBlock(state);
+    if (block.some(([t]) => t.parentId === state.activeListId)) {
         // nothing to unnest from
         return state;
     }
-    return blocks
-        .reduce((s, [t, p]) => {
-            const np = taskForId(s, p.parentId);
-            return resetParent(s, t, p, np);
-        }, state);
+    const p = block[block.length - 1][1];
+    return moveSubtreeInternal(state, {
+        ids: block.map(([t]) => t.id),
+        parentId: p.parentId,
+        afterId: p.id,
+    });
 };
 
 const toggleExpanded = (state, id) => {
@@ -664,52 +717,6 @@ const forceExpansionBuilder = expanded => {
 
 const expandAll = forceExpansionBuilder(true);
 const collapseAll = forceExpansionBuilder(false);
-
-const resetParent = (state, task, parent, newParent) => {
-    if (!ClientId.is(task.id)) {
-        parentsToReset.add(parent.id);
-        parentsToReset.add(newParent.id);
-        inTheFuture(TaskActions.FLUSH_REORDERS);
-    }
-    return {
-        ...state,
-        byId: {
-            ...state.byId,
-            // update its parentId
-            [task.id]: state.byId[task.id].map(t => ({
-                ...t,
-                parentId: newParent.id,
-            })),
-            // remove it from its old parent
-            [parent.id]: state.byId[parent.id].map(t => {
-                const subtaskIds = t.subtaskIds.slice();
-                subtaskIds.splice(parent.subtaskIds.indexOf(task.id), 1);
-                return {
-                    ...t,
-                    subtaskIds,
-                };
-            }),
-            // add it to its new parent
-            [newParent.id]: state.byId[newParent.id].map(t => {
-                const subtaskIds = (t.subtaskIds || []).slice();
-                if (newParent.id === parent.parentId) {
-                    const idx = newParent.subtaskIds.indexOf(parent.id);
-                    if (idx >= 0) {
-                        subtaskIds.splice(idx + 1, 0, task.id);
-                    } else {
-                        subtaskIds.push(task.id);
-                    }
-                } else {
-                    subtaskIds.push(task.id);
-                }
-                return {
-                    ...t,
-                    subtaskIds,
-                };
-            }),
-        },
-    };
-};
 
 const loadSubtasks = (state, id, background = false) => {
     TaskApi.loadSubtasks(id, background);
@@ -1007,19 +1014,19 @@ class TaskStore extends ReduceStore {
             case TaskActions.SELECT_TO:
                 userAction();
                 return selectTo(state, action.id);
-            case TaskActions.MOVE_NEXT:
+            case TaskActions.MOVE_NEXT: // todo: recast as tree move
                 userAction();
                 return moveDelta(state, 1);
-            case TaskActions.MOVE_PREVIOUS:
+            case TaskActions.MOVE_PREVIOUS: // todo: recast as tree move
                 userAction();
                 return moveDelta(state, -1);
 
-            case TaskActions.NEST: {
+            case TaskActions.NEST: { // todo: recast as tree move
                 userAction();
                 return nestTask(state);
             }
 
-            case TaskActions.UNNEST: {
+            case TaskActions.UNNEST: { // todo: recast as tree move
                 userAction();
                 return unnestTask(state);
             }
