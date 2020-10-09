@@ -449,7 +449,7 @@ const queueStatusUpdate = (state, id, status) => {
         status,
     );
     if (t._next_status == null && t.status === status) return state;
-    if (t._next_statu === status) return state;
+    if (t._next_status === status) return state;
     const isDelete = willStatusDelete(status);
     let nextLO = lo.map(t => ({
         ...t,
