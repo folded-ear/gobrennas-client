@@ -37,6 +37,7 @@ const TaskActions = {
     CLEAR_LIST_GRANT: "task/clear-list-grant",
     NEST: "task/nest",
     UNNEST: "task/unnest",
+    MOVE_SUBTREE: "task/move-subtree",
     // ajax actions
     LOAD_LISTS: "task/load-lists",
     LISTS_LOADED: "task/lists-loaded",

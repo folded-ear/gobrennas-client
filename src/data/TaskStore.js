@@ -583,6 +583,39 @@ const moveDelta = (state, delta) => {
     });
 };
 
+const subtaskIdBefore = (state, parentId, before) => {
+    const p = taskForId(state, parentId);
+    if (!p.subtaskIds || p.subtaskIds.length === 0) return null;
+    const idx = p.subtaskIds.indexOf(before);
+    if (idx < 0) return p.subtaskIds[p.subtaskIds.length - 1];
+    if (idx === 0) return null;
+    return p.subtaskIds[idx - 1];
+};
+
+const moveSubtree = (state, action) => {
+    let blockIds = getOrderedBlock(state)
+        .map(([t]) => t.id);
+    const afterId = action.hasOwnProperty("before")
+        ? subtaskIdBefore(state, action.parentId, action.before)
+        : action.after == null ? null : action.after;
+    if (blockIds.includes(action.parentId) || blockIds.includes(afterId)) {
+        // dragging into the selection, so unselect
+        state = {
+            ...state,
+            selectedTaskIds: null,
+        };
+        blockIds = [state.activeTaskId];
+    }
+    if (!blockIds.includes(action.id)) {
+        blockIds = [action.id];
+    }
+    return moveSubtreeInternal(state, {
+        ids: blockIds,
+        parentId: action.parentId,
+        afterId,
+    });
+};
+
 const moveSubtreeInternal = (state, spec) => {
     /*
     Spec is {ids, parentId, afterId}
@@ -1029,6 +1062,11 @@ class TaskStore extends ReduceStore {
             case TaskActions.UNNEST: { // todo: recast as tree move
                 userAction();
                 return unnestTask(state);
+            }
+
+            case TaskActions.MOVE_SUBTREE: {
+                userAction();
+                return moveSubtree(state, action);
             }
 
             case TaskActions.TOGGLE_EXPANDED: {
