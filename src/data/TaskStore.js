@@ -640,7 +640,7 @@ const moveDelta = (state, delta) => {
     if (upward && idx === 0) return state;
     if (!upward && idx === p.subtaskIds.length - 1) return state;
     const afterId = p.subtaskIds[idx + delta + (upward ? -1 : 0)];
-    return moveSubtreeInternal(state, {
+    return mutateTree(state, {
         ids: block.map(([t]) => t.id),
         parentId: p.id,
         afterId,
@@ -673,14 +673,14 @@ const moveSubtree = (state, action) => {
     if (!blockIds.includes(action.id)) {
         blockIds = [action.id];
     }
-    return moveSubtreeInternal(state, {
+    return mutateTree(state, {
         ids: blockIds,
         parentId: action.parentId,
         afterId,
     });
 };
 
-const moveSubtreeInternal = (state, spec) => {
+const mutateTree = (state, spec) => {
     /*
     Spec is {ids, parentId, afterId}
      */
@@ -696,10 +696,10 @@ const moveSubtreeInternal = (state, spec) => {
     if (spec.ids.some(id => id === spec.afterId)) return state;
     socket.publish(`/api/plan/${state.activeListId}/mutate-tree`, spec);
     // do it now so the UI updates; the future message will be a race-y no-op
-    return performMove(state, spec);
+    return treeMutated(state, spec);
 };
 
-const performMove = (state, spec) => {
+const treeMutated = (state, spec) => {
     // Woo! GO GO GO!
     const byId = {...state.byId};
     spec.ids.reduce((afterId, id) => {
@@ -761,7 +761,7 @@ const nestTask = state => {
     const [t, p] = block[0];
     const idx = p.subtaskIds.indexOf(t.id);
     const np = taskForId(state, p.subtaskIds[idx - 1]);
-    state = moveSubtreeInternal(state, {
+    state = mutateTree(state, {
         ids: block.map(([t]) => t.id),
         parentId: np.id,
         afterId: np.subtaskIds && np.subtaskIds.length
@@ -785,7 +785,7 @@ const unnestTask = state => {
         return state;
     }
     const p = block[block.length - 1][1];
-    return moveSubtreeInternal(state, {
+    return mutateTree(state, {
         ids: block.map(([t]) => t.id),
         parentId: p.parentId,
         afterId: p.id,
@@ -1104,19 +1104,23 @@ class TaskStore extends ReduceStore {
             case TaskActions.SELECT_TO:
                 userAction();
                 return selectTo(state, action.id);
-            case TaskActions.MOVE_NEXT: // todo: recast as tree move
+
+            case TaskActions.MOVE_NEXT: {
                 userAction();
                 return moveDelta(state, 1);
-            case TaskActions.MOVE_PREVIOUS: // todo: recast as tree move
+            }
+
+            case TaskActions.MOVE_PREVIOUS: {
                 userAction();
                 return moveDelta(state, -1);
+            }
 
-            case TaskActions.NEST: { // todo: recast as tree move
+            case TaskActions.NEST: {
                 userAction();
                 return nestTask(state);
             }
 
-            case TaskActions.UNNEST: { // todo: recast as tree move
+            case TaskActions.UNNEST: {
                 userAction();
                 return unnestTask(state);
             }
@@ -1127,7 +1131,7 @@ class TaskStore extends ReduceStore {
             }
 
             case TaskActions.TREE_MUTATED: {
-                return performMove(state, action);
+                return treeMutated(state, action);
             }
 
             case TaskActions.TOGGLE_EXPANDED: {
