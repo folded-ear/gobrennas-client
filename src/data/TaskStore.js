@@ -17,7 +17,6 @@ import {
 import AccessLevel from "./AccessLevel";
 import Dispatcher from "./dispatcher";
 import PreferencesStore from "./PreferencesStore";
-import RecipeActions from "./RecipeActions";
 import RouteStore from "./RouteStore";
 import ShoppingActions from "./ShoppingActions";
 import TaskActions from "./TaskActions";
@@ -189,6 +188,13 @@ const subscribeToListUpdates = (state, id) => {
                 Dispatcher.dispatch({
                     type: TaskActions.TREE_MUTATED,
                     ...body.info,
+                });
+                return;
+            case "create":
+                Dispatcher.dispatch({
+                    type: TaskActions.TREE_CREATE,
+                    id: state.activeListId,
+                    data: body.info,
                 });
                 return;
             default:
@@ -996,10 +1002,15 @@ class TaskStore extends ReduceStore {
                 ], lo => lo.done());
             }
 
-            case TaskActions.LIST_DATA_BOOTSTRAPPED:
+            case TaskActions.LIST_DATA_BOOTSTRAPPED: {
                 return tasksLoaded(
                     subscribeToListUpdates(state, action.id),
                     action.data);
+            }
+
+            case TaskActions.TREE_CREATE: {
+                return tasksLoaded(state, action.data);
+            }
 
             case TaskActions.RENAME_TASK:
                 userAction();
@@ -1172,11 +1183,6 @@ class TaskStore extends ReduceStore {
                 return flushParentsToReset(state);
             case TaskActions.FLUSH_STATUS_UPDATES:
                 return flushStatusUpdates(state);
-
-            case RecipeActions.SENT_TO_PLAN: { // todo: this should go away
-                if (action.planId !== state.activeListId) return state;
-                return refreshActiveListSubscription(state);
-            }
 
             case TemporalActions.EVERY_15_SECONDS: { // todo: this should go away
                 if (userActedWithin(1000 * 15)) return state;

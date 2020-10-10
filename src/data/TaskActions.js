@@ -54,6 +54,7 @@ const TaskActions = {
     // socket actions
     LIST_DATA_BOOTSTRAPPED: "task/list-data-bootstrapped",
     TREE_MUTATED: "task/tree-mutated",
+    TREE_CREATE: "task/tree-create",
     // deferred actions
     FLUSH_RENAMES: "task/flush-renames",
     FLUSH_REORDERS: "task/flush-reorders",
