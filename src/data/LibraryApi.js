@@ -32,7 +32,7 @@ const LibraryApi = {
     },
 
     orderForStore(id, targetId, after) {
-        socket.publish("/app/pantry-item/order-for-store", {
+        socket.publish("/api/pantry-item/order-for-store", {
             id,
             targetId,
             after: !!after,
