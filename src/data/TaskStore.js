@@ -473,7 +473,6 @@ const selectDelta = (state, id, delta) => {
 let statusUpdatesToFlush = new Map();
 
 const unqueueTaskId = id => {
-    parentsToReset.delete(id);
     tasksToRename.delete(id);
     statusUpdatesToFlush.delete(id);
 };
@@ -599,25 +598,6 @@ const statusUpdated = (state, id, status, data) => {
     } else {
         return taskUpdated(state, id, data);
     }
-};
-
-let parentsToReset = new Set();
-
-const flushParentsToReset = state => {
-    if (parentsToReset.size === 0) return state;
-    const requeue = new Set();
-    for (const id of parentsToReset) {
-        if (! state.byId.hasOwnProperty(id)) continue;
-        const p = taskForId(state, id);
-        if (p.subtaskIds.some(ClientId.is)) {
-            requeue.add(p.id);
-        } else {
-            TaskApi.resetSubtasks(p.id, p.subtaskIds);
-        }
-    }
-    parentsToReset = requeue;
-    if (requeue.size > 0) inTheFuture(TaskActions.FLUSH_REORDERS, 1);
-    return state;
 };
 
 /**
@@ -1179,8 +1159,6 @@ class TaskStore extends ReduceStore {
 
             case TaskActions.FLUSH_RENAMES:
                 return flushTasksToRename(state);
-            case TaskActions.FLUSH_REORDERS:
-                return flushParentsToReset(state);
             case TaskActions.FLUSH_STATUS_UPDATES:
                 return flushStatusUpdates(state);
 

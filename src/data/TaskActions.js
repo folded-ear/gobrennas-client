@@ -57,7 +57,6 @@ const TaskActions = {
     TREE_CREATE: "task/tree-create",
     // deferred actions
     FLUSH_RENAMES: "task/flush-renames",
-    FLUSH_REORDERS: "task/flush-reorders",
     FLUSH_STATUS_UPDATES: "task/flush-status-updates",
 };
 

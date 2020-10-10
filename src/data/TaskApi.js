@@ -32,17 +32,6 @@ const TaskApi = {
             }),
         ),
 
-    loadSubtasks: (id, background = false) =>
-        promiseFlux(
-            axios.get(`/${id}/subtasks`),
-            ({data}) => ({
-                type: TaskActions.SUBTASKS_LOADED,
-                id,
-                data,
-                background,
-            }),
-        ),
-
     createTask: (name, parentId, clientId, afterId) => {
         let url = `/${parentId}/subtasks`;
         if (afterId) {
@@ -102,28 +91,6 @@ const TaskApi = {
                 type: TaskActions.TASK_DELETED,
                 id,
             }),
-        ),
-
-    resetSubtasks: (id, subtaskIds) =>
-        promiseFlux(
-            axios.put(`/${id}/subtaskIds`, {
-                subtaskIds
-            }),
-            () => ({
-                type: TaskActions.SUBTASKS_RESET,
-                id,
-            })
-        ),
-
-    resetParent: (id, parentId) =>
-        promiseFlux(
-            axios.put(`/${id}/parentId`, {
-                parentId,
-            }),
-            () => ({
-                type: TaskActions.PARENT_RESET,
-                id,
-            })
         ),
 
     setListGrant: (id, userId, level) =>
