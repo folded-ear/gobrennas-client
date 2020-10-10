@@ -22,15 +22,15 @@ const Item = ({
         // for drag sources
         props.draggable = true;
         props.onDragStart = e => {
-            e.dataTransfer.setData("app/foodinger-data", itemId);
+            e.dataTransfer.setData("foodinger/data", itemId);
             const dragRect = e.currentTarget.getBoundingClientRect();
-            e.dataTransfer.setData("app/foodinger-x-pos", (e.clientX - dragRect.x) / dragRect.width);
-            e.dataTransfer.setData("app/foodinger-opacity", e.target.style.opacity);
+            e.dataTransfer.setData("foodinger/x-pos", (e.clientX - dragRect.x) / dragRect.width);
+            e.dataTransfer.setData("foodinger/opacity", e.target.style.opacity);
             e.target.style.opacity = "0.3";
             e.dataTransfer.effectAllowed = "move";
         };
         props.onDragEnd = e => {
-            e.target.style.opacity = e.dataTransfer.getData("app/foodinger-opacity");
+            e.target.style.opacity = e.dataTransfer.getData("foodinger/opacity");
         };
         // for drop targets
         props.onDragOver = e => {
@@ -39,13 +39,13 @@ const Item = ({
         };
         props.onDrop = e => {
             e.preventDefault();
-            let droppedId = e.dataTransfer.getData("app/foodinger-data");
+            let droppedId = e.dataTransfer.getData("foodinger/data");
             if (!isNaN(parseInt(droppedId, 10))) {
                 droppedId = parseInt(droppedId, 10);
             }
             if (droppedId === itemId) return;
             const dropRect = e.currentTarget.getBoundingClientRect();
-            const dragPos = parseFloat(e.dataTransfer.getData("app/foodinger-x-pos"));
+            const dragPos = parseFloat(e.dataTransfer.getData("foodinger/x-pos"));
             const dropPos = (e.clientX - dropRect.x) / dropRect.width;
             const dx = dropPos - dragPos;
             onDragDrop(
