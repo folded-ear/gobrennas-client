@@ -360,7 +360,7 @@ const focusTask = (state, id) => {
     if (state.activeTaskId === id) return state;
     if (state.activeTaskId != null) {
         const prev = taskForId(state, state.activeTaskId);
-        if (prev.name && prev.name.trim() === "") {
+        if (prev.name == null || prev.name.trim() === "") {
             state = queueDelete(state, state.activeTaskId);
         }
     }
@@ -513,25 +513,33 @@ const queueStatusUpdate = (state, id, status) => {
     if (t._next_status == null && t.status === status) return state;
     if (t._next_status === status) return state;
     const isDelete = willStatusDelete(status);
+    if (isDelete && ClientId.is(id)) {
+        // short circuit this one...
+        return taskDeleted(state, id);
+    }
     let nextLO = lo.map(t => ({
         ...t,
         _next_status: status,
     }));
-    if (isDelete) nextLO = nextLO.deleting();
-    else nextLO = nextLO.updating();
+    nextLO = isDelete
+        ? nextLO.deleting()
+        : nextLO.updating();
     state = {
         ...state,
-        activeTaskId: null,
-        selectedTaskIds: null,
         byId: {
             ...state.byId,
             [id]: nextLO,
         },
     };
+    if (state.activeListId === id) {
+        state.activeTaskId = null;
+    }
+    if (state.selectedTaskIds) {
+        state.selectedTaskIds = state.selectedTaskIds
+            .filter(it => it !== id);
+    }
 
-    if (ClientId.is(id)) {
-        state = taskDeleted(state, id);
-    } else if (t.name === "") {
+    if (isDelete && t.name === "") {
         doTaskDelete(id);
     } else {
         statusUpdatesToFlush.set(id, status);
@@ -583,6 +591,9 @@ const taskDeleted = (state, id) => {
     kill(id);
     state = {
         ...state,
+        activeTaskId: state.activeTaskId === id
+            ? null
+            : state.activeTaskId,
         byId,
     };
     if (p.id === state.activeListId && !isParent(p)) {
