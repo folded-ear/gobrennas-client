@@ -564,14 +564,22 @@ const taskDeleted = (state, id) => {
         subtaskIds: p.subtaskIds.slice(0, idx)
             .concat(p.subtaskIds.slice(idx + 1)),
     };
+    const byId = {...state.byId};
+    byId[p.id] = byId[p.id].setValue(p);
+    const kill = id => {
+        if (!byId.hasOwnProperty(id)) return;
+        const lo = byId[id];
+        if (lo.hasValue()) {
+            const ids = lo.getValueEnforcing().subtaskIds;
+            if (ids) ids.forEach(kill);
+        }
+        delete byId[id];
+    };
+    kill(id);
     state = {
         ...state,
-        byId: {
-            ...state.byId,
-            [p.id]: LoadObject.withValue(p),
-        },
+        byId,
     };
-    // todo: cascade down the tree!
     if (p.id === state.activeListId && !isParent(p)) {
         // it was the last task on the list
         state = addTask(state, p.id, "", AT_END);
