@@ -694,10 +694,9 @@ const moveSubtreeInternal = (state, spec) => {
     }
     // ensure we're not positioning something based on itself
     if (spec.ids.some(id => id === spec.afterId)) return state;
-    console.log(`/api/plan/${state.activeListId}/mutate-tree`, spec); // todo: remove
     socket.publish(`/api/plan/${state.activeListId}/mutate-tree`, spec);
-    return state;
-    // return performMove(state, spec); // todo: reinstate this, w/ confirmation that reapplication (via message) is safe
+    // do it now so the UI updates; the future message will be a race-y no-op
+    return performMove(state, spec);
 };
 
 const performMove = (state, spec) => {
