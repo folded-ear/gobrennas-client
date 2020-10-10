@@ -8,6 +8,7 @@ import hotLoadObject from "../util/hotLoadObject";
 import inTheFuture from "../util/inTheFuture";
 import LoadObject from "../util/LoadObject";
 import loadObjectOf from "../util/loadObjectOf";
+import socket from "../util/socket";
 import typedStore from "../util/typedStore";
 import {
     userActedWithin,
@@ -151,11 +152,65 @@ const selectList = (state, id) => {
         listDetailVisible: false,
     };
     if (list.subtaskIds && list.subtaskIds.length) {
-        state.activeTaskId = list.subtaskIds[0];
+        state = list.subtaskIds.reduce(taskLoading, {
+            ...state,
+            activeTaskId: list.subtaskIds[0],
+        });
     } else {
         state = addTask(state, id, "");
     }
-    return loadSubtasks(state, id);
+    return refreshActiveListSubscription(state);
+};
+
+const refreshActiveListSubscription = state => {
+    state = doUnsub(state, "bootstrapSub");
+    if (state.activeListId == null) return state;
+    // leave this subscription hot, so if we get disconnected, it'll re-trigger
+    // when we reconnect, and download everything again.
+    const bootstrapSub = socket.subscribe(`/api/plan/${state.activeListId}`, message => {
+        Dispatcher.dispatch({
+            type: TaskActions.LIST_DATA_BOOTSTRAPPED,
+            id: state.activeListId,
+            data: message.body,
+        });
+    });
+    return {
+        ...state,
+        bootstrapSub,
+    };
+};
+
+const subscribeToListUpdates = (state, id) => {
+    state = doUnsub(state, "updateSub");
+    const updateSub = socket.subscribe(`/topic/plan/${id}`, ({body}) => {
+        // eslint-disable-next-line no-console
+        switch (body.type) {
+            case "tree-mutation":
+                Dispatcher.dispatch({
+                    type: TaskActions.TREE_MUTATED,
+                    ...body.info,
+                });
+                return;
+            default:
+                // eslint-disable-next-line no-console
+                console.warn("Unrecognized Task Message", body);
+        }
+    });
+    return {
+        ...state,
+        updateSub,
+    };
+};
+
+const doUnsub = (state, key) => {
+    if (state[key]) {
+        state[key].unsubscribe();
+        state = {
+            ...state,
+            [key]: null,
+        };
+    }
+    return state;
 };
 
 const taskForId = (state, id) =>
@@ -516,6 +571,7 @@ const taskDeleted = (state, id) => {
             [p.id]: LoadObject.withValue(p),
         },
     };
+    // todo: cascade down the tree!
     if (p.id === state.activeListId && !isParent(p)) {
         // it was the last task on the list
         state = addTask(state, p.id, "", AT_END);
@@ -625,12 +681,21 @@ const moveSubtreeInternal = (state, spec) => {
     if (ClientId.is(spec.parentId)) return state;
     if (ClientId.is(spec.afterId)) return state;
     // ensure we're not going to create a cycle
-    for (let id = spec.parentId; id; id = taskForId(state, id).parentId){
+    for (let id = spec.parentId; id; id = taskForId(state, id).parentId) {
         if (spec.ids.includes(id)) return state;
     }
+    // ensure we're not positioning something based on itself
+    if (spec.ids.some(id => id === spec.afterId)) return state;
+    console.log(`/api/plan/${state.activeListId}/mutate-tree`, spec); // todo: remove
+    socket.publish(`/api/plan/${state.activeListId}/mutate-tree`, spec);
+    return state;
+    // return performMove(state, spec); // todo: reinstate this, w/ confirmation that reapplication (via message) is safe
+};
+
+const performMove = (state, spec) => {
     // Woo! GO GO GO!
     const byId = {...state.byId};
-    for (const id of spec.ids.reverse()) {
+    spec.ids.reduce((afterId, id) => {
         const lo = byId[id];
         // remove the task from its old parent
         const oldPid = byId[id].getValueEnforcing().parentId;
@@ -653,9 +718,9 @@ const moveSubtreeInternal = (state, spec) => {
         byId[spec.parentId] = byId[spec.parentId].map(t => {
             let subtaskIds = t.subtaskIds;
             if (subtaskIds) {
-                const afterIdx = spec.afterId == null
+                const afterIdx = afterId == null
                     ? 0
-                    : subtaskIds.indexOf(spec.afterId) + 1;
+                    : subtaskIds.indexOf(afterId) + 1;
                 const currIdx = subtaskIds.indexOf(id);
                 if (currIdx < 0 || currIdx !== afterIdx + 1) {
                     subtaskIds = subtaskIds.slice();
@@ -672,7 +737,8 @@ const moveSubtreeInternal = (state, spec) => {
                 subtaskIds,
             };
         });
-    }
+        return id;
+    }, spec.afterId);
     return {
         ...state,
         byId,
@@ -751,16 +817,7 @@ const forceExpansionBuilder = expanded => {
 const expandAll = forceExpansionBuilder(true);
 const collapseAll = forceExpansionBuilder(false);
 
-const loadSubtasks = (state, id, background = false) => {
-    TaskApi.loadSubtasks(id, background);
-    if (background) return state;
-    return dotProp.set(
-        state,
-        ["byId", id],
-        lo => lo.updating());
-};
-
-const taskLoaded = (state, task, background=false) => {
+const taskLoaded = (state, task) => {
     let lo = state.byId[task.id] || LoadObject.empty();
     if (lo.hasValue()) {
         lo = lo.map(t => ({ ...t, ...task }));
@@ -771,10 +828,6 @@ const taskLoaded = (state, task, background=false) => {
         state,
         ["byId", task.id],
         lo.done());
-    if (isParent(task)) {
-        state = loadSubtasks(state, task.id, background);
-        state = task.subtaskIds.reduce(taskLoading, state);
-    }
     return state;
 };
 
@@ -804,10 +857,14 @@ const loadLists = state => {
     };
 };
 
+const tasksLoaded = (state, tasks) => ({
+    ...tasks.reduce((s, t) =>
+        taskLoaded(s, t), state),
+});
+
 const listsLoaded = (state, lists) => {
     state = {
-        ...lists.reduce((s, t) =>
-            taskLoaded(s, t), state),
+        ...tasksLoaded(state, lists),
         topLevelIds: LoadObject.withValue(lists.map(t => t.id)),
     };
     if (lists.length > 0) {
@@ -832,6 +889,8 @@ class TaskStore extends ReduceStore {
             selectedTaskIds: null, // Array<ID>
             topLevelIds: LoadObject.empty(), // LoadObject<Array<ID>>
             byId: {}, // Map<ID, LoadObject<Task>>
+            bootstrapSub: null,
+            updateSub: null,
         };
     }
 
@@ -930,21 +989,10 @@ class TaskStore extends ReduceStore {
                 ], lo => lo.done());
             }
 
-            case TaskActions.SUBTASKS_LOADED: {
-                if (action.background && userActedWithin(10 * 1000)) {
-                    // they did something while in flight
-                    return state;
-                }
-                return dotProp.set(
-                    action.data.reduce((s, t) =>
-                        taskLoaded(s, t, action.background), state),
-                    ["byId", action.id],
-                    lo => lo.map(task => ({
-                        ...task,
-                        subtaskIds: action.data.map(it => it.id),
-                    })).done()
-                );
-            }
+            case TaskActions.LIST_DATA_BOOTSTRAPPED:
+                return tasksLoaded(
+                    subscribeToListUpdates(state, action.id),
+                    action.data);
 
             case TaskActions.RENAME_TASK:
                 userAction();
@@ -971,10 +1019,12 @@ class TaskStore extends ReduceStore {
                 return flushTasksToRename(state);
             case TaskActions.CREATE_TASK_AFTER:
                 userAction();
-                return createTaskAfter(state, action.id);
+                state = createTaskAfter(state, action.id);
+                return flushTasksToRename(state);
             case TaskActions.CREATE_TASK_BEFORE:
                 userAction();
-                return createTaskBefore(state, action.id);
+                state = createTaskBefore(state, action.id);
+                return flushTasksToRename(state);
             case TaskActions.TASK_CREATED:
                 state = taskCreated(
                     state,
@@ -1069,6 +1119,10 @@ class TaskStore extends ReduceStore {
                 return moveSubtree(state, action);
             }
 
+            case TaskActions.TREE_MUTATED: {
+                return performMove(state, action);
+            }
+
             case TaskActions.TOGGLE_EXPANDED: {
                 userAction();
                 return toggleExpanded(state, action.id);
@@ -1108,24 +1162,26 @@ class TaskStore extends ReduceStore {
             case TaskActions.FLUSH_STATUS_UPDATES:
                 return flushStatusUpdates(state);
 
-            case RecipeActions.SENT_TO_PLAN: {
-                TaskApi.loadSubtasks(action.planId, false);
-                return state;
+            case RecipeActions.SENT_TO_PLAN: { // todo: this should go away
+                if (action.planId !== state.activeListId) return state;
+                return refreshActiveListSubscription(state);
             }
 
-            case TemporalActions.EVERY_15_SECONDS: {
+            case TemporalActions.EVERY_15_SECONDS: { // todo: this should go away
                 if (userActedWithin(1000 * 15)) return state;
                 if (state.activeListId == null) return state;
                 if (RouteStore.getMatch().path !== "/plan") return state;
                 if (!WindowStore.isActive()) return state;
-                return loadSubtasks(state, state.activeListId, true);
+                if (!state.bootstrapSub) return state;
+                return refreshActiveListSubscription(state);
             }
 
-            case WindowActions.VISIBILITY_CHANGE: {
+            case WindowActions.VISIBILITY_CHANGE: { // todo: this should go away
                 if (state.activeListId == null) return state;
                 if (RouteStore.getMatch().path !== "/plan") return state;
                 if (!WindowStore.isVisible()) return state;
-                return loadSubtasks(state, state.activeListId, true);
+                if (!state.bootstrapSub) return state;
+                return refreshActiveListSubscription(state);
             }
 
             default:
@@ -1236,6 +1292,8 @@ TaskStore.stateTypes = {
             _next_status: PropTypes.string,
         }))
     ).isRequired,
+    bootstrapSub: PropTypes.object,
+    updateSub: PropTypes.object,
 };
 
 export default typedStore(new TaskStore(Dispatcher));
