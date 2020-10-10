@@ -97,7 +97,7 @@ const taskCreated = (state, clientId, id, task) => {
     };
     delete byId[clientId];
     if (tasksToRename.has(clientId)) {
-        tasksToRename.set(id, tasksToRename.get(clientId));
+        tasksToRename.add(id);
         tasksToRename.delete(clientId);
     }
     if (task.parentId != null) {
@@ -115,11 +115,11 @@ const taskCreated = (state, clientId, id, task) => {
             }));
         });
     }
-    return {
+    return flushTasksToRename({
         ...state,
         activeTaskId: idFixer(state.activeTaskId),
         byId,
-    };
+    });
 };
 
 const listCreated = (state, clientId, id, list) => {
@@ -195,8 +195,6 @@ const spliceIds = (ids, id, after = AT_END) => {
 const addTask = (state, parentId, name, after = AT_END) => {
     const task = _newTask(name);
     const plo = loForId(state, parentId);
-    parentsToReset.add(parentId);
-    inTheFuture(TaskActions.FLUSH_REORDERS);
     return {
         ...state,
         activeTaskId: task.id,
@@ -242,19 +240,34 @@ const createTaskBefore = (state, id) => {
     return state;
 };
 
-let tasksToRename = new Map();
+let tasksToRename = new Set();
 
 const flushTasksToRename = state => {
     if (tasksToRename.size === 0) return state;
-    const requeue = new Map();
-    for (const [id, name] of tasksToRename) {
-        if (ClientId.is(id)) {
-            requeue.set(id, name);
-        } else {
-            TaskApi.renameTask(id, name);
+    const requeue = new Set();
+    for (const id of tasksToRename) {
+        const task = taskForId(state, id);
+        if (!ClientId.is(id)) {
+            TaskApi.renameTask(id, task.name);
+            continue;
         }
+        if (ClientId.is(task.parentId)) {
+            requeue.add(id);
+            continue;
+        }
+        const parent = taskForId(state, task.parentId);
+        const idx = parent.subtaskIds.indexOf(id);
+        const afterId = idx === 0
+            ? null
+            : parent.subtaskIds[idx - 1];
+        if (ClientId.is(afterId)) {
+            requeue.add(id);
+            continue;
+        }
+        TaskApi.createTask(task.name, task.parentId, id, afterId);
     }
     tasksToRename = requeue;
+    if (requeue.size > 0) inTheFuture(TaskActions.FLUSH_RENAMES);
     return state;
 };
 
@@ -262,20 +275,12 @@ const renameTask = (state, id, name) => {
     let lo = loForId(state, id);
     const task = lo.getValueEnforcing();
     if (task.name === name) return state;
-    if (ClientId.is(id)) {
-        if (lo.isDone()) { // really means "hasn't started yet"
-            TaskApi.createTask(name, task.parentId, id);
-            lo = lo.creating();
-        } else {
-            tasksToRename.set(id, name);
-            inTheFuture(TaskActions.FLUSH_RENAMES);
-        }
-    } else {
-        tasksToRename.set(id, name);
-        inTheFuture(TaskActions.FLUSH_RENAMES);
-        if (lo.isDone()) {
-            lo = lo.updating();
-        }
+    tasksToRename.add(id);
+    inTheFuture(TaskActions.FLUSH_RENAMES);
+    if (lo.isDone()) {
+        lo = ClientId.is(id)
+            ? lo.creating()
+            : lo.updating();
     }
     return {
         ...state,
@@ -429,6 +434,7 @@ const flushStatusUpdates = state => {
     for (const [id, status] of Array.from(statusUpdatesToFlush)) {
         setTaskStatus(id, status);
     }
+    statusUpdatesToFlush.clear();
     return state;
 };
 
@@ -445,7 +451,7 @@ const queueStatusUpdate = (state, id, status) => {
         status,
     );
     if (t._next_status == null && t.status === status) return state;
-    if (t._next_statu === status) return state;
+    if (t._next_status === status) return state;
     const isDelete = willStatusDelete(status);
     let nextLO = lo.map(t => ({
         ...t,
@@ -540,6 +546,7 @@ const flushParentsToReset = state => {
         }
     }
     parentsToReset = requeue;
+    if (requeue.size > 0) inTheFuture(TaskActions.FLUSH_REORDERS, 1);
     return state;
 };
 
@@ -1041,11 +1048,12 @@ class TaskStore extends ReduceStore {
                 if (active.name == null || active.name.trim().length === 0) {
                     state = renameTask(state, active.id, lines.shift());
                 }
-                return lines.reduce((s, l) => {
+                state = lines.reduce((s, l) => {
                     s = createTaskAfter(s, s.activeTaskId);
                     s = renameTask(s, s.activeTaskId, l);
                     return s;
                 }, state);
+                return flushTasksToRename(state);
             }
 
             case TaskActions.FLUSH_RENAMES:
