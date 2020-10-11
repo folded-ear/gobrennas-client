@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css?family=Stint+Ultra+Condensed');
+@import url('https://fonts.googleapis.com/css2?family=News+Cycle:wght@700&family=Stint+Ultra+Condensed&display=swap');
 @import '~antd/dist/antd.css';
 
 .logo {
@@ -60,3 +60,30 @@
 .profile-container .profile-avatar img {
   max-width: 100%;
 }
+
+.markdown {
+  ol {
+    padding: 0;
+    list-style: none;
+    counter-reset: cntr;
+  }
+
+  ol li {
+    margin-bottom: 15px;
+    counter-increment: cntr;
+
+    &::before {
+      content: "Step " counter(cntr);
+      color: #870000;
+      display: block;
+      font-weight: bold;
+      font-family: "News Cycle", sans-serif;
+      font-size: 1.1em;
+      text-transform: uppercase;
+    }
+
+  }
+
+}
+
+

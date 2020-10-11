@@ -1,25 +1,25 @@
 import React from "react";
 import PropTypes from "prop-types";
 import {IconButton, Tooltip} from "@material-ui/core";
-import {Edit} from "@material-ui/icons";
+import {Close} from "@material-ui/icons";
 
-const EditButton = ({onClick}) => {
+const CloseButton = ({onClick}) => {
     return (
         <Tooltip
-            title="Edit"
+            title="Close"
             placement="top"
         >
             <IconButton
                 onClick={onClick}
             >
-                <Edit/>
+                <Close/>
             </IconButton>
         </Tooltip>
     );
 };
 
-EditButton.propTypes = {
+CloseButton.propTypes = {
     onClick: PropTypes.func,
 };
 
-export default EditButton;
+export default CloseButton;

@@ -1,4 +1,5 @@
-import {Affix, Button, List, Spin,} from "antd";
+import {Affix, List, Spin} from "antd";
+import {Grid, Toolbar} from "@material-ui/core";
 import PropTypes from "prop-types";
 import React from "react";
 import {Redirect} from "react-router-dom";
@@ -11,12 +12,37 @@ import history from "../util/history";
 import loadObjectOf from "../util/loadObjectOf";
 import AddToList from "./AddToList";
 import DeleteButton from "./common/DeleteButton";
+import CopyButton from "./common/CopyButton";
+import EditButton from "./common/EditButton";
+import CloseButton from "./common/CloseButton";
 import Directions from "./common/Directions";
 import IngredientItem from "./IngredientItem";
 import LabelItem from "./LabelItem";
 import User from "./user/User";
+import {makeStyles} from "@material-ui/core/styles";
+import Typography from "@material-ui/core/Typography";
+import StageButton from "./common/StageButton";
+import Source from "./common/Source";
+
+const useStyles = makeStyles(theme => ({
+    root: {},
+    name: {
+        flexGrow: 1
+    },
+    image: {
+        maxWidth: "90%",
+        height: "auto",
+        paddingBottom: "2em"
+    },
+    toolbar: {
+        backgroundColor: "white",
+        padding: theme.spacing(4, 0),
+    },
+}));
 
 const RecipeDetail = ({recipeLO, mine, staged, ownerLO}) => {
+
+    const classes = useStyles();
 
     if (!recipeLO.hasValue()) {
         if (recipeLO.isLoading()) {
@@ -24,107 +50,109 @@ const RecipeDetail = ({recipeLO, mine, staged, ownerLO}) => {
         }
         return <Redirect to="/library"/>;
     }
-    
+
     const recipe = recipeLO.getValueEnforcing();
 
     return (
-        <div>
-            <Button.Group>
-                <Button
-                    icon="close"
-                    onClick={() => history.push("/library")}
-                >Close</Button>
-                {mine && (staged
-                    ? <Button
-                        icon="export"
-                        onClick={() => Dispatcher.dispatch({
-                            type: LibraryActions.UNSTAGE_RECIPE,
-                            id: recipe.id,
-                        })}
-                    >Unstage</Button>
-                    : <Button
-                        icon="import"
-                        onClick={() => Dispatcher.dispatch({
-                            type: LibraryActions.STAGE_RECIPE,
-                            id: recipe.id,
-                        })}
-                    >Stage</Button>
-                )}
-                <Button
-                    icon="copy"
-                    onClick={() => history.push(`/library/recipe/${recipe.id}/make-copy`)}
-                >{mine ? "Copy" : "Duplicate to My Library"}</Button>
-                {mine && <Button
-                    icon="edit"
-                    onClick={() => history.push(`/library/recipe/${recipe.id}/edit`)}
-                >Edit</Button>}
-                {mine && <DeleteButton
-                    type="recipe"
-                    label={"Delete"}
-                    onConfirm={() => RecipeApi.deleteRecipe(recipe.id)}
-                />}
-            </Button.Group>
+        <div className={classes.root} id="toolbar">
+            <Grid container>
+                <Grid item xs={12}>
+                    <Affix offset={75}>
+                        <Toolbar className={classes.toolbar}>
+                            <Typography className={classes.name} component="h1" variant="h3">{recipe.name}</Typography>
+                            {mine && (staged
+                                    ? <StageButton
+                                        staged
+                                        onClick={() => Dispatcher.dispatch({
+                                            type: LibraryActions.UNSTAGE_RECIPE,
+                                            id: recipe.id,
+                                        })}/>
+                                    : <StageButton
+                                        onClick={() => Dispatcher.dispatch({
+                                            type: LibraryActions.STAGE_RECIPE,
+                                            id: recipe.id,
+                                        })}/>
+                            )}
+                            <CopyButton
+                                mine
+                                onClick={() => history.push(`/library/recipe/${recipe.id}/make-copy`)}
+                            />
+                            {mine && <EditButton
+                                onClick={() => history.push(`/library/recipe/${recipe.id}/edit`)}
+                            />}
+                            <CloseButton
+                                onClick={() => history.push("/library")}/>
+                            {mine && <DeleteButton
+                                type="recipe"
+                                onConfirm={() => RecipeApi.deleteRecipe(recipe.id)}
+                            />}
+                            {!mine && ownerLO.hasValue() && <p style={{float: "right"}}>
+                                <User {...ownerLO.getValueEnforcing()} />
+                            </p>}
 
+                        </Toolbar>
+                    </Affix>
+                </Grid>
+                <Grid item xs={5}>
+                    {recipe.photo && <React.Fragment>
+                        <div><img className={classes.image} src={recipe.photo} alt={`${recipe.name}`}/></div>
+                    </React.Fragment>}
+                </Grid>
+                <Grid item xs={5}>
+                    {recipe.externalUrl.length && <React.Fragment>
+                        <Typography variant="h5">Source</Typography>
+                        <Source url={recipe.externalUrl}/>
+                    </React.Fragment>}
 
-            <Affix offsetTop={0}>
-                {!mine && ownerLO.hasValue() && <p style={{float: "right"}}>
-                    <User {...ownerLO.getValueEnforcing()} />
-                </p>}
-                <h2 style={{
-                    backgroundColor: "white",
-                }}>{recipe.name}</h2>
-            </Affix>
+                    {recipe.yield && <React.Fragment>
+                        <Typography variant="h5">Yield</Typography>
+                        <p>{recipe.yield} servings</p>
+                    </React.Fragment>}
 
-            {recipe.photo && <React.Fragment>
-                <p><img src={recipe.photo} alt={`${recipe.name}`}/></p>
-            </React.Fragment>}
+                    {recipe.totalTime && <React.Fragment>
+                        <Typography variant="h5">Total time</Typography>
+                        <p>{recipe.totalTime} minutes</p>
+                    </React.Fragment>}
 
-            {recipe.externalUrl && <React.Fragment>
-                <h5>Source</h5>
-                <p><a href={recipe.externalUrl}>{recipe.externalUrl}</a></p>
-            </React.Fragment>}
+                    {recipe.calories && <React.Fragment>
+                        <Typography variant="h5">Calories</Typography>
+                        <p>{recipe.calories} calories</p>
+                    </React.Fragment>}
 
-            {recipe.ingredients != null && recipe.ingredients.length > 0 && <React.Fragment>
-                <h3>Ingredients</h3>
-                <List
-                    dataSource={recipe.ingredients}
-                    renderItem={it => <List.Item>
-                        <IngredientItem ingredient={it} />
-                    </List.Item>}
-                    size="small"
-                    split={false}
-                    footer={<AddToList onClick={planId => Dispatcher.dispatch({
-                        type: RecipeActions.SEND_TO_PLAN,
-                        recipeId: recipe.id,
-                        planId,
-                    })} />}
-                />
-            </React.Fragment>}
+                    {recipe.labels && recipe.labels
+                        .filter(label => label.indexOf("--") !== 0)
+                        .map(label =>
+                            <LabelItem key={label} label={label}/>)}
+                </Grid>
 
-            {recipe.directions && <React.Fragment>
-                <h3>Directions</h3>
-                <Directions text={recipe.directions} />
-            </React.Fragment>}
+                <Grid item xs={12} md={5}>
+                    {recipe.ingredients != null && recipe.ingredients.length > 0 && <React.Fragment>
+                        <Typography variant="h5">Ingredients</Typography>
+                        <List
+                            dataSource={recipe.ingredients}
+                            renderItem={it => <List.Item>
+                                <IngredientItem ingredient={it}/>
+                            </List.Item>}
+                            size="small"
+                            split={false}
+                            footer={<AddToList onClick={planId => Dispatcher.dispatch({
+                                type: RecipeActions.SEND_TO_PLAN,
+                                recipeId: recipe.id,
+                                planId,
+                            })}/>}
+                        />
+                    </React.Fragment>}
+                </Grid>
 
-            {recipe.yield && <React.Fragment>
-                <h3>Yield</h3>
-                <p>{recipe.yield} servings</p>
-            </React.Fragment>}
+                <Grid item xs={12} md={7}>
+                    {recipe.directions && <React.Fragment>
+                        <Typography variant="h5">Directions</Typography>
+                        <Directions text={recipe.directions}/>
+                    </React.Fragment>}
+                </Grid>
 
-            {recipe.totalTime && <React.Fragment>
-                <h3>Total time</h3>
-                <p>{recipe.totalTime} minutes</p>
-            </React.Fragment>}
+            </Grid>
 
-            {recipe.calories && <React.Fragment>
-                <h3>Calories</h3>
-                <p>{recipe.calories} calories</p>
-            </React.Fragment>}
-
-            {recipe.labels && recipe.labels
-                .filter(label => label.indexOf("--") !== 0)
-                .map(label =>
-                    <LabelItem key={label} label={label} />)}
 
         </div>
     );

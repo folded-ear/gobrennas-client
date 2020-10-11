@@ -1,7 +1,4 @@
-import {
-    createMuiTheme,
-    responsiveFontSizes
-} from "@material-ui/core/styles";
+import {createMuiTheme, responsiveFontSizes} from "@material-ui/core/styles";
 
 let theme = createMuiTheme({
     palette: {
@@ -24,6 +21,21 @@ let theme = createMuiTheme({
             main: "#333333"
         }
     },
+    typography: {
+        h3: {
+            fontFamily: "News Cycle",
+        },
+        h5: {
+            fontFamily: "News Cycle",
+            fontWeight: 600,
+            fontSize: "1.1rem",
+            textTransform: "uppercase",
+            marginBottom: ".5em"
+        }
+    },
+    header: {
+        height: "75px"
+    }
 });
 theme = responsiveFontSizes(theme);
 
