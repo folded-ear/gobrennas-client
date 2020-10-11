@@ -32,6 +32,7 @@ class Task extends React.PureComponent {
         this.onKeyDown = this.onKeyDown.bind(this);
         this.onClick = this.onClick.bind(this);
         this.onToggleExpanded = this.onToggleExpanded.bind(this);
+        this.onDragDrop = this.onDragDrop.bind(this);
         this.inputRef = React.createRef();
     }
 
@@ -195,6 +196,32 @@ class Task extends React.PureComponent {
         });
     }
 
+    onDragDrop(id, targetId, vertical, horizontal) {
+        const {
+            task,
+        } = this.props;
+        const action = {
+            type: TaskActions.MOVE_SUBTREE,
+            id,
+        };
+        if (horizontal === "right") {
+            action.parentId = targetId;
+            if (isExpanded(task)) {
+                action.after = null;
+            } else {
+                action.before = null;
+            }
+        } else {
+            action.parentId = task.parentId;
+            if (vertical === "above") {
+                action.before = targetId;
+            } else {
+                action.after = targetId;
+            }
+        }
+        Dispatcher.dispatch(action);
+    }
+
     componentDidMount() {
         if (this.props.active) this.inputRef.current.focus();
     }
@@ -282,6 +309,8 @@ class Task extends React.PureComponent {
                 [classes.completing]: completing,
                 [classes.ancestorDeleting]: ancestorDeleting,
             })}
+            dragId={task.id}
+            onDragDrop={this.onDragDrop}
         >
             {active
                 ? <Input

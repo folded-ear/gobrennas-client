@@ -1,7 +1,6 @@
 import { Container } from "flux/utils";
 import React from "react";
 import LibraryStore from "../data/LibraryStore";
-import PlanStore from "../data/PlanStore";
 import ShoppingStore from "../data/ShoppingStore";
 import {
     isParent,
@@ -9,6 +8,7 @@ import {
     isSection,
 } from "../data/tasks";
 import TaskStatus from "../data/TaskStatus";
+import TaskStore from "../data/TaskStore";
 import groupBy from "../util/groupBy";
 import ShopList from "../views/shop/ShopList";
 
@@ -20,7 +20,7 @@ const gatherLeaves = item => {
             path: [],
         }];
     }
-    return PlanStore.getChildItemLOs(item.id)
+    return TaskStore.getSubtaskLOs(item.id)
         .filter(lo => lo.hasValue())
         .map(lo => {
             const item = lo.getValueEnforcing();
@@ -128,18 +128,17 @@ const groupItems = plans => {
 export default Container.createFunctional(
     props => <ShopList {...props} />,
     () => [
-        PlanStore,
+        TaskStore,
         ShoppingStore,
         LibraryStore,
     ],
     () => {
-        const allPlans = ShoppingStore.getAllPlans();
+        const planLO = TaskStore.getActiveListLO();
         const activeItem = ShoppingStore.getActiveItem();
         return {
-            allPlans,
-            itemTuples: allPlans.hasValue()
-                ? groupItems(allPlans.getValueEnforcing()
-                    .filter(p => p.selected))
+            planLO,
+            itemTuples: planLO.hasValue()
+                ? groupItems([planLO.getValueEnforcing()])
                 : [],
             isActive: activeItem == null
                 ? () => false

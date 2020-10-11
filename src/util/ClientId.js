@@ -1,18 +1,18 @@
 import PropTypes from "prop-types";
+import buildSequence from "./buildSequence";
 import {
     createChainableTypeChecker,
     PropTypeError,
 } from "./typeHelpers";
 
-const NOISE = Math.floor(Math.random() * 100000); // ~5 random digits
-const PREFIX = "c_" + NOISE + "_";
-let counter = 0;
+const {
+    PREFIX,
+    next,
+} = buildSequence();
 
 const ClientId = {
 
-    next() {
-        return PREFIX + (++counter);
-    },
+    next,
 
     is(id) {
         return typeof id === "string"

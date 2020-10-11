@@ -2,7 +2,11 @@
 import { Client } from "@stomp/stompjs";
 import SockJS from "sockjs-client";
 import { API_BASE_URL } from "../constants";
-import ClientId from "./ClientId";
+import buildSequence from "./buildSequence";
+
+const {
+    next,
+} = buildSequence();
 
 export class SocketAdapter {
     constructor() {
@@ -50,7 +54,7 @@ export class SocketAdapter {
     }
 
     subscribe(destination, callback, headers) {
-        const id = (headers && headers.id) || ("sub_" + ClientId.next());
+        const id = (headers && headers.id) || next();
         this._activate();
         this._subscriptions.set(id, {
             id,

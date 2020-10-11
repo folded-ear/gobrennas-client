@@ -32,47 +32,6 @@ const TaskApi = {
             }),
         ),
 
-    loadSubtasks: (id, background = false) =>
-        promiseFlux(
-            axios.get(`/${id}/subtasks`),
-            ({data}) => ({
-                type: TaskActions.SUBTASKS_LOADED,
-                id,
-                data,
-                background,
-            }),
-        ),
-
-    createTask: (name, parentId, clientId, afterId) => {
-        let url = `/${parentId}/subtasks`;
-        if (afterId) {
-            url += `?after=${afterId}`;
-        }
-        return promiseFlux(
-            axios.post(url, {
-                name,
-            }),
-            ({data}) => ({
-                type: TaskActions.TASK_CREATED,
-                clientId,
-                id: data.id,
-                data,
-            }),
-        );
-    },
-
-    renameTask: (id, name) =>
-        promiseFlux(
-            axios.put(`/${id}/name`, {
-                name,
-            }),
-            ({data}) => ({
-                type: TaskActions.TASK_RENAMED,
-                id,
-                data,
-            }),
-        ),
-
     deleteList: (id) =>
         promiseFlux(
             axios.delete(`/${id}`),
@@ -80,50 +39,6 @@ const TaskApi = {
                 type: TaskActions.LIST_DELETED,
                 id,
             }),
-        ),
-
-    setStatus: (id, status) =>
-        promiseFlux(
-            axios.put(`/${id}/status`, {
-                status,
-            }),
-            ({data}) => ({
-                type: TaskActions.STATUS_UPDATED,
-                id,
-                status,
-                data,
-            }),
-        ),
-
-    deleteTask: (id) =>
-        promiseFlux(
-            axios.delete(`/${id}`),
-            () => ({
-                type: TaskActions.TASK_DELETED,
-                id,
-            }),
-        ),
-
-    resetSubtasks: (id, subtaskIds) =>
-        promiseFlux(
-            axios.put(`/${id}/subtaskIds`, {
-                subtaskIds
-            }),
-            () => ({
-                type: TaskActions.SUBTASKS_RESET,
-                id,
-            })
-        ),
-
-    resetParent: (id, parentId) =>
-        promiseFlux(
-            axios.put(`/${id}/parentId`, {
-                parentId,
-            }),
-            () => ({
-                type: TaskActions.PARENT_RESET,
-                id,
-            })
         ),
 
     setListGrant: (id, userId, level) =>

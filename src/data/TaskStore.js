@@ -8,16 +8,11 @@ import hotLoadObject from "../util/hotLoadObject";
 import inTheFuture from "../util/inTheFuture";
 import LoadObject from "../util/LoadObject";
 import loadObjectOf from "../util/loadObjectOf";
+import socket from "../util/socket";
 import typedStore from "../util/typedStore";
-import {
-    userActedWithin,
-    userAction,
-} from "../util/userAction";
 import AccessLevel from "./AccessLevel";
 import Dispatcher from "./dispatcher";
 import PreferencesStore from "./PreferencesStore";
-import RecipeActions from "./RecipeActions";
-import RouteStore from "./RouteStore";
 import ShoppingActions from "./ShoppingActions";
 import TaskActions from "./TaskActions";
 import TaskApi from "./TaskApi";
@@ -26,10 +21,7 @@ import {
     isParent,
 } from "./tasks";
 import TaskStatus, { willStatusDelete } from "./TaskStatus";
-import TemporalActions from "./TemporalActions";
 import UserStore from "./UserStore";
-import WindowActions from "./WindowActions";
-import WindowStore from "./WindowStore";
 
 /*
  * This store is way too muddled. But leaving it that way for the moment, to
@@ -79,21 +71,14 @@ const idFixerFactory = (cid, id) => {
     return idFixer;
 };
 
-const receiveTaskSave = (lo, task) =>
-    // Despite possibly thinking we'd want to save the name, we don't. If the
-    // user has made further changes while the save (creation or rename) was in
-    // flight, we don't want to lose those. It'll save again shortly.
-    lo.done().map(t => ({
-        ...t,
-        ...task,
-        name: t.name,
-    }));
-
-const taskCreated = (state, clientId, id, task) => {
+const fixIds = (state, task, id, clientId) => {
     const idFixer = idFixerFactory(clientId, id);
     const byId = {
         ...state.byId,
-        [id]: receiveTaskSave(state.byId[clientId], task),
+        [id]: state.byId[clientId].map(t => ({
+            ...t,
+            id,
+        })),
     };
     delete byId[clientId];
     if (tasksToRename.has(clientId)) {
@@ -120,6 +105,17 @@ const taskCreated = (state, clientId, id, task) => {
         activeTaskId: idFixer(state.activeTaskId),
         byId,
     });
+};
+
+const tasksCreated = (state, tasks, newIds) => {
+    if (newIds != null) {
+        for (const id of Object.keys(newIds)) {
+            const cid = newIds[id];
+            if (!isKnown(state, cid)) continue;
+            state = fixIds(state, taskForId(state, cid), parseInt(id, 10), cid);
+        }
+    }
+    return tasksLoaded(state, tasks);
 };
 
 const listCreated = (state, clientId, id, list) => {
@@ -151,12 +147,88 @@ const selectList = (state, id) => {
         listDetailVisible: false,
     };
     if (list.subtaskIds && list.subtaskIds.length) {
-        state.activeTaskId = list.subtaskIds[0];
+        state = list.subtaskIds.reduce(taskLoading, {
+            ...state,
+            activeTaskId: list.subtaskIds[0],
+        });
     } else {
         state = addTask(state, id, "");
     }
-    return loadSubtasks(state, id);
+    return refreshActiveListSubscription(state);
 };
+
+const refreshActiveListSubscription = state => {
+    state = doUnsub(state, "bootstrapSub");
+    if (state.activeListId == null) return state;
+    // leave this subscription hot, so if we get disconnected, it'll re-trigger
+    // when we reconnect, and download everything again.
+    const bootstrapSub = socket.subscribe(`/api/plan/${state.activeListId}`, message => {
+        Dispatcher.dispatch({
+            type: TaskActions.LIST_DATA_BOOTSTRAPPED,
+            id: state.activeListId,
+            data: message.body,
+        });
+    });
+    return {
+        ...state,
+        bootstrapSub,
+    };
+};
+
+const subscribeToListUpdates = (state, id) => {
+    state = doUnsub(state, "updateSub");
+    const updateSub = socket.subscribe(`/topic/plan/${id}`, ({body}) => {
+        // eslint-disable-next-line no-console
+        switch (body.type) {
+            case "tree-mutation":
+                Dispatcher.dispatch({
+                    type: TaskActions.TREE_MUTATED,
+                    ...body.info,
+                });
+                return;
+            case "create":
+                Dispatcher.dispatch({
+                    type: TaskActions.TREE_CREATE,
+                    data: body.info,
+                    newIds: body.newIds,
+                });
+                return;
+            case "update":
+                Dispatcher.dispatch({
+                    type: TaskActions.UPDATED,
+                    data: body.info,
+                });
+                return;
+            case "delete":
+                Dispatcher.dispatch({
+                    type: TaskActions.DELETED,
+                    id: body.id,
+                });
+                return;
+            default:
+                // eslint-disable-next-line no-console
+                console.warn("Unrecognized Task Message", body);
+        }
+    });
+    return {
+        ...state,
+        updateSub,
+    };
+};
+
+const doUnsub = (state, key) => {
+    if (state[key]) {
+        state[key].unsubscribe();
+        state = {
+            ...state,
+            [key]: null,
+        };
+    }
+    return state;
+};
+
+const isKnown = (state, id) =>
+    state.byId.hasOwnProperty(id);
 
 const taskForId = (state, id) =>
     loForId(state, id).getValueEnforcing();
@@ -248,7 +320,10 @@ const flushTasksToRename = state => {
     for (const id of tasksToRename) {
         const task = taskForId(state, id);
         if (!ClientId.is(id)) {
-            TaskApi.renameTask(id, task.name);
+            socket.publish(`/api/plan/${state.activeListId}/rename`, {
+                id,
+                name: task.name,
+            });
             continue;
         }
         if (ClientId.is(task.parentId)) {
@@ -264,7 +339,12 @@ const flushTasksToRename = state => {
             requeue.add(id);
             continue;
         }
-        TaskApi.createTask(task.name, task.parentId, id, afterId);
+        socket.publish(`/api/plan/${state.activeListId}/create`, {
+            id,
+            parentId: task.parentId,
+            afterId,
+            name: task.name,
+        });
     }
     tasksToRename = requeue;
     if (requeue.size > 0) inTheFuture(TaskActions.FLUSH_RENAMES);
@@ -298,8 +378,7 @@ const focusTask = (state, id) => {
     taskForId(state, id);
     if (state.activeTaskId === id) return state;
     if (state.activeTaskId != null) {
-        const prev = taskForId(state, state.activeTaskId);
-        if (prev.name && prev.name.trim() === "") {
+        if (isEmpty(taskForId(state, state.activeTaskId))) {
             state = queueDelete(state, state.activeTaskId);
         }
     }
@@ -412,34 +491,50 @@ const selectDelta = (state, id, delta) => {
 let statusUpdatesToFlush = new Map();
 
 const unqueueTaskId = id => {
-    parentsToReset.delete(id);
     tasksToRename.delete(id);
     statusUpdatesToFlush.delete(id);
 };
 
-const doTaskDelete = id => {
+const doTaskDelete = (state, id) => {
     unqueueTaskId(id);
-    TaskApi.deleteTask(id);
+    socket.publish(`/api/plan/${state.activeListId}/delete`, {
+        id,
+    });
+    return state;
 };
 
-const setTaskStatus = (id, status) => {
+const setTaskStatus = (state, id, status) => {
     if (willStatusDelete(status)) {
         unqueueTaskId(id);
     }
-    TaskApi.setStatus(id, status);
+    socket.publish(`/api/plan/${state.activeListId}/status`, {
+        id,
+        status
+    });
+    return state;
 };
 
 const flushStatusUpdates = state => {
     if (statusUpdatesToFlush.size === 0) return state;
     for (const [id, status] of Array.from(statusUpdatesToFlush)) {
-        setTaskStatus(id, status);
+        state = setTaskStatus(state, id, status);
     }
     statusUpdatesToFlush.clear();
     return state;
 };
 
-const queueDelete = (state, id) =>
-    queueStatusUpdate(state, id, TaskStatus.DELETED);
+const queueDelete = (state, id) => {
+    if (!isKnown(state, id)) return state; // already gone...
+    return queueStatusUpdate(state, id, TaskStatus.DELETED);
+};
+
+function isEmpty(taskOrString) {
+    if (taskOrString == null) return true;
+    const str = typeof taskOrString === "string"
+        ? taskOrString
+        : taskOrString.name;
+    return str == null || str.trim() === "";
+}
 
 const queueStatusUpdate = (state, id, status) => {
     let lo = loForId(state, id);
@@ -453,30 +548,38 @@ const queueStatusUpdate = (state, id, status) => {
     if (t._next_status == null && t.status === status) return state;
     if (t._next_status === status) return state;
     const isDelete = willStatusDelete(status);
+    if (isDelete && ClientId.is(id)) {
+        // short circuit this one...
+        return taskDeleted(state, id);
+    }
+    if (isDelete && isEmpty(t)) {
+        state = doTaskDelete(state, id);
+        return taskDeleted(state, id);
+    }
     let nextLO = lo.map(t => ({
         ...t,
         _next_status: status,
     }));
-    if (isDelete) nextLO = nextLO.deleting();
-    else nextLO = nextLO.updating();
+    nextLO = isDelete
+        ? nextLO.deleting()
+        : nextLO.updating();
     state = {
         ...state,
-        activeTaskId: null,
-        selectedTaskIds: null,
         byId: {
             ...state.byId,
             [id]: nextLO,
         },
     };
-
-    if (ClientId.is(id)) {
-        state = taskDeleted(state, id);
-    } else if (t.name === "") {
-        doTaskDelete(id);
-    } else {
-        statusUpdatesToFlush.set(id, status);
-        inTheFuture(TaskActions.FLUSH_STATUS_UPDATES, 9);
+    if (state.activeListId === id) {
+        state.activeTaskId = null;
     }
+    if (state.selectedTaskIds) {
+        state.selectedTaskIds = state.selectedTaskIds
+            .filter(it => it !== id);
+    }
+
+    statusUpdatesToFlush.set(id, status);
+    inTheFuture(TaskActions.FLUSH_STATUS_UPDATES, 9);
     if (isExpanded(t) && isDelete) {
         state = setExpansion(state, t.id, false);
     }
@@ -501,6 +604,14 @@ const cancelStatusUpdate = (state, id) => {
 };
 
 const taskDeleted = (state, id) => {
+    unqueueTaskId(id);
+    if (state.activeTaskId === id) {
+        state = {
+            ...state,
+            activeTaskId: null,
+        };
+    }
+    if (!isKnown(state, id)) return state;
     const t = taskForId(state, id);
     let p = taskForId(state, t.parentId);
     const idx = p.subtaskIds.indexOf(id);
@@ -509,12 +620,21 @@ const taskDeleted = (state, id) => {
         subtaskIds: p.subtaskIds.slice(0, idx)
             .concat(p.subtaskIds.slice(idx + 1)),
     };
+    const byId = {...state.byId};
+    byId[p.id] = byId[p.id].setValue(p);
+    const kill = id => {
+        const lo = byId[id];
+        if (lo == null) return;
+        if (lo.hasValue()) {
+            const ids = lo.getValueEnforcing().subtaskIds;
+            if (ids) ids.forEach(kill);
+        }
+        delete byId[id];
+    };
+    kill(id);
     state = {
         ...state,
-        byId: {
-            ...state.byId,
-            [p.id]: LoadObject.withValue(p),
-        },
+        byId,
     };
     if (p.id === state.activeListId && !isParent(p)) {
         // it was the last task on the list
@@ -523,34 +643,10 @@ const taskDeleted = (state, id) => {
     return state;
 };
 
-const statusUpdated = (state, id, status, data) => {
-    if (willStatusDelete(status)) {
-        return taskDeleted(state, id);
-    } else {
-        return taskUpdated(state, id, data);
-    }
-};
-
-let parentsToReset = new Set();
-
-const flushParentsToReset = state => {
-    if (parentsToReset.size === 0) return state;
-    const requeue = new Set();
-    for (const id of parentsToReset) {
-        if (! state.byId.hasOwnProperty(id)) continue;
-        const p = taskForId(state, id);
-        if (p.subtaskIds.some(ClientId.is)) {
-            requeue.add(p.id);
-        } else {
-            TaskApi.resetSubtasks(p.id, p.subtaskIds);
-        }
-    }
-    parentsToReset = requeue;
-    if (requeue.size > 0) inTheFuture(TaskActions.FLUSH_REORDERS, 1);
-    return state;
-};
-
-function getOrderedBlock(state, ascending) {
+/**
+ * I return an array of [task, parent, index] tuples for the active task(s).
+ */
+const getOrderedBlock = state => {
     const block = [state.activeTaskId];
     if (state.selectedTaskIds != null) {
         block.push(...state.selectedTaskIds);
@@ -562,55 +658,146 @@ function getOrderedBlock(state, ascending) {
             [t, taskForId(state, t.parentId)])
         .map(([t, p]) =>
             [t, p, p.subtaskIds.indexOf(t.id)])
-        .sort(ascending
-            ? (a, b) => a[2] - b[2]
-            : (a, b) => b[2] - a[2]);
-}
+        .sort((a, b) => a[2] - b[2]);
+};
 
 const moveDelta = (state, delta) => {
-    const t = taskForId(state, state.activeTaskId);
-    const plo = loForId(state, t.parentId);
-    const p = plo.getValueEnforcing();
-    const sids = p.subtaskIds.slice();
-    const idxs = getOrderedBlock(state, delta < 1)
-        .map(it => it[2]);
-    if (idxs[0] === 0 && delta < 0) return state;
-    if (idxs[0] === sids.length - 1 && delta > 0) return state;
-    // this isn't terribly efficient. but whatever.
-    idxs.forEach(i => {
-        const temp = sids[i + delta];
-        sids[i + delta] = sids[i];
-        sids[i] = temp;
+    const upward = delta < 1;
+    const block = getOrderedBlock(state);
+    // eslint-disable-next-line no-unused-vars
+    const [ignored, p, idx] = block[upward ? 0 : block.length - 1];
+    if (upward && idx === 0) return state;
+    if (!upward && idx === p.subtaskIds.length - 1) return state;
+    const afterId = p.subtaskIds[idx + delta + (upward ? -1 : 0)];
+    return mutateTree(state, {
+        ids: block.map(([t]) => t.id),
+        parentId: p.id,
+        afterId,
     });
-    parentsToReset.add(t.parentId);
-    inTheFuture(TaskActions.FLUSH_REORDERS);
+};
+
+const subtaskIdBefore = (state, parentId, before) => {
+    const p = taskForId(state, parentId);
+    if (!p.subtaskIds || p.subtaskIds.length === 0) return null;
+    const idx = p.subtaskIds.indexOf(before);
+    if (idx < 0) return p.subtaskIds[p.subtaskIds.length - 1];
+    if (idx === 0) return null;
+    return p.subtaskIds[idx - 1];
+};
+
+const moveSubtree = (state, action) => {
+    let blockIds = getOrderedBlock(state)
+        .map(([t]) => t.id);
+    const afterId = action.hasOwnProperty("before")
+        ? subtaskIdBefore(state, action.parentId, action.before)
+        : action.after == null ? null : action.after;
+    if (blockIds.includes(action.parentId) || blockIds.includes(afterId)) {
+        // dragging into the selection, so unselect
+        state = {
+            ...state,
+            selectedTaskIds: null,
+        };
+        blockIds = [state.activeTaskId];
+    }
+    if (!blockIds.includes(action.id)) {
+        blockIds = [action.id];
+    }
+    return mutateTree(state, {
+        ids: blockIds,
+        parentId: action.parentId,
+        afterId,
+    });
+};
+
+const mutateTree = (state, spec) => {
+    /*
+    Spec is {ids, parentId, afterId}
+     */
+    // ensure no client IDs
+    if (spec.ids.some(id => ClientId.is(id))) return state;
+    if (ClientId.is(spec.parentId)) return state;
+    if (ClientId.is(spec.afterId)) return state;
+    // ensure we're not going to create a cycle
+    for (let id = spec.parentId; id; id = taskForId(state, id).parentId) {
+        if (spec.ids.includes(id)) return state;
+    }
+    // ensure we're not positioning something based on itself
+    if (spec.ids.some(id => id === spec.afterId)) return state;
+    socket.publish(`/api/plan/${state.activeListId}/mutate-tree`, spec);
+    // do it now so the UI updates; the future message will be a race-y no-op
+    return treeMutated(state, spec);
+};
+
+const treeMutated = (state, spec) => {
+    // Woo! GO GO GO!
+    const byId = {...state.byId};
+    spec.ids.reduce((afterId, id) => {
+        const lo = byId[id];
+        // remove the task from its old parent
+        const oldPid = byId[id].getValueEnforcing().parentId;
+        byId[oldPid] = byId[oldPid].map(t => {
+            const idx = t.subtaskIds.indexOf(id);
+            if (idx < 0) return t;
+            const subtaskIds = t.subtaskIds.slice();
+            subtaskIds.splice(idx, 1);
+            return {
+                ...t,
+                subtaskIds,
+            };
+        });
+        // update the tasks' parents
+        byId[id] = lo.map(t => ({
+            ...t,
+            parentId: spec.parentId,
+        }));
+        // add the task to its new parent
+        byId[spec.parentId] = byId[spec.parentId].map(t => {
+            let subtaskIds = t.subtaskIds;
+            if (subtaskIds) {
+                const afterIdx = afterId == null
+                    ? 0
+                    : subtaskIds.indexOf(afterId) + 1;
+                const currIdx = subtaskIds.indexOf(id);
+                if (currIdx < 0 || currIdx !== afterIdx + 1) {
+                    subtaskIds = subtaskIds.slice();
+                    if (currIdx >= 0) {
+                        subtaskIds.splice(currIdx, 1);
+                    }
+                    subtaskIds.splice(afterIdx, 0, id);
+                }
+            } else {
+                subtaskIds = [id];
+            }
+            return {
+                ...t,
+                subtaskIds,
+            };
+        });
+        return id;
+    }, spec.afterId);
     return {
         ...state,
-        byId: {
-            ...state.byId,
-            [p.id]: plo.map(p => ({
-                ...p,
-                subtaskIds: sids,
-            })),
-        },
+        byId,
     };
 };
 
 const nestTask = state => {
-    const blocks = getOrderedBlock(state, true);
-    if (blocks.some(([t, p]) => p.subtaskIds.indexOf(t.id) === 0)) {
+    const block = getOrderedBlock(state);
+    if (block.some(([t, p]) => p.subtaskIds.indexOf(t.id) === 0)) {
         // nothing to nest under
         return state;
     }
-    return blocks
-        .reduce((s, [t]) => {
-            const p = taskForId(s, t.parentId);
-            const idx = p.subtaskIds.indexOf(t.id);
-            const np = taskForId(s, p.subtaskIds[idx - 1]);
-            s = resetParent(s, t, p, np);
-            // force the new parent to be expanded
-            return setExpansion(s, np.id, true);
-        }, state);
+    const [t, p] = block[0];
+    const idx = p.subtaskIds.indexOf(t.id);
+    const np = taskForId(state, p.subtaskIds[idx - 1]);
+    state = mutateTree(state, {
+        ids: block.map(([t]) => t.id),
+        parentId: np.id,
+        afterId: np.subtaskIds && np.subtaskIds.length
+            ? np.subtaskIds[np.subtaskIds.length - 1]
+            : null,
+    });
+    return setExpansion(state, np.id, true);
 };
 
 // if expanded is null, it means "toggle it"
@@ -621,16 +808,17 @@ const setExpansion = (state, id, expanded=null) =>
     })));
 
 const unnestTask = state => {
-    const blocks = getOrderedBlock(state, false);
-    if (blocks.some(([t]) => t.parentId === state.activeListId)) {
+    const block = getOrderedBlock(state);
+    if (block.some(([t]) => t.parentId === state.activeListId)) {
         // nothing to unnest from
         return state;
     }
-    return blocks
-        .reduce((s, [t, p]) => {
-            const np = taskForId(s, p.parentId);
-            return resetParent(s, t, p, np);
-        }, state);
+    const p = block[block.length - 1][1];
+    return mutateTree(state, {
+        ids: block.map(([t]) => t.id),
+        parentId: p.parentId,
+        afterId: p.id,
+    });
 };
 
 const toggleExpanded = (state, id) => {
@@ -665,77 +853,36 @@ const forceExpansionBuilder = expanded => {
 const expandAll = forceExpansionBuilder(true);
 const collapseAll = forceExpansionBuilder(false);
 
-const resetParent = (state, task, parent, newParent) => {
-    if (!ClientId.is(task.id)) {
-        parentsToReset.add(parent.id);
-        parentsToReset.add(newParent.id);
-        inTheFuture(TaskActions.FLUSH_REORDERS);
-    }
-    return {
-        ...state,
-        byId: {
-            ...state.byId,
-            // update its parentId
-            [task.id]: state.byId[task.id].map(t => ({
-                ...t,
-                parentId: newParent.id,
-            })),
-            // remove it from its old parent
-            [parent.id]: state.byId[parent.id].map(t => {
-                const subtaskIds = t.subtaskIds.slice();
-                subtaskIds.splice(parent.subtaskIds.indexOf(task.id), 1);
-                return {
-                    ...t,
-                    subtaskIds,
-                };
-            }),
-            // add it to its new parent
-            [newParent.id]: state.byId[newParent.id].map(t => {
-                const subtaskIds = (t.subtaskIds || []).slice();
-                if (newParent.id === parent.parentId) {
-                    const idx = newParent.subtaskIds.indexOf(parent.id);
-                    if (idx >= 0) {
-                        subtaskIds.splice(idx + 1, 0, task.id);
-                    } else {
-                        subtaskIds.push(task.id);
-                    }
-                } else {
-                    subtaskIds.push(task.id);
-                }
-                return {
-                    ...t,
-                    subtaskIds,
-                };
-            }),
-        },
-    };
-};
-
-const loadSubtasks = (state, id, background = false) => {
-    TaskApi.loadSubtasks(id, background);
-    if (background) return state;
-    return dotProp.set(
-        state,
-        ["byId", id],
-        lo => lo.updating());
-};
-
-const taskLoaded = (state, task, background=false) => {
-    let lo = state.byId[task.id] || LoadObject.empty();
+const taskLoaded = (state, task, id=task.id) => {
+    let lo = state.byId[id] || LoadObject.empty();
     if (lo.hasValue()) {
-        lo = lo.map(t => ({ ...t, ...task }));
+        lo = lo.map(t => {
+            const subtaskIds = task.subtaskIds
+                ? task.subtaskIds.slice()
+                : [];
+            t.subtaskIds && t.subtaskIds.forEach((id, idx) => {
+                if (!ClientId.is(id)) return;
+                if (idx < subtaskIds.length) {
+                    subtaskIds.splice(idx,0, id);
+                } else {
+                    subtaskIds.push(id);
+                }
+            });
+            return ({
+                ...t,
+                ...task,
+                name: id === state.activeTaskId
+                    ? t.name
+                    : task.name,
+                subtaskIds: subtaskIds.length
+                    ? subtaskIds
+                    : null,
+            });
+        });
     } else {
         lo = lo.setValue(task);
     }
-    state = dotProp.set(
-        state,
-        ["byId", task.id],
-        lo.done());
-    if (isParent(task)) {
-        state = loadSubtasks(state, task.id, background);
-        state = task.subtaskIds.reduce(taskLoading, state);
-    }
-    return state;
+    return dotProp.set(state, ["byId", task.id], lo.done());
 };
 
 const taskLoading = (state, id) => {
@@ -748,14 +895,6 @@ const taskLoading = (state, id) => {
     );
 };
 
-const taskUpdated = (state, id, task) => ({
-    ...state,
-    byId: {
-        ...state.byId,
-        [id]: receiveTaskSave(state.byId[id], task),
-    },
-});
-
 const loadLists = state => {
     TaskApi.loadLists();
     return {
@@ -764,10 +903,13 @@ const loadLists = state => {
     };
 };
 
+const tasksLoaded = (state, tasks) =>
+    tasks.reduce((s, t) =>
+        taskLoaded(s, t), state);
+
 const listsLoaded = (state, lists) => {
     state = {
-        ...lists.reduce((s, t) =>
-            taskLoaded(s, t), state),
+        ...tasksLoaded(state, lists),
         topLevelIds: LoadObject.withValue(lists.map(t => t.id)),
     };
     if (lists.length > 0) {
@@ -792,13 +934,14 @@ class TaskStore extends ReduceStore {
             selectedTaskIds: null, // Array<ID>
             topLevelIds: LoadObject.empty(), // LoadObject<Array<ID>>
             byId: {}, // Map<ID, LoadObject<Task>>
+            bootstrapSub: null,
+            updateSub: null,
         };
     }
 
     reduce(state, action) {
         switch (action.type) {
             case TaskActions.CREATE_LIST:
-                userAction();
                 return createList(state, action.name);
             case TaskActions.LIST_CREATED:
                 return listCreated(
@@ -810,7 +953,6 @@ class TaskStore extends ReduceStore {
 
             case TaskActions.LIST_DETAIL_VISIBILITY: {
                 if (state.listDetailVisible === action.visible) return state;
-                userAction();
                 return {
                     ...state,
                     listDetailVisible: action.visible,
@@ -818,7 +960,6 @@ class TaskStore extends ReduceStore {
             }
 
             case TaskActions.DELETE_LIST: {
-                userAction();
                 TaskApi.deleteList(action.id);
                 const next = dotProp.set(state, [
                     "byId",
@@ -852,14 +993,11 @@ class TaskStore extends ReduceStore {
             case TaskActions.LISTS_LOADED:
                 return listsLoaded(state, action.data);
             case TaskActions.SELECT_LIST:
-                userAction();
                 return selectList(state, action.id);
             case TaskActions.RENAME_LIST:
-                userAction();
                 return renameTask(state, action.id, action.name);
 
             case TaskActions.SET_LIST_GRANT: {
-                userAction();
                 TaskApi.setListGrant(action.id, action.userId, action.level);
                 return dotProp.set(state, [
                     "byId",
@@ -871,7 +1009,6 @@ class TaskStore extends ReduceStore {
             }
 
             case TaskActions.CLEAR_LIST_GRANT: {
-                userAction();
                 TaskApi.clearListGrant(action.id, action.userId);
                 return dotProp.set(state, [
                     "byId",
@@ -890,28 +1027,25 @@ class TaskStore extends ReduceStore {
                 ], lo => lo.done());
             }
 
-            case TaskActions.SUBTASKS_LOADED: {
-                if (action.background && userActedWithin(10 * 1000)) {
-                    // they did something while in flight
-                    return state;
-                }
-                return dotProp.set(
-                    action.data.reduce((s, t) =>
-                        taskLoaded(s, t, action.background), state),
-                    ["byId", action.id],
-                    lo => lo.map(task => ({
-                        ...task,
-                        subtaskIds: action.data.map(it => it.id),
-                    })).done()
-                );
+            case TaskActions.LIST_DATA_BOOTSTRAPPED: {
+                return tasksLoaded(
+                    subscribeToListUpdates(state, action.id),
+                    action.data);
+            }
+
+            case TaskActions.TREE_CREATE: {
+                return tasksCreated(state, action.data, action.newIds);
             }
 
             case TaskActions.RENAME_TASK:
-                userAction();
                 return renameTask(state, action.id, action.name);
 
-            case TaskActions.TASK_RENAMED: {
-                return taskUpdated(state, action.id, action.data);
+            case TaskActions.UPDATED: {
+                return taskLoaded(state, action.data);
+            }
+
+            case TaskActions.DELETED: {
+                return taskDeleted(state, action.id);
             }
 
             case TaskActions.FOCUS: {
@@ -930,43 +1064,31 @@ class TaskStore extends ReduceStore {
                 state = focusDelta(state, state.activeTaskId, -1);
                 return flushTasksToRename(state);
             case TaskActions.CREATE_TASK_AFTER:
-                userAction();
-                return createTaskAfter(state, action.id);
+                state = createTaskAfter(state, action.id);
+                return flushTasksToRename(state);
             case TaskActions.CREATE_TASK_BEFORE:
-                userAction();
-                return createTaskBefore(state, action.id);
-            case TaskActions.TASK_CREATED:
-                state = taskCreated(
-                    state,
-                    action.clientId,
-                    action.id,
-                    action.data,
-                );
-                return state;
+                state = createTaskBefore(state, action.id);
+                return flushTasksToRename(state);
 
             case TaskActions.DELETE_TASK_FORWARD: {
-                userAction();
-                state = queueDelete(state, action.id);
-                return focusDelta(state, action.id, 1);
+                state = focusDelta(state, action.id, 1);
+                return queueDelete(state, action.id);
             }
 
             case TaskActions.DELETE_TASK_BACKWARDS: {
-                userAction();
-                state = queueDelete(state, action.id);
-                return focusDelta(state, action.id, -1);
+                state = focusDelta(state, action.id, -1);
+                return queueDelete(state, action.id);
             }
 
             case TaskActions.SET_STATUS: {
-                userAction();
-                state = queueStatusUpdate(state, action.id, action.status);
-                if (action.status === TaskStatus.COMPLETED || action.status === TaskStatus.DELETED) {
+                if (willStatusDelete(action.status)) {
                     state = focusDelta(state, action.id, 1);
                 }
+                state = queueStatusUpdate(state, action.id, action.status);
                 return state;
             }
 
             case ShoppingActions.SET_INGREDIENT_STATUS: {
-                userAction();
                 return action.itemIds.reduce((s, id) =>
                     queueStatusUpdate(s, id, action.status), state);
             }
@@ -976,71 +1098,62 @@ class TaskStore extends ReduceStore {
                     .map(([t]) => t);
                 state = tasks
                     .reduce((s, t) => queueDelete(s, t.id), state);
-                return focusDelta(state, tasks[0].id, 1);
+                return focusDelta(state, tasks[0].id, -1);
             }
 
             case TaskActions.UNDO_SET_STATUS: {
-                userAction();
                 return cancelStatusUpdate(state, action.id);
             }
 
             case ShoppingActions.UNDO_SET_INGREDIENT_STATUS: {
-                userAction();
                 return action.itemIds.reduce((s, id) =>
                     cancelStatusUpdate(s, id), state);
             }
 
-            case TaskActions.STATUS_UPDATED: {
-                return statusUpdated(state, action.id, action.status, action.data);
-            }
-
-            case TaskActions.TASK_DELETED: {
-                return taskDeleted(state, action.id);
-            }
-
             case TaskActions.SELECT_NEXT:
-                userAction();
                 return selectDelta(state, state.activeTaskId, 1);
             case TaskActions.SELECT_PREVIOUS:
-                userAction();
                 return selectDelta(state, state.activeTaskId, -1);
             case TaskActions.SELECT_TO:
-                userAction();
                 return selectTo(state, action.id);
-            case TaskActions.MOVE_NEXT:
-                userAction();
+
+            case TaskActions.MOVE_NEXT: {
                 return moveDelta(state, 1);
-            case TaskActions.MOVE_PREVIOUS:
-                userAction();
+            }
+
+            case TaskActions.MOVE_PREVIOUS: {
                 return moveDelta(state, -1);
+            }
 
             case TaskActions.NEST: {
-                userAction();
                 return nestTask(state);
             }
 
             case TaskActions.UNNEST: {
-                userAction();
                 return unnestTask(state);
             }
 
+            case TaskActions.MOVE_SUBTREE: {
+                return moveSubtree(state, action);
+            }
+
+            case TaskActions.TREE_MUTATED: {
+                return treeMutated(state, action);
+            }
+
             case TaskActions.TOGGLE_EXPANDED: {
-                userAction();
                 return toggleExpanded(state, action.id);
             }
 
             case TaskActions.EXPAND_ALL: {
-                userAction();
                 return expandAll(state);
             }
 
             case TaskActions.COLLAPSE_ALL: {
-                userAction();
                 return collapseAll(state);
             }
 
             case TaskActions.MULTI_LINE_PASTE: {
-                userAction();
                 const lines = action.text.split("\n")
                     .map(l => l.trim())
                     .filter(l => l.length > 0);
@@ -1058,30 +1171,8 @@ class TaskStore extends ReduceStore {
 
             case TaskActions.FLUSH_RENAMES:
                 return flushTasksToRename(state);
-            case TaskActions.FLUSH_REORDERS:
-                return flushParentsToReset(state);
             case TaskActions.FLUSH_STATUS_UPDATES:
                 return flushStatusUpdates(state);
-
-            case RecipeActions.SENT_TO_PLAN: {
-                TaskApi.loadSubtasks(action.planId, false);
-                return state;
-            }
-
-            case TemporalActions.EVERY_15_SECONDS: {
-                if (userActedWithin(1000 * 15)) return state;
-                if (state.activeListId == null) return state;
-                if (RouteStore.getMatch().path !== "/plan") return state;
-                if (!WindowStore.isActive()) return state;
-                return loadSubtasks(state, state.activeListId, true);
-            }
-
-            case WindowActions.VISIBILITY_CHANGE: {
-                if (state.activeListId == null) return state;
-                if (RouteStore.getMatch().path !== "/plan") return state;
-                if (!WindowStore.isVisible()) return state;
-                return loadSubtasks(state, state.activeListId, true);
-            }
 
             default:
                 return state;
@@ -1140,7 +1231,6 @@ class TaskStore extends ReduceStore {
     isMultiTaskSelection() {
         const s = this.getState();
         return s.activeTaskId != null && s.selectedTaskIds != null;
-
     }
 
     getSelectionAsTextBlock() {
@@ -1191,6 +1281,8 @@ TaskStore.stateTypes = {
             _next_status: PropTypes.string,
         }))
     ).isRequired,
+    bootstrapSub: PropTypes.object,
+    updateSub: PropTypes.object,
 };
 
 export default typedStore(new TaskStore(Dispatcher));
