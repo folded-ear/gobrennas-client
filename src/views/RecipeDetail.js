@@ -99,7 +99,7 @@ const RecipeDetail = ({recipeLO, mine, staged, ownerLO}) => {
                     </React.Fragment>}
                 </Grid>
                 <Grid item xs={5}>
-                    {recipe.externalUrl.length && <React.Fragment>
+                    {recipe.externalUrl && <React.Fragment>
                         <Typography variant="h5">Source</Typography>
                         <Source url={recipe.externalUrl}/>
                     </React.Fragment>}
