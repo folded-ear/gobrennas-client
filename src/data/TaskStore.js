@@ -10,14 +10,9 @@ import LoadObject from "../util/LoadObject";
 import loadObjectOf from "../util/loadObjectOf";
 import socket from "../util/socket";
 import typedStore from "../util/typedStore";
-import {
-    userActedWithin,
-    userAction,
-} from "../util/userAction";
 import AccessLevel from "./AccessLevel";
 import Dispatcher from "./dispatcher";
 import PreferencesStore from "./PreferencesStore";
-import RouteStore from "./RouteStore";
 import ShoppingActions from "./ShoppingActions";
 import TaskActions from "./TaskActions";
 import TaskApi from "./TaskApi";
@@ -26,10 +21,7 @@ import {
     isParent,
 } from "./tasks";
 import TaskStatus, { willStatusDelete } from "./TaskStatus";
-import TemporalActions from "./TemporalActions";
 import UserStore from "./UserStore";
-import WindowActions from "./WindowActions";
-import WindowStore from "./WindowStore";
 
 /*
  * This store is way too muddled. But leaving it that way for the moment, to
@@ -116,10 +108,12 @@ const fixIds = (state, task, id, clientId) => {
 };
 
 const tasksCreated = (state, tasks, newIds) => {
-    for (const id of Object.keys(newIds)) {
-        const cid = newIds[id];
-        if (!state.byId.hasOwnProperty(cid)) continue;
-        state = fixIds(state, taskForId(state, cid), parseInt(id, 10), cid);
+    if (newIds != null) {
+        for (const id of Object.keys(newIds)) {
+            const cid = newIds[id];
+            if (!isKnown(state, cid)) continue;
+            state = fixIds(state, taskForId(state, cid), parseInt(id, 10), cid);
+        }
     }
     return tasksLoaded(state, tasks);
 };
@@ -232,6 +226,9 @@ const doUnsub = (state, key) => {
     }
     return state;
 };
+
+const isKnown = (state, id) =>
+    state.byId.hasOwnProperty(id);
 
 const taskForId = (state, id) =>
     loForId(state, id).getValueEnforcing();
@@ -527,7 +524,7 @@ const flushStatusUpdates = state => {
 };
 
 const queueDelete = (state, id) => {
-    if (!state.byId.hasOwnProperty(id)) return state; // already gone...
+    if (!isKnown(state, id)) return state; // already gone...
     return queueStatusUpdate(state, id, TaskStatus.DELETED);
 };
 
@@ -608,7 +605,13 @@ const cancelStatusUpdate = (state, id) => {
 
 const taskDeleted = (state, id) => {
     unqueueTaskId(id);
-    if (!state.byId.hasOwnProperty(id)) return state;
+    if (state.activeTaskId === id) {
+        state = {
+            ...state,
+            activeTaskId: null,
+        };
+    }
+    if (!isKnown(state, id)) return state;
     const t = taskForId(state, id);
     let p = taskForId(state, t.parentId);
     const idx = p.subtaskIds.indexOf(id);
@@ -620,8 +623,8 @@ const taskDeleted = (state, id) => {
     const byId = {...state.byId};
     byId[p.id] = byId[p.id].setValue(p);
     const kill = id => {
-        if (!byId.hasOwnProperty(id)) return;
         const lo = byId[id];
+        if (lo == null) return;
         if (lo.hasValue()) {
             const ids = lo.getValueEnforcing().subtaskIds;
             if (ids) ids.forEach(kill);
@@ -631,9 +634,6 @@ const taskDeleted = (state, id) => {
     kill(id);
     state = {
         ...state,
-        activeTaskId: state.activeTaskId === id
-            ? null
-            : state.activeTaskId,
         byId,
     };
     if (p.id === state.activeListId && !isParent(p)) {
@@ -942,7 +942,6 @@ class TaskStore extends ReduceStore {
     reduce(state, action) {
         switch (action.type) {
             case TaskActions.CREATE_LIST:
-                userAction();
                 return createList(state, action.name);
             case TaskActions.LIST_CREATED:
                 return listCreated(
@@ -954,7 +953,6 @@ class TaskStore extends ReduceStore {
 
             case TaskActions.LIST_DETAIL_VISIBILITY: {
                 if (state.listDetailVisible === action.visible) return state;
-                userAction();
                 return {
                     ...state,
                     listDetailVisible: action.visible,
@@ -962,7 +960,6 @@ class TaskStore extends ReduceStore {
             }
 
             case TaskActions.DELETE_LIST: {
-                userAction();
                 TaskApi.deleteList(action.id);
                 const next = dotProp.set(state, [
                     "byId",
@@ -996,14 +993,11 @@ class TaskStore extends ReduceStore {
             case TaskActions.LISTS_LOADED:
                 return listsLoaded(state, action.data);
             case TaskActions.SELECT_LIST:
-                userAction();
                 return selectList(state, action.id);
             case TaskActions.RENAME_LIST:
-                userAction();
                 return renameTask(state, action.id, action.name);
 
             case TaskActions.SET_LIST_GRANT: {
-                userAction();
                 TaskApi.setListGrant(action.id, action.userId, action.level);
                 return dotProp.set(state, [
                     "byId",
@@ -1015,7 +1009,6 @@ class TaskStore extends ReduceStore {
             }
 
             case TaskActions.CLEAR_LIST_GRANT: {
-                userAction();
                 TaskApi.clearListGrant(action.id, action.userId);
                 return dotProp.set(state, [
                     "byId",
@@ -1045,7 +1038,6 @@ class TaskStore extends ReduceStore {
             }
 
             case TaskActions.RENAME_TASK:
-                userAction();
                 return renameTask(state, action.id, action.name);
 
             case TaskActions.UPDATED: {
@@ -1072,28 +1064,23 @@ class TaskStore extends ReduceStore {
                 state = focusDelta(state, state.activeTaskId, -1);
                 return flushTasksToRename(state);
             case TaskActions.CREATE_TASK_AFTER:
-                userAction();
                 state = createTaskAfter(state, action.id);
                 return flushTasksToRename(state);
             case TaskActions.CREATE_TASK_BEFORE:
-                userAction();
                 state = createTaskBefore(state, action.id);
                 return flushTasksToRename(state);
 
             case TaskActions.DELETE_TASK_FORWARD: {
-                userAction();
                 state = focusDelta(state, action.id, 1);
                 return queueDelete(state, action.id);
             }
 
             case TaskActions.DELETE_TASK_BACKWARDS: {
-                userAction();
                 state = focusDelta(state, action.id, -1);
                 return queueDelete(state, action.id);
             }
 
             case TaskActions.SET_STATUS: {
-                userAction();
                 if (willStatusDelete(action.status)) {
                     state = focusDelta(state, action.id, 1);
                 }
@@ -1102,7 +1089,6 @@ class TaskStore extends ReduceStore {
             }
 
             case ShoppingActions.SET_INGREDIENT_STATUS: {
-                userAction();
                 return action.itemIds.reduce((s, id) =>
                     queueStatusUpdate(s, id, action.status), state);
             }
@@ -1116,48 +1102,38 @@ class TaskStore extends ReduceStore {
             }
 
             case TaskActions.UNDO_SET_STATUS: {
-                userAction();
                 return cancelStatusUpdate(state, action.id);
             }
 
             case ShoppingActions.UNDO_SET_INGREDIENT_STATUS: {
-                userAction();
                 return action.itemIds.reduce((s, id) =>
                     cancelStatusUpdate(s, id), state);
             }
 
             case TaskActions.SELECT_NEXT:
-                userAction();
                 return selectDelta(state, state.activeTaskId, 1);
             case TaskActions.SELECT_PREVIOUS:
-                userAction();
                 return selectDelta(state, state.activeTaskId, -1);
             case TaskActions.SELECT_TO:
-                userAction();
                 return selectTo(state, action.id);
 
             case TaskActions.MOVE_NEXT: {
-                userAction();
                 return moveDelta(state, 1);
             }
 
             case TaskActions.MOVE_PREVIOUS: {
-                userAction();
                 return moveDelta(state, -1);
             }
 
             case TaskActions.NEST: {
-                userAction();
                 return nestTask(state);
             }
 
             case TaskActions.UNNEST: {
-                userAction();
                 return unnestTask(state);
             }
 
             case TaskActions.MOVE_SUBTREE: {
-                userAction();
                 return moveSubtree(state, action);
             }
 
@@ -1166,22 +1142,18 @@ class TaskStore extends ReduceStore {
             }
 
             case TaskActions.TOGGLE_EXPANDED: {
-                userAction();
                 return toggleExpanded(state, action.id);
             }
 
             case TaskActions.EXPAND_ALL: {
-                userAction();
                 return expandAll(state);
             }
 
             case TaskActions.COLLAPSE_ALL: {
-                userAction();
                 return collapseAll(state);
             }
 
             case TaskActions.MULTI_LINE_PASTE: {
-                userAction();
                 const lines = action.text.split("\n")
                     .map(l => l.trim())
                     .filter(l => l.length > 0);
@@ -1201,23 +1173,6 @@ class TaskStore extends ReduceStore {
                 return flushTasksToRename(state);
             case TaskActions.FLUSH_STATUS_UPDATES:
                 return flushStatusUpdates(state);
-
-            case TemporalActions.EVERY_15_SECONDS: { // todo: this should go away
-                if (userActedWithin(1000 * 15)) return state;
-                if (state.activeListId == null) return state;
-                if (RouteStore.getMatch().path !== "/plan") return state;
-                if (!WindowStore.isActive()) return state;
-                if (!state.bootstrapSub) return state;
-                return refreshActiveListSubscription(state);
-            }
-
-            case WindowActions.VISIBILITY_CHANGE: { // todo: this should go away
-                if (state.activeListId == null) return state;
-                if (RouteStore.getMatch().path !== "/plan") return state;
-                if (!WindowStore.isVisible()) return state;
-                if (!state.bootstrapSub) return state;
-                return refreshActiveListSubscription(state);
-            }
 
             default:
                 return state;
@@ -1276,7 +1231,6 @@ class TaskStore extends ReduceStore {
     isMultiTaskSelection() {
         const s = this.getState();
         return s.activeTaskId != null && s.selectedTaskIds != null;
-
     }
 
     getSelectionAsTextBlock() {
