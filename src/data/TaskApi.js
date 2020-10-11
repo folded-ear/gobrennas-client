@@ -41,28 +41,6 @@ const TaskApi = {
             }),
         ),
 
-    setStatus: (id, status) =>
-        promiseFlux(
-            axios.put(`/${id}/status`, {
-                status,
-            }),
-            ({data}) => ({
-                type: TaskActions.STATUS_UPDATED,
-                id,
-                status,
-                data,
-            }),
-        ),
-
-    deleteTask: (id) =>
-        promiseFlux(
-            axios.delete(`/${id}`),
-            () => ({
-                type: TaskActions.TASK_DELETED,
-                id,
-            }),
-        ),
-
     setListGrant: (id, userId, level) =>
         // i was not thinking when i designed this endpoint. :)
         promiseFlux(

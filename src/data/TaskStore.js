@@ -205,6 +205,12 @@ const subscribeToListUpdates = (state, id) => {
                     data: body.info,
                 });
                 return;
+            case "delete":
+                Dispatcher.dispatch({
+                    type: TaskActions.DELETED,
+                    id: body.id,
+                });
+                return;
             default:
                 // eslint-disable-next-line no-console
                 console.warn("Unrecognized Task Message", body);
@@ -375,8 +381,7 @@ const focusTask = (state, id) => {
     taskForId(state, id);
     if (state.activeTaskId === id) return state;
     if (state.activeTaskId != null) {
-        const prev = taskForId(state, state.activeTaskId);
-        if (prev.name == null || prev.name.trim() === "") {
+        if (isEmpty(taskForId(state, state.activeTaskId))) {
             state = queueDelete(state, state.activeTaskId);
         }
     }
@@ -493,29 +498,46 @@ const unqueueTaskId = id => {
     statusUpdatesToFlush.delete(id);
 };
 
-const doTaskDelete = id => {
+const doTaskDelete = (state, id) => {
     unqueueTaskId(id);
-    TaskApi.deleteTask(id);
+    socket.publish(`/api/plan/${state.activeListId}/delete`, {
+        id,
+    });
+    return state;
 };
 
-const setTaskStatus = (id, status) => {
+const setTaskStatus = (state, id, status) => {
     if (willStatusDelete(status)) {
         unqueueTaskId(id);
     }
-    TaskApi.setStatus(id, status);
+    socket.publish(`/api/plan/${state.activeListId}/status`, {
+        id,
+        status
+    });
+    return state;
 };
 
 const flushStatusUpdates = state => {
     if (statusUpdatesToFlush.size === 0) return state;
     for (const [id, status] of Array.from(statusUpdatesToFlush)) {
-        setTaskStatus(id, status);
+        state = setTaskStatus(state, id, status);
     }
     statusUpdatesToFlush.clear();
     return state;
 };
 
-const queueDelete = (state, id) =>
-    queueStatusUpdate(state, id, TaskStatus.DELETED);
+const queueDelete = (state, id) => {
+    if (!state.byId.hasOwnProperty(id)) return state; // already gone...
+    return queueStatusUpdate(state, id, TaskStatus.DELETED);
+};
+
+function isEmpty(taskOrString) {
+    if (taskOrString == null) return true;
+    const str = typeof taskOrString === "string"
+        ? taskOrString
+        : taskOrString.name;
+    return str == null || str.trim() === "";
+}
 
 const queueStatusUpdate = (state, id, status) => {
     let lo = loForId(state, id);
@@ -531,6 +553,10 @@ const queueStatusUpdate = (state, id, status) => {
     const isDelete = willStatusDelete(status);
     if (isDelete && ClientId.is(id)) {
         // short circuit this one...
+        return taskDeleted(state, id);
+    }
+    if (isDelete && isEmpty(t)) {
+        state = doTaskDelete(state, id);
         return taskDeleted(state, id);
     }
     let nextLO = lo.map(t => ({
@@ -555,12 +581,8 @@ const queueStatusUpdate = (state, id, status) => {
             .filter(it => it !== id);
     }
 
-    if (isDelete && t.name === "") {
-        doTaskDelete(id);
-    } else {
-        statusUpdatesToFlush.set(id, status);
-        inTheFuture(TaskActions.FLUSH_STATUS_UPDATES, 9);
-    }
+    statusUpdatesToFlush.set(id, status);
+    inTheFuture(TaskActions.FLUSH_STATUS_UPDATES, 9);
     if (isExpanded(t) && isDelete) {
         state = setExpansion(state, t.id, false);
     }
@@ -585,6 +607,8 @@ const cancelStatusUpdate = (state, id) => {
 };
 
 const taskDeleted = (state, id) => {
+    unqueueTaskId(id);
+    if (!state.byId.hasOwnProperty(id)) return state;
     const t = taskForId(state, id);
     let p = taskForId(state, t.parentId);
     const idx = p.subtaskIds.indexOf(id);
@@ -617,14 +641,6 @@ const taskDeleted = (state, id) => {
         state = addTask(state, p.id, "", AT_END);
     }
     return state;
-};
-
-const statusUpdated = (state, id, status, data) => {
-    if (willStatusDelete(status)) {
-        return taskDeleted(state, id);
-    } else {
-        return taskLoaded(state, data);
-    }
 };
 
 /**
@@ -1036,6 +1052,10 @@ class TaskStore extends ReduceStore {
                 return taskLoaded(state, action.data);
             }
 
+            case TaskActions.DELETED: {
+                return taskDeleted(state, action.id);
+            }
+
             case TaskActions.FOCUS: {
                 state = focusTask(state, action.id);
                 return flushTasksToRename(state);
@@ -1074,10 +1094,10 @@ class TaskStore extends ReduceStore {
 
             case TaskActions.SET_STATUS: {
                 userAction();
-                state = queueStatusUpdate(state, action.id, action.status);
-                if (action.status === TaskStatus.COMPLETED || action.status === TaskStatus.DELETED) {
+                if (willStatusDelete(action.status)) {
                     state = focusDelta(state, action.id, 1);
                 }
+                state = queueStatusUpdate(state, action.id, action.status);
                 return state;
             }
 
@@ -1092,7 +1112,7 @@ class TaskStore extends ReduceStore {
                     .map(([t]) => t);
                 state = tasks
                     .reduce((s, t) => queueDelete(s, t.id), state);
-                return focusDelta(state, tasks[0].id, 1);
+                return focusDelta(state, tasks[0].id, -1);
             }
 
             case TaskActions.UNDO_SET_STATUS: {
@@ -1104,14 +1124,6 @@ class TaskStore extends ReduceStore {
                 userAction();
                 return action.itemIds.reduce((s, id) =>
                     cancelStatusUpdate(s, id), state);
-            }
-
-            case TaskActions.STATUS_UPDATED: {
-                return statusUpdated(state, action.id, action.status, action.data);
-            }
-
-            case TaskActions.TASK_DELETED: {
-                return taskDeleted(state, action.id);
             }
 
             case TaskActions.SELECT_NEXT:

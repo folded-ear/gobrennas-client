@@ -43,8 +43,6 @@ const TaskActions = {
     LISTS_LOADED: "task/lists-loaded",
     LIST_CREATED: "task/list-created",
     LIST_DELETED: "task/list-deleted",
-    TASK_DELETED: "task/deleted",
-    STATUS_UPDATED: "task/status-updated",
     LIST_GRANT_SET: "task/list-grant-set",
     LIST_GRANT_CLEARED: "task/list-grant-cleared",
     // socket actions
@@ -52,6 +50,7 @@ const TaskActions = {
     TREE_MUTATED: "task/tree-mutated",
     TREE_CREATE: "task/tree-create",
     UPDATED: "task/updated",
+    DELETED: "task/deleted",
     // deferred actions
     FLUSH_RENAMES: "task/flush-renames",
     FLUSH_STATUS_UPDATES: "task/flush-status-updates",
