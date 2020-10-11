@@ -43,10 +43,6 @@ const TaskActions = {
     LISTS_LOADED: "task/lists-loaded",
     LIST_CREATED: "task/list-created",
     LIST_DELETED: "task/list-deleted",
-    TASK_CREATED: "task/task-created",
-    TASK_RENAMED: "task/task-renamed",
-    SUBTASKS_RESET: "task/subtasks-reset",
-    PARENT_RESET: "task/parent-reset",
     TASK_DELETED: "task/deleted",
     STATUS_UPDATED: "task/status-updated",
     LIST_GRANT_SET: "task/list-grant-set",
@@ -55,6 +51,7 @@ const TaskActions = {
     LIST_DATA_BOOTSTRAPPED: "task/list-data-bootstrapped",
     TREE_MUTATED: "task/tree-mutated",
     TREE_CREATE: "task/tree-create",
+    UPDATED: "task/updated",
     // deferred actions
     FLUSH_RENAMES: "task/flush-renames",
     FLUSH_STATUS_UPDATES: "task/flush-status-updates",

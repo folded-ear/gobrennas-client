@@ -32,36 +32,6 @@ const TaskApi = {
             }),
         ),
 
-    createTask: (name, parentId, clientId, afterId) => {
-        let url = `/${parentId}/subtasks`;
-        if (afterId) {
-            url += `?after=${afterId}`;
-        }
-        return promiseFlux(
-            axios.post(url, {
-                name,
-            }),
-            ({data}) => ({
-                type: TaskActions.TASK_CREATED,
-                clientId,
-                id: data.id,
-                data,
-            }),
-        );
-    },
-
-    renameTask: (id, name) =>
-        promiseFlux(
-            axios.put(`/${id}/name`, {
-                name,
-            }),
-            ({data}) => ({
-                type: TaskActions.TASK_RENAMED,
-                id,
-                data,
-            }),
-        ),
-
     deleteList: (id) =>
         promiseFlux(
             axios.delete(`/${id}`),

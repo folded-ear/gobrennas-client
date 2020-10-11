@@ -79,21 +79,14 @@ const idFixerFactory = (cid, id) => {
     return idFixer;
 };
 
-const receiveTaskSave = (lo, task) =>
-    // Despite possibly thinking we'd want to save the name, we don't. If the
-    // user has made further changes while the save (creation or rename) was in
-    // flight, we don't want to lose those. It'll save again shortly.
-    lo.done().map(t => ({
-        ...t,
-        ...task,
-        name: t.name,
-    }));
-
-const taskCreated = (state, clientId, id, task) => {
+const fixIds = (state, task, id, clientId) => {
     const idFixer = idFixerFactory(clientId, id);
     const byId = {
         ...state.byId,
-        [id]: receiveTaskSave(state.byId[clientId], task),
+        [id]: state.byId[clientId].map(t => ({
+            ...t,
+            id,
+        })),
     };
     delete byId[clientId];
     if (tasksToRename.has(clientId)) {
@@ -120,6 +113,15 @@ const taskCreated = (state, clientId, id, task) => {
         activeTaskId: idFixer(state.activeTaskId),
         byId,
     });
+};
+
+const tasksCreated = (state, tasks, newIds) => {
+    for (const id of Object.keys(newIds)) {
+        const cid = newIds[id];
+        if (!state.byId.hasOwnProperty(cid)) continue;
+        state = fixIds(state, taskForId(state, cid), parseInt(id, 10), cid);
+    }
+    return tasksLoaded(state, tasks);
 };
 
 const listCreated = (state, clientId, id, list) => {
@@ -193,7 +195,13 @@ const subscribeToListUpdates = (state, id) => {
             case "create":
                 Dispatcher.dispatch({
                     type: TaskActions.TREE_CREATE,
-                    id: state.activeListId,
+                    data: body.info,
+                    newIds: body.newIds,
+                });
+                return;
+            case "update":
+                Dispatcher.dispatch({
+                    type: TaskActions.UPDATED,
                     data: body.info,
                 });
                 return;
@@ -309,7 +317,10 @@ const flushTasksToRename = state => {
     for (const id of tasksToRename) {
         const task = taskForId(state, id);
         if (!ClientId.is(id)) {
-            TaskApi.renameTask(id, task.name);
+            socket.publish(`/api/plan/${state.activeListId}/rename`, {
+                id,
+                name: task.name,
+            });
             continue;
         }
         if (ClientId.is(task.parentId)) {
@@ -325,7 +336,12 @@ const flushTasksToRename = state => {
             requeue.add(id);
             continue;
         }
-        TaskApi.createTask(task.name, task.parentId, id, afterId);
+        socket.publish(`/api/plan/${state.activeListId}/create`, {
+            id,
+            parentId: task.parentId,
+            afterId,
+            name: task.name,
+        });
     }
     tasksToRename = requeue;
     if (requeue.size > 0) inTheFuture(TaskActions.FLUSH_RENAMES);
@@ -607,7 +623,7 @@ const statusUpdated = (state, id, status, data) => {
     if (willStatusDelete(status)) {
         return taskDeleted(state, id);
     } else {
-        return taskUpdated(state, id, data);
+        return taskLoaded(state, data);
     }
 };
 
@@ -821,18 +837,36 @@ const forceExpansionBuilder = expanded => {
 const expandAll = forceExpansionBuilder(true);
 const collapseAll = forceExpansionBuilder(false);
 
-const taskLoaded = (state, task) => {
-    let lo = state.byId[task.id] || LoadObject.empty();
+const taskLoaded = (state, task, id=task.id) => {
+    let lo = state.byId[id] || LoadObject.empty();
     if (lo.hasValue()) {
-        lo = lo.map(t => ({ ...t, ...task }));
+        lo = lo.map(t => {
+            const subtaskIds = task.subtaskIds
+                ? task.subtaskIds.slice()
+                : [];
+            t.subtaskIds && t.subtaskIds.forEach((id, idx) => {
+                if (!ClientId.is(id)) return;
+                if (idx < subtaskIds.length) {
+                    subtaskIds.splice(idx,0, id);
+                } else {
+                    subtaskIds.push(id);
+                }
+            });
+            return ({
+                ...t,
+                ...task,
+                name: id === state.activeTaskId
+                    ? t.name
+                    : task.name,
+                subtaskIds: subtaskIds.length
+                    ? subtaskIds
+                    : null,
+            });
+        });
     } else {
         lo = lo.setValue(task);
     }
-    state = dotProp.set(
-        state,
-        ["byId", task.id],
-        lo.done());
-    return state;
+    return dotProp.set(state, ["byId", task.id], lo.done());
 };
 
 const taskLoading = (state, id) => {
@@ -845,14 +879,6 @@ const taskLoading = (state, id) => {
     );
 };
 
-const taskUpdated = (state, id, task) => ({
-    ...state,
-    byId: {
-        ...state.byId,
-        [id]: receiveTaskSave(state.byId[id], task),
-    },
-});
-
 const loadLists = state => {
     TaskApi.loadLists();
     return {
@@ -861,10 +887,9 @@ const loadLists = state => {
     };
 };
 
-const tasksLoaded = (state, tasks) => ({
-    ...tasks.reduce((s, t) =>
-        taskLoaded(s, t), state),
-});
+const tasksLoaded = (state, tasks) =>
+    tasks.reduce((s, t) =>
+        taskLoaded(s, t), state);
 
 const listsLoaded = (state, lists) => {
     state = {
@@ -1000,15 +1025,15 @@ class TaskStore extends ReduceStore {
             }
 
             case TaskActions.TREE_CREATE: {
-                return tasksLoaded(state, action.data);
+                return tasksCreated(state, action.data, action.newIds);
             }
 
             case TaskActions.RENAME_TASK:
                 userAction();
                 return renameTask(state, action.id, action.name);
 
-            case TaskActions.TASK_RENAMED: {
-                return taskUpdated(state, action.id, action.data);
+            case TaskActions.UPDATED: {
+                return taskLoaded(state, action.data);
             }
 
             case TaskActions.FOCUS: {
@@ -1034,25 +1059,17 @@ class TaskStore extends ReduceStore {
                 userAction();
                 state = createTaskBefore(state, action.id);
                 return flushTasksToRename(state);
-            case TaskActions.TASK_CREATED:
-                state = taskCreated(
-                    state,
-                    action.clientId,
-                    action.id,
-                    action.data,
-                );
-                return state;
 
             case TaskActions.DELETE_TASK_FORWARD: {
                 userAction();
-                state = queueDelete(state, action.id);
-                return focusDelta(state, action.id, 1);
+                state = focusDelta(state, action.id, 1);
+                return queueDelete(state, action.id);
             }
 
             case TaskActions.DELETE_TASK_BACKWARDS: {
                 userAction();
-                state = queueDelete(state, action.id);
-                return focusDelta(state, action.id, -1);
+                state = focusDelta(state, action.id, -1);
+                return queueDelete(state, action.id);
             }
 
             case TaskActions.SET_STATUS: {
