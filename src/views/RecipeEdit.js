@@ -1,6 +1,6 @@
-import { Spin } from "antd";
-import React, { Component } from "react";
-import { Redirect } from "react-router-dom";
+import {Spin} from "antd";
+import React, {Component} from "react";
+import {Redirect} from "react-router-dom";
 import RecipeForm from "../containers/RecipeForm";
 import Dispatcher from "../data/dispatcher";
 import RecipeActions from "../data/RecipeActions";
@@ -8,8 +8,7 @@ import RecipeApi from "../data/RecipeApi";
 import history from "../util/history";
 import onNextActionThat from "../util/onNextActionThat";
 import DeleteButton from "./common/DeleteButton";
-import { handleSave as handleSaveCopy } from "./RecipeAdd";
-import {any} from "prop-types";
+import {handleSave as handleSaveCopy} from "./RecipeAdd";
 
 const handleDelete = (id) => {
     RecipeApi.deleteRecipe(id);
