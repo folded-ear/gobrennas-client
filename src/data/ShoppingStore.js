@@ -1,22 +1,13 @@
-import {ReduceStore} from "flux/utils"
-import PropTypes from "prop-types"
-import {toggleDistinct} from "../util/arrayAsSet"
-import {clientOrDatabaseIdType} from "../util/ClientId"
-import typedStore from "../util/typedStore"
-import Dispatcher from "./dispatcher"
-import PlanActions from "./PlanActions"
-import PlanStore from "./PlanStore"
-import PreferencesStore from "./PreferencesStore"
-import ShoppingActions from "./ShoppingActions"
-import TaskActions from "./TaskActions"
-import TaskStore from "./TaskStore"
+import { ReduceStore } from "flux/utils";
+import PropTypes from "prop-types";
+import typedStore from "../util/typedStore";
+import Dispatcher from "./dispatcher";
+import ShoppingActions from "./ShoppingActions";
 
 class ShoppingStore extends ReduceStore {
 
     getInitialState() {
-        const apid = PreferencesStore.getActivePlan();
         return {
-            selectedPlanIds: apid ? [apid] : [], // Array<ID>
             activeItem: null, // {id: ID, type: String}
             expandedId: null, // ID
         };
@@ -24,34 +15,6 @@ class ShoppingStore extends ReduceStore {
 
     reduce(state, action) {
         switch (action.type) {
-            case TaskActions.LISTS_LOADED: {
-                if (state.selectedPlanIds.length) return state
-                this.__dispatcher.waitFor([
-                    TaskStore.getDispatchToken(),
-                ]);
-                let activeListLO = TaskStore.getActiveListLO()
-                if(!activeListLO.hasValue()) {
-                    return state
-                }
-                return {
-                    ...state,
-                    selectedPlanIds: [activeListLO.getValueEnforcing().id],
-                };
-            }
-
-            case PlanActions.SELECT_PLAN: {
-                return {
-                    ...state,
-                    selectedPlanIds: [action.id],
-                };
-            }
-
-            case ShoppingActions.TOGGLE_PLAN: {
-                return {
-                    ...state,
-                    selectedPlanIds: toggleDistinct(state.selectedPlanIds, action.id),
-                };
-            }
 
             case ShoppingActions.FOCUS: {
                 state = {
@@ -92,17 +55,6 @@ class ShoppingStore extends ReduceStore {
         }
     }
 
-    getAllPlans() {
-        const lo = PlanStore.getPlans();
-        if (!lo.hasValue()) return lo;
-        const s = this.getState();
-        return lo.map(plans =>
-            plans.map(p => ({
-                ...p,
-                selected: s.selectedPlanIds.includes(p.id),
-            })));
-    }
-
     getActiveItem() {
         return this.getState().activeItem;
     }
@@ -114,7 +66,6 @@ class ShoppingStore extends ReduceStore {
 }
 
 ShoppingStore.stateTypes = {
-    selectedPlanIds: PropTypes.arrayOf(clientOrDatabaseIdType).isRequired,
     activeItem: PropTypes.shape({
         id: PropTypes.number.isRequired,
         type: PropTypes.oneOf(["ingredient", "task"]).isRequired,
