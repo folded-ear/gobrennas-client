@@ -80,7 +80,7 @@ const RecipeDetail = ({recipeLO, mine, staged, ownerLO}) => {
                                         })}/>
                             )}
                             <CopyButton
-                                mine
+                                mine={mine}
                                 onClick={() => history.push(`/library/recipe/${recipe.id}/make-copy`)}
                             />
                             {mine && <EditButton
