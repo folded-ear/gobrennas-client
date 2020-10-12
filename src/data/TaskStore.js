@@ -853,8 +853,8 @@ const forceExpansionBuilder = expanded => {
 const expandAll = forceExpansionBuilder(true);
 const collapseAll = forceExpansionBuilder(false);
 
-const taskLoaded = (state, task, id=task.id) => {
-    let lo = state.byId[id] || LoadObject.empty();
+const taskLoaded = (state, task) => {
+    let lo = state.byId[task.id] || LoadObject.empty();
     if (lo.hasValue()) {
         lo = lo.map(t => {
             const subtaskIds = task.subtaskIds
@@ -871,7 +871,7 @@ const taskLoaded = (state, task, id=task.id) => {
             return ({
                 ...t,
                 ...task,
-                name: id === state.activeTaskId
+                name: task.id === state.activeTaskId
                     ? t.name
                     : task.name,
                 subtaskIds: subtaskIds.length

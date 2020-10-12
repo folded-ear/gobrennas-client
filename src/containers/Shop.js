@@ -51,10 +51,10 @@ const groupItems = plans => {
     }
     const byIngredient = groupBy(leaves, it => it.ingredientId);
     let unparsed = [];
-    if (byIngredient.has(undefined)) {
-        unparsed = byIngredient.get(undefined)
+    if (byIngredient.has(null)) {
+        unparsed = byIngredient.get(null)
             .filter(it => it.status === TaskStatus.NEEDED);
-        byIngredient.delete(undefined);
+        byIngredient.delete(null);
     }
     const orderedIngredients = [];
     for (const [ingId, items] of byIngredient) {
