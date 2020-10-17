@@ -28,6 +28,9 @@ const useStyles = makeStyles(theme => ({
     root: {},
     name: {
         flexGrow: 1,
+        [theme.breakpoints.down("xs")]: {
+            width: "100%",
+        },
     },
     image: {
         maxWidth: "90%",
