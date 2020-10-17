@@ -27,7 +27,7 @@ import Source from "./common/Source";
 const useStyles = makeStyles(theme => ({
     root: {},
     name: {
-        flexGrow: 1
+        flexGrow: 1,
     },
     image: {
         maxWidth: "90%",
@@ -35,6 +35,9 @@ const useStyles = makeStyles(theme => ({
         paddingBottom: "2em"
     },
     toolbar: {
+        [theme.breakpoints.down("xs")]: {
+            flexWrap: "wrap-reverse",
+        },
         backgroundColor: "white",
         padding: theme.spacing(4, 0),
     },
@@ -80,16 +83,15 @@ const RecipeDetail = ({recipeLO, mine, staged, ownerLO}) => {
                             {mine && <EditButton
                                 onClick={() => history.push(`/library/recipe/${recipe.id}/edit`)}
                             />}
-                            <CloseButton
-                                onClick={() => history.push("/library")}/>
                             {mine && <DeleteButton
                                 type="recipe"
                                 onConfirm={() => RecipeApi.deleteRecipe(recipe.id)}
                             />}
+                            <CloseButton
+                                onClick={() => history.push("/library")}/>
                             {!mine && ownerLO.hasValue() && <p style={{float: "right"}}>
                                 <User {...ownerLO.getValueEnforcing()} />
                             </p>}
-
                         </Toolbar>
                     </Affix>
                 </Grid>
