@@ -1,11 +1,15 @@
-import {Icon} from "antd";
-import {Container} from "flux/utils";
+import { Icon } from "antd";
+import { Container } from "flux/utils";
 import PropTypes from "prop-types";
 import React from "react";
-import {Link} from "react-router-dom";
+import { Link } from "react-router-dom";
+import Dispatcher from "../data/dispatcher";
 import LibraryStore from "../data/LibraryStore";
-import {refType} from "../models/IngredientRef";
+import PantryItemActions from "../data/PantryItemActions";
+import TaskActions from "../data/TaskActions";
+import { refType } from "../models/IngredientRef";
 import loadObjectOf from "../util/loadObjectOf";
+import AddToList from "./AddToList";
 import Quantity from "./common/Quantity";
 
 const Augment = ({text, prefix, suffix}) => text
@@ -26,11 +30,20 @@ const IngredientItem = ({ingredient: ref, iLO, uLO}) => {
     if (iLO == null || !iLO.hasValue()) {
         return <span>
             <div style={{marginLeft: "7em"}}>
-            {ref.raw}
-            {ref.ingredientId && <span>
+                {ref.raw}
+                {ref.ingredientId && <span>
+                    {" "}
+                    ({ref.ingredientId})
+                </span>}
                 {" "}
-                ({ref.ingredientId})
-            </span>}
+                <AddToList
+                    onClick={planId => Dispatcher.dispatch({
+                        type: TaskActions.SEND_TO_PLAN,
+                        planId,
+                        name: ref.raw,
+                    })}
+                    iconOnly
+                />
             </div>
         </span>;
     }
@@ -41,25 +54,41 @@ const IngredientItem = ({ingredient: ref, iLO, uLO}) => {
     return (
     <span>
         <div style={{float: "left", width: "6em", textAlign: "right"}}>
-        <Quantity quantity={ref.quantity}
-                  units={units}/>
+            <Quantity
+                quantity={ref.quantity}
+                units={units}
+            />
         </div>
-        <div style={{marginLeft: "7em"}}>
-        {isRecipe
-            ? <React.Fragment>
-                {ingredient.name}
-                {" "}
-                <Link to={`/library/recipe/${ingredient.id}`}>
-                    <Icon type="link"/>
-                </Link>
-            </React.Fragment>
-            : <span style={{
+        <div style={{
+            marginLeft: "7em",
+        }}>
+            <span style={{
                 textDecoration: "#999 dotted underline",
             }}>
                 {ingredient.name}
-            </span>}
-        <Augment text={ref.preparation}
-                 prefix=", " />
+            </span>
+            {isRecipe && <React.Fragment>
+                {" "}
+                <Link to={`/library/recipe/${ingredient.id}`}>
+                    <Icon type="link" />
+                </Link>
+            </React.Fragment>}
+            <Augment
+                text={ref.preparation}
+                prefix=", "
+            />
+            {!isRecipe && <React.Fragment>
+                {" "}
+                <AddToList
+                    onClick={planId => Dispatcher.dispatch({
+                        type: PantryItemActions.SEND_TO_PLAN,
+                        planId,
+                        id: ingredient.id,
+                        name: ingredient.name,
+                    })}
+                    iconOnly
+                />
+            </React.Fragment>}
         </div>
     </span>
   );
