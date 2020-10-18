@@ -8,7 +8,7 @@ import { Container } from "flux/utils";
 import React from "react";
 import TaskStore from "../data/TaskStore";
 
-const AddToList = Container.createFunctional(
+const SendToPlan = Container.createFunctional(
     ({
          listLO,
          onClick,
@@ -20,7 +20,7 @@ const AddToList = Container.createFunctional(
             return <IconButton
                     size="small"
                     onClick={() => onClick(list.id)}
-                    title={`Add to "${list.name}"`}
+                    title={`Send to "${list.name}"`}
                 >
                     <AddShoppingCart fontSize="inherit" />
                 </IconButton>;
@@ -31,7 +31,7 @@ const AddToList = Container.createFunctional(
             onClick={() => onClick(list.id)}
             endIcon={<ArrowForward />}
         >
-            Add to &quot;{list.name}&quot;
+            Send to &quot;{list.name}&quot;
         </Button>;
     },
     () => [
@@ -46,4 +46,4 @@ const AddToList = Container.createFunctional(
     {withProps: true},
 );
 
-export default AddToList;
+export default SendToPlan;

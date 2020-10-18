@@ -9,8 +9,8 @@ import PantryItemActions from "../data/PantryItemActions";
 import TaskActions from "../data/TaskActions";
 import { refType } from "../models/IngredientRef";
 import loadObjectOf from "../util/loadObjectOf";
-import AddToList from "./AddToList";
 import Quantity from "./common/Quantity";
+import SendToPlan from "./SendToPlan";
 
 const Augment = ({text, prefix, suffix}) => text
     ? <React.Fragment>{prefix}{text}{suffix}</React.Fragment>
@@ -36,7 +36,7 @@ const IngredientItem = ({ingredient: ref, iLO, uLO}) => {
                     ({ref.ingredientId})
                 </span>}
                 {" "}
-                <AddToList
+                <SendToPlan
                     onClick={planId => Dispatcher.dispatch({
                         type: TaskActions.SEND_TO_PLAN,
                         planId,
@@ -79,7 +79,7 @@ const IngredientItem = ({ingredient: ref, iLO, uLO}) => {
             />
             {!isRecipe && <React.Fragment>
                 {" "}
-                <AddToList
+                <SendToPlan
                     onClick={planId => Dispatcher.dispatch({
                         type: PantryItemActions.SEND_TO_PLAN,
                         planId,
