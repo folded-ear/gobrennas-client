@@ -14,6 +14,7 @@ import {
 import TaskStatus from "../../data/TaskStatus";
 import TaskStore from "../../data/TaskStore";
 import LoadObject from "../../util/LoadObject";
+import LinkIfRecipe from "../common/LinkIfRecipe";
 import LoadingIconButton from "../common/LoadingIconButton";
 import PlaceholderIconButton from "../common/PlaceholderIconButton";
 import CollapseIconButton from "./CollapseIconButton";
@@ -306,18 +307,27 @@ class Task extends React.PureComponent {
                     next={nextStatus}
                 />);
         }
-        const addonAfter = deleting && !ancestorDeleting
-            ? <DontChangeStatusButton
-                key="delete"
-                id={task.id}
-                next={task._next_status}
-            />
-            : <StatusIconButton
-                key="delete"
-                id={task.id}
-                next={TaskStatus.DELETED}
-                disabled={ancestorDeleting}
-            />;
+        const addonAfter = [
+            deleting && !ancestorDeleting
+                ? <DontChangeStatusButton
+                    key="delete"
+                    id={task.id}
+                    next={task._next_status}
+                />
+                : <StatusIconButton
+                    key="delete"
+                    id={task.id}
+                    next={TaskStatus.DELETED}
+                    disabled={ancestorDeleting}
+                />,
+        ];
+        if (task.ingredientId) {
+            addonAfter.unshift(<LinkIfRecipe
+                key="recipe"
+                size="small"
+                id={task.ingredientId}
+            />);
+        }
 
         return <Item
             depth={depth}
