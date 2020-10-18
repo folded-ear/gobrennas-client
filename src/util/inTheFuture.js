@@ -3,8 +3,11 @@ import Dispatcher from "../data/dispatcher";
 const timeoutRegistry = new Map();
 
 const flushPending = () => {
-    for (const k of timeoutRegistry.keys()) {
-        doFutureWork(k);
+    // to avoid jacking your data on hot reload, disable the unload flush in dev
+    if (process.env.NODE_ENV !== "development") {
+        for (const k of timeoutRegistry.keys()) {
+            doFutureWork(k);
+        }
     }
 };
 
