@@ -586,7 +586,7 @@ const queueStatusUpdate = (state, id, status) => {
     }
 
     statusUpdatesToFlush.set(id, status);
-    inTheFuture(TaskActions.FLUSH_STATUS_UPDATES, 9);
+    inTheFuture(TaskActions.FLUSH_STATUS_UPDATES, 4);
     if (isExpanded(t) && isDelete) {
         state = setExpansion(state, t.id, false);
     }
