@@ -101,7 +101,7 @@ class IngredientItem extends React.PureComponent {
         } = this.props;
         const {
             expanded,
-            pending,
+            loading,
             deleting,
             acquiring,
         } = item;
@@ -112,25 +112,25 @@ class IngredientItem extends React.PureComponent {
                 onClick={this.onToggleExpanded}
             />
         ];
-        if (pending) {
+        if (loading) {
             addonBefore.push(
                 <LoadingIconButton
                     key="acquire"
-                    size="small"
                 />);
         } else {
+            const next = acquiring ? TaskStatus.NEEDED : TaskStatus.ACQUIRED;
             addonBefore.push(
                 <StatusIconButton
                     key="acquire"
-                    current={TaskStatus.NEEDED}
-                    next={TaskStatus.ACQUIRED}
-                    onClick={e => this.onSetStatus(TaskStatus.ACQUIRED, e)}
+                    current={acquiring ? TaskStatus.ACQUIRED : TaskStatus.NEEDED}
+                    next={next}
+                    onClick={e => this.onSetStatus(next, e)}
                 />);
         }
-        const addonAfter = deleting || acquiring
+        const addonAfter = deleting
             ? <DontChangeStatusButton
                 key="delete"
-                next={deleting ? TaskStatus.DELETED : TaskStatus.ACQUIRED}
+                next={TaskStatus.DELETED}
                 onClick={e => this.onUndoSetStatus(e)}
             />
             : null;

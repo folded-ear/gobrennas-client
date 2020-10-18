@@ -31,6 +31,7 @@ export const getColorForStatus = status =>
     colorByStatus[status] || deepPurple;
 
 const iconByStatus = {
+    [TaskStatus.NEEDED]: Check,
     [TaskStatus.ACQUIRED]: Check,
     [TaskStatus.COMPLETED]: Check,
     [TaskStatus.DELETED]: DeleteForeverOutlined,

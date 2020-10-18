@@ -3,6 +3,7 @@ import {
     acquiredColor,
     completeColor,
     deleteColor,
+    neededColor,
     questionColor,
     selectionColor,
 } from "../common/colors";
@@ -33,6 +34,9 @@ const withItemStyles = withStyles({
     },
     acquiring: {
         backgroundColor: acquiredColor[50],
+    },
+    needing: {
+        backgroundColor: neededColor[100],
     },
     deleting: {
         opacity: 0.8,

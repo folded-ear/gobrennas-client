@@ -12,7 +12,6 @@ import DontChangeStatusButton from "../plan/DontChangeStatusButton";
 import Item from "../plan/Item";
 import StatusIconButton from "../plan/StatusIconButton";
 import withItemStyles from "../plan/withItemStyles";
-import StatusIconIndicator from "./StatusIconIndicator";
 import {
     baseItemPropTypes,
     itemPropTypes,
@@ -73,9 +72,10 @@ class TaskItem extends React.PureComponent {
         } = this.props;
         const {
             question,
-            pending,
+            loading,
             deleting,
             acquiring,
+            needing,
         } = item;
         let addonBefore = [
             <PlaceholderIconButton
@@ -83,28 +83,22 @@ class TaskItem extends React.PureComponent {
                 size="small"
             />
         ];
-        if (pending) {
+        if (loading || deleting) {
             addonBefore.push(
                 <LoadingIconButton
                     key="acquire"
-                    size="small"
-                />);
-        } else if (item.status === TaskStatus.ACQUIRED) {
-            addonBefore.push(
-                <StatusIconIndicator
-                    key="acquire"
-                    status={TaskStatus.ACQUIRED}
                 />);
         } else {
+            const curr = item._next_status || item.status;
             addonBefore.push(
                 <StatusIconButton
                     key="acquire"
                     id={item.id}
-                    current={item.status}
-                    next={TaskStatus.ACQUIRED}
+                    current={curr}
+                    next={curr === TaskStatus.ACQUIRED ? TaskStatus.NEEDED : TaskStatus.ACQUIRED}
                 />);
         }
-        const addonAfter = deleting || acquiring
+        const addonAfter = deleting
             ? <DontChangeStatusButton
                 key="delete"
                 id={item.id}
@@ -120,6 +114,7 @@ class TaskItem extends React.PureComponent {
                 [classes.question]: question,
                 [classes.active]: active,
                 [classes.acquiring]: acquiring,
+                [classes.needing]: needing,
                 [classes.deleting]: deleting,
             })}
         >

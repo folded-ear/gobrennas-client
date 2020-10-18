@@ -12,8 +12,7 @@ function LoadingTask({
         depth={depth}
         prefix={
             <LoadingIconButton
-                key="complete"
-                size="small"
+                key="loading"
             />
         }
     >

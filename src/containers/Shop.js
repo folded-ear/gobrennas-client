@@ -27,10 +27,11 @@ const gatherLeaves = item => {
             return {
                 ...item,
                 question: isQuestionable(item),
-                pending: !lo.isDone(),
-                deleting: lo.isDeleting() && item._next_status === TaskStatus.DELETED,
-                completing: lo.isDeleting() && item._next_status === TaskStatus.COMPLETED,
-                acquiring: lo.isUpdating() && item._next_status === TaskStatus.ACQUIRED,
+                loading: lo.isLoading(),
+                deleting: item._next_status === TaskStatus.DELETED,
+                completing: item._next_status === TaskStatus.COMPLETED,
+                acquiring: item._next_status === TaskStatus.ACQUIRED,
+                needing: item._next_status === TaskStatus.NEEDED,
             };
         })
         .flatMap(gatherLeaves)
@@ -104,7 +105,7 @@ const groupItems = plans => {
             name: lo.hasValue() ? lo.getValueEnforcing().name : items[0].name,
             quantities,
             expanded,
-            pending: lo.hasOperation() || items.some(it => it.pending),
+            loading: lo.isLoading() || items.some(it => it.loading),
             acquiring: items.every(it => it.acquiring || it.status === TaskStatus.ACQUIRED),
             deleting: items.every(it => it.deleting || it.status === TaskStatus.DELETED),
         });

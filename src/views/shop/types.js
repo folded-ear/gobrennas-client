@@ -13,7 +13,7 @@ export const baseItemPropTypes = {
 
 export const itemPropTypes = {
     ...baseItemPropTypes,
-    pending: PropTypes.bool.isRequired,
+    loading: PropTypes.bool.isRequired,
     deleting: PropTypes.bool.isRequired,
     acquiring: PropTypes.bool.isRequired,
 };

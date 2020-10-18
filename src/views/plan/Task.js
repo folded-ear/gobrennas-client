@@ -244,6 +244,33 @@ class Task extends React.PureComponent {
         const parent = isParent(task);
         const expanded = isExpanded(task);
         const question = isQuestionable(task);
+        const deleting = task._next_status === TaskStatus.DELETED;
+        const completing = task._next_status === TaskStatus.COMPLETED;
+        const acquiring = task._next_status === TaskStatus.ACQUIRED;
+        const needing = task._next_status === TaskStatus.NEEDED;
+        let nextStatus = TaskStatus.COMPLETED;
+
+        if (task.status === TaskStatus.NEEDED) {
+            if (task._next_status === TaskStatus.ACQUIRED) {
+                nextStatus = TaskStatus.NEEDED;
+            } else if (task._next_status === TaskStatus.COMPLETED) {
+                nextStatus = TaskStatus.ACQUIRED;
+            } else {
+                nextStatus = TaskStatus.COMPLETED;
+            }
+        } else if (task.status === TaskStatus.ACQUIRED) {
+            if (task._next_status === TaskStatus.NEEDED) {
+                nextStatus = TaskStatus.ACQUIRED;
+            } else if (task._next_status === TaskStatus.COMPLETED) {
+                nextStatus = TaskStatus.NEEDED;
+            } else {
+                nextStatus = TaskStatus.COMPLETED;
+            }
+        } else {
+            // eslint-disable-next-line no-console
+            console.warn(`Bad status for task#${task.id}: ${task.status} -> ${task._next_status}`);
+        }
+
         let addonBefore = [];
         if (parent) {
             addonBefore.push(
@@ -259,11 +286,10 @@ class Task extends React.PureComponent {
                     size="small"
                 />);
         }
-        if (!lo.isDone() || ancestorDeleting) {
+        if (lo.isLoading() || deleting || ancestorDeleting) {
             addonBefore.push(
                 <LoadingIconButton
                     key="complete"
-                    size="small"
                 />);
         } else if (section) {
             addonBefore.push(
@@ -276,13 +302,11 @@ class Task extends React.PureComponent {
                 <StatusIconButton
                     key="complete"
                     id={task.id}
-                    current={parent ? null : task.status}
-                    next={TaskStatus.COMPLETED}
+                    current={task.status}
+                    next={nextStatus}
                 />);
         }
-        const deleting = lo.isDeleting() && task._next_status === TaskStatus.DELETED;
-        const completing = lo.isDeleting() && task._next_status === TaskStatus.COMPLETED;
-        const addonAfter = lo.isDeleting() && !ancestorDeleting
+        const addonAfter = deleting && !ancestorDeleting
             ? <DontChangeStatusButton
                 key="delete"
                 id={task.id}
@@ -307,6 +331,8 @@ class Task extends React.PureComponent {
                 [classes.question]: question,
                 [classes.deleting]: deleting,
                 [classes.completing]: completing,
+                [classes.acquiring]: acquiring,
+                [classes.needing]: needing,
                 [classes.ancestorDeleting]: ancestorDeleting,
             })}
             dragId={task.id}
@@ -338,8 +364,8 @@ Task.propTypes = {
     task: PropTypes.object.isRequired,
     loadObject: PropTypes.instanceOf(LoadObject).isRequired,
     active: PropTypes.bool,
-    ancestorDeleting: PropTypes.bool,
     selected: PropTypes.bool,
+    ancestorDeleting: PropTypes.bool,
     classes: PropTypes.object.isRequired,
 };
 

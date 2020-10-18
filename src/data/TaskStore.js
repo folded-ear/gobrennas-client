@@ -552,8 +552,7 @@ const queueStatusUpdate = (state, id, status) => {
         id,
         status,
     );
-    if (t._next_status == null && t.status === status) return state;
-    if (t._next_status === status) return state;
+    if (t._next_status === status) return state; // we're golden
     const isDelete = willStatusDelete(status);
     if (isDelete && ClientId.is(id)) {
         // short circuit this one...
@@ -563,13 +562,30 @@ const queueStatusUpdate = (state, id, status) => {
         state = doTaskDelete(state, id);
         return taskDeleted(state, id);
     }
-    let nextLO = lo.map(t => ({
-        ...t,
-        _next_status: status,
-    }));
-    nextLO = isDelete
-        ? nextLO.deleting()
-        : nextLO.updating();
+    let nextLO;
+    if (t.status === status) {
+        statusUpdatesToFlush.delete(t.id);
+        nextLO = lo.map(t => {
+            t = {
+                ...t,
+            };
+            delete t._next_status;
+            return t;
+        }).done();
+    } else {
+        statusUpdatesToFlush.set(id, status);
+        inTheFuture(TaskActions.FLUSH_STATUS_UPDATES, 4);
+        nextLO = lo.map(t => ({
+            ...t,
+            _next_status: status,
+            _expanded: t._expanded && !isDelete,
+        }));
+        if (isDelete) {
+            nextLO = nextLO.deleting();
+        } else {
+            nextLO = nextLO.updating();
+        }
+    }
     state = {
         ...state,
         byId: {
@@ -583,12 +599,6 @@ const queueStatusUpdate = (state, id, status) => {
     if (state.selectedTaskIds) {
         state.selectedTaskIds = state.selectedTaskIds
             .filter(it => it !== id);
-    }
-
-    statusUpdatesToFlush.set(id, status);
-    inTheFuture(TaskActions.FLUSH_STATUS_UPDATES, 4);
-    if (isExpanded(t) && isDelete) {
-        state = setExpansion(state, t.id, false);
     }
     return state;
 };
@@ -875,7 +885,7 @@ const taskLoaded = (state, task) => {
                     subtaskIds.push(id);
                 }
             });
-            return ({
+            t = {
                 ...t,
                 ...task,
                 name: task.id === state.activeTaskId
@@ -884,7 +894,12 @@ const taskLoaded = (state, task) => {
                 subtaskIds: subtaskIds.length
                     ? subtaskIds
                     : null,
-            });
+            };
+            if (t.status === t._next_status) {
+                // it worked!
+                delete t._next_status;
+            }
+            return t;
         });
     } else {
         lo = lo.setValue(task);
