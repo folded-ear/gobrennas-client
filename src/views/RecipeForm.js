@@ -16,13 +16,13 @@ import ElEdit from "./ElEdit";
 const handleFileUpdate = (e) => {
     const { name: key, files } = e.target;
     if(files.length){
-        const value = files[0]
+        const value = files[0];
         Dispatcher.dispatch({
             type: RecipeActions.DRAFT_RECIPE_UPDATED,
             data: { key, value }
         });
     }
-}
+};
 
 const handleUpdate = (e) => {
     const { name: key, value } = e.target;
@@ -35,7 +35,7 @@ const handleUpdate = (e) => {
 const addLabel = (label) => {
     Dispatcher.dispatch({
         type: RecipeActions.NEW_DRAFT_LABEL,
-        data: label
+        data: label.replace(/\/+/g, "-"),
     });
 };
 
