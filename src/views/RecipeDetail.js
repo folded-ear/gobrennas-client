@@ -1,28 +1,35 @@
-import {Affix, List, Spin} from "antd";
-import {Grid, Toolbar} from "@material-ui/core";
+import {
+    Grid,
+    Toolbar,
+} from "@material-ui/core";
+import { makeStyles } from "@material-ui/core/styles";
+import Typography from "@material-ui/core/Typography";
+import {
+    Affix,
+    List,
+    Spin,
+} from "antd";
 import PropTypes from "prop-types";
 import React from "react";
-import {Redirect} from "react-router-dom";
+import { Redirect } from "react-router-dom";
 import Dispatcher from "../data/dispatcher";
 import LibraryActions from "../data/LibraryActions";
 import RecipeActions from "../data/RecipeActions";
 import RecipeApi from "../data/RecipeApi";
-import {Recipe} from "../data/RecipeTypes";
+import { Recipe } from "../data/RecipeTypes";
 import history from "../util/history";
 import loadObjectOf from "../util/loadObjectOf";
-import AddToList from "./AddToList";
-import DeleteButton from "./common/DeleteButton";
-import CopyButton from "./common/CopyButton";
-import EditButton from "./common/EditButton";
 import CloseButton from "./common/CloseButton";
+import CopyButton from "./common/CopyButton";
+import DeleteButton from "./common/DeleteButton";
 import Directions from "./common/Directions";
+import EditButton from "./common/EditButton";
+import Source from "./common/Source";
+import StageButton from "./common/StageButton";
 import IngredientItem from "./IngredientItem";
 import LabelItem from "./LabelItem";
+import SendToPlan from "./SendToPlan";
 import User from "./user/User";
-import {makeStyles} from "@material-ui/core/styles";
-import Typography from "@material-ui/core/Typography";
-import StageButton from "./common/StageButton";
-import Source from "./common/Source";
 
 const useStyles = makeStyles(theme => ({
     root: {},
@@ -140,7 +147,7 @@ const RecipeDetail = ({recipeLO, mine, staged, ownerLO}) => {
                             </List.Item>}
                             size="small"
                             split={false}
-                            footer={<AddToList onClick={planId => Dispatcher.dispatch({
+                            footer={<SendToPlan onClick={planId => Dispatcher.dispatch({
                                 type: RecipeActions.SEND_TO_PLAN,
                                 recipeId: recipe.id,
                                 planId,
