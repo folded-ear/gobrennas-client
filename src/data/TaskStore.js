@@ -12,6 +12,7 @@ import socket from "../util/socket";
 import typedStore from "../util/typedStore";
 import AccessLevel from "./AccessLevel";
 import Dispatcher from "./dispatcher";
+import PantryItemActions from "./PantryItemActions";
 import PreferencesStore from "./PreferencesStore";
 import ShoppingActions from "./ShoppingActions";
 import TaskActions from "./TaskActions";
@@ -282,6 +283,12 @@ const addTask = (state, parentId, name, after = AT_END) => {
             }),
         },
     };
+};
+
+const addTaskAndFlush = (state, parentId, name, after = AT_END) => {
+    state = addTask(state, parentId, name, after);
+    tasksToRename.add(state.activeTaskId);
+    return flushTasksToRename(state);
 };
 
 const createTaskAfter = (state, id) => {
@@ -1069,6 +1076,18 @@ class TaskStore extends ReduceStore {
             case TaskActions.CREATE_TASK_BEFORE:
                 state = createTaskBefore(state, action.id);
                 return flushTasksToRename(state);
+
+            case TaskActions.SEND_TO_PLAN: {
+                return addTaskAndFlush(state, action.planId, action.name);
+            }
+
+            case PantryItemActions.SEND_TO_PLAN: {
+                let name = action.name.trim();
+                if (name.indexOf(" ") > 0) {
+                    name = `"${name}"`;
+                }
+                return addTaskAndFlush(state, action.planId, name);
+            }
 
             case TaskActions.DELETE_TASK_FORWARD: {
                 state = focusDelta(state, action.id, 1);
