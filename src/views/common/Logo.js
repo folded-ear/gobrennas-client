@@ -9,7 +9,7 @@ const useStyles = makeStyles(theme => ({
             margin: ({small}) =>
                 theme.spacing(small ? 1 : 3),
             marginRight: ({small}) =>
-                theme.spacing(small ? 2 : 8),
+                theme.spacing(small ? 2 : 6),
             fontFamily: "Stint Ultra Condensed",
             whiteSpace: "nowrap",
         },

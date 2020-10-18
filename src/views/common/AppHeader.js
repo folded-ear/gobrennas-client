@@ -1,10 +1,28 @@
-import {AppBar, Box, IconButton, Tab, Tabs, Toolbar,} from "@material-ui/core";
-import {makeStyles} from "@material-ui/core/styles";
-import {AccountCircle, EventNote, ExitToApp, ListAlt, MenuBook, PostAdd,} from "@material-ui/icons";
+import {
+    AppBar,
+    Box,
+    IconButton,
+    Tab,
+    Tabs,
+    Toolbar,
+} from "@material-ui/core";
+import { makeStyles } from "@material-ui/core/styles";
+import withStyles from "@material-ui/core/styles/withStyles";
+import {
+    AccountCircle,
+    EventNote,
+    ExitToApp,
+    ListAlt,
+    MenuBook,
+    PostAdd,
+} from "@material-ui/icons";
 import classnames from "classnames";
-import {Container} from "flux/utils";
+import { Container } from "flux/utils";
 import React from "react";
-import {Link, withRouter,} from "react-router-dom";
+import {
+    Link,
+    withRouter,
+} from "react-router-dom";
 import WindowStore from "../../data/WindowStore";
 import Logo from "./Logo";
 
@@ -46,9 +64,17 @@ const TinyNav = ({children, navTo, location}) => {
     </IconButton>);
 };
 
+const BigNav = withStyles((theme) => ({
+    root: {
+        textTransform: "uppercase",
+        minWidth: 72, // the default is 160
+        marginRight: theme.spacing(2),
+    },
+}))((props) => <Tab {...props} />);
+
 const AppHeader = ({authenticated, onLogout, location, windowSize}) => {
     const classes = styles();
-    const mobile = windowSize.width <= 1000;
+    const mobile = windowSize.width < 768;
     const topLevelNavSeg = location.pathname.split("/")[1];
     const colorByHotness = val =>
         topLevelNavSeg  === val ? "inherit" : "default";
@@ -85,28 +111,28 @@ const AppHeader = ({authenticated, onLogout, location, windowSize}) => {
                     textColor="inherit"
                     TabIndicatorProps={{className: classes.indicator}}
                 >
-                    <Tab
+                    <BigNav
                         icon={<MenuBook/>}
                         label="Library"
                         component={Link}
                         to="/library"
                         value="library"
                     />
-                    <Tab
+                    <BigNav
                         icon={<PostAdd/>}
                         label="New Recipe"
                         component={Link}
                         to="/add"
                         value="add"
                     />
-                    <Tab
+                    <BigNav
                         icon={<EventNote/>}
                         label="Plan"
                         component={Link}
                         to="/plan"
                         value="plan"
                     />
-                    <Tab
+                    <BigNav
                         icon={<ListAlt/>}
                         label="Shop"
                         component={Link}
