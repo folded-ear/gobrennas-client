@@ -3,9 +3,6 @@ import Dispatcher from "./dispatcher";
 import RouteActions from "./RouteActions";
 
 class RouteStore extends ReduceStore {
-    constructor() {
-        super(Dispatcher);
-    }
 
     getInitialState() {
         return null;
@@ -22,14 +19,6 @@ class RouteStore extends ReduceStore {
         }
     }
 
-    hasMatch() {
-        return this.getState() != null;
-    }
-
-    getMatch() {
-        return this.getState();
-    }
-
 }
 
-export default new RouteStore();
+export default new RouteStore(Dispatcher);

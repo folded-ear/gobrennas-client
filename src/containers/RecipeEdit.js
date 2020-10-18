@@ -14,10 +14,12 @@ export default withRouter(Container.createFunctional(
     ],
     () => {
         let recipeLO;
-        if (RouteStore.hasMatch()) {
-            recipeLO = LibraryStore.getRecipeById(
-                parseInt(
-                    RouteStore.getMatch().params.id, 10));
+        const routeMatch = RouteStore.getState();
+        if (routeMatch != null) {
+            const id = parseInt(routeMatch.params.id, 10);
+            recipeLO = isNaN(id)
+                ? LoadObject.loading()
+                : LibraryStore.getRecipeById(id);
         } else {
             // this "loading" actually represents waiting for the ROUTE to load
             // and thus provide the match. But the view doesn't care what we're

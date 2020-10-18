@@ -9,7 +9,7 @@ const FluxRoute = ({render, component: Component, ...rest}) => (
         {...rest}
         render={props => {
             const { match: next } = props;
-            const curr = RouteStore.getMatch();
+            const curr = RouteStore.getState();
             if (curr == null || next.url !== curr.url) {
                 const work = () => Dispatcher.dispatch({
                     type: RouteActions.MATCH,
