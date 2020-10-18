@@ -1,7 +1,5 @@
 import { ReduceStore } from "flux/utils";
-import { OrderedMap } from "immutable";
 import history from "../util/history";
-import LoadObject from "../util/LoadObject";
 import { toMilliseconds } from "../util/time";
 import Dispatcher from "./dispatcher";
 import RecipeActions from "./RecipeActions";
@@ -21,9 +19,7 @@ class RecipeStore extends ReduceStore {
     }
     
     getInitialState() {
-        return new OrderedMap({
-            sendState: null,
-        });
+        return {};
     }
     
     reduce(state, action) {
@@ -49,11 +45,11 @@ class RecipeStore extends ReduceStore {
                     action.recipeId,
                     action.planId,
                 );
-                return state.set("sendState", LoadObject.updating());
+                return state;
             }
 
             case RecipeActions.SENT_TO_PLAN: {
-                return state.set("sendState", LoadObject.empty());
+                return state;
             }
 
             case RecipeActions.RAW_INGREDIENT_DISSECTED: {
@@ -70,10 +66,6 @@ class RecipeStore extends ReduceStore {
             default:
                 return state;
         }
-    }
-    
-    getSendState() {
-        return this.getState().get("sendState");
     }
 
 }
