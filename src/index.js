@@ -28,15 +28,15 @@ window.addEventListener("resize", debounce(() =>
     }), 250));
 
 window.addEventListener("focus", () => {
-    try {
-        Dispatcher.dispatch({
-            type: WindowActions.FOCUS_CHANGE,
-            focused: true,
-        });
-    } catch (e) {
+    if (Dispatcher.isDispatching()) {
         // eslint-disable-next-line no-console
         console.warn("reentrant focus dispatch");
+        return;
     }
+    Dispatcher.dispatch({
+        type: WindowActions.FOCUS_CHANGE,
+        focused: true,
+    });
 });
 
 window.addEventListener("blur", () =>
