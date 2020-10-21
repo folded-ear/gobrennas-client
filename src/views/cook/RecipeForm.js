@@ -1,25 +1,19 @@
-import {
-    Button,
-    Form,
-    Input,
-    List,
-    Spin,
-} from "antd";
+import {Button, Form, Input, List, Spin,} from "antd";
 import ChipInput from "material-ui-chip-input";
 import PropTypes from "prop-types";
 import React from "react";
-import Dispatcher from "../data/dispatcher";
-import RecipeActions from "../data/RecipeActions";
-import { Recipe } from "../data/RecipeTypes";
-import ElEdit from "./ElEdit";
+import Dispatcher from "../../data/dispatcher";
+import RecipeActions from "../../data/RecipeActions";
+import {Recipe} from "../../data/RecipeTypes";
+import ElEdit from "../ElEdit";
 
 const handleFileUpdate = (e) => {
-    const { name: key, files } = e.target;
-    if(files.length){
+    const {name: key, files} = e.target;
+    if (files.length) {
         const value = files[0];
         Dispatcher.dispatch({
             type: RecipeActions.DRAFT_RECIPE_UPDATED,
-            data: { key, value }
+            data: {key, value}
         });
     }
 };

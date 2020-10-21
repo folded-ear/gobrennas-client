@@ -1,10 +1,10 @@
-import React, { Component } from "react";
-import RecipeForm from "../containers/RecipeForm";
-import Dispatcher from "../data/dispatcher";
-import DraftRecipeStore from "../data/DraftRecipeStore";
-import RecipeActions from "../data/RecipeActions";
-import history from "../util/history";
-import onNextActionThat from "../util/onNextActionThat";
+import React, {Component} from "react";
+import RecipeForm from "../../containers/RecipeForm";
+import Dispatcher from "../../data/dispatcher";
+import DraftRecipeStore from "../../data/DraftRecipeStore";
+import RecipeActions from "../../data/RecipeActions";
+import history from "../../util/history";
+import onNextActionThat from "../../util/onNextActionThat";
 
 export const handleSave = (recipe) => {
     Dispatcher.dispatch({
