@@ -33,14 +33,14 @@ const hotLoadObject = ( // todo: remove!
             let nextLO = getLO();
             if (nextLO == null || shouldLoad(nextLO)) {
                 // eslint-disable-next-line no-console
-                console.warn("hotLoadObject is deprecated");
+                console.log("hotLoadObject is deprecated");
                 doLoad();
                 nextLO = getLO();
                 invariant(nextLO != null, "doLoad must warm up getLO's cache");
                 invariant(!shouldLoad(lo), "doLoad must create a pending LO");
             } else {
                 // eslint-disable-next-line no-console
-                console.warn("no-op hotLoadObject thunk - try batching");
+                console.log("no-op hotLoadObject thunk - try batching");
             }
         });
         lo = lo.loading();

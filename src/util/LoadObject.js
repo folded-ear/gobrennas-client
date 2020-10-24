@@ -204,7 +204,11 @@ class LoadObject<V> {
         if (!this.hasValue()) {
             return this;
         }
-        return this.setValue(fn(this.getValueEnforcing()));
+        const v = fn(this.getValueEnforcing());
+        if (v === this._value) {
+            return this;
+        }
+        return this.setValue(v);
     }
 
     // Provide some helper methods to check specific operations

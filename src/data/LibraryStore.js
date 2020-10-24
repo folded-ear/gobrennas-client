@@ -7,6 +7,7 @@ import {
 } from "../util/arrayAsSet";
 import hotLoadObject from "../util/hotLoadObject";
 import LoadObject from "../util/LoadObject";
+import LoadObjectState from "../util/LoadObjectState";
 import { fromMilliseconds } from "../util/time";
 import Dispatcher from "./dispatcher";
 import LibraryActions from "./LibraryActions";
@@ -55,7 +56,11 @@ class LibraryStore extends ReduceStore {
             // the real goodies
             byId: {}, // Map<ID, LoadObject<Ingredient>>
             // used for bootstrapping (at the moment)
-            recipeIds: LoadObject.empty(), // LoadObject<ID[]>
+            recipeIds: new LoadObjectState(
+                () =>
+                    Dispatcher.dispatch({
+                        type: LibraryActions.LOAD_LIBRARY
+                    })), // LoadObjectState<ID[]>
             scope: SCOPE_MINE,
             filter: ""
         };
@@ -70,7 +75,7 @@ class LibraryStore extends ReduceStore {
                 return {
                     ...state,
                     scope: action.scope,
-                    recipeIds: LoadObject.loading(),
+                    recipeIds: state.recipeIds.mapLO(lo => lo.loading()),
                 };
             }
             
@@ -85,7 +90,7 @@ class LibraryStore extends ReduceStore {
                 LibraryApi.loadLibrary(state.scope, state.filter);
                 return {
                     ...state,
-                    recipeIds: LoadObject.loading(),
+                    recipeIds: state.recipeIds.mapLO(lo => lo.loading()),
                 };
             }
             
@@ -94,7 +99,7 @@ class LibraryStore extends ReduceStore {
                 LibraryApi.loadLibrary(state.scope, state.filter);
                 return {
                     ...state,
-                    recipeIds: state.recipeIds.loading(),
+                    recipeIds: state.recipeIds.mapLO(lo => lo.loading()),
                 };
             }
 
@@ -173,7 +178,8 @@ class LibraryStore extends ReduceStore {
             case LibraryActions.LIBRARY_LOADED: {
                 return {
                     ...state,
-                    recipeIds: LoadObject.withValue(action.data.map(r => r.id)),
+                    recipeIds: state.recipeIds
+                        .mapLO(lo => lo.setValue(action.data.map(r => r.id)).done()),
                     // use the "pure function implemented with mutable local state" methodology
                     byId: action.data.reduce((idx, r) => {
                         idx[r.id] = LoadObject.withValue(adaptTime(r));
@@ -214,15 +220,12 @@ class LibraryStore extends ReduceStore {
     }
     
     getLibraryLO() {
-        return hotLoadObject(
-            () => this.getState().recipeIds,
-            () =>
-                Dispatcher.dispatch({
-                    type: LibraryActions.LOAD_LIBRARY
-                })
-        ).map(ids =>
-            ids.map(id =>
-                this.getIngredientById(id).getValueEnforcing()));
+        return this.getState()
+            .recipeIds
+            .getLoadObject()
+            .map(ids =>
+                ids.map(id =>
+                    this.getIngredientById(id).getValueEnforcing()));
     }
 
     getIngredientById(id) {
