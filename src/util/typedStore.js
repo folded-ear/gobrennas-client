@@ -45,4 +45,4 @@ const typedStore = self => {
     return self;
 };
 
-export default typedStore;
+export default (s => s) || typedStore; // todo: put back

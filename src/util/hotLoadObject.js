@@ -14,7 +14,7 @@ import LoadObject from "./LoadObject";
  *  not provided LoadObject.isEmpty is used.
  * @return {*|LoadObject<*>}
  */
-const hotLoadObject = (
+const hotLoadObject = ( // todo: remove!
     getLO,
     doLoad,
     shouldLoad = lo => lo.isEmpty(),
@@ -24,19 +24,23 @@ const hotLoadObject = (
         /*
          * This queuing will end up unwinding in a very graceless manner, so
          * don't make a bunch of new hot LOs in a single dispatch cycle. Each
-         * one will be loaded as a separate dispatch, likely requeuing all the
-         * subsequent items already in the queue. :) There is no "bulk queue",
-         * which would address the problem. The second `shouldLoad` check inside
-         * the thunk will make all subsequent thunks do nothing, but they are
-         * still triggered.
+         * one will be loaded as a separate dispatch, likely requeueing all the
+         * subsequent items already in the queue. :) The second `shouldLoad`
+         * check inside the thunk will make all subsequent thunks do nothing,
+         * but they are still triggered.
          */
         setTimeout(() => {
             let nextLO = getLO();
             if (nextLO == null || shouldLoad(nextLO)) {
+                // eslint-disable-next-line no-console
+                console.warn("hotLoadObject is deprecated");
                 doLoad();
                 nextLO = getLO();
                 invariant(nextLO != null, "doLoad must warm up getLO's cache");
                 invariant(!shouldLoad(lo), "doLoad must create a pending LO");
+            } else {
+                // eslint-disable-next-line no-console
+                console.warn("no-op hotLoadObject thunk - try batching");
             }
         });
         lo = lo.loading();

@@ -6,7 +6,7 @@ import {
     PropTypeError,
 } from "./typeHelpers";
 
-const loadObjectOf = (valueTypeChecker, optionalErrorTypeChecker) =>
+const loadObjectOf = (valueTypeChecker, optionalErrorTypeChecker) => // todo: assume a LoadObjectState, not just LoadObject
     createChainableTypeChecker((
         props,
         propName,
@@ -45,5 +45,7 @@ const loadObjectOf = (valueTypeChecker, optionalErrorTypeChecker) =>
         }
         return null;
     });
+
+// todo: make a LoadObjectMap one too
 
 export default loadObjectOf;

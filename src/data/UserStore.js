@@ -89,7 +89,7 @@ class UserStore extends ReduceStore {
     }
 
     getProfileLO() {
-        return hotLoadObject(
+        return hotLoadObject( // todo: here's one!
             () => this.getState().get("profile"),
             () => Dispatcher.dispatch({
                 type: UserActions.LOAD_PROFILE

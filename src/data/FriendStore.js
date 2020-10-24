@@ -44,7 +44,7 @@ class FriendStore extends ReduceStore {
     }
 
     getFriendsLO() {
-        return hotLoadObject(
+        return hotLoadObject( // todo: here's one!
             () => this.getState(),
             () => Dispatcher.dispatch({
                 type: FriendActions.LOAD_FRIEND_LIST,

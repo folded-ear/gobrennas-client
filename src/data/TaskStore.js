@@ -1214,7 +1214,7 @@ class TaskStore extends ReduceStore {
     }
 
     getListsLO() {
-        return hotLoadObject(
+        return hotLoadObject( // todo: here's one!
             () => this.getState().topLevelIds,
             () => Dispatcher.dispatch({
                 type: TaskActions.LOAD_LISTS,
