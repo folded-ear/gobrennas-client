@@ -155,12 +155,11 @@ class LibraryStore extends ReduceStore {
             }
 
             case LibraryActions.LOAD_INGREDIENTS: {
+                LibraryApi.getIngredientInBulk(action.ids);
                 return {
                     ...state,
-                    byId: action.ids.reduce((byId, id) => {
-                        LibraryApi.getIngredient(id);
-                        return byId.set(id, LoadObject.loading());
-                    }, state.byId),
+                    byId: action.ids.reduce((byId, id) =>
+                        byId.set(id, LoadObject.loading()), state.byId),
                 };
             }
 
@@ -176,7 +175,15 @@ class LibraryStore extends ReduceStore {
                         LoadObject.withValue(adaptTime(action.data))),
                 };
             }
-            
+
+            case LibraryActions.INGREDIENTS_LOADED: {
+                return {
+                    ...state,
+                    byId: action.data.reduce((byId, it) =>
+                        byId.set(it.id, LoadObject.withValue(adaptTime(it))), state.byId),
+                };
+            }
+
             case LibraryActions.LIBRARY_LOADED: {
                 return {
                     ...state,

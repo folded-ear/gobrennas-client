@@ -31,6 +31,17 @@ const LibraryApi = {
         );
     },
 
+    getIngredientInBulk(ids) {
+        promiseFlux(
+            axios.get(`/bulk-ingredients/${ids}`),
+            data => ({
+                type: LibraryActions.INGREDIENTS_LOADED,
+                ids,
+                data: data.data,
+            })
+        );
+    },
+
     orderForStore(id, targetId, after) {
         socket.publish("/api/pantry-item/order-for-store", {
             id,

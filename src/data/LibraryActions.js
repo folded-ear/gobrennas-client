@@ -6,6 +6,7 @@ const LibraryActions = {
     LIBRARY_LOADED: "library/library-loaded",
     LOAD_INGREDIENTS: "library/load-ingredients",
     INGREDIENT_LOADED: "library/ingredient-loaded",
+    INGREDIENTS_LOADED: "library/ingredients-loaded",
     STAGE_RECIPE: "library/stage-recipe",
     UNSTAGE_RECIPE: "library/unstage-recipe",
     SET_SCOPE: "library/set-scope",
