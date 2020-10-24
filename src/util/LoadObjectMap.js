@@ -80,6 +80,18 @@ class LoadObjectMap<K, V> {
         return Array.from(this._data.values());
     }
 
+    /**
+     * I indicate if this map _already has_ this key. You probably don't want
+     * this method, as the whole point of LoadObjectMap is to transparently
+     * load values for keys. In particular, invoking this method will provide no
+     * information about what `get` may return now or in the future.
+     * @param key The key to check the presence of.
+     * @returns {boolean} Whether the key already exists in the map.
+     */
+    has(key: K): boolean {
+        return this._data.has(key);
+    }
+
     every(fn: (lo: LoadObject<V>, key: K) => boolean): boolean {
         return this._data.every(fn);
     }

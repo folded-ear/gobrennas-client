@@ -1,12 +1,11 @@
-import dotProp from "dot-prop-immutable";
 import { ReduceStore } from "flux/utils";
 import invariant from "invariant";
 import {
     addDistinct,
     removeDistinct,
 } from "../util/arrayAsSet";
-import hotLoadObject from "../util/hotLoadObject";
 import LoadObject from "../util/LoadObject";
+import LoadObjectMap from "../util/LoadObjectMap";
 import LoadObjectState from "../util/LoadObjectState";
 import { fromMilliseconds } from "../util/time";
 import Dispatcher from "./dispatcher";
@@ -27,16 +26,20 @@ const adaptTime = (recipe) => {
 };
 
 const workOnLabels = (state, recipeId, work) => {
-    const lo = state.byId[recipeId];
-    if (lo == null || !lo.hasValue()) return state;
-    const r = lo.getValueEnforcing();
-    const labels = work(r.labels);
-    if (labels === r.labels) return state;
-    return dotProp.set(state, ["byId", recipeId], lo =>
-        lo.map(r => ({
-            ...r,
-            labels,
-        })));
+    if (!state.byId.has(recipeId)) return state;
+    return {
+        ...state,
+        byId: state.byId.update(recipeId, lo => {
+            if (!lo.hasValue()) return lo;
+            const r = lo.getValueEnforcing();
+            const labels = work(r.labels);
+            if (labels === r.labels) return lo;
+            return lo.map(r => ({
+                ...r,
+                labels,
+            }));
+        }),
+    };
 };
 
 export const isRecipeStaged = r => {
@@ -54,7 +57,11 @@ class LibraryStore extends ReduceStore {
     getInitialState() {
         return {
             // the real goodies
-            byId: {}, // Map<ID, LoadObject<Ingredient>>
+            byId: new LoadObjectMap(ids =>
+                Dispatcher.dispatch({
+                    type: LibraryActions.LOAD_INGREDIENTS,
+                    ids: [...ids],
+                })), // LoadObjectMap<ID, Ingredient>
             // used for bootstrapping (at the moment)
             recipeIds: new LoadObjectState(
                 () =>
@@ -104,75 +111,70 @@ class LibraryStore extends ReduceStore {
             }
 
             case RecipeActions.RECIPE_DELETED: {
-                state = dotProp.delete(
-                    state,
-                    ["byId", action.id]
-                );
-                state.recipeIds = state.recipeIds.map(ids => {
-                    const i = ids.indexOf(action.id);
-                    if (i < 0) return ids;
-                    ids = ids.slice();
-                    ids.splice(i, 1);
-                    return ids;
-                });
-                return state;
+                return {
+                    ...state,
+                    byId: state.byId.delete(action.id),
+                    recipeIds: state.recipeIds.map(ids =>
+                        removeDistinct(ids, action.id)),
+                };
             }
 
             case RecipeActions.CREATE_RECIPE: {
-                return dotProp.set(
-                    state,
-                    ["byId", action.data.id],
-                    LoadObject.withValue(action.data).creating(),
-                );
+                return {
+                    ...state,
+                    byId: state.byId.set(action.data.id,
+                        LoadObject.withValue(action.data).creating()),
+                };
             }
 
             case RecipeActions.RECIPE_CREATED: {
-                state = dotProp.set(
-                    state,
-                    ["byId", action.data.id],
-                    LoadObject.withValue(adaptTime(action.data)),
-                );
-                delete state.byId[action.id];
-                state.recipeIds = state.recipeIds.map(ids =>
-                    ids.concat(action.data.id));
-                return state;
+                return {
+                    ...state,
+                    byId: state.byId
+                        .set(action.data.id,
+                            LoadObject.withValue(adaptTime(action.data)))
+                        .delete(action.id),
+                    recipeIds: state.recipeIds.map(ids =>
+                        ids.concat(action.data.id))
+                };
             }
 
             case RecipeActions.UPDATE_RECIPE: {
-                return dotProp.set(
-                    state,
-                    ["byId", action.data.id],
-                    lo => lo.updating(),
-                );
+                return {
+                    ...state,
+                    byId: state.byId.update(action.data.id, lo => lo.updating()),
+                };
             }
 
             case RecipeActions.RECIPE_UPDATED: {
-                return dotProp.set(
-                    state,
-                    ["byId", action.id],
-                    LoadObject.withValue(adaptTime(action.data)).done(),
-                );
+                return {
+                    ...state,
+                    byId: state.byId.set(action.id,
+                        LoadObject.withValue(adaptTime(action.data)).done()),
+                };
             }
 
-            case LibraryActions.LOAD_INGREDIENT: {
-                LibraryApi.getIngredient(action.id);
-                return dotProp.set(state, ["byId", action.id], lo =>
-                    lo instanceof LoadObject
-                        ? lo.loading()
-                        : LoadObject.loading());
+            case LibraryActions.LOAD_INGREDIENTS: {
+                return {
+                    ...state,
+                    byId: action.ids.reduce((byId, id) => {
+                        LibraryApi.getIngredient(id);
+                        return byId.set(id, LoadObject.loading());
+                    }, state.byId),
+                };
             }
 
             case LibraryActions.INGREDIENT_LOADED: {
-                if (action.background && !state.byId.hasOwnProperty(action.id)) {
+                if (action.background && !state.byId.has(action.id)) {
                     // background update to something we don't have info about,
                     // so just ignore it.
                     return state;
                 }
-                return dotProp.set(
-                    state,
-                    ["byId", action.id],
-                    LoadObject.withValue(adaptTime(action.data)),
-                );
+                return {
+                    ...state,
+                    byId: state.byId.set(action.id,
+                        LoadObject.withValue(adaptTime(action.data))),
+                };
             }
             
             case LibraryActions.LIBRARY_LOADED: {
@@ -180,11 +182,8 @@ class LibraryStore extends ReduceStore {
                     ...state,
                     recipeIds: state.recipeIds
                         .mapLO(lo => lo.setValue(action.data.map(r => r.id)).done()),
-                    // use the "pure function implemented with mutable local state" methodology
-                    byId: action.data.reduce((idx, r) => {
-                        idx[r.id] = LoadObject.withValue(adaptTime(r));
-                        return idx;
-                    }, state.byId),
+                    byId: action.data.reduce((byId, r) =>
+                        byId.set(r.id, LoadObject.withValue(adaptTime(r))), state.byId),
                 };
             }
 
@@ -201,16 +200,18 @@ class LibraryStore extends ReduceStore {
             }
 
             case PantryItemActions.ORDER_FOR_STORE: {
-                const it = state.byId[action.id];
-                if (!it || !it.hasValue()) return state;
-                const target = state.byId[action.targetId];
+                if (!state.byId.has(action.id)) return state;
+                const target = state.byId.get(action.targetId);
                 if (!target || !target.hasValue()) return state;
                 LibraryApi.orderForStore(action.id, action.targetId, action.after);
-                return dotProp.set(state, ["byId", action.id], it.map(v => ({
-                    ...v,
-                    storeOrder: target.getValueEnforcing().storeOrder +
-                        (action.after ? 0.5 : -0.5)
-                })));
+                return {
+                    ...state,
+                    byId: state.byId.update(action.id, lo => lo.map(v => ({
+                        ...v,
+                        storeOrder: target.getValueEnforcing().storeOrder +
+                            (action.after ? 0.5 : -0.5)
+                    })))
+                };
             }
 
             default: {
@@ -229,14 +230,9 @@ class LibraryStore extends ReduceStore {
     }
 
     getIngredientById(id) {
-        return hotLoadObject(
-            () => this.getState().byId[id],
-            () =>
-                Dispatcher.dispatch({
-                    type: LibraryActions.LOAD_INGREDIENT,
-                    id,
-                })
-        );
+        return this.getState()
+            .byId
+            .get(id);
     }
     
     getRecipeById(selectedRecipe) {
@@ -253,8 +249,8 @@ class LibraryStore extends ReduceStore {
         const map = this.getState().byId;
         const result = [];
         const me = UserStore.getProfileLO().getValueEnforcing();
-        for (const id of Object.keys(map)) {
-            const lo = map[id];
+        for (const id of map.getKeys()) {
+            const lo = map.get(id);
             if (!lo.hasValue()) continue;
             const r = lo.getValueEnforcing();
             if (r.ownerId === me.id && isRecipeStaged(r)) {
@@ -265,7 +261,7 @@ class LibraryStore extends ReduceStore {
     }
 
     isStaged(id) {
-        return isRecipeStaged(this.getState().byId[id]);
+        return isRecipeStaged(this.getState().byId.get(id));
     }
 
 }
