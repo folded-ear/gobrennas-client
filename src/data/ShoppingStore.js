@@ -2,6 +2,7 @@ import { ReduceStore } from "flux/utils";
 import PropTypes from "prop-types";
 import typedStore from "../util/typedStore";
 import Dispatcher from "./dispatcher";
+import PantryItemActions from "./PantryItemActions";
 import ShoppingActions from "./ShoppingActions";
 
 class ShoppingStore extends ReduceStore {
@@ -30,6 +31,16 @@ class ShoppingStore extends ReduceStore {
                         : action.id;
                 }
                 return state;
+            }
+
+            case PantryItemActions.ORDER_FOR_STORE: {
+                return {
+                    ...state,
+                    activeItem: {
+                        id: action.id,
+                        type: "ingredient",
+                    },
+                };
             }
 
             case ShoppingActions.TOGGLE_EXPANDED: {
