@@ -7,8 +7,7 @@ import {
     LOCAL_STORAGE_ACCESS_TOKEN,
 } from "../constants/index";
 import { getCookie } from "../util/cookies";
-import hotLoadObject from "../util/hotLoadObject";
-import LoadObject from "../util/LoadObject";
+import LoadObjectState from "../util/LoadObjectState";
 import promiseFlux from "../util/promiseFlux";
 import Dispatcher from "./dispatcher";
 import UserActions from "./UserActions";
@@ -21,7 +20,7 @@ const axios = BaseAxios.create({
 });
 
 const initiateProfileLoad = state => {
-    if (state.get("profile").isLoading()) {
+    if (state.get("profile").getLoadObject().isLoading()) {
         return state;
     }
     promiseFlux(
@@ -32,8 +31,9 @@ const initiateProfileLoad = state => {
         }),
         UserActions.PROFILE_LOAD_ERROR,
     );
-    return state.update("profile", lo =>
-        lo.loading());
+    return state.update("profile", los =>
+        los.mapLO(lo =>
+            lo.loading()));
 };
 
 const setToken = (state, token) => {
@@ -46,7 +46,10 @@ class UserStore extends ReduceStore {
 
     getInitialState() {
         const state = new OrderedMap({
-            profile: LoadObject.empty(),
+            profile: new LoadObjectState(
+                () => Dispatcher.dispatch({
+                    type: UserActions.LOAD_PROFILE
+                })),
         });
         const token = getCookie(COOKIE_AUTH_TOKEN);
         return token ? setToken(state, token) : state;
@@ -61,12 +64,14 @@ class UserStore extends ReduceStore {
                 return initiateProfileLoad(state);
             }
             case UserActions.PROFILE_LOADED: {
-                return state.update("profile", lo =>
-                    lo.setValue(action.data).done());
+                return state.update("profile", los =>
+                    los.mapLO(lo =>
+                        lo.setValue(action.data).done()));
             }
             case UserActions.PROFILE_LOAD_ERROR: {
-                return state.update("profile", lo =>
-                    lo.setError(action.error).done());
+                return state.update("profile", los =>
+                    los.mapLO(lo =>
+                        lo.setError(action.error).done()));
             }
             case UserActions.LOGOUT: {
                 localStorage.removeItem(LOCAL_STORAGE_ACCESS_TOKEN);
@@ -81,7 +86,7 @@ class UserStore extends ReduceStore {
 
     isAuthenticated() {
         const s = this.getState();
-        return s.get("token") != null && s.get("profile").hasValue();
+        return s.get("token") != null && s.get("profile").getLoadObject().hasValue();
     }
 
     getToken() {
@@ -89,12 +94,7 @@ class UserStore extends ReduceStore {
     }
 
     getProfileLO() {
-        return hotLoadObject( // todo: here's one!
-            () => this.getState().get("profile"),
-            () => Dispatcher.dispatch({
-                type: UserActions.LOAD_PROFILE
-            })
-        );
+        return this.getState().get("profile").getLoadObject();
     }
 
     isDeveloper() {
