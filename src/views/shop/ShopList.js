@@ -2,7 +2,7 @@ import List from "@material-ui/core/List";
 import PropTypes from "prop-types";
 import React from "react";
 import { clientOrDatabaseIdType } from "../../util/ClientId";
-import loadObjectOf from "../../util/loadObjectOf";
+import { loadObjectOf } from "../../util/loadObjectTypes";
 import LoadingIndicator from "../common/LoadingIndicator";
 import Ingredient from "./IngredientItem";
 import TaskItem from "./TaskItem";

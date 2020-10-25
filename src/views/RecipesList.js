@@ -14,7 +14,7 @@ import {
     SCOPE_MINE,
 } from "../data/LibraryStore";
 import { Recipe } from "../data/RecipeTypes";
-import loadObjectOf from "../util/loadObjectOf";
+import { loadObjectOf } from "../util/loadObjectTypes";
 import RecipeListItem from "./RecipeListItem";
 import SearchFilter from "./SearchFilter";
 

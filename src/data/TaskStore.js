@@ -6,8 +6,11 @@ import ClientId, { clientOrDatabaseIdType } from "../util/ClientId";
 import { humanStringComparator } from "../util/comparators";
 import inTheFuture from "../util/inTheFuture";
 import LoadObject from "../util/LoadObject";
-import loadObjectOf from "../util/loadObjectOf";
 import LoadObjectState from "../util/LoadObjectState";
+import {
+    loadObjectOf,
+    loadObjectStateOf,
+} from "../util/loadObjectTypes";
 import socket from "../util/socket";
 import typedStore from "../util/typedStore";
 import AccessLevel from "./AccessLevel";
@@ -1291,7 +1294,7 @@ TaskStore.stateTypes = {
     listDetailVisible: PropTypes.bool.isRequired,
     activeTaskId: clientOrDatabaseIdType,
     selectedTaskIds: PropTypes.arrayOf(clientOrDatabaseIdType),
-    topLevelIds: loadObjectOf(
+    topLevelIds: loadObjectStateOf(
         PropTypes.arrayOf(clientOrDatabaseIdType)
     ),
     byId: PropTypes.objectOf(

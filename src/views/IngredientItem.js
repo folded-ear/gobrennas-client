@@ -8,7 +8,7 @@ import LibraryStore from "../data/LibraryStore";
 import PantryItemActions from "../data/PantryItemActions";
 import TaskActions from "../data/TaskActions";
 import { refType } from "../models/IngredientRef";
-import loadObjectOf from "../util/loadObjectOf";
+import { loadObjectOf } from "../util/loadObjectTypes";
 import Quantity from "./common/Quantity";
 import SendToPlan from "./SendToPlan";
 

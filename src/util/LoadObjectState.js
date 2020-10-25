@@ -63,7 +63,7 @@ class LoadObjectState<V> {
     }
 
     mapLO(fn: (lo: LoadObject<V>) => LoadObject<V>) {
-        const lo = fn(this.getLoadObject());
+        const lo = fn(this._data);
         if (lo === this._data) {
             return this;
         }

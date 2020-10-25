@@ -1,13 +1,20 @@
 import { ReduceStore } from "flux/utils";
 import invariant from "invariant";
+import PropTypes from "prop-types";
 import {
     addDistinct,
     removeDistinct,
 } from "../util/arrayAsSet";
+import { clientOrDatabaseIdType } from "../util/ClientId";
 import LoadObject from "../util/LoadObject";
 import LoadObjectMap from "../util/LoadObjectMap";
 import LoadObjectState from "../util/LoadObjectState";
+import {
+    loadObjectMapOf,
+    loadObjectStateOf,
+} from "../util/loadObjectTypes";
 import { fromMilliseconds } from "../util/time";
+import typedStore from "../util/typedStore";
 import Dispatcher from "./dispatcher";
 import LibraryActions from "./LibraryActions";
 import LibraryApi from "./LibraryApi";
@@ -273,4 +280,39 @@ class LibraryStore extends ReduceStore {
 
 }
 
-export default new LibraryStore(Dispatcher);
+LibraryStore.stateTypes = {
+    byId: loadObjectMapOf(clientOrDatabaseIdType, PropTypes.shape({
+        // all
+        id: clientOrDatabaseIdType.isRequired,
+        type: PropTypes.string.isRequired,
+        name: PropTypes.string.isRequired,
+        // recipe
+        ownerId: clientOrDatabaseIdType,
+        externalUrl: PropTypes.string,
+        ingredients: PropTypes.arrayOf(
+            PropTypes.shape({
+                raw: PropTypes.string.isRequired,
+                quantity: PropTypes.number,
+                units: PropTypes.string,
+                uomId: PropTypes.number,
+                ingredient: PropTypes.string,
+                ingredientId: PropTypes.number,
+                preparation: PropTypes.string,
+            })
+        ),
+        directions: PropTypes.string,
+        calories: PropTypes.number,
+        yield: PropTypes.number,
+        totalTime: PropTypes.number,
+        labels: PropTypes.arrayOf(
+            PropTypes.string
+        ),
+        // pantry item
+        storeOrder: PropTypes.number,
+    })),
+    recipeIds: loadObjectStateOf(PropTypes.arrayOf(clientOrDatabaseIdType)),
+    scope: PropTypes.string.isRequired,
+    filter: PropTypes.string.isRequired,
+};
+
+export default typedStore(new LibraryStore(Dispatcher));
