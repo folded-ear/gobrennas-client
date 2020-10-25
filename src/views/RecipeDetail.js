@@ -70,7 +70,7 @@ const RecipeDetail = ({recipeLO, mine, staged, ownerLO}) => {
         <div className={classes.root} id="toolbar">
             <Grid container>
                 <Grid item xs={12}>
-                    <Affix offset={75}>
+                    <Affix offsetTop={75}>
                         <Toolbar className={classes.toolbar}>
                             <Typography className={classes.name} component="h1" variant="h3">{recipe.name}</Typography>
                             {mine && (staged
