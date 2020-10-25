@@ -1,8 +1,7 @@
 import BaseAxios from "axios";
 import { ReduceStore } from "flux/utils";
 import { API_BASE_URL } from "../constants/index";
-import hotLoadObject from "../util/hotLoadObject";
-import LoadObject from "../util/LoadObject";
+import LoadObjectState from "../util/LoadObjectState";
 import promiseFlux from "../util/promiseFlux";
 import Dispatcher from "./dispatcher";
 import FriendActions from "./FriendActions";
@@ -17,7 +16,10 @@ class FriendStore extends ReduceStore {
     }
 
     getInitialState() {
-        return LoadObject.empty();
+        return new LoadObjectState(
+            () => Dispatcher.dispatch({
+                type: FriendActions.LOAD_FRIEND_LIST,
+            }));
     }
 
     reduce(state, action) {
@@ -31,11 +33,11 @@ class FriendStore extends ReduceStore {
                         data: data.data,
                     }),
                 );
-                return state.loading();
+                return state.mapLO(lo => lo.loading());
             }
 
             case FriendActions.FRIEND_LIST_LOADED: {
-                return state.setValue(action.data).done();
+                return state.mapLO(lo => lo.setValue(action.data).done());
             }
 
             default:
@@ -44,12 +46,7 @@ class FriendStore extends ReduceStore {
     }
 
     getFriendsLO() {
-        return hotLoadObject( // todo: here's one!
-            () => this.getState(),
-            () => Dispatcher.dispatch({
-                type: FriendActions.LOAD_FRIEND_LIST,
-            }),
-        );
+        return this.getState().getLoadObject();
     }
 
     getFriendLO(id) {
