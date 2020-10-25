@@ -31,8 +31,8 @@
     const sendToFoodinger = () => {
         fetchImage().then( result => {
             let recipeData = new FormData();
-            recipeData.append('info', JSON.stringify({
-                type: 'Recipe',
+            recipeData.append("info", JSON.stringify({
+                type: "Recipe",
                 name: store.title,
                 externalUrl: store.url,
                 ingredients: store.ingredients.map(i => ({raw: i})),
@@ -40,10 +40,13 @@
                     .map(d => d.trim())
                     .map(d => d.length === 0 ? d : `1.  ${d}`)
                     .join("\n"),
+                calories: store.calories ? Number(store.calories) : null,
+                yield: store.yield ? Number(store.yield) : null,
+                totalTime: store.totalTime ? (Number(store.totalTime) * 60 * 1000) : null,
                 cookThis: true,
             }));
             if(result) {
-                recipeData.append('photo', result)
+                recipeData.append("photo", result);
             }
             fetch(apiRoot + "/recipe", {
                 method: "POST",
@@ -74,7 +77,7 @@
                 });
             store.mode = "importing";
             render();
-        })
+        });
     };
 
     const GATEWAY_PROP = "foodinger_import_bookmarklet_gateway_Ch8LF4wGvsRHN3nM0jFv";
@@ -88,9 +91,9 @@
         url: window.location.toString(),
         ingredients: [],
         directions: [],
-        yield: null,
-        totalTime: null,
-        calories: null,
+        yield: 0,
+        totalTime: 0,
+        calories: 0,
         photo: null,
         photoURL: "",
         id: null,
@@ -118,11 +121,11 @@
         tearDownGrab();
     }, 250);
     const findSelectHandler = (e) => {
-        e.preventDefault()
-        if(!e.target.src) return;
+        e.preventDefault();
+        if (!e.target.src) return;
         store.photoURL = e.target.src;
         tearDownGrab();
-    }
+    };
     const setUpGrab = (target, style) => {
         store.mode = "grab";
         store.grabTarget = target;
@@ -130,13 +133,13 @@
         document.addEventListener("selectionchange", grabSelectHandler);
         render();
     };
-    const setUpFind = (target,style) => {
+    const setUpFind = (target, style) => {
         store.mode = "find";
         store.grabTarget = target;
         store.grabStyle = style;
-        setTimeout( () => document.addEventListener("click", findSelectHandler), 500);
+        setTimeout(() => document.addEventListener("click", findSelectHandler), 500);
         render();
-    }
+    };
     const tearDownGrab = () => {
         store.grabTarget = null;
         store.grabStyle = null;
@@ -146,17 +149,18 @@
         store.mode = "form";
         render();
     };
-    const grabSelectedNode = () => {
-        const sel = document.getSelection();
-        if (sel.isCollapsed) {
-            alert("Select something to grab...");
-            return;
-        }
-        let targetNode = sel.focusNode;
-        while (targetNode && !targetNode.contains(sel.anchorNode)) {
-            targetNode = targetNode.parentNode;
-        }
-        if (!targetNode) {
+    const grabSelectedNode =
+        () => {
+            const sel = document.getSelection();
+            if (sel.isCollapsed) {
+                alert("Select something to grab...");
+                return;
+            }
+            let targetNode = sel.focusNode;
+            while (targetNode && !targetNode.contains(sel.anchorNode)) {
+                targetNode = targetNode.parentNode;
+            }
+            if (!targetNode) {
             alert("Something's amiss. Sorry.");
             return;
         }
@@ -172,23 +176,23 @@
             .map(collapseWS)
             .filter(s => s.length > 0) : [];
     const findImage = node => {
-        if(!node.src) return;
+        if (!node.src) return;
         store.photoURL = node.src;
-    }
+    };
     const fetchImage = () => {
-        if(!store.photoURL) {
-            return Promise.resolve(null)
+        if (!store.photoURL) {
+            return Promise.resolve(null);
         }
-        const filename = store.photoURL.split("/").pop()
+        const filename = store.photoURL.split("/").pop();
         return fetch(store.photoURL)
             .then(response => {
-                return response.blob()
+                return response.blob();
             })
             .then(blob => {
-                return new File([blob], filename, {type: blob.type})
+                return new File([blob], filename, {type: blob.type});
             })
-            .catch( e => null)
-    }
+            .catch(e => null);
+    };
     const camelToDashed = n =>
         n.replace(/([a-z0-9])([A-Z])/g, (match, a, b) =>
             `${a}-${b.toLowerCase()}`);
@@ -255,7 +259,7 @@
         width: "85px",
         height: "auto",
         margin: "10px"
-    })
+    });
     const blockRules = {
         border: "1px solid #ddd",
         backgroundColor: "white",
@@ -320,6 +324,25 @@
         const url = $div.querySelector("input[name=url]");
         url.setAttribute("value", store.url);
         url.addEventListener("change", e => store.url = e.target.value);
+
+        const yieldVal = $div.querySelector("input[name=yield]");
+        if (store.yield) {
+            yieldVal.setAttribute("value", store.yield);
+        }
+        yieldVal.addEventListener("change", e => store.yield = e.target.value);
+
+        const calories = $div.querySelector("input[name=calories]");
+        if (store.calories) {
+            calories.setAttribute("value", store.calories);
+        }
+        calories.addEventListener("change", e => store.calories = e.target.value);
+
+        const totalTime = $div.querySelector("input[name=totalTime]");
+        if (store.totalTime) {
+            totalTime.setAttribute("value", store.totalTime);
+        }
+        totalTime.addEventListener("change", e => store.totalTime = e.target.value);
+
         const ings = $div.querySelector("textarea[name=ingredients]");
         ings.innerHTML = store.ingredients.join("\n");
         ings.addEventListener("change", e =>
@@ -367,7 +390,7 @@
                 tearDownGrab();
             },
         };
-    }
+    };
     const renderStale = $div => {
         $div.innerHTML = `<h1 style="${headerStyle}">Stale Bookmarklet</h1>
         <p>Your import bookmarklet is stale. Go update it from
