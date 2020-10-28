@@ -13,7 +13,7 @@ import { LABEL_STAGED_INDICATOR } from "../data/LibraryStore";
 import { Recipe } from "../data/RecipeTypes";
 import UserStore from "../data/UserStore";
 import history from "../util/history";
-import loadObjectOf from "../util/loadObjectOf";
+import { loadObjectOf } from "../util/loadObjectTypes";
 import EditButton from "./common/EditButton";
 import User from "./user/User";
 

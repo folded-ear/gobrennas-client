@@ -4,10 +4,13 @@ import invariant from "invariant";
 import PropTypes from "prop-types";
 import ClientId, { clientOrDatabaseIdType } from "../util/ClientId";
 import { humanStringComparator } from "../util/comparators";
-import hotLoadObject from "../util/hotLoadObject";
 import inTheFuture from "../util/inTheFuture";
 import LoadObject from "../util/LoadObject";
-import loadObjectOf from "../util/loadObjectOf";
+import LoadObjectState from "../util/LoadObjectState";
+import {
+    loadObjectOf,
+    loadObjectStateOf,
+} from "../util/loadObjectTypes";
 import socket from "../util/socket";
 import typedStore from "../util/typedStore";
 import AccessLevel from "./AccessLevel";
@@ -65,6 +68,7 @@ const idFixerFactory = (cid, id) => {
                 v === cid ? id : v);
         }
         if (ids instanceof LoadObject) return ids.map(idFixer);
+        if (ids instanceof LoadObjectState) return ids.map(idFixer);
         if (typeof ids === "string") return ids;
         if (typeof ids === "number") return ids;
         throw new Error("Unsupported value passed to replaceId: " + ids);
@@ -139,7 +143,9 @@ const selectList = (state, id) => {
     // only valid ids, please
     const list = taskForId(state, id);
     invariant(
-        state.topLevelIds.getValueEnforcing().some(it => it === id),
+        state.topLevelIds.getLoadObject()
+            .getValueEnforcing()
+            .some(it => it === id),
         `Task '${id}' is not a list.`,
     );
     state = {
@@ -921,7 +927,7 @@ const loadLists = state => {
     TaskApi.loadLists();
     return {
         ...state,
-        topLevelIds: state.topLevelIds.loading(),
+        topLevelIds: state.topLevelIds.mapLO(lo => lo.loading()),
     };
 };
 
@@ -932,7 +938,8 @@ const tasksLoaded = (state, tasks) =>
 const listsLoaded = (state, lists) => {
     state = {
         ...tasksLoaded(state, lists),
-        topLevelIds: LoadObject.withValue(lists.map(t => t.id)),
+        topLevelIds: state.topLevelIds.setLoadObject(
+            LoadObject.withValue(lists.map(t => t.id))),
     };
     if (lists.length > 0) {
         // see if there's a preferred active list
@@ -954,7 +961,10 @@ class TaskStore extends ReduceStore {
             listDetailVisible: false, // boolean
             activeTaskId: null, // ID
             selectedTaskIds: null, // Array<ID>
-            topLevelIds: LoadObject.empty(), // LoadObject<Array<ID>>
+            topLevelIds: new LoadObjectState(
+                () => Dispatcher.dispatch({
+                    type: TaskActions.LOAD_LISTS,
+                })), // LoadObjectState<Array<ID>>
             byId: {}, // Map<ID, LoadObject<Task>>
             bootstrapSub: null,
             updateSub: null,
@@ -988,8 +998,9 @@ class TaskStore extends ReduceStore {
                     action.id,
                 ], lo => lo.deleting());
                 if (next.activeListId === action.id) {
-                    next.activeListId = next.topLevelIds.hasValue()
-                        ? next.topLevelIds.getValueEnforcing().find(id =>
+                    const lo = next.topLevelIds.getLoadObject();
+                    next.activeListId = lo.hasValue()
+                        ? lo.getValueEnforcing().find(id =>
                             id !== action.id)
                         : null;
                     next.listDetailVisible = false;
@@ -1214,12 +1225,9 @@ class TaskStore extends ReduceStore {
     }
 
     getListsLO() {
-        return hotLoadObject(
-            () => this.getState().topLevelIds,
-            () => Dispatcher.dispatch({
-                type: TaskActions.LOAD_LISTS,
-            }),
-        );
+        return this.getState()
+            .topLevelIds
+            .getLoadObject();
     }
 
     getLists() {
@@ -1286,7 +1294,7 @@ TaskStore.stateTypes = {
     listDetailVisible: PropTypes.bool.isRequired,
     activeTaskId: clientOrDatabaseIdType,
     selectedTaskIds: PropTypes.arrayOf(clientOrDatabaseIdType),
-    topLevelIds: loadObjectOf(
+    topLevelIds: loadObjectStateOf(
         PropTypes.arrayOf(clientOrDatabaseIdType)
     ),
     byId: PropTypes.objectOf(

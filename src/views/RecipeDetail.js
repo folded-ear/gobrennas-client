@@ -18,7 +18,7 @@ import RecipeActions from "../data/RecipeActions";
 import RecipeApi from "../data/RecipeApi";
 import { Recipe } from "../data/RecipeTypes";
 import history from "../util/history";
-import loadObjectOf from "../util/loadObjectOf";
+import { loadObjectOf } from "../util/loadObjectTypes";
 import CloseButton from "./common/CloseButton";
 import CopyButton from "./common/CopyButton";
 import DeleteButton from "./common/DeleteButton";

@@ -14,7 +14,7 @@ import {
     SCOPE_MINE,
 } from "../data/LibraryStore";
 import { Recipe } from "../data/RecipeTypes";
-import loadObjectOf from "../util/loadObjectOf";
+import { loadObjectOf } from "../util/loadObjectTypes";
 import RecipeListItem from "./RecipeListItem";
 import SearchFilter from "./SearchFilter";
 
@@ -41,54 +41,48 @@ const RecipesList = (props: {}) => {
     const hasStage = stagedRecipes.length > 0;
     const stagedIds = new Set(stagedRecipes.map(r => r.id));
 
-    const stage = hasStage && <List
-        dataSource={stagedRecipes}
-        itemLayout="horizontal"
-        renderItem={recipe =>
-            <RecipeListItem recipe={recipe}
-                            mine
-                            staged />}
-    />;
-
-    const content = !libraryLO.hasValue()
-        ? <Spin tip="Loading recipe library..."/>
-        : <React.Fragment>
-            <div style={{float: "right"}}>
-                <Switch checked={scope === SCOPE_EVERYONE}
-                        checkedChildren="Everyone"
-                        unCheckedChildren="Mine"
-                        onChange={everyone => Dispatcher.dispatch({
-                            type: LibraryActions.SET_SCOPE,
-                            scope: everyone ? SCOPE_EVERYONE : SCOPE_MINE,
-                        })}
-                />
-            </div>
-            <SearchFilter
-                onChange={updateFilter}
-                onFilter={sendFilter}
-                term={filter}
-            />
-
-            <List
-                dataSource={libraryLO.getValueEnforcing()
-                    .filter(r => !stagedIds.has(r.id))}
-                itemLayout="horizontal"
-                renderItem={recipe =>
-                    <RecipeListItem recipe={recipe}
-                                    mine={recipe.ownerId === me.id} />}
-            />
-        </React.Fragment>;
-
     return <React.Fragment>
         <h1>Recipe Library</h1>
         <Row>
             <Col span={24}>
                 {hasStage && <React.Fragment>
                     <h2>Staged</h2>
-                    {stage}
+                    <List
+                        dataSource={stagedRecipes}
+                        itemLayout="horizontal"
+                        renderItem={recipe =>
+                            <RecipeListItem recipe={recipe}
+                                            mine
+                                            staged />}
+                    />
                     <h2>Everything Else</h2>
                 </React.Fragment>}
-                {content}
+                {libraryLO.isLoading() && <div>
+                    <Spin tip="Loading recipe library..."/>
+                </div>}
+                <div style={{float: "right"}}>
+                    <Switch checked={scope === SCOPE_EVERYONE}
+                            checkedChildren="Everyone"
+                            unCheckedChildren="Mine"
+                            onChange={everyone => Dispatcher.dispatch({
+                                type: LibraryActions.SET_SCOPE,
+                                scope: everyone ? SCOPE_EVERYONE : SCOPE_MINE,
+                            })}
+                    />
+                </div>
+                <SearchFilter
+                    onChange={updateFilter}
+                    onFilter={sendFilter}
+                    term={filter}
+                />
+                {libraryLO.hasValue() && <List
+                    dataSource={libraryLO.getValueEnforcing()
+                        .filter(r => !stagedIds.has(r.id))}
+                    itemLayout="horizontal"
+                    renderItem={recipe =>
+                        <RecipeListItem recipe={recipe}
+                                        mine={recipe.ownerId === me.id} />}
+                />}
             </Col>
         </Row>
     </React.Fragment>;
