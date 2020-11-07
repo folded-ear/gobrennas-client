@@ -24,6 +24,7 @@ class TaskItem extends React.PureComponent {
         super(props);
         this.onChange = this.onChange.bind(this);
         this.onClick = this.onClick.bind(this);
+        this.onKeyDown = this.onKeyDown.bind(this);
         this.inputRef = React.createRef();
     }
 
@@ -53,6 +54,48 @@ class TaskItem extends React.PureComponent {
             id: item.id,
             itemType: "task",
         });
+    }
+
+    onKeyDown(e) {
+        const {
+            value,
+            selectionStart,
+        } = e.target;
+        const {
+            key,
+        } = e;
+        switch (key) { // eslint-disable-line default-case
+            case "Enter":
+                if (value.length === 0) break;
+                // add a new item, before if the cursor is at the beginning, after otherwise
+                Dispatcher.dispatch({
+                    type: selectionStart === 0
+                        ? ShoppingActions.CREATE_ITEM_BEFORE
+                        : ShoppingActions.CREATE_ITEM_AFTER,
+                    id: this.props.item.id,
+                });
+                break;
+            case "Backspace":
+                // if the value is empty, delete the task and focus previous
+                if (value.length === 0) {
+                    e.preventDefault();
+                    Dispatcher.dispatch({
+                        type: ShoppingActions.DELETE_ITEM_BACKWARDS,
+                        id: this.props.item.id
+                    });
+                }
+                break;
+            case "Delete":
+                // if the value is empty, delete the task and focus next
+                if (value.length === 0) {
+                    e.preventDefault();
+                    Dispatcher.dispatch({
+                        type: ShoppingActions.DELETE_ITEM_FORWARD,
+                        id: this.props.item.id,
+                    });
+                }
+                break;
+        }
     }
 
     componentDidMount() {

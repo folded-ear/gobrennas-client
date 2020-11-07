@@ -26,7 +26,11 @@ class ShoppingStore extends ReduceStore {
     reduce(state, action) {
         switch (action.type) {
 
-            case ShoppingActions.CREATE_ITEM_AT_END: {
+            case ShoppingActions.CREATE_ITEM_AFTER:
+            case ShoppingActions.CREATE_ITEM_BEFORE:
+            case ShoppingActions.CREATE_ITEM_AT_END:
+            case ShoppingActions.DELETE_ITEM_BACKWARDS:
+            case ShoppingActions.DELETE_ITEM_FORWARD: {
                 this.__dispatcher.waitFor([
                     TaskStore.getDispatchToken(),
                 ]);

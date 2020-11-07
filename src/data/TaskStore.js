@@ -1097,12 +1097,14 @@ class TaskStore extends ReduceStore {
                 state = focusDelta(state, state.activeTaskId, -1);
                 return flushTasksToRename(state);
 
-            case TaskActions.CREATE_TASK_AFTER: {
+            case TaskActions.CREATE_TASK_AFTER:
+            case ShoppingActions.CREATE_ITEM_AFTER: {
                 state = createTaskAfter(state, action.id);
                 return flushTasksToRename(state);
             }
 
-            case TaskActions.CREATE_TASK_BEFORE: {
+            case TaskActions.CREATE_TASK_BEFORE:
+            case ShoppingActions.CREATE_ITEM_BEFORE: {
                 state = createTaskBefore(state, action.id);
                 return flushTasksToRename(state);
             }
@@ -1125,12 +1127,14 @@ class TaskStore extends ReduceStore {
                 return addTaskAndFlush(state, action.planId, name);
             }
 
-            case TaskActions.DELETE_TASK_FORWARD: {
+            case TaskActions.DELETE_TASK_FORWARD:
+            case ShoppingActions.DELETE_ITEM_FORWARD: {
                 state = focusDelta(state, action.id, 1);
                 return queueDelete(state, action.id);
             }
 
-            case TaskActions.DELETE_TASK_BACKWARDS: {
+            case TaskActions.DELETE_TASK_BACKWARDS:
+            case ShoppingActions.DELETE_ITEM_BACKWARDS: {
                 state = focusDelta(state, action.id, -1);
                 return queueDelete(state, action.id);
             }
