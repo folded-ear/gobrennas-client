@@ -51,12 +51,14 @@ const groupItems = plans => {
         }
     }
     const byIngredient = groupBy(leaves, it => it.ingredientId);
-    let unparsed = [];
-    if (byIngredient.has(null)) {
-        unparsed = byIngredient.get(null)
-            .filter(it => it.status === TaskStatus.NEEDED);
-        byIngredient.delete(null);
-    }
+    const unparsed = [];
+    [null, undefined].forEach(k => {
+        if (byIngredient.has(k)) {
+            unparsed.push(...byIngredient.get(k)
+                .filter(it => it.status === TaskStatus.NEEDED));
+            byIngredient.delete(k);
+        }
+    });
     const orderedIngredients = [];
     for (const [ingId, items] of byIngredient) {
         orderedIngredients.push({
