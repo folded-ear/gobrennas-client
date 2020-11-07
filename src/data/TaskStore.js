@@ -1096,12 +1096,22 @@ class TaskStore extends ReduceStore {
             case TaskActions.FOCUS_PREVIOUS:
                 state = focusDelta(state, state.activeTaskId, -1);
                 return flushTasksToRename(state);
-            case TaskActions.CREATE_TASK_AFTER:
+
+            case TaskActions.CREATE_TASK_AFTER: {
                 state = createTaskAfter(state, action.id);
                 return flushTasksToRename(state);
-            case TaskActions.CREATE_TASK_BEFORE:
+            }
+
+            case TaskActions.CREATE_TASK_BEFORE: {
                 state = createTaskBefore(state, action.id);
                 return flushTasksToRename(state);
+            }
+
+            case TaskActions.CREATE_TASK_AT_END:
+            case ShoppingActions.CREATE_ITEM_AT_END: {
+                state = addTask(state, state.activeListId, "");
+                return state;
+            }
 
             case TaskActions.SEND_TO_PLAN: {
                 return addTaskAndFlush(state, action.planId, action.name);

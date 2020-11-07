@@ -4,6 +4,15 @@ import typedStore from "../util/typedStore";
 import Dispatcher from "./dispatcher";
 import PantryItemActions from "./PantryItemActions";
 import ShoppingActions from "./ShoppingActions";
+import TaskStore from "./TaskStore";
+
+const placeFocus = (state, id, type) => ({
+    ...state,
+    activeItem: {
+        id,
+        type,
+    },
+});
 
 class ShoppingStore extends ReduceStore {
 
@@ -17,14 +26,16 @@ class ShoppingStore extends ReduceStore {
     reduce(state, action) {
         switch (action.type) {
 
+            case ShoppingActions.CREATE_ITEM_AT_END: {
+                this.__dispatcher.waitFor([
+                    TaskStore.getDispatchToken(),
+                ]);
+                state = placeFocus(state, TaskStore.getActiveTask().id, "task");
+                return state;
+            }
+
             case ShoppingActions.FOCUS: {
-                state = {
-                    ...state,
-                    activeItem: {
-                        id: action.id,
-                        type: action.itemType,
-                    },
-                };
+                state = placeFocus(state, action.id, action.itemType);
                 if (action.itemType === "ingredient") {
                     state.expandedId = state.expandedId === action.id
                         ? null

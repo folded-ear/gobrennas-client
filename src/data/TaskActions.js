@@ -22,6 +22,7 @@ const TaskActions = {
     LIST_DETAIL_VISIBILITY: "task/list-detail-visibility",
     CREATE_TASK_AFTER: "task/create-task-after",
     CREATE_TASK_BEFORE: "task/create-task-before",
+    CREATE_TASK_AT_END: "task/create-task-at-end",
     SEND_TO_PLAN: typedAction("task/send-to-plan", {
         planId: PropTypes.number.isRequired,
         name: PropTypes.string.isRequired,

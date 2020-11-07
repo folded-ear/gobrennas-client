@@ -1,13 +1,30 @@
 import List from "@material-ui/core/List";
+import Add from "@material-ui/icons/Add";
 import PropTypes from "prop-types";
 import React from "react";
+import Dispatcher from "../../data/dispatcher";
+import TaskActions from "../../data/TaskActions";
 import LoadObject from "../../util/LoadObject";
+import FoodingerFab from "../common/FoodingerFab";
 import LoadingIndicator from "../common/LoadingIndicator";
 import TaskListHeader from "../TaskListHeader";
 import LoadingTask from "./LoadingTask";
 import Task from "./Task";
 
 class TaskList extends React.PureComponent {
+
+    constructor(...args) {
+        super(...args);
+        this.onAddNew = this.onAddNew.bind(this);
+    }
+
+
+    onAddNew(e) {
+        e.preventDefault();
+        Dispatcher.dispatch({
+            type: TaskActions.CREATE_TASK_AT_END,
+        });
+    }
 
     render() {
         const {
@@ -55,6 +72,11 @@ class TaskList extends React.PureComponent {
                     }
                 })}
             </List>
+            <FoodingerFab
+                onClick={this.onAddNew}
+            >
+                <Add />
+            </FoodingerFab>
         </>;
     }
 

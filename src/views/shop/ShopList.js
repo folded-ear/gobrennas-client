@@ -1,8 +1,12 @@
 import List from "@material-ui/core/List";
+import Add from "@material-ui/icons/Add";
 import PropTypes from "prop-types";
 import React from "react";
+import Dispatcher from "../../data/dispatcher";
+import ShoppingActions from "../../data/ShoppingActions";
 import { clientOrDatabaseIdType } from "../../util/ClientId";
 import { loadObjectOf } from "../../util/loadObjectTypes";
+import FoodingerFab from "../common/FoodingerFab";
 import LoadingIndicator from "../common/LoadingIndicator";
 import Ingredient from "./IngredientItem";
 import TaskItem from "./TaskItem";
@@ -12,6 +16,19 @@ import {
 } from "./types";
 
 class ShopList extends React.PureComponent {
+
+    constructor(...args) {
+        super(...args);
+        this.onAddNew = this.onAddNew.bind(this);
+    }
+
+
+    onAddNew(e) {
+        e.preventDefault();
+        Dispatcher.dispatch({
+            type: ShoppingActions.CREATE_ITEM_AT_END,
+        });
+    }
 
     render() {
         const {
@@ -45,6 +62,11 @@ class ShopList extends React.PureComponent {
                     }
                 })}
             </List>
+            <FoodingerFab
+                onClick={this.onAddNew}
+            >
+                <Add />
+            </FoodingerFab>
         </>;
     }
 
