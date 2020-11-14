@@ -1,11 +1,11 @@
+import Box from "@material-ui/core/Box";
+import Button from "@material-ui/core/Button";
+import FormControl from "@material-ui/core/FormControl";
 import IconButton from "@material-ui/core/IconButton";
-import {
-    Button,
-    Drawer,
-    Form,
-    Input,
-    Select,
-} from "antd";
+import MenuItem from "@material-ui/core/MenuItem";
+import Select from "@material-ui/core/Select";
+import TextField from "@material-ui/core/TextField";
+import { Drawer } from "antd";
 import { Container } from "flux/utils";
 import PropTypes from "prop-types";
 import React from "react";
@@ -13,6 +13,7 @@ import Dispatcher from "../data/dispatcher";
 import TaskActions from "../data/TaskActions";
 import WindowStore from "../data/WindowStore";
 import { humanStringComparator } from "../util/comparators";
+import EditButton from "./common/EditButton";
 import {
     CollapseAll,
     ExpandAll,
@@ -100,8 +101,11 @@ class TaskListHeader extends React.PureComponent {
         const {
             name,
         } = this.state;
-        return <Form layout="inline">
-            {activeList && <Form.Item>
+        return <Box
+            display="flex"
+            alignItems="center"
+        >
+            {activeList && <Box>
                 <IconButton
                     aria-label="expand-all"
                     onClick={this.onExpandAll}
@@ -114,34 +118,34 @@ class TaskListHeader extends React.PureComponent {
                 >
                     <CollapseAll />
                 </IconButton>
-            </Form.Item>}
+            </Box>}
             {allLists && allLists.length > 0 && <React.Fragment>
-                <Form.Item
-                    label="Select a List">
+                <FormControl
+                    variant="outlined"
+                    style={{
+                        minWidth: "120px",
+                    }}
+                >
                     <Select
-                        style={{minWidth: 120}}
-                        onChange={this.onSelect}
+                        placeholder="Select a Plan"
                         value={activeList && activeList.id}
+                        onChange={this.onSelect}
                     >
                         {allLists.sort(humanStringComparator).map(l =>
-                            <Select.Option
+                            <MenuItem
                                 key={l.id}
                                 value={l.id}
                             >
                                 {l.name}
-                            </Select.Option>,
+                            </MenuItem>,
                         )}
                     </Select>
-                </Form.Item>
-                {activeList && <React.Fragment>
-                    <Form.Item>
-                        <Button
-                            icon="edit"
-                            shape="circle"
-                            type={listDetailVisible ? "primary" : "default"}
-                            onClick={this.onShowDrawer}
-                        />
-                    </Form.Item>
+                </FormControl>
+                {activeList && <>
+                    <EditButton
+                        type={listDetailVisible ? "primary" : "default"}
+                        onClick={this.onShowDrawer}
+                    />
                     <Drawer
                         visible={listDetailVisible}
                         title="List Info"
@@ -150,23 +154,19 @@ class TaskListHeader extends React.PureComponent {
                     >
                         <TaskListSidebar list={activeList} />
                     </Drawer>
-                </React.Fragment>}
+                </>}
             </React.Fragment>}
-            <Form.Item
-                labelCol={{
-                    offset: 12,
-                }}>
-                <Input.Search
-                    placeholder="New List..."
-                    value={name}
-                    onPressEnter={this.onCreate}
-                    enterButton={<Button
-                        disabled={!isValidName(name)}>Create</Button>}
-                    onSearch={this.onCreate}
-                    onChange={this.onNameChange}
-                />
-            </Form.Item>
-        </Form>;
+            <TextField
+                label="New Plan..."
+                onChange={this.onNameChange}
+            />
+            <Button
+                onClick={this.onCreate}
+                disabled={!isValidName(name)}
+            >
+                Create
+            </Button>
+        </Box>;
     }
 
 }
