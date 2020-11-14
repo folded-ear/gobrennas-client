@@ -1,4 +1,4 @@
-import { Button } from "antd";
+import Button from "@material-ui/core/Button";
 import React, { Component } from "react";
 import { Redirect } from "react-router-dom";
 import {
@@ -44,8 +44,13 @@ class Login extends Component {
             <div className="login-container">
                 <div className="login-content">
                     <h1>Welcome to Foodinger</h1>
-                    <p>Login to continue...</p>
-                    <Button type="primary" icon="google" href={GOOGLE_AUTH_URL}>Login</Button>
+                    <Button
+                        color="primary"
+                        variant="outlined"
+                        href={GOOGLE_AUTH_URL}
+                    >
+                        Login with Google
+                    </Button>
                 </div>
             </div>
         );
