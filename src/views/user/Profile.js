@@ -1,10 +1,9 @@
-import {
-    Button,
-    Divider,
-    Icon,
-    Switch,
-} from "antd";
+import Button from "@material-ui/core/Button";
+import Divider from "@material-ui/core/Divider";
+import Switch from "@material-ui/core/Switch";
+import { LockOpen } from "@material-ui/icons";
 import { Container } from "flux/utils";
+import PropTypes from "prop-types";
 import React, { Component } from "react";
 import {
     API_IS_SECURE,
@@ -24,10 +23,10 @@ class Profile extends Component {
         this.onDevModeChange = this.onDevModeChange.bind(this);
     }
 
-    onDevModeChange(enabled) {
+    onDevModeChange(e) {
         Dispatcher.dispatch({
             type: UserActions.SET_DEV_MODE,
-            enabled,
+            enabled: e.target.checked,
         });
     }
 
@@ -58,7 +57,8 @@ class Profile extends Component {
             <p style={{textAlign: "center"}}>
                 <Button
                     href={`javascript:var s=document.createElement('script');s.src='${APP_BASE_URL}/import_bookmarklet.js?token=${encodeURIComponent(token)}&_='+Date.now();s.id='foodinger-import-bookmarklet';document.body.appendChild(s);`}
-                    type={process.env.NODE_ENV === "production" ? "primary" : "danger"}
+                    variant={process.env.NODE_ENV === "production" ? "contained" : "outlined"}
+                    color="primary"
                 >
                     {process.env.NODE_ENV === "production"
                         ? "Cook This!"
@@ -66,9 +66,9 @@ class Profile extends Component {
                 </Button>
             </p>
             {!API_IS_SECURE && <p>
-                Since <Icon type="unlock" /> you hate SSL <Icon type="unlock" />,
-                you&apos;ll have to do this each time you log into Foodinger
-                (deleting the old one first). Sorry, man.
+                <LockOpen />
+                Since you hate SSL, you&apos;ll have to do this each time you log into Foodinger (deleting the old one first). Sorry, man.
+                <LockOpen />
             </p>}
             <Divider />
             <div><User {...user} /></div>
@@ -79,15 +79,29 @@ class Profile extends Component {
                 <Switch
                     checked={isDevMode}
                     onChange={this.onDevModeChange}
-                    checkedChildren="ON"
-                    unCheckedChildren="off"
+                    color="primary"
                 />
-                {" "}
+                <br />
                 Window: {windowSize.width}x{windowSize.height}
             </React.Fragment>}
         </>;
     }
 }
+
+Profile.propTypes = {
+    currentUser: PropTypes.shape({
+        imageUrl: PropTypes.string,
+        name: PropTypes.string.isRequired,
+        email: PropTypes.string.isRequired,
+    }).isRequired,
+    token: PropTypes.string.isRequired,
+    isDeveloper: PropTypes.bool,
+    isDevMode: PropTypes.bool,
+    windowSize: PropTypes.shape({
+        width: PropTypes.number.isRequired,
+        height: PropTypes.number.isRequired,
+    }).isRequired,
+};
 
 export default Container.createFunctional(
     props => <Profile {...props} />,
