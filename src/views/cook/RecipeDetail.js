@@ -92,9 +92,11 @@ const RecipeDetail = ({recipeLO, mine, staged, ownerLO}) => {
                             />}
                             <CloseButton
                                 onClick={() => history.push("/library")}/>
-                            {!mine && ownerLO.hasValue() && <p style={{float: "right"}}>
-                                <User {...ownerLO.getValueEnforcing()} />
-                            </p>}
+                            {!mine && ownerLO.hasValue() && <User
+                                size="default"
+                                iconOnly
+                                {...ownerLO.getValueEnforcing()}
+                            />}
                         </Toolbar>
                     </Affix>
                 </Grid>
