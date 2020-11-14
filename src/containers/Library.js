@@ -1,10 +1,10 @@
-import { Container } from "flux/utils";
+import {Container} from "flux/utils";
 import React from "react";
 import LibraryStore from "../data/LibraryStore";
 import RecipeStore from "../data/RecipeStore";
 import UserStore from "../data/UserStore";
-import { humanStringComparator } from "../util/comparators";
-import RecipesList from "../views/RecipesList";
+import {humanStringComparator} from "../util/comparators";
+import RecipesList from "../views/library/RecipesList";
 
 export default Container.createFunctional(
     (props) => <RecipesList {...props}/>,

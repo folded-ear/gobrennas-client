@@ -1,10 +1,10 @@
-import { Container } from "flux/utils";
+import {Container} from "flux/utils";
 import React from "react";
-import { withRouter } from "react-router-dom";
+import {withRouter} from "react-router-dom";
 import LibraryStore from "../data/LibraryStore";
 import RouteStore from "../data/RouteStore";
 import LoadObject from "../util/LoadObject";
-import RecipeEdit from "../views/RecipeEdit";
+import RecipeEdit from "../views/cook/RecipeEdit";
 
 export default withRouter(Container.createFunctional(
     (props) => <RecipeEdit {...props}/>,

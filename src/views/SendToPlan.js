@@ -1,10 +1,7 @@
-import { IconButton } from "@material-ui/core";
+import {IconButton} from "@material-ui/core";
 import Button from "@material-ui/core/Button";
-import {
-    AddShoppingCart,
-    ArrowForward,
-} from "@material-ui/icons";
-import { Container } from "flux/utils";
+import {AddShoppingCart, ExitToApp,} from "@material-ui/icons";
+import {Container} from "flux/utils";
 import React from "react";
 import TaskStore from "../data/TaskStore";
 
@@ -14,7 +11,7 @@ const SendToPlan = Container.createFunctional(
          onClick,
          iconOnly,
      }) => {
-        if (! listLO.hasValue()) return null;
+        if (!listLO.hasValue()) return null;
         const list = listLO.getValueEnforcing();
         if (iconOnly) {
             return <IconButton
@@ -26,12 +23,13 @@ const SendToPlan = Container.createFunctional(
                 </IconButton>;
         }
         return <Button
-            variant="outlined"
-            size="small"
+            disableElevation
+            variant="contained"
+            color="secondary"
             onClick={() => onClick(list.id)}
-            endIcon={<ArrowForward />}
+            startIcon={<ExitToApp/>}
         >
-            Send to &quot;{list.name}&quot;
+            To {list.name}
         </Button>;
     },
     () => [
