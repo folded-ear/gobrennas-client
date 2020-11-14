@@ -1,3 +1,4 @@
+import { Tooltip } from "@material-ui/core";
 import PropTypes from "prop-types";
 import React from "react";
 import Dispatcher from "../../data/dispatcher";
@@ -25,21 +26,25 @@ const findButton = (next, curr) => {
 const StatusIconButton = props => {
     const Btn = findButton(props.next, props.current || props.next);
     const Icn = getIconForStatus(props.next);
-    return <Btn
-        aria-label={props.next.toLowerCase()}
-        size="small"
-        onClick={e => {
-            e.stopPropagation();
-            Dispatcher.dispatch({
-                type: TaskActions.SET_STATUS,
-                id: props.id,
-                status: props.next,
-            });
-        }}
-        {...props}
+    return <Tooltip
+        title={`Mark ${props.next.substr(0, 1)}${props.next.substr(1).toLowerCase()}`}
     >
-        <Icn />
-    </Btn>;
+        <Btn
+            aria-label={props.next.toLowerCase()}
+            size="small"
+            onClick={e => {
+                e.stopPropagation();
+                Dispatcher.dispatch({
+                    type: TaskActions.SET_STATUS,
+                    id: props.id,
+                    status: props.next,
+                });
+            }}
+            {...props}
+        >
+            <Icn />
+        </Btn>
+    </Tooltip>;
 };
 
 StatusIconButton.propTypes = {
