@@ -1,11 +1,14 @@
 import {
-    Form,
-    Icon,
-    Input,
-    List,
-    Select,
-    Spin,
-} from "antd";
+    Divider,
+    MenuItem,
+} from "@material-ui/core";
+import Box from "@material-ui/core/Box";
+import CircularProgress from "@material-ui/core/CircularProgress";
+import Grid from "@material-ui/core/Grid";
+import List from "@material-ui/core/List";
+import ListItem from "@material-ui/core/ListItem";
+import Select from "@material-ui/core/Select";
+import TextField from "@material-ui/core/TextField";
 import { Container } from "flux/utils";
 import PropTypes from "prop-types";
 import React from "react";
@@ -79,18 +82,6 @@ class TaskListSidebar extends React.PureComponent {
             friendsById,
         } = this.props;
 
-        // blindly copied - side by side when big, stacked when small
-        const formItemLayout = {
-            labelCol: {
-                xs: {span: 24},
-                sm: {span: 6},
-            },
-            wrapperCol: {
-                xs: {span: 24},
-                sm: {span: 18},
-            },
-        };
-
         const grants = list.acl.grants || {};
         const isMine = list.acl.ownerId === me.id;
         const owner = isMine
@@ -100,83 +91,65 @@ class TaskListSidebar extends React.PureComponent {
             grants[me.id],
             AccessLevel.ADMINISTER,
         );
-        return <Form {...formItemLayout}>
-            <Form.Item
+        return <Box m={2}>
+            <TextField
                 label="Name"
-            >
-                <Input
-                    value={list.name}
-                    onChange={this.onRename}
-                />
-            </Form.Item>
-            {friendsLoading ? <Spin /> : <React.Fragment>
-                <Form.Item
-                    label="Owned By"
-                >
-                    <User {...owner} />
-                </Form.Item>
-                {isAdministrator && <Form.Item
-                    label="Sharing"
-                >
-                    <List
-                        bordered
-                        dataSource={isMine ? friendList : friendList.filter(
-                            f => f.id !== list.acl.ownerId).concat(me)}
-                        renderItem={f =>
-                            <List.Item>
-                                <User {...f} />
-                                {" "}
-                                <Select
-                                    value={grants[f.id] || LEVEL_NO_ACCESS}
-                                    style={{color: grants[f.id] ? "inherit" : "#ccc"}}
-                                    onChange={level => this.onGrantChange(
-                                        f.id,
-                                        level,
-                                    )}
-                                >
-                                    <Select.Option
-                                        value={LEVEL_NO_ACCESS}
-                                        style={{color: "#ccc"}}
-                                    >
-                                        <Icon type="stop" />
-                                        {" "}
-                                        No Access
-                                    </Select.Option>
-                                    {/*<Select.Option*/}
-                                    {/*    value="VIEW"*/}
-                                    {/*>*/}
-                                    {/*    <Icon type="eye" />*/}
-                                    {/*    {" "}*/}
-                                    {/*    View*/}
-                                    {/*</Select.Option>*/}
-                                    <Select.Option
-                                        value={AccessLevel.CHANGE}
-                                    >
-                                        <Icon type="edit" />
-                                        {" "}
-                                        Modify
-                                    </Select.Option>
-                                    <Select.Option
-                                        value={AccessLevel.ADMINISTER}
-                                    >
-                                        <Icon type="crown" />
-                                        {" "}
-                                        Administer
-                                    </Select.Option>
-                                </Select>
-                            </List.Item>}
-                    />
-                </Form.Item>}
-                {isAdministrator && <Form.Item
-                    label="Danger Zone"
-                >
+                required
+                value={list.name}
+                onChange={this.onRename}
+                variant="outlined"
+                fullWidth
+            />
+            {owner && <User {...owner} />}
+            {friendsLoading ? <CircularProgress /> : <React.Fragment>
+                {isAdministrator && <div>
+                    <Divider />
+                    Sharing
+                    <List>
+                        {(isMine ? friendList : friendList.filter(f =>f.id !== list.acl.ownerId).concat(me)).map(f =>
+                            <ListItem
+                                key={f.id}
+                            >
+                                <Grid container spacing={1} justify="space-between">
+                                    <Grid item>
+                                        <User {...f} />
+                                    </Grid>
+                                    <Grid item>
+                                        <Select
+                                            value={grants[f.id] || LEVEL_NO_ACCESS}
+                                            style={{color: grants[f.id] ? "inherit" : "#ccc"}}
+                                            onChange={e => this.onGrantChange(
+                                                f.id,
+                                                e.target.value,
+                                            )}
+                                        >
+                                            <MenuItem value={LEVEL_NO_ACCESS}>
+                                                No Access
+                                            </MenuItem>
+                                            {/*VIEW too!*/}
+                                            <MenuItem value={AccessLevel.CHANGE}>
+                                                Modify
+                                            </MenuItem>
+                                            <MenuItem value={AccessLevel.ADMINISTER}>
+                                                Administer
+                                            </MenuItem>
+                                        </Select>
+                                    </Grid>
+                                </Grid>
+                            </ListItem>)}
+                    </List>
+                </div>}
+                {isAdministrator && <div>
+                    <Divider />
+                    Danger Zone
                     <DeleteButton
-                        type="list"
+                        type="plan"
                         onConfirm={this.onDelete}
+                        label="Delete Plan"
                     />
-                </Form.Item>}
+                </div>}
             </React.Fragment>}
-        </Form>;
+        </Box>;
     }
 
 }

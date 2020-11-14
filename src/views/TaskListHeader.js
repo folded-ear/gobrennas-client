@@ -1,11 +1,11 @@
 import Box from "@material-ui/core/Box";
 import Button from "@material-ui/core/Button";
+import Drawer from "@material-ui/core/Drawer";
 import FormControl from "@material-ui/core/FormControl";
 import IconButton from "@material-ui/core/IconButton";
 import MenuItem from "@material-ui/core/MenuItem";
 import Select from "@material-ui/core/Select";
 import TextField from "@material-ui/core/TextField";
-import { Drawer } from "antd";
 import { Container } from "flux/utils";
 import PropTypes from "prop-types";
 import React from "react";
@@ -96,7 +96,6 @@ class TaskListHeader extends React.PureComponent {
             activeList,
             allLists,
             listDetailVisible,
-            windowWidth,
         } = this.props;
         const {
             name,
@@ -147,9 +146,9 @@ class TaskListHeader extends React.PureComponent {
                         onClick={this.onShowDrawer}
                     />
                     <Drawer
-                        visible={listDetailVisible}
-                        title="List Info"
-                        width={Math.min(500, windowWidth - 50)}
+                        open={listDetailVisible}
+                        anchor="right"
+                        title="Plan Info"
                         onClose={this.onCloseDrawer}
                     >
                         <TaskListSidebar list={activeList} />

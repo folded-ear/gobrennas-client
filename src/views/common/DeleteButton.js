@@ -9,7 +9,6 @@ import DialogTitle from "@material-ui/core/DialogTitle";
 import { Delete } from "@material-ui/icons";
 import PropTypes from "prop-types";
 import React from "react";
-import capitalize from "../../util/capitalize";
 
 const DeleteIcon = ({onClick}) => (
     <Tooltip title="Delete" placement="top">
@@ -46,7 +45,7 @@ const DeleteButton = ({type, onConfirm, label, onClick, onCancel}) => {
                 startIcon={<Delete />}
                 onClick={handleOpen}
             >
-                Delete {capitalize(type)}
+                {label}
             </Button>
             : <DeleteIcon onClick={handleOpen} />
         }
