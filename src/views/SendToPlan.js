@@ -1,7 +1,10 @@
-import {IconButton} from "@material-ui/core";
+import { IconButton } from "@material-ui/core";
 import Button from "@material-ui/core/Button";
-import {AddShoppingCart, ExitToApp,} from "@material-ui/icons";
-import {Container} from "flux/utils";
+import {
+    AddShoppingCart,
+    ExitToApp,
+} from "@material-ui/icons";
+import { Container } from "flux/utils";
 import React from "react";
 import TaskStore from "../data/TaskStore";
 
@@ -29,7 +32,16 @@ const SendToPlan = Container.createFunctional(
             onClick={() => onClick(list.id)}
             startIcon={<ExitToApp/>}
         >
-            To {list.name}
+            <span
+                style={{
+                    whiteSpace: "nowrap",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                }}
+                title={`Send to ${list.name}`}
+            >
+                To {list.name}
+            </span>
         </Button>;
     },
     () => [
