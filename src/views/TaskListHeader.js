@@ -72,10 +72,10 @@ class TaskListHeader extends React.PureComponent {
         });
     }
 
-    onSelect(id) {
+    onSelect(e) {
         Dispatcher.dispatch({
             type: TaskActions.SELECT_LIST,
-            id,
+            id: e.target.value,
         });
     }
 
