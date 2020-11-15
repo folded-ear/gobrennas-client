@@ -12,6 +12,7 @@ import {
     loadObjectStateOf,
 } from "../util/loadObjectTypes";
 import socket from "../util/socket";
+import { parseLocalDate } from "../util/time";
 import typedStore from "../util/typedStore";
 import AccessLevel from "./AccessLevel";
 import Dispatcher from "./dispatcher";
@@ -876,6 +877,15 @@ const expandAll = forceExpansionBuilder(true);
 const collapseAll = forceExpansionBuilder(false);
 
 const taskLoaded = (state, task) => {
+    if (task.buckets) {
+        task = {
+            ...task,
+            buckets: task.buckets.map(b => b.date ? {
+                ...b,
+                date: parseLocalDate(b.date),
+            } : b),
+        };
+    }
     let lo = state.byId[task.id] || LoadObject.empty();
     if (lo.hasValue()) {
         lo = lo.map(t => {
@@ -1302,6 +1312,12 @@ class TaskStore extends ReduceStore {
     }
 }
 
+export const bucketType = PropTypes.exact({
+    id: clientOrDatabaseIdType.isRequired,
+    name: PropTypes.string,
+    date: PropTypes.instanceOf(Date),
+});
+
 TaskStore.stateTypes = {
     activeListId: clientOrDatabaseIdType,
     listDetailVisible: PropTypes.bool.isRequired,
@@ -1325,6 +1341,7 @@ TaskStore.stateTypes = {
                     PropTypes.oneOf(Object.values(AccessLevel))
                 ),
             }),
+            buckets: PropTypes.arrayOf(bucketType),
             // item
             quantity: PropTypes.number,
             uomId: PropTypes.number,
