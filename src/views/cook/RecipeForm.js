@@ -1,4 +1,10 @@
-import {Button, Form, Input, List, Spin,} from "antd";
+import {
+    Button,
+    Form,
+    Input,
+    List,
+    Spin,
+} from "antd";
 import ChipInput from "material-ui-chip-input";
 import PropTypes from "prop-types";
 import React from "react";
@@ -6,6 +12,9 @@ import Dispatcher from "../../data/dispatcher";
 import RecipeActions from "../../data/RecipeActions";
 import {Recipe} from "../../data/RecipeTypes";
 import ElEdit from "../ElEdit";
+import TextField from "@material-ui/core/TextField";
+import Box from "@material-ui/core/Box";
+import Grid from "@material-ui/core/Grid";
 
 const handleFileUpdate = (e) => {
     const {name: key, files} = e.target;
@@ -54,25 +63,33 @@ const RecipeForm = ({draft: lo, onSave, onSaveCopy, onCancel}) => {
     const {TextArea} = Input;
     const draft = lo.getValueEnforcing();
     const hasIngredients = draft.ingredients && draft.ingredients.length > 0;
-    
+
+    const MARGIN = 2;
+
     const form = (
-        <Form layout="vertical">
-            <Form.Item>
-                <Input
+        <>
+            <Box m={MARGIN}>
+                <TextField
                     name="name"
+                    fullWidth
+                    variant="outlined"
                     placeholder="Recipe Title"
+                    label="Title"
                     value={draft.name}
                     onChange={handleUpdate}
                 />
-            </Form.Item>
-            <Form.Item>
-                <Input
+            </Box>
+            <Box m={MARGIN}>
+                <TextField
                     name="externalUrl"
+                    fullWidth
+                    variant="outlined"
                     placeholder="External URL"
                     value={draft.externalUrl}
+                    label="External URL"
                     onChange={handleUpdate}
                 />
-            </Form.Item>
+            </Box>
             <Form.Item>
                 <List
                     dataSource={draft.ingredients}
@@ -122,39 +139,55 @@ const RecipeForm = ({draft: lo, onSave, onSaveCopy, onCancel}) => {
                     footer={hasIngredients && NewIngredient}
                 />
             </Form.Item>
-            <Form.Item>
-                <TextArea
-                    name="directions"
-                    placeholder="Recipe Directions"
+            <Box m={MARGIN}>
+                <TextField
+                    label="Directions"
+                    multiline
+                    rows={6}
                     value={draft.directions}
                     onChange={handleUpdate}
-                    rows={10}
+                    placeholder="Recipe Directions"
+                    fullWidth
+                    variant="outlined"
                 />
-            </Form.Item>
-            <Form.Item>
-                <Input
-                    name="yield"
-                    placeholder="Yield (in servings)"
-                    value={draft.yield}
-                    onChange={handleUpdate}
-                />
-            </Form.Item>
-            <Form.Item>
-                <Input
-                    name="totalTime"
-                    placeholder="Total Time In Minutes"
-                    value={draft.totalTime}
-                    onChange={handleUpdate}
-                />
-            </Form.Item>
-            <Form.Item>
-                <Input
-                    name="calories"
-                    placeholder="Calories"
-                    value={draft.calories}
-                    onChange={handleUpdate}
-                />
-            </Form.Item>
+            </Box>
+            <Box m={MARGIN}>
+                <Grid container spacing={2}>
+                    <Grid item sm={4}>
+                        <TextField
+                            name="yield"
+                            label="Yield"
+                            fullWidth
+                            placeholder="Yield (in servings)"
+                            value={draft.yield}
+                            onChange={handleUpdate}
+                            variant="outlined"
+                        />
+                    </Grid>
+                    <Grid item sm={4}>
+                        <TextField
+                            name="totalTime"
+                            label="Total Cook Time"
+                            fullWidth
+                            placeholder="Total Time In Minutes"
+                            value={draft.totalTime}
+                            onChange={handleUpdate}
+                            variant="outlined"
+                        />
+                    </Grid>
+                    <Grid item sm={4}>
+                        <TextField
+                            name="calories"
+                            label="Calories"
+                            fullWidth
+                            placeholder="Calories Per Serving"
+                            value={draft.calories}
+                            onChange={handleUpdate}
+                            variant="outlined"
+                        />
+                    </Grid>
+                </Grid>
+            </Box>
             <Form.Item>
                 <ChipInput
                     name="labels"
@@ -181,7 +214,7 @@ const RecipeForm = ({draft: lo, onSave, onSaveCopy, onCancel}) => {
                         onClick={() => onCancel(draft)}>Cancel</Button>
                 </Button.Group>
             </Form.Item>
-        </Form>
+        </>
     );
 
     return lo.isDone()
