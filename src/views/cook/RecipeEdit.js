@@ -1,5 +1,8 @@
-import {Spin} from "antd";
 import React, {Component} from "react";
+import {
+    CircularProgress,
+    Typography
+} from "@material-ui/core";
 import {Redirect} from "react-router-dom";
 import RecipeForm from "../../containers/RecipeForm";
 import Dispatcher from "../../data/dispatcher";
@@ -41,14 +44,14 @@ class RecipeEdit extends Component<{ recipeLO: any }> {
         
         if (!recipeLO.hasValue()) {
             if (recipeLO.isLoading()) {
-                return <Spin tip="Recipe is loading..."/>;
+                return <CircularProgress/>;
             }
             return <Redirect to="/library"/>;
         }
         
         return (
             <div>
-                <h2>Editing {recipeLO.getValueEnforcing().name}</h2>
+                <Typography variant="h2">Editing {recipeLO.getValueEnforcing().name}</Typography>
                 <RecipeForm onSave={handleSave}
                             onSaveCopy={handleSaveCopy}
                             onCancel={handleCancel}/>

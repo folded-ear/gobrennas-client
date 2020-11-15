@@ -1,10 +1,13 @@
 import {
-    AutoComplete,
-    Icon,
-    Input,
-    Select,
-    Spin,
-} from "antd";
+    CircularProgress,
+    InputAdornment,
+    TextField
+} from "@material-ui/core";
+import {
+    CheckCircleOutline,
+    ErrorOutline
+} from "@material-ui/icons";
+import Autocomplete from "@material-ui/lab/Autocomplete";
 import PropTypes from "prop-types";
 import React from "react";
 import RecipeApi from "../data/RecipeApi";
@@ -121,7 +124,7 @@ class ElEdit extends React.PureComponent {
             });
     }
 
-    handleChange(v) {
+    handleChange(e, val) {
         const {
             name,
             onChange,
@@ -130,7 +133,7 @@ class ElEdit extends React.PureComponent {
             target: {
                 name,
                 value: {
-                    raw: v,
+                    raw: val,
                 },
             },
         });
@@ -152,6 +155,7 @@ class ElEdit extends React.PureComponent {
     }
 
     onKeyDown(e) {
+        const {onPressEnter} = this.props;
         const {
             value,
         } = e.target;
@@ -163,6 +167,9 @@ class ElEdit extends React.PureComponent {
         } = this.props;
         switch (key) { // eslint-disable-line default-case
             case "Backspace":
+            case "Enter":
+                onPressEnter();
+                break;
             case "Delete":
                 // if the value is empty, delete the task and focus previous
                 if (value.length === 0) {
@@ -181,7 +188,6 @@ class ElEdit extends React.PureComponent {
         const {
             name,
             value,
-            onPressEnter,
         } = this.props;
         const {
             raw,
@@ -192,38 +198,40 @@ class ElEdit extends React.PureComponent {
             suggestions,
         } = this.state;
         const hasSuggestions = suggestions && suggestions.length > 0;
+
+        const indicator = () => {
+            return n == null
+                ? <InputAdornment><ErrorOutline/></InputAdornment>
+                : <InputAdornment><CheckCircleOutline/></InputAdornment>;
+        };
+
         return <React.Fragment>
-            <AutoComplete name={`${name}.raw`}
-                          value={raw}
-                          onChange={this.handleChange}
-                          dataSource={hasSuggestions && suggestions.map(s =>
-                              <Select.Option key={s.result}
-                                             value={s.result}
-                              >
-                                  <span style={{color: "#999"}}>{s.prefix}</span>
-                                  <strong>{s.value}</strong>
-                                  <span style={{color: "#999"}}>{s.suffix}</span>
-                              </Select.Option>)}
-                          style={{
-                              width: "50%",
-                          }}
-            >
-                <Input id={this._domId}
-                       onPaste={this.onPaste}
-                       onPressEnter={hasSuggestions ? null : onPressEnter}
-                       onKeyDown={this.onKeyDown}
-                       autoComplete={"off"}
-                       suffix={n == null
-                           ? <Icon type="warning"
-                                   title="No Ingredient Found!"
-                                   style={{
-                                       color: "red",
-                                   }}
-                           />
-                           : <span />} />
-            </AutoComplete>
+            <Autocomplete
+                name={`${name}.raw`}
+                value={raw}
+                onChange={this.handleChange}
+                onInputChange={this.handleChange}
+                id="free-solo-demo"
+                freeSolo
+                handleHomeEndKeys
+                clearOnEscape
+                style={{width: "50%"}}
+                options={hasSuggestions ? suggestions.map((option) => option.value) : []}
+                renderInput={(params) => {
+                    params.InputProps.startAdornment = indicator();
+                    return (
+                        <TextField
+                            {...params}
+                            onPaste={this.onPaste}
+                            onKeyDown={this.onKeyDown}
+                            variant="outlined"
+                        />
+                    );
+                }}
+            />
+
             {recog == null
-                ? doRecog(raw) ? <Hunk><Spin /></Hunk> : null
+                ? doRecog(raw) ? <Hunk><CircularProgress/></Hunk> : null
                 : <Hunk>
                     {q && <Hunk style={{backgroundColor: "#fde"}}>{q}</Hunk>}
                     {u && <Hunk style={{backgroundColor: uv ? "#efd" : "#dfe"}}>{u}</Hunk>}

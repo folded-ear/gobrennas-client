@@ -1,6 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import { Router } from "react-router-dom";
+import {Router} from "react-router-dom";
 import App from "./App";
 import Dispatcher from "./data/dispatcher";
 import WindowActions from "./data/WindowActions";
@@ -65,12 +65,12 @@ serviceWorker.register({
     }),
 });
 
-if (process.env.NODE_ENV !== "production") {
-    document.body.style.setProperty("background-image", "repeating-linear-gradient(\n" +
-        "20deg,\n" +
-        "transparent,\n" +
-        "transparent 88px,\n" +
-        "hsl(300, 100%, 95%) 88px,\n" +
-        "hsl(250, 100%, 95%) 90px\n" +
-        ")");
-}
+// if (process.env.NODE_ENV !== "production") {
+//     document.body.style.setProperty("background-image", "repeating-linear-gradient(\n" +
+//         "20deg,\n" +
+//         "transparent,\n" +
+//         "transparent 88px,\n" +
+//         "hsl(300, 100%, 95%) 88px,\n" +
+//         "hsl(250, 100%, 95%) 90px\n" +
+//         ")");
+// }

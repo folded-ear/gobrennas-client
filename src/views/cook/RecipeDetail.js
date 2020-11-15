@@ -1,24 +1,22 @@
 import {
+    CircularProgress,
     Grid,
-    Toolbar,
-} from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
-import Typography from "@material-ui/core/Typography";
-import {
-    Affix,
     List,
-    Spin,
-} from "antd";
+    ListItem,
+    Toolbar,
+    Typography,
+} from "@material-ui/core";
+import {makeStyles} from "@material-ui/core/styles";
 import PropTypes from "prop-types";
 import React from "react";
-import { Redirect } from "react-router-dom";
+import {Redirect} from "react-router-dom";
 import Dispatcher from "../../data/dispatcher";
 import LibraryActions from "../../data/LibraryActions";
 import RecipeActions from "../../data/RecipeActions";
 import RecipeApi from "../../data/RecipeApi";
-import { Recipe } from "../../data/RecipeTypes";
+import {Recipe} from "../../data/RecipeTypes";
 import history from "../../util/history";
-import { loadObjectOf } from "../../util/loadObjectTypes";
+import {loadObjectOf} from "../../util/loadObjectTypes";
 import CloseButton from "../common/CloseButton";
 import CopyButton from "../common/CopyButton";
 import DeleteButton from "../common/DeleteButton";
@@ -40,10 +38,13 @@ const useStyles = makeStyles(theme => ({
             width: "100%",
         },
     },
-    image: {
-        maxWidth: "90%",
-        height: "auto",
-        paddingBottom: "2em"
+    imageContainer: {
+        backgroundPosition: "center",
+        backgroundSize: "cover",
+        height: "250px",
+        overflow: "hidden",
+        marginBottom: theme.spacing(4),
+        marginRight: theme.spacing(4)
     },
     toolbar: {
         [theme.breakpoints.down("xs")]: {
@@ -60,7 +61,7 @@ const RecipeDetail = ({recipeLO, mine, staged, ownerLO}) => {
 
     if (!recipeLO.hasValue()) {
         if (recipeLO.isLoading()) {
-            return <Spin tip="Recipe is loading..."/>;
+            return <CircularProgress tip="Recipe is loading..."/>;
         }
         return <Redirect to="/library"/>;
     }
@@ -71,7 +72,6 @@ const RecipeDetail = ({recipeLO, mine, staged, ownerLO}) => {
         <div className={classes.root} id="toolbar">
             <Grid container>
                 <Grid item xs={12}>
-                    <Affix offsetTop={75}>
                         <Toolbar className={classes.toolbar}>
                             <Typography className={classes.name} component="h1" variant="h3">{recipe.name}</Typography>
                             {mine && (staged
@@ -106,14 +106,11 @@ const RecipeDetail = ({recipeLO, mine, staged, ownerLO}) => {
                                 {...ownerLO.getValueEnforcing()}
                             />}
                         </Toolbar>
-                    </Affix>
                 </Grid>
                 <Grid item xs={5}>
                     {recipe.photo
-                        ? <div>
-                            <img className={classes.image} src={recipe.photo} alt={`${recipe.name}`}/>
-                        </div>
-                        : <ItemImageUpload recipe={recipe} />}
+                        ? <div className={classes.imageContainer} style={{backgroundImage: `url(${recipe.photo})`}}/>
+                        : <ItemImageUpload recipe={recipe}/>}
                 </Grid>
                 <Grid item xs={5}>
                     {recipe.externalUrl && <React.Fragment>
@@ -140,25 +137,27 @@ const RecipeDetail = ({recipeLO, mine, staged, ownerLO}) => {
                         .filter(label => label.indexOf("--") !== 0)
                         .map(label =>
                             <LabelItem key={label} label={label}/>)}
+
+                    <SendToPlan onClick={planId => Dispatcher.dispatch({
+                        type: RecipeActions.SEND_TO_PLAN,
+                        recipeId: recipe.id,
+                        planId,
+                    })}/>
                 </Grid>
 
                 <Grid item xs={12} md={5}>
-                    {recipe.ingredients != null && recipe.ingredients.length > 0 && <React.Fragment>
+                    {recipe.ingredients != null && recipe.ingredients.length > 0 && <>
                         <Typography variant="h5">Ingredients</Typography>
-                        <List
-                            dataSource={recipe.ingredients}
-                            renderItem={it => <List.Item>
-                                <IngredientItem ingredient={it}/>
-                            </List.Item>}
-                            size="small"
-                            split={false}
-                            footer={<SendToPlan onClick={planId => Dispatcher.dispatch({
-                                type: RecipeActions.SEND_TO_PLAN,
-                                recipeId: recipe.id,
-                                planId,
-                            })}/>}
-                        />
-                    </React.Fragment>}
+                        <List>
+                            {recipe.ingredients && recipe.ingredients.map(it => {
+                                return (
+                                    <ListItem key={it}>
+                                        <IngredientItem ingredient={it}/>
+                                    </ListItem>
+                                );
+                            })}
+                        </List>
+                    </>}
                 </Grid>
 
                 <Grid item xs={12} md={7}>

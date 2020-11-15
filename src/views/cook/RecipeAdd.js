@@ -5,6 +5,7 @@ import DraftRecipeStore from "../../data/DraftRecipeStore";
 import RecipeActions from "../../data/RecipeActions";
 import history from "../../util/history";
 import onNextActionThat from "../../util/onNextActionThat";
+import {Typography} from "@material-ui/core";
 
 export const handleSave = (recipe) => {
     Dispatcher.dispatch({
@@ -33,7 +34,7 @@ class RecipeAdd extends Component<{}> {
     render() {
         return (
             <div>
-                <h2>Add A New Recipe</h2>
+                <Typography variant="h2">Add A New Recipe</Typography>
                 <div>
                     <RecipeForm onSave={handleSave}
                                 onCancel={handleCancel}/>

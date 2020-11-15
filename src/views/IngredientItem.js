@@ -1,14 +1,14 @@
-import { Icon } from "antd";
-import { Container } from "flux/utils";
-import PropTypes from "prop-types";
 import React from "react";
-import { Link } from "react-router-dom";
+import {LinkIcon} from "@material-ui/icons/Link";
+import {Container} from "flux/utils";
+import PropTypes from "prop-types";
+import {Link} from "react-router-dom";
 import Dispatcher from "../data/dispatcher";
 import LibraryStore from "../data/LibraryStore";
 import PantryItemActions from "../data/PantryItemActions";
 import TaskActions from "../data/TaskActions";
-import { refType } from "../models/IngredientRef";
-import { loadObjectOf } from "../util/loadObjectTypes";
+import {refType} from "../models/IngredientRef";
+import {loadObjectOf} from "../util/loadObjectTypes";
 import Quantity from "./common/Quantity";
 import SendToPlan from "./SendToPlan";
 
@@ -70,7 +70,7 @@ const IngredientItem = ({ingredient: ref, iLO, uLO}) => {
             {isRecipe && <React.Fragment>
                 {" "}
                 <Link to={`/library/recipe/${ingredient.id}`}>
-                    <Icon type="link" />
+                    <LinkIcon/>
                 </Link>
             </React.Fragment>}
             <Augment

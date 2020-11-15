@@ -1,4 +1,8 @@
-import List from "@material-ui/core/List";
+import {
+    Box,
+    List,
+    Typography
+} from "@material-ui/core";
 import Add from "@material-ui/icons/Add";
 import PropTypes from "prop-types";
 import React from "react";
@@ -40,12 +44,16 @@ class TaskList extends React.PureComponent {
                 primary="Loading task lists..."
             />;
         }
+
         return <>
-            <TaskListHeader
-                allLists={allLists.getValueEnforcing()}
-                activeList={activeListLO.getValue()}
-                listDetailVisible={listDetailVisible}
-            />
+            <Typography variant="h2">Recipe Planning</Typography>
+            <Box m={4}>
+                <TaskListHeader
+                    allLists={allLists.getValueEnforcing()}
+                    activeList={activeListLO.getValue()}
+                    listDetailVisible={listDetailVisible}
+                />
+            </Box>
             <List>
                 {taskTuples.map(item => {
                     const {
