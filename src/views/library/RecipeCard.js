@@ -1,9 +1,11 @@
 import React from "react";
 import PropTypes from "prop-types";
 import {
+    Button,
     Card,
     CardActions,
     CardContent,
+    Grid,
     Typography,
 } from "@material-ui/core";
 import {
@@ -24,7 +26,18 @@ import ItemImage from "./ItemImage";
 import ItemImageUpload from "./ItemImageUpload";
 import RecipeActions from "../../data/RecipeActions";
 import SendToPlan from "../SendToPlan";
-import Button from "@material-ui/core/Button";
+
+const RecipeInfo = ({label, text}) => (
+    <Grid container xs>
+        <Grid item style={{width: "100px"}}><Typography variant="overline">{label}</Typography></Grid>
+        <Grid item><Typography variant="subtitle1">{text}</Typography></Grid>
+    </Grid>
+);
+
+RecipeInfo.propTypes = {
+    label: PropTypes.string,
+    text: PropTypes.string,
+};
 
 const RecipeCard = ({recipe, mine, staged, ownerLO}) => {
     const actions = mine
@@ -84,15 +97,9 @@ const RecipeCard = ({recipe, mine, staged, ownerLO}) => {
                         <Source url={recipe.externalUrl}/>
                     </React.Fragment>}
 
-                    {recipe.yield && <React.Fragment>
-                        <Typography variant="h5">Yield</Typography>
-                        <p>{recipe.yield} servings</p>
-                    </React.Fragment>}
-
-                    {recipe.totalTime && <React.Fragment>
-                        <Typography variant="h5">Total time</Typography>
-                        <p>{recipe.totalTime} minutes</p>
-                    </React.Fragment>}
+                    {recipe.yield && <RecipeInfo label="Yield" text={`${recipe.yield} servings`}/>}
+                    {recipe.totalTime && <RecipeInfo label="Time" text={recipe.totalTime}/>}
+                    {recipe.calories && <RecipeInfo label="Calories" text={recipe.calories}/>}
 
                     {recipe.labels && recipe.labels
                         .filter(label => label.indexOf("--") !== 0)
