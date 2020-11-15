@@ -1,10 +1,3 @@
-import {
-    Button,
-    Form,
-    Input,
-    List,
-    Spin,
-} from "antd";
 import ChipInput from "material-ui-chip-input";
 import PropTypes from "prop-types";
 import React from "react";
@@ -12,9 +5,23 @@ import Dispatcher from "../../data/dispatcher";
 import RecipeActions from "../../data/RecipeActions";
 import {Recipe} from "../../data/RecipeTypes";
 import ElEdit from "../ElEdit";
-import TextField from "@material-ui/core/TextField";
-import Box from "@material-ui/core/Box";
-import Grid from "@material-ui/core/Grid";
+import {
+    Box,
+    Button,
+    CircularProgress,
+    Grid,
+    IconButton,
+    List,
+    ListItem,
+    TextField
+} from "@material-ui/core";
+import {
+    Add,
+    Cancel,
+    Delete,
+    FileCopy,
+    Save
+} from "@material-ui/icons";
 
 const handleFileUpdate = (e) => {
     const {name: key, files} = e.target;
@@ -60,10 +67,7 @@ const NewIngredient = <Button
 
 const RecipeForm = ({draft: lo, onSave, onSaveCopy, onCancel}) => {
 
-    const {TextArea} = Input;
     const draft = lo.getValueEnforcing();
-    const hasIngredients = draft.ingredients && draft.ingredients.length > 0;
-
     const MARGIN = 2;
 
     const form = (
@@ -90,57 +94,61 @@ const RecipeForm = ({draft: lo, onSave, onSaveCopy, onCancel}) => {
                     onChange={handleUpdate}
                 />
             </Box>
-            <Form.Item>
-                <List
-                    dataSource={draft.ingredients}
-                    renderItem={(it, i) => <List.Item>
-                        <ElEdit
-                            name={`ingredients.${i}`}
-                            value={it}
-                            onChange={handleUpdate}
-                            onMultilinePaste={text => Dispatcher.dispatch({
-                                type: RecipeActions.MULTI_LINE_DRAFT_INGREDIENT_PASTE_YO,
-                                index: i,
-                                text,
-                            })}
-                            onPressEnter={() => Dispatcher.dispatch({
-                                type: RecipeActions.NEW_DRAFT_INGREDIENT_YO,
-                                index: i,
-                            })}
-                            onDelete={() => Dispatcher.dispatch({
-                                type: RecipeActions.KILL_DRAFT_INGREDIENT_YO,
-                                index: i,
-                            })}
-                        />
-                        <div style={{marginLeft: "auto"}}>
-                            <Button
-                                key="add"
-                                icon="plus"
-                                tabIndex={-1}
-                                onClick={() => Dispatcher.dispatch({
-                                    type: RecipeActions.NEW_DRAFT_INGREDIENT_YO,
-                                    index: i,
-                                })}
-                            />
-                            <Button
-                                key="delete"
-                                icon="delete"
-                                tabIndex={-1}
-                                onClick={() => Dispatcher.dispatch({
-                                    type: RecipeActions.KILL_DRAFT_INGREDIENT_YO,
-                                    index: i,
-                                })}
-                            />
-                        </div>
-                    </List.Item>}
-                    split={false}
-                    size="small"
-                    header={hasIngredients || NewIngredient}
-                    footer={hasIngredients && NewIngredient}
-                />
-            </Form.Item>
+            <List>
+                {
+                    draft.ingredients.map((it, i) => {
+                        return (
+                            <ListItem
+                                key={i}>
+                                <ElEdit
+                                    name={`ingredients.${i}`}
+                                    value={it}
+                                    onChange={handleUpdate}
+                                    onMultilinePaste={text => Dispatcher.dispatch({
+                                        type: RecipeActions.MULTI_LINE_DRAFT_INGREDIENT_PASTE_YO,
+                                        index: i,
+                                        text,
+                                    })}
+                                    onPressEnter={() => Dispatcher.dispatch({
+                                        type: RecipeActions.NEW_DRAFT_INGREDIENT_YO,
+                                        index: i,
+                                    })}
+                                    onDelete={() => Dispatcher.dispatch({
+                                        type: RecipeActions.KILL_DRAFT_INGREDIENT_YO,
+                                        index: i,
+                                    })}
+                                />
+                                <div style={{marginLeft: "auto"}}>
+                                    <IconButton
+                                        size="small"
+                                        tabIndex={-1}
+                                        onClick={() => Dispatcher.dispatch({
+                                            type: RecipeActions.NEW_DRAFT_INGREDIENT_YO,
+                                            index: i,
+                                        })}
+                                    >
+                                        <Add/>
+                                    </IconButton>
+                                    <IconButton
+                                        size="small"
+                                        tabIndex={-1}
+                                        onClick={() => Dispatcher.dispatch({
+                                            type: RecipeActions.KILL_DRAFT_INGREDIENT_YO,
+                                            index: i,
+                                        })}
+                                    >
+                                        <Delete/>
+                                    </IconButton>
+                                </div>
+                            </ListItem>
+                        );
+                    })
+                }
+            </List>
+            <Box m={2}>{NewIngredient}</Box>
             <Box m={MARGIN}>
                 <TextField
+                    name="directions"
                     label="Directions"
                     multiline
                     rows={6}
@@ -188,7 +196,7 @@ const RecipeForm = ({draft: lo, onSave, onSaveCopy, onCancel}) => {
                     </Grid>
                 </Grid>
             </Box>
-            <Form.Item>
+            <Box m={MARGIN}>
                 <ChipInput
                     name="labels"
                     value={draft.labels}
@@ -198,28 +206,39 @@ const RecipeForm = ({draft: lo, onSave, onSaveCopy, onCancel}) => {
                     label='Labels'
                     placeholder='Type and press enter to add labels'
                 />
-            </Form.Item>
-            <Form.Item>
+            </Box>
+            <Box m={MARGIN}>
                 <label>Upload Image</label>
                 <input type="file" name="photo" onChange={handleFileUpdate}/>
-            </Form.Item>
-            <Form.Item>
-                <Button.Group>
-                    <Button
-                        type="primary"
-                        onClick={() => onSave(draft)}>Save</Button>
-                    {onSaveCopy && <Button
-                        onClick={() => onSaveCopy(draft)}>Save as Copy</Button>}
-                    <Button
-                        onClick={() => onCancel(draft)}>Cancel</Button>
-                </Button.Group>
-            </Form.Item>
+            </Box>
+            <Button
+                variant="contained"
+                color="primary"
+                onClick={() => onSave(draft)}
+                startIcon={<Save/>}
+            >
+                Save
+            </Button>
+            {onSaveCopy && <Button
+                variant="contained"
+                color="primary"
+                startIcon={<FileCopy/>}
+                onClick={() => onSaveCopy(draft)}>
+                Save as Copy
+            </Button>}
+            <Button
+                variant="contained"
+                color="secondary"
+                onClick={() => onCancel(draft)}
+                startIcon={<Cancel/>}>
+                Cancel
+            </Button>
         </>
     );
 
     return lo.isDone()
         ? form
-        : <Spin>{form}</Spin>;
+        : <><CircularProgress/>{form}</>;
 };
 
 RecipeForm.propTypes = {
