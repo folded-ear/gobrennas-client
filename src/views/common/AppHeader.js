@@ -6,7 +6,7 @@ import {
     Tabs,
     Toolbar,
 } from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
+import {makeStyles} from "@material-ui/core/styles";
 import withStyles from "@material-ui/core/styles/withStyles";
 import {
     AccountCircle,
@@ -14,10 +14,9 @@ import {
     ExitToApp,
     ListAlt,
     MenuBook,
-    PostAdd,
 } from "@material-ui/icons";
 import classnames from "classnames";
-import { Container } from "flux/utils";
+import {Container} from "flux/utils";
 import React from "react";
 import {
     Link,
@@ -89,7 +88,6 @@ const AppHeader = ({authenticated, onLogout, location, windowSize}) => {
                 />
                 {authenticated && <Box className={classes.bar}>
                     <TinyNav location={location} navTo="library"><MenuBook/></TinyNav>
-                    <TinyNav location={location} navTo="add"><PostAdd/></TinyNav>
                     <TinyNav location={location} navTo="plan"><EventNote/></TinyNav>
                     <TinyNav location={location} navTo="shop"><ListAlt/></TinyNav>
                 </Box>}
@@ -117,13 +115,6 @@ const AppHeader = ({authenticated, onLogout, location, windowSize}) => {
                         component={Link}
                         to="/library"
                         value="library"
-                    />
-                    <BigNav
-                        icon={<PostAdd/>}
-                        label="New Recipe"
-                        component={Link}
-                        to="/add"
-                        value="add"
                     />
                     <BigNav
                         icon={<EventNote/>}

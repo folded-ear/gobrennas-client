@@ -14,13 +14,6 @@ import LoadingIndicator from "../common/LoadingIndicator";
 import TaskListHeader from "../TaskListHeader";
 import LoadingTask from "./LoadingTask";
 import Task from "./Task";
-import {withStyles} from "@material-ui/core/styles";
-
-const styles = {
-    paper: {
-        padding: "20px"
-    }
-};
 
 class TaskList extends React.PureComponent {
 
@@ -45,7 +38,6 @@ class TaskList extends React.PureComponent {
             taskTuples,
             isTaskActive,
             isTaskSelected,
-            classes
         } = this.props;
         if (!allLists.hasValue()) {
             return <LoadingIndicator
@@ -112,4 +104,4 @@ TaskList.propTypes = {
     isTaskSelected: PropTypes.func.isRequired,
 };
 
-export default withStyles(styles)(TaskList);
+export default TaskList;

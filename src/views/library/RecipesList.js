@@ -20,6 +20,9 @@ import {Recipe} from "../../data/RecipeTypes";
 import {loadObjectOf} from "../../util/loadObjectTypes";
 import SearchFilter from "./SearchFilter";
 import RecipeCard from "./RecipeCard";
+import FoodingerFab from "../common/FoodingerFab";
+import {PostAdd} from "@material-ui/icons";
+import history from "../../util/history";
 
 const useStyles = makeStyles((theme) => ({
     search: {
@@ -62,7 +65,6 @@ const RecipesList = (props: {}) => {
     const {me, filter, scope, libraryLO} = props;
 
     return <>
-
         <Paper elevation={1} variant="outlined" className={classes.search}>
             <Typography variant="h5">Search Recipe Library</Typography>
             <div style={{float: "right"}}>
@@ -83,7 +85,6 @@ const RecipesList = (props: {}) => {
                 term={filter}
             />
         </Paper>
-
         {
             libraryLO.isLoading()
                 ? <Box><CircularProgress/></Box>
@@ -113,6 +114,11 @@ const RecipesList = (props: {}) => {
                 }
                 </>
         }
+        <FoodingerFab
+            onClick={() => history.push(`/add`)}
+        >
+            <PostAdd/>
+        </FoodingerFab>
     </>;
 };
 
