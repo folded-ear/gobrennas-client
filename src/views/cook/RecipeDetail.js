@@ -1,17 +1,24 @@
-import {Grid, Toolbar,} from "@material-ui/core";
-import {makeStyles} from "@material-ui/core/styles";
+import {
+    Grid,
+    Toolbar,
+} from "@material-ui/core";
+import { makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
-import {Affix, List, Spin,} from "antd";
+import {
+    Affix,
+    List,
+    Spin,
+} from "antd";
 import PropTypes from "prop-types";
 import React from "react";
-import {Redirect} from "react-router-dom";
+import { Redirect } from "react-router-dom";
 import Dispatcher from "../../data/dispatcher";
 import LibraryActions from "../../data/LibraryActions";
 import RecipeActions from "../../data/RecipeActions";
 import RecipeApi from "../../data/RecipeApi";
-import {Recipe} from "../../data/RecipeTypes";
+import { Recipe } from "../../data/RecipeTypes";
 import history from "../../util/history";
-import {loadObjectOf} from "../../util/loadObjectTypes";
+import { loadObjectOf } from "../../util/loadObjectTypes";
 import CloseButton from "../common/CloseButton";
 import CopyButton from "../common/CopyButton";
 import DeleteButton from "../common/DeleteButton";
@@ -21,6 +28,7 @@ import Source from "../common/Source";
 import StageButton from "../common/StageButton";
 import IngredientItem from "../IngredientItem";
 import LabelItem from "../LabelItem";
+import ItemImageUpload from "../library/ItemImageUpload";
 import SendToPlan from "../SendToPlan";
 import User from "../user/User";
 
@@ -101,9 +109,11 @@ const RecipeDetail = ({recipeLO, mine, staged, ownerLO}) => {
                     </Affix>
                 </Grid>
                 <Grid item xs={5}>
-                    {recipe.photo && <React.Fragment>
-                        <div><img className={classes.image} src={recipe.photo} alt={`${recipe.name}`}/></div>
-                    </React.Fragment>}
+                    {recipe.photo
+                        ? <div>
+                            <img className={classes.image} src={recipe.photo} alt={`${recipe.name}`}/>
+                        </div>
+                        : <ItemImageUpload recipe={recipe} />}
                 </Grid>
                 <Grid item xs={5}>
                     {recipe.externalUrl && <React.Fragment>
