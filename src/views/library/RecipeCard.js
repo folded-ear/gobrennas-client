@@ -28,15 +28,15 @@ import RecipeActions from "../../data/RecipeActions";
 import SendToPlan from "../SendToPlan";
 
 const RecipeInfo = ({label, text}) => (
-    <Grid container xs>
-        <Grid item style={{width: "100px"}}><Typography variant="overline">{label}</Typography></Grid>
-        <Grid item><Typography variant="subtitle1">{text}</Typography></Grid>
+    <Grid container>
+        <Grid item xs={3}><Typography variant="overline">{label}</Typography></Grid>
+        <Grid item xs={9}><Typography variant="subtitle1">{text}</Typography></Grid>
     </Grid>
 );
 
 RecipeInfo.propTypes = {
     label: PropTypes.string,
-    text: PropTypes.string,
+    text: PropTypes.node,
 };
 
 const RecipeCard = ({recipe, mine, staged, ownerLO}) => {
@@ -92,11 +92,7 @@ const RecipeCard = ({recipe, mine, staged, ownerLO}) => {
                     <Typography gutterBottom variant="h5" component="h2">
                         {recipe.name}
                     </Typography>
-                    {recipe.externalUrl && <React.Fragment>
-                        <Typography variant="h5">Source</Typography>
-                        <Source url={recipe.externalUrl}/>
-                    </React.Fragment>}
-
+                    {recipe.externalUrl && <RecipeInfo label="Source" text={<Source url={recipe.externalUrl}/>}/>}
                     {recipe.yield && <RecipeInfo label="Yield" text={`${recipe.yield} servings`}/>}
                     {recipe.totalTime && <RecipeInfo label="Time" text={recipe.totalTime}/>}
                     {recipe.calories && <RecipeInfo label="Calories" text={recipe.calories}/>}

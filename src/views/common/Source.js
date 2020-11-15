@@ -4,9 +4,9 @@ import PropTypes from "prop-types";
 const Source = ({url}) => {
     try {
         const source = new URL(url);
-        return (<p><a href={url} target="_blank" rel="noreferrer">{source.hostname}</a></p>);
+        return (<a href={url} target="_blank" rel="noreferrer">{source.hostname}</a>);
     } catch (e) {
-        return (<p>{url}</p>);
+        return url;
     }
 };
 
