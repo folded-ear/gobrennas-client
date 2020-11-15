@@ -1,4 +1,8 @@
-import List from "@material-ui/core/List";
+import {
+    Box,
+    List,
+    Typography
+} from "@material-ui/core";
 import Add from "@material-ui/icons/Add";
 import PropTypes from "prop-types";
 import React from "react";
@@ -10,6 +14,13 @@ import LoadingIndicator from "../common/LoadingIndicator";
 import TaskListHeader from "../TaskListHeader";
 import LoadingTask from "./LoadingTask";
 import Task from "./Task";
+import {withStyles} from "@material-ui/core/styles";
+
+const styles = {
+    paper: {
+        padding: "20px"
+    }
+};
 
 class TaskList extends React.PureComponent {
 
@@ -34,18 +45,23 @@ class TaskList extends React.PureComponent {
             taskTuples,
             isTaskActive,
             isTaskSelected,
+            classes
         } = this.props;
         if (!allLists.hasValue()) {
             return <LoadingIndicator
                 primary="Loading task lists..."
             />;
         }
+
         return <>
-            <TaskListHeader
-                allLists={allLists.getValueEnforcing()}
-                activeList={activeListLO.getValue()}
-                listDetailVisible={listDetailVisible}
-            />
+            <Typography variant="h2">Recipe Planning</Typography>
+            <Box m={4}>
+                <TaskListHeader
+                    allLists={allLists.getValueEnforcing()}
+                    activeList={activeListLO.getValue()}
+                    listDetailVisible={listDetailVisible}
+                />
+            </Box>
             <List>
                 {taskTuples.map(item => {
                     const {
@@ -96,4 +112,4 @@ TaskList.propTypes = {
     isTaskSelected: PropTypes.func.isRequired,
 };
 
-export default TaskList;
+export default withStyles(styles)(TaskList);

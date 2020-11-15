@@ -1,4 +1,7 @@
-import {createMuiTheme, responsiveFontSizes} from "@material-ui/core/styles";
+import {
+    createMuiTheme,
+    responsiveFontSizes
+} from "@material-ui/core/styles";
 
 let theme = createMuiTheme({
     palette: {
@@ -17,11 +20,28 @@ let theme = createMuiTheme({
         },
         dark: {
             main: "#333333"
+        },
+        background: {
+            default: "#ffffff"
         }
     },
     typography: {
+        fontFamily: [
+            '"Roboto"',
+            '"Helvetica Neue"',
+            '"Arial"',
+            '"sans-serif"',
+            '"Apple Color Emoji"',
+            '"Segoe UI Emoji"',
+            '"Segoe UI Symbol"',
+        ].join(","),
+        h2: {
+            fontFamily: "'News Cycle', sans-serif",
+            fontSize: "2.5rem"
+        },
         h3: {
             fontFamily: "News Cycle",
+            fontSize: "2rem"
         },
         h5: {
             fontFamily: "News Cycle",
@@ -33,6 +53,13 @@ let theme = createMuiTheme({
     },
     header: {
         height: "75px"
+    },
+    overrides: {
+        MuiTextField: {
+            root: {
+                backgroundColor: "white"
+            }
+        }
     }
 });
 theme = responsiveFontSizes(theme);

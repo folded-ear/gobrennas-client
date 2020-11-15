@@ -1,4 +1,5 @@
 import {ThemeProvider} from "@material-ui/core/styles";
+import CssBaseline from "@material-ui/core/CssBaseline";
 import {Container as Content} from "@material-ui/core";
 import {Container} from "flux/utils";
 import React, {Component} from "react";
@@ -23,13 +24,13 @@ class App extends Component {
         super(props);
         this.handleLogout = this.handleLogout.bind(this);
     }
-    
+
     handleLogout() {
         Dispatcher.dispatch({
             type: UserActions.LOGOUT,
         });
     }
-    
+
     render() {
         const {
             authenticated,
@@ -39,51 +40,54 @@ class App extends Component {
 
         if (!userLO.isDone()) {
             return <ThemeProvider theme={theme}>
-                <AppHeader authenticated={false} />
+                <AppHeader authenticated={false}/>
                 <LoadingIndicator/>
             </ThemeProvider>;
         }
         const currentUser = authenticated
             ? userLO.getValueEnforcing()
             : null;
-        
+
         return (
-            <ThemeProvider theme={theme}>
-                {newVersionAvailable && <NewVersionAvailable />}
-                <AppHeader authenticated={authenticated} onLogout={this.handleLogout}/>
+            <>
+                <ThemeProvider theme={theme}>
+                    <CssBaseline/>
+                    {newVersionAvailable && <NewVersionAvailable/>}
+                    <AppHeader authenticated={authenticated} onLogout={this.handleLogout}/>
 
-                <Content style={{paddingBottom: "3em"}}>
-                    <Switch>
-                        {routes.public.map(route => {
-                            return (
-                                <FluxRoute
-                                    key={route.path}
-                                    path={route.path}
-                                    render={props => <route.component authenticated={authenticated} {...props} />}
-                                    exact={route.exact}
-                                />
-                            );
-                        })}
+                    <Content style={{paddingBottom: "3em", paddingTop: "2em"}}>
+                        <Switch>
+                            {routes.public.map(route => {
+                                return (
+                                    <FluxRoute
+                                        key={route.path}
+                                        path={route.path}
+                                        render={props => <route.component authenticated={authenticated} {...props} />}
+                                        exact={route.exact}
+                                    />
+                                );
+                            })}
 
-                        {routes.private.map(route => {
-                            return (
-                                <PrivateRoute
-                                    key={route.path}
-                                    path={route.path}
-                                    component={route.component}
-                                    currentUser={currentUser}
-                                    authenticated={authenticated}
-                                />
-                            );
-                        })}
+                            {routes.private.map(route => {
+                                return (
+                                    <PrivateRoute
+                                        key={route.path}
+                                        path={route.path}
+                                        component={route.component}
+                                        currentUser={currentUser}
+                                        authenticated={authenticated}
+                                    />
+                                );
+                            })}
 
-                        <FluxRoute path="/login" render={(props) => <Login
-                            authenticated={authenticated} {...props} />} />
-                        <FluxRoute component={NotFound} />
-                    </Switch>
-                
-                </Content>
-            </ThemeProvider>
+                            <FluxRoute path="/login" render={(props) => <Login
+                                authenticated={authenticated} {...props} />}/>
+                            <FluxRoute component={NotFound}/>
+                        </Switch>
+
+                    </Content>
+                </ThemeProvider>
+            </>
         );
     }
 }

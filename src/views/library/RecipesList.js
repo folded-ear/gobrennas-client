@@ -3,7 +3,9 @@ import {
     CircularProgress,
     FormControlLabel,
     Grid,
-    Switch
+    Paper,
+    Switch,
+    Typography
 } from "@material-ui/core";
 import {makeStyles} from "@material-ui/core/styles";
 import PropTypes from "prop-types";
@@ -19,11 +21,15 @@ import {loadObjectOf} from "../../util/loadObjectTypes";
 import SearchFilter from "./SearchFilter";
 import RecipeCard from "./RecipeCard";
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme) => ({
+    search: {
+        margin: theme.spacing(4, 0),
+        padding: theme.spacing(4, 2)
+    },
     card: {
         display: "flex",
     }
-});
+}));
 
 const updateFilter = (e) => {
     const {value: filter} = e.target;
@@ -56,28 +62,27 @@ const RecipesList = (props: {}) => {
     const {me, filter, scope, libraryLO} = props;
 
     return <>
-        <h1>Recipe Library</h1>
 
-        <div style={{float: "right"}}>
-            <FormControlLabel
-                control={
-                    <Switch checked={scope === SCOPE_EVERYONE}
-                            name="scope"
-                            onChange={toggleScope}
-                            color="primary"
-                    />
-                }
-                label={scope === SCOPE_EVERYONE ? "Everyone" : "Mine"}
-            />
-        </div>
-
-        <Box m={2}>
+        <Paper elevation={1} variant="outlined" className={classes.search}>
+            <Typography variant="h5">Search Recipe Library</Typography>
+            <div style={{float: "right"}}>
+                <FormControlLabel
+                    control={
+                        <Switch checked={scope === SCOPE_EVERYONE}
+                                name="scope"
+                                onChange={toggleScope}
+                                color="primary"
+                        />
+                    }
+                    label={scope === SCOPE_EVERYONE ? "Everyone" : "Mine"}
+                />
+            </div>
             <SearchFilter
                 onChange={updateFilter}
                 onFilter={sendFilter}
                 term={filter}
             />
-        </Box>
+        </Paper>
 
         {
             libraryLO.isLoading()

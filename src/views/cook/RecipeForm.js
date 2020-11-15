@@ -68,7 +68,7 @@ const NewIngredient = <Button
 const RecipeForm = ({draft: lo, onSave, onSaveCopy, onCancel}) => {
 
     const draft = lo.getValueEnforcing();
-    const MARGIN = 2;
+    const MARGIN = 1;
 
     const form = (
         <>
