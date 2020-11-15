@@ -35,6 +35,11 @@ class RecipeStore extends ReduceStore {
                 return state;
             }
 
+            case RecipeActions.SET_RECIPE_PHOTO: {
+                RecipeApi.setRecipePhoto(action.id, action.photo);
+                return state;
+            }
+
             case RecipeActions.RECIPE_DELETED: {
                 history.push("/library");
                 return state;

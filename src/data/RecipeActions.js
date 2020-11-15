@@ -12,6 +12,7 @@ const RecipeActions = {
     RECIPE_CREATED: "recipe/recipe-created",
     CANCEL_ADD: typedAction("recipe/cancel-add", {}),
     UPDATE_RECIPE: "recipe/update-recipe",
+    SET_RECIPE_PHOTO: "recipe/set-recipe-photo",
     RECIPE_UPDATED: "recipe/recipe-updated",
     CANCEL_EDIT: typedAction("recipe/cancel-edit", {
         id: PropTypes.number.isRequired,

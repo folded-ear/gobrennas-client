@@ -49,6 +49,19 @@ const RecipeApi = {
             })
         );
     },
+
+    setRecipePhoto(id, photo) {
+        let payload = new FormData();
+        payload.append("photo", photo);
+        promiseFlux(
+            axios.put(`/recipe/${id}/photo`, payload),
+            data => ({
+                type: RecipeActions.RECIPE_UPDATED,
+                id,
+                data: data.data,
+            })
+        );
+    },
     
     deleteRecipe(id) {
         promiseFlux(
