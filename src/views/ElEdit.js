@@ -204,11 +204,11 @@ class ElEdit extends React.PureComponent {
         } = this.state;
         const hasSuggestions = suggestions && suggestions.length > 0;
 
-        const indicator = () => {
-            return n == null
-                ? <InputAdornment><ErrorOutline/></InputAdornment>
-                : <InputAdornment><CheckCircleOutline/></InputAdornment>;
-        };
+        const indicator = () =>
+            <InputAdornment>{n == null
+                ? <ErrorOutline color="error" />
+                : <CheckCircleOutline color="disabled" />
+            }</InputAdornment>;
 
         return <React.Fragment>
             <Autocomplete
