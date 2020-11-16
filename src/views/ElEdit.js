@@ -168,10 +168,10 @@ class ElEdit extends React.PureComponent {
             onDelete,
         } = this.props;
         switch (key) { // eslint-disable-line default-case
-            case "Backspace":
             case "Enter":
                 onPressEnter();
                 break;
+            case "Backspace":
             case "Delete":
                 // if the value is empty, delete the task and focus previous
                 if (value.length === 0) {

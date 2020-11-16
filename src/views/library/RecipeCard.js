@@ -39,7 +39,7 @@ RecipeInfo.propTypes = {
     text: PropTypes.node,
 };
 
-const RecipeCard = ({recipe, mine, staged, ownerLO}) => {
+const RecipeCard = ({recipe, mine, ownerLO}) => {
     const actions = mine
         ? <>
             <Button
