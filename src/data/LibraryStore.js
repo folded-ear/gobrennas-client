@@ -244,9 +244,12 @@ class LibraryStore extends ReduceStore {
     }
 
     getIngredientById(id) {
-        return this.getState()
-            .byId
-            .get(id);
+        const LOMap = this.getState().byId;
+        let lo = LOMap.get(id);
+        if (lo.isEmpty()) {
+            lo = lo.loading();
+        }
+        return lo;
     }
     
     getRecipeById(selectedRecipe) {
