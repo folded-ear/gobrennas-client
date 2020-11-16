@@ -1,16 +1,9 @@
 @import url('https://fonts.googleapis.com/css2?family=News+Cycle:wght@700&family=Stint+Ultra+Condensed&display=swap');
 
-.logo {
-  width: 120px;
-  height: 31px;
-  color: white;
-  font-size: 24px;
-  margin: 16px 24px 16px 0;
-  float: left;
-}
-
-.content {
-  padding: 20px;
+// avoid the layout flash before CssBaseline loads
+html, body {
+  margin: 0;
+  padding: 0;
 }
 
 .login-container {
@@ -26,38 +19,6 @@
   vertical-align: middle;
   position: relative;
   padding: 35px;
-}
-
-.social-btn {
-  margin-bottom: 15px;
-  font-weight: 400;
-  font-size: 16px;
-}
-
-.social-btn img {
-  height: 32px;
-  float: left;
-  margin-top: 10px;
-}
-
-.social-btn.google {
-  margin-top: 7px;
-}
-
-.login-title {
-  font-size: 1.5em;
-  font-weight: 500;
-  margin-top: 0;
-  margin-bottom: 30px;
-  color: rgba(0, 0, 0, 0.65);
-}
-
-.MuiToolbar-root a:hover {
-  color: whitesmoke !important;
-}
-
-.profile-container .profile-avatar img {
-  max-width: 100%;
 }
 
 .markdown {
