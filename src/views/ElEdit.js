@@ -70,7 +70,7 @@ class ElEdit extends React.PureComponent {
             .then(recog => {
                 if (!this._mounted) return;
                 if (recog.raw !== this.props.value.raw) return;
-                if (recog.cursor !== this.getCursorPosition()) return;
+                // if (recog.cursor !== this.getCursorPosition()) return;
                 const {
                     raw,
                     quantity: qv,
@@ -214,12 +214,13 @@ class ElEdit extends React.PureComponent {
                 value={raw}
                 onChange={this.handleChange}
                 onInputChange={this.handleChange}
-                id="free-solo-demo"
                 freeSolo
                 handleHomeEndKeys
                 clearOnEscape
                 style={{width: "50%"}}
-                options={hasSuggestions ? suggestions.map((option) => option.value) : []}
+                options={hasSuggestions ? suggestions.map((option) => {
+                    return (option.result);
+                }) : []}
                 renderInput={(params) => {
                     params.InputProps.startAdornment = indicator();
                     return (
