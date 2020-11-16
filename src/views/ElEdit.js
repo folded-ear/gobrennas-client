@@ -24,6 +24,7 @@ class ElEdit extends React.PureComponent {
     constructor(...args) {
         super(...args);
         this._domId = "el-edit-" + (++seq);
+        this.ref = React.createRef();
         this._mounted = false;
         this.state = {
             recog: null,
@@ -49,7 +50,7 @@ class ElEdit extends React.PureComponent {
     }
 
     getCursorPosition() {
-        const el = document.getElementById(this._domId);
+        const el = this.ref.current;
         if (el == null) return 0;
         const c = el.selectionStart;
         const raw = el.value || "";
@@ -223,6 +224,7 @@ class ElEdit extends React.PureComponent {
                     params.InputProps.startAdornment = indicator();
                     return (
                         <TextField
+                            inputRef={this.ref}
                             {...params}
                             onPaste={this.onPaste}
                             onKeyDown={this.onKeyDown}
