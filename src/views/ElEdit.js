@@ -158,7 +158,7 @@ class ElEdit extends React.PureComponent {
     }
 
     onKeyDown(e) {
-        const {onPressEnter} = this.props;
+        const {suggestions} = this.state;
         const {
             value,
         } = e.target;
@@ -167,10 +167,15 @@ class ElEdit extends React.PureComponent {
         } = e;
         const {
             onDelete,
+            onPressEnter
         } = this.props;
+        const hasSuggestions = suggestions && suggestions.length > 0;
+
         switch (key) { // eslint-disable-line default-case
             case "Enter":
-                onPressEnter();
+                if (!hasSuggestions) {
+                    onPressEnter();
+                }
                 break;
             case "Backspace":
             case "Delete":
