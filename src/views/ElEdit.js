@@ -14,8 +14,6 @@ import RecipeApi from "../data/RecipeApi";
 import debounce from "../util/debounce";
 import processRecognizedItem from "../util/processRecognizedItem";
 
-let seq = 0;
-
 const doRecog = raw =>
     raw != null && raw.trim().length >= 2;
 
@@ -23,7 +21,6 @@ class ElEdit extends React.PureComponent {
 
     constructor(...args) {
         super(...args);
-        this._domId = "el-edit-" + (++seq);
         this.ref = React.createRef();
         this._mounted = false;
         this.state = {
