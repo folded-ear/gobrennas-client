@@ -1,11 +1,11 @@
 import {
     CircularProgress,
     InputAdornment,
-    TextField
+    TextField,
 } from "@material-ui/core";
 import {
     CheckCircleOutline,
-    ErrorOutline
+    ErrorOutline,
 } from "@material-ui/icons";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import PropTypes from "prop-types";
@@ -128,7 +128,9 @@ class ElEdit extends React.PureComponent {
         const {
             name,
             onChange,
+            value,
         } = this.props;
+        if (value.raw === val) return;
         onChange({
             target: {
                 name,
@@ -248,6 +250,11 @@ const Hunk = ({children, style}) => <span style={{
     marginLeft: "0.4em",
     padding: "0 0.25em"
 }}>{children}</span>;
+
+Hunk.propTypes = {
+    children: PropTypes.node.isRequired,
+    style: PropTypes.object,
+};
 
 ElEdit.propTypes = {
     name: PropTypes.string.isRequired,
