@@ -12,6 +12,7 @@ const useStyles = makeStyles(theme => ({
                 theme.spacing(small ? 2 : 6),
             fontFamily: "Stint Ultra Condensed",
             whiteSpace: "nowrap",
+            textDecoration: "none",
         },
         F: {
             transform: "scaleX(-1)",
