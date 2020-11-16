@@ -3,41 +3,29 @@ import {
     Card,
     CardActions,
     CardContent,
-    Grid,
     Typography,
 } from "@material-ui/core";
 import {
     Edit,
     MenuBook,
 } from "@material-ui/icons";
-import { Container } from "flux/utils";
+import {Container} from "flux/utils";
 import PropTypes from "prop-types";
 import React from "react";
-import { Link } from "react-router-dom";
+import {Link} from "react-router-dom";
 import Dispatcher from "../../data/dispatcher";
 import FriendStore from "../../data/FriendStore";
-import RecipeActions from "../../data/RecipeActions";
-import { Recipe } from "../../data/RecipeTypes";
+import {Recipe} from "../../data/RecipeTypes";
 import UserStore from "../../data/UserStore";
-import { loadObjectOf } from "../../util/loadObjectTypes";
+import {loadObjectOf} from "../../util/loadObjectTypes";
 import Source from "../common/Source";
 import LabelItem from "../LabelItem";
-import SendToPlan from "../SendToPlan";
 import User from "../user/User";
 import ItemImage from "./ItemImage";
 import ItemImageUpload from "./ItemImageUpload";
-
-const RecipeInfo = ({label, text}) => (
-    <Grid container>
-        <Grid item xs={3}><Typography variant="overline">{label}</Typography></Grid>
-        <Grid item xs={9}><Typography variant="subtitle1">{text}</Typography></Grid>
-    </Grid>
-);
-
-RecipeInfo.propTypes = {
-    label: PropTypes.string,
-    text: PropTypes.node,
-};
+import RecipeActions from "../../data/RecipeActions";
+import RecipeInfo from "../common/RecipeInfo";
+import SendToPlan from "../SendToPlan";
 
 const RecipeCard = ({recipe, mine, ownerLO}) => {
     const actions = <>
