@@ -1,3 +1,7 @@
+import {
+    Container as Content,
+    Typography,
+} from "@material-ui/core";
 import List from "@material-ui/core/List";
 import Add from "@material-ui/icons/Add";
 import PropTypes from "prop-types";
@@ -42,8 +46,11 @@ class ShopList extends React.PureComponent {
             />;
         }
         const plan = planLO.getValueEnforcing();
-        return <>
-            <h1>{plan.name}</h1>
+        return <Content style={{
+            backgroundColor: "white",
+            minHeight: "100vh",
+        }}>
+            <Typography variant="h2">{plan.name}</Typography>
             <List>
                 {itemTuples.map(it => {
                     if (it._type === "ingredient") {
@@ -67,7 +74,7 @@ class ShopList extends React.PureComponent {
             >
                 <Add />
             </FoodingerFab>
-        </>;
+        </Content>;
     }
 
 }

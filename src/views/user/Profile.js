@@ -1,3 +1,4 @@
+import { Container as Content } from "@material-ui/core";
 import Button from "@material-ui/core/Button";
 import Divider from "@material-ui/core/Divider";
 import Switch from "@material-ui/core/Switch";
@@ -38,7 +39,7 @@ class Profile extends Component {
             isDevMode,
             windowSize,
         } = this.props;
-        return <>
+        return <Content>
             {user.imageUrl && <img
                 src={user.imageUrl}
                 alt={user.name}
@@ -84,7 +85,7 @@ class Profile extends Component {
                 <br />
                 Window: {windowSize.width}x{windowSize.height}
             </React.Fragment>}
-        </>;
+        </Content>;
     }
 }
 

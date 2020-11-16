@@ -1,9 +1,10 @@
-import React, {Component} from "react";
 import {
     CircularProgress,
-    Typography
+    Container as Content,
+    Typography,
 } from "@material-ui/core";
-import {Redirect} from "react-router-dom";
+import React, { Component } from "react";
+import { Redirect } from "react-router-dom";
 import RecipeForm from "../../containers/RecipeForm";
 import Dispatcher from "../../data/dispatcher";
 import RecipeActions from "../../data/RecipeActions";
@@ -11,7 +12,7 @@ import RecipeApi from "../../data/RecipeApi";
 import history from "../../util/history";
 import onNextActionThat from "../../util/onNextActionThat";
 import DeleteButton from "../common/DeleteButton";
-import {handleSave as handleSaveCopy} from "./RecipeAdd";
+import { handleSave as handleSaveCopy } from "./RecipeAdd";
 
 const handleDelete = (id) => {
     RecipeApi.deleteRecipe(id);
@@ -50,7 +51,7 @@ class RecipeEdit extends Component<{ recipeLO: any }> {
         }
         
         return (
-            <div>
+            <Content>
                 <Typography variant="h2">Editing {recipeLO.getValueEnforcing().name}</Typography>
                 <RecipeForm onSave={handleSave}
                             onSaveCopy={handleSaveCopy}
@@ -62,7 +63,7 @@ class RecipeEdit extends Component<{ recipeLO: any }> {
                     onConfirm={() => handleDelete(recipeLO.getValueEnforcing().id)}
                 />
 
-            </div>
+            </Content>
         );
     }
 }

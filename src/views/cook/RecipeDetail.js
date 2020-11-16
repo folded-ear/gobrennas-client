@@ -1,22 +1,23 @@
 import {
     CircularProgress,
+    Container as Content,
     Grid,
     List,
     ListItem,
     Toolbar,
     Typography,
 } from "@material-ui/core";
-import {makeStyles} from "@material-ui/core/styles";
+import { makeStyles } from "@material-ui/core/styles";
 import PropTypes from "prop-types";
 import React from "react";
-import {Redirect} from "react-router-dom";
+import { Redirect } from "react-router-dom";
 import Dispatcher from "../../data/dispatcher";
 import LibraryActions from "../../data/LibraryActions";
 import RecipeActions from "../../data/RecipeActions";
 import RecipeApi from "../../data/RecipeApi";
-import {Recipe} from "../../data/RecipeTypes";
+import { Recipe } from "../../data/RecipeTypes";
 import history from "../../util/history";
-import {loadObjectOf} from "../../util/loadObjectTypes";
+import { loadObjectOf } from "../../util/loadObjectTypes";
 import CloseButton from "../common/CloseButton";
 import CopyButton from "../common/CopyButton";
 import DeleteButton from "../common/DeleteButton";
@@ -31,7 +32,10 @@ import SendToPlan from "../SendToPlan";
 import User from "../user/User";
 
 const useStyles = makeStyles(theme => ({
-    root: {},
+    root: {
+        backgroundColor: "white",
+        minHeight: "100vh",
+    },
     name: {
         flexGrow: 1,
         [theme.breakpoints.down("xs")]: {
@@ -69,7 +73,7 @@ const RecipeDetail = ({recipeLO, mine, staged, ownerLO}) => {
     const recipe = recipeLO.getValueEnforcing();
 
     return (
-        <div className={classes.root} id="toolbar">
+        <Content className={classes.root} id="toolbar">
             <Grid container>
                 <Grid item xs={12}>
                         <Toolbar className={classes.toolbar}>
@@ -168,9 +172,7 @@ const RecipeDetail = ({recipeLO, mine, staged, ownerLO}) => {
                 </Grid>
 
             </Grid>
-
-
-        </div>
+        </Content>
     );
 };
 

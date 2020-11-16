@@ -1,13 +1,15 @@
 import {
     Box,
     CircularProgress,
+    Container as Content,
     FormControlLabel,
     Grid,
     Paper,
     Switch,
-    Typography
+    Typography,
 } from "@material-ui/core";
-import {makeStyles} from "@material-ui/core/styles";
+import { makeStyles } from "@material-ui/core/styles";
+import { PostAdd } from "@material-ui/icons";
 import PropTypes from "prop-types";
 import React from "react";
 import Dispatcher from "../../data/dispatcher";
@@ -16,13 +18,12 @@ import {
     SCOPE_EVERYONE,
     SCOPE_MINE,
 } from "../../data/LibraryStore";
-import {Recipe} from "../../data/RecipeTypes";
-import {loadObjectOf} from "../../util/loadObjectTypes";
-import SearchFilter from "./SearchFilter";
-import RecipeCard from "./RecipeCard";
-import FoodingerFab from "../common/FoodingerFab";
-import {PostAdd} from "@material-ui/icons";
+import { Recipe } from "../../data/RecipeTypes";
 import history from "../../util/history";
+import { loadObjectOf } from "../../util/loadObjectTypes";
+import FoodingerFab from "../common/FoodingerFab";
+import RecipeCard from "./RecipeCard";
+import SearchFilter from "./SearchFilter";
 
 const useStyles = makeStyles((theme) => ({
     search: {
@@ -64,7 +65,7 @@ const RecipesList = (props: {}) => {
     const classes = useStyles();
     const {me, filter, scope, libraryLO} = props;
 
-    return <>
+    return <Content>
         <Paper elevation={1} variant="outlined" className={classes.search}>
             <Typography variant="h5">Search Recipe Library</Typography>
             <div style={{float: "right"}}>
@@ -119,7 +120,7 @@ const RecipesList = (props: {}) => {
         >
             <PostAdd/>
         </FoodingerFab>
-    </>;
+    </Content>;
 };
 
 RecipesList.defaultProps = {

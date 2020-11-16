@@ -1,6 +1,6 @@
 import {
     createMuiTheme,
-    responsiveFontSizes
+    responsiveFontSizes,
 } from "@material-ui/core/styles";
 
 let theme = createMuiTheme({
@@ -22,7 +22,7 @@ let theme = createMuiTheme({
             main: "#333333"
         },
         background: {
-            default: "#ffffff"
+            default: "#f7f7f7"
         }
     },
     typography: {

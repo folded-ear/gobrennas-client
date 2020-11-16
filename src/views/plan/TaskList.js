@@ -1,7 +1,8 @@
 import {
     Box,
+    Container as Content,
     List,
-    Typography
+    Typography,
 } from "@material-ui/core";
 import Add from "@material-ui/icons/Add";
 import PropTypes from "prop-types";
@@ -21,7 +22,6 @@ class TaskList extends React.PureComponent {
         super(...args);
         this.onAddNew = this.onAddNew.bind(this);
     }
-
 
     onAddNew(e) {
         e.preventDefault();
@@ -45,7 +45,10 @@ class TaskList extends React.PureComponent {
             />;
         }
 
-        return <>
+        return <Content style={{
+            backgroundColor: "white",
+            minHeight: "100vh",
+        }}>
             <Typography variant="h2">Recipe Planning</Typography>
             <Box m={4}>
                 <TaskListHeader
@@ -85,7 +88,7 @@ class TaskList extends React.PureComponent {
             >
                 <Add />
             </FoodingerFab>
-        </>;
+        </Content>;
     }
 
 }

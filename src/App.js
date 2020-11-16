@@ -1,9 +1,8 @@
-import {ThemeProvider} from "@material-ui/core/styles";
 import CssBaseline from "@material-ui/core/CssBaseline";
-import {Container as Content} from "@material-ui/core";
-import {Container} from "flux/utils";
-import React, {Component} from "react";
-import {Switch} from "react-router-dom";
+import { ThemeProvider } from "@material-ui/core/styles";
+import { Container } from "flux/utils";
+import React, { Component } from "react";
+import { Switch } from "react-router-dom";
 import "./App.scss";
 import Dispatcher from "./data/dispatcher";
 import UserActions from "./data/UserActions";
@@ -54,38 +53,32 @@ class App extends Component {
                     <CssBaseline/>
                     {newVersionAvailable && <NewVersionAvailable/>}
                     <AppHeader authenticated={authenticated} onLogout={this.handleLogout}/>
-
-                    <Content style={{paddingBottom: "3em", paddingTop: "2em"}}>
-                        <Switch>
-                            {routes.public.map(route => {
-                                return (
-                                    <FluxRoute
-                                        key={route.path}
-                                        path={route.path}
-                                        render={props => <route.component authenticated={authenticated} {...props} />}
-                                        exact={route.exact}
-                                    />
-                                );
-                            })}
-
-                            {routes.private.map(route => {
-                                return (
-                                    <PrivateRoute
-                                        key={route.path}
-                                        path={route.path}
-                                        component={route.component}
-                                        currentUser={currentUser}
-                                        authenticated={authenticated}
-                                    />
-                                );
-                            })}
-
-                            <FluxRoute path="/login" render={(props) => <Login
-                                authenticated={authenticated} {...props} />}/>
-                            <FluxRoute component={NotFound}/>
-                        </Switch>
-
-                    </Content>
+                    <Switch>
+                        {routes.public.map(route => {
+                            return (
+                                <FluxRoute
+                                    key={route.path}
+                                    path={route.path}
+                                    render={props => <route.component authenticated={authenticated} {...props} />}
+                                    exact={route.exact}
+                                />
+                            );
+                        })}
+                        {routes.private.map(route => {
+                            return (
+                                <PrivateRoute
+                                    key={route.path}
+                                    path={route.path}
+                                    component={route.component}
+                                    currentUser={currentUser}
+                                    authenticated={authenticated}
+                                />
+                            );
+                        })}
+                        <FluxRoute path="/login" render={(props) => <Login
+                            authenticated={authenticated} {...props} />}/>
+                        <FluxRoute component={NotFound}/>
+                    </Switch>
                 </ThemeProvider>
             </>
         );

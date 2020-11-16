@@ -1,11 +1,14 @@
-import React, {Component} from "react";
+import {
+    Container as Content,
+    Typography,
+} from "@material-ui/core";
+import React, { Component } from "react";
 import RecipeForm from "../../containers/RecipeForm";
 import Dispatcher from "../../data/dispatcher";
 import DraftRecipeStore from "../../data/DraftRecipeStore";
 import RecipeActions from "../../data/RecipeActions";
 import history from "../../util/history";
 import onNextActionThat from "../../util/onNextActionThat";
-import {Typography} from "@material-ui/core";
 
 export const handleSave = (recipe) => {
     Dispatcher.dispatch({
@@ -33,13 +36,13 @@ const handleCancel = () => {
 class RecipeAdd extends Component<{}> {
     render() {
         return (
-            <div>
+            <Content>
                 <Typography variant="h2">Add A New Recipe</Typography>
                 <div>
                     <RecipeForm onSave={handleSave}
                                 onCancel={handleCancel}/>
                 </div>
-            </div>
+            </Content>
         );
     }
 }
