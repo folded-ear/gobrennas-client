@@ -19,9 +19,7 @@ import FriendStore from "../../data/FriendStore";
 import RecipeActions from "../../data/RecipeActions";
 import { Recipe } from "../../data/RecipeTypes";
 import UserStore from "../../data/UserStore";
-import history from "../../util/history";
 import { loadObjectOf } from "../../util/loadObjectTypes";
-import CopyButton from "../common/CopyButton";
 import Source from "../common/Source";
 import LabelItem from "../LabelItem";
 import SendToPlan from "../SendToPlan";
@@ -53,22 +51,16 @@ const RecipeCard = ({recipe, mine, ownerLO}) => {
         >
             View
         </Button>
-        {mine
-            ? <Button
-                variant="contained"
-                color="secondary"
-                disableElevation
-                startIcon={<Edit/>}
-                to={`/library/recipe/${recipe.id}/edit`}
-                component={Link}
-            >
-                Edit
-            </Button>
-            : <CopyButton
-                mine={mine}
-                onClick={() => history.push(`/library/recipe/${recipe.id}/make-copy`)}
-            />
-        }
+        {mine && <Button
+            variant="contained"
+            color="secondary"
+            disableElevation
+            startIcon={<Edit/>}
+            to={`/library/recipe/${recipe.id}/edit`}
+            component={Link}
+        >
+            Edit
+        </Button>}
         {(!mine && ownerLO.hasValue()) && <User key={"user"}
                                                 {...ownerLO.getValueEnforcing()}
                                                 iconOnly/>}
