@@ -1,5 +1,3 @@
-import React from "react";
-import PropTypes from "prop-types";
 import {
     Button,
     Card,
@@ -10,22 +8,26 @@ import {
 } from "@material-ui/core";
 import {
     Edit,
-    MenuBook
+    MenuBook,
 } from "@material-ui/icons";
-import {loadObjectOf} from "../../util/loadObjectTypes";
-import {Recipe} from "../../data/RecipeTypes";
+import { Container } from "flux/utils";
+import PropTypes from "prop-types";
+import React from "react";
+import { Link } from "react-router-dom";
+import Dispatcher from "../../data/dispatcher";
+import FriendStore from "../../data/FriendStore";
+import RecipeActions from "../../data/RecipeActions";
+import { Recipe } from "../../data/RecipeTypes";
+import UserStore from "../../data/UserStore";
+import history from "../../util/history";
+import { loadObjectOf } from "../../util/loadObjectTypes";
+import CopyButton from "../common/CopyButton";
 import Source from "../common/Source";
 import LabelItem from "../LabelItem";
-import Dispatcher from "../../data/dispatcher";
-import {Link} from "react-router-dom";
+import SendToPlan from "../SendToPlan";
 import User from "../user/User";
-import {Container} from "flux/utils";
-import FriendStore from "../../data/FriendStore";
-import UserStore from "../../data/UserStore";
 import ItemImage from "./ItemImage";
 import ItemImageUpload from "./ItemImageUpload";
-import RecipeActions from "../../data/RecipeActions";
-import SendToPlan from "../SendToPlan";
 
 const RecipeInfo = ({label, text}) => (
     <Grid container>
@@ -40,19 +42,19 @@ RecipeInfo.propTypes = {
 };
 
 const RecipeCard = ({recipe, mine, ownerLO}) => {
-    const actions = mine
-        ? <>
-            <Button
-                variant="contained"
-                color="secondary"
-                disableElevation
-                startIcon={<MenuBook/>}
-                component={Link}
-                to={`/library/recipe/${recipe.id}`}
-            >
-                View
-            </Button>
-            <Button
+    const actions = <>
+        <Button
+            variant="contained"
+            color="secondary"
+            disableElevation
+            startIcon={<MenuBook/>}
+            component={Link}
+            to={`/library/recipe/${recipe.id}`}
+        >
+            View
+        </Button>
+        {mine
+            ? <Button
                 variant="contained"
                 color="secondary"
                 disableElevation
@@ -62,17 +64,20 @@ const RecipeCard = ({recipe, mine, ownerLO}) => {
             >
                 Edit
             </Button>
-            <SendToPlan onClick={planId => Dispatcher.dispatch({
-                type: RecipeActions.SEND_TO_PLAN,
-                recipeId: recipe.id,
-                planId,
-            })}/>
-        </>
-        : ownerLO.hasValue()
-            ? [<User key={"user"}
-                     {...ownerLO.getValueEnforcing()}
-                     iconOnly/>]
-            : null;
+            : <CopyButton
+                mine={mine}
+                onClick={() => history.push(`/library/recipe/${recipe.id}/make-copy`)}
+            />
+        }
+        {(!mine && ownerLO.hasValue()) && <User key={"user"}
+                                                {...ownerLO.getValueEnforcing()}
+                                                iconOnly/>}
+        <SendToPlan onClick={planId => Dispatcher.dispatch({
+            type: RecipeActions.SEND_TO_PLAN,
+            recipeId: recipe.id,
+            planId,
+        })}/>
+    </>;
 
     return (
         <Card
