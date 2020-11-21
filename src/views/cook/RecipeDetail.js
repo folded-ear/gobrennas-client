@@ -153,13 +153,10 @@ const RecipeDetail = ({recipeLO, mine, staged, ownerLO}) => {
                     {recipe.ingredients != null && recipe.ingredients.length > 0 && <>
                         <Typography variant="h5">Ingredients</Typography>
                         <List>
-                            {recipe.ingredients && recipe.ingredients.map(it => {
-                                return (
-                                    <ListItem key={it}>
-                                        <IngredientItem ingredient={it}/>
-                                    </ListItem>
-                                );
-                            })}
+                            {recipe.ingredients && recipe.ingredients.map((it, i) =>
+                                <ListItem key={`${i}:${it.raw}`}>
+                                    <IngredientItem ingredient={it} />
+                                </ListItem>)}
                         </List>
                     </>}
                 </Grid>
