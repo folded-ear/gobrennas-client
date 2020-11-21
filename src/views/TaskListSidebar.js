@@ -1,7 +1,4 @@
-import {
-    Divider,
-    MenuItem,
-} from "@material-ui/core";
+import { MenuItem } from "@material-ui/core";
 import Box from "@material-ui/core/Box";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Grid from "@material-ui/core/Grid";
@@ -18,6 +15,7 @@ import FriendStore from "../data/FriendStore";
 import TaskActions from "../data/TaskActions";
 import UserStore from "../data/UserStore";
 import DeleteButton from "./common/DeleteButton";
+import SidebarUnit from "./plan/SidebarUnit";
 import User from "./user/User";
 
 const LEVEL_NO_ACCESS = "NO_ACCESS";
@@ -92,63 +90,66 @@ class TaskListSidebar extends React.PureComponent {
             AccessLevel.ADMINISTER,
         );
         return <Box m={2}>
-            <TextField
-                label="Name"
-                required
-                value={list.name}
-                onChange={this.onRename}
-                variant="outlined"
-                fullWidth
-            />
-            {owner && <User {...owner} />}
-            {friendsLoading ? <CircularProgress /> : <React.Fragment>
-                {isAdministrator && <div>
-                    <Divider />
-                    Sharing
-                    <List>
-                        {(isMine ? friendList : friendList.filter(f =>f.id !== list.acl.ownerId).concat(me)).map(f =>
-                            <ListItem
-                                key={f.id}
-                            >
-                                <Grid container spacing={1} justify="space-between">
-                                    <Grid item>
-                                        <User {...f} />
-                                    </Grid>
-                                    <Grid item>
-                                        <Select
-                                            value={grants[f.id] || LEVEL_NO_ACCESS}
-                                            style={{color: grants[f.id] ? "inherit" : "#ccc"}}
-                                            onChange={e => this.onGrantChange(
-                                                f.id,
-                                                e.target.value,
-                                            )}
-                                        >
-                                            <MenuItem value={LEVEL_NO_ACCESS}>
-                                                No Access
-                                            </MenuItem>
-                                            {/*VIEW too!*/}
-                                            <MenuItem value={AccessLevel.CHANGE}>
-                                                Modify
-                                            </MenuItem>
-                                            <MenuItem value={AccessLevel.ADMINISTER}>
-                                                Administer
-                                            </MenuItem>
-                                        </Select>
-                                    </Grid>
+            <SidebarUnit>
+                {owner && <div style={{float: "right"}}>
+                    <User {...owner} />
+                </div>}
+                <TextField
+                    label="Name"
+                    required
+                    value={list.name}
+                    onChange={this.onRename}
+                    variant="outlined"
+                    fullWidth
+                />
+            </SidebarUnit>
+            {friendsLoading && <CircularProgress />}
+            {isAdministrator && <SidebarUnit>
+                <List>
+                    {(isMine ? friendList : friendList.filter(f =>f.id !== list.acl.ownerId).concat(me)).map(f =>
+                        <ListItem
+                            key={f.id}
+                        >
+                            <Grid container spacing={1} justify="space-between">
+                                <Grid item>
+                                    <User {...f} />
                                 </Grid>
-                            </ListItem>)}
-                    </List>
-                </div>}
-                {isAdministrator && <div>
-                    <Divider />
-                    Danger Zone
-                    <DeleteButton
-                        type="plan"
-                        onConfirm={this.onDelete}
-                        label="Delete Plan"
-                    />
-                </div>}
-            </React.Fragment>}
+                                <Grid item>
+                                    <Select
+                                        value={grants[f.id] || LEVEL_NO_ACCESS}
+                                        style={{color: grants[f.id] ? "inherit" : "#ccc"}}
+                                        onChange={e => this.onGrantChange(
+                                            f.id,
+                                            e.target.value,
+                                        )}
+                                    >
+                                        <MenuItem value={LEVEL_NO_ACCESS}>
+                                            No Access
+                                        </MenuItem>
+                                        {/*VIEW too!*/}
+                                        <MenuItem value={AccessLevel.CHANGE}>
+                                            Modify
+                                        </MenuItem>
+                                        <MenuItem value={AccessLevel.ADMINISTER}>
+                                            Administer
+                                        </MenuItem>
+                                    </Select>
+                                </Grid>
+                            </Grid>
+                        </ListItem>)}
+                </List>
+            </SidebarUnit>}
+            {isAdministrator && <SidebarUnit
+                style={{
+                    textAlign: "center",
+                }}
+            >
+                <DeleteButton
+                    type="plan"
+                    onConfirm={this.onDelete}
+                    label="Delete Plan"
+                />
+            </SidebarUnit>}
         </Box>;
     }
 

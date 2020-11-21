@@ -148,10 +148,16 @@ class TaskListHeader extends React.PureComponent {
                     <Drawer
                         open={listDetailVisible}
                         anchor="right"
-                        title="Plan Info"
                         onClose={this.onCloseDrawer}
                     >
-                        <TaskListSidebar list={activeList} />
+                        <div
+                            style={{
+                                minHeight: "100%",
+                                backgroundColor: "#f7f7f7",
+                            }}
+                        >
+                            <TaskListSidebar list={activeList} />
+                        </div>
                     </Drawer>
                 </>}
             </React.Fragment>}
