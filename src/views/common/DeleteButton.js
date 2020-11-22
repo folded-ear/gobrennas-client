@@ -10,9 +10,9 @@ import { Delete } from "@material-ui/icons";
 import PropTypes from "prop-types";
 import React from "react";
 
-const DeleteIcon = ({onClick}) => (
+const DeleteIcon = ({onClick, ...props}) => (
     <Tooltip title="Delete" placement="top">
-        <IconButton onClick={onClick}>
+        <IconButton onClick={onClick} {...props}>
             <Delete/>
         </IconButton>
     </Tooltip>
@@ -22,7 +22,7 @@ DeleteIcon.propTypes = {
     onClick: PropTypes.func
 };
 
-const DeleteButton = ({type, onConfirm, label, onClick, onCancel}) => {
+const DeleteButton = ({type, onConfirm, label, onClick, onCancel, ...props}) => {
     const [open, setOpen] = React.useState(false);
     const handleOpen = () => {
         setOpen(true);
@@ -44,10 +44,11 @@ const DeleteButton = ({type, onConfirm, label, onClick, onCancel}) => {
                 color="primary"
                 startIcon={<Delete />}
                 onClick={handleOpen}
+                {...props}
             >
                 {label}
             </Button>
-            : <DeleteIcon onClick={handleOpen} />
+            : <DeleteIcon onClick={handleOpen} {...props} />
         }
         <Dialog
             open={open}
