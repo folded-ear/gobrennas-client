@@ -4,7 +4,7 @@ export const addDistinct = (items, newItem) => {
     return items.concat(newItem);
 };
 
-const removeAtIndex = (items, idx) => {
+export const removeAtIndex = (items, idx) => {
     if (idx < 0) return items;
     if (idx === 0) return items.slice(1);
     items = items.slice();

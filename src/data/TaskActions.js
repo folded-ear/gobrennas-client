@@ -17,7 +17,10 @@ const TaskActions = {
     COLLAPSE_ALL: "task/collapse-all",
     // user actions (with persistence)
     CREATE_LIST: "task/create-list",
-    RENAME_LIST: "task/rename-list",
+    RENAME_LIST: typedAction("task/rename-list", {
+        id: clientOrDatabaseIdType.isRequired,
+        name: PropTypes.string.isRequired,
+    }),
     DELETE_LIST: "task/delete-list",
     LIST_DETAIL_VISIBILITY: "task/list-detail-visibility",
     CREATE_TASK_AFTER: "task/create-task-after",
@@ -37,12 +40,35 @@ const TaskActions = {
     UNDO_SET_STATUS: "task/undo-set-status",
     MOVE_NEXT: "task/move-next",
     MOVE_PREVIOUS: "task/move-previous",
-    RENAME_TASK: "task/rename-task",
+    RENAME_TASK: typedAction("task/rename-task", {
+        id: clientOrDatabaseIdType.isRequired,
+        name: PropTypes.string.isRequired,
+    }),
     SET_LIST_GRANT: "task/set-list-grant",
     CLEAR_LIST_GRANT: "task/clear-list-grant",
     NEST: "task/nest",
     UNNEST: "task/unnest",
     MOVE_SUBTREE: "task/move-subtree",
+    CREATE_BUCKET: typedAction("task/create-bucket", {
+        planId: clientOrDatabaseIdType.isRequired,
+    }),
+    GENERATE_ONE_WEEKS_BUCKETS: typedAction("task/generate-one-weeks-buckets", {
+        planId: clientOrDatabaseIdType.isRequired,
+    }),
+    RENAME_BUCKET: typedAction("task/rename-bucket", {
+        planId: clientOrDatabaseIdType.isRequired,
+        id: clientOrDatabaseIdType.isRequired,
+        name: PropTypes.string.isRequired,
+    }),
+    SET_BUCKET_DATE: typedAction("task/set-bucket-date", {
+        planId: clientOrDatabaseIdType.isRequired,
+        id: clientOrDatabaseIdType.isRequired,
+        ds: PropTypes.string.isRequired,
+    }),
+    DELETE_BUCKET: typedAction("task/delete-bucket", {
+        planId: clientOrDatabaseIdType.isRequired,
+        id: clientOrDatabaseIdType.isRequired,
+    }),
     // ajax actions
     LOAD_LISTS: "task/load-lists",
     LISTS_LOADED: "task/lists-loaded",

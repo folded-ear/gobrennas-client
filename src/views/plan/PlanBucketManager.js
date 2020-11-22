@@ -17,21 +17,10 @@ import {
 import { Container } from "flux/utils";
 import PropTypes from "prop-types";
 import React from "react";
+import dispatcher from "../../data/dispatcher";
+import TaskActions from "../../data/TaskActions";
 import TaskStore, { bucketType } from "../../data/TaskStore";
-import {
-    formatLocalDate,
-    parseLocalDate,
-} from "../../util/time";
-
-const getBucketLabel = b => {
-    if (b.name) return b.name;
-    if (!b.date) return `Bucket ${b.id}`;
-    return new Intl.DateTimeFormat("default", {
-        month: "short",
-        weekday: "short",
-        day: "numeric"
-    }).format(b.date);
-};
+import getBucketLabel from "./getBucketLabel";
 
 const BucketManager = ({
     buckets,
@@ -89,13 +78,13 @@ const BucketManager = ({
                         </TableCell>
                         <TableCell>
                             <TextField
-                                value={formatLocalDate(b.date) || ""}
+                                value={b.ds || ""}
                                 type="date"
-                                onChange={e => onBucketDateChange(b.id, parseLocalDate(e.target.value), e.target.value)}
+                                onChange={e => onBucketDateChange(b.id, e.target.value)}
                                 size="small"
                                 inputProps={{
                                     style: {
-                                        color: b.date ? "currentColor" : "#a3a3a3",
+                                        color: b.ds ? "currentColor" : "#a3a3a3",
                                     },
                                 }}
                             />
@@ -134,14 +123,36 @@ export default Container.createFunctional(
     () => [
         TaskStore,
     ],
-    () => ({
-        buckets: TaskStore.getActiveListLO()
-            .getValueEnforcing()
-            .buckets,
-        onBucketCreate: () => console.log("onBucketCreate"),
-        onBucketGenerate: () => console.log("onBucketGenerate"),
-        onBucketNameChange: (id, value) => console.log("onBucketNameChange", id, value),
-        onBucketDateChange: (id, value, rawValue) => console.log("onBucketDateChange", id, value, rawValue),
-        onBucketDelete: (id) => console.log("onBucketDelete", id),
-    }),
+    () => {
+        const plan = TaskStore.getActiveListLO()
+            .getValueEnforcing();
+        return {
+            buckets: plan.buckets,
+            onBucketCreate: () => dispatcher.dispatch({
+                type: TaskActions.CREATE_BUCKET,
+                planId: plan.id,
+            }),
+            onBucketGenerate: () => dispatcher.dispatch({
+                type: TaskActions.GENERATE_ONE_WEEKS_BUCKETS,
+                planId: plan.id,
+            }),
+            onBucketNameChange: (id, value) => dispatcher.dispatch({
+                type: TaskActions.RENAME_BUCKET,
+                planId: plan.id,
+                id,
+                name: value,
+            }),
+            onBucketDateChange: (id, value) => dispatcher.dispatch({
+                type: TaskActions.SET_BUCKET_DATE,
+                planId: plan.id,
+                id,
+                ds: value,
+            }),
+            onBucketDelete: id => dispatcher.dispatch({
+                type: TaskActions.DELETE_BUCKET,
+                planId: plan.id,
+                id,
+            }),
+        };
+    },
 );

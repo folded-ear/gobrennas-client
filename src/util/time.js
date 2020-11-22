@@ -8,10 +8,15 @@ export const fromMilliseconds = (time) => {
     return time / (60 * 1000);
 };
 
-export const parseLocalDate = date =>
-    date == null ? null : new Date(...date.split(/\D/)
-        .map((p, i) =>
-            i === 1 ? p - 1 : p));
+export const parseLocalDate = date => {
+    if (!date) return null;
+    if (!/^\d+-\d+-\d+(\D|$)/.test(date)) return null;
+    const parts = date.split(/\D/)
+        .slice(0, 3);
+    if (parts[0] < 1000) return null;
+    parts[1] -= 1;
+    return new Date(...parts);
+};
 
 const pad = number => {
     if (number < 10) {
@@ -21,7 +26,7 @@ const pad = number => {
 };
 
 export const formatLocalDate = date => {
-    if (date == null) return null;
+    if (!date) return null;
     return date.getFullYear() +
         "-" + pad(date.getMonth() + 1) +
         "-" + pad(date.getDate());

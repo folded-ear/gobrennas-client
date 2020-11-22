@@ -2,6 +2,7 @@ import dotProp from "dot-prop-immutable";
 import { ReduceStore } from "flux/utils";
 import invariant from "invariant";
 import PropTypes from "prop-types";
+import { removeAtIndex } from "../util/arrayAsSet";
 import ClientId, { clientOrDatabaseIdType } from "../util/ClientId";
 import {
     bucketComparator,
@@ -189,7 +190,6 @@ const refreshActiveListSubscription = state => {
 const subscribeToListUpdates = (state, id) => {
     state = doUnsub(state, "updateSub");
     const updateSub = socket.subscribe(`/topic/plan/${id}`, ({body}) => {
-        // eslint-disable-next-line no-console
         switch (body.type) {
             case "tree-mutation":
                 Dispatcher.dispatch({
@@ -884,10 +884,16 @@ const taskLoaded = (state, task) => {
         task = {
             ...task,
             buckets: task.buckets
-                .map(b => b.date ? {
-                    ...b,
-                    date: parseLocalDate(b.date),
-                } : b)
+                .map(b => {
+                    if (!b.date) return b;
+                    b = {
+                        ...b,
+                        ds: b.date,
+                        dt: parseLocalDate(b.date),
+                    };
+                    delete b.date;
+                    return b;
+                })
                 .sort(bucketComparator),
         };
     }
@@ -966,6 +972,15 @@ const listsLoaded = (state, lists) => {
     }
     return state;
 };
+
+const workOnBuckets = (state, planId, work) =>
+    dotProp.set(state, [
+        "byId",
+        planId,
+    ], lo => lo.map(t => ({
+        ...t,
+        buckets: work(t.buckets || []),
+    })));
 
 class TaskStore extends ReduceStore {
 
@@ -1242,6 +1257,62 @@ class TaskStore extends ReduceStore {
                 return flushTasksToRename(state);
             }
 
+            case TaskActions.CREATE_BUCKET: {
+                return workOnBuckets(state, action.planId, bs =>
+                    [{id: ClientId.next()}].concat(bs));
+            }
+
+            case TaskActions.GENERATE_ONE_WEEKS_BUCKETS: {
+                return workOnBuckets(state, action.planId, bs => {
+                    const yesterday = new Date();
+                    yesterday.setDate(yesterday.getDate() - 1);
+                    const maxDate = bs.reduce((max, b) =>
+                        b.dt != null && b.dt > max
+                            ? b.dt
+                            : max,
+                        yesterday);
+                    const newOnes = [];
+                    for (let i = 1; i <= 7; i++) {
+                        const dt = new Date(maxDate.valueOf());
+                        dt.setDate(dt.getDate() + i);
+                        newOnes.push({
+                            id: ClientId.next(),
+                            dt,
+                        });
+                    }
+                    // todo: gotta send them to the server too...
+                    return bs.concat(newOnes);
+                });
+            }
+
+            case TaskActions.DELETE_BUCKET: {
+                return workOnBuckets(state, action.planId, bs =>
+                    // todo: gotta send it to the server (if it isn't a ClientId)...
+                    removeAtIndex(bs, bs.findIndex(b =>
+                        b.id === action.id)));
+            }
+
+            case TaskActions.RENAME_BUCKET: {
+                return workOnBuckets(state, action.planId, bs =>
+                    // todo: gotta send it to the server too...
+                    bs.map(b => b.id === action.id
+                        ? { ...b, name: action.name }
+                        : b).sort(bucketComparator));
+
+            }
+
+            case TaskActions.SET_BUCKET_DATE: {
+                return workOnBuckets(state, action.planId, bs =>
+                    // todo: gotta send it to the server too...
+                    bs.map(b => b.id === action.id
+                        ? {
+                            ...b,
+                            ds: action.ds,
+                            dt: parseLocalDate(action.ds),
+                        }
+                        : b).sort(bucketComparator));
+            }
+
             case TaskActions.FLUSH_RENAMES:
                 return flushTasksToRename(state);
             case TaskActions.FLUSH_STATUS_UPDATES:
@@ -1320,7 +1391,8 @@ class TaskStore extends ReduceStore {
 export const bucketType = PropTypes.exact({
     id: clientOrDatabaseIdType.isRequired,
     name: PropTypes.string,
-    date: PropTypes.instanceOf(Date),
+    ds: PropTypes.string,
+    dt: PropTypes.instanceOf(Date),
 });
 
 TaskStore.stateTypes = {

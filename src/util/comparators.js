@@ -24,12 +24,12 @@ export const byNameComparator = (a, b) =>
     humanStringComparator(a.name, b.name);
 
 /**
- * I am an object comparator based on the "date" and "name" keys, used for
+ * I am an object comparator based on the "dt" (date) and "name" keys, used for
  * sorting plan buckets.
  */
 export const bucketComparator = (a, b) => {
-    let ad = a.date;
-    let bd = b.date;
+    let ad = a.dt;
+    let bd = b.dt;
     if (ad != null || bd != null) {
         // one or both is non-null
         if (ad == null) return -1;
