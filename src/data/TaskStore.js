@@ -614,7 +614,6 @@ const cancelStatusUpdate = (state, id) => {
     statusUpdatesToFlush.delete(id);
     return {
         ...state,
-        activeTaskId: id,
         byId: {
             ...state.byId,
             [id]: state.byId[id].map(t => {
@@ -1140,7 +1139,7 @@ class TaskStore extends ReduceStore {
             }
 
             case TaskActions.SET_STATUS: {
-                if (willStatusDelete(action.status)) {
+                if (willStatusDelete(action.status) && action.id === state.activeTaskId) {
                     state = focusDelta(state, action.id, 1);
                 }
                 state = queueStatusUpdate(state, action.id, action.status);
