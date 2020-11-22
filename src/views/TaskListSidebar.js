@@ -1,6 +1,8 @@
-import { MenuItem } from "@material-ui/core";
+import {
+    MenuItem,
+    Typography,
+} from "@material-ui/core";
 import Box from "@material-ui/core/Box";
-import CircularProgress from "@material-ui/core/CircularProgress";
 import Grid from "@material-ui/core/Grid";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
@@ -15,6 +17,7 @@ import FriendStore from "../data/FriendStore";
 import TaskActions from "../data/TaskActions";
 import UserStore from "../data/UserStore";
 import DeleteButton from "./common/DeleteButton";
+import LoadingIndicator from "./common/LoadingIndicator";
 import PlanBucketManager from "./plan/PlanBucketManager";
 import SidebarUnit from "./plan/SidebarUnit";
 import User from "./user/User";
@@ -90,36 +93,36 @@ class TaskListSidebar extends React.PureComponent {
             grants[me.id],
             AccessLevel.ADMINISTER,
         );
+
         return <Box m={2}>
             <SidebarUnit>
                 {owner && <div style={{float: "right"}}>
                     <User {...owner} />
                 </div>}
-                <TextField
+                {isAdministrator ? <TextField
                     label="Name"
                     required
                     value={list.name}
                     onChange={this.onRename}
                     variant="outlined"
                     fullWidth
-                />
+                /> : <Typography variant="h2" component="h3">{list.name}</Typography>}
             </SidebarUnit>
-            <SidebarUnit>
-                <PlanBucketManager />
-            </SidebarUnit>
-            {friendsLoading && <CircularProgress />}
             {isAdministrator && <SidebarUnit>
+                <PlanBucketManager />
+            </SidebarUnit>}
+            {friendsLoading ? <LoadingIndicator primary="Loading friends list..." /> : <SidebarUnit>
                 <List>
                     {(isMine ? friendList : friendList.filter(f =>f.id !== list.acl.ownerId).concat(me)).map(f =>
                         <ListItem
                             key={f.id}
                         >
-                            <Grid container spacing={1} justify="space-between">
+                            <Grid container spacing={1} justify="space-between" alignItems="center">
                                 <Grid item>
                                     <User {...f} />
                                 </Grid>
                                 <Grid item>
-                                    <Select
+                                    {isAdministrator ? <Select
                                         value={grants[f.id] || LEVEL_NO_ACCESS}
                                         style={{color: grants[f.id] ? "inherit" : "#ccc"}}
                                         onChange={e => this.onGrantChange(
@@ -137,7 +140,7 @@ class TaskListSidebar extends React.PureComponent {
                                         <MenuItem value={AccessLevel.ADMINISTER}>
                                             Administer
                                         </MenuItem>
-                                    </Select>
+                                    </Select> : (grants[f.id] || LEVEL_NO_ACCESS)}
                                 </Grid>
                             </Grid>
                         </ListItem>)}
