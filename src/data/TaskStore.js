@@ -3,7 +3,10 @@ import { ReduceStore } from "flux/utils";
 import invariant from "invariant";
 import PropTypes from "prop-types";
 import ClientId, { clientOrDatabaseIdType } from "../util/ClientId";
-import { humanStringComparator } from "../util/comparators";
+import {
+    bucketComparator,
+    byNameComparator,
+} from "../util/comparators";
 import inTheFuture from "../util/inTheFuture";
 import LoadObject from "../util/LoadObject";
 import LoadObjectState from "../util/LoadObjectState";
@@ -880,10 +883,12 @@ const taskLoaded = (state, task) => {
     if (task.buckets) {
         task = {
             ...task,
-            buckets: task.buckets.map(b => b.date ? {
-                ...b,
-                date: parseLocalDate(b.date),
-            } : b),
+            buckets: task.buckets
+                .map(b => b.date ? {
+                    ...b,
+                    date: parseLocalDate(b.date),
+                } : b)
+                .sort(bucketComparator),
         };
     }
     let lo = state.byId[task.id] || LoadObject.empty();
@@ -955,7 +960,7 @@ const listsLoaded = (state, lists) => {
         let alid = PreferencesStore.getActiveTaskList();
         if (lists.find(it => it.id === alid) == null) {
             // auto-select the first one
-            alid = lists.sort(humanStringComparator)[0].id;
+            alid = lists.sort(byNameComparator)[0].id;
         }
         state = selectList(state, alid);
     }

@@ -1,9 +1,9 @@
-import {Container} from "flux/utils";
+import { Container } from "flux/utils";
 import React from "react";
 import LibraryStore from "../data/LibraryStore";
 import RecipeStore from "../data/RecipeStore";
 import UserStore from "../data/UserStore";
-import {humanStringComparator} from "../util/comparators";
+import { byNameComparator } from "../util/comparators";
 import RecipesList from "../views/library/RecipesList";
 
 export default Container.createFunctional(
@@ -18,7 +18,7 @@ export default Container.createFunctional(
         scope: LibraryStore.getState().scope,
         filter: LibraryStore.getState().filter,
         libraryLO: LibraryStore.getLibraryLO()
-            .map(rs => rs.sort(humanStringComparator)),
+            .map(rs => rs.sort(byNameComparator)),
         stagedRecipes: LibraryStore.getStagedRecipes(),
     })
 );
