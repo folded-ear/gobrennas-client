@@ -8,12 +8,23 @@ export const fromMilliseconds = (time) => {
     return time / (60 * 1000);
 };
 
+const TEN_YEARS_FROM_NOW_THIS_CENTURY = new Date().getFullYear() % 100 + 10;
 export const parseLocalDate = date => {
     if (!date) return null;
     if (!/^\d+-\d+-\d+(\D|$)/.test(date)) return null;
     const parts = date.split(/\D/)
-        .slice(0, 3);
-    if (parts[0] < 1000) return null;
+        .slice(0, 3)
+        .map(p => parseInt(p, 10));
+    if (parts.some(p => isNaN(p))) return null;
+    let year = parts.shift();
+    if (year < 0) return null;
+    if (year <= TEN_YEARS_FROM_NOW_THIS_CENTURY) {
+        year += 2000;
+    } else if (year < 100) {
+        year += 1900;
+    }
+    if (year < 1000) return null;
+    parts.unshift(year);
     parts[1] -= 1;
     return new Date(...parts);
 };
