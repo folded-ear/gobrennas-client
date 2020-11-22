@@ -16,7 +16,10 @@ import {
     loadObjectStateOf,
 } from "../util/loadObjectTypes";
 import socket from "../util/socket";
-import { parseLocalDate } from "../util/time";
+import {
+    formatLocalDate,
+    parseLocalDate,
+} from "../util/time";
 import typedStore from "../util/typedStore";
 import AccessLevel from "./AccessLevel";
 import Dispatcher from "./dispatcher";
@@ -213,6 +216,28 @@ const subscribeToListUpdates = (state, id) => {
             case "delete":
                 Dispatcher.dispatch({
                     type: TaskActions.DELETED,
+                    id: body.id,
+                });
+                return;
+            case "create-bucket":
+                Dispatcher.dispatch({
+                    type: TaskActions.BUCKET_CREATED,
+                    planId: id,
+                    data: body.info,
+                    oldId: body.newIds[body.id],
+                });
+                return;
+            case "update-bucket":
+                Dispatcher.dispatch({
+                    type: TaskActions.BUCKET_UPDATED,
+                    planId: id,
+                    data: body.info,
+                });
+                return;
+            case "delete-bucket":
+                Dispatcher.dispatch({
+                    type: TaskActions.BUCKET_DELETED,
+                    planId: id,
                     id: body.id,
                 });
                 return;
@@ -884,9 +909,7 @@ const taskLoaded = (state, task) => {
         task = {
             ...task,
             buckets: task.buckets
-                .map(b => b.date
-                    ? { ...b, date: parseLocalDate(b.date) }
-                    : b)
+                .map(deserializeBucket)
                 .sort(bucketComparator),
         };
     }
@@ -974,6 +997,21 @@ const workOnBuckets = (state, planId, work) =>
         ...t,
         buckets: work(t.buckets || []),
     })));
+
+const deserializeBucket = b => b.date
+    ? { ...b, date: parseLocalDate(b.date) }
+    : b;
+
+const serializeBucket = b => b.date
+    ? { ...b, date: formatLocalDate(b.date) }
+    : b;
+
+const saveBucket = (state, bucket) => {
+    const action = ClientId.is(bucket.id) ? "create" : "update";
+    socket.publish(
+        `/api/plan/${state.activeListId}/buckets/${action}`,
+        serializeBucket(bucket));
+};
 
 class TaskStore extends ReduceStore {
 
@@ -1268,38 +1306,66 @@ class TaskStore extends ReduceStore {
                     for (let i = 1; i <= 7; i++) {
                         const date = new Date(maxDate.valueOf());
                         date.setDate(date.getDate() + i);
-                        newOnes.push({
+                        const b = {
                             id: ClientId.next(),
                             date,
-                        });
+                        };
+                        saveBucket(state, b);
+                        newOnes.push(b);
                     }
-                    // todo: gotta send them to the server too...
                     return bs.concat(newOnes);
                 });
             }
 
-            case TaskActions.DELETE_BUCKET: {
+            case TaskActions.BUCKET_CREATED: {
                 return workOnBuckets(state, action.planId, bs =>
-                    // todo: gotta send it to the server (if it isn't a ClientId)...
-                    removeAtIndex(bs, bs.findIndex(b =>
-                        b.id === action.id)));
+                    bs.filter(b => b.id !== action.oldId)
+                        .concat(deserializeBucket(action.data))
+                        .sort(bucketComparator));
+            }
+
+            case TaskActions.DELETE_BUCKET: {
+                return workOnBuckets(state, action.planId, bs => {
+                    const idx = bs.findIndex(b => b.id === action.id);
+                    if (idx >= 0 && !ClientId.is(action.id)) {
+                        socket.publish(`/api/plan/${state.activeListId}/buckets/delete`, {id: action.id});
+                    }
+                    return removeAtIndex(bs, idx);
+                });
+            }
+
+            case TaskActions.BUCKET_DELETED: {
+                return workOnBuckets(state, action.planId, bs =>
+                    bs.filter(b => b.id !== action.id));
             }
 
             case TaskActions.RENAME_BUCKET: {
                 return workOnBuckets(state, action.planId, bs =>
-                    // todo: gotta send it to the server too...
-                    bs.map(b => b.id === action.id
-                        ? { ...b, name: action.name }
-                        : b).sort(bucketComparator));
+                    bs.map(b => {
+                        if (b.id !== action.id) return b;
+                        b = {...b, name: action.name};
+                        saveBucket(state, b);
+                        return b;
+                    }).sort(bucketComparator));
 
             }
 
             case TaskActions.SET_BUCKET_DATE: {
                 return workOnBuckets(state, action.planId, bs =>
-                    // todo: gotta send it to the server too...
-                    bs.map(b => b.id === action.id
-                        ? { ...b, date: action.date }
-                        : b).sort(bucketComparator));
+                    bs.map(b => {
+                        if (b.id !== action.id) return b;
+                        b = {...b, date: action.date};
+                        saveBucket(state, b);
+                        return b;
+                    }).sort(bucketComparator));
+            }
+
+            case TaskActions.BUCKET_UPDATED: {
+                return workOnBuckets(state, action.planId, bs =>
+                    bs.map(b => {
+                        if (b.id !== action.data.id) return b;
+                        return deserializeBucket(action.data);
+                    }).sort(bucketComparator));
             }
 
             case TaskActions.FLUSH_RENAMES:

@@ -69,6 +69,19 @@ const TaskActions = {
         planId: clientOrDatabaseIdType.isRequired,
         id: clientOrDatabaseIdType.isRequired,
     }),
+    BUCKET_CREATED: typedAction("task/bucket-created", {
+        planId: PropTypes.number.isRequired,
+        data: PropTypes.object.isRequired,
+        oldId: clientOrDatabaseIdType.isRequired,
+    }),
+    BUCKET_UPDATED: typedAction("task/bucket-updated", {
+        planId: PropTypes.number.isRequired,
+        data: PropTypes.object.isRequired,
+    }),
+    BUCKET_DELETED: typedAction("task/bucket-deleted", {
+        planId: PropTypes.number.isRequired,
+        id: PropTypes.number.isRequired,
+    }),
     // ajax actions
     LOAD_LISTS: "task/load-lists",
     LISTS_LOADED: "task/lists-loaded",
