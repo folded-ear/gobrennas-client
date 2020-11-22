@@ -7,7 +7,6 @@ import {
 } from "@material-ui/core";
 import IconButton from "@material-ui/core/IconButton";
 import TableCell from "@material-ui/core/TableCell";
-import TextField from "@material-ui/core/TextField";
 import Tooltip from "@material-ui/core/Tooltip";
 import {
     Add as AddIcon,
@@ -20,6 +19,11 @@ import React from "react";
 import dispatcher from "../../data/dispatcher";
 import TaskActions from "../../data/TaskActions";
 import TaskStore, { bucketType } from "../../data/TaskStore";
+import {
+    formatLocalDate,
+    parseLocalDate,
+} from "../../util/time";
+import LocalTextField from "../common/LocalTextField";
 import getBucketLabel from "./getBucketLabel";
 
 const BucketManager = ({
@@ -34,7 +38,7 @@ const BucketManager = ({
         <Table size="small">
             <TableHead>
                 <TableRow>
-                    <TableCell>Label</TableCell>
+                    <TableCell>Bucket</TableCell>
                     <TableCell>Date</TableCell>
                     <TableCell align="right">
                         <Tooltip
@@ -69,24 +73,19 @@ const BucketManager = ({
                 {buckets.map(b =>
                     <TableRow key={b.id}>
                         <TableCell>
-                            <TextField
-                                value={b.name || ""}
+                            <LocalTextField
+                                value={b.name}
                                 onChange={e => onBucketNameChange(b.id, e.target.value)}
                                 placeholder={getBucketLabel(b)}
                                 size="small"
                             />
                         </TableCell>
                         <TableCell>
-                            <TextField
-                                value={b.ds || ""}
+                            <LocalTextField
                                 type="date"
-                                onChange={e => onBucketDateChange(b.id, e.target.value)}
+                                value={formatLocalDate(b.date)}
+                                onChange={e => onBucketDateChange(b.id, parseLocalDate(e.target.value))}
                                 size="small"
-                                inputProps={{
-                                    style: {
-                                        color: b.ds ? "currentColor" : "#a3a3a3",
-                                    },
-                                }}
                             />
                         </TableCell>
                         <TableCell align="right">
@@ -127,7 +126,7 @@ export default Container.createFunctional(
         const plan = TaskStore.getActiveListLO()
             .getValueEnforcing();
         return {
-            buckets: plan.buckets,
+            buckets: plan.buckets || [],
             onBucketCreate: () => dispatcher.dispatch({
                 type: TaskActions.CREATE_BUCKET,
                 planId: plan.id,
@@ -146,7 +145,7 @@ export default Container.createFunctional(
                 type: TaskActions.SET_BUCKET_DATE,
                 planId: plan.id,
                 id,
-                ds: value,
+                date: value,
             }),
             onBucketDelete: id => dispatcher.dispatch({
                 type: TaskActions.DELETE_BUCKET,

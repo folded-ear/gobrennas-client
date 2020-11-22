@@ -884,16 +884,9 @@ const taskLoaded = (state, task) => {
         task = {
             ...task,
             buckets: task.buckets
-                .map(b => {
-                    if (!b.date) return b;
-                    b = {
-                        ...b,
-                        ds: b.date,
-                        dt: parseLocalDate(b.date),
-                    };
-                    delete b.date;
-                    return b;
-                })
+                .map(b => b.date
+                    ? { ...b, date: parseLocalDate(b.date) }
+                    : b)
                 .sort(bucketComparator),
         };
     }
@@ -1267,17 +1260,17 @@ class TaskStore extends ReduceStore {
                     const yesterday = new Date();
                     yesterday.setDate(yesterday.getDate() - 1);
                     const maxDate = bs.reduce((max, b) =>
-                        b.dt != null && b.dt > max
-                            ? b.dt
+                        b.date != null && b.date > max
+                            ? b.date
                             : max,
                         yesterday);
                     const newOnes = [];
                     for (let i = 1; i <= 7; i++) {
-                        const dt = new Date(maxDate.valueOf());
-                        dt.setDate(dt.getDate() + i);
+                        const date = new Date(maxDate.valueOf());
+                        date.setDate(date.getDate() + i);
                         newOnes.push({
                             id: ClientId.next(),
-                            dt,
+                            date,
                         });
                     }
                     // todo: gotta send them to the server too...
@@ -1305,11 +1298,7 @@ class TaskStore extends ReduceStore {
                 return workOnBuckets(state, action.planId, bs =>
                     // todo: gotta send it to the server too...
                     bs.map(b => b.id === action.id
-                        ? {
-                            ...b,
-                            ds: action.ds,
-                            dt: parseLocalDate(action.ds),
-                        }
+                        ? { ...b, date: action.date }
                         : b).sort(bucketComparator));
             }
 
@@ -1391,8 +1380,7 @@ class TaskStore extends ReduceStore {
 export const bucketType = PropTypes.exact({
     id: clientOrDatabaseIdType.isRequired,
     name: PropTypes.string,
-    ds: PropTypes.string,
-    dt: PropTypes.instanceOf(Date),
+    date: PropTypes.instanceOf(Date),
 });
 
 TaskStore.stateTypes = {

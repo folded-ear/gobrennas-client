@@ -63,7 +63,7 @@ const TaskActions = {
     SET_BUCKET_DATE: typedAction("task/set-bucket-date", {
         planId: clientOrDatabaseIdType.isRequired,
         id: clientOrDatabaseIdType.isRequired,
-        ds: PropTypes.string.isRequired,
+        date: PropTypes.instanceOf(Date), // can be null
     }),
     DELETE_BUCKET: typedAction("task/delete-bucket", {
         planId: clientOrDatabaseIdType.isRequired,
