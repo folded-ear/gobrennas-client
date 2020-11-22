@@ -15,6 +15,7 @@ import FriendStore from "../data/FriendStore";
 import TaskActions from "../data/TaskActions";
 import UserStore from "../data/UserStore";
 import DeleteButton from "./common/DeleteButton";
+import PlanBucketManager from "./plan/PlanBucketManager";
 import SidebarUnit from "./plan/SidebarUnit";
 import User from "./user/User";
 
@@ -102,6 +103,9 @@ class TaskListSidebar extends React.PureComponent {
                     variant="outlined"
                     fullWidth
                 />
+            </SidebarUnit>
+            <SidebarUnit>
+                <PlanBucketManager />
             </SidebarUnit>
             {friendsLoading && <CircularProgress />}
             {isAdministrator && <SidebarUnit>
