@@ -417,11 +417,17 @@ const renameTask = (state, id, name) =>
         }));
     });
 
-const assignToBucket = (state, id, bucketId) =>
-    mapTask(state, id, t => ({
+const assignToBucket = (state, id, bucketId) => {
+    if (ClientId.is(id)) return state;
+    socket.publish(`/api/plan/${state.activeListId}/assign-bucket`, {
+        id,
+        bucketId,
+    });
+    return mapTask(state, id, t => ({
         ...t,
         bucketId,
     }));
+};
 
 const focusTask = (state, id) => {
     taskForId(state, id);
