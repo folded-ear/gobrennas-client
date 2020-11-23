@@ -42,3 +42,11 @@ export const formatLocalDate = date => {
         "-" + pad(date.getMonth() + 1) +
         "-" + pad(date.getDate());
 };
+
+const humanDateFormatter = new Intl.DateTimeFormat("default", {
+    month: "short",
+    weekday: "short",
+    day: "numeric",
+});
+export const humanDate = date =>
+    date ? humanDateFormatter.format(date) : "";

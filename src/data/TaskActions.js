@@ -82,6 +82,10 @@ const TaskActions = {
         planId: PropTypes.number.isRequired,
         id: PropTypes.number.isRequired,
     }),
+    ASSIGN_ITEM_TO_BUCKET: typedAction("task/assign-item-to-bucket", {
+        id: PropTypes.number.isRequired,
+        bucketId: PropTypes.number,
+    }),
     // ajax actions
     LOAD_LISTS: "task/load-lists",
     LISTS_LOADED: "task/lists-loaded",

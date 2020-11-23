@@ -2,7 +2,6 @@ import {
     Box,
     Container as Content,
     List,
-    Typography,
 } from "@material-ui/core";
 import Add from "@material-ui/icons/Add";
 import PropTypes from "prop-types";
@@ -45,15 +44,16 @@ class TaskList extends React.PureComponent {
             />;
         }
 
+        const plan = activeListLO.getValue();
+        const buckets = plan && plan.buckets;
         return <Content style={{
             backgroundColor: "white",
             minHeight: "100vh",
         }}>
-            <Typography variant="h2">Recipe Planning</Typography>
-            <Box m={4}>
+            <Box p={2}>
                 <TaskListHeader
                     allLists={allLists.getValueEnforcing()}
-                    activeList={activeListLO.getValue()}
+                    activeList={plan}
                     listDetailVisible={listDetailVisible}
                 />
             </Box>
@@ -74,6 +74,7 @@ class TaskList extends React.PureComponent {
                             loadObject={lo}
                             active={isTaskActive(t)}
                             selected={isTaskSelected(t)}
+                            buckets={buckets}
                         />;
                     } else {
                         return <LoadingTask

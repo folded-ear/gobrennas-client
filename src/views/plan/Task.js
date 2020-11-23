@@ -12,7 +12,7 @@ import {
     isSection,
 } from "../../data/tasks";
 import TaskStatus from "../../data/TaskStatus";
-import TaskStore from "../../data/TaskStore";
+import TaskStore, { bucketType } from "../../data/TaskStore";
 import LoadObject from "../../util/LoadObject";
 import LinkIfRecipe from "../common/LinkIfRecipe";
 import LoadingIconButton from "../common/LoadingIconButton";
@@ -21,6 +21,7 @@ import CollapseIconButton from "./CollapseIconButton";
 import DontChangeStatusButton from "./DontChangeStatusButton";
 import Item from "./Item";
 import StatusIconButton from "./StatusIconButton";
+import TaskBucketChip from "./TaskBucketChip";
 import withItemStyles from "./withItemStyles";
 
 class Task extends React.PureComponent {
@@ -238,6 +239,7 @@ class Task extends React.PureComponent {
             loadObject: lo,
             active,
             selected,
+            buckets,
             ancestorDeleting,
             classes,
         } = this.props;
@@ -328,6 +330,14 @@ class Task extends React.PureComponent {
                 id={task.ingredientId}
             />);
         }
+        if (buckets && buckets.length > 0) {
+            addonAfter.unshift(<TaskBucketChip
+                key="bucket"
+                taskId={task.id}
+                bucketId={task.bucketId}
+                buckets={buckets}
+            />);
+        }
 
         return <Item
             depth={depth}
@@ -375,6 +385,7 @@ Task.propTypes = {
     loadObject: PropTypes.instanceOf(LoadObject).isRequired,
     active: PropTypes.bool,
     selected: PropTypes.bool,
+    buckets: PropTypes.arrayOf(bucketType),
     ancestorDeleting: PropTypes.bool,
     classes: PropTypes.object.isRequired,
 };
