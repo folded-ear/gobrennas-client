@@ -95,52 +95,49 @@ const RecipeForm = ({draft: lo, onSave, onSaveCopy, onCancel}) => {
                 />
             </Box>
             <List>
-                {
-                    draft.ingredients.map((it, i) =>
-                        <ListItem key={it.raw}>
-                            <ElEdit
-                                name={`ingredients.${i}`}
-                                value={it}
-                                onChange={handleUpdate}
-                                onMultilinePaste={text => Dispatcher.dispatch(
-                                    {
-                                        type: RecipeActions.MULTI_LINE_DRAFT_INGREDIENT_PASTE_YO,
-                                        index: i,
-                                        text,
-                                    })}
-                                onPressEnter={() => Dispatcher.dispatch({
+                {draft.ingredients.map((it, i) =>
+                    <ListItem key={i}>
+                        <ElEdit
+                            name={`ingredients.${i}`}
+                            value={it}
+                            onChange={handleUpdate}
+                            onMultilinePaste={text => Dispatcher.dispatch({
+                                type: RecipeActions.MULTI_LINE_DRAFT_INGREDIENT_PASTE_YO,
+                                index: i,
+                                text,
+                            })}
+                            onPressEnter={() => Dispatcher.dispatch({
+                                type: RecipeActions.NEW_DRAFT_INGREDIENT_YO,
+                                index: i,
+                            })}
+                            onDelete={() => Dispatcher.dispatch({
+                                type: RecipeActions.KILL_DRAFT_INGREDIENT_YO,
+                                index: i,
+                            })}
+                        />
+                        <div style={{marginLeft: "auto"}}>
+                            <IconButton
+                                size="small"
+                                tabIndex={-1}
+                                onClick={() => Dispatcher.dispatch({
                                     type: RecipeActions.NEW_DRAFT_INGREDIENT_YO,
                                     index: i,
                                 })}
-                                onDelete={() => Dispatcher.dispatch({
+                            >
+                                <Add />
+                            </IconButton>
+                            <IconButton
+                                size="small"
+                                tabIndex={-1}
+                                onClick={() => Dispatcher.dispatch({
                                     type: RecipeActions.KILL_DRAFT_INGREDIENT_YO,
                                     index: i,
                                 })}
-                            />
-                            <div style={{marginLeft: "auto"}}>
-                                <IconButton
-                                    size="small"
-                                    tabIndex={-1}
-                                    onClick={() => Dispatcher.dispatch({
-                                        type: RecipeActions.NEW_DRAFT_INGREDIENT_YO,
-                                        index: i,
-                                    })}
-                                >
-                                    <Add />
-                                </IconButton>
-                                <IconButton
-                                    size="small"
-                                    tabIndex={-1}
-                                    onClick={() => Dispatcher.dispatch({
-                                        type: RecipeActions.KILL_DRAFT_INGREDIENT_YO,
-                                        index: i,
-                                    })}
-                                >
-                                    <Delete />
-                                </IconButton>
-                            </div>
-                        </ListItem>)
-                }
+                            >
+                                <Delete />
+                            </IconButton>
+                        </div>
+                    </ListItem>)}
             </List>
             <Box m={2}>{NewIngredient}</Box>
             <Box m={MARGIN}>

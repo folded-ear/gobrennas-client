@@ -237,7 +237,7 @@ class ElEdit extends React.PureComponent {
                 }}
             />
 
-            {recog == null
+            {(!recog || !raw)
                 ? doRecog(raw) ? <Hunk><CircularProgress/></Hunk> : null
                 : <Hunk>
                     {q && <Hunk style={{backgroundColor: "#fde"}}>{q}</Hunk>}
