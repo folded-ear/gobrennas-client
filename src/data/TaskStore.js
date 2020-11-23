@@ -56,14 +56,11 @@ const createList = (state, name) => {
     };
     TaskApi.createList(name, task.id);
     return {
-        ...state,
+        ...mapTaskLO(state, task.id, () =>
+            LoadObject.withValue(task).creating()),
         activeListId: task.id,
         activeTaskId: null,
         topLevelIds: state.topLevelIds.map(ids => ids.concat(task.id)),
-        byId: {
-            ...state.byId,
-            [task.id]: LoadObject.withValue(task).creating(),
-        },
     };
 };
 
@@ -302,21 +299,18 @@ const spliceIds = (ids, id, after = AT_END) => {
 
 const addTask = (state, parentId, name, after = AT_END) => {
     const task = _newTask(name);
-    const plo = loForId(state, parentId);
+    state = mapTask(state, parentId, p => ({
+        ...p,
+        subtaskIds: spliceIds(p.subtaskIds, task.id, after),
+    }));
+    state = mapTaskLO(state, task.id, () =>
+        LoadObject.withValue({
+            ...task,
+            parentId,
+        }));
     return {
         ...state,
         activeTaskId: task.id,
-        byId: {
-            ...state.byId,
-            [parentId]: plo.map(p => ({
-                ...p,
-                subtaskIds: spliceIds(p.subtaskIds, task.id, after),
-            })),
-            [task.id]: LoadObject.withValue({
-                ...task,
-                parentId,
-            }),
-        },
     };
 };
 
@@ -393,28 +387,41 @@ const flushTasksToRename = state => {
     return state;
 };
 
-const renameTask = (state, id, name) => {
-    let lo = loForId(state, id);
-    const task = lo.getValueEnforcing();
-    if (task.name === name) return state;
-    tasksToRename.add(id);
-    inTheFuture(TaskActions.FLUSH_RENAMES);
-    if (lo.isDone()) {
-        lo = ClientId.is(id)
-            ? lo.creating()
-            : lo.updating();
-    }
-    return {
-        ...state,
-        byId: {
-            ...state.byId,
-            [id]: lo.map(t => ({
-                ...t,
-                name,
-            })),
+const mapTaskLO = (state, id, work) =>
+    dotProp.set(state, [
+        "byId",
+        id,
+    ], lo => {
+        // dotProp will give us an anonymous object literal on a missing key...
+        if (!(lo instanceof LoadObject)) {
+            lo = LoadObject.empty();
         }
-    };
-};
+        return work(lo);
+    });
+
+const mapTask = (state, id, work) =>
+    mapTaskLO(state, id, lo => lo.map(work));
+
+const renameTask = (state, id, name) =>
+    mapTaskLO(state, id, lo => {
+        if (lo.isDone()) {
+            lo = ClientId.is(id)
+                ? lo.creating()
+                : lo.updating();
+        }
+        tasksToRename.add(id);
+        inTheFuture(TaskActions.FLUSH_RENAMES);
+        return lo.map(t => ({
+            ...t,
+            name,
+        }));
+    });
+
+const assignToBucket = (state, id, bucketId) =>
+    mapTask(state, id, t => ({
+        ...t,
+        bucketId,
+    }));
 
 const focusTask = (state, id) => {
     taskForId(state, id);
@@ -579,55 +586,50 @@ function isEmpty(taskOrString) {
 }
 
 const queueStatusUpdate = (state, id, status) => {
-    let lo = loForId(state, id);
-    const t = lo.getValueEnforcing();
-    invariant(
-        t.parentId != null,
-        "Can't change root-level task '%s' to %s",
-        id,
-        status,
-    );
-    if (t._next_status === status) return state; // we're golden
-    const isDelete = willStatusDelete(status);
-    if (isDelete && ClientId.is(id)) {
-        // short circuit this one...
-        return taskDeleted(state, id);
-    }
-    if (isDelete && isEmpty(t)) {
-        state = doTaskDelete(state, id);
-        return taskDeleted(state, id);
-    }
-    let nextLO;
-    if (t.status === status) {
-        statusUpdatesToFlush.delete(t.id);
-        nextLO = lo.map(t => {
-            t = {
-                ...t,
-            };
-            delete t._next_status;
-            return t;
-        }).done();
-    } else {
-        statusUpdatesToFlush.set(id, status);
-        inTheFuture(TaskActions.FLUSH_STATUS_UPDATES, 4);
-        nextLO = lo.map(t => ({
-            ...t,
-            _next_status: status,
-            _expanded: t._expanded && !isDelete,
-        }));
-        if (isDelete) {
-            nextLO = nextLO.deleting();
-        } else {
-            nextLO = nextLO.updating();
+    state = mapTaskLO(state, id, lo => {
+        const t = lo.getValueEnforcing();
+        invariant(
+            t.parentId != null,
+            "Can't change root-level task '%s' to %s",
+            id,
+            status,
+        );
+        if (t._next_status === status) return state; // we're golden
+        const isDelete = willStatusDelete(status);
+        if (isDelete && ClientId.is(id)) {
+            // short circuit this one...
+            return taskDeleted(state, id);
         }
-    }
-    state = {
-        ...state,
-        byId: {
-            ...state.byId,
-            [id]: nextLO,
-        },
-    };
+        if (isDelete && isEmpty(t)) {
+            state = doTaskDelete(state, id);
+            return taskDeleted(state, id);
+        }
+        let nextLO;
+        if (t.status === status) {
+            statusUpdatesToFlush.delete(t.id);
+            nextLO = lo.map(t => {
+                t = {
+                    ...t,
+                };
+                delete t._next_status;
+                return t;
+            }).done();
+        } else {
+            statusUpdatesToFlush.set(id, status);
+            inTheFuture(TaskActions.FLUSH_STATUS_UPDATES, 4);
+            nextLO = lo.map(t => ({
+                ...t,
+                _next_status: status,
+                _expanded: t._expanded && !isDelete,
+            }));
+            if (isDelete) {
+                nextLO = nextLO.deleting();
+            } else {
+                nextLO = nextLO.updating();
+            }
+        }
+        return nextLO;
+    });
     if (state.activeListId === id) {
         state.activeTaskId = null;
     }
@@ -641,17 +643,11 @@ const queueStatusUpdate = (state, id, status) => {
 const cancelStatusUpdate = (state, id) => {
     if (!statusUpdatesToFlush.has(id)) return state;
     statusUpdatesToFlush.delete(id);
-    return {
-        ...state,
-        byId: {
-            ...state.byId,
-            [id]: state.byId[id].map(t => {
-                t = {...t};
-                delete t._next_status;
-                return t;
-            }).done(),
-        },
-    };
+    return mapTaskLO(state, id, lo => lo.map(t => {
+        t = {...t};
+        delete t._next_status;
+        return t;
+    }).done());
 };
 
 const taskDeleted = (state, id) => {
@@ -989,7 +985,7 @@ const listsLoaded = (state, lists) => {
     return state;
 };
 
-const workOnBuckets = (state, planId, work) =>
+const mapPlanBuckets = (state, planId, work) =>
     dotProp.set(state, [
         "byId",
         planId,
@@ -1289,12 +1285,12 @@ class TaskStore extends ReduceStore {
             }
 
             case TaskActions.CREATE_BUCKET: {
-                return workOnBuckets(state, action.planId, bs =>
+                return mapPlanBuckets(state, action.planId, bs =>
                     [{id: ClientId.next()}].concat(bs));
             }
 
             case TaskActions.GENERATE_ONE_WEEKS_BUCKETS: {
-                return workOnBuckets(state, action.planId, bs => {
+                return mapPlanBuckets(state, action.planId, bs => {
                     const yesterday = new Date();
                     yesterday.setDate(yesterday.getDate() - 1);
                     const maxDate = bs.reduce((max, b) =>
@@ -1318,14 +1314,14 @@ class TaskStore extends ReduceStore {
             }
 
             case TaskActions.BUCKET_CREATED: {
-                return workOnBuckets(state, action.planId, bs =>
+                return mapPlanBuckets(state, action.planId, bs =>
                     bs.filter(b => b.id !== action.oldId)
                         .concat(deserializeBucket(action.data))
                         .sort(bucketComparator));
             }
 
             case TaskActions.DELETE_BUCKET: {
-                return workOnBuckets(state, action.planId, bs => {
+                return mapPlanBuckets(state, action.planId, bs => {
                     const idx = bs.findIndex(b => b.id === action.id);
                     if (idx >= 0 && !ClientId.is(action.id)) {
                         socket.publish(`/api/plan/${state.activeListId}/buckets/delete`, {id: action.id});
@@ -1335,12 +1331,12 @@ class TaskStore extends ReduceStore {
             }
 
             case TaskActions.BUCKET_DELETED: {
-                return workOnBuckets(state, action.planId, bs =>
+                return mapPlanBuckets(state, action.planId, bs =>
                     bs.filter(b => b.id !== action.id));
             }
 
             case TaskActions.RENAME_BUCKET: {
-                return workOnBuckets(state, action.planId, bs =>
+                return mapPlanBuckets(state, action.planId, bs =>
                     bs.map(b => {
                         if (b.id !== action.id) return b;
                         b = {...b, name: action.name};
@@ -1351,7 +1347,7 @@ class TaskStore extends ReduceStore {
             }
 
             case TaskActions.SET_BUCKET_DATE: {
-                return workOnBuckets(state, action.planId, bs =>
+                return mapPlanBuckets(state, action.planId, bs =>
                     bs.map(b => {
                         if (b.id !== action.id) return b;
                         b = {...b, date: action.date};
@@ -1361,11 +1357,15 @@ class TaskStore extends ReduceStore {
             }
 
             case TaskActions.BUCKET_UPDATED: {
-                return workOnBuckets(state, action.planId, bs =>
+                return mapPlanBuckets(state, action.planId, bs =>
                     bs.map(b => {
                         if (b.id !== action.data.id) return b;
                         return deserializeBucket(action.data);
                     }).sort(bucketComparator));
+            }
+
+            case TaskActions.ASSIGN_ITEM_TO_BUCKET: {
+                return assignToBucket(state, action.id, action.bucketId);
             }
 
             case TaskActions.FLUSH_RENAMES:
