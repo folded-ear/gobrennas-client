@@ -78,6 +78,9 @@ const BucketManager = ({
                                 onChange={e => onBucketNameChange(b.id, e.target.value)}
                                 placeholder={getBucketLabel(b)}
                                 size="small"
+                                style={{
+                                    minWidth: "8em",
+                                }}
                             />
                         </TableCell>
                         <TableCell>

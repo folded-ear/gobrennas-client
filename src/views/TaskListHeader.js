@@ -154,6 +154,7 @@ class TaskListHeader extends React.PureComponent {
                             style={{
                                 minHeight: "100%",
                                 minWidth: "40vw",
+                                maxWidth: "90vw",
                                 backgroundColor: "#f7f7f7",
                             }}
                         >
