@@ -12,7 +12,7 @@ import React from "react";
 import Dispatcher from "../data/dispatcher";
 import TaskActions from "../data/TaskActions";
 import WindowStore from "../data/WindowStore";
-import { humanStringComparator } from "../util/comparators";
+import { byNameComparator } from "../util/comparators";
 import EditButton from "./common/EditButton";
 import {
     CollapseAll,
@@ -130,7 +130,7 @@ class TaskListHeader extends React.PureComponent {
                         value={activeList && activeList.id}
                         onChange={this.onSelect}
                     >
-                        {allLists.sort(humanStringComparator).map(l =>
+                        {allLists.sort(byNameComparator).map(l =>
                             <MenuItem
                                 key={l.id}
                                 value={l.id}
@@ -153,6 +153,7 @@ class TaskListHeader extends React.PureComponent {
                         <div
                             style={{
                                 minHeight: "100%",
+                                minWidth: "40vw",
                                 backgroundColor: "#f7f7f7",
                             }}
                         >
