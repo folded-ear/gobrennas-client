@@ -15,6 +15,7 @@ const TaskActions = {
     TOGGLE_EXPANDED: "task/toggle-expanded",
     EXPAND_ALL: "task/expand-all",
     COLLAPSE_ALL: "task/collapse-all",
+    SORT_BY_BUCKET: "task/sort-by-bucket",
     // user actions (with persistence)
     CREATE_LIST: "task/create-list",
     RENAME_LIST: typedAction("task/rename-list", {

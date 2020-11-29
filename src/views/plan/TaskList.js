@@ -55,6 +55,7 @@ class TaskList extends React.PureComponent {
                     allLists={allLists.getValueEnforcing()}
                     activeList={plan}
                     listDetailVisible={listDetailVisible}
+                    hasBuckets={!!buckets}
                 />
             </Box>
             <List>

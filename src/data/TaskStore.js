@@ -1374,6 +1374,31 @@ class TaskStore extends ReduceStore {
                 return assignToBucket(state, action.id, action.bucketId);
             }
 
+            case TaskActions.SORT_BY_BUCKET: {
+                let plan = taskForId(state, state.activeListId);
+                if (!plan.buckets) return state;
+                const bucketIdOrder = plan.buckets.reduce((index, b, i) => ({
+                    ...index,
+                    [b.id]: i,
+                }), {});
+                const desiredIds = plan.subtaskIds
+                    .map(id => taskForId(state, id))
+                    .map(t => [t.id, t.bucketId ? bucketIdOrder[t.bucketId] : -1])
+                    .sort((pa, pb) => pa[1] - pb[1])
+                    .map(pair => pair[0]);
+                for (var i = 0, l = desiredIds.length; i < l; i++) {
+                    // Spec is {ids, parentId, afterId}
+                    if (plan.subtaskIds[i] !== desiredIds[i]) {
+                        socket.publish(`/api/plan/${state.activeListId}/reorder-items`, {
+                            id: state.activeListId,
+                            subitemIds: desiredIds,
+                        });
+                        break;
+                    }
+                }
+                return state;
+            }
+
             case TaskActions.FLUSH_RENAMES:
                 return flushTasksToRename(state);
             case TaskActions.FLUSH_STATUS_UPDATES:

@@ -6,6 +6,8 @@ import IconButton from "@material-ui/core/IconButton";
 import MenuItem from "@material-ui/core/MenuItem";
 import Select from "@material-ui/core/Select";
 import TextField from "@material-ui/core/TextField";
+import Tooltip from "@material-ui/core/Tooltip";
+import { DynamicFeed } from "@material-ui/icons";
 import { Container } from "flux/utils";
 import PropTypes from "prop-types";
 import React from "react";
@@ -37,6 +39,7 @@ class TaskListHeader extends React.PureComponent {
         this.onNameChange = this.onNameChange.bind(this);
         this.onExpandAll = this.onExpandAll.bind(this);
         this.onCollapseAll = this.onCollapseAll.bind(this);
+        this.sortByBucket = this.sortByBucket.bind(this);
     }
 
     onShowDrawer() {
@@ -91,6 +94,12 @@ class TaskListHeader extends React.PureComponent {
         });
     }
 
+    sortByBucket() {
+        Dispatcher.dispatch({
+            type: TaskActions.SORT_BY_BUCKET,
+        });
+    }
+
     render() {
         const {
             activeList,
@@ -117,6 +126,17 @@ class TaskListHeader extends React.PureComponent {
                 >
                     <CollapseAll />
                 </IconButton>
+                <Tooltip
+                    title="Sort plan in bucket order"
+                    placement="bottom-start"
+                >
+                    <IconButton
+                        aria-label="sort-by-bucket"
+                        onClick={this.sortByBucket}
+                    >
+                        <DynamicFeed />
+                    </IconButton>
+                </Tooltip>
             </Box>}
             {allLists && allLists.length > 0 && <React.Fragment>
                 <FormControl
@@ -182,6 +202,7 @@ TaskListHeader.propTypes = {
     allLists: PropTypes.array.isRequired,
     activeList: PropTypes.object,
     listDetailVisible: PropTypes.bool.isRequired,
+    hasBuckets: PropTypes.bool.isRequired,
     windowWidth: PropTypes.number.isRequired,
 };
 
