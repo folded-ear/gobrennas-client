@@ -11,6 +11,7 @@ import {
 import {
     Add,
     Cancel,
+    CloudUpload,
     Delete,
     FileCopy,
     Save,
@@ -22,6 +23,13 @@ import Dispatcher from "../../data/dispatcher";
 import RecipeActions from "../../data/RecipeActions";
 import { Recipe } from "../../data/RecipeTypes";
 import ElEdit from "../ElEdit";
+import {makeStyles} from "@material-ui/core/styles";
+
+const useStyles = makeStyles((theme) => ({
+    button: {
+        margin: theme.spacing(1)
+    }
+}));
 
 const handleFileUpdate = (e) => {
     const {name: key, files} = e.target;
@@ -56,19 +64,10 @@ const removeLabel = (label, index) => {
     });
 };
 
-const NewIngredient = <Button
-    icon="plus"
-    onClick={() => Dispatcher.dispatch({
-        type: RecipeActions.NEW_DRAFT_INGREDIENT_YO,
-    })}
->
-    New Ingredient
-</Button>;
-
 const RecipeForm = ({draft: lo, onSave, onSaveCopy, onCancel}) => {
-
+    const classes = useStyles();
     const draft = lo.getValueEnforcing();
-    const MARGIN = 1;
+    const MARGIN = 2;
 
     const form = (
         <>
@@ -93,6 +92,23 @@ const RecipeForm = ({draft: lo, onSave, onSaveCopy, onCancel}) => {
                     label="External URL"
                     onChange={handleUpdate}
                 />
+            </Box>
+            <Box m={MARGIN}>
+                <Button
+                    variant="contained"
+                    color="default"
+                    className={classes.button}
+                    startIcon={<CloudUpload/>}
+                    component="label"
+                >
+                    Upload Photo
+                    <input
+                        type="file"
+                        name="photo"
+                        onChange={handleFileUpdate}
+                        hidden
+                    />
+                </Button>
             </Box>
             <List>
                 {draft.ingredients.map((it, i) =>
@@ -139,7 +155,19 @@ const RecipeForm = ({draft: lo, onSave, onSaveCopy, onCancel}) => {
                         </div>
                     </ListItem>)}
             </List>
-            <Box m={2}>{NewIngredient}</Box>
+            <Box m={MARGIN}>
+                <Button
+                    className={classes.button}
+                    startIcon={<Add/>}
+                    color="secondary"
+                    variant="contained"
+                    onClick={() => Dispatcher.dispatch({
+                        type: RecipeActions.NEW_DRAFT_INGREDIENT_YO,
+                    })}
+                >
+                    Add Ingredient
+                </Button>
+            </Box>
             <Box m={MARGIN}>
                 <TextField
                     name="directions"
@@ -201,11 +229,8 @@ const RecipeForm = ({draft: lo, onSave, onSaveCopy, onCancel}) => {
                     placeholder='Type and press enter to add labels'
                 />
             </Box>
-            <Box m={MARGIN}>
-                <label>Upload Image</label>
-                <input type="file" name="photo" onChange={handleFileUpdate}/>
-            </Box>
             <Button
+                className={classes.button}
                 variant="contained"
                 color="primary"
                 onClick={() => onSave(draft)}
@@ -214,6 +239,7 @@ const RecipeForm = ({draft: lo, onSave, onSaveCopy, onCancel}) => {
                 Save
             </Button>
             {onSaveCopy && <Button
+                className={classes.button}
                 variant="contained"
                 color="primary"
                 startIcon={<FileCopy/>}
@@ -221,6 +247,7 @@ const RecipeForm = ({draft: lo, onSave, onSaveCopy, onCancel}) => {
                 Save as Copy
             </Button>}
             <Button
+                className={classes.button}
                 variant="contained"
                 color="secondary"
                 onClick={() => onCancel(draft)}

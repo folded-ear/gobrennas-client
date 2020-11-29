@@ -12,7 +12,6 @@ import PropTypes from "prop-types";
 import React from "react";
 import { Redirect } from "react-router-dom";
 import Dispatcher from "../../data/dispatcher";
-import LibraryActions from "../../data/LibraryActions";
 import RecipeActions from "../../data/RecipeActions";
 import RecipeApi from "../../data/RecipeApi";
 import { Recipe } from "../../data/RecipeTypes";
@@ -24,12 +23,12 @@ import DeleteButton from "../common/DeleteButton";
 import Directions from "../common/Directions";
 import EditButton from "../common/EditButton";
 import Source from "../common/Source";
-import StageButton from "../common/StageButton";
 import IngredientItem from "../IngredientItem";
 import LabelItem from "../LabelItem";
 import ItemImageUpload from "../library/ItemImageUpload";
 import SendToPlan from "../SendToPlan";
 import User from "../user/User";
+import RecipeInfo from "../common/RecipeInfo";
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -59,7 +58,7 @@ const useStyles = makeStyles(theme => ({
     },
 }));
 
-const RecipeDetail = ({recipeLO, mine, staged, ownerLO}) => {
+const RecipeDetail = ({recipeLO, mine, ownerLO}) => {
 
     const classes = useStyles();
 
@@ -77,20 +76,7 @@ const RecipeDetail = ({recipeLO, mine, staged, ownerLO}) => {
             <Grid container>
                 <Grid item xs={12}>
                         <Toolbar className={classes.toolbar}>
-                            <Typography className={classes.name} component="h1" variant="h3">{recipe.name}</Typography>
-                            {mine && (staged
-                                    ? <StageButton
-                                        staged
-                                        onClick={() => Dispatcher.dispatch({
-                                            type: LibraryActions.UNSTAGE_RECIPE,
-                                            id: recipe.id,
-                                        })}/>
-                                    : <StageButton
-                                        onClick={() => Dispatcher.dispatch({
-                                            type: LibraryActions.STAGE_RECIPE,
-                                            id: recipe.id,
-                                        })}/>
-                            )}
+                            <Typography className={classes.name} variant="h2">{recipe.name}</Typography>
                             <CopyButton
                                 mine={mine}
                                 onClick={() => history.push(`/library/recipe/${recipe.id}/make-copy`)}
@@ -117,26 +103,10 @@ const RecipeDetail = ({recipeLO, mine, staged, ownerLO}) => {
                         : <ItemImageUpload recipe={recipe}/>}
                 </Grid>
                 <Grid item xs={5}>
-                    {recipe.externalUrl && <React.Fragment>
-                        <Typography variant="h5">Source</Typography>
-                        <Source url={recipe.externalUrl}/>
-                    </React.Fragment>}
-
-                    {recipe.yield && <React.Fragment>
-                        <Typography variant="h5">Yield</Typography>
-                        <p>{recipe.yield} servings</p>
-                    </React.Fragment>}
-
-                    {recipe.totalTime && <React.Fragment>
-                        <Typography variant="h5">Total time</Typography>
-                        <p>{recipe.totalTime} minutes</p>
-                    </React.Fragment>}
-
-                    {recipe.calories && <React.Fragment>
-                        <Typography variant="h5">Calories</Typography>
-                        <p>{recipe.calories} calories</p>
-                    </React.Fragment>}
-
+                    {recipe.externalUrl && <RecipeInfo label="Source" text={<Source url={recipe.externalUrl}/>}/>}
+                    {recipe.yield && <RecipeInfo label="Yield" text={`${recipe.yield} servings`}/>}
+                    {recipe.totalTime && <RecipeInfo label="Time" text={`${recipe.totalTime} minutes`}/>}
+                    {recipe.calories && <RecipeInfo label="Calories" text={`${recipe.calories} per serving`}/>}
                     {recipe.labels && recipe.labels
                         .filter(label => label.indexOf("--") !== 0)
                         .map(label =>

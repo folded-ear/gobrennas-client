@@ -56,13 +56,14 @@ class RecipeEdit extends Component<{ recipeLO: any }> {
                 <RecipeForm onSave={handleSave}
                             onSaveCopy={handleSaveCopy}
                             onCancel={handleCancel}/>
-                <hr />
-                <DeleteButton
-                    type="recipe"
-                    label="Delete Recipe"
-                    onConfirm={() => handleDelete(recipeLO.getValueEnforcing().id)}
-                />
-
+                <hr/>
+                <div style={{float: "right"}}>
+                    <DeleteButton
+                        type="recipe"
+                        label="Delete Recipe"
+                        onConfirm={() => handleDelete(recipeLO.getValueEnforcing().id)}
+                    />
+                </div>
             </Content>
         );
     }
