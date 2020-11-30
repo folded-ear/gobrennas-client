@@ -1,5 +1,5 @@
 import React from "react";
-import {LinkIcon} from "@material-ui/icons/Link";
+import LinkIcon from "@material-ui/icons/Link";
 import {Container} from "flux/utils";
 import PropTypes from "prop-types";
 import {Link} from "react-router-dom";
