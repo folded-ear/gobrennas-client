@@ -1,6 +1,15 @@
-import {FormControl, InputAdornment, InputLabel, OutlinedInput,} from "@material-ui/core";
-import {makeStyles} from "@material-ui/core/styles";
-import {Search} from "@material-ui/icons";
+import {
+    FormControl,
+    IconButton,
+    InputAdornment,
+    InputLabel,
+    OutlinedInput,
+} from "@material-ui/core";
+import { makeStyles } from "@material-ui/core/styles";
+import {
+    Clear,
+    Search,
+} from "@material-ui/icons";
 import PropTypes from "prop-types";
 import React from "react";
 
@@ -8,7 +17,7 @@ const useStyles = makeStyles((theme) => ({
     margin: theme.spacing(1),
 }));
 
-const SearchFilter = ({term, onFilter, onChange}) => {
+const SearchFilter = ({term, onFilter, onChange, onClear}) => {
     const classes = useStyles();
     return (<FormControl
         fullWidth
@@ -26,14 +35,25 @@ const SearchFilter = ({term, onFilter, onChange}) => {
                     <Search/>
                 </InputAdornment>
             }
+            endAdornment={
+                onClear && <InputAdornment position="end">
+                    <IconButton
+                        disabled={!term}
+                        onClick={onClear}
+                    >
+                        <Clear />
+                    </IconButton>
+                </InputAdornment>
+            }
         />
     </FormControl>);
 };
 
 SearchFilter.propTypes = {
-    term: PropTypes.string,
+    term: PropTypes.string.isRequired,
     onFilter: PropTypes.func,
-    onChange: PropTypes.func
+    onChange: PropTypes.func.isRequired,
+    onClear: PropTypes.func,
 };
 
 export default SearchFilter;

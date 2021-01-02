@@ -101,7 +101,17 @@ class LibraryStore extends ReduceStore {
                     filter: action.filter
                 };
             }
-            
+
+            case LibraryActions.CLEAR_FILTER: {
+                const filter = "";
+                LibraryApi.loadLibrary(state.scope, filter);
+                return {
+                    ...state,
+                    filter: filter,
+                    recipeIds: state.recipeIds.mapLO(lo => lo.loading()),
+                };
+            }
+
             case LibraryActions.FILTER_LIBRARY: {
                 LibraryApi.loadLibrary(state.scope, state.filter);
                 return {

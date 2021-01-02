@@ -43,6 +43,11 @@ const updateFilter = (e) => {
     });
 };
 
+const clearFilter = () =>
+    Dispatcher.dispatch({
+        type: LibraryActions.CLEAR_FILTER,
+    });
+
 const sendFilter = (e) => {
     if (e.key === "Enter") {
         const {value: filter} = e.target;
@@ -84,6 +89,7 @@ const RecipesList = (props: {}) => {
                 onChange={updateFilter}
                 onFilter={sendFilter}
                 term={filter}
+                onClear={clearFilter}
             />
         </Paper>
         {
