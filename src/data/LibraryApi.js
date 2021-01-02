@@ -12,7 +12,7 @@ const LibraryApi = {
     
     loadLibrary: (scope, filter) => {
         promiseFlux(
-            axios.get(`/?scope=${encodeURIComponent(scope)}&filter=${encodeURIComponent(filter)}`),
+            axios.get(`/?scope=${encodeURIComponent(scope)}&filter=${encodeURIComponent(filter.trim())}`),
             data => ({
                 type: LibraryActions.LIBRARY_LOADED,
                 data: data.data,
