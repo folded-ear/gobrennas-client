@@ -218,7 +218,7 @@ class ElEdit extends React.PureComponent {
                 onInputChange={this.handleChange}
                 freeSolo
                 handleHomeEndKeys
-                clearOnEscape
+                disableClearable
                 style={{width: "50%"}}
                 options={hasSuggestions ? suggestions.map((option) => {
                     return (option.result);
