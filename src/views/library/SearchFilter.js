@@ -26,6 +26,7 @@ const SearchFilter = ({term, onFilter, onChange, onClear}) => {
         <InputLabel htmlFor="input-with-icon-adornment">Filter Recipes By Keyword</InputLabel>
         <OutlinedInput
             id="input-with-icon-adornment"
+            autoComplete="off"
             onChange={onChange}
             onKeyDown={onFilter}
             value={term}
