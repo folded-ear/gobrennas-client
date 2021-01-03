@@ -48,16 +48,6 @@ const clearFilter = () =>
         type: LibraryActions.CLEAR_FILTER,
     });
 
-const sendFilter = (e) => {
-    if (e.key === "Enter") {
-        const {value: filter} = e.target;
-        Dispatcher.dispatch({
-            type: LibraryActions.FILTER_LIBRARY,
-            filter
-        });
-    }
-};
-
 const toggleScope = (e) => {
     const everyone = e.target.checked;
     Dispatcher.dispatch({
@@ -87,7 +77,6 @@ const RecipesList = (props: {}) => {
             </div>
             <SearchFilter
                 onChange={updateFilter}
-                onFilter={sendFilter}
                 term={filter}
                 onClear={clearFilter}
             />

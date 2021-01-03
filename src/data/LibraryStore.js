@@ -78,7 +78,7 @@ class LibraryStore extends ReduceStore {
                         type: LibraryActions.LOAD_LIBRARY
                     })), // LoadObjectState<ID[]>
             scope: SCOPE_MINE,
-            filter: ""
+            filter: "",
         };
     }
     
@@ -87,7 +87,7 @@ class LibraryStore extends ReduceStore {
 
             case LibraryActions.SET_SCOPE: {
                 if (action.scope === state.scope) return state;
-                LibraryApi.loadLibrary(action.scope, state.filter);
+                LibraryApi.loadLibrary(action.scope, "");
                 return {
                     ...state,
                     scope: action.scope,
@@ -103,26 +103,15 @@ class LibraryStore extends ReduceStore {
             }
 
             case LibraryActions.CLEAR_FILTER: {
-                const filter = "";
-                LibraryApi.loadLibrary(state.scope, filter);
                 return {
                     ...state,
-                    filter: filter,
-                    recipeIds: state.recipeIds.mapLO(lo => lo.loading()),
+                    filter: "",
                 };
             }
 
-            case LibraryActions.FILTER_LIBRARY: {
-                LibraryApi.loadLibrary(state.scope, state.filter);
-                return {
-                    ...state,
-                    recipeIds: state.recipeIds.mapLO(lo => lo.loading()),
-                };
-            }
-            
             case LibraryActions.LOAD_LIBRARY:
             case RecipeActions.DISSECTION_RECORDED: {
-                LibraryApi.loadLibrary(state.scope, state.filter);
+                LibraryApi.loadLibrary(state.scope, "");
                 return {
                     ...state,
                     recipeIds: state.recipeIds.mapLO(lo => lo.loading()),

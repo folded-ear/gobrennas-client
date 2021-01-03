@@ -12,7 +12,6 @@ const LibraryActions = {
     SET_SCOPE: "library/set-scope",
     UPDATE_FILTER: "library/update-filter",
     CLEAR_FILTER: "library/clear-filter",
-    FILTER_LIBRARY: "library/filter-library",
 };
 
 /*
