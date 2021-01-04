@@ -8,6 +8,7 @@ import {
     ListItem,
     TextField,
 } from "@material-ui/core";
+import { makeStyles } from "@material-ui/core/styles";
 import {
     Add,
     Cancel,
@@ -23,7 +24,6 @@ import Dispatcher from "../../data/dispatcher";
 import RecipeActions from "../../data/RecipeActions";
 import { Recipe } from "../../data/RecipeTypes";
 import ElEdit from "../ElEdit";
-import {makeStyles} from "@material-ui/core/styles";
 
 const useStyles = makeStyles((theme) => ({
     button: {
@@ -68,6 +68,18 @@ const RecipeForm = ({draft: lo, onSave, onSaveCopy, onCancel}) => {
     const classes = useStyles();
     const draft = lo.getValueEnforcing();
     const MARGIN = 2;
+    let photoName, photoUrl, onPhotoUrlLoad;
+    if (draft.photo) {
+        if (typeof draft.photo === "string") {
+            const p = draft.photo.split("/");
+            photoName = p[p.length - 1];
+            photoUrl = draft.photo;
+        } else {
+            photoName = draft.photo.name;
+            photoUrl = URL.createObjectURL(draft.photo);
+            onPhotoUrlLoad = () => URL.revokeObjectURL(photoUrl);
+        }
+    }
 
     const form = (
         <>
@@ -94,21 +106,35 @@ const RecipeForm = ({draft: lo, onSave, onSaveCopy, onCancel}) => {
                 />
             </Box>
             <Box m={MARGIN}>
+                {draft.photo && <img
+                    src={photoUrl}
+                    alt={photoName}
+                    onLoad={onPhotoUrlLoad}
+                    style={{
+                        maxWidth: "400px",
+                        maxHeight: "200px",
+                    }}
+                />}
                 <Button
                     variant="contained"
                     color="default"
                     className={classes.button}
                     startIcon={<CloudUpload/>}
                     component="label"
+                    style={{
+                        float: "right",
+                    }}
                 >
                     Upload Photo
                     <input
-                        type="file"
                         name="photo"
+                        type="file"
+                        accept="image/*"
                         onChange={handleFileUpdate}
                         hidden
                     />
                 </Button>
+                <br style={{clear: "right"}} />
             </Box>
             <List>
                 {draft.ingredients.map((it, i) =>
