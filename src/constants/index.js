@@ -6,5 +6,7 @@ export const LOCAL_STORAGE_ACCESS_TOKEN = "accessToken";
 export const LOCAL_STORAGE_PREFERENCES = "preferences";
 export const SESSION_STORAGE_POST_LOGIN = "postLogin";
 
+export const MAX_UPLOAD_BYTES = 1048576;
+
 export const OAUTH2_REDIRECT_URI = APP_BASE_URL + "/post-oauth2/redirect";
 export const GOOGLE_AUTH_URL = API_BASE_URL + "/oauth2/authorize/google?redirect_uri=" + OAUTH2_REDIRECT_URI;

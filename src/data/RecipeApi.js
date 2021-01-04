@@ -1,5 +1,8 @@
 import BaseAxios from "axios";
-import { API_BASE_URL } from "../constants/index";
+import {
+    API_BASE_URL,
+    MAX_UPLOAD_BYTES,
+} from "../constants/index";
 import promiseFlux from "../util/promiseFlux";
 import RecipeActions from "./RecipeActions";
 
@@ -18,19 +21,56 @@ function build(recipe) {
     return recipeData;
 }
 
+const promiseWellSizedFile = fileOrString => new Promise((resolve, reject) => {
+    if (fileOrString instanceof File && fileOrString.size > MAX_UPLOAD_BYTES) {
+        // lifted from https://codepen.io/tuanitpro/pen/wJZJbp
+        const reader = new FileReader();
+        reader.onerror = reject;
+        reader.onload = function (e) {
+            const img = document.createElement("img");
+            img.onerror = reject;
+            img.onload = function() {
+                const canvas = document.createElement("canvas");
+                let ctx = canvas.getContext("2d");
+                ctx.drawImage(img, 0, 0);
+
+                // This is basically a WAG. Go, go, go?!
+                const factor = MAX_UPLOAD_BYTES / fileOrString.size;
+                const width = Math.round(img.width * factor);
+                const height = Math.round(img.height * factor);
+
+                canvas.width = width;
+                canvas.height = height;
+                ctx = canvas.getContext("2d");
+                ctx.drawImage(img, 0, 0, width, height);
+
+                canvas.toBlob(blob => {
+                    let fn = fileOrString.name;
+                    if (!fn.endsWith(".jpg")) {
+                        fn += ".jpg";
+                    }
+                    resolve(new File([blob], fn));
+                }, "image/jpeg");
+            };
+            img.src = e.target.result;
+        };
+        reader.readAsDataURL(fileOrString);
+    } else {
+        resolve(fileOrString);
+    }
+});
+
 const RecipeApi = {
     
     addRecipe(recipe) {
         const id = recipe.id;
         delete recipe.id;
-        let recipeData = build(recipe);
         promiseFlux(
-            BaseAxios.create({
-                baseURL: `${API_BASE_URL}/api`,
-                headers: {
-                    "Content-Type": "multipart/form-data",
-                }
-            }).post("/recipe", recipeData),
+            promiseWellSizedFile(recipe.photo).then(photo =>
+                axios.post("/recipe", build({
+                    ...recipe,
+                    photo,
+                }))),
             data => ({
                 type: RecipeActions.RECIPE_CREATED,
                 id, // need this for translation
@@ -41,7 +81,11 @@ const RecipeApi = {
     
     updateRecipe(recipe) {
         promiseFlux(
-            axios.put(`/recipe/${recipe.id}`, build(recipe)),
+            promiseWellSizedFile(recipe.photo).then(photo =>
+                axios.put(`/recipe/${recipe.id}`, build({
+                    ...recipe,
+                    photo,
+                }))),
             data => ({
                 type: RecipeActions.RECIPE_UPDATED,
                 id: recipe.id,
@@ -51,10 +95,15 @@ const RecipeApi = {
     },
 
     setRecipePhoto(id, photo) {
-        let payload = new FormData();
-        payload.append("photo", photo);
+        if (!(photo instanceof File)) {
+            throw new Error("Non-File photo? Huh?");
+        }
         promiseFlux(
-            axios.put(`/recipe/${id}/photo`, payload),
+            promiseWellSizedFile(photo).then(p => {
+                let payload = new FormData();
+                payload.append("photo", p);
+                return axios.put(`/recipe/${id}/photo`, payload);
+            }),
             data => ({
                 type: RecipeActions.RECIPE_UPDATED,
                 id,

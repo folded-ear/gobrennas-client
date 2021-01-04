@@ -29,7 +29,7 @@ class RecipeStore extends ReduceStore {
                 RecipeApi.addRecipe(buildRecipe(action.data));
                 return state;
             }
-            
+
             case RecipeActions.UPDATE_RECIPE: {
                 RecipeApi.updateRecipe(buildRecipe(action.data));
                 return state;
