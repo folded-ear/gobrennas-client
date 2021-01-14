@@ -34,10 +34,14 @@ const promiseWellSizedFile = fileOrString => new Promise((resolve, reject) => {
                 let ctx = canvas.getContext("2d");
                 ctx.drawImage(img, 0, 0);
 
-                // This is basically a WAG. Go, go, go?!
-                const factor = MAX_UPLOAD_BYTES / fileOrString.size;
-                const width = Math.round(img.width * factor);
-                const height = Math.round(img.height * factor);
+                // Scale by total area, maintaining aspect ratio, aiming a
+                // little low. If it's a PNG source, the JPG will end up _way_
+                // smaller, but whatever.
+                const factor = MAX_UPLOAD_BYTES / fileOrString.size * 0.9;
+                const srcArea = img.width * img.height;
+                const targetArea = Math.floor(srcArea * factor);
+                const width = Math.floor(Math.sqrt(targetArea * img.width / img.height));
+                const height = Math.floor(Math.sqrt(targetArea * img.height / img.width));
 
                 canvas.width = width;
                 canvas.height = height;
