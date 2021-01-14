@@ -48,13 +48,14 @@ const promiseWellSizedFile = fileOrString => new Promise((resolve, reject) => {
                 ctx = canvas.getContext("2d");
                 ctx.drawImage(img, 0, 0, width, height);
 
+                const contentType = "image/jpeg";
                 canvas.toBlob(blob => {
                     let fn = fileOrString.name;
                     if (!fn.endsWith(".jpg")) {
                         fn += ".jpg";
                     }
-                    resolve(new File([blob], fn));
-                }, "image/jpeg");
+                    resolve(new File([blob], fn, { type: contentType}));
+                }, contentType);
             };
             img.src = e.target.result;
         };
