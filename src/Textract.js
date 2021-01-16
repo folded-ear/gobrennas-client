@@ -6,9 +6,6 @@ import PropTypes from "prop-types";
 import React from "react";
 import LoadingIndicator from "./views/common/LoadingIndicator";
 
-const imageUrl = "/pork_chops_sm.jpg";
-const jsonUrl = "/pork_chops_sm_textract.json";
-
 const overlaps = (a, b) =>
     a.left + a.width >= b.left &&
     a.left <= b.left + b.width &&
@@ -16,7 +13,9 @@ const overlaps = (a, b) =>
     a.top <= b.top + b.height;
 
 const Ui = ({image, textract}) => {
-    const [[width, height, scaleFactor], setSize] = React.useState([100, 100, 1]);
+    const [[width, height, scaledWidth], setSize] = React.useState([100, 100, 100]);
+    const scaleFactor = scaledWidth / width;
+    const scaledHeight = height * scaleFactor;
     const [drawnBox, setDrawnBox] = React.useState(null);
     const [selectedRegion, setSelectedRegion] = React.useState(null);
     const [partitionedLines, setPartitionedLines] = React.useState([textract, []]);
@@ -58,7 +57,6 @@ const Ui = ({image, textract}) => {
         setSelectedRegion(null);
     };
     const updateBoxDraw = e => {
-        const svg = findSvg(e.target);
         const [x, y] = getXY(e);
         const b = {
             ...drawnBox,
@@ -67,18 +65,22 @@ const Ui = ({image, textract}) => {
         };
         setDrawnBox(b);
         const sel = {
-            top: Math.min(b.y1, b.y2) / svg.clientHeight,
-            left: Math.min(b.x1, b.x2) / svg.clientWidth,
+            top: Math.min(b.y1, b.y2) / scaledHeight,
+            left: Math.min(b.x1, b.x2) / scaledWidth,
         };
-        sel.height = Math.max(b.y1, b.y2) / svg.clientHeight - sel.top;
-        sel.width = Math.max(b.x1, b.x2) / svg.clientWidth - sel.left;
+        sel.height = Math.max(b.y1, b.y2) / scaledHeight - sel.top;
+        sel.width = Math.max(b.x1, b.x2) / scaledWidth - sel.left;
         setSelectedRegion(sel);
     };
     const endBoxDraw = e => {
         const [x, y] = getXY(e);
         if (drawnBox.x1 === x && drawnBox.y1 === y) {
-            // just a click; pretend it was a one-pixel draw
-            updateBoxDraw(e);
+            setSelectedRegion({
+                top: y / scaledHeight,
+                left: x / scaledWidth,
+                height: 0,
+                width: 0,
+            });
         }
         setDrawnBox(null);
     };
@@ -99,25 +101,25 @@ const Ui = ({image, textract}) => {
                     <img
                         src={image}
                         alt="to extract"
-                        width={width * scaleFactor}
-                        height={height * scaleFactor}
+                        width={scaledWidth}
+                        height={scaledHeight}
                         onLoad={e => {
                             const img = e.target;
                             setSize([
                                 img.naturalWidth,
                                 img.naturalHeight,
-                                img.parentNode.clientWidth / img.naturalWidth
+                                img.parentNode.clientWidth,
                             ]);
                         }}
                     />
                     <svg
                         viewBox={`0 0 ${width} ${height}`}
-                        width={width * scaleFactor}
-                        height={height * scaleFactor}
+                        width={scaledWidth}
+                        height={scaledHeight}
                         preserveAspectRatio="none"
                         onMouseDown={startBoxDraw}
                         onMouseMove={drawnBox && updateBoxDraw}
-                        onMouseUp={endBoxDraw}
+                        onMouseUp={drawnBox && endBoxDraw}
                         strokeWidth={1}
                         style={{
                             userSelect: "none",
@@ -153,7 +155,7 @@ const Ui = ({image, textract}) => {
                         onChange={e => setSelectedText(e.target.value)}
                         style={{
                             width: "100%",
-                            height: height * scaleFactor + "px",
+                            height: scaledHeight + "px",
                         }}
                     />
                 </Box>
@@ -176,6 +178,9 @@ Ui.propTypes = {
         }).isRequired,
     })).isRequired,
 };
+
+const imageUrl = "/pork_chops_sm.jpg";
+const jsonUrl = "/pork_chops_sm_textract.json";
 
 const Textract = () => {
     let [json, setJson] = React.useState(null);
