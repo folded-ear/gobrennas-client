@@ -1,6 +1,9 @@
 import {
     Box,
+    Button,
+    ButtonGroup,
     Grid,
+    Typography,
 } from "@material-ui/core";
 import PropTypes from "prop-types";
 import React from "react";
@@ -12,7 +15,7 @@ const overlaps = (a, b) =>
     a.top + a.height >= b.top &&
     a.top <= b.top + b.height;
 
-const Ui = ({image, textract}) => {
+const Ui = ({image, textract, renderActions}) => {
     const [[width, height, scaledWidth], setSize] = React.useState([100, 100, 100]);
     const scaleFactor = scaledWidth / width;
     const scaledHeight = height * scaleFactor;
@@ -150,14 +153,18 @@ const Ui = ({image, textract}) => {
             </Grid>
             <Grid item xs={12} sm={6}>
                 <Box>
+                    <Typography as={"p"} variant={"h6"}>
+                        Select some text on your photo.
+                    </Typography>
                     <textarea
                         value={selectedText}
                         onChange={e => setSelectedText(e.target.value)}
                         style={{
                             width: "100%",
-                            height: scaledHeight + "px",
+                            height: `calc(${scaledHeight}px - 100px)`,
                         }}
                     />
+                    {renderActions(selectedText.trim())}
                 </Box>
             </Grid>
         </Grid>
@@ -177,6 +184,31 @@ Ui.propTypes = {
             height: PropTypes.number.isRequired,
         }).isRequired,
     })).isRequired,
+    renderActions: PropTypes.func.isRequired,
+};
+
+const Actions = text => {
+    const disabled = !text;
+    return <ButtonGroup>
+        <Button
+            onClick={() => console.log("set title", text)}
+            disabled={disabled || text.indexOf("\n") > 0}
+        >
+            Set Title
+        </Button>
+        <Button
+            onClick={() => console.log("add ingredients", text)}
+            disabled={disabled}
+        >
+            Add Ingredients
+        </Button>
+        <Button
+            onClick={() => console.log("add description", text)}
+            disabled={disabled}
+        >
+            Add Description
+        </Button>
+    </ButtonGroup>;
 };
 
 const imageUrl = "/pork_chops_sm.jpg";
@@ -191,7 +223,11 @@ const Textract = () => {
             .then(setJson, setError);
     }, []);
     return json
-        ? <Ui image={imageUrl} textract={json} />
+        ? <Ui
+            image={imageUrl}
+            textract={json}
+            renderActions={Actions}
+        />
         : error
             ? <p color="red">{error.toString()}</p>
             : <LoadingIndicator />;
