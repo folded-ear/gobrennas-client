@@ -11,8 +11,8 @@ import {
 import { makeStyles } from "@material-ui/core/styles";
 import {
     Add,
+    AddAPhoto,
     Cancel,
-    CloudUpload,
     Delete,
     FileCopy,
     Save,
@@ -27,8 +27,8 @@ import ElEdit from "../ElEdit";
 
 const useStyles = makeStyles((theme) => ({
     button: {
-        margin: theme.spacing(1)
-    }
+        margin: theme.spacing(1),
+    },
 }));
 
 const handleFileUpdate = (e) => {
@@ -37,16 +37,16 @@ const handleFileUpdate = (e) => {
         const value = files[0];
         Dispatcher.dispatch({
             type: RecipeActions.DRAFT_RECIPE_UPDATED,
-            data: {key, value}
+            data: {key, value},
         });
     }
 };
 
 const handleUpdate = (e) => {
-    const { name: key, value } = e.target;
+    const {name: key, value} = e.target;
     Dispatcher.dispatch({
         type: RecipeActions.DRAFT_RECIPE_UPDATED,
-        data: { key, value}
+        data: {key, value},
     });
 };
 
@@ -60,7 +60,7 @@ const addLabel = (label) => {
 const removeLabel = (label, index) => {
     Dispatcher.dispatch({
         type: RecipeActions.REMOVE_DRAFT_LABEL,
-        data: {label, index}
+        data: {label, index},
     });
 };
 
@@ -106,35 +106,43 @@ const RecipeForm = ({draft: lo, onSave, onSaveCopy, onCancel}) => {
                 />
             </Box>
             <Box m={MARGIN}>
-                {draft.photo && <img
-                    src={photoUrl}
-                    alt={photoName}
-                    onLoad={onPhotoUrlLoad}
+                <label
+                    htmlFor="photo"
                     style={{
-                        maxWidth: "400px",
-                        maxHeight: "200px",
-                    }}
-                />}
-                <Button
-                    variant="contained"
-                    color="default"
-                    className={classes.button}
-                    startIcon={<CloudUpload/>}
-                    component="label"
-                    style={{
-                        float: "right",
+                        display: "inline-block",
+                        backgroundColor: "#eee",
+                        textAlign: "center",
                     }}
                 >
-                    Upload Photo
+                    {draft.photo
+                        ? <img
+                            src={photoUrl}
+                            alt={photoName}
+                            onLoad={onPhotoUrlLoad}
+                            style={{
+                                maxWidth: "400px",
+                                maxHeight: "200px",
+                            }}
+                        />
+                        : <AddAPhoto
+                            color="disabled"
+                            style={{
+                                margin: "30px 40px",
+                            }}
+                        />}
                     <input
+                        id="photo"
                         name="photo"
-                        type="file"
                         accept="image/*"
+                        type="file"
+                        style={{
+                            opacity: 0,
+                            height: 0,
+                            width: 0,
+                        }}
                         onChange={handleFileUpdate}
-                        hidden
                     />
-                </Button>
-                <br style={{clear: "right"}} />
+                </label>
             </Box>
             <List>
                 {draft.ingredients.map((it, i) =>
@@ -184,7 +192,7 @@ const RecipeForm = ({draft: lo, onSave, onSaveCopy, onCancel}) => {
             <Box m={MARGIN}>
                 <Button
                     className={classes.button}
-                    startIcon={<Add/>}
+                    startIcon={<Add />}
                     color="secondary"
                     variant="contained"
                     onClick={() => Dispatcher.dispatch({
@@ -251,8 +259,8 @@ const RecipeForm = ({draft: lo, onSave, onSaveCopy, onCancel}) => {
                     onAdd={addLabel}
                     onDelete={removeLabel}
                     fullWidth
-                    label='Labels'
-                    placeholder='Type and press enter to add labels'
+                    label="Labels"
+                    placeholder="Type and press enter to add labels"
                 />
             </Box>
             <Button
@@ -260,7 +268,7 @@ const RecipeForm = ({draft: lo, onSave, onSaveCopy, onCancel}) => {
                 variant="contained"
                 color="primary"
                 onClick={() => onSave(draft)}
-                startIcon={<Save/>}
+                startIcon={<Save />}
             >
                 Save
             </Button>
@@ -268,7 +276,7 @@ const RecipeForm = ({draft: lo, onSave, onSaveCopy, onCancel}) => {
                 className={classes.button}
                 variant="contained"
                 color="primary"
-                startIcon={<FileCopy/>}
+                startIcon={<FileCopy />}
                 onClick={() => onSaveCopy(draft)}>
                 Save as Copy
             </Button>}
@@ -277,7 +285,7 @@ const RecipeForm = ({draft: lo, onSave, onSaveCopy, onCancel}) => {
                 variant="contained"
                 color="secondary"
                 onClick={() => onCancel(draft)}
-                startIcon={<Cancel/>}>
+                startIcon={<Cancel />}>
                 Cancel
             </Button>
         </>
@@ -285,14 +293,14 @@ const RecipeForm = ({draft: lo, onSave, onSaveCopy, onCancel}) => {
 
     return lo.isDone()
         ? form
-        : <><CircularProgress/>{form}</>;
+        : <><CircularProgress />{form}</>;
 };
 
 RecipeForm.propTypes = {
     onSave: PropTypes.func,
     onSaveCopy: PropTypes.func,
     onCancel: PropTypes.func,
-    draft: Recipe
+    draft: Recipe,
 };
 
 export default RecipeForm;
