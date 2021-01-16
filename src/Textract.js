@@ -16,103 +16,135 @@ const overlaps = (a, b) =>
     a.top <= b.top + b.height;
 
 const Ui = ({image, textract}) => {
-    const [[width, height], setSize] = React.useState([100, 100]);
-    const [maxWidth, setMaxWidth] = React.useState(100);
-    const [box, setBox] = React.useState(null);
-    const [selection, setSelection] = React.useState(null);
+    const [[width, height, scaleFactor], setSize] = React.useState([100, 100, 1]);
+    const [drawnBox, setDrawnBox] = React.useState(null);
+    const [selectedRegion, setSelectedRegion] = React.useState(null);
+    const [partitionedLines, setPartitionedLines] = React.useState([textract, []]);
     const [selectedText, setSelectedText] = React.useState("");
-    const canvasRef = React.useRef(null);
-    const scaleFactor = maxWidth / width;
+    React.useEffect(
+        () => {
+            const partition = selectedRegion == null
+                ? [textract, []]
+                : textract.reduce((agg, t) => {
+                    agg[overlaps(selectedRegion, t.box) ? 1 : 0].push(t);
+                    return agg;
+                }, [[], []]);
+            setPartitionedLines(partition);
+            setSelectedText(partition[1]
+                .map(t => t.text)
+                .join("\n"));
+        },
+        [textract, selectedRegion],
+    );
+    const findSvg = n => {
+        while (n && n.localName !== "svg") {
+            n = n.parentNode;
+        }
+        return n;
+    };
     const getXY = e => {
-        const c = e.target;
+        const svg = findSvg(e.target);
         return [
-            e.clientX - c.offsetLeft,
-            e.clientY - c.offsetTop,
+            e.clientX - svg.parentNode.offsetLeft,
+            e.clientY - svg.parentNode.offsetTop,
         ];
     };
     const startBoxDraw = e => {
         const [x, y] = getXY(e);
-        setBox({
+        setDrawnBox({
             x1: x,
             y1: y,
         });
-        setSelection(null);
+        setSelectedRegion(null);
     };
     const updateBoxDraw = e => {
-        const c = e.target;
+        const svg = findSvg(e.target);
         const [x, y] = getXY(e);
         const b = {
-            ...box,
+            ...drawnBox,
             x2: x,
             y2: y,
         };
-        setBox(b);
+        setDrawnBox(b);
         const sel = {
-            top: Math.min(b.y1, b.y2) / c.clientHeight,
-            left: Math.min(b.x1, b.x2) / c.clientWidth,
+            top: Math.min(b.y1, b.y2) / svg.clientHeight,
+            left: Math.min(b.x1, b.x2) / svg.clientWidth,
         };
-        sel.height = Math.max(b.y1, b.y2) / c.clientHeight - sel.top;
-        sel.width = Math.max(b.x1, b.x2) / c.clientWidth - sel.left;
-        setSelection(sel);
+        sel.height = Math.max(b.y1, b.y2) / svg.clientHeight - sel.top;
+        sel.width = Math.max(b.x1, b.x2) / svg.clientWidth - sel.left;
+        setSelectedRegion(sel);
     };
-    const endBoxDraw = () => {
-        setBox(null);
-        if (selection == null) return;
-        setSelectedText(textract
-            .filter(t => overlaps(selection, t.box))
-            .map(t => t.text)
-            .join("\n"));
+    const endBoxDraw = e => {
+        const [x, y] = getXY(e);
+        if (drawnBox.x1 === x && drawnBox.y1 === y) {
+            // just a click; pretend it was a one-pixel draw
+            updateBoxDraw(e);
+        }
+        setDrawnBox(null);
     };
-    React.useEffect(() => {
-        const img = document.createElement("img");
-        img.onload = () => {
-            setSize([img.width, img.height]);
-            setMaxWidth(canvasRef.current.parentNode.clientWidth);
-        };
-        img.src = image;
-    }, [image]);
-    React.useLayoutEffect(() => {
-        const ctx = canvasRef.current.getContext("2d");
-        ctx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
-        ctx.strokeStyle = "#ff000099";
-        ctx.lineWidth = 0.5;
-        const box2coords = box => [
-            Math.ceil(box.left * width * scaleFactor),
-            Math.ceil(box.top * height * scaleFactor),
-            Math.floor(box.width * width * scaleFactor),
-            Math.floor(box.height * height * scaleFactor),
-        ];
-        for (const t of textract) {
-            ctx.strokeRect(...box2coords(t.box));
-        }
-        ctx.strokeStyle = "#999900cc";
-        ctx.fillStyle = "#ffff0066";
-        if (selection) {
-            const coords = box2coords(selection);
-            ctx.fillRect(...coords);
-            ctx.strokeRect(...coords);
-        }
-    }, [width, height, scaleFactor, textract, selection]);
+    const rect = box =>
+        <rect
+            key={box.top}
+            x={box.left * width}
+            y={box.top * height}
+            width={box.width * width}
+            height={box.height * height}
+        />;
     return <Box m={2}>
         <Grid container spacing={2}>
             <Grid item xs={12} sm={6}>
-                <Box>
-                    <canvas
-                        ref={canvasRef}
+                <Box style={{
+                    position: "relative",
+                }}>
+                    <img
+                        src={image}
+                        alt="to extract"
                         width={width * scaleFactor}
                         height={height * scaleFactor}
-                        onMouseDown={startBoxDraw}
-                        onMouseMove={box && updateBoxDraw}
-                        onMouseUp={endBoxDraw}
-                        style={{
-                            backgroundImage: `url(${image})`,
-                            backgroundSize: "cover",
-                            userSelect: "none",
+                        onLoad={e => {
+                            const img = e.target;
+                            setSize([
+                                img.naturalWidth,
+                                img.naturalHeight,
+                                img.parentNode.clientWidth / img.naturalWidth
+                            ]);
                         }}
                     />
-                    {box && <code>{JSON.stringify(box)}</code>}
-                    {selection && <code>{JSON.stringify(selection)}</code>}
+                    <svg
+                        viewBox={`0 0 ${width} ${height}`}
+                        width={width * scaleFactor}
+                        height={height * scaleFactor}
+                        preserveAspectRatio="none"
+                        onMouseDown={startBoxDraw}
+                        onMouseMove={drawnBox && updateBoxDraw}
+                        onMouseUp={endBoxDraw}
+                        strokeWidth={1}
+                        style={{
+                            userSelect: "none",
+                            position: "absolute",
+                            top: 0,
+                            left: 0,
+                        }}
+                    >
+                        <g stroke="#ff0000">
+                            <g fill="none">
+                                {partitionedLines[0].map(t => rect(t.box))}
+                            </g>
+                            <g fill="#99ffff" fillOpacity={0.4}>
+                                {partitionedLines[1].map(t => rect(t.box))}
+                            </g>
+                        </g>
+                        {selectedRegion && <g
+                            fill="#ffff00"
+                            fillOpacity={0.3}
+                            stroke="#ffff00"
+                        >
+                            {rect(selectedRegion)}
+                        </g>}
+                    </svg>
                 </Box>
+                {drawnBox && <code>{JSON.stringify(drawnBox)}</code>}
+                {selectedRegion && <code>{JSON.stringify(selectedRegion)}</code>}
             </Grid>
             <Grid item xs={12} sm={6}>
                 <Box>
@@ -142,7 +174,7 @@ Ui.propTypes = {
             width: PropTypes.number.isRequired,
             height: PropTypes.number.isRequired,
         }).isRequired,
-    })).isRequired
+    })).isRequired,
 };
 
 const Textract = () => {
