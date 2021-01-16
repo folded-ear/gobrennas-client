@@ -22,7 +22,7 @@ const Ui = ({image, textract, renderActions}) => {
     const [drawnBox, setDrawnBox] = React.useState(null);
     const [selectedRegion, setSelectedRegion] = React.useState(null);
     const [partitionedLines, setPartitionedLines] = React.useState([textract, []]);
-    const [selectedText, setSelectedText] = React.useState("");
+    const [selectedText, setSelectedText] = React.useState([]);
     React.useEffect(
         () => {
             const partition = selectedRegion == null
@@ -33,8 +33,7 @@ const Ui = ({image, textract, renderActions}) => {
                 }, [[], []]);
             setPartitionedLines(partition);
             setSelectedText(partition[1]
-                .map(t => t.text)
-                .join("\n"));
+                .map(t => t.text));
         },
         [textract, selectedRegion],
     );
@@ -157,14 +156,16 @@ const Ui = ({image, textract, renderActions}) => {
                         Select some text on your photo.
                     </Typography>
                     <textarea
-                        value={selectedText}
-                        onChange={e => setSelectedText(e.target.value)}
+                        value={selectedText.join("\n")}
+                        onChange={e => setSelectedText(e.target.value
+                            .split("\n"))}
                         style={{
                             width: "100%",
                             height: `calc(${scaledHeight}px - 100px)`,
+                            whiteSpace: "nowrap",
                         }}
                     />
-                    {renderActions(selectedText.trim())}
+                    {renderActions(selectedText)}
                 </Box>
             </Grid>
         </Grid>
@@ -184,26 +185,26 @@ Ui.propTypes = {
             height: PropTypes.number.isRequired,
         }).isRequired,
     })).isRequired,
-    renderActions: PropTypes.func.isRequired,
+    renderActions: PropTypes.func.isRequired, // passed a Array<String>
 };
 
-const Actions = text => {
-    const disabled = !text;
+const Actions = lines => {
+    const disabled = !(lines && lines.length);
     return <ButtonGroup>
         <Button
-            onClick={() => console.log("set title", text)}
-            disabled={disabled || text.indexOf("\n") > 0}
+            onClick={() => console.log("set title", lines[0])}
+            disabled={disabled || lines.length > 1}
         >
             Set Title
         </Button>
         <Button
-            onClick={() => console.log("add ingredients", text)}
+            onClick={() => console.log("add ingredients", lines.map(s => s.trim()).filter(s => s.length))}
             disabled={disabled}
         >
             Add Ingredients
         </Button>
         <Button
-            onClick={() => console.log("add description", text)}
+            onClick={() => console.log("add description", lines.join("\n"))}
             disabled={disabled}
         >
             Add Description
