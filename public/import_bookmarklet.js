@@ -301,7 +301,7 @@
             <input style="${valueStyle}" name="yield" />
         </div>
         <div style="${formItemStyle}">
-            <label style="${labelStyle}">Prep:</label>
+            <label style="${labelStyle}">Prep Time:</label>
             <input style="${valueStyle}" name="totalTime" />
         </div>
         <div style="${formItemStyle}">
