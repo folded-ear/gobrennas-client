@@ -3,8 +3,13 @@ import {
     Button,
     ButtonGroup,
     Grid,
+    IconButton,
     Typography,
 } from "@material-ui/core";
+import {
+    RotateLeft,
+    RotateRight,
+} from "@material-ui/icons";
 import PropTypes from "prop-types";
 import React from "react";
 import LoadingIndicator from "./views/common/LoadingIndicator";
@@ -16,8 +21,10 @@ const overlaps = (a, b) =>
     a.top <= b.top + b.height;
 
 const Ui = ({image, textract, renderActions}) => {
-    const [[width, height, scaledWidth], setSize] = React.useState([100, 100, 100]);
-    const scaleFactor = scaledWidth / width;
+    const [rotation, setRotation] = React.useState(0);
+    const [[width, height, maxWidth], setSize] = React.useState([100, 100, 100]);
+    const scaleFactor = maxWidth / (rotation % 180 === 0 ? width : height);
+    const scaledWidth = width * scaleFactor;
     const scaledHeight = height * scaleFactor;
     const [drawnBox, setDrawnBox] = React.useState(null);
     const [selectedRegion, setSelectedRegion] = React.useState(null);
@@ -45,10 +52,17 @@ const Ui = ({image, textract, renderActions}) => {
     };
     const getXY = e => {
         const svg = findSvg(e.target);
-        return [
-            e.clientX - svg.parentNode.offsetLeft,
-            e.clientY - svg.parentNode.offsetTop,
-        ];
+        const x = e.clientX - svg.parentNode.offsetLeft;
+        const y = e.clientY - svg.parentNode.offsetTop;
+        if (rotation === 90) {
+            return [y, scaledHeight - x];
+        } else if (rotation === 180) {
+            return [scaledWidth - x, scaledHeight - y];
+        } else if (rotation === 270) {
+            return [scaledWidth - y, x];
+        } else {
+            return [x, y];
+        }
     };
     const startBoxDraw = e => {
         const [x, y] = getXY(e);
@@ -94,6 +108,24 @@ const Ui = ({image, textract, renderActions}) => {
             width={box.width * width}
             height={box.height * height}
         />;
+    let rotationStyles = null;
+    if (rotation === 90) {
+        rotationStyles = {
+            transformOrigin: "top left",
+            transform: `rotate(90deg) translateY(-100%)`,
+            marginBottom: `${scaledWidth - scaledHeight}px`,
+        };
+    } else if (rotation === 180) {
+        rotationStyles = {
+            transform: `rotate(180deg)`,
+        };
+    } else if (rotation === 270) {
+        rotationStyles = {
+            transformOrigin: "top left",
+            transform: `rotate(270deg) translateX(-100%)`,
+            marginBottom: `${scaledWidth - scaledHeight}px`,
+        };
+    }
     return <Box m={2}>
         <Grid container spacing={2}>
             <Grid item xs={12} sm={6}>
@@ -113,6 +145,7 @@ const Ui = ({image, textract, renderActions}) => {
                                 img.parentNode.clientWidth,
                             ]);
                         }}
+                        style={rotationStyles}
                     />
                     <svg
                         viewBox={`0 0 ${width} ${height}`}
@@ -124,6 +157,7 @@ const Ui = ({image, textract, renderActions}) => {
                         onMouseUp={drawnBox && endBoxDraw}
                         strokeWidth={1}
                         style={{
+                            ...rotationStyles,
                             userSelect: "none",
                             position: "absolute",
                             top: 0,
@@ -146,6 +180,26 @@ const Ui = ({image, textract, renderActions}) => {
                             {rect(selectedRegion)}
                         </g>}
                     </svg>
+                    <IconButton
+                        onClick={() => setRotation(r => (r + 90) % 360)}
+                        style={{
+                            position: "absolute",
+                            top: 0,
+                            left: 0,
+                        }}
+                    >
+                        <RotateRight />
+                    </IconButton>
+                    <IconButton
+                        onClick={() => setRotation(r => (r - 90 + 360) % 360)}
+                        style={{
+                            position: "absolute",
+                            top: 0,
+                            right: 0,
+                        }}
+                    >
+                        <RotateLeft />
+                    </IconButton>
                 </Box>
                 {drawnBox && <code>{JSON.stringify(drawnBox)}</code>}
                 {selectedRegion && <code>{JSON.stringify(selectedRegion)}</code>}
@@ -161,7 +215,7 @@ const Ui = ({image, textract, renderActions}) => {
                             .split("\n"))}
                         style={{
                             width: "100%",
-                            height: `calc(${scaledHeight}px - 100px)`,
+                            height: `calc(${rotation % 180 === 0 ? scaledHeight : scaledWidth}px - 100px)`,
                             whiteSpace: "nowrap",
                         }}
                     />
