@@ -9,6 +9,7 @@ import UserActions from "./data/UserActions";
 import UserStore from "./data/UserStore";
 import WindowStore from "./data/WindowStore";
 import routes from "./routes";
+import Textract from "./Textract";
 import theme from "./theme";
 import AppHeader from "./views/common/AppHeader";
 import FluxRoute from "./views/common/FluxRoute";
@@ -53,7 +54,8 @@ class App extends Component {
                     <CssBaseline/>
                     {newVersionAvailable && <NewVersionAvailable/>}
                     <AppHeader authenticated={authenticated} onLogout={this.handleLogout}/>
-                    <Switch>
+                    <Textract />
+                    {false && <Switch>
                         {routes.public.map(route => {
                             return (
                                 <FluxRoute
@@ -78,7 +80,7 @@ class App extends Component {
                         <FluxRoute path="/login" render={(props) => <Login
                             authenticated={authenticated} {...props} />}/>
                         <FluxRoute component={NotFound}/>
-                    </Switch>
+                    </Switch>}
                 </ThemeProvider>
             </>
         );
