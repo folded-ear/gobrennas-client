@@ -10,11 +10,8 @@ import {
     RotateLeft,
     RotateRight,
 } from "@material-ui/icons";
-import BaseAxios from "axios";
 import PropTypes from "prop-types";
 import React from "react";
-import { API_BASE_URL } from "../constants";
-import LoadingIndicator from "../views/common/LoadingIndicator";
 
 const useStyles = makeStyles({
     rotateRight: {
@@ -41,7 +38,7 @@ const overlaps = (a, b) =>
     a.top + a.height >= b.top &&
     a.top <= b.top + b.height;
 
-const Ui = ({image, textract, renderActions}) => {
+const TextractEditor = ({image, textract, renderActions, onClose}) => {
     const classes = useStyles();
     const [rotation, setRotation] = React.useState(0);
     const [[width, height, maxWidth], setSize] = React.useState([100, 100, 100]);
@@ -150,6 +147,16 @@ const Ui = ({image, textract, renderActions}) => {
         };
     }
     return <Box m={2}>
+        <IconButton
+            onClick={onClose}
+            size={"small"}
+            style={{
+                position: "absolute",
+                right: "2em",
+            }}
+        >
+            <Close />
+        </IconButton>
         <Grid container spacing={2}>
             <Grid item xs={12} sm={6}>
                 <Box style={{
@@ -234,7 +241,7 @@ const Ui = ({image, textract, renderActions}) => {
     </Box>;
 };
 
-Ui.propTypes = {
+TextractEditor.propTypes = {
     image: PropTypes.string.isRequired,
     textract: PropTypes.arrayOf(PropTypes.shape({
         text: PropTypes.string.isRequired,
@@ -245,42 +252,6 @@ Ui.propTypes = {
             height: PropTypes.number.isRequired,
         }).isRequired,
     })).isRequired,
-    renderActions: PropTypes.func.isRequired, // passed a Array<String>
-};
-
-const axios = BaseAxios.create({
-    baseURL: `${API_BASE_URL}/api/textract`,
-});
-
-const TextractEditor = ({jobId, renderActions, onClose}) => {
-    let [json, setJson] = React.useState(null);
-    React.useEffect(() => {
-        axios.get(`/${jobId}`)
-            .then(data => setJson(data.data));
-    }, []);
-    return json
-        ? <div>
-            <IconButton
-                onClick={onClose}
-                size={"small"}
-                style={{
-                    position: "absolute",
-                    right: "2em",
-                }}
-            >
-                <Close />
-            </IconButton>
-            <Ui
-                image={json.photo.url}
-                textract={json.lines}
-                renderActions={renderActions}
-            />
-        </div>
-        : <LoadingIndicator />;
-};
-
-TextractEditor.propTypes = {
-    jobId: PropTypes.number.isRequired,
     renderActions: PropTypes.func.isRequired, // passed a Array<String>
     onClose: PropTypes.func.isRequired,
 };
