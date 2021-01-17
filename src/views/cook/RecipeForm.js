@@ -24,7 +24,7 @@ import Dispatcher from "../../data/dispatcher";
 import RecipeActions from "../../data/RecipeActions";
 import { Recipe } from "../../data/RecipeTypes";
 import ImageDropZone from "../../util/ImageDropZone";
-import TextractSidebar from "../../util/TextractSidebar";
+import TextractFormAugment from "../../util/TextractFormAugment";
 import ElEdit from "../ElEdit";
 
 const useStyles = makeStyles((theme) => ({
@@ -66,7 +66,7 @@ const RecipeForm = ({draft: lo, onSave, onSaveCopy, onCancel}) => {
 
     const form = (
         <>
-            <TextractSidebar
+            <TextractFormAugment
                 renderActions={lines => {
                     const disabled = !(lines && lines.length);
                     return <ButtonGroup>

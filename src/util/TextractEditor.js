@@ -4,13 +4,36 @@ import {
     IconButton,
     Typography,
 } from "@material-ui/core";
+import { makeStyles } from "@material-ui/core/styles";
 import {
+    Close,
     RotateLeft,
     RotateRight,
 } from "@material-ui/icons";
+import BaseAxios from "axios";
 import PropTypes from "prop-types";
 import React from "react";
-import LoadingIndicator from "./views/common/LoadingIndicator";
+import { API_BASE_URL } from "../constants";
+import LoadingIndicator from "../views/common/LoadingIndicator";
+
+const useStyles = makeStyles({
+    rotateRight: {
+        position: "absolute",
+        top: 0,
+        left: 0,
+    },
+    rotateLeft: {
+        position: "absolute",
+        top: 0,
+        right: 0,
+    },
+    svg: {
+        userSelect: "none",
+        position: "absolute",
+        top: 0,
+        left: 0,
+    },
+});
 
 const overlaps = (a, b) =>
     a.left + a.width >= b.left &&
@@ -19,6 +42,7 @@ const overlaps = (a, b) =>
     a.top <= b.top + b.height;
 
 const Ui = ({image, textract, renderActions}) => {
+    const classes = useStyles();
     const [rotation, setRotation] = React.useState(0);
     const [[width, height, maxWidth], setSize] = React.useState([100, 100, 100]);
     const scaleFactor = maxWidth / (rotation % 180 === 0 ? width : height);
@@ -155,13 +179,8 @@ const Ui = ({image, textract, renderActions}) => {
                         onMouseMove={drawnBox && updateBoxDraw}
                         onMouseUp={drawnBox && endBoxDraw}
                         strokeWidth={1}
-                        style={{
-                            ...rotationStyles,
-                            userSelect: "none",
-                            position: "absolute",
-                            top: 0,
-                            left: 0,
-                        }}
+                        className={classes.svg}
+                        style={rotationStyles}
                     >
                         <g stroke="#ff0000">
                             <g fill="none">
@@ -181,21 +200,13 @@ const Ui = ({image, textract, renderActions}) => {
                     </svg>
                     <IconButton
                         onClick={() => setRotation(r => (r + 90) % 360)}
-                        style={{
-                            position: "absolute",
-                            top: 0,
-                            left: 0,
-                        }}
+                        className={classes.rotateRight}
                     >
                         <RotateRight />
                     </IconButton>
                     <IconButton
                         onClick={() => setRotation(r => (r - 90 + 360) % 360)}
-                        style={{
-                            position: "absolute",
-                            top: 0,
-                            right: 0,
-                        }}
+                        className={classes.rotateLeft}
                     >
                         <RotateLeft />
                     </IconButton>
@@ -237,30 +248,41 @@ Ui.propTypes = {
     renderActions: PropTypes.func.isRequired, // passed a Array<String>
 };
 
-const imageUrl = "/pork_chops_sm.jpg";
-const jsonUrl = "/pork_chops_sm_textract.json";
+const axios = BaseAxios.create({
+    baseURL: `${API_BASE_URL}/api/textract`,
+});
 
-const Textract = ({renderActions}) => {
+const TextractEditor = ({jobId, renderActions, onClose}) => {
     let [json, setJson] = React.useState(null);
-    let [error, setError] = React.useState(null);
     React.useEffect(() => {
-        fetch(jsonUrl)
-            .then(r => r.json())
-            .then(setJson, setError);
+        axios.get(`/${jobId}`)
+            .then(data => setJson(data.data));
     }, []);
     return json
-        ? <Ui
-            image={imageUrl}
-            textract={json}
-            renderActions={renderActions}
-        />
-        : error
-            ? <p color="red">{error.toString()}</p>
-            : <LoadingIndicator />;
+        ? <div>
+            <IconButton
+                onClick={onClose}
+                size={"small"}
+                style={{
+                    position: "absolute",
+                    right: "2em",
+                }}
+            >
+                <Close />
+            </IconButton>
+            <Ui
+                image={json.photo.url}
+                textract={json.lines}
+                renderActions={renderActions}
+            />
+        </div>
+        : <LoadingIndicator />;
 };
 
-Textract.propTypes = {
+TextractEditor.propTypes = {
+    jobId: PropTypes.number.isRequired,
     renderActions: PropTypes.func.isRequired, // passed a Array<String>
+    onClose: PropTypes.func.isRequired,
 };
 
-export default Textract;
+export default TextractEditor;
