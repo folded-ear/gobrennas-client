@@ -1,4 +1,5 @@
 import {
+    CircularProgress,
     GridList,
     GridListTile,
     GridListTileBar,
@@ -22,6 +23,9 @@ const useStyles = makeStyles({
         backgroundColor: "#f7f7f7",
         padding: "0 1em",
         position: "relative",
+    },
+    pending: {
+        marginLeft: "0.5em",
     },
     dropZone: {
         display: "block",
@@ -48,7 +52,7 @@ const useStyles = makeStyles({
     },
 });
 
-const Ui = ({onSelect, onClose, onUpload, onDelete, queue}) => {
+const Ui = ({pending, onSelect, onClose, onUpload, onDelete, queue}) => {
     const classes = useStyles();
     return <Drawer
         open
@@ -66,6 +70,10 @@ const Ui = ({onSelect, onClose, onUpload, onDelete, queue}) => {
             </IconButton>
             <Typography variant="h3">
                 Select Photo
+                {pending && <CircularProgress
+                    size="0.8em"
+                    className={classes.pending}
+                />}
             </Typography>
             <GridList>
                 <GridListTile>
@@ -118,17 +126,22 @@ const Ui = ({onSelect, onClose, onUpload, onDelete, queue}) => {
     </Drawer>;
 };
 
+const passthroughTypes = {
+    pending: PropTypes.bool.isRequired,
+    onSelect: PropTypes.func.isRequired,
+    onUpload: PropTypes.func.isRequired,
+    onDelete: PropTypes.func.isRequired,
+    onClose: PropTypes.func.isRequired,
+};
+
 Ui.propTypes = {
+    ...passthroughTypes,
     queue: PropTypes.arrayOf(PropTypes.shape({
         id: PropTypes.number.isRequired,
         url: PropTypes.string.isRequired,
         name: PropTypes.string.isRequired,
         ready: PropTypes.bool.isRequired,
     })).isRequired,
-    onSelect: PropTypes.func.isRequired,
-    onUpload: PropTypes.func.isRequired,
-    onDelete: PropTypes.func.isRequired,
-    onClose: PropTypes.func.isRequired,
 };
 
 const TextractQueueBrowser = props => {
@@ -149,11 +162,6 @@ const TextractQueueBrowser = props => {
     />;
 };
 
-TextractQueueBrowser.propTypes = {
-    onSelect: PropTypes.func.isRequired,
-    onUpload: PropTypes.func.isRequired,
-    onDelete: PropTypes.func.isRequired,
-    onClose: PropTypes.func.isRequired,
-};
+TextractQueueBrowser.propTypes = passthroughTypes;
 
 export default TextractQueueBrowser;

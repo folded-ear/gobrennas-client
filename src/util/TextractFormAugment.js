@@ -4,6 +4,7 @@ import React from "react";
 import { API_BASE_URL } from "../constants";
 import LoadingIndicator from "../views/common/LoadingIndicator";
 import LoadObject from "./LoadObject";
+import promiseWellSizedFile from "./promiseWellSizedFile";
 import TextractButton from "./TextractButton";
 import TextractEditor from "./TextractEditor";
 import TextractQueueBrowser from "./TextractQueueBrowser";
@@ -13,8 +14,9 @@ const axios = BaseAxios.create({
 });
 
 const TextractFormAugment = ({renderActions}) => {
-    const [browserOpen, setBrowserOpen] = React.useState(true);
+    const [browserOpen, setBrowserOpen] = React.useState(false);
     const [jobLO, setJobLO] = React.useState(LoadObject.empty());
+    const [actionLO, setActionLO] = React.useState(LoadObject.empty());
     return <>
         <TextractButton
             onClick={() => setBrowserOpen(true)}
@@ -26,6 +28,8 @@ const TextractFormAugment = ({renderActions}) => {
         />}
         {jobLO.hasOperation() && <LoadingIndicator />}
         {browserOpen && <TextractQueueBrowser
+            pending={actionLO.hasOperation()}
+            onClose={() => setBrowserOpen(false)}
             onSelect={id => {
                 setJobLO(LoadObject.loading());
                 axios.get(`/${id}`)
@@ -36,9 +40,20 @@ const TextractFormAugment = ({renderActions}) => {
                         })));
                 setBrowserOpen(false);
             }}
-            onUpload={file => console.log("UPLOAD", file)}
-            onDelete={id => console.log("DELETE", id)}
-            onClose={() => setBrowserOpen(false)}
+            onUpload={photo => {
+                setActionLO(LoadObject.creating());
+                promiseWellSizedFile(photo).then(p => {
+                    let payload = new FormData();
+                    payload.append("photo", p);
+                    return axios.post(`/`, payload)
+                        .finally(() => setActionLO(LoadObject.empty()));
+                });
+            }}
+            onDelete={id => {
+                setActionLO(LoadObject.deleting());
+                return axios.delete(`/${id}`)
+                    .finally(() => setActionLO(LoadObject.empty()));
+            }}
         />}
     </>;
 };
