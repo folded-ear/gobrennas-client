@@ -39,7 +39,12 @@ class DraftRecipeStore extends ReduceStore {
     getInitialState() {
         return LoadObject.withValue({
             id: ClientId.next(),
+            name: "",
             ingredients: [{raw: ""}],
+            directions: "",
+            "yield": "",
+            totalTime: "",
+            calories: "",
             labels: []
         });
     }

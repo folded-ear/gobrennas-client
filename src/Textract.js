@@ -1,7 +1,5 @@
 import {
     Box,
-    Button,
-    ButtonGroup,
     Grid,
     IconButton,
     Typography,
@@ -51,9 +49,10 @@ const Ui = ({image, textract, renderActions}) => {
         return n;
     };
     const getXY = e => {
-        const svg = findSvg(e.target);
-        const x = e.clientX - svg.parentNode.offsetLeft;
-        const y = e.clientY - svg.parentNode.offsetTop;
+        const basis = findSvg(e.target).parentNode;
+        const scroll = document.scrollingElement;
+        const x = e.clientX - basis.offsetLeft + scroll.scrollLeft;
+        const y = e.clientY - basis.offsetTop + scroll.scrollTop;
         if (rotation === 90) {
             return [y, scaledHeight - x];
         } else if (rotation === 180) {
@@ -201,8 +200,6 @@ const Ui = ({image, textract, renderActions}) => {
                         <RotateLeft />
                     </IconButton>
                 </Box>
-                {drawnBox && <code>{JSON.stringify(drawnBox)}</code>}
-                {selectedRegion && <code>{JSON.stringify(selectedRegion)}</code>}
             </Grid>
             <Grid item xs={12} sm={6}>
                 <Box>
@@ -219,12 +216,10 @@ const Ui = ({image, textract, renderActions}) => {
                             whiteSpace: "nowrap",
                         }}
                     />
-                    {renderActions(selectedText)}
+                    {renderActions && renderActions(selectedText)}
                 </Box>
             </Grid>
         </Grid>
-        <hr />
-        <pre>{JSON.stringify(textract, null, 3)}</pre>
     </Box>;
 };
 
@@ -242,34 +237,10 @@ Ui.propTypes = {
     renderActions: PropTypes.func.isRequired, // passed a Array<String>
 };
 
-const Actions = lines => {
-    const disabled = !(lines && lines.length);
-    return <ButtonGroup>
-        <Button
-            onClick={() => console.log("set title", lines[0])}
-            disabled={disabled || lines.length > 1}
-        >
-            Set Title
-        </Button>
-        <Button
-            onClick={() => console.log("add ingredients", lines.map(s => s.trim()).filter(s => s.length))}
-            disabled={disabled}
-        >
-            Add Ingredients
-        </Button>
-        <Button
-            onClick={() => console.log("add description", lines.join("\n"))}
-            disabled={disabled}
-        >
-            Add Description
-        </Button>
-    </ButtonGroup>;
-};
-
 const imageUrl = "/pork_chops_sm.jpg";
 const jsonUrl = "/pork_chops_sm_textract.json";
 
-const Textract = () => {
+const Textract = ({renderActions}) => {
     let [json, setJson] = React.useState(null);
     let [error, setError] = React.useState(null);
     React.useEffect(() => {
@@ -281,11 +252,15 @@ const Textract = () => {
         ? <Ui
             image={imageUrl}
             textract={json}
-            renderActions={Actions}
+            renderActions={renderActions}
         />
         : error
             ? <p color="red">{error.toString()}</p>
             : <LoadingIndicator />;
+};
+
+Textract.propTypes = {
+    renderActions: PropTypes.func.isRequired, // passed a Array<String>
 };
 
 export default Textract;
