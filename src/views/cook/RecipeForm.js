@@ -11,7 +11,6 @@ import {
 import { makeStyles } from "@material-ui/core/styles";
 import {
     Add,
-    AddAPhoto,
     Cancel,
     Delete,
     FileCopy,
@@ -23,6 +22,7 @@ import React from "react";
 import Dispatcher from "../../data/dispatcher";
 import RecipeActions from "../../data/RecipeActions";
 import { Recipe } from "../../data/RecipeTypes";
+import ImageDropZone from "../../util/ImageDropZone";
 import ElEdit from "../ElEdit";
 
 const useStyles = makeStyles((theme) => ({
@@ -31,23 +31,16 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-const handleFileUpdate = (e) => {
-    const {name: key, files} = e.target;
-    if (files.length) {
-        const value = files[0];
-        Dispatcher.dispatch({
-            type: RecipeActions.DRAFT_RECIPE_UPDATED,
-            data: {key, value},
-        });
-    }
-};
-
-const handleUpdate = (e) => {
-    const {name: key, value} = e.target;
+const updateDraft = (key, value) => {
     Dispatcher.dispatch({
         type: RecipeActions.DRAFT_RECIPE_UPDATED,
         data: {key, value},
     });
+};
+
+const handleUpdate = (e) => {
+    const {name: key, value} = e.target;
+    updateDraft(key, value);
 };
 
 const addLabel = (label) => {
@@ -68,18 +61,6 @@ const RecipeForm = ({draft: lo, onSave, onSaveCopy, onCancel}) => {
     const classes = useStyles();
     const draft = lo.getValueEnforcing();
     const MARGIN = 2;
-    let photoName, photoUrl, onPhotoUrlLoad;
-    if (draft.photo) {
-        if (typeof draft.photo === "string") {
-            const p = draft.photo.split("/");
-            photoName = p[p.length - 1];
-            photoUrl = draft.photo;
-        } else {
-            photoName = draft.photo.name;
-            photoUrl = URL.createObjectURL(draft.photo);
-            onPhotoUrlLoad = () => URL.revokeObjectURL(photoUrl);
-        }
-    }
 
     const form = (
         <>
@@ -106,43 +87,15 @@ const RecipeForm = ({draft: lo, onSave, onSaveCopy, onCancel}) => {
                 />
             </Box>
             <Box m={MARGIN}>
-                <label
-                    htmlFor="photo"
+                <ImageDropZone
+                    image={draft.photo}
+                    onImage={file => updateDraft("photo", file)}
                     style={{
                         display: "inline-block",
                         backgroundColor: "#eee",
                         textAlign: "center",
                     }}
-                >
-                    {draft.photo
-                        ? <img
-                            src={photoUrl}
-                            alt={photoName}
-                            onLoad={onPhotoUrlLoad}
-                            style={{
-                                maxWidth: "400px",
-                                maxHeight: "200px",
-                            }}
-                        />
-                        : <AddAPhoto
-                            color="disabled"
-                            style={{
-                                margin: "30px 40px",
-                            }}
-                        />}
-                    <input
-                        id="photo"
-                        name="photo"
-                        accept="image/*"
-                        type="file"
-                        style={{
-                            opacity: 0,
-                            height: 0,
-                            width: 0,
-                        }}
-                        onChange={handleFileUpdate}
-                    />
-                </label>
+                />
             </Box>
             <List>
                 {draft.ingredients.map((it, i) =>
