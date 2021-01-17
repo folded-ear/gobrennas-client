@@ -24,16 +24,19 @@ DeleteIcon.propTypes = {
 
 const DeleteButton = ({type, onConfirm, label, onClick, onCancel, ...props}) => {
     const [open, setOpen] = React.useState(false);
-    const handleOpen = () => {
+    const handleOpen = e => {
+        e.stopPropagation();
         setOpen(true);
         onClick && onClick();
     };
     const handleClose = () => setOpen(false);
-    const handleCancel = () => {
+    const handleCancel = e => {
+        e.stopPropagation();
         setOpen(false);
         onCancel && onCancel();
     };
-    const handleConfirm = () => {
+    const handleConfirm = e => {
+        e.stopPropagation();
         setOpen(false);
         onConfirm && onConfirm();
     };

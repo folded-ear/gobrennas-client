@@ -23,6 +23,7 @@ import Dispatcher from "../../data/dispatcher";
 import RecipeActions from "../../data/RecipeActions";
 import { Recipe } from "../../data/RecipeTypes";
 import ImageDropZone from "../../util/ImageDropZone";
+import TextractSidebar from "../../util/TextractSidebar";
 import ElEdit from "../ElEdit";
 
 const useStyles = makeStyles((theme) => ({
@@ -64,6 +65,7 @@ const RecipeForm = ({draft: lo, onSave, onSaveCopy, onCancel}) => {
 
     const form = (
         <>
+            <TextractSidebar />
             <Box m={MARGIN}>
                 <TextField
                     name="name"
@@ -94,6 +96,7 @@ const RecipeForm = ({draft: lo, onSave, onSaveCopy, onCancel}) => {
                         display: "inline-block",
                         backgroundColor: "#eee",
                         textAlign: "center",
+                        cursor: "pointer",
                     }}
                 />
             </Box>
