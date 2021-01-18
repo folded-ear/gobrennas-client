@@ -1,6 +1,7 @@
 import {
     Box,
     Button,
+    ButtonGroup,
     CircularProgress,
     Grid,
     IconButton,
@@ -12,7 +13,6 @@ import { makeStyles } from "@material-ui/core/styles";
 import {
     Add,
     Cancel,
-    CloudUpload,
     Delete,
     FileCopy,
     Save,
@@ -23,31 +23,26 @@ import React from "react";
 import Dispatcher from "../../data/dispatcher";
 import RecipeActions from "../../data/RecipeActions";
 import { Recipe } from "../../data/RecipeTypes";
+import ImageDropZone from "../../util/ImageDropZone";
+import TextractFormAugment from "../../util/TextractFormAugment";
 import ElEdit from "../ElEdit";
 
 const useStyles = makeStyles((theme) => ({
     button: {
-        margin: theme.spacing(1)
-    }
+        margin: theme.spacing(1),
+    },
 }));
 
-const handleFileUpdate = (e) => {
-    const {name: key, files} = e.target;
-    if (files.length) {
-        const value = files[0];
-        Dispatcher.dispatch({
-            type: RecipeActions.DRAFT_RECIPE_UPDATED,
-            data: {key, value}
-        });
-    }
+const updateDraft = (key, value) => {
+    Dispatcher.dispatch({
+        type: RecipeActions.DRAFT_RECIPE_UPDATED,
+        data: {key, value},
+    });
 };
 
 const handleUpdate = (e) => {
-    const { name: key, value } = e.target;
-    Dispatcher.dispatch({
-        type: RecipeActions.DRAFT_RECIPE_UPDATED,
-        data: { key, value}
-    });
+    const {name: key, value} = e.target;
+    updateDraft(key, value);
 };
 
 const addLabel = (label) => {
@@ -60,7 +55,7 @@ const addLabel = (label) => {
 const removeLabel = (label, index) => {
     Dispatcher.dispatch({
         type: RecipeActions.REMOVE_DRAFT_LABEL,
-        data: {label, index}
+        data: {label, index},
     });
 };
 
@@ -68,21 +63,38 @@ const RecipeForm = ({draft: lo, onSave, onSaveCopy, onCancel}) => {
     const classes = useStyles();
     const draft = lo.getValueEnforcing();
     const MARGIN = 2;
-    let photoName, photoUrl, onPhotoUrlLoad;
-    if (draft.photo) {
-        if (typeof draft.photo === "string") {
-            const p = draft.photo.split("/");
-            photoName = p[p.length - 1];
-            photoUrl = draft.photo;
-        } else {
-            photoName = draft.photo.name;
-            photoUrl = URL.createObjectURL(draft.photo);
-            onPhotoUrlLoad = () => URL.revokeObjectURL(photoUrl);
-        }
-    }
 
     const form = (
         <>
+            <TextractFormAugment
+                renderActions={lines => {
+                    const disabled = !(lines && lines.length);
+                    return <ButtonGroup>
+                        <Button
+                            onClick={() => updateDraft("name", lines[0])}
+                            disabled={disabled || lines.length > 1}
+                        >
+                            Set Title
+                        </Button>
+                        <Button
+                            onClick={() => Dispatcher.dispatch({
+                                type: RecipeActions.MULTI_LINE_DRAFT_INGREDIENT_PASTE_YO,
+                                index: 999999,
+                                text: lines.map(s => s.trim()).filter(s => s.length).join("\n"),
+                            })}
+                            disabled={disabled}
+                        >
+                            Add Ingredients
+                        </Button>
+                        <Button
+                            onClick={() => updateDraft("directions", (draft.directions + "\n\n" + lines.join("\n")).trim())}
+                            disabled={disabled}
+                        >
+                            Add Description
+                        </Button>
+                    </ButtonGroup>;
+                }}
+            />
             <Box m={MARGIN}>
                 <TextField
                     name="name"
@@ -106,35 +118,16 @@ const RecipeForm = ({draft: lo, onSave, onSaveCopy, onCancel}) => {
                 />
             </Box>
             <Box m={MARGIN}>
-                {draft.photo && <img
-                    src={photoUrl}
-                    alt={photoName}
-                    onLoad={onPhotoUrlLoad}
+                <ImageDropZone
+                    image={draft.photo}
+                    onImage={file => updateDraft("photo", file)}
                     style={{
-                        maxWidth: "400px",
-                        maxHeight: "200px",
+                        display: "inline-block",
+                        backgroundColor: "#eee",
+                        textAlign: "center",
+                        cursor: "pointer",
                     }}
-                />}
-                <Button
-                    variant="contained"
-                    color="default"
-                    className={classes.button}
-                    startIcon={<CloudUpload/>}
-                    component="label"
-                    style={{
-                        float: "right",
-                    }}
-                >
-                    Upload Photo
-                    <input
-                        name="photo"
-                        type="file"
-                        accept="image/*"
-                        onChange={handleFileUpdate}
-                        hidden
-                    />
-                </Button>
-                <br style={{clear: "right"}} />
+                />
             </Box>
             <List>
                 {draft.ingredients.map((it, i) =>
@@ -184,7 +177,7 @@ const RecipeForm = ({draft: lo, onSave, onSaveCopy, onCancel}) => {
             <Box m={MARGIN}>
                 <Button
                     className={classes.button}
-                    startIcon={<Add/>}
+                    startIcon={<Add />}
                     color="secondary"
                     variant="contained"
                     onClick={() => Dispatcher.dispatch({
@@ -251,8 +244,8 @@ const RecipeForm = ({draft: lo, onSave, onSaveCopy, onCancel}) => {
                     onAdd={addLabel}
                     onDelete={removeLabel}
                     fullWidth
-                    label='Labels'
-                    placeholder='Type and press enter to add labels'
+                    label="Labels"
+                    placeholder="Type and press enter to add labels"
                 />
             </Box>
             <Button
@@ -260,7 +253,7 @@ const RecipeForm = ({draft: lo, onSave, onSaveCopy, onCancel}) => {
                 variant="contained"
                 color="primary"
                 onClick={() => onSave(draft)}
-                startIcon={<Save/>}
+                startIcon={<Save />}
             >
                 Save
             </Button>
@@ -268,7 +261,7 @@ const RecipeForm = ({draft: lo, onSave, onSaveCopy, onCancel}) => {
                 className={classes.button}
                 variant="contained"
                 color="primary"
-                startIcon={<FileCopy/>}
+                startIcon={<FileCopy />}
                 onClick={() => onSaveCopy(draft)}>
                 Save as Copy
             </Button>}
@@ -277,7 +270,7 @@ const RecipeForm = ({draft: lo, onSave, onSaveCopy, onCancel}) => {
                 variant="contained"
                 color="secondary"
                 onClick={() => onCancel(draft)}
-                startIcon={<Cancel/>}>
+                startIcon={<Cancel />}>
                 Cancel
             </Button>
         </>
@@ -285,14 +278,14 @@ const RecipeForm = ({draft: lo, onSave, onSaveCopy, onCancel}) => {
 
     return lo.isDone()
         ? form
-        : <><CircularProgress/>{form}</>;
+        : <><CircularProgress />{form}</>;
 };
 
 RecipeForm.propTypes = {
     onSave: PropTypes.func,
     onSaveCopy: PropTypes.func,
     onCancel: PropTypes.func,
-    draft: Recipe
+    draft: Recipe,
 };
 
 export default RecipeForm;
