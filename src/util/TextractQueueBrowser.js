@@ -1,5 +1,4 @@
 import {
-    CircularProgress,
     GridList,
     GridListTile,
     GridListTileBar,
@@ -13,6 +12,7 @@ import PropTypes from "prop-types";
 import React from "react";
 import socket from "../util/socket";
 import DeleteButton from "../views/common/DeleteButton";
+import { clientOrDatabaseIdType } from "./ClientId";
 import ImageDropZone from "./ImageDropZone";
 
 const useStyles = makeStyles({
@@ -23,9 +23,6 @@ const useStyles = makeStyles({
         backgroundColor: "#f7f7f7",
         padding: "0 1em",
         position: "relative",
-    },
-    pending: {
-        marginLeft: "0.5em",
     },
     dropZone: {
         display: "block",
@@ -41,10 +38,10 @@ const useStyles = makeStyles({
         top: 0,
         right: 0,
     },
-    readyTile: {
+    ready: {
         cursor: "pointer",
     },
-    pendingTile: {
+    inactive: {
         opacity: 0.4,
     },
     deleteButton: {
@@ -52,8 +49,18 @@ const useStyles = makeStyles({
     },
 });
 
-const Ui = ({pending, onSelect, onClose, onUpload, onDelete, queue}) => {
+const Ui = ({onSelect, onClose, onUpload, onDelete, queue: persistent, deleting, uploading}) => {
     const classes = useStyles();
+    const queue = uploading.map(j => ({
+        ...j,
+        state: "uploading",
+        ready: false,
+    })).concat(persistent.map(j => ({
+        ...j,
+        state: deleting.indexOf(j.id) >= 0
+            ? "deleting"
+            : j.ready ? "ready" : "extracting",
+    })));
     return <Drawer
         open
         anchor="right"
@@ -70,10 +77,6 @@ const Ui = ({pending, onSelect, onClose, onUpload, onDelete, queue}) => {
             </IconButton>
             <Typography variant="h3">
                 Select Photo
-                {pending && <CircularProgress
-                    size="0.8em"
-                    className={classes.pending}
-                />}
             </Typography>
             <GridList>
                 <GridListTile>
@@ -82,66 +85,48 @@ const Ui = ({pending, onSelect, onClose, onUpload, onDelete, queue}) => {
                         onImage={onUpload}
                     />
                 </GridListTile>
-                {queue.map(p => p.ready
-                    ? <GridListTile
-                        key={p.url}
-                        onClick={() => onSelect(p.id)}
-                        className={classes.readyTile}
-                        title="Use this photo"
-                    >
-                        <img src={p.url} alt={p.name} />
-                        <GridListTileBar
-                            title={p.name}
-                            actionIcon={
-                                <DeleteButton
-                                    type="photo"
-                                    onConfirm={() => onDelete(p.id)}
-                                    className={classes.deleteButton}
-                                />
-                            }
-                        />
-                    </GridListTile>
-                    : <GridListTile
-                        key={p.url}
-                    >
-                        <img
-                            src={p.url}
-                            alt={p.name}
-                            className={classes.pendingTile}
-                        />
-                        <GridListTileBar
-                            title={p.name}
-                            subtitle="...extracting text..."
-                            actionIcon={
-                                <DeleteButton
-                                    type="photo"
-                                    onConfirm={() => onDelete(p.id)}
-                                    className={classes.deleteButton}
-                                />
-                            }
-                        />
-                    </GridListTile>)}
+                {queue.map(j => <GridListTile
+                    key={j.id}
+                    onClick={j.state === "ready" ? () => onSelect(j.id) : null}
+                    className={j.state === "ready" ? classes.ready : classes.inactive}
+                    title={j.ready ? "Use this photo" : null}
+                >
+                    <img src={j.url} alt={j.name} />
+                    <GridListTileBar
+                        title={j.name}
+                        subtitle={j.ready ? null : (j.state + "...")}
+                        actionIcon={(j.state === "ready" || j.state === "extracting") &&
+                        <DeleteButton
+                            type="photo"
+                            onConfirm={() => onDelete(j.id)}
+                            className={classes.deleteButton}
+                        />}
+                    />
+                </GridListTile>)}
             </GridList>
         </div>
     </Drawer>;
 };
 
+const Job = PropTypes.shape({
+    id: clientOrDatabaseIdType.isRequired,
+    url: PropTypes.string.isRequired,
+    name: PropTypes.string.isRequired,
+    ready: PropTypes.bool.isRequired,
+});
+
 const passthroughTypes = {
-    pending: PropTypes.bool.isRequired,
     onSelect: PropTypes.func.isRequired,
     onUpload: PropTypes.func.isRequired,
     onDelete: PropTypes.func.isRequired,
     onClose: PropTypes.func.isRequired,
+    uploading: PropTypes.arrayOf(Job).isRequired,
+    deleting: PropTypes.arrayOf(PropTypes.number).isRequired,
 };
 
 Ui.propTypes = {
     ...passthroughTypes,
-    queue: PropTypes.arrayOf(PropTypes.shape({
-        id: PropTypes.number.isRequired,
-        url: PropTypes.string.isRequired,
-        name: PropTypes.string.isRequired,
-        ready: PropTypes.bool.isRequired,
-    })).isRequired,
+    queue: PropTypes.arrayOf(Job).isRequired,
 };
 
 const TextractQueueBrowser = props => {

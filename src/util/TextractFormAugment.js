@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import React from "react";
 import { API_BASE_URL } from "../constants";
 import LoadingIndicator from "../views/common/LoadingIndicator";
+import ClientId from "./ClientId";
 import LoadObject from "./LoadObject";
 import promiseWellSizedFile from "./promiseWellSizedFile";
 import TextractButton from "./TextractButton";
@@ -16,7 +17,8 @@ const axios = BaseAxios.create({
 const TextractFormAugment = ({renderActions}) => {
     const [browserOpen, setBrowserOpen] = React.useState(false);
     const [jobLO, setJobLO] = React.useState(LoadObject.empty());
-    const [actionLO, setActionLO] = React.useState(LoadObject.empty());
+    const [creating, setCreating] = React.useState([]);
+    const [deleting, setDeleting] = React.useState([]);
     return <>
         <TextractButton
             onClick={() => setBrowserOpen(true)}
@@ -28,7 +30,6 @@ const TextractFormAugment = ({renderActions}) => {
         />}
         {jobLO.hasOperation() && <LoadingIndicator />}
         {browserOpen && <TextractQueueBrowser
-            pending={actionLO.hasOperation()}
             onClose={() => setBrowserOpen(false)}
             onSelect={id => {
                 setJobLO(LoadObject.loading());
@@ -36,23 +37,39 @@ const TextractFormAugment = ({renderActions}) => {
                     .then(data =>
                         setJobLO(LoadObject.withValue({
                             image: data.data.photo.url,
-                            textract: data.data.lines,
+                            textract: data.data.lines || [],
                         })));
                 setBrowserOpen(false);
             }}
+            uploading={creating}
             onUpload={photo => {
-                setActionLO(LoadObject.creating());
+                const id = ClientId.next();
+                setCreating(curr => [{
+                    id,
+                    url: URL.createObjectURL(photo),
+                    name: photo.name,
+                    ready: false,
+                }].concat(curr));
                 promiseWellSizedFile(photo).then(p => {
                     let payload = new FormData();
                     payload.append("photo", p);
                     return axios.post(`/`, payload)
-                        .finally(() => setActionLO(LoadObject.empty()));
+                        .finally(() => setCreating(curr =>
+                            curr.filter(p => {
+                                if (p.id === id) {
+                                    URL.revokeObjectURL(p.url);
+                                    return false;
+                                }
+                                return true;
+                            })));
                 });
             }}
+            deleting={deleting}
             onDelete={id => {
-                setActionLO(LoadObject.deleting());
+                setDeleting(curr => curr.concat(id));
                 return axios.delete(`/${id}`)
-                    .finally(() => setActionLO(LoadObject.empty()));
+                    .finally(() => setDeleting(curr =>
+                        curr.filter(i => i !== id)));
             }}
         />}
     </>;

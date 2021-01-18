@@ -39,6 +39,7 @@ const overlaps = (a, b) =>
     a.top <= b.top + b.height;
 
 const TextractEditor = ({image, textract, renderActions, onClose}) => {
+    if (!textract) textract = [];
     const classes = useStyles();
     const [rotation, setRotation] = React.useState(0);
     const [[width, height, maxWidth], setSize] = React.useState([100, 100, 100]);
