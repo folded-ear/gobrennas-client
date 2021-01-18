@@ -148,16 +148,6 @@ const TextractEditor = ({image, textract, renderActions, onClose}) => {
         };
     }
     return <Box m={2}>
-        <IconButton
-            onClick={onClose}
-            size={"small"}
-            style={{
-                position: "absolute",
-                right: "2em",
-            }}
-        >
-            <Close />
-        </IconButton>
         <Grid container spacing={2}>
             <Grid item xs={12} sm={6}>
                 <Box style={{
@@ -221,7 +211,17 @@ const TextractEditor = ({image, textract, renderActions, onClose}) => {
                 </Box>
             </Grid>
             <Grid item xs={12} sm={6}>
-                <Box>
+                <Box style={{position: "relative"}}>
+                    <IconButton
+                        onClick={onClose}
+                        size={"small"}
+                        style={{
+                            position: "absolute",
+                            right: 0,
+                        }}
+                    >
+                        <Close />
+                    </IconButton>
                     <Typography as={"p"} variant={"h6"}>
                         Select some text on your photo.
                     </Typography>
