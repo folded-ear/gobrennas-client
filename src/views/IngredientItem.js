@@ -1,4 +1,8 @@
-import { IconButton } from "@material-ui/core";
+import {
+    Grid,
+    IconButton,
+} from "@material-ui/core";
+import { makeStyles } from "@material-ui/core/styles";
 import LinkIcon from "@material-ui/icons/Link";
 import { Container } from "flux/utils";
 import PropTypes from "prop-types";
@@ -13,8 +17,17 @@ import { loadObjectOf } from "../util/loadObjectTypes";
 import Quantity from "./common/Quantity";
 import SendToPlan from "./SendToPlan";
 
+const useStyles = makeStyles(() => ({
+    quantity: {
+        textAlign: "right",
+    },
+    name: {
+        textDecoration: "#999 dotted underline",
+    }
+}));
+
 const Augment = ({text, prefix, suffix}) => text
-    ? <React.Fragment>{prefix}{text}{suffix}</React.Fragment>
+    ? <>{prefix}{text}{suffix}</>
     : null;
 
 Augment.propTypes = {
@@ -27,48 +40,41 @@ Augment.propTypes = {
 };
 
 const IngredientItem = ({ingredient: ref, iLO, uLO}) => {
+    const classes = useStyles();
+    let left, right;
 
     if (iLO == null || !iLO.hasValue()) {
-        return <span>
-            <div style={{marginLeft: "7em"}}>
-                {ref.raw}
-                {ref.ingredientId && <span>
+        right = <>
+            {ref.raw}
+            {ref.ingredientId && <span>
                     {" "}
-                    ({ref.ingredientId})
+                ({ref.ingredientId})
                 </span>}
-                {" "}
-                <SendToPlan
-                    onClick={planId => Dispatcher.dispatch({
-                        type: TaskActions.SEND_TO_PLAN,
-                        planId,
-                        name: ref.raw,
-                    })}
-                    iconOnly
-                />
-            </div>
-        </span>;
-    }
-
-    const ingredient = iLO.getValueEnforcing();
-    const isRecipe = ingredient.type === "Recipe";
-    const units = uLO && uLO.hasValue() ? uLO.getValueEnforcing().name : ref.units;
-    return (
-    <span>
-        <div style={{float: "left", width: "6em", textAlign: "right"}}>
-            <Quantity
-                quantity={ref.quantity}
-                units={units}
+            {" "}
+            <SendToPlan
+                onClick={planId => Dispatcher.dispatch({
+                    type: TaskActions.SEND_TO_PLAN,
+                    planId,
+                    name: ref.raw,
+                })}
+                iconOnly
             />
-        </div>
-        <div style={{
-            marginLeft: "7em",
-        }}>
-            <span style={{
-                textDecoration: "#999 dotted underline",
-            }}>
+        </>;
+    } else {
+        const ingredient = iLO.getValueEnforcing();
+        const isRecipe = ingredient.type === "Recipe";
+        const units = uLO && uLO.hasValue() ? uLO.getValueEnforcing().name : ref.units;
+
+        left = <Quantity
+            quantity={ref.quantity}
+            units={units}
+        />;
+
+        right = <>
+            <span className={classes.name}>
                 {ingredient.name}
             </span>
-            {isRecipe && <React.Fragment>
+            {isRecipe && <>
                 {" "}
                 <IconButton
                     size={"small"}
@@ -77,12 +83,12 @@ const IngredientItem = ({ingredient: ref, iLO, uLO}) => {
                 >
                     <LinkIcon fontSize="inherit" />
                 </IconButton>
-            </React.Fragment>}
+            </>}
             <Augment
                 text={ref.preparation}
                 prefix=", "
             />
-            {!isRecipe && <React.Fragment>
+            {!isRecipe && <>
                 {" "}
                 <SendToPlan
                     onClick={planId => Dispatcher.dispatch({
@@ -93,10 +99,18 @@ const IngredientItem = ({ingredient: ref, iLO, uLO}) => {
                     })}
                     iconOnly
                 />
-            </React.Fragment>}
-        </div>
-    </span>
-  );
+            </>}
+        </>;
+    }
+
+    return <Grid container spacing={2}>
+        <Grid item xs={3} className={classes.quantity}>
+            {left}
+        </Grid>
+        <Grid item xs={9}>
+            {right}
+        </Grid>
+    </Grid>;
 };
 
 IngredientItem.propTypes = {
@@ -110,7 +124,7 @@ IngredientItem.propTypes = {
 };
 
 const IngCon = Container.createFunctional(
-    IngredientItem,
+    props => <IngredientItem {...props} />,
     () => [
         LibraryStore,
     ],
