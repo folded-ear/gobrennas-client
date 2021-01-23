@@ -8,6 +8,17 @@ import LibraryStore from "./LibraryStore";
 import RecipeActions from "./RecipeActions";
 import RouteActions from "./RouteActions";
 
+const buildTemplate = () => ({
+    id: ClientId.next(),
+    name: "",
+    ingredients: [{raw: ""}],
+    directions: "",
+    "yield": "",
+    totalTime: "",
+    calories: "",
+    labels: []
+});
+
 const loadRecipeIfPossible = draftLO => {
     if (draftLO.isDone()) return draftLO;
     const state = draftLO.getValueEnforcing();
@@ -16,6 +27,7 @@ const loadRecipeIfPossible = draftLO => {
     if (!lo.hasValue()) return draftLO;
     const recipe = lo.getValueEnforcing();
     return draftLO.setValue({
+        ...buildTemplate(),
         ...state,
         ...recipe,
         id: state.id, // in case it's a copy
@@ -37,16 +49,7 @@ class DraftRecipeStore extends ReduceStore {
     }
     
     getInitialState() {
-        return LoadObject.withValue({
-            id: ClientId.next(),
-            name: "",
-            ingredients: [{raw: ""}],
-            directions: "",
-            "yield": "",
-            totalTime: "",
-            calories: "",
-            labels: []
-        });
+        return LoadObject.withValue(buildTemplate());
     }
     
     reduce(state, action) {
