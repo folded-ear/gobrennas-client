@@ -1,14 +1,15 @@
-import React from "react";
+import { IconButton } from "@material-ui/core";
 import LinkIcon from "@material-ui/icons/Link";
-import {Container} from "flux/utils";
+import { Container } from "flux/utils";
 import PropTypes from "prop-types";
-import {Link} from "react-router-dom";
+import React from "react";
 import Dispatcher from "../data/dispatcher";
 import LibraryStore from "../data/LibraryStore";
 import PantryItemActions from "../data/PantryItemActions";
 import TaskActions from "../data/TaskActions";
-import {refType} from "../models/IngredientRef";
-import {loadObjectOf} from "../util/loadObjectTypes";
+import { refType } from "../models/IngredientRef";
+import history from "../util/history";
+import { loadObjectOf } from "../util/loadObjectTypes";
 import Quantity from "./common/Quantity";
 import SendToPlan from "./SendToPlan";
 
@@ -69,9 +70,13 @@ const IngredientItem = ({ingredient: ref, iLO, uLO}) => {
             </span>
             {isRecipe && <React.Fragment>
                 {" "}
-                <Link to={`/library/recipe/${ingredient.id}`}>
-                    <LinkIcon/>
-                </Link>
+                <IconButton
+                    size={"small"}
+                    onClick={() => history.push(`/library/recipe/${ingredient.id}`)}
+                    title={`Open ${ingredient.name}`}
+                >
+                    <LinkIcon fontSize="inherit" />
+                </IconButton>
             </React.Fragment>}
             <Augment
                 text={ref.preparation}
