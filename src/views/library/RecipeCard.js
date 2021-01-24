@@ -5,6 +5,7 @@ import {
     CardContent,
     Typography,
 } from "@material-ui/core";
+import { makeStyles } from "@material-ui/core/styles";
 import {
     Edit,
     MenuBook,
@@ -27,7 +28,14 @@ import User from "../user/User";
 import ItemImage from "./ItemImage";
 import ItemImageUpload from "./ItemImageUpload";
 
+const useStyles = makeStyles({
+    photo: {
+        height: 140,
+    },
+});
+
 const RecipeCard = ({recipe, mine, ownerLO}) => {
+    const classes = useStyles();
     const actions = <>
         <Button
             variant="contained"
@@ -71,9 +79,13 @@ const RecipeCard = ({recipe, mine, ownerLO}) => {
             <div>
                 {recipe.photo
                     ? <Link to={`/library/recipe/${recipe.id}`}>
-                        <ItemImage recipe={recipe}/>
+                        <ItemImage
+                            className={classes.photo}
+                            recipe={recipe} />
                     </Link>
-                    : <ItemImageUpload recipe={recipe}/>
+                    : <ItemImageUpload
+                        className={classes.photo}
+                        recipe={recipe} />
                 }
                 <CardContent>
                     <Typography gutterBottom variant="h5" component="h2">
@@ -105,7 +117,7 @@ RecipeCard.propTypes = {
 };
 
 export default Container.createFunctional(
-    RecipeCard,
+    props => <RecipeCard {...props} />,
     () => [
         FriendStore,
     ],

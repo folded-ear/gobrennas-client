@@ -26,6 +26,7 @@ import { Recipe } from "../../data/RecipeTypes";
 import ImageDropZone from "../../util/ImageDropZone";
 import TextractFormAugment from "../../util/TextractFormAugment";
 import ElEdit from "../ElEdit";
+import PositionPicker from "../PositionPicker";
 
 const useStyles = makeStyles((theme) => ({
     button: {
@@ -129,16 +130,26 @@ const RecipeForm = ({draft: lo, onSave, onSaveCopy, onCancel}) => {
                 />
             </Box>
             <Box m={MARGIN}>
-                <ImageDropZone
-                    image={draft.photo}
-                    onImage={file => updateDraft("photo", file)}
-                    style={{
-                        display: "inline-block",
-                        backgroundColor: "#eee",
-                        textAlign: "center",
-                        cursor: "pointer",
-                    }}
-                />
+                <Grid container>
+                    {draft.photo && <Grid item>
+                        <PositionPicker
+                            image={draft.photo}
+                            value={draft.focus}
+                            onChange={pos => updateDraft("focus", pos)}
+                        />
+                    </Grid>}
+                    <Grid item>
+                        <ImageDropZone
+                            onImage={file => updateDraft("photo", file)}
+                            style={{
+                                display: "inline-block",
+                                backgroundColor: "#eee",
+                                textAlign: "center",
+                                cursor: "pointer",
+                            }}
+                        />
+                    </Grid>
+                </Grid>
             </Box>
             <List>
                 {draft.ingredients.map((it, i) =>
