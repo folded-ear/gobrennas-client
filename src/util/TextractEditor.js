@@ -12,6 +12,8 @@ import {
 } from "@material-ui/icons";
 import PropTypes from "prop-types";
 import React from "react";
+import { findSvg } from "./findAncestorByName";
+import getPositionWithin from "./getPositionWithin";
 
 const useStyles = makeStyles({
     rotateRight: {
@@ -64,17 +66,8 @@ const TextractEditor = ({image, textract, renderActions, onClose}) => {
         },
         [textract, selectedRegion],
     );
-    const findSvg = n => {
-        while (n && n.localName !== "svg") {
-            n = n.parentNode;
-        }
-        return n;
-    };
     const getXY = e => {
-        const basis = findSvg(e.target).parentNode;
-        const scroll = document.scrollingElement;
-        const x = e.clientX - basis.offsetLeft + scroll.scrollLeft;
-        const y = e.clientY - basis.offsetTop + scroll.scrollTop;
+        const [x, y] = getPositionWithin(findSvg(e.target).parentNode, e);
         if (rotation === 90) {
             return [y, scaledHeight - x];
         } else if (rotation === 180) {
