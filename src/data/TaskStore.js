@@ -432,11 +432,6 @@ const assignToBucket = (state, id, bucketId) => {
 const focusTask = (state, id) => {
     taskForId(state, id);
     if (state.activeTaskId === id) return state;
-    if (state.activeTaskId != null) {
-        if (isEmpty(taskForId(state, state.activeTaskId))) {
-            state = queueDelete(state, state.activeTaskId);
-        }
-    }
     return {
         ...state,
         activeTaskId: id,
@@ -592,50 +587,55 @@ function isEmpty(taskOrString) {
 }
 
 const queueStatusUpdate = (state, id, status) => {
-    state = mapTaskLO(state, id, lo => {
-        const t = lo.getValueEnforcing();
-        invariant(
-            t.parentId != null,
-            "Can't change root-level task '%s' to %s",
-            id,
-            status,
-        );
-        if (t._next_status === status) return state; // we're golden
-        const isDelete = willStatusDelete(status);
-        if (isDelete && ClientId.is(id)) {
-            // short circuit this one...
-            return taskDeleted(state, id);
-        }
-        if (isDelete && isEmpty(t)) {
-            state = doTaskDelete(state, id);
-            return taskDeleted(state, id);
-        }
-        let nextLO;
-        if (t.status === status) {
-            statusUpdatesToFlush.delete(t.id);
-            nextLO = lo.map(t => {
-                t = {
-                    ...t,
-                };
-                delete t._next_status;
-                return t;
-            }).done();
-        } else {
-            statusUpdatesToFlush.set(id, status);
-            inTheFuture(TaskActions.FLUSH_STATUS_UPDATES, 4);
-            nextLO = lo.map(t => ({
+    let lo = loForId(state, id);
+    const t = lo.getValueEnforcing();
+    invariant(
+        t.parentId != null,
+        "Can't change root-level task '%s' to %s",
+        id,
+        status,
+    );
+    if (t._next_status === status) return state; // we're golden
+    const isDelete = willStatusDelete(status);
+    if (isDelete && ClientId.is(id)) {
+        // short circuit this one...
+        return taskDeleted(state, id);
+    }
+    if (isDelete && isEmpty(t)) {
+        state = doTaskDelete(state, id);
+        return taskDeleted(state, id);
+    }
+    let nextLO;
+    if (t.status === status) {
+        statusUpdatesToFlush.delete(t.id);
+        nextLO = lo.map(t => {
+            t = {
                 ...t,
-                _next_status: status,
-                _expanded: t._expanded && !isDelete,
-            }));
-            if (isDelete) {
-                nextLO = nextLO.deleting();
-            } else {
-                nextLO = nextLO.updating();
-            }
+            };
+            delete t._next_status;
+            return t;
+        }).done();
+    } else {
+        statusUpdatesToFlush.set(id, status);
+        inTheFuture(TaskActions.FLUSH_STATUS_UPDATES, 4);
+        nextLO = lo.map(t => ({
+            ...t,
+            _next_status: status,
+            _expanded: t._expanded && !isDelete,
+        }));
+        if (isDelete) {
+            nextLO = nextLO.deleting();
+        } else {
+            nextLO = nextLO.updating();
         }
-        return nextLO;
-    });
+    }
+    state = {
+        ...state,
+        byId: {
+            ...state.byId,
+            [id]: nextLO,
+        },
+    };
     if (state.activeListId === id) {
         state.activeTaskId = null;
     }
