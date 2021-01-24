@@ -1,6 +1,7 @@
 import { AddAPhoto } from "@material-ui/icons";
 import PropTypes from "prop-types";
 import React from "react";
+import ImageOrPreview from "../views/common/ImageOrPreview";
 import buildSequence from "./buildSequence";
 
 const {next} = buildSequence();
@@ -31,19 +32,6 @@ const ImageDropZone = ({image, onImage, maxWidth, maxHeight, ...props}) => {
         sendOffFirstFile(event.target.files);
     };
 
-    let imageName, imageUrl, onImageLoad;
-    if (image) {
-        if (typeof image === "string") {
-            const p = image.split("/");
-            imageName = p[p.length - 1];
-            imageUrl = image;
-        } else {
-            imageName = image.name;
-            imageUrl = URL.createObjectURL(image);
-            onImageLoad = () => URL.revokeObjectURL(imageUrl);
-        }
-    }
-
     const inputId = `image-drop-zone-${next()}`;
     return (
         <label
@@ -54,10 +42,9 @@ const ImageDropZone = ({image, onImage, maxWidth, maxHeight, ...props}) => {
             onDragOver={handleDragOver}
         >
             {image
-                ? <img
-                    src={imageUrl}
-                    alt={imageName}
-                    onLoad={onImageLoad}
+                ? <ImageOrPreview
+                    src={image}
+                    alt={""}
                     style={{
                         maxWidth: maxWidth || "400px",
                         maxHeight: maxHeight || "200px",
