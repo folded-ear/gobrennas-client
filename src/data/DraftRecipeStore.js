@@ -13,9 +13,9 @@ const buildTemplate = () => ({
     name: "",
     ingredients: [{raw: ""}],
     directions: "",
-    "yield": "",
-    totalTime: "",
-    calories: "",
+    "yield": null,
+    totalTime: null,
+    calories: null,
     labels: []
 });
 

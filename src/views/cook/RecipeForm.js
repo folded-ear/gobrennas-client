@@ -45,6 +45,12 @@ const handleUpdate = (e) => {
     updateDraft(key, value);
 };
 
+const handleNumericUpdate = (e) => {
+    const {name: key, value} = e.target;
+    const v = parseFloat(value);
+    updateDraft(key, isNaN(v) ? null : v);
+};
+
 const addLabel = (label) => {
     Dispatcher.dispatch({
         type: RecipeActions.NEW_DRAFT_LABEL,
@@ -80,14 +86,19 @@ const RecipeForm = ({draft: lo, onSave, onSaveCopy, onCancel}) => {
                             onClick={() => Dispatcher.dispatch({
                                 type: RecipeActions.MULTI_LINE_DRAFT_INGREDIENT_PASTE_YO,
                                 index: 999999,
-                                text: lines.map(s => s.trim()).filter(s => s.length).join("\n"),
+                                text: lines.map(s => s.trim())
+                                    .filter(s => s.length)
+                                    .join("\n"),
                             })}
                             disabled={disabled}
                         >
                             Add Ingredients
                         </Button>
                         <Button
-                            onClick={() => updateDraft("directions", (draft.directions + "\n\n" + lines.join("\n")).trim())}
+                            onClick={() => updateDraft(
+                                "directions",
+                                (draft.directions + "\n\n" + lines.join("\n")).trim(),
+                            )}
                             disabled={disabled}
                         >
                             Add Description
@@ -208,8 +219,8 @@ const RecipeForm = ({draft: lo, onSave, onSaveCopy, onCancel}) => {
                             label="Yield"
                             fullWidth
                             placeholder="Yield (in servings)"
-                            value={draft.yield}
-                            onChange={handleUpdate}
+                            value={draft.yield == null ? "" : draft.yield}
+                            onChange={handleNumericUpdate}
                             variant="outlined"
                         />
                     </Grid>
@@ -219,8 +230,8 @@ const RecipeForm = ({draft: lo, onSave, onSaveCopy, onCancel}) => {
                             label="Total Cook Time"
                             fullWidth
                             placeholder="Total Time In Minutes"
-                            value={draft.totalTime}
-                            onChange={handleUpdate}
+                            value={draft.totalTime == null ? "" : draft.totalTime}
+                            onChange={handleNumericUpdate}
                             variant="outlined"
                         />
                     </Grid>
@@ -230,8 +241,8 @@ const RecipeForm = ({draft: lo, onSave, onSaveCopy, onCancel}) => {
                             label="Calories"
                             fullWidth
                             placeholder="Calories Per Serving"
-                            value={draft.calories}
-                            onChange={handleUpdate}
+                            value={draft.calories == null ? "" : draft.calories}
+                            onChange={handleNumericUpdate}
                             variant="outlined"
                         />
                     </Grid>
