@@ -9,10 +9,7 @@ import TaskStore from "../data/TaskStore";
 import useStore from "../data/useStore";
 
 const SendToPlan = ({onClick, iconOnly}) => {
-    const listLO = useStore(
-        TaskStore,
-        () => TaskStore.getActiveListLO(),
-        []);
+    const listLO = useStore(() => TaskStore.getActiveListLO(), TaskStore, []);
     if (!listLO.hasValue()) return null;
     const list = listLO.getValueEnforcing();
     if (iconOnly) {
