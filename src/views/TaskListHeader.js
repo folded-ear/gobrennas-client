@@ -1,19 +1,19 @@
-import Box from "@material-ui/core/Box";
-import Button from "@material-ui/core/Button";
-import Drawer from "@material-ui/core/Drawer";
-import FormControl from "@material-ui/core/FormControl";
-import IconButton from "@material-ui/core/IconButton";
-import MenuItem from "@material-ui/core/MenuItem";
-import Select from "@material-ui/core/Select";
-import TextField from "@material-ui/core/TextField";
-import Tooltip from "@material-ui/core/Tooltip";
+import {
+    Button,
+    Drawer,
+    FormControl,
+    Grid,
+    IconButton,
+    MenuItem,
+    Select,
+    TextField,
+    Tooltip,
+} from "@material-ui/core";
 import { DynamicFeed } from "@material-ui/icons";
-import { Container } from "flux/utils";
 import PropTypes from "prop-types";
 import React from "react";
 import Dispatcher from "../data/dispatcher";
 import TaskActions from "../data/TaskActions";
-import WindowStore from "../data/WindowStore";
 import { byNameComparator } from "../util/comparators";
 import EditButton from "./common/EditButton";
 import {
@@ -21,6 +21,7 @@ import {
     ExpandAll,
 } from "./common/icons";
 import TaskListSidebar from "./TaskListSidebar";
+import UserById from "./user/UserById";
 
 const isValidName = name =>
     name != null && name.trim().length > 0;
@@ -109,11 +110,8 @@ class TaskListHeader extends React.PureComponent {
         const {
             name,
         } = this.state;
-        return <Box
-            display="flex"
-            alignItems="center"
-        >
-            {activeList && <Box>
+        return <Grid container justify={"space-between"}>
+            {activeList && <Grid item>
                 <IconButton
                     aria-label="expand-all"
                     onClick={this.onExpandAll}
@@ -137,13 +135,34 @@ class TaskListHeader extends React.PureComponent {
                         <DynamicFeed />
                     </IconButton>
                 </Tooltip>
-            </Box>}
-            {allLists && allLists.length > 0 && <React.Fragment>
+                <EditButton
+                    type={listDetailVisible ? "primary" : "default"}
+                    onClick={this.onShowDrawer}
+                />
+                <Drawer
+                    open={listDetailVisible}
+                    anchor="right"
+                    onClose={this.onCloseDrawer}
+                >
+                    <div
+                        style={{
+                            minHeight: "100%",
+                            minWidth: "40vw",
+                            maxWidth: "90vw",
+                            backgroundColor: "#f7f7f7",
+                        }}
+                    >
+                        <TaskListSidebar list={activeList} />
+                    </div>
+                </Drawer>
+            </Grid>}
+            {allLists && allLists.length > 0 && <Grid item>
                 <FormControl
                     variant="outlined"
                     style={{
                         minWidth: "120px",
                     }}
+                    size={"small"}
                 >
                     <Select
                         placeholder="Select a Plan"
@@ -160,40 +179,27 @@ class TaskListHeader extends React.PureComponent {
                         )}
                     </Select>
                 </FormControl>
-                {activeList && <>
-                    <EditButton
-                        type={listDetailVisible ? "primary" : "default"}
-                        onClick={this.onShowDrawer}
-                    />
-                    <Drawer
-                        open={listDetailVisible}
-                        anchor="right"
-                        onClose={this.onCloseDrawer}
-                    >
-                        <div
-                            style={{
-                                minHeight: "100%",
-                                minWidth: "40vw",
-                                maxWidth: "90vw",
-                                backgroundColor: "#f7f7f7",
-                            }}
-                        >
-                            <TaskListSidebar list={activeList} />
-                        </div>
-                    </Drawer>
-                </>}
-            </React.Fragment>}
-            <TextField
-                label="New Plan..."
-                onChange={this.onNameChange}
-            />
-            <Button
-                onClick={this.onCreate}
-                disabled={!isValidName(name)}
-            >
-                Create
-            </Button>
-        </Box>;
+                {activeList && activeList.acl && <UserById
+                    id={activeList.acl.ownerId}
+                    iconOnly
+                />}
+            </Grid>}
+            <Grid item>
+                <TextField
+                    label="New Plan..."
+                    value={name}
+                    size={"small"}
+                    variant={"outlined"}
+                    onChange={this.onNameChange}
+                />
+                <Button
+                    onClick={this.onCreate}
+                    disabled={!isValidName(name)}
+                >
+                    Create
+                </Button>
+            </Grid>
+        </Grid>;
     }
 
 }
@@ -203,19 +209,6 @@ TaskListHeader.propTypes = {
     activeList: PropTypes.object,
     listDetailVisible: PropTypes.bool.isRequired,
     hasBuckets: PropTypes.bool.isRequired,
-    windowWidth: PropTypes.number.isRequired,
 };
 
-export default Container.createFunctional(
-    props => <TaskListHeader {...props} />,
-    () => [
-        WindowStore,
-    ],
-    (prev, props) => {
-        return {
-            ...props,
-            windowWidth: WindowStore.getSize().width,
-        };
-    },
-    { withProps: true }
-);
+export default TaskListHeader;
