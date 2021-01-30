@@ -8,6 +8,7 @@ import {
     Typography,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
+import { PostAdd } from "@material-ui/icons";
 import PropTypes from "prop-types";
 import React from "react";
 import { Redirect } from "react-router-dom";
@@ -22,6 +23,7 @@ import CopyButton from "../common/CopyButton";
 import DeleteButton from "../common/DeleteButton";
 import Directions from "../common/Directions";
 import EditButton from "../common/EditButton";
+import FoodingerFab from "../common/FoodingerFab";
 import RecipeInfo from "../common/RecipeInfo";
 import Source from "../common/Source";
 import IngredientItem from "../IngredientItem";
@@ -35,6 +37,7 @@ const useStyles = makeStyles(theme => ({
     root: {
         backgroundColor: "white",
         minHeight: "100vh",
+        paddingBottom: "6em",
     },
     name: {
         flexGrow: 1,
@@ -138,6 +141,11 @@ const RecipeDetail = ({recipeLO, mine, ownerLO}) => {
                 </Grid>
 
             </Grid>
+            <FoodingerFab
+                onClick={() => history.push(`/add`)}
+            >
+                <PostAdd />
+            </FoodingerFab>
         </Content>
     );
 };

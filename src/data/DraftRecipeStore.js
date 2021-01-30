@@ -1,6 +1,7 @@
 import dotProp from "dot-prop-immutable";
 import { ReduceStore } from "flux/utils";
 import ClientId from "../util/ClientId";
+import history from "../util/history";
 import LoadObject from "../util/LoadObject";
 import Dispatcher from "./dispatcher";
 import LibraryActions from "./LibraryActions";
@@ -182,19 +183,21 @@ class DraftRecipeStore extends ReduceStore {
                 return state.updating();
             }
 
-            case RecipeActions.RECIPE_CREATED: {
+            case RecipeActions.RECIPE_CREATED:
+            case RecipeActions.RECIPE_UPDATED: {
+                history.push(`/library/recipe/${action.data.id}`);
                 return this.getInitialState();
             }
 
             case RecipeActions.CANCEL_ADD: {
+                history.push(action.sourceId == null
+                    ? "/library"
+                    : `/library/recipe/${action.sourceId}`);
                 return this.getInitialState();
             }
 
             case RecipeActions.CANCEL_EDIT: {
-                return this.getInitialState();
-            }
-
-            case RecipeActions.RECIPE_UPDATED: {
+                history.push(`/library/recipe/${action.id}`);
                 return this.getInitialState();
             }
 

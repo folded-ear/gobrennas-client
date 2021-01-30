@@ -10,7 +10,9 @@ const dissectionComponentType = PropTypes.shape({
 const RecipeActions = {
     CREATE_RECIPE: "recipe/create-recipe",
     RECIPE_CREATED: "recipe/recipe-created",
-    CANCEL_ADD: typedAction("recipe/cancel-add", {}),
+    CANCEL_ADD: typedAction("recipe/cancel-add", {
+        sourceId: PropTypes.number,
+    }),
     UPDATE_RECIPE: "recipe/update-recipe",
     SET_RECIPE_PHOTO: "recipe/set-recipe-photo",
     RECIPE_UPDATED: "recipe/recipe-updated",

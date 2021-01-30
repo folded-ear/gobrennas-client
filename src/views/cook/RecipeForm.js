@@ -21,8 +21,10 @@ import ChipInput from "material-ui-chip-input";
 import PropTypes from "prop-types";
 import React from "react";
 import Dispatcher from "../../data/dispatcher";
+import DraftRecipeStore from "../../data/DraftRecipeStore";
 import RecipeActions from "../../data/RecipeActions";
 import { Recipe } from "../../data/RecipeTypes";
+import useFluxStore from "../../data/useFluxStore";
 import ImageDropZone from "../../util/ImageDropZone";
 import TextractFormAugment from "../../util/TextractFormAugment";
 import ElEdit from "../ElEdit";
@@ -66,7 +68,10 @@ const removeLabel = (label, index) => {
     });
 };
 
-const RecipeForm = ({draft: lo, onSave, onSaveCopy, onCancel}) => {
+const RecipeForm = ({onSave, onSaveCopy, onCancel}) => {
+    const lo = useFluxStore(
+        () => DraftRecipeStore.getDraftLO(),
+        [DraftRecipeStore]);
     const classes = useStyles();
     const draft = lo.getValueEnforcing();
     const MARGIN = 2;

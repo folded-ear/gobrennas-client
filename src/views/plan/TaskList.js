@@ -49,6 +49,7 @@ class TaskList extends React.PureComponent {
         return <Content style={{
             backgroundColor: "white",
             minHeight: "100vh",
+            paddingBottom: "6em",
         }}>
             <Box p={2}>
                 <TaskListHeader
