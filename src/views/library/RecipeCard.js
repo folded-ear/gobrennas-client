@@ -10,7 +10,6 @@ import {
     Edit,
     MenuBook,
 } from "@material-ui/icons";
-import { Container } from "flux/utils";
 import PropTypes from "prop-types";
 import React from "react";
 import { Link } from "react-router-dom";
@@ -18,7 +17,7 @@ import Dispatcher from "../../data/dispatcher";
 import FriendStore from "../../data/FriendStore";
 import RecipeActions from "../../data/RecipeActions";
 import { Recipe } from "../../data/RecipeTypes";
-import UserStore from "../../data/UserStore";
+import useFluxStore from "../../data/useFluxStore";
 import { loadObjectOf } from "../../util/loadObjectTypes";
 import RecipeInfo from "../common/RecipeInfo";
 import Source from "../common/Source";
@@ -34,7 +33,14 @@ const useStyles = makeStyles({
     },
 });
 
-const RecipeCard = ({recipe, mine, ownerLO}) => {
+const RecipeCard = ({recipe, mine}) => {
+    const friendLO = useFluxStore(
+        () => mine
+            ? null
+            : FriendStore.getFriendLO(recipe.ownerId),
+        [FriendStore],
+        [mine, recipe.ownerId],
+    );
     const classes = useStyles();
     const actions = <>
         <Button
@@ -57,9 +63,10 @@ const RecipeCard = ({recipe, mine, ownerLO}) => {
         >
             Edit
         </Button>}
-        {(!mine && ownerLO.hasValue()) && <User key={"user"}
-                                                {...ownerLO.getValueEnforcing()}
-                                                iconOnly/>}
+        {friendLO && friendLO.hasValue() && <User
+            {...friendLO.getValueEnforcing()}
+            iconOnly
+        />}
         <SendToPlan onClick={planId => Dispatcher.dispatch({
             type: RecipeActions.SEND_TO_PLAN,
             recipeId: recipe.id,
@@ -116,16 +123,4 @@ RecipeCard.propTypes = {
     staged: PropTypes.bool,
 };
 
-export default Container.createFunctional(
-    props => <RecipeCard {...props} />,
-    () => [
-        FriendStore,
-    ],
-    (prevState, props) => ({
-        ...props,
-        ownerLO: props.mine
-            ? UserStore.getProfileLO()
-            : FriendStore.getFriendLO(props.recipe.ownerId),
-    }),
-    {withProps: true},
-);
+export default RecipeCard;

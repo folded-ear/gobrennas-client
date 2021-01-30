@@ -1,4 +1,3 @@
-import { Container } from "flux/utils";
 import React from "react";
 import LibraryStore from "../data/LibraryStore";
 import ShoppingStore from "../data/ShoppingStore";
@@ -9,6 +8,7 @@ import {
 } from "../data/tasks";
 import TaskStatus from "../data/TaskStatus";
 import TaskStore from "../data/TaskStore";
+import useFluxStore from "../data/useFluxStore";
 import groupBy from "../util/groupBy";
 import ShopList from "../views/shop/ShopList";
 
@@ -41,7 +41,7 @@ const gatherLeaves = item => {
         }));
 };
 
-const groupItems = plans => {
+const groupItems = (plans, expandedId) => {
     const leaves = plans
         .flatMap(gatherLeaves);
     if (plans.length === 1) {
@@ -64,7 +64,8 @@ const groupItems = plans => {
         orderedIngredients.push({
             id: ingId,
             items: items,
-            lo: LibraryStore.getIngredientById(ingId)});
+            lo: LibraryStore.getIngredientById(ingId),
+        });
     }
     orderedIngredients.sort(({lo: alo}, {lo: blo}) => {
         if (!alo.hasValue()) return blo.hasValue() ? 1 : 0;
@@ -79,7 +80,6 @@ const groupItems = plans => {
         return 0;
     });
     const theTree = [];
-    const expandedId = ShoppingStore.getExpandedIngredientId();
     for (const {id: ingId, items, lo} of orderedIngredients) {
         const neededItems = items.filter(it => it.status === TaskStatus.NEEDED);
         if (neededItems.length === 0) continue;
@@ -128,24 +128,26 @@ const groupItems = plans => {
     return theTree;
 };
 
-export default Container.createFunctional(
-    props => <ShopList {...props} />,
-    () => [
-        TaskStore,
-        ShoppingStore,
-        LibraryStore,
-    ],
-    () => {
-        const planLO = TaskStore.getActiveListLO();
-        const activeItem = ShoppingStore.getActiveItem();
-        return {
-            planLO,
-            itemTuples: planLO.hasValue()
-                ? groupItems([planLO.getValueEnforcing()])
+const Shop = () => {
+    const expandedId = useFluxStore(
+        () => ShoppingStore.getExpandedIngredientId(),
+        [ShoppingStore]
+    );
+    const [planLO, itemTuples] = useFluxStore(
+        () => {
+            const planLO = TaskStore.getActiveListLO();
+            return [planLO, planLO.hasValue()
+                ? groupItems([planLO.getValueEnforcing()], expandedId)
                 : [],
-            isActive: activeItem == null
-                ? () => false
-                : it => it.id === activeItem.id && it._type === activeItem.type,
-        };
-    }
-);
+            ];
+        },
+        [TaskStore, LibraryStore],
+        [expandedId]
+    );
+    return <ShopList
+        planLO={planLO}
+        itemTuples={itemTuples}
+    />;
+};
+
+export default Shop;

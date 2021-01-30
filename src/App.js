@@ -1,10 +1,10 @@
 import CssBaseline from "@material-ui/core/CssBaseline";
 import { ThemeProvider } from "@material-ui/core/styles";
-import { Container } from "flux/utils";
-import React, { Component } from "react";
+import React from "react";
 import { Switch } from "react-router-dom";
 import "./App.scss";
 import Dispatcher from "./data/dispatcher";
+import useFluxStore from "./data/useFluxStore";
 import UserActions from "./data/UserActions";
 import UserStore from "./data/UserStore";
 import WindowStore from "./data/WindowStore";
@@ -18,82 +18,76 @@ import PrivateRoute from "./views/common/PrivateRoute";
 import NewVersionAvailable from "./views/NewVersionAvailable";
 import Login from "./views/user/Login";
 
-class App extends Component {
-    constructor(props) {
-        super(props);
-        this.handleLogout = this.handleLogout.bind(this);
-    }
+const App = () => {
+    const [authenticated, userLO] = useFluxStore(
+        () => [
+            UserStore.isAuthenticated(),
+            UserStore.getProfileLO(),
+        ],
+        [UserStore],
+    );
+    const newVersionAvailable = useFluxStore(
+        () => WindowStore.isNewVersionAvailable(),
+        [WindowStore],
+    );
 
-    handleLogout() {
+    const handleLogout = () =>
         Dispatcher.dispatch({
             type: UserActions.LOGOUT,
         });
+
+    if (!userLO.isDone()) {
+        return <ThemeProvider theme={theme}>
+            {newVersionAvailable && <NewVersionAvailable />}
+            <AppHeader authenticated={false} />
+            <LoadingIndicator />
+        </ThemeProvider>;
     }
 
-    render() {
-        const {
-            authenticated,
-            userLO,
-            newVersionAvailable,
-        } = this.props;
+    const currentUser = authenticated
+        ? userLO.getValueEnforcing()
+        : null;
 
-        if (!userLO.isDone()) {
-            return <ThemeProvider theme={theme}>
-                <AppHeader authenticated={false}/>
-                <LoadingIndicator/>
-            </ThemeProvider>;
-        }
-        const currentUser = authenticated
-            ? userLO.getValueEnforcing()
-            : null;
+    return <ThemeProvider theme={theme}>
+        <CssBaseline />
+        {newVersionAvailable && <NewVersionAvailable />}
+        <AppHeader
+            authenticated={authenticated}
+            onLogout={handleLogout}
+        />
+        <Switch>
+            {routes.public.map(route => {
+                return (
+                    <FluxRoute
+                        key={route.path}
+                        path={route.path}
+                        render={props => <route.component
+                            authenticated={authenticated} {...props} />}
+                        exact={route.exact}
+                    />
+                );
+            })}
+            {routes.private.map(route => {
+                return (
+                    <PrivateRoute
+                        key={route.path}
+                        path={route.path}
+                        component={route.component}
+                        currentUser={currentUser}
+                        authenticated={authenticated}
+                    />
+                );
+            })}
+            <FluxRoute
+                path="/login"
+                render={(props) => <Login
+                    authenticated={authenticated}
+                    {...props}
+                />}
+            />
+            <FluxRoute component={NotFound} />
+        </Switch>
+    </ThemeProvider>;
+};
 
-        return (
-            <>
-                <ThemeProvider theme={theme}>
-                    <CssBaseline/>
-                    {newVersionAvailable && <NewVersionAvailable/>}
-                    <AppHeader authenticated={authenticated} onLogout={this.handleLogout}/>
-                    <Switch>
-                        {routes.public.map(route => {
-                            return (
-                                <FluxRoute
-                                    key={route.path}
-                                    path={route.path}
-                                    render={props => <route.component authenticated={authenticated} {...props} />}
-                                    exact={route.exact}
-                                />
-                            );
-                        })}
-                        {routes.private.map(route => {
-                            return (
-                                <PrivateRoute
-                                    key={route.path}
-                                    path={route.path}
-                                    component={route.component}
-                                    currentUser={currentUser}
-                                    authenticated={authenticated}
-                                />
-                            );
-                        })}
-                        <FluxRoute path="/login" render={(props) => <Login
-                            authenticated={authenticated} {...props} />}/>
-                        <FluxRoute component={NotFound}/>
-                    </Switch>
-                </ThemeProvider>
-            </>
-        );
-    }
-}
-
-export default Container.createFunctional(
-    props => <App {...props} />,
-    () => [
-        UserStore,
-        WindowStore,
-    ],
-    () => ({
-        authenticated: UserStore.isAuthenticated(),
-        userLO: UserStore.getProfileLO(),
-        newVersionAvailable: WindowStore.isNewVersionAvailable(),
-    }),
-);
+export default App;

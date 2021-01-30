@@ -12,6 +12,7 @@ import RouteActions from "./RouteActions";
 const buildTemplate = () => ({
     id: ClientId.next(),
     name: "",
+    externalUrl: "",
     ingredients: [{raw: ""}],
     directions: "",
     "yield": null,
