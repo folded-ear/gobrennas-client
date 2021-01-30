@@ -3,6 +3,7 @@ import {
     IconButton,
     Snackbar,
 } from "@material-ui/core";
+import makeStyles from "@material-ui/core/styles/makeStyles";
 import {
     AddShoppingCart,
     ExitToApp,
@@ -11,7 +12,18 @@ import React from "react";
 import TaskStore from "../data/TaskStore";
 import useFluxStore from "../data/useFluxStore";
 
+const useStyles = makeStyles(theme => ({
+    snackbar: {
+        // SendToPlan is always shown w/ a FAB, don't need to make this extra
+        // spacing conditional. Yet.
+        [theme.breakpoints.down("xs")]: {
+            bottom: 90,
+        },
+    },
+}));
+
 const SendToPlan = ({onClick, iconOnly, withToast = true}) => {
+    const classes = useStyles();
     const [open, setOpen] = React.useState(false);
     const listLO = useFluxStore(() => TaskStore.getActiveListLO(), [TaskStore], []);
     if (!listLO.hasValue()) return null;
@@ -69,6 +81,7 @@ const SendToPlan = ({onClick, iconOnly, withToast = true}) => {
                 autoHideDuration={1500}
                 onClose={handleClose}
                 message={`Sent to ${list.name}!`}
+                className={classes.snackbar}
             />
         </>;
     }
