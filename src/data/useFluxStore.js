@@ -3,8 +3,8 @@ import React from "react";
 
 /**
  * I replace Flux Utils' Container concept with a hook. This not only allows for
- * functional components in the hook style, but also avoids Flux's dependence on
- * deprecated (and to be obsoleted) React lifecycles.
+ * functional components in the hook style, but also avoids Container's
+ * dependence on deprecated (and to be obsoleted) React lifecycles.
  *
  * My signature is reminiscent of useEffect, useMemo, and useState. Like
  * useEffect, there's a subscription created (and canceled/recreated) against
@@ -23,6 +23,15 @@ import React from "react";
  * etc.). That is, you have to actually manage your dependencies with the hook,
  * you can't just rely on Flux Utils to madly recalculate all the time.
  *
+ * ***NB***: When the collection of stores change, Flux Utils' Container updates
+ * its subscription's stores. `useFluxStore`, on the other hand, unsubscribes
+ * completely and resubscribes with the new stores. The net result is the same,
+ * but the latter approach requires a few extra object allocations. The Rules of
+ * Hooks, strongly discourage usage where the stores are changing out from a
+ * single `useFluxStore` hook instance. Thus the optimization seems nearly
+ * pointless (and it's small anyway), given the increased implementation
+ * complexity to provide it.
+ *
  * @param calculateState The callback for calculating the next state. This is
  *  the same as was passed to `Container.create`.
  * @param stores An array of stores to listen for changes to. This is the same
@@ -33,12 +42,20 @@ import React from "react";
  */
 const useFluxStore = (calculateState, stores, deps = []) => {
     const [state, setState] = React.useState(undefined);
+    const firstRun = state === undefined;
     // this useMemo/setState dance avoids a double calculation on mount
     const initializer = React.useMemo(
         () => {
-            const value = calculateState();
-            setState(value);
-            return value;
+            if (firstRun) {
+                const next = calculateState(undefined);
+                // why the function dance? because if next _is_ a function,
+                // setState will do the "wrong" thing!
+                setState(() => next);
+                return next;
+            } else {
+                setState(calculateState);
+                return undefined;
+            }
         },
         deps, // eslint-disable-line react-hooks/exhaustive-deps
     );
@@ -51,7 +68,7 @@ const useFluxStore = (calculateState, stores, deps = []) => {
         },
         stores, // eslint-disable-line react-hooks/exhaustive-deps
     );
-    return state === undefined ? initializer : state;
+    return firstRun ? initializer : state;
 };
 
 export default useFluxStore;
