@@ -22,13 +22,14 @@ import CopyButton from "../common/CopyButton";
 import DeleteButton from "../common/DeleteButton";
 import Directions from "../common/Directions";
 import EditButton from "../common/EditButton";
+import RecipeInfo from "../common/RecipeInfo";
 import Source from "../common/Source";
 import IngredientItem from "../IngredientItem";
 import LabelItem from "../LabelItem";
+import ItemImage from "../library/ItemImage";
 import ItemImageUpload from "../library/ItemImageUpload";
 import SendToPlan from "../SendToPlan";
 import User from "../user/User";
-import RecipeInfo from "../common/RecipeInfo";
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -42,8 +43,6 @@ const useStyles = makeStyles(theme => ({
         },
     },
     imageContainer: {
-        backgroundPosition: "center",
-        backgroundSize: "cover",
         height: "250px",
         overflow: "hidden",
         marginBottom: theme.spacing(4),
@@ -99,8 +98,8 @@ const RecipeDetail = ({recipeLO, mine, ownerLO}) => {
                 </Grid>
                 <Grid item xs={5}>
                     {recipe.photo
-                        ? <div className={classes.imageContainer} style={{backgroundImage: `url(${recipe.photo})`}}/>
-                        : <ItemImageUpload recipe={recipe}/>}
+                        ? <ItemImage className={classes.imageContainer} recipe={recipe} />
+                        : <ItemImageUpload recipe={recipe} />}
                 </Grid>
                 <Grid item xs={5}>
                     {recipe.externalUrl && <RecipeInfo label="Source" text={<Source url={recipe.externalUrl}/>}/>}

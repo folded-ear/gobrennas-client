@@ -1,26 +1,26 @@
+import { CardMedia } from "@material-ui/core";
+import PropTypes from "prop-types";
 import React from "react";
-import {CardMedia} from "@material-ui/core";
-import {makeStyles} from "@material-ui/core/styles";
-import {Recipe} from "../../data/RecipeTypes";
+import { Recipe } from "../../data/RecipeTypes";
 
-const useStyles = makeStyles({
-    photo: {
-        height: 140,
-    },
-});
-
-const ItemImage = ({recipe}) => {
-    const classes = useStyles();
+const ItemImage = ({recipe, style, ...props}) => {
+    const x = recipe.photoFocus ? recipe.photoFocus[0] * 100 : 50;
+    const y = recipe.photoFocus ? recipe.photoFocus[1] * 100 : 50;
 
     return (<CardMedia
-        className={classes.photo}
         image={recipe.photo}
         title={recipe.name}
+        {...props}
+        style={{
+            ...style,
+            backgroundPosition: `${x == null ? 50 : x}% ${y == null ? 50 : y}%`
+        }}
     />);
 };
 
 ItemImage.propTypes = {
-    recipe: Recipe
+    recipe: Recipe.isRequired,
+    style: PropTypes.object,
 };
 
 export default ItemImage;
