@@ -16,6 +16,7 @@ import {
     MenuBook,
 } from "@material-ui/icons";
 import classnames from "classnames";
+import PropTypes from "prop-types";
 import React from "react";
 import {
     Link,
@@ -60,6 +61,12 @@ const TinyNav = ({children, navTo, location}) => {
         color="inherit">
         {children}
     </IconButton>);
+};
+
+TinyNav.propTypes = {
+    children: PropTypes.node,
+    navTo: PropTypes.string.isRequired,
+    location: PropTypes.object.isRequired, // react-router BS
 };
 
 const BigNav = withStyles((theme) => ({
@@ -165,6 +172,12 @@ const AppHeader = ({authenticated, onLogout, location}) => {
             </React.Fragment>
         </>
     );
+};
+
+AppHeader.propTypes = {
+    authenticated: PropTypes.bool,
+    onLogout: PropTypes.func,
+    location: PropTypes.object.isRequired, // react-router BS
 };
 
 export default withRouter(AppHeader);
