@@ -134,8 +134,8 @@ const RecipeForm = ({draft: lo, onSave, onSaveCopy, onCancel}) => {
                     {draft.photo && <Grid item>
                         <PositionPicker
                             image={draft.photo}
-                            value={draft.focus}
-                            onChange={pos => updateDraft("focus", pos)}
+                            value={draft.photoFocus}
+                            onChange={pos => updateDraft("photoFocus", pos)}
                         />
                     </Grid>}
                     <Grid item>

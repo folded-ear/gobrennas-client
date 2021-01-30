@@ -1,4 +1,4 @@
-import PropTypes from "prop-types"
+import PropTypes from "prop-types";
 
 export const Ingredient = PropTypes.shape({
     aisle: PropTypes.string,
@@ -26,5 +26,6 @@ export const Recipe = PropTypes.shape({
     yield: PropTypes.number,
     totalTime: PropTypes.number,
     calories: PropTypes.number,
-    photo: PropTypes.string
+    photo: PropTypes.string,
+    photoFocus: PropTypes.arrayOf(PropTypes.number),
 });

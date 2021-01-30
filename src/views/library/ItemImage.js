@@ -4,8 +4,8 @@ import React from "react";
 import { Recipe } from "../../data/RecipeTypes";
 
 const ItemImage = ({recipe, style, ...props}) => {
-    const x = recipe.focus ? recipe.focus[0] * 100 : 50;
-    const y = recipe.focus ? recipe.focus[1] * 100 : 50;
+    const x = recipe.photoFocus ? recipe.photoFocus[0] * 100 : 50;
+    const y = recipe.photoFocus ? recipe.photoFocus[1] * 100 : 50;
 
     return (<CardMedia
         image={recipe.photo}
