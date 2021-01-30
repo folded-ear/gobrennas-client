@@ -38,7 +38,6 @@ class ShopList extends React.PureComponent {
         const {
             planLO,
             itemTuples,
-            isActive,
         } = this.props;
         if (!planLO.hasValue()) {
             return <LoadingIndicator
@@ -58,14 +57,14 @@ class ShopList extends React.PureComponent {
                         return <Ingredient
                             key={it.id + it._type}
                             item={it}
-                            active={isActive(it)}
+                            active={it.expanded}
                         />;
                     } else {
                         return <TaskItem
                             key={it.id}
                             depth={it.depth}
                             item={it}
-                            active={isActive(it)}
+                            active={it.expanded}
                         />;
                     }
                 })}
@@ -91,6 +90,7 @@ ShopList.propTypes = {
             _type: PropTypes.oneOf(["ingredient", "task"]),
             ...itemPropTypes,
             // for ingredient
+            expanded: PropTypes.bool,
             itemIds: PropTypes.arrayOf(clientOrDatabaseIdType),
             quantities: PropTypes.arrayOf(
                 PropTypes.shape({
@@ -100,7 +100,6 @@ ShopList.propTypes = {
             // for item
             path: PropTypes.arrayOf(PropTypes.shape(baseItemPropTypes)),
         })).isRequired,
-    isActive: PropTypes.func.isRequired,
 };
 
 export default ShopList;

@@ -6,7 +6,7 @@ import {
     Tabs,
     Toolbar,
 } from "@material-ui/core";
-import {makeStyles} from "@material-ui/core/styles";
+import { makeStyles } from "@material-ui/core/styles";
 import withStyles from "@material-ui/core/styles/withStyles";
 import {
     AccountCircle,
@@ -16,13 +16,13 @@ import {
     MenuBook,
 } from "@material-ui/icons";
 import classnames from "classnames";
-import {Container} from "flux/utils";
+import PropTypes from "prop-types";
 import React from "react";
 import {
     Link,
     withRouter,
 } from "react-router-dom";
-import WindowStore from "../../data/WindowStore";
+import useWindowSize from "../../data/useWindowSize";
 import Logo from "./Logo";
 
 const styles = makeStyles(theme => ({
@@ -63,6 +63,12 @@ const TinyNav = ({children, navTo, location}) => {
     </IconButton>);
 };
 
+TinyNav.propTypes = {
+    children: PropTypes.node,
+    navTo: PropTypes.string.isRequired,
+    location: PropTypes.object.isRequired, // react-router BS
+};
+
 const BigNav = withStyles((theme) => ({
     root: {
         textTransform: "uppercase",
@@ -71,7 +77,8 @@ const BigNav = withStyles((theme) => ({
     },
 }))((props) => <Tab {...props} />);
 
-const AppHeader = ({authenticated, onLogout, location, windowSize}) => {
+const AppHeader = ({authenticated, onLogout, location}) => {
+    const windowSize = useWindowSize();
     const classes = styles();
     const mobile = windowSize.width < 768;
     const topLevelNavSeg = location.pathname.split("/")[1];
@@ -167,14 +174,10 @@ const AppHeader = ({authenticated, onLogout, location, windowSize}) => {
     );
 };
 
-export default withRouter(Container.createFunctional(
-    props => <AppHeader {...props} />,
-    () => [
-        WindowStore,
-    ],
-    (prevState, props) => ({
-        ...props,
-        windowSize: WindowStore.getSize(),
-    }),
-    { withProps: true }
-));
+AppHeader.propTypes = {
+    authenticated: PropTypes.bool,
+    onLogout: PropTypes.func,
+    location: PropTypes.object.isRequired, // react-router BS
+};
+
+export default withRouter(AppHeader);

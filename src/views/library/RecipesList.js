@@ -139,9 +139,8 @@ RecipesList.defaultProps = {
 RecipesList.propTypes = {
     me: PropTypes.object.isRequired,
     libraryLO: loadObjectOf(PropTypes.arrayOf(Recipe)).isRequired,
-    stagedRecipes: PropTypes.arrayOf(Recipe).isRequired,
-    filter: PropTypes.string,
-    scope: PropTypes.string,
+    filter: PropTypes.string.isRequired,
+    scope: PropTypes.string.isRequired,
 };
 
 export default RecipesList;

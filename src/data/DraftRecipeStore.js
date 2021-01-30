@@ -3,15 +3,18 @@ import { ReduceStore } from "flux/utils";
 import ClientId from "../util/ClientId";
 import history from "../util/history";
 import LoadObject from "../util/LoadObject";
+import { toMilliseconds } from "../util/time";
 import Dispatcher from "./dispatcher";
 import LibraryActions from "./LibraryActions";
 import LibraryStore from "./LibraryStore";
 import RecipeActions from "./RecipeActions";
+import RecipeApi from "./RecipeApi";
 import RouteActions from "./RouteActions";
 
 const buildTemplate = () => ({
     id: ClientId.next(),
     name: "",
+    externalUrl: "",
     ingredients: [{raw: ""}],
     directions: "",
     "yield": null,
@@ -19,6 +22,13 @@ const buildTemplate = () => ({
     calories: null,
     labels: []
 });
+
+const buildWirePacket = recipe => {
+    recipe.type = "Recipe";
+    recipe.totalTime = toMilliseconds(recipe.totalTime);
+    delete recipe.rawIngredients;
+    return recipe;
+};
 
 const loadRecipeIfPossible = draftLO => {
     if (draftLO.isDone()) return draftLO;
@@ -176,16 +186,24 @@ class DraftRecipeStore extends ReduceStore {
             }
 
             case RecipeActions.CREATE_RECIPE: {
+                RecipeApi.addRecipe(buildWirePacket(action.data));
                 return state.creating();
             }
 
             case RecipeActions.UPDATE_RECIPE: {
+                RecipeApi.updateRecipe(buildWirePacket(action.data));
                 return state.updating();
             }
 
-            case RecipeActions.RECIPE_CREATED:
-            case RecipeActions.RECIPE_UPDATED: {
+            case RecipeActions.RECIPE_CREATED: {
                 history.push(`/library/recipe/${action.data.id}`);
+                return this.getInitialState();
+            }
+
+            case RecipeActions.RECIPE_UPDATED: {
+                if (state.hasValue() && action.data.id === state.getValueEnforcing().id) {
+                    history.push(`/library/recipe/${action.data.id}`);
+                }
                 return this.getInitialState();
             }
 

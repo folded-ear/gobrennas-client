@@ -9,8 +9,7 @@ import {
     ExitToApp,
 } from "@material-ui/icons";
 import React from "react";
-import TaskStore from "../data/TaskStore";
-import useFluxStore from "../data/useFluxStore";
+import useActivePlannerLO from "../data/useActivePlannerLO";
 
 const useStyles = makeStyles(theme => ({
     snackbar: {
@@ -25,7 +24,7 @@ const useStyles = makeStyles(theme => ({
 const SendToPlan = ({onClick, iconOnly, withToast = true}) => {
     const classes = useStyles();
     const [open, setOpen] = React.useState(false);
-    const listLO = useFluxStore(() => TaskStore.getActiveListLO(), [TaskStore], []);
+    const listLO = useActivePlannerLO();
     if (!listLO.hasValue()) return null;
     const list = listLO.getValueEnforcing();
     const handleClick = () => {

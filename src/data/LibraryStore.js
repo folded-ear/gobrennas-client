@@ -6,6 +6,7 @@ import {
     removeDistinct,
 } from "../util/arrayAsSet";
 import { clientOrDatabaseIdType } from "../util/ClientId";
+import history from "../util/history";
 import LoadObject from "../util/LoadObject";
 import LoadObjectMap from "../util/LoadObjectMap";
 import LoadObjectState from "../util/LoadObjectState";
@@ -119,6 +120,7 @@ class LibraryStore extends ReduceStore {
             }
 
             case RecipeActions.RECIPE_DELETED: {
+                history.push("/library");
                 return {
                     ...state,
                     byId: state.byId.delete(action.id),
@@ -214,6 +216,14 @@ class LibraryStore extends ReduceStore {
                     removeDistinct(labels, LABEL_STAGED_INDICATOR));
             }
 
+            case RecipeActions.SEND_TO_PLAN: {
+                RecipeApi.sendToPlan(
+                    action.recipeId,
+                    action.planId,
+                );
+                return state;
+            }
+
             case PantryItemActions.ORDER_FOR_STORE: {
                 if (!state.byId.has(action.id)) return state;
                 const target = state.byId.get(action.targetId);
@@ -227,6 +237,13 @@ class LibraryStore extends ReduceStore {
                             (action.after ? 0.5 : -0.5)
                     })))
                 };
+            }
+
+            // This takes place in ad hoc fashion, outside the normal edit flows
+            // which uses DraftRecipeStore. So it's here.
+            case RecipeActions.SET_RECIPE_PHOTO: {
+                RecipeApi.setRecipePhoto(action.id, action.photo);
+                return state;
             }
 
             default: {
