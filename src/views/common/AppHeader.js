@@ -56,7 +56,7 @@ const TinyNav = ({children, navTo, location}) => {
     return (<IconButton
         className={classnames([classes.icons],{[classes.active]: topLevelNavSeg === navTo})}
         component={Link}
-        to={`/${navTo}`}
+        to={navTo}
         value={navTo}
         color="inherit">
         {children}
@@ -94,9 +94,9 @@ const AppHeader = ({authenticated, onLogout, location}) => {
                     to="/library"
                 />
                 {authenticated && <Box className={classes.bar}>
-                    <TinyNav location={location} navTo="library"><MenuBook/></TinyNav>
-                    <TinyNav location={location} navTo="plan"><EventNote/></TinyNav>
-                    <TinyNav location={location} navTo="shop"><ListAlt/></TinyNav>
+                    <TinyNav location={location} navTo="/library"><MenuBook/></TinyNav>
+                    <TinyNav location={location} navTo="/plan"><EventNote/></TinyNav>
+                    <TinyNav location={location} navTo="/shop"><ListAlt/></TinyNav>
                 </Box>}
             </>
         );
@@ -153,7 +153,7 @@ const AppHeader = ({authenticated, onLogout, location}) => {
                         {mobile ? renderMobile() : renderDesktop()}
                         {authenticated && <IconButton
                             component={Link}
-                            to="profile"
+                            to="/profile"
                             value="profile"
                             title="Profile"
                             color={colorByHotness("profile")}
