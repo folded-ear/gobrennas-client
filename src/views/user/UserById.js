@@ -1,11 +1,11 @@
 import PropTypes from "prop-types";
 import React from "react";
 import FriendStore from "../../data/FriendStore";
-import useStore from "../../data/useStore";
+import useFluxStore from "../../data/useFluxStore";
 import User from "./User";
 
 const UserById = ({id, iconOnly}) => {
-    const user = useStore(() => FriendStore.getFriendLO(id), FriendStore, [id]).getValue();
+    const user = useFluxStore(() => FriendStore.getFriendLO(id), [FriendStore], [id]).getValue();
     return user
         ? <User iconOnly={iconOnly} {...user} />
         : null;

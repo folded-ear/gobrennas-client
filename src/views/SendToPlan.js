@@ -9,11 +9,11 @@ import {
 } from "@material-ui/icons";
 import React from "react";
 import TaskStore from "../data/TaskStore";
-import useStore from "../data/useStore";
+import useFluxStore from "../data/useFluxStore";
 
 const SendToPlan = ({onClick, iconOnly, withToast = true}) => {
     const [open, setOpen] = React.useState(false);
-    const listLO = useStore(() => TaskStore.getActiveListLO(), TaskStore, []);
+    const listLO = useFluxStore(() => TaskStore.getActiveListLO(), [TaskStore], []);
     if (!listLO.hasValue()) return null;
     const list = listLO.getValueEnforcing();
     const handleClick = () => {
@@ -66,7 +66,7 @@ const SendToPlan = ({onClick, iconOnly, withToast = true}) => {
                     horizontal: "left",
                 }}
                 open={open}
-                autoHideDuration={6000}
+                autoHideDuration={1500}
                 onClose={handleClose}
                 message={`Sent to ${list.name}!`}
             />

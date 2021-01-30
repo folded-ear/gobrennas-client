@@ -1,9 +1,9 @@
 import LibraryStore from "./LibraryStore";
-import useStore from "./useStore";
+import useFluxStore from "./useFluxStore";
 
 const useIngredientLO = id =>
-    useStore(() => id
+    useFluxStore(() => id
         ? LibraryStore.getIngredientById(id)
-        : null, LibraryStore, [id]);
+        : null, [LibraryStore], [id]);
 
 export default useIngredientLO;
