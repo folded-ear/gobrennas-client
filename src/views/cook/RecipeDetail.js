@@ -6,6 +6,7 @@ import {
     ListItem,
     Toolbar,
     Typography,
+    useScrollTrigger,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import { PostAdd } from "@material-ui/icons";
@@ -16,6 +17,7 @@ import Dispatcher from "../../data/dispatcher";
 import RecipeActions from "../../data/RecipeActions";
 import RecipeApi from "../../data/RecipeApi";
 import { Recipe } from "../../data/RecipeTypes";
+import useWindowSize from "../../data/useWindowSize";
 import history from "../../util/history";
 import { loadObjectOf } from "../../util/loadObjectTypes";
 import CloseButton from "../common/CloseButton";
@@ -56,9 +58,45 @@ const useStyles = makeStyles(theme => ({
             flexWrap: "wrap-reverse",
         },
         backgroundColor: "white",
-        padding: theme.spacing(4, 0),
+        padding: theme.spacing(2, 0),
     },
 }));
+
+const SubHeader = ({children}) => {
+    const windowSize = useWindowSize();
+    const [height, setHeight] = React.useState("auto");
+    const [width, setWidth] = React.useState("auto");
+    const inner = React.useRef();
+    React.useLayoutEffect(() => {
+        setHeight(inner.current.clientHeight);
+        setWidth(inner.current.parentNode.clientWidth);
+    }, [windowSize.width]);
+    const trigger = useScrollTrigger({
+        disableHysteresis: true,
+        // roughly the spacing 2
+        threshold: 20,
+    });
+
+    return <div
+        style={{height}}
+    >
+        <div
+            ref={inner}
+            style={trigger ? {
+                position: "fixed",
+                width,
+                // theme.header.height
+                top: 75,
+                // appbar zindex
+                zIndex: 1100,
+                // elevation 4
+                boxShadow:"0px 2px 4px -1px rgba(0,0,0,0.2), 0px 4px 5px 0px rgba(0,0,0,0.14), 0px 1px 10px 0px rgba(0,0,0,0.12)",
+            } : null}
+        >
+            {children}
+        </div>
+    </div>;
+};
 
 const RecipeDetail = ({recipeLO, mine, ownerLO}) => {
 
@@ -75,30 +113,30 @@ const RecipeDetail = ({recipeLO, mine, ownerLO}) => {
 
     return (
         <Content className={classes.root} id="toolbar">
+            <SubHeader>
+                <Toolbar className={classes.toolbar}>
+                    <Typography className={classes.name} variant="h2">{recipe.name}</Typography>
+                    <CopyButton
+                        mine={mine}
+                        onClick={() => history.push(`/library/recipe/${recipe.id}/make-copy`)}
+                    />
+                    {mine && <EditButton
+                        onClick={() => history.push(`/library/recipe/${recipe.id}/edit`)}
+                    />}
+                    {mine && <DeleteButton
+                        type="recipe"
+                        onConfirm={() => RecipeApi.deleteRecipe(recipe.id)}
+                    />}
+                    <CloseButton
+                        onClick={() => history.push("/library")}/>
+                    {!mine && ownerLO.hasValue() && <User
+                        size="default"
+                        iconOnly
+                        {...ownerLO.getValueEnforcing()}
+                    />}
+                </Toolbar>
+            </SubHeader>
             <Grid container>
-                <Grid item xs={12}>
-                        <Toolbar className={classes.toolbar}>
-                            <Typography className={classes.name} variant="h2">{recipe.name}</Typography>
-                            <CopyButton
-                                mine={mine}
-                                onClick={() => history.push(`/library/recipe/${recipe.id}/make-copy`)}
-                            />
-                            {mine && <EditButton
-                                onClick={() => history.push(`/library/recipe/${recipe.id}/edit`)}
-                            />}
-                            {mine && <DeleteButton
-                                type="recipe"
-                                onConfirm={() => RecipeApi.deleteRecipe(recipe.id)}
-                            />}
-                            <CloseButton
-                                onClick={() => history.push("/library")}/>
-                            {!mine && ownerLO.hasValue() && <User
-                                size="default"
-                                iconOnly
-                                {...ownerLO.getValueEnforcing()}
-                            />}
-                        </Toolbar>
-                </Grid>
                 <Grid item xs={5}>
                     {recipe.photo
                         ? <ItemImage className={classes.imageContainer} recipe={recipe} />
