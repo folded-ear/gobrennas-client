@@ -2,14 +2,19 @@ import {
     CircularProgress,
     Container as Content,
     Grid,
+    IconButton,
     List,
     ListItem,
     Toolbar,
+    Tooltip,
     Typography,
     useScrollTrigger,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import { PostAdd } from "@material-ui/icons";
+import {
+    PostAdd,
+    Share,
+} from "@material-ui/icons";
 import PropTypes from "prop-types";
 import React from "react";
 import { Redirect } from "react-router-dom";
@@ -120,6 +125,16 @@ const RecipeDetail = ({recipeLO, mine, ownerLO}) => {
                         mine={mine}
                         onClick={() => history.push(`/library/recipe/${recipe.id}/make-copy`)}
                     />
+                    <Tooltip
+                        title="Share this recipe"
+                        placement="top"
+                    >
+                        <IconButton
+                            onClick={() => alert("no! you must not!")}
+                        >
+                            <Share />
+                        </IconButton>
+                    </Tooltip>
                     {mine && <EditButton
                         onClick={() => history.push(`/library/recipe/${recipe.id}/edit`)}
                     />}
