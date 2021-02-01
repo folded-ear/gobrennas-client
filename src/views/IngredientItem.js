@@ -42,14 +42,16 @@ const IngredientItem = ({ingredient: ref}) => {
     const iLO = useIngredientLO(ref.ingredientId);
 
     let left, right;
+    if (ref.quantity != null) {
+        left = <Quantity
+            quantity={ref.quantity}
+            units={ref.units}
+        />;
+    }
 
     if (iLO == null || !iLO.hasValue()) {
         right = <>
-            {ref.raw}
-            {ref.ingredientId && <span>
-                    {" "}
-                ({ref.ingredientId})
-                </span>}
+            {ref.quantity == null ? ref.raw : ref.preparation}
             {" "}
             <SendToPlan
                 onClick={planId => Dispatcher.dispatch({
@@ -63,11 +65,6 @@ const IngredientItem = ({ingredient: ref}) => {
     } else {
         const ingredient = iLO.getValueEnforcing();
         const isRecipe = ingredient.type === "Recipe";
-
-        left = <Quantity
-            quantity={ref.quantity}
-            units={ref.units}
-        />;
 
         right = <>
             <span className={classes.name}>
