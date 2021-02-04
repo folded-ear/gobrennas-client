@@ -1,4 +1,5 @@
 import { makeStyles } from "@material-ui/core/styles";
+import PropTypes from "prop-types";
 import React from "react";
 import Dispatcher from "../../data/dispatcher";
 import RecipeActions from "../../data/RecipeActions";
@@ -15,8 +16,11 @@ const useStyles = makeStyles({
     },
 });
 
-const ItemImageUpload = ({recipe}) => {
+const ItemImageUpload = ({recipe, disabled}) => {
     const classes = useStyles();
+    if (disabled) {
+        return null;
+    }
     return <ImageDropZone
         className={classes.root}
         onImage={file => Dispatcher.dispatch({
@@ -29,6 +33,7 @@ const ItemImageUpload = ({recipe}) => {
 
 ItemImageUpload.propTypes = {
     recipe: Recipe,
+    disabled: PropTypes.bool,
 };
 
 export default ItemImageUpload;

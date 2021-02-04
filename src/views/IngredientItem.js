@@ -37,37 +37,39 @@ Augment.propTypes = {
     suffix: PropTypes.string,
 };
 
-const IngredientItem = ({ingredient: ref}) => {
+const IngredientItem = ({ingredient: ref, loggedIn}) => {
     const classes = useStyles();
     const iLO = useIngredientLO(ref.ingredientId);
 
     let left, right;
-
-    if (iLO == null || !iLO.hasValue()) {
-        right = <>
-            {ref.raw}
-            {ref.ingredientId && <span>
-                    {" "}
-                ({ref.ingredientId})
-                </span>}
-            {" "}
-            <SendToPlan
-                onClick={planId => Dispatcher.dispatch({
-                    type: TaskActions.SEND_TO_PLAN,
-                    planId,
-                    name: ref.raw,
-                })}
-                iconOnly
-            />
-        </>;
-    } else {
-        const ingredient = iLO.getValueEnforcing();
-        const isRecipe = ingredient.type === "Recipe";
-
+    if (ref.quantity != null) {
         left = <Quantity
             quantity={ref.quantity}
             units={ref.units}
         />;
+    }
+
+    if (iLO == null || !iLO.hasValue()) {
+        right = ref.quantity == null
+            ? ref.raw
+            : ref.preparation;
+        if (loggedIn) {
+            right = <>
+                {right}
+                {" "}
+                <SendToPlan
+                    onClick={planId => Dispatcher.dispatch({
+                        type: TaskActions.SEND_TO_PLAN,
+                        planId,
+                        name: ref.raw,
+                    })}
+                    iconOnly
+                />
+            </>;
+        }
+    } else {
+        const ingredient = iLO.getValueEnforcing();
+        const isRecipe = ingredient.type === "Recipe";
 
         right = <>
             <span className={classes.name}>
@@ -87,7 +89,7 @@ const IngredientItem = ({ingredient: ref}) => {
                 text={ref.preparation}
                 prefix=", "
             />
-            {!isRecipe && <>
+            {!isRecipe && loggedIn && <>
                 {" "}
                 <SendToPlan
                     onClick={planId => Dispatcher.dispatch({
@@ -114,6 +116,7 @@ const IngredientItem = ({ingredient: ref}) => {
 
 IngredientItem.propTypes = {
     ingredient: refType.isRequired,
+    loggedIn: PropTypes.bool,
 };
 
 export default IngredientItem;
