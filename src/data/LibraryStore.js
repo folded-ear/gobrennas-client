@@ -28,7 +28,7 @@ export const SCOPE_MINE = "mine";
 export const SCOPE_EVERYONE = "everyone";
 export const LABEL_STAGED_INDICATOR = "--on-stage";
 
-const adaptTime = (recipe) => {
+export const adaptTime = (recipe) => {
     if (recipe.totalTime) {
         recipe.totalTime = fromMilliseconds(recipe.totalTime);
     }

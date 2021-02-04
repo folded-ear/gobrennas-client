@@ -5,6 +5,7 @@ import { Redirect } from "react-router-dom";
 import { API_BASE_URL } from "../../constants";
 import Dispatcher from "../../data/dispatcher";
 import LibraryActions from "../../data/LibraryActions";
+import { adaptTime } from "../../data/LibraryStore";
 import LoadObject from "../../util/LoadObject";
 import LoadingIndicator from "../common/LoadingIndicator";
 import RecipeDetail from "./RecipeDetail";
@@ -36,7 +37,7 @@ const DoTheDance = props => {
                             oneOff: true,
                         });
                     }
-                    setData([recipe, owner]);
+                    setData([adaptTime(recipe), owner]);
                 },
                 () => alert("There was an error loading the recipe. Refresh?")
             );
