@@ -15,7 +15,7 @@ const routes = {
     public: [
         {path: "/", component: Landing, exact: true },
         {path: "/post-oauth2/redirect", component: OAuth2RedirectHandler},
-        {path: "/shared/recipe/:slug/:secret/:id", component: SharedRecipe },
+        {path: "/share/recipe/:slug/:secret/:id", component: SharedRecipe },
     ],
     private: [
         {path: "/profile",  component: Profile},

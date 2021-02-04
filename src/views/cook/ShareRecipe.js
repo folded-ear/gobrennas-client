@@ -97,7 +97,7 @@ const ShareRecipe = ({recipe}) => {
         </div>;
     } else { // got it!
         const info = lo.getValueEnforcing();
-        const shareUrl = `${APP_BASE_URL}/shared/recipe/${info.slug}/${info.secret}/${info.id}`;
+        const shareUrl = `${APP_BASE_URL}/share/recipe/${info.slug}/${info.secret}/${info.id}`;
         body = <>
             <p>Share this link to allow non-users to access your recipe:
             </p>

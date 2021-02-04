@@ -28,12 +28,14 @@ const DoTheDance = props => {
                     owner,
                     ingredients,
                 }}) => {
-                    Dispatcher.dispatch({
-                        type: LibraryActions.INGREDIENTS_LOADED,
-                        ids: ingredients.map(i => i.id),
-                        data: ingredients,
-                        oneOff: true,
-                    });
+                    if (ingredients && ingredients.length) {
+                        Dispatcher.dispatch({
+                            type: LibraryActions.INGREDIENTS_LOADED,
+                            ids: ingredients.map(i => i.id),
+                            data: ingredients,
+                            oneOff: true,
+                        });
+                    }
                     setData([recipe, owner]);
                 },
                 () => alert("There was an error loading the recipe. Refresh?")
