@@ -29,9 +29,8 @@ const DoTheDance = props => {
                 }}) => {
                     Dispatcher.dispatch({
                         type: LibraryActions.INGREDIENTS_LOADED,
-                        ids: Object.keys(ingredients),
-                        data: Object.keys(ingredients).map(id =>
-                            ingredients[id]),
+                        ids: ingredients.map(i => i.id),
+                        data: ingredients,
                         oneOff: true,
                     });
                     setData([recipe, owner]);
