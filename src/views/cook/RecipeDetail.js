@@ -107,6 +107,8 @@ const RecipeDetail = ({recipeLO, mine, ownerLO, anonymous}) => {
 
     const classes = useStyles();
 
+    const windowSize = useWindowSize();
+
     let loggedIn = true;
     if (anonymous) {
         mine = false;
@@ -145,8 +147,8 @@ const RecipeDetail = ({recipeLO, mine, ownerLO, anonymous}) => {
                         <CloseButton
                             onClick={() => history.push("/library")}/>
                     </>}
-                    {!mine && ownerLO.hasValue() && <User
-                        size="small"
+                    {!mine && ownerLO.hasValue() && (loggedIn || windowSize.width > 600) && <User
+                        size={loggedIn ? "small" : "large"}
                         iconOnly
                         {...ownerLO.getValueEnforcing()}
                     />}
