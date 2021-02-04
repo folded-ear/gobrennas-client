@@ -20,7 +20,7 @@ import { Recipe } from "../../data/RecipeTypes";
 import LoadObject from "../../util/LoadObject";
 
 const axios = BaseAxios.create({
-    baseURL: `${API_BASE_URL}/share/recipe`,
+    baseURL: `${API_BASE_URL}/api/recipe`,
 });
 
 const useStyles = makeStyles(theme => {
@@ -55,7 +55,7 @@ const ShareRecipe = ({recipe}) => {
             setLo(LoadObject.loading().setValue({
                 id: recipe.id,
             }));
-            axios.get(`/for/${recipe.id}`)
+            axios.get(`/share/${recipe.id}`)
                 .then(
                     data => setLo(LoadObject.withValue(data.data)),
                     err => setLo(LoadObject.withError(err)),

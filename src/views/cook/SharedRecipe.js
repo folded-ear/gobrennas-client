@@ -10,7 +10,7 @@ import LoadingIndicator from "../common/LoadingIndicator";
 import RecipeDetail from "./RecipeDetail";
 
 const axios = BaseAxios.create({
-    baseURL: `${API_BASE_URL}/share/recipe`,
+    baseURL: `${API_BASE_URL}/shared/recipe`,
 });
 
 const DoTheDance = props => {
