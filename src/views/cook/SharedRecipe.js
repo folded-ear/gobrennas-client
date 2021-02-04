@@ -1,0 +1,71 @@
+import BaseAxios from "axios";
+import React from "react";
+import { API_BASE_URL } from "../../constants";
+import Dispatcher from "../../data/dispatcher";
+import LibraryActions from "../../data/LibraryActions";
+import history from "../../util/history";
+import LoadObject from "../../util/LoadObject";
+import LoadingIndicator from "../common/LoadingIndicator";
+import RecipeDetail from "./RecipeDetail";
+
+const axios = BaseAxios.create({
+    baseURL: `${API_BASE_URL}/share/recipe`,
+});
+
+const DoTheDance = props => {
+    const {
+        slug,
+        secret,
+        id,
+    } = props;
+    const [[recipe, owner], setData] = React.useState([]);
+    React.useEffect(() => {
+        axios.get(`/${slug}/${secret}/${id}.json`)
+            .then(
+                ({data: {
+                    recipe,
+                    owner,
+                    ingredients,
+                }}) => {
+                    Dispatcher.dispatch({
+                        type: LibraryActions.INGREDIENTS_LOADED,
+                        ids: Object.keys(ingredients),
+                        data: Object.keys(ingredients).map(id =>
+                            ingredients[id]),
+                        oneOff: true,
+                    });
+                    setData([recipe, owner]);
+                },
+                () => alert("There was an error loading the recipe. Refresh?")
+            );
+    }, [slug, secret, id]);
+    if (!recipe) {
+        return <LoadingIndicator />;
+    }
+    return <RecipeDetail
+        anonymous
+        recipeLO={LoadObject.withValue(recipe)}
+        ownerLO={LoadObject.withValue(owner)}
+    />;
+};
+
+const SharedRecipe = props => {
+    const {
+        authenticated,
+        match:  {
+            params: {
+                id: rawId,
+                ...params
+            },
+        },
+    } = props;
+    const id = parseInt(rawId);
+    if (authenticated) {
+        // At the moment, being a user means you can view any recipe...
+        history.replace(`/library/recipe/${id}`);
+        return null;
+    }
+    return <DoTheDance id={id} {...params} />;
+};
+
+export default SharedRecipe;

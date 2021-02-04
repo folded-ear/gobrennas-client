@@ -1,19 +1,21 @@
 import React from "react";
-import {Redirect} from "react-router-dom";
+import { Redirect } from "react-router-dom";
 import Library from "./containers/Library";
 import Recipe from "./containers/Recipe";
 import RecipeEdit from "./containers/RecipeEdit";
 import Shop from "./containers/Shop";
 import Tasks from "./containers/Tasks";
-import Landing from "./views/Landing";
 import RecipeAdd from "./views/cook/RecipeAdd";
+import SharedRecipe from "./views/cook/SharedRecipe";
+import Landing from "./views/Landing";
 import OAuth2RedirectHandler from "./views/user/OAuth2RedirectHandler";
 import Profile from "./views/user/Profile";
 
 const routes = {
     public: [
         {path: "/", component: Landing, exact: true },
-        {path: "/post-oauth2/redirect", component: OAuth2RedirectHandler}
+        {path: "/post-oauth2/redirect", component: OAuth2RedirectHandler},
+        {path: "/shared/recipe/:slug/:secret/:id", component: SharedRecipe },
     ],
     private: [
         {path: "/profile",  component: Profile},

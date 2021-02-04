@@ -18,10 +18,11 @@ const LibraryActions = {
  * Keep pantry items hot. This is the wrong place to do it, but unsure where it
  * ought to be.
  */
-let token = Dispatcher.register(({type}) => {
+let token = Dispatcher.register(({type, oneOff}) => {
     if (type === LibraryActions.INGREDIENT_LOADED ||
         type === LibraryActions.INGREDIENTS_LOADED
     ) {
+        if (oneOff) return;
         Dispatcher.unregister(token);
         socket.subscribe("/topic/pantry-items", ({body}) => {
             if (body.type === "update") {

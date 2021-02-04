@@ -99,9 +99,15 @@ const SubHeader = ({children}) => {
     </div>;
 };
 
-const RecipeDetail = ({recipeLO, mine, ownerLO}) => {
+const RecipeDetail = ({recipeLO, mine, ownerLO, anonymous}) => {
 
     const classes = useStyles();
+
+    let loggedIn = true;
+    if (anonymous) {
+        mine = false;
+        loggedIn = false;
+    }
 
     if (!recipeLO.hasValue()) {
         if (recipeLO.isLoading()) {
@@ -117,24 +123,26 @@ const RecipeDetail = ({recipeLO, mine, ownerLO}) => {
             <SubHeader>
                 <Toolbar className={classes.toolbar}>
                     <Typography className={classes.name} variant="h2">{recipe.name}</Typography>
-                    <CopyButton
-                        mine={mine}
-                        onClick={() => history.push(`/library/recipe/${recipe.id}/make-copy`)}
-                    />
-                    <ShareRecipe
-                        recipe={recipe}
-                    />
-                    {mine && <EditButton
-                        onClick={() => history.push(`/library/recipe/${recipe.id}/edit`)}
-                    />}
-                    {mine && <DeleteButton
-                        type="recipe"
-                        onConfirm={() => RecipeApi.deleteRecipe(recipe.id)}
-                    />}
-                    <CloseButton
-                        onClick={() => history.push("/library")}/>
+                    {loggedIn && <>
+                        <CopyButton
+                            mine={mine}
+                            onClick={() => history.push(`/library/recipe/${recipe.id}/make-copy`)}
+                        />
+                        <ShareRecipe
+                            recipe={recipe}
+                        />
+                        {mine && <EditButton
+                            onClick={() => history.push(`/library/recipe/${recipe.id}/edit`)}
+                        />}
+                        {mine && <DeleteButton
+                            type="recipe"
+                            onConfirm={() => RecipeApi.deleteRecipe(recipe.id)}
+                        />}
+                        <CloseButton
+                            onClick={() => history.push("/library")}/>
+                    </>}
                     {!mine && ownerLO.hasValue() && <User
-                        size="default"
+                        size="small"
                         iconOnly
                         {...ownerLO.getValueEnforcing()}
                     />}
@@ -144,7 +152,7 @@ const RecipeDetail = ({recipeLO, mine, ownerLO}) => {
                 <Grid item xs={5}>
                     {recipe.photo
                         ? <ItemImage className={classes.imageContainer} recipe={recipe} />
-                        : <ItemImageUpload recipe={recipe} />}
+                        : <ItemImageUpload recipe={recipe} disabled={!mine} />}
                 </Grid>
                 <Grid item xs={5}>
                     {recipe.externalUrl && <RecipeInfo label="Source" text={<Source url={recipe.externalUrl}/>}/>}
@@ -156,11 +164,13 @@ const RecipeDetail = ({recipeLO, mine, ownerLO}) => {
                         .map(label =>
                             <LabelItem key={label} label={label}/>)}
 
-                    <SendToPlan onClick={planId => Dispatcher.dispatch({
-                        type: RecipeActions.SEND_TO_PLAN,
-                        recipeId: recipe.id,
-                        planId,
-                    })}/>
+                    {loggedIn && <SendToPlan
+                        onClick={planId => Dispatcher.dispatch({
+                            type: RecipeActions.SEND_TO_PLAN,
+                            recipeId: recipe.id,
+                            planId,
+                        })}
+                    />}
                 </Grid>
 
                 <Grid item xs={12} md={5}>
@@ -169,7 +179,10 @@ const RecipeDetail = ({recipeLO, mine, ownerLO}) => {
                         <List>
                             {recipe.ingredients && recipe.ingredients.map((it, i) =>
                                 <ListItem key={`${i}:${it.raw}`}>
-                                    <IngredientItem ingredient={it} />
+                                    <IngredientItem
+                                        ingredient={it}
+                                        loggedIn={loggedIn}
+                                    />
                                 </ListItem>)}
                         </List>
                     </>}
@@ -183,17 +196,18 @@ const RecipeDetail = ({recipeLO, mine, ownerLO}) => {
                 </Grid>
 
             </Grid>
-            <FoodingerFab
+            {loggedIn && <FoodingerFab
                 onClick={() => history.push(`/add`)}
             >
                 <PostAdd />
-            </FoodingerFab>
+            </FoodingerFab>}
         </Content>
     );
 };
 
 RecipeDetail.propTypes = {
     recipeLO: loadObjectOf(Recipe).isRequired,
+    anonymous: PropTypes.bool,
     mine: PropTypes.bool,
     ownerLO: loadObjectOf(PropTypes.object),
     staged: PropTypes.bool,

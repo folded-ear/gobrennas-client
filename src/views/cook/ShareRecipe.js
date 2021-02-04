@@ -5,13 +5,17 @@ import {
     IconButton,
     Modal,
     Paper,
+    TextField,
     Tooltip,
 } from "@material-ui/core";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import { Share } from "@material-ui/icons";
 import BaseAxios from "axios";
 import React from "react";
-import { API_BASE_URL } from "../../constants";
+import {
+    API_BASE_URL,
+    APP_BASE_URL,
+} from "../../constants";
 import { Recipe } from "../../data/RecipeTypes";
 import LoadObject from "../../util/LoadObject";
 
@@ -38,29 +42,23 @@ const useStyles = makeStyles(theme => {
 
 const ShareRecipe = ({recipe}) => {
     const classes = useStyles();
-    const [open, setOpen] = React.useState(true); // todo: set back!
+    const [open, setOpen] = React.useState(false);
     const [lo, setLo] = React.useState(LoadObject.empty());
     React.useEffect(
         () => {
             if (!open) {
-                console.log("not open")
                 return;
             }
             if (lo.hasValue() && lo.getValue().id === recipe.id) {
-                console.log("already got this recipe's deets")
                 return;
             }
             setLo(LoadObject.loading().setValue({
                 id: recipe.id,
             }));
-            console.log("do load....")
             axios.get(`/for/${recipe.id}`)
                 .then(
-                    data => setLo(lo => lo.done().map(v => ({
-                        ...v,
-                        ...data.data,
-                    }))),
-                    err => setLo(lo => lo.done().setError(err)),
+                    data => setLo(LoadObject.withValue(data.data)),
+                    err => setLo(LoadObject.withError(err)),
                 );
         },
         [open, lo, recipe.id],
@@ -98,9 +96,17 @@ const ShareRecipe = ({recipe}) => {
             </div>
         </div>;
     } else { // got it!
-        body = <pre>
-            {JSON.stringify(lo.getValueEnforcing(), null, 3)}
-        </pre>;
+        const info = lo.getValueEnforcing();
+        const shareUrl = `${APP_BASE_URL}/shared/recipe/${info.slug}/${info.secret}/${info.id}`;
+        body = <>
+            <p>Share this link to allow non-users to access your recipe:
+            </p>
+            <TextField
+                value={shareUrl}
+                fullWidth
+                onFocus={e => e.target.select()}
+            />
+        </>;
     }
 
     return <>
