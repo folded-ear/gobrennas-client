@@ -1,10 +1,10 @@
 import BaseAxios from "axios";
 import PropTypes from "prop-types";
 import React from "react";
+import { Redirect } from "react-router-dom";
 import { API_BASE_URL } from "../../constants";
 import Dispatcher from "../../data/dispatcher";
 import LibraryActions from "../../data/LibraryActions";
-import history from "../../util/history";
 import LoadObject from "../../util/LoadObject";
 import LoadingIndicator from "../common/LoadingIndicator";
 import RecipeDetail from "./RecipeDetail";
@@ -68,8 +68,7 @@ const SharedRecipe = props => {
     const id = parseInt(rawId);
     if (authenticated) {
         // At the moment, being a user means you can view any recipe...
-        history.replace(`/library/recipe/${id}`);
-        return null;
+        return <Redirect to={`/library/recipe/${id}`} />;
     }
     return <DoTheDance id={id} {...params} />;
 };
