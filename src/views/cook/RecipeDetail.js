@@ -99,6 +99,10 @@ const SubHeader = ({children}) => {
     </div>;
 };
 
+SubHeader.propTypes = {
+    children: PropTypes.node.isRequired,
+};
+
 const RecipeDetail = ({recipeLO, mine, ownerLO, anonymous}) => {
 
     const classes = useStyles();

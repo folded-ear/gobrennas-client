@@ -1,4 +1,5 @@
 import BaseAxios from "axios";
+import PropTypes from "prop-types";
 import React from "react";
 import { API_BASE_URL } from "../../constants";
 import Dispatcher from "../../data/dispatcher";
@@ -48,6 +49,12 @@ const DoTheDance = props => {
     />;
 };
 
+DoTheDance.propTypes = {
+    slug: PropTypes.string.isRequired,
+    secret: PropTypes.string.isRequired,
+    id: PropTypes.number.isRequired,
+};
+
 const SharedRecipe = props => {
     const {
         authenticated,
@@ -65,6 +72,17 @@ const SharedRecipe = props => {
         return null;
     }
     return <DoTheDance id={id} {...params} />;
+};
+
+SharedRecipe.propTypes = {
+    authenticated: PropTypes.bool.isRequired,
+    match: PropTypes.shape({
+        params: PropTypes.shape({
+            slug: PropTypes.string.isRequired,
+            secret: PropTypes.string.isRequired,
+            id: PropTypes.string.isRequired,
+        }).isRequired,
+    }).isRequired
 };
 
 export default SharedRecipe;
