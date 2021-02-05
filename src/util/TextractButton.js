@@ -14,6 +14,8 @@ const useStyles = makeStyles({
     trigger: {
         position: "absolute",
         right: 0,
+        zIndex: 1000,
+        backgroundColor: "white",
         transformOrigin: "bottom right",
         transform: `rotate(90deg) translateY(100%) translateX(50%)`,
     },
