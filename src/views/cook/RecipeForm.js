@@ -158,7 +158,7 @@ const RecipeForm = ({title, onSave, onSaveCopy, onCancel, extraButtons}) => {
         </Box>
         <List>
             {draft.ingredients.map((it, i) =>
-                <ListItem key={i}>
+                <ListItem key={i} disableGutters>
                     <ElEdit
                         name={`ingredients.${i}`}
                         value={it}
@@ -177,7 +177,7 @@ const RecipeForm = ({title, onSave, onSaveCopy, onCancel, extraButtons}) => {
                             index: i,
                         })}
                     />
-                    <div style={{marginLeft: "auto"}}>
+                    <div style={{marginLeft: "auto", whiteSpace: "nowrap"}}>
                         <IconButton
                             size="small"
                             tabIndex={-1}
@@ -201,19 +201,17 @@ const RecipeForm = ({title, onSave, onSaveCopy, onCancel, extraButtons}) => {
                     </div>
                 </ListItem>)}
         </List>
-        <Box my={MARGIN}>
-            <Button
-                className={classes.button}
-                startIcon={<Add />}
-                color="secondary"
-                variant="contained"
-                onClick={() => Dispatcher.dispatch({
-                    type: RecipeActions.NEW_DRAFT_INGREDIENT_YO,
-                })}
-            >
-                Add Ingredient
-            </Button>
-        </Box>
+        <Button
+            className={classes.button}
+            startIcon={<Add />}
+            color="secondary"
+            variant="contained"
+            onClick={() => Dispatcher.dispatch({
+                type: RecipeActions.NEW_DRAFT_INGREDIENT_YO,
+            })}
+        >
+            Add Ingredient
+        </Button>
         <Box my={MARGIN}>
             <TextField
                 name="directions"

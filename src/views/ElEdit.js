@@ -164,7 +164,7 @@ class ElEdit extends React.PureComponent {
         } = e;
         const {
             onDelete,
-            onPressEnter
+            onPressEnter,
         } = this.props;
         const hasSuggestions = suggestions && suggestions.length > 0;
 
@@ -204,14 +204,14 @@ class ElEdit extends React.PureComponent {
         } = this.state;
         const hasSuggestions = suggestions && suggestions.length > 0;
 
-        const indicator = () =>
-            <InputAdornment>{n == null
-                ? <ErrorOutline color="error" />
-                : <CheckCircleOutline color="disabled" />
-            }</InputAdornment>;
+        const indicator = <InputAdornment>{n == null
+            ? <ErrorOutline color="error" />
+            : <CheckCircleOutline color="disabled" />
+        }</InputAdornment>;
 
-        return <React.Fragment>
+        return <>
             <Autocomplete
+                size={"small"}
                 name={`${name}.raw`}
                 value={raw}
                 onChange={this.handleChange}
@@ -224,7 +224,7 @@ class ElEdit extends React.PureComponent {
                     return (option.result);
                 }) : []}
                 renderInput={(params) => {
-                    params.InputProps.startAdornment = indicator();
+                    params.InputProps.startAdornment = indicator;
                     return (
                         <TextField
                             inputRef={this.ref}
@@ -238,7 +238,7 @@ class ElEdit extends React.PureComponent {
             />
 
             {(!recog || !raw)
-                ? doRecog(raw) ? <Hunk><CircularProgress/></Hunk> : null
+                ? doRecog(raw) ? <Hunk><CircularProgress size={"small"} /></Hunk> : null
                 : <Hunk>
                     {q && <Hunk style={{backgroundColor: "#fde"}}>{q}</Hunk>}
                     {u && <Hunk style={{backgroundColor: uv ? "#efd" : "#dfe"}}>{u}</Hunk>}
@@ -246,14 +246,14 @@ class ElEdit extends React.PureComponent {
                     {p && <span>{n ? ", " : null}{p}</span>}
                 </Hunk>
             }
-        </React.Fragment>;
+        </>;
     }
 }
 
 const Hunk = ({children, style}) => <span style={{
     ...style,
     marginLeft: "0.4em",
-    padding: "0 0.25em"
+    padding: "0 0.25em",
 }}>{children}</span>;
 
 Hunk.propTypes = {
