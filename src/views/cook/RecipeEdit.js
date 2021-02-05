@@ -1,6 +1,6 @@
 import {
+    Box,
     CircularProgress,
-    Container as Content,
     Typography,
 } from "@material-ui/core";
 import React from "react";
@@ -11,6 +11,7 @@ import RecipeApi from "../../data/RecipeApi";
 import { Recipe } from "../../data/RecipeTypes";
 import { loadObjectOf } from "../../util/loadObjectTypes";
 import DeleteButton from "../common/DeleteButton";
+import PageBody from "../common/PageBody";
 import { handleSave as handleSaveCopy } from "./RecipeAdd";
 import RecipeForm from "./RecipeForm";
 
@@ -39,7 +40,7 @@ const RecipeEdit = ({recipeLO}) => {
         return <Redirect to="/library" />;
     }
 
-    return <Content>
+    return <PageBody>
         <Typography
             variant="h2">Editing {recipeLO.getValueEnforcing().name}</Typography>
         <RecipeForm
@@ -48,14 +49,14 @@ const RecipeEdit = ({recipeLO}) => {
             onCancel={handleCancel}
         />
         <hr />
-        <div style={{float: "right"}}>
+        <Box display="flex" justifyContent="flex-end">
             <DeleteButton
                 type="recipe"
                 label="Delete Recipe"
                 onConfirm={() => handleDelete(recipeLO.getValueEnforcing().id)}
             />
-        </div>
-    </Content>;
+        </Box>
+    </PageBody>;
 };
 
 RecipeEdit.propTypes = {

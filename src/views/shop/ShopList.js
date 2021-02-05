@@ -1,7 +1,4 @@
-import {
-    Container as Content,
-    Typography,
-} from "@material-ui/core";
+import { Typography } from "@material-ui/core";
 import List from "@material-ui/core/List";
 import Add from "@material-ui/icons/Add";
 import PropTypes from "prop-types";
@@ -12,6 +9,7 @@ import { clientOrDatabaseIdType } from "../../util/ClientId";
 import { loadObjectOf } from "../../util/loadObjectTypes";
 import FoodingerFab from "../common/FoodingerFab";
 import LoadingIndicator from "../common/LoadingIndicator";
+import PageBody from "../common/PageBody";
 import Ingredient from "./IngredientItem";
 import TaskItem from "./TaskItem";
 import {
@@ -45,11 +43,7 @@ class ShopList extends React.PureComponent {
             />;
         }
         const plan = planLO.getValueEnforcing();
-        return <Content style={{
-            backgroundColor: "white",
-            minHeight: "100vh",
-            paddingBottom: "6em",
-        }}>
+        return <PageBody hasFab>
             <Typography variant="h2">{plan.name}</Typography>
             <List>
                 {itemTuples.map(it => {
@@ -74,7 +68,7 @@ class ShopList extends React.PureComponent {
             >
                 <Add />
             </FoodingerFab>
-        </Content>;
+        </PageBody>;
     }
 
 }

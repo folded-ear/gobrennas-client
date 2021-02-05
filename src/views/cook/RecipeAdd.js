@@ -1,10 +1,8 @@
-import {
-    Container as Content,
-    Typography,
-} from "@material-ui/core";
+import { Typography } from "@material-ui/core";
 import React, { Component } from "react";
 import Dispatcher from "../../data/dispatcher";
 import RecipeActions from "../../data/RecipeActions";
+import PageBody from "../common/PageBody";
 import RecipeForm from "./RecipeForm";
 
 export const handleSave = recipe =>
@@ -22,13 +20,13 @@ const handleCancel = recipe =>
 class RecipeAdd extends Component<{}> {
     render() {
         return (
-            <Content>
+            <PageBody>
                 <Typography variant="h2">Add A New Recipe</Typography>
                 <div>
                     <RecipeForm onSave={handleSave}
                                 onCancel={handleCancel}/>
                 </div>
-            </Content>
+            </PageBody>
         );
     }
 }

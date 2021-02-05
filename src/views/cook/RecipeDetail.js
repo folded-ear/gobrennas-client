@@ -1,6 +1,5 @@
 import {
     CircularProgress,
-    Container as Content,
     Grid,
     List,
     ListItem,
@@ -26,6 +25,7 @@ import DeleteButton from "../common/DeleteButton";
 import Directions from "../common/Directions";
 import EditButton from "../common/EditButton";
 import FoodingerFab from "../common/FoodingerFab";
+import PageBody from "../common/PageBody";
 import RecipeInfo from "../common/RecipeInfo";
 import Source from "../common/Source";
 import IngredientItem from "../IngredientItem";
@@ -37,11 +37,6 @@ import User from "../user/User";
 import ShareRecipe from "./ShareRecipe";
 
 const useStyles = makeStyles(theme => ({
-    root: {
-        backgroundColor: "white",
-        minHeight: "100vh",
-        paddingBottom: "6em",
-    },
     name: {
         flexGrow: 1,
         [theme.breakpoints.down("xs")]: {
@@ -125,7 +120,7 @@ const RecipeDetail = ({recipeLO, mine, ownerLO, anonymous}) => {
     const recipe = recipeLO.getValueEnforcing();
 
     return (
-        <Content className={classes.root} id="toolbar">
+        <PageBody hasFab id="toolbar">
             <SubHeader>
                 <Toolbar className={classes.toolbar}>
                     <Typography className={classes.name} variant="h2">{recipe.name}</Typography>
@@ -207,7 +202,7 @@ const RecipeDetail = ({recipeLO, mine, ownerLO, anonymous}) => {
             >
                 <PostAdd />
             </FoodingerFab>}
-        </Content>
+        </PageBody>
     );
 };
 

@@ -1,6 +1,5 @@
 import {
     Box,
-    Container as Content,
     List,
 } from "@material-ui/core";
 import Add from "@material-ui/icons/Add";
@@ -11,6 +10,7 @@ import TaskActions from "../../data/TaskActions";
 import LoadObject from "../../util/LoadObject";
 import FoodingerFab from "../common/FoodingerFab";
 import LoadingIndicator from "../common/LoadingIndicator";
+import PageBody from "../common/PageBody";
 import TaskListHeader from "../TaskListHeader";
 import LoadingTask from "./LoadingTask";
 import Task from "./Task";
@@ -46,11 +46,7 @@ class TaskList extends React.PureComponent {
 
         const plan = activeListLO.getValue();
         const buckets = plan && plan.buckets;
-        return <Content style={{
-            backgroundColor: "white",
-            minHeight: "100vh",
-            paddingBottom: "6em",
-        }}>
+        return <PageBody hasFab>
             <Box p={2}>
                 <TaskListHeader
                     allLists={allLists.getValueEnforcing()}
@@ -91,7 +87,7 @@ class TaskList extends React.PureComponent {
             >
                 <Add />
             </FoodingerFab>
-        </Content>;
+        </PageBody>;
     }
 
 }
