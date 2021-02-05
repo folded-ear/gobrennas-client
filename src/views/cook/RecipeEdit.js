@@ -1,8 +1,4 @@
-import {
-    Box,
-    CircularProgress,
-    Typography,
-} from "@material-ui/core";
+import { CircularProgress } from "@material-ui/core";
 import React from "react";
 import { Redirect } from "react-router-dom";
 import Dispatcher from "../../data/dispatcher";
@@ -40,22 +36,20 @@ const RecipeEdit = ({recipeLO}) => {
         return <Redirect to="/library" />;
     }
 
+    const recipe = recipeLO.getValueEnforcing();
     return <PageBody>
-        <Typography
-            variant="h2">Editing {recipeLO.getValueEnforcing().name}</Typography>
         <RecipeForm
+            title={`Editing ${recipe.name}`}
             onSave={handleSave}
             onSaveCopy={handleSaveCopy}
             onCancel={handleCancel}
+            extraButtons={
+                <DeleteButton
+                    type="recipe"
+                    label="Delete Recipe"
+                    onConfirm={() => handleDelete(recipe.id)}
+                />}
         />
-        <hr />
-        <Box display="flex" justifyContent="flex-end">
-            <DeleteButton
-                type="recipe"
-                label="Delete Recipe"
-                onConfirm={() => handleDelete(recipeLO.getValueEnforcing().id)}
-            />
-        </Box>
     </PageBody>;
 };
 

@@ -1,4 +1,3 @@
-import { Typography } from "@material-ui/core";
 import React, { Component } from "react";
 import Dispatcher from "../../data/dispatcher";
 import RecipeActions from "../../data/RecipeActions";
@@ -21,11 +20,11 @@ class RecipeAdd extends Component<{}> {
     render() {
         return (
             <PageBody>
-                <Typography variant="h2">Add A New Recipe</Typography>
-                <div>
-                    <RecipeForm onSave={handleSave}
-                                onCancel={handleCancel}/>
-                </div>
+                <RecipeForm
+                    title={"Add A New Recipe"}
+                    onSave={handleSave}
+                    onCancel={handleCancel}
+                />
             </PageBody>
         );
     }

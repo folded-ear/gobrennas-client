@@ -8,6 +8,7 @@ import {
     List,
     ListItem,
     TextField,
+    Typography,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import {
@@ -67,13 +68,15 @@ const removeLabel = (label, index) => {
     });
 };
 
-const RecipeForm = ({onSave, onSaveCopy, onCancel}) => {
+const RecipeForm = ({title, onSave, onSaveCopy, onCancel, extraButtons}) => {
     const lo = useDraftRecipeLO();
     const classes = useStyles();
     const draft = lo.getValueEnforcing();
     const MARGIN = 2;
 
     return <>
+        <Typography
+            variant="h2">{title}</Typography>
         {lo.hasOperation() && <CircularProgress />}
         <TextractFormAugment
             renderActions={lines => {
@@ -272,39 +275,48 @@ const RecipeForm = ({onSave, onSaveCopy, onCancel}) => {
                 placeholder="Type and press enter to add labels"
             />
         </Box>
-        <Button
-            className={classes.button}
-            variant="contained"
-            color="primary"
-            onClick={() => onSave(draft)}
-            startIcon={<Save />}
-        >
-            Save
-        </Button>
-        {onSaveCopy && <Button
-            className={classes.button}
-            variant="contained"
-            color="primary"
-            startIcon={<FileCopy />}
-            onClick={() => onSaveCopy(draft)}>
-            Save as Copy
-        </Button>}
-        <Button
-            className={classes.button}
-            variant="contained"
-            color="secondary"
-            onClick={() => onCancel(draft)}
-            startIcon={<Cancel />}>
-            Cancel
-        </Button>
+        <Grid container justify={"space-between"}>
+            <Grid item>
+                <Button
+                    className={classes.button}
+                    variant="contained"
+                    color="primary"
+                    onClick={() => onSave(draft)}
+                    startIcon={<Save />}
+                >
+                    Save
+                </Button>
+                {onSaveCopy && <Button
+                    className={classes.button}
+                    variant="contained"
+                    color="secondary"
+                    startIcon={<FileCopy />}
+                    onClick={() => onSaveCopy(draft)}>
+                    Save as Copy
+                </Button>}
+                <Button
+                    className={classes.button}
+                    variant="contained"
+                    color="secondary"
+                    onClick={() => onCancel(draft)}
+                    startIcon={<Cancel />}>
+                    Cancel
+                </Button>
+            </Grid>
+            {extraButtons && <Grid item>
+                {extraButtons}
+            </Grid>}
+        </Grid>
     </>;
 };
 
 RecipeForm.propTypes = {
+    title: PropTypes.string.isRequired,
     onSave: PropTypes.func,
     onSaveCopy: PropTypes.func,
     onCancel: PropTypes.func,
     draft: Recipe,
+    extraButtons: PropTypes.node,
 };
 
 export default RecipeForm;
