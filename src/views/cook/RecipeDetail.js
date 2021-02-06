@@ -126,7 +126,7 @@ const RecipeDetail = ({recipeLO, mine, ownerLO, anonymous}) => {
                     <Typography className={classes.name} variant="h2">{recipe.name}</Typography>
                     {loggedIn && <>
                         <CopyButton
-                            mine={mine}
+                            title={mine ? "Copy" : "Duplicate to My Library"}
                             onClick={() => history.push(`/library/recipe/${recipe.id}/make-copy`)}
                         />
                         <ShareRecipe

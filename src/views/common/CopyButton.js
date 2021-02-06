@@ -1,12 +1,15 @@
-import React from "react";
+import {
+    IconButton,
+    Tooltip,
+} from "@material-ui/core";
+import { FileCopy } from "@material-ui/icons";
 import PropTypes from "prop-types";
-import {IconButton, Tooltip} from "@material-ui/core";
-import {FileCopy} from "@material-ui/icons";
+import React from "react";
 
-const CopyButton = ({mine, onClick}) => {
+const CopyButton = ({title, onClick}) => {
     return (
         <Tooltip
-            title={mine ? "Copy" : "Duplicate to My Library"}
+            title={title}
             placement="top"
         >
             <IconButton
@@ -18,7 +21,7 @@ const CopyButton = ({mine, onClick}) => {
     );
 };
 CopyButton.propTypes = {
-    mine: PropTypes.bool,
+    title: PropTypes.string.isRequired,
     onClick: PropTypes.func,
 };
 
