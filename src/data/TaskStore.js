@@ -132,17 +132,12 @@ const listCreated = (state, clientId, id, list) => {
         [id]: LoadObject.withValue(list),
     };
     delete byId[clientId];
-    const nextActiveListId = idFixer(state.activeListId);
-    const nAlidChanged = state.activeListId !== nextActiveListId;
     state = addTask({
         ...state,
-        activeListId: nextActiveListId,
         topLevelIds: idFixer(state.topLevelIds),
         byId,
     }, id, "");
-    if (nAlidChanged) {
-        state = refreshActiveListSubscription(state);
-    }
+    state = selectList(state, idFixer(state.activeListId));
     return state;
 };
 
