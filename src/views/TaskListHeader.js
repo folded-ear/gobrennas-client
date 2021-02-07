@@ -1,5 +1,4 @@
 import {
-    Button,
     Drawer,
     FormControl,
     Grid,
@@ -9,7 +8,10 @@ import {
     TextField,
     Tooltip,
 } from "@material-ui/core";
-import { DynamicFeed } from "@material-ui/icons";
+import {
+    Add,
+    DynamicFeed,
+} from "@material-ui/icons";
 import PropTypes from "prop-types";
 import React from "react";
 import Dispatcher from "../data/dispatcher";
@@ -20,6 +22,7 @@ import {
     CollapseAll,
     ExpandAll,
 } from "./common/icons";
+import SplitButton from "./common/SplitButton";
 import TaskListSidebar from "./TaskListSidebar";
 import UserById from "./user/UserById";
 
@@ -36,6 +39,7 @@ class TaskListHeader extends React.PureComponent {
         this.onShowDrawer = this.onShowDrawer.bind(this);
         this.onCloseDrawer = this.onCloseDrawer.bind(this);
         this.onCreate = this.onCreate.bind(this);
+        this.onDuplicate = this.onDuplicate.bind(this);
         this.onSelect = this.onSelect.bind(this);
         this.onNameChange = this.onNameChange.bind(this);
         this.onExpandAll = this.onExpandAll.bind(this);
@@ -76,6 +80,19 @@ class TaskListHeader extends React.PureComponent {
         });
     }
 
+    onDuplicate(e, list) {
+        const {name} = this.state;
+        if (!isValidName(name)) return;
+        this.setState({
+            name: "",
+        });
+        Dispatcher.dispatch({
+            type: TaskActions.DUPLICATE_LIST,
+            name: name.trim(),
+            fromId: list.id,
+        });
+    }
+
     onSelect(e) {
         Dispatcher.dispatch({
             type: TaskActions.SELECT_LIST,
@@ -104,9 +121,12 @@ class TaskListHeader extends React.PureComponent {
     render() {
         const {
             activeList,
-            allLists,
+            allLists: allListsUnsorted,
             listDetailVisible,
         } = this.props;
+        const allLists = allListsUnsorted
+            ? allListsUnsorted.slice().sort(byNameComparator)
+            : [];
         const {
             name,
         } = this.state;
@@ -135,10 +155,6 @@ class TaskListHeader extends React.PureComponent {
                         <DynamicFeed />
                     </IconButton>
                 </Tooltip>
-                <EditButton
-                    type={listDetailVisible ? "primary" : "default"}
-                    onClick={this.onShowDrawer}
-                />
                 <Drawer
                     open={listDetailVisible}
                     anchor="right"
@@ -156,48 +172,69 @@ class TaskListHeader extends React.PureComponent {
                     </div>
                 </Drawer>
             </Grid>}
-            {allLists && allLists.length > 0 && <Grid item>
-                <FormControl
-                    variant="outlined"
-                    style={{
-                        minWidth: "120px",
-                    }}
-                    size={"small"}
-                >
-                    <Select
-                        placeholder="Select a Plan"
-                        value={activeList && activeList.id}
-                        onChange={this.onSelect}
-                    >
-                        {allLists.sort(byNameComparator).map(l =>
-                            <MenuItem
-                                key={l.id}
-                                value={l.id}
+            {allLists.length > 0 && <Grid item>
+                <Grid container>
+                    {activeList && <Grid item>
+                        <EditButton
+                            onClick={this.onShowDrawer}
+                        />
+                    </Grid>}
+                    <Grid item>
+                        <FormControl
+                            variant="outlined"
+                            style={{
+                                minWidth: "120px",
+                            }}
+                            size={"small"}
+                        >
+                            <Select
+                                placeholder="Select a Plan"
+                                value={activeList && activeList.id}
+                                onChange={this.onSelect}
                             >
-                                {l.name}
-                            </MenuItem>,
-                        )}
-                    </Select>
-                </FormControl>
-                {activeList && activeList.acl && <UserById
-                    id={activeList.acl.ownerId}
-                    iconOnly
-                />}
+                                {allLists.map(l =>
+                                    <MenuItem
+                                        key={l.id}
+                                        value={l.id}
+                                    >
+                                        {l.name}
+                                    </MenuItem>,
+                                )}
+                            </Select>
+                        </FormControl>
+                    </Grid>
+                    {activeList && activeList.acl && <Grid item>
+                        <UserById
+                            id={activeList.acl.ownerId}
+                            iconOnly
+                        />
+                    </Grid>}
+                </Grid>
             </Grid>}
             <Grid item>
-                <TextField
-                    label="New Plan..."
-                    value={name}
-                    size={"small"}
-                    variant={"outlined"}
-                    onChange={this.onNameChange}
-                />
-                <Button
-                    onClick={this.onCreate}
-                    disabled={!isValidName(name)}
-                >
-                    Create
-                </Button>
+                <Grid container>
+                    <Grid item>
+                        <TextField
+                            label="New Plan..."
+                            value={name}
+                            size={"small"}
+                            variant={"outlined"}
+                            onChange={this.onNameChange}
+                        />
+                    </Grid>
+                    <Grid item>
+                        <SplitButton
+                            primary={<Add />}
+                            onClick={this.onCreate}
+                            options={allLists.length > 0 && allLists.map(l => ({
+                                label: l.name,
+                                id: l.id,
+                            }))}
+                            onSelect={this.onDuplicate}
+                            disabled={!isValidName(name)}
+                        />
+                    </Grid>
+                </Grid>
             </Grid>
         </Grid>;
     }

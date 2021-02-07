@@ -18,6 +18,7 @@ const TaskActions = {
     SORT_BY_BUCKET: "task/sort-by-bucket",
     // user actions (with persistence)
     CREATE_LIST: "task/create-list",
+    DUPLICATE_LIST: "task/duplicate-list",
     RENAME_LIST: typedAction("task/rename-list", {
         id: clientOrDatabaseIdType.isRequired,
         name: PropTypes.string.isRequired,

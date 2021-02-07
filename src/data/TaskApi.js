@@ -10,16 +10,18 @@ const axios = BaseAxios.create({
 
 const TaskApi = {
 
-    createList: (name, clientId) =>
+    createList: (name, clientId, fromId) =>
         promiseFlux(
             axios.post(`/`, {
                 name,
+                fromId,
             }),
             data => ({
                 type: TaskActions.LIST_CREATED,
                 clientId,
                 id: data.data.id,
                 data: data.data,
+                fromId,
             }),
         ),
 
