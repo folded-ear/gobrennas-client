@@ -4,10 +4,7 @@ import invariant from "invariant";
 import PropTypes from "prop-types";
 import { removeAtIndex } from "../util/arrayAsSet";
 import ClientId, { clientOrDatabaseIdType } from "../util/ClientId";
-import {
-    bucketComparator,
-    byNameComparator,
-} from "../util/comparators";
+import { bucketComparator } from "../util/comparators";
 import inTheFuture from "../util/inTheFuture";
 import LoadObject from "../util/LoadObject";
 import LoadObjectState from "../util/LoadObjectState";
@@ -49,12 +46,12 @@ const _newTask = name => ({
     status: TaskStatus.NEEDED,
 });
 
-const createList = (state, name) => {
+const createList = (state, name, optionalPlanIdToCopy) => {
     const task = _newTask(name);
     task.acl = {
         ownerId: UserStore.getProfileLO().getValueEnforcing().id,
     };
-    TaskApi.createList(name, task.id);
+    TaskApi.createList(name, task.id, optionalPlanIdToCopy);
     return {
         ...mapTaskLO(state, task.id, () =>
             LoadObject.withValue(task).creating()),
@@ -135,12 +132,18 @@ const listCreated = (state, clientId, id, list) => {
         [id]: LoadObject.withValue(list),
     };
     delete byId[clientId];
-    return addTask({
+    const nextActiveListId = idFixer(state.activeListId);
+    const nAlidChanged = state.activeListId !== nextActiveListId;
+    state = addTask({
         ...state,
-        activeListId: idFixer(state.activeListId),
+        activeListId: nextActiveListId,
         topLevelIds: idFixer(state.topLevelIds),
         byId,
     }, id, "");
+    if (nAlidChanged) {
+        state = refreshActiveListSubscription(state);
+    }
+    return state;
 };
 
 const selectList = (state, id) => {
@@ -973,21 +976,27 @@ const tasksLoaded = (state, tasks) =>
     tasks.reduce((s, t) =>
         taskLoaded(s, t), state);
 
+function selectDefaultList(state) {
+    const lids = state.topLevelIds.getLoadObject().getValueEnforcing();
+    if (lids.length > 0) {
+        // see if there's a preferred active list
+        let alid = PreferencesStore.getActiveTaskList();
+        if (lids.find(id => id === alid) == null) {
+            // auto-select the first one
+            alid = lids[0];
+        }
+        state = selectList(state, alid);
+    }
+    return state;
+}
+
 const listsLoaded = (state, lists) => {
     state = {
         ...tasksLoaded(state, lists),
         topLevelIds: state.topLevelIds.setLoadObject(
             LoadObject.withValue(lists.map(t => t.id))),
     };
-    if (lists.length > 0) {
-        // see if there's a preferred active list
-        let alid = PreferencesStore.getActiveTaskList();
-        if (lists.find(it => it.id === alid) == null) {
-            // auto-select the first one
-            alid = lists.sort(byNameComparator)[0].id;
-        }
-        state = selectList(state, alid);
-    }
+    state = selectDefaultList(state);
     return state;
 };
 
@@ -1035,15 +1044,22 @@ class TaskStore extends ReduceStore {
 
     reduce(state, action) {
         switch (action.type) {
-            case TaskActions.CREATE_LIST:
+            case TaskActions.CREATE_LIST: {
                 return createList(state, action.name);
-            case TaskActions.LIST_CREATED:
+            }
+
+            case TaskActions.DUPLICATE_LIST: {
+                return createList(state, action.name, action.fromId);
+            }
+
+            case TaskActions.LIST_CREATED: {
                 return listCreated(
                     state,
                     action.clientId,
                     action.id,
                     action.data,
                 );
+            }
 
             case TaskActions.LIST_DETAIL_VISIBILITY: {
                 if (state.listDetailVisible === action.visible) return state;
@@ -1055,7 +1071,7 @@ class TaskStore extends ReduceStore {
 
             case TaskActions.DELETE_LIST: {
                 TaskApi.deleteList(action.id);
-                const next = dotProp.set(state, [
+                let next = dotProp.set(state, [
                     "byId",
                     action.id,
                 ], lo => lo.deleting());
@@ -1068,19 +1084,20 @@ class TaskStore extends ReduceStore {
                     next.listDetailVisible = false;
                     next.activeTaskId = null;
                     next.selectedTaskIds = null;
+                    next = selectDefaultList(next);
                 }
                 return next;
             }
 
             case TaskActions.LIST_DELETED: {
-                return {
+                return selectDefaultList({
                     ...dotProp.delete(state, [
                         "byId",
                         action.id,
                     ]),
                     topLevelIds: state.topLevelIds.map(ids =>
                         ids.filter(id => id !== action.id)),
-                };
+                });
             }
 
             case TaskActions.LOAD_LISTS:
