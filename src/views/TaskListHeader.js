@@ -227,7 +227,7 @@ class TaskListHeader extends React.PureComponent {
                             primary={<Add />}
                             onClick={this.onCreate}
                             options={allLists.length > 0 && allLists.map(l => ({
-                                label: l.name,
+                                label: `Duplicate "${l.name}"`,
                                 id: l.id,
                             }))}
                             onSelect={this.onDuplicate}

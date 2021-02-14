@@ -70,7 +70,7 @@ const SplitButton = props => {
                     <Button
                         size="small"
                         onClick={handleToggle}
-                        disabled={disabled}
+                        disabled={disabled || !options || !options.length}
                     >
                         <ArrowDropDownIcon />
                     </Button>
@@ -100,7 +100,7 @@ const SplitButton = props => {
                                                 selected={option === selectedOption}
                                                 onClick={(event) => handleSelect(event, option)}
                                             >
-                                                Duplicate {option.label}
+                                                {option.label}
                                             </MenuItem>
                                         ))}
                                     </MenuList>
