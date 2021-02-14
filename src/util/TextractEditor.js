@@ -62,6 +62,29 @@ const TextractEditor = ({image, textract, renderActions, onClose}) => {
                 }, [[], []]);
             setPartitionedLines(partition);
             setSelectedText(partition[1]
+                /*
+                 You might think to put this up top and sort the whole extract
+                 once at the beginning, but you can't. The total order of the
+                 boxes is dependent on the specific set of boxes selected, as
+                 that influences the column detection stuff. So a given subset
+                 of boxes may sort into different orders based on the other
+                 boxes which are also selected, what order they are in the
+                 original (complete) list, and what sorting algorithm is used.
+
+                 If you select boxes from three different "sections" of the
+                 scan, where two are columns and the third spans the columns,
+                 that'll get the first part. The second part depends on what
+                 the Textract service's implementation. The third part depends
+                 on the browser's implementation.
+                 */
+                .sort((a, b) => {
+                    const dt = a.box.top - b.box.top;
+                    const dl = a.box.left - b.box.left;
+                    const twoCol = dl < 0
+                        ? a.box.width < -dl
+                        : b.box.width < dl;
+                    return twoCol ? dl : dt;
+                })
                 .map(t => t.text));
         },
         [textract, selectedRegion],
