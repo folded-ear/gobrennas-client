@@ -67,6 +67,32 @@ const TextractEditor = ({image, textract, renderActions, onClose}) => {
                     return agg;
                 }, [[], []]);
             setPartitionedLines(partition);
+            const toSortBox = box => {
+                if (rotation === 90) {
+                    // noinspection JSSuspiciousNameCombination
+                    return {
+                        top: box.left,
+                        left: 1 - box.top - box.height,
+                        width: box.height
+                    };
+                } else if (rotation === 180) {
+                    // noinspection JSSuspiciousNameCombination
+                    return {
+                        top: 1 - box.top - box.height,
+                        left: 1 - box.left - box.width,
+                        width: box.width
+                    };
+                } else if (rotation === 270) {
+                    // noinspection JSSuspiciousNameCombination
+                    return {
+                        top: 1 - box.left,
+                        left: box.top,
+                        width: box.height
+                    };
+                } else {
+                    return box;
+                }
+            };
             setSelectedText(partition[1]
                 /*
                  You might think to put this up top and sort the whole extract
@@ -83,17 +109,19 @@ const TextractEditor = ({image, textract, renderActions, onClose}) => {
                  the Textract service's implementation. The third part depends
                  on the browser's implementation.
                  */
-                .sort((a, b) => {
-                    const dt = a.box.top - b.box.top;
-                    const dl = a.box.left - b.box.left;
+                .sort((ta, tb) => {
+                    const a = toSortBox(ta.box);
+                    const b = toSortBox(tb.box);
+                    const dt = a.top - b.top;
+                    const dl = a.left - b.left;
                     const twoCol = dl < 0
-                        ? a.box.width < -dl
-                        : b.box.width < dl;
+                        ? a.width < -dl
+                        : b.width < dl;
                     return twoCol ? dl : dt;
                 })
                 .map(t => t.text));
         },
-        [textract, selectedRegion],
+        [textract, rotation, selectedRegion],
     );
     const getXY = e => {
         const [x, y] = getPositionWithin(findSvg(e.target).parentNode, e);
