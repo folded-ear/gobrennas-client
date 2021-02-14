@@ -7,11 +7,14 @@ import buildSequence from "./buildSequence";
 const {next} = buildSequence();
 
 const ImageDropZone = ({image, onImage, maxWidth, maxHeight, ...props}) => {
+    const [value, setValue] = React.useState([]);
+
     const sendOffFirstFile = files => {
         for (let i = 0; i < files.length; i++) {
             const f = files[i];
             if (f.type.indexOf("image/") !== 0) continue;
             onImage(f);
+            setValue([]);
             break;
         }
     };
@@ -65,6 +68,7 @@ const ImageDropZone = ({image, onImage, maxWidth, maxHeight, ...props}) => {
                     height: 0,
                     width: 0,
                 }}
+                value={value}
                 onChange={handleFileSelect}
             />
         </label>);
