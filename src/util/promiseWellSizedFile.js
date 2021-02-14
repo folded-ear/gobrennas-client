@@ -14,9 +14,11 @@ const promiseWellSizedFile = fileOrString => new Promise((resolve, reject) => {
                 ctx.drawImage(img, 0, 0);
 
                 // Scale by total area, maintaining aspect ratio, aiming a
-                // little low. If it's a PNG source, the JPG will end up _way_
-                // smaller, but whatever.
-                const factor = MAX_UPLOAD_BYTES / fileOrString.size * 0.9;
+                // little low. PNG will be way over-reduced, but whatever. WebP
+                // is around a third smaller than JPEG, so have to reduce it
+                // even further so it'll still fit when reencoded.
+                const baseFactor = fileOrString.type === "image/webp" ? 0.66 : 0.9;
+                const factor = MAX_UPLOAD_BYTES / fileOrString.size * baseFactor;
                 const srcArea = img.width * img.height;
                 const targetArea = Math.floor(srcArea * factor);
                 const width = Math.floor(Math.sqrt(targetArea * img.width / img.height));
