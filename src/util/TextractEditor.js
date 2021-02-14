@@ -12,6 +12,8 @@ import {
 } from "@material-ui/icons";
 import PropTypes from "prop-types";
 import React from "react";
+import useFluxStore from "../data/useFluxStore";
+import WindowStore from "../data/WindowStore";
 import { findSvg } from "./findAncestorByName";
 import getPositionWithin from "./getPositionWithin";
 
@@ -29,6 +31,7 @@ const useStyles = makeStyles({
     svg: {
         userSelect: "none",
         position: "absolute",
+        touchAction: "none",
         top: 0,
         left: 0,
     },
@@ -43,6 +46,9 @@ const overlaps = (a, b) =>
 const TextractEditor = ({image, textract, renderActions, onClose}) => {
     if (!textract) textract = [];
     const classes = useStyles();
+    const windowSize = useFluxStore(
+        () => WindowStore.getSize(),
+        [WindowStore]);
     const [rotation, setRotation] = React.useState(0);
     const [[width, height, maxWidth], setSize] = React.useState([100, 100, 100]);
     const scaleFactor = maxWidth / (rotation % 180 === 0 ? width : height);
@@ -170,7 +176,7 @@ const TextractEditor = ({image, textract, renderActions, onClose}) => {
                     position: "relative",
                 }}>
                     <img
-                        src={image}
+                        src={`${image}${image.indexOf("?") < 0 ? "?" : "&"}w=${windowSize.width}`}
                         alt="to extract"
                         width={scaledWidth}
                         height={scaledHeight}
@@ -189,9 +195,9 @@ const TextractEditor = ({image, textract, renderActions, onClose}) => {
                         width={scaledWidth}
                         height={scaledHeight}
                         preserveAspectRatio="none"
-                        onMouseDown={startBoxDraw}
-                        onMouseMove={drawnBox && updateBoxDraw}
-                        onMouseUp={drawnBox && endBoxDraw}
+                        onPointerDown={startBoxDraw}
+                        onPointerMove={drawnBox && updateBoxDraw}
+                        onPointerUp={drawnBox && endBoxDraw}
                         strokeWidth={1}
                         className={classes.svg}
                         style={rotationStyles}
