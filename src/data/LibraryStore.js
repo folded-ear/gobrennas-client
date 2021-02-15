@@ -110,8 +110,7 @@ class LibraryStore extends ReduceStore {
                 };
             }
 
-            case LibraryActions.LOAD_LIBRARY:
-            case RecipeActions.DISSECTION_RECORDED: {
+            case LibraryActions.LOAD_LIBRARY: {
                 LibraryApi.loadLibrary(state.scope, "");
                 return {
                     ...state,

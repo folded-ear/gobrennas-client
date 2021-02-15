@@ -34,10 +34,6 @@ const RecipeActions = {
         units: dissectionComponentType,
         name: dissectionComponentType.isRequired,
     }),
-    DISSECTION_RECORDED: typedAction("recipe/dissection-recorded", {
-        recipeId: PropTypes.number.isRequired,
-        raw: PropTypes.string.isRequired,
-    }),
     NEW_DRAFT_INGREDIENT_YO: "recipe/new-draft-ingredient-yo",
     KILL_DRAFT_INGREDIENT_YO: "recipe/kill-draft-ingredient-yo",
     MULTI_LINE_DRAFT_INGREDIENT_PASTE_YO: "recipe/multi-line-draft-ingredient-paste-yo",
