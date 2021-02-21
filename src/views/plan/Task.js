@@ -248,31 +248,8 @@ class Task extends React.PureComponent {
         const expanded = isExpanded(task);
         const question = isQuestionable(task);
         const deleting = task._next_status === TaskStatus.DELETED;
-        const completing = task._next_status === TaskStatus.COMPLETED;
         const acquiring = task._next_status === TaskStatus.ACQUIRED;
         const needing = task._next_status === TaskStatus.NEEDED;
-        let nextStatus = TaskStatus.COMPLETED;
-
-        if (task.status === TaskStatus.NEEDED) {
-            if (task._next_status === TaskStatus.ACQUIRED) {
-                nextStatus = TaskStatus.NEEDED;
-            } else if (task._next_status === TaskStatus.COMPLETED) {
-                nextStatus = TaskStatus.ACQUIRED;
-            } else {
-                nextStatus = TaskStatus.COMPLETED;
-            }
-        } else if (task.status === TaskStatus.ACQUIRED) {
-            if (task._next_status === TaskStatus.NEEDED) {
-                nextStatus = TaskStatus.ACQUIRED;
-            } else if (task._next_status === TaskStatus.COMPLETED) {
-                nextStatus = TaskStatus.NEEDED;
-            } else {
-                nextStatus = TaskStatus.COMPLETED;
-            }
-        } else {
-            // eslint-disable-next-line no-console
-            console.warn(`Bad status for task#${task.id}: ${task.status} -> ${task._next_status}`);
-        }
 
         let addonBefore = [];
         if (parent) {
@@ -292,21 +269,22 @@ class Task extends React.PureComponent {
         if (lo.isLoading() || deleting || ancestorDeleting) {
             addonBefore.push(
                 <LoadingIconButton
-                    key="complete"
+                    key="acquire"
                 />);
         } else if (section) {
             addonBefore.push(
                 <PlaceholderIconButton
-                    key="complete"
+                    key="acquire"
                     size="small"
                 />);
         } else {
+            const curr = task._next_status || task.status;
             addonBefore.push(
                 <StatusIconButton
-                    key="complete"
+                    key="acquire"
                     id={task.id}
-                    current={task.status}
-                    next={nextStatus}
+                    current={curr}
+                    next={curr === TaskStatus.ACQUIRED ? TaskStatus.NEEDED : TaskStatus.ACQUIRED}
                 />);
         }
         const addonAfter = [
@@ -350,7 +328,6 @@ class Task extends React.PureComponent {
                 [classes.selected]: selected,
                 [classes.question]: question,
                 [classes.deleting]: deleting,
-                [classes.completing]: completing,
                 [classes.acquiring]: acquiring,
                 [classes.needing]: needing,
                 [classes.ancestorDeleting]: ancestorDeleting,
