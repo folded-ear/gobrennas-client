@@ -120,7 +120,6 @@ RecipeCard.propTypes = {
     recipe: Recipe,
     mine: PropTypes.bool,
     ownerLO: loadObjectOf(PropTypes.object),
-    staged: PropTypes.bool,
 };
 
 export default RecipeCard;

@@ -211,7 +211,6 @@ RecipeDetail.propTypes = {
     anonymous: PropTypes.bool,
     mine: PropTypes.bool,
     ownerLO: loadObjectOf(PropTypes.object),
-    staged: PropTypes.bool,
 };
 
 export default RecipeDetail;
