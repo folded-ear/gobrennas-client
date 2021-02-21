@@ -66,7 +66,7 @@ const useFluxStore = (calculateState, stores, deps = []) => {
             subs.addListener(() => setState(calculateState));
             return () => subs.reset();
         },
-        stores, // eslint-disable-line react-hooks/exhaustive-deps
+        stores.concat(deps), // eslint-disable-line react-hooks/exhaustive-deps
     );
     return firstRun ? initializer : state;
 };
