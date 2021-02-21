@@ -656,12 +656,6 @@ const cancelStatusUpdate = (state, id) => {
 
 const taskDeleted = (state, id) => {
     unqueueTaskId(id);
-    if (state.activeTaskId === id) {
-        state = {
-            ...state,
-            activeTaskId: null,
-        };
-    }
     if (!isKnown(state, id)) return state;
     const t = taskForId(state, id);
     let p = taskForId(state, t.parentId);
@@ -687,6 +681,12 @@ const taskDeleted = (state, id) => {
         ...state,
         byId,
     };
+    if (!isKnown(state, state.activeTaskId)) {
+        state = {
+            ...state,
+            activeTaskId: null,
+        };
+    }
     if (p.id === state.activeListId && !isParent(p)) {
         // it was the last task on the list
         state = addTask(state, p.id, "", AT_END);
