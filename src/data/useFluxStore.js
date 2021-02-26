@@ -23,15 +23,6 @@ import React from "react";
  * etc.). That is, you have to actually manage your dependencies with the hook,
  * you can't just rely on Flux Utils to madly recalculate all the time.
  *
- * ***NB***: When the collection of stores change, Flux Utils' Container updates
- * its subscription's stores. `useFluxStore`, on the other hand, unsubscribes
- * completely and resubscribes with the new stores. The net result is the same,
- * but the latter approach requires a few extra object allocations. The Rules of
- * Hooks, strongly discourage usage where the stores are changing out from a
- * single `useFluxStore` hook instance. Thus the optimization seems nearly
- * pointless (and it's small anyway), given the increased implementation
- * complexity to provide it.
- *
  * @param calculateState The callback for calculating the next state. This is
  *  the same as was passed to `Container.create`.
  * @param stores An array of stores to listen for changes to. This is the same
@@ -41,34 +32,18 @@ import React from "react";
  * @return The current calculated state.
  */
 const useFluxStore = (calculateState, stores, deps = []) => {
-    const [state, setState] = React.useState(undefined);
-    const firstRun = state === undefined;
-    // this useMemo/setState dance avoids a double calculation on mount
-    const initializer = React.useMemo(
-        () => {
-            if (firstRun) {
-                const next = calculateState(undefined);
-                // why the function dance? because if next _is_ a function,
-                // setState will do the "wrong" thing!
-                setState(() => next);
-                return next;
-            } else {
-                setState(calculateState);
-                return undefined;
-            }
-        },
-        deps, // eslint-disable-line react-hooks/exhaustive-deps
-    );
+    const [state, setState] = React.useState(calculateState);
     React.useEffect(
         () => {
             const subs = new FluxContainerSubscriptions();
             subs.setStores(stores);
             subs.addListener(() => setState(calculateState));
+            setState(calculateState);
             return () => subs.reset();
         },
         stores.concat(deps), // eslint-disable-line react-hooks/exhaustive-deps
     );
-    return firstRun ? initializer : state;
+    return state;
 };
 
 export default useFluxStore;
