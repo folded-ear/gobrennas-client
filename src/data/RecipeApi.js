@@ -105,25 +105,6 @@ const RecipeApi = {
         );
     },
     
-    recordIngredientDissection(raw, quantity, units, name, prep) {
-        promiseFlux(
-            axios.post(`/recipe/_actions`, {
-                type: "DISSECT_RAW_INGREDIENT",
-                dissection: {
-                    raw,
-                    quantity,
-                    units,
-                    name,
-                    prep,
-                },
-            }),
-            () => ({
-                type: RecipeActions.DISSECTION_RECORDED,
-                raw,
-            }),
-        );
-    },
-
     addLabel(id, label) {
         promiseFlux(
             // this endpoint wants a plain-text post body containing the label

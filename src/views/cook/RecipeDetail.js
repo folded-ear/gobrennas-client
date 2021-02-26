@@ -1,8 +1,6 @@
 import {
     CircularProgress,
     Grid,
-    List,
-    ListItem,
     Toolbar,
     Typography,
     useScrollTrigger,
@@ -22,19 +20,19 @@ import { loadObjectOf } from "../../util/loadObjectTypes";
 import CloseButton from "../common/CloseButton";
 import CopyButton from "../common/CopyButton";
 import DeleteButton from "../common/DeleteButton";
-import Directions from "../common/Directions";
 import EditButton from "../common/EditButton";
 import FoodingerFab from "../common/FoodingerFab";
 import PageBody from "../common/PageBody";
 import RecipeInfo from "../common/RecipeInfo";
 import Source from "../common/Source";
-import IngredientItem from "../IngredientItem";
 import LabelItem from "../LabelItem";
 import ItemImage from "../library/ItemImage";
 import ItemImageUpload from "../library/ItemImageUpload";
 import SendToPlan from "../SendToPlan";
 import User from "../user/User";
+import IngredientDirectionsRow from "./IngredientDirectionsRow";
 import ShareRecipe from "./ShareRecipe";
+import SubrecipeItem from "./SubrecipeItem";
 
 const useStyles = makeStyles(theme => ({
     name: {
@@ -47,7 +45,7 @@ const useStyles = makeStyles(theme => ({
         height: "250px",
         overflow: "hidden",
         marginBottom: theme.spacing(4),
-        marginRight: theme.spacing(4)
+        marginRight: theme.spacing(4),
     },
     toolbar: {
         [theme.breakpoints.down("xs")]: {
@@ -86,7 +84,7 @@ const SubHeader = ({children}) => {
                 // appbar zindex
                 zIndex: 1100,
                 // elevation 4
-                boxShadow:"0px 2px 4px -1px rgba(0,0,0,0.2), 0px 4px 5px 0px rgba(0,0,0,0.14), 0px 1px 10px 0px rgba(0,0,0,0.12)",
+                boxShadow: "0px 2px 4px -1px rgba(0,0,0,0.2), 0px 4px 5px 0px rgba(0,0,0,0.14), 0px 1px 10px 0px rgba(0,0,0,0.12)",
             } : null}
         >
             {children}
@@ -112,9 +110,9 @@ const RecipeDetail = ({recipeLO, mine, ownerLO, anonymous}) => {
 
     if (!recipeLO.hasValue()) {
         if (recipeLO.isLoading()) {
-            return <CircularProgress tip="Recipe is loading..."/>;
+            return <CircularProgress tip="Recipe is loading..." />;
         }
-        return <Redirect to="/library"/>;
+        return <Redirect to="/library" />;
     }
 
     const recipe = recipeLO.getValueEnforcing();
@@ -123,7 +121,12 @@ const RecipeDetail = ({recipeLO, mine, ownerLO, anonymous}) => {
         <PageBody hasFab id="toolbar">
             <SubHeader>
                 <Toolbar className={classes.toolbar}>
-                    <Typography className={classes.name} variant="h2">{recipe.name}</Typography>
+                    <Typography
+                        className={classes.name}
+                        variant="h2"
+                    >
+                        {recipe.name}
+                    </Typography>
                     {loggedIn && <>
                         <CopyButton
                             title={mine ? "Copy" : "Duplicate to My Library"}
@@ -140,30 +143,40 @@ const RecipeDetail = ({recipeLO, mine, ownerLO, anonymous}) => {
                             onConfirm={() => RecipeApi.deleteRecipe(recipe.id)}
                         />}
                         <CloseButton
-                            onClick={() => history.push("/library")}/>
+                            onClick={() => history.push("/library")} />
                     </>}
-                    {!mine && ownerLO.hasValue() && (loggedIn || windowSize.width > 600) && <User
+                    {!mine && ownerLO.hasValue() && (loggedIn || windowSize.width > 600) &&
+                    <User
                         size={loggedIn ? "small" : "large"}
                         iconOnly
                         {...ownerLO.getValueEnforcing()}
                     />}
                 </Toolbar>
             </SubHeader>
-            <Grid container>
+            <Grid container spacing={1}>
                 <Grid item xs={5}>
                     {recipe.photo
-                        ? <ItemImage className={classes.imageContainer} recipe={recipe} />
+                        ? <ItemImage className={classes.imageContainer}
+                                     recipe={recipe} />
                         : <ItemImageUpload recipe={recipe} disabled={!mine} />}
                 </Grid>
                 <Grid item xs={5}>
-                    {recipe.externalUrl && <RecipeInfo label="Source" text={<Source url={recipe.externalUrl}/>}/>}
-                    {recipe.yield && <RecipeInfo label="Yield" text={`${recipe.yield} servings`}/>}
-                    {recipe.totalTime && <RecipeInfo label="Time" text={`${recipe.totalTime} minutes`}/>}
-                    {recipe.calories && <RecipeInfo label="Calories" text={`${recipe.calories} per serving`}/>}
+                    {recipe.externalUrl && <RecipeInfo
+                        label="Source"
+                        text={<Source url={recipe.externalUrl} />} />}
+                    {recipe.yield && <RecipeInfo
+                        label="Yield"
+                        text={`${recipe.yield} servings`} />}
+                    {recipe.totalTime && <RecipeInfo
+                        label="Time"
+                        text={`${recipe.totalTime} minutes`} />}
+                    {recipe.calories && <RecipeInfo
+                        label="Calories"
+                        text={`${recipe.calories} per serving`} />}
                     {recipe.labels && recipe.labels
                         .filter(label => label.indexOf("--") !== 0)
                         .map(label =>
-                            <LabelItem key={label} label={label}/>)}
+                            <LabelItem key={label} label={label} />)}
 
                     {loggedIn && <SendToPlan
                         onClick={planId => Dispatcher.dispatch({
@@ -174,27 +187,17 @@ const RecipeDetail = ({recipeLO, mine, ownerLO, anonymous}) => {
                     />}
                 </Grid>
 
-                <Grid item xs={12} md={5}>
-                    {recipe.ingredients != null && recipe.ingredients.length > 0 && <>
-                        <Typography variant="h5">Ingredients</Typography>
-                        <List>
-                            {recipe.ingredients && recipe.ingredients.map((it, i) =>
-                                <ListItem key={`${i}:${it.raw}`}>
-                                    <IngredientItem
-                                        ingredient={it}
-                                        loggedIn={loggedIn}
-                                    />
-                                </ListItem>)}
-                        </List>
-                    </>}
-                </Grid>
+                {recipe.ingredients != null && recipe.ingredients.map((it, i) =>
+                    <SubrecipeItem
+                        key={i}
+                        ingredient={it}
+                        loggedIn={loggedIn}
+                    />)}
 
-                <Grid item xs={12} md={7}>
-                    {recipe.directions && <React.Fragment>
-                        <Typography variant="h5">Directions</Typography>
-                        <Directions text={recipe.directions}/>
-                    </React.Fragment>}
-                </Grid>
+                <IngredientDirectionsRow
+                    recipe={recipe}
+                    loggedIn={loggedIn}
+                />
 
             </Grid>
             {loggedIn && <FoodingerFab
@@ -211,7 +214,6 @@ RecipeDetail.propTypes = {
     anonymous: PropTypes.bool,
     mine: PropTypes.bool,
     ownerLO: loadObjectOf(PropTypes.object),
-    staged: PropTypes.bool,
 };
 
 export default RecipeDetail;

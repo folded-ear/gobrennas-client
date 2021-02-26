@@ -1508,6 +1508,8 @@ TaskStore.stateTypes = {
             status: PropTypes.string.isRequired,
             parentId: PropTypes.number,
             subtaskIds: PropTypes.arrayOf(clientOrDatabaseIdType),
+            aggregateId: PropTypes.number,
+            componentIds: PropTypes.arrayOf(PropTypes.number),
             bucketId: PropTypes.number,
             // lists
             acl: PropTypes.exact({

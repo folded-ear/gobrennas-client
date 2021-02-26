@@ -1,10 +1,7 @@
 import { ReduceStore } from "flux/utils";
 import invariant from "invariant";
 import PropTypes from "prop-types";
-import {
-    addDistinct,
-    removeDistinct,
-} from "../util/arrayAsSet";
+import { removeDistinct } from "../util/arrayAsSet";
 import { clientOrDatabaseIdType } from "../util/ClientId";
 import history from "../util/history";
 import LoadObject from "../util/LoadObject";
@@ -22,44 +19,15 @@ import LibraryApi from "./LibraryApi";
 import PantryItemActions from "./PantryItemActions";
 import RecipeActions from "./RecipeActions";
 import RecipeApi from "./RecipeApi";
-import UserStore from "./UserStore";
 
 export const SCOPE_MINE = "mine";
 export const SCOPE_EVERYONE = "everyone";
-export const LABEL_STAGED_INDICATOR = "--on-stage";
 
 export const adaptTime = (recipe) => {
     if (recipe.totalTime) {
         recipe.totalTime = fromMilliseconds(recipe.totalTime);
     }
     return recipe;
-};
-
-const workOnLabels = (state, recipeId, work) => {
-    if (!state.byId.has(recipeId)) return state;
-    return {
-        ...state,
-        byId: state.byId.update(recipeId, lo => {
-            if (!lo.hasValue()) return lo;
-            const r = lo.getValueEnforcing();
-            const labels = work(r.labels);
-            if (labels === r.labels) return lo;
-            return lo.map(r => ({
-                ...r,
-                labels,
-            }));
-        }),
-    };
-};
-
-export const isRecipeStaged = r => {
-    if (r == null) return false;
-    if (r instanceof LoadObject) {
-        if (!r.hasValue()) return false;
-        r = r.getValueEnforcing();
-    }
-    if (r.labels == null) return false;
-    return r.labels.indexOf(LABEL_STAGED_INDICATOR) >= 0;
 };
 
 class LibraryStore extends ReduceStore {
@@ -110,8 +78,7 @@ class LibraryStore extends ReduceStore {
                 };
             }
 
-            case LibraryActions.LOAD_LIBRARY:
-            case RecipeActions.DISSECTION_RECORDED: {
+            case LibraryActions.LOAD_LIBRARY: {
                 LibraryApi.loadLibrary(state.scope, "");
                 return {
                     ...state,
@@ -204,18 +171,6 @@ class LibraryStore extends ReduceStore {
                 };
             }
 
-            case LibraryActions.STAGE_RECIPE: {
-                RecipeApi.addLabel(action.id, LABEL_STAGED_INDICATOR);
-                return workOnLabels(state, action.id, labels =>
-                    addDistinct(labels, LABEL_STAGED_INDICATOR));
-            }
-
-            case LibraryActions.UNSTAGE_RECIPE: {
-                RecipeApi.removeLabel(action.id, LABEL_STAGED_INDICATOR);
-                return workOnLabels(state, action.id, labels =>
-                    removeDistinct(labels, LABEL_STAGED_INDICATOR));
-            }
-
             case RecipeActions.SEND_TO_PLAN: {
                 RecipeApi.sendToPlan(
                     action.recipeId,
@@ -276,27 +231,6 @@ class LibraryStore extends ReduceStore {
             "That is not a valid integer",
         );
         return this.getIngredientById(selectedRecipe);
-    }
-
-    getStagedRecipes() {
-        // don't use the list of recipes, use all recipe ingredients, so it's
-        // exempt from filtering.
-        const map = this.getState().byId;
-        const result = [];
-        const me = UserStore.getProfileLO().getValueEnforcing();
-        for (const id of map.getKeys()) {
-            const lo = map.get(id);
-            if (!lo.hasValue()) continue;
-            const r = lo.getValueEnforcing();
-            if (r.ownerId === me.id && isRecipeStaged(r)) {
-                result.push(r);
-            }
-        }
-        return result;
-    }
-
-    isStaged(id) {
-        return isRecipeStaged(this.getState().byId.get(id));
     }
 
 }

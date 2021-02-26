@@ -1,7 +1,6 @@
 import React from "react";
 import { withRouter } from "react-router-dom";
 import FriendStore from "../data/FriendStore";
-import { isRecipeStaged } from "../data/LibraryStore";
 import useIngredientLO from "../data/useIngredientLO";
 import useProfileLO from "../data/useProfileLO";
 import RecipeDetail from "../views/cook/RecipeDetail";
@@ -20,7 +19,6 @@ export default withRouter(({match}) => {
         state.ownerLO = state.mine
             ? profileLO
             : FriendStore.getFriendLO(r.ownerId);
-        state.staged = isRecipeStaged(r);
     }
     return <RecipeDetail {...state} />;
 });

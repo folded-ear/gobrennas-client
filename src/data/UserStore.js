@@ -1,6 +1,5 @@
 import BaseAxios from "axios";
 import { ReduceStore } from "flux/utils";
-import { OrderedMap } from "immutable";
 import {
     API_BASE_URL,
     COOKIE_AUTH_TOKEN,
@@ -20,7 +19,7 @@ const axios = BaseAxios.create({
 });
 
 const initiateProfileLoad = state => {
-    if (state.get("profile").getLoadObject().isLoading()) {
+    if (state.profile.getLoadObject().isLoading()) {
         return state;
     }
     promiseFlux(
@@ -31,54 +30,67 @@ const initiateProfileLoad = state => {
         }),
         UserActions.PROFILE_LOAD_ERROR,
     );
-    return state.update("profile", los =>
-        los.mapLO(lo =>
-            lo.loading()));
+    return {
+        ...state,
+        profile: state.profile.mapLO(lo =>
+            lo.loading())
+    };
 };
 
 const setToken = (state, token) => {
-    return initiateProfileLoad(
-        state.set("token", token)
-    );
+    return initiateProfileLoad({
+        ...state,
+        token,
+    });
 };
 
 class UserStore extends ReduceStore {
 
     getInitialState() {
-        const state = new OrderedMap({
+        const state = {
             profile: new LoadObjectState(
                 () => Dispatcher.dispatch({
                     type: UserActions.LOAD_PROFILE
                 })),
-        });
+        };
         const token = getCookie(COOKIE_AUTH_TOKEN);
         return token ? setToken(state, token) : state;
     }
 
     reduce(state, action) {
         switch (action.type) {
+
             case UserActions.LOGGED_IN: {
                 return setToken(state, action.token);
             }
+
             case UserActions.LOAD_PROFILE: {
                 return initiateProfileLoad(state);
             }
+
             case UserActions.PROFILE_LOADED: {
-                return state.update("profile", los =>
-                    los.mapLO(lo =>
-                        lo.setValue(action.data).done()));
+                return {
+                    ...state,
+                    profile: state.profile.mapLO(lo =>
+                        lo.setValue(action.data).done()),
+                };
             }
+
             case UserActions.PROFILE_LOAD_ERROR: {
-                return state.update("profile", los =>
-                    los.mapLO(lo =>
-                        lo.setError(action.error).done()));
+                return {
+                    ...state,
+                    profile: state.profile.mapLO(lo =>
+                        lo.setError(action.error).done())
+                };
             }
+
             case UserActions.LOGOUT: {
                 localStorage.removeItem(LOCAL_STORAGE_ACCESS_TOKEN);
                 // we need the server to close out too
                 window.location = API_BASE_URL + "/oauth2/logout";
                 return this.getInitialState();
             }
+
             default:
                 return state;
         }
@@ -86,15 +98,15 @@ class UserStore extends ReduceStore {
 
     isAuthenticated() {
         const s = this.getState();
-        return s.get("token") != null && s.get("profile").getLoadObject().hasValue();
+        return s.token != null && s.profile.getLoadObject().hasValue();
     }
 
     getToken() {
-        return this.getState().get("token");
+        return this.getState().token;
     }
 
     getProfileLO() {
-        return this.getState().get("profile").getLoadObject();
+        return this.getState().profile.getLoadObject();
     }
 
     isDeveloper() {
