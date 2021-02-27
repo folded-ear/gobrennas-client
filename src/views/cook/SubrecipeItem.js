@@ -22,7 +22,14 @@ const SubrecipeItem = ({ingredient: ref, loggedIn}) => {
                     expanded={expanded}
                     onClick={() => setExpanded(s => !s)}
                 />
-                {ing.name}
+                <span
+                    onClick={() => setExpanded(s => !s)}
+                    style={{
+                        cursor: "pointer",
+                    }}
+                >
+                    {ing.name}
+                </span>
             </Typography>
         </Grid>
         {expanded && <IngredientDirectionsRow
