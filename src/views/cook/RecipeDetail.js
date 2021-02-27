@@ -22,6 +22,7 @@ import CopyButton from "../common/CopyButton";
 import DeleteButton from "../common/DeleteButton";
 import EditButton from "../common/EditButton";
 import FoodingerFab from "../common/FoodingerFab";
+import LoadingIndicator from "../common/LoadingIndicator";
 import PageBody from "../common/PageBody";
 import RecipeInfo from "../common/RecipeInfo";
 import Source from "../common/Source";
@@ -110,7 +111,7 @@ const RecipeDetail = ({recipeLO, subrecipes, mine, ownerLO, anonymous}) => {
 
     if (!recipeLO.hasValue()) {
         if (recipeLO.isLoading()) {
-            return <CircularProgress tip="Recipe is loading..." />;
+            return <LoadingIndicator />;
         }
         return <Redirect to="/library" />;
     }
@@ -126,6 +127,7 @@ const RecipeDetail = ({recipeLO, subrecipes, mine, ownerLO, anonymous}) => {
                         variant="h2"
                     >
                         {recipe.name}
+                        {recipeLO.isLoading() && <CircularProgress />}
                     </Typography>
                     {loggedIn && <>
                         <CopyButton

@@ -16,31 +16,36 @@ const Recipe = ({match}) => {
                 recipeLO,
                 subrecipes: [],
             };
-            const subIds = new Set();
-            const collectSubrecipes = r => {
-                if (r.ingredients == null) return r;
-                return {
-                    ...r,
-                    ingredients: r.ingredients.map(ref => {
-                        if (!ref.ingredientId) return ref;
-                        const iLO = LibraryStore.getIngredientById(ref.ingredientId);
-                        if (!iLO || !iLO.done() || !iLO.hasValue()) return ref;
-                        const ing = iLO.getValueEnforcing();
-                        ref = {
-                            ...ref,
-                            ingredient: ing,
-                        };
-                        if (ing.type !== "Recipe") return ref;
-                        if (subIds.has(ing.id)) return ref;
-                        subIds.add(ing.id);
-                        state.subrecipes.push(collectSubrecipes(ing));
-                        return ref;
-                    }),
-                };
-            };
             if (!recipeLO.hasValue()) return state;
-            const recipe = collectSubrecipes(recipeLO.getValueEnforcing());
+
+            const subIds = new Set();
+            let loading = false;
+            const prepRecipe = recipe => ({
+                ...recipe,
+                ingredients: (recipe.ingredients || []).map(ref => {
+                    if (!ref.ingredientId) return ref;
+                    const iLO = LibraryStore.getIngredientById(ref.ingredientId);
+                    if (iLO.isLoading()) {
+                        loading = true;
+                    }
+                    if (!iLO.hasValue()) return ref;
+                    const ing = iLO.getValueEnforcing();
+                    ref = {
+                        ...ref,
+                        ingredient: ing,
+                    };
+                    if (ing.type !== "Recipe") return ref;
+                    if (subIds.has(ing.id)) return ref;
+                    subIds.add(ing.id);
+                    state.subrecipes.push(prepRecipe(ing));
+                    return ref;
+                }),
+            });
+            const recipe = prepRecipe(recipeLO.getValueEnforcing());
             state.recipeLO = LoadObject.withValue(recipe);
+            if (loading) {
+                state.recipeLO = state.recipeLO.loading();
+            }
 
             const profileLO = UserStore.getProfileLO();
             if (!profileLO.hasValue()) return state;
