@@ -8,9 +8,8 @@ import PropTypes from "prop-types";
 import React from "react";
 import Dispatcher from "../data/dispatcher";
 import PantryItemActions from "../data/PantryItemActions";
+import { IngredientRef } from "../data/RecipeTypes";
 import TaskActions from "../data/TaskActions";
-import useIngredientLO from "../data/useIngredientLO";
-import { refType } from "../models/IngredientRef";
 import history from "../util/history";
 import Quantity from "./common/Quantity";
 import SendToPlan from "./SendToPlan";
@@ -37,9 +36,8 @@ Augment.propTypes = {
     suffix: PropTypes.string,
 };
 
-const IngredientItem = ({ingredient: ref, loggedIn}) => {
+const IngredientItem = ({ingRef: ref, loggedIn}) => {
     const classes = useStyles();
-    const iLO = useIngredientLO(ref.ingredientId);
 
     let left, right;
     if (ref.quantity != null) {
@@ -49,7 +47,7 @@ const IngredientItem = ({ingredient: ref, loggedIn}) => {
         />;
     }
 
-    if (iLO == null || !iLO.hasValue()) {
+    if (ref.ingredient == null || typeof ref.ingredient === "string") {
         right = ref.quantity == null
             ? ref.raw
             : ref.preparation;
@@ -68,7 +66,7 @@ const IngredientItem = ({ingredient: ref, loggedIn}) => {
             </>;
         }
     } else {
-        const ingredient = iLO.getValueEnforcing();
+        const ingredient = ref.ingredient;
         const isRecipe = ingredient.type === "Recipe";
 
         right = <>
@@ -115,7 +113,7 @@ const IngredientItem = ({ingredient: ref, loggedIn}) => {
 };
 
 IngredientItem.propTypes = {
-    ingredient: refType.isRequired,
+    ingRef: IngredientRef.isRequired,
     loggedIn: PropTypes.bool,
 };
 

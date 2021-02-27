@@ -1,20 +1,16 @@
 import {
+    Divider,
     Grid,
     Typography,
 } from "@material-ui/core";
 import PropTypes from "prop-types";
 import React from "react";
-import useIngredientLO from "../../data/useIngredientLO";
-import { refType } from "../../models/IngredientRef";
+import { Recipe } from "../../data/RecipeTypes";
 import CollapseIconButton from "../plan/CollapseIconButton";
 import IngredientDirectionsRow from "./IngredientDirectionsRow";
 
-const SubrecipeItem = ({ingredient: ref, loggedIn}) => {
+const SubrecipeItem = ({recipe, loggedIn}) => {
     const [expanded, setExpanded] = React.useState(false);
-    const iLO = useIngredientLO(ref.ingredientId);
-    if (!iLO.done() || !iLO.hasValue()) return null;
-    const ing = iLO.getValueEnforcing();
-    if (ing.type !== "Recipe") return null;
     return <>
         <Grid item xs={12}>
             <Typography variant="h5">
@@ -28,20 +24,27 @@ const SubrecipeItem = ({ingredient: ref, loggedIn}) => {
                         cursor: "pointer",
                     }}
                 >
-                    {ing.name}
+                    {recipe.name}
                 </span>
             </Typography>
         </Grid>
-        {expanded && <IngredientDirectionsRow
-            loggedIn={loggedIn}
-            recipe={ing}
-            hideHeadings
-        />}
+        {expanded && <>
+            <IngredientDirectionsRow
+                loggedIn={loggedIn}
+                recipe={recipe}
+                hideHeadings
+            />
+            <Grid item xs={12}>
+                <Divider
+                    variant={"middle"}
+                />
+            </Grid>
+        </>}
     </>;
 };
 
 SubrecipeItem.propTypes = {
-    ingredient: refType.isRequired,
+    recipe: Recipe.isRequired,
     loggedIn: PropTypes.bool,
 };
 

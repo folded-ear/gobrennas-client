@@ -96,7 +96,7 @@ SubHeader.propTypes = {
     children: PropTypes.node.isRequired,
 };
 
-const RecipeDetail = ({recipeLO, mine, ownerLO, anonymous}) => {
+const RecipeDetail = ({recipeLO, subrecipes, mine, ownerLO, anonymous}) => {
 
     const classes = useStyles();
 
@@ -178,6 +178,7 @@ const RecipeDetail = ({recipeLO, mine, ownerLO, anonymous}) => {
                         .map(label =>
                             <LabelItem key={label} label={label} />)}
 
+                    {/* todo: this does a store hit for the plan, and only makes sense for a library recipe */}
                     {loggedIn && <SendToPlan
                         onClick={planId => Dispatcher.dispatch({
                             type: RecipeActions.SEND_TO_PLAN,
@@ -187,10 +188,10 @@ const RecipeDetail = ({recipeLO, mine, ownerLO, anonymous}) => {
                     />}
                 </Grid>
 
-                {recipe.ingredients != null && recipe.ingredients.map((it, i) =>
+                {subrecipes != null && subrecipes.map(it =>
                     <SubrecipeItem
-                        key={i}
-                        ingredient={it}
+                        key={it.id}
+                        recipe={it}
                         loggedIn={loggedIn}
                     />)}
 
@@ -211,6 +212,7 @@ const RecipeDetail = ({recipeLO, mine, ownerLO, anonymous}) => {
 
 RecipeDetail.propTypes = {
     recipeLO: loadObjectOf(Recipe).isRequired,
+    subrecipes: PropTypes.arrayOf(Recipe),
     anonymous: PropTypes.bool,
     mine: PropTypes.bool,
     ownerLO: loadObjectOf(PropTypes.object),

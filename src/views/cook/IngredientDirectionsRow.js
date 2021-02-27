@@ -13,12 +13,14 @@ import IngredientItem from "../IngredientItem";
 const IngredientDirectionsRow = ({recipe, loggedIn, hideHeadings}) => <>
     <Grid item xs={12} md={5}>
         {recipe.ingredients && recipe.ingredients.length > 0 && <>
-            {!hideHeadings &&<Typography variant="h5">Ingredients</Typography>}
+            {!hideHeadings && <Typography variant="h5">
+                Ingredients
+            </Typography>}
             <List>
                 {recipe.ingredients.map((it, i) =>
-                    <ListItem key={`${i}:${it.raw}`}>
+                    <ListItem key={i}>
                         <IngredientItem
-                            ingredient={it}
+                            ingRef={it}
                             loggedIn={loggedIn}
                         />
                     </ListItem>)}
