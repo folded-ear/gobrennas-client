@@ -24,10 +24,11 @@ export const SCOPE_MINE = "mine";
 export const SCOPE_EVERYONE = "everyone";
 
 export const adaptTime = (recipe) => {
-    if (recipe.totalTime) {
-        recipe.totalTime = fromMilliseconds(recipe.totalTime);
-    }
-    return recipe;
+    if (!recipe.totalTime) return recipe;
+    return {
+        ...recipe,
+        totalTime: fromMilliseconds(recipe.totalTime),
+    };
 };
 
 class LibraryStore extends ReduceStore {
