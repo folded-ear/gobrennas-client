@@ -8,18 +8,18 @@ import React from "react";
 import useIngredientLO from "../../data/useIngredientLO";
 import history from "../../util/history";
 
-const LinkIfRecipe = ({id, ...props}) => {
-    const lo = useIngredientLO(id);
+const LinkIfRecipe = ({planId, taskId, ingredientId, ...props}) => {
+    const lo = useIngredientLO(ingredientId);
     if (!lo || !lo.hasValue()) return null;
     const ing = lo.getValueEnforcing();
     if (ing.type !== "Recipe") return null;
     return (
         <Tooltip
-            title="Jump to Recipe in Library"
+            title="Cook / Kitchen View"
             placement="top"
         >
             <IconButton
-                onClick={() => history.push(`/library/recipe/${ing.id}`)}
+                onClick={() => history.push(`/plan/${planId}/recipe/${taskId}`)}
                 {...props}
             >
                 <Kitchen />
@@ -29,7 +29,9 @@ const LinkIfRecipe = ({id, ...props}) => {
 };
 
 LinkIfRecipe.propTypes = {
-    id: PropTypes.number.isRequired,
+    planId: PropTypes.number.isRequired,
+    taskId: PropTypes.number.isRequired,
+    ingredientId: PropTypes.number.isRequired,
 };
 
 export default LinkIfRecipe;

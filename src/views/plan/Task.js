@@ -234,6 +234,7 @@ class Task extends React.PureComponent {
 
     render() {
         const {
+            plan,
             task,
             depth,
             loadObject: lo,
@@ -305,12 +306,15 @@ class Task extends React.PureComponent {
             addonAfter.unshift(<LinkIfRecipe
                 key="recipe"
                 size="small"
-                id={task.ingredientId}
+                planId={plan.id}
+                taskId={task.id}
+                ingredientId={task.ingredientId}
             />);
         }
         if (buckets && buckets.length > 0) {
             addonAfter.unshift(<TaskBucketChip
                 key="bucket"
+                planId={plan.id}
                 taskId={task.id}
                 bucketId={task.bucketId}
                 buckets={buckets}
@@ -358,6 +362,7 @@ class Task extends React.PureComponent {
 
 Task.propTypes = {
     depth: PropTypes.number.isRequired,
+    plan: PropTypes.object.isRequired,
     task: PropTypes.object.isRequired,
     loadObject: PropTypes.instanceOf(LoadObject).isRequired,
     active: PropTypes.bool,

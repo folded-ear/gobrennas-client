@@ -66,6 +66,7 @@ class TaskList extends React.PureComponent {
                         const t = lo.getValueEnforcing();
                         return <Task
                             key={t.id}
+                            plan={plan}
                             depth={depth}
                             task={t}
                             ancestorDeleting={ancestorDeleting}

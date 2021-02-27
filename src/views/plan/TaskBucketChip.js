@@ -4,17 +4,22 @@ import {
 } from "@material-ui/core";
 import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
-import { HighlightOff as DeleteIcon } from "@material-ui/icons";
+import {
+    HighlightOff as DeleteIcon,
+    Kitchen,
+} from "@material-ui/icons";
 import PropTypes from "prop-types";
 import React from "react";
 import dispatcher from "../../data/dispatcher";
 import TaskActions from "../../data/TaskActions";
 import { bucketType } from "../../data/TaskStore";
 import { clientOrDatabaseIdType } from "../../util/ClientId";
+import history from "../../util/history";
 import { humanDate } from "../../util/time";
 import getBucketLabel from "./getBucketLabel";
 
 const BucketChip = ({
+    planId,
     bucketId,
     buckets = [],
     onSelect,
@@ -73,6 +78,13 @@ const BucketChip = ({
             open={Boolean(anchorEl)}
             onClose={handleClose}
         >
+            {bucket && <MenuItem
+                onClick={() => history.push(`/plan/${planId}/bucket/${bucketId}`)}
+            >
+                <Kitchen />
+                Cook &quot;{getBucketLabel(bucket)}&quot;
+            </MenuItem>}
+            {bucket && <Divider />}
             {buckets.map(b => {
                 const selected = b === bucket;
                 return <MenuItem
@@ -104,6 +116,7 @@ const BucketChip = ({
 };
 
 BucketChip.propTypes = {
+    planId: PropTypes.number.isRequired,
     bucketId: PropTypes.number,
     buckets: PropTypes.arrayOf(bucketType).isRequired,
     onSelect: PropTypes.func.isRequired,
@@ -128,6 +141,7 @@ const TaskBucketChip = ({
     />;
 
 TaskBucketChip.propTypes = {
+    planId: PropTypes.number.isRequired,
     taskId: clientOrDatabaseIdType.isRequired,
     bucketId: PropTypes.number,
     buckets: PropTypes.arrayOf(bucketType).isRequired,
