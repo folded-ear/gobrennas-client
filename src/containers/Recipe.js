@@ -1,11 +1,11 @@
+import PropTypes from "prop-types";
 import React from "react";
-import { withRouter } from "react-router-dom";
 import FriendStore from "../data/FriendStore";
 import useIngredientLO from "../data/useIngredientLO";
 import useProfileLO from "../data/useProfileLO";
 import RecipeDetail from "../views/cook/RecipeDetail";
 
-export default withRouter(({match}) => {
+const Recipe = ({match}) => {
     const id = parseInt(match.params.id, 10);
     const lo = useIngredientLO(id);
     const state = {
@@ -21,4 +21,14 @@ export default withRouter(({match}) => {
             : FriendStore.getFriendLO(r.ownerId);
     }
     return <RecipeDetail {...state} />;
-});
+};
+
+Recipe.propTypes = {
+    match: PropTypes.shape({
+        params: PropTypes.shape({
+            id: PropTypes.string.isRequired,
+        }).isRequired,
+    }).isRequired
+};
+
+export default Recipe;
