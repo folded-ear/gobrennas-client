@@ -1440,6 +1440,12 @@ class TaskStore extends ReduceStore {
         return losForIds(s, p.subtaskIds);
     }
 
+    getComponentLOs(id) {
+        const s = this.getState();
+        const p = taskForId(s, id);
+        return losForIds(s, p.componentIds);
+    }
+
     getActiveListLO() {
         const lo = this.getListsLO();
         if (!lo.hasValue()) return lo;
@@ -1454,6 +1460,12 @@ class TaskStore extends ReduceStore {
         if (s.activeTaskId == null) return null;
         const lo = loForId(s, s.activeTaskId);
         return lo.hasValue() ? lo.getValueEnforcing() : null;
+    }
+
+    getTaskLO(id) {
+        if (id == null) throw new Error("No task has the null ID");
+        const s = this.getState();
+        return isKnown(s, id) ? loForId(s, id) : LoadObject.empty();
     }
 
     getSelectedTasks() {

@@ -9,7 +9,6 @@ import { makeStyles } from "@material-ui/core/styles";
 import { PostAdd } from "@material-ui/icons";
 import PropTypes from "prop-types";
 import React from "react";
-import { Redirect } from "react-router-dom";
 import Dispatcher from "../../data/dispatcher";
 import RecipeActions from "../../data/RecipeActions";
 import RecipeApi from "../../data/RecipeApi";
@@ -22,7 +21,6 @@ import CopyButton from "../common/CopyButton";
 import DeleteButton from "../common/DeleteButton";
 import EditButton from "../common/EditButton";
 import FoodingerFab from "../common/FoodingerFab";
-import LoadingIndicator from "../common/LoadingIndicator";
 import PageBody from "../common/PageBody";
 import RecipeInfo from "../common/RecipeInfo";
 import Source from "../common/Source";
@@ -107,13 +105,6 @@ const RecipeDetail = ({recipeLO, subrecipes, mine, ownerLO, anonymous}) => {
     if (anonymous) {
         mine = false;
         loggedIn = false;
-    }
-
-    if (!recipeLO.hasValue()) {
-        if (recipeLO.isLoading()) {
-            return <LoadingIndicator />;
-        }
-        return <Redirect to="/library" />;
     }
 
     const recipe = recipeLO.getValueEnforcing();
@@ -217,7 +208,7 @@ RecipeDetail.propTypes = {
     subrecipes: PropTypes.arrayOf(Recipe),
     anonymous: PropTypes.bool,
     mine: PropTypes.bool,
-    ownerLO: loadObjectOf(PropTypes.object),
+    ownerLO: loadObjectOf(PropTypes.object).isRequired,
 };
 
 export default RecipeDetail;
