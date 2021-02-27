@@ -3,9 +3,9 @@ import PropTypes from "prop-types";
 import React from "react";
 import { Redirect } from "react-router-dom";
 import { API_BASE_URL } from "../../constants";
+import { buildFullRecipeLO } from "../../containers/Recipe";
 import Dispatcher from "../../data/dispatcher";
 import LibraryActions from "../../data/LibraryActions";
-import { adaptTime } from "../../data/LibraryStore";
 import LoadObject from "../../util/LoadObject";
 import LoadingIndicator from "../common/LoadingIndicator";
 import RecipeDetail from "./RecipeDetail";
@@ -20,34 +20,33 @@ const DoTheDance = props => {
         secret,
         id,
     } = props;
-    const [[recipe, owner], setData] = React.useState([]);
+    const [owner, setOwner] = React.useState(null);
     React.useEffect(() => {
         axios.get(`/${slug}/${secret}/${id}.json`)
             .then(
                 ({data: {
-                    recipe,
+                    ingredients, // includes the recipe itself
                     owner,
-                    ingredients,
                 }}) => {
-                    if (ingredients && ingredients.length) {
-                        Dispatcher.dispatch({
-                            type: LibraryActions.INGREDIENTS_LOADED,
-                            ids: ingredients.map(i => i.id),
-                            data: ingredients,
-                            oneOff: true,
-                        });
-                    }
-                    setData([adaptTime(recipe), owner]);
+                    Dispatcher.dispatch({
+                        type: LibraryActions.INGREDIENTS_LOADED,
+                        ids: ingredients.map(i => i.id),
+                        data: ingredients,
+                        oneOff: true,
+                    });
+                    setOwner(owner);
                 },
                 () => alert("There was an error loading the recipe. Refresh?")
             );
     }, [slug, secret, id]);
-    if (!recipe) {
+    if (!owner) {
         return <LoadingIndicator />;
     }
+    const lo = buildFullRecipeLO(id);
     return <RecipeDetail
         anonymous
-        recipeLO={LoadObject.withValue(recipe)}
+        recipeLO={lo}
+        subrecipes={lo.hasValue() ? lo.getValueEnforcing().subrecipes : null}
         ownerLO={LoadObject.withValue(owner)}
     />;
 };

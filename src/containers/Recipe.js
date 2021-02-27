@@ -7,46 +7,55 @@ import UserStore from "../data/UserStore";
 import LoadObject from "../util/LoadObject";
 import RecipeDetail from "../views/cook/RecipeDetail";
 
+export const buildFullRecipeLO = id => {
+    let lo = LibraryStore.getIngredientById(id);
+    if (!lo.hasValue()) return lo;
+
+    const subIds = new Set();
+    const subs = [];
+    let loading = false;
+    const prepRecipe = recipe => ({
+        ...recipe,
+        ingredients: (recipe.ingredients || []).map(ref => {
+            if (!ref.ingredientId) return ref;
+            const iLO = LibraryStore.getIngredientById(ref.ingredientId);
+            if (iLO.isLoading()) {
+                loading = true;
+            }
+            if (!iLO.hasValue()) return ref;
+            const ing = iLO.getValueEnforcing();
+            ref = {
+                ...ref,
+                ingredient: ing,
+            };
+            if (ing.type !== "Recipe") return ref;
+            if (subIds.has(ing.id)) return ref;
+            subIds.add(ing.id);
+            subs.push(prepRecipe(ing));
+            return ref;
+        }),
+    });
+    const recipe = prepRecipe(lo.getValueEnforcing());
+    recipe.subrecipes = subs;
+    lo = LoadObject.withValue(recipe);
+    if (loading) {
+        lo = lo.loading();
+    }
+    return lo;
+};
+
 const Recipe = ({match}) => {
     const id = parseInt(match.params.id, 10);
     const state = useFluxStore(
         () => {
-            const recipeLO = LibraryStore.getIngredientById(id);
+            let recipeLO = buildFullRecipeLO(id);
             const state = {
                 recipeLO,
-                subrecipes: [],
             };
             if (!recipeLO.hasValue()) return state;
 
-            const subIds = new Set();
-            let loading = false;
-            const prepRecipe = recipe => ({
-                ...recipe,
-                ingredients: (recipe.ingredients || []).map(ref => {
-                    if (!ref.ingredientId) return ref;
-                    const iLO = LibraryStore.getIngredientById(ref.ingredientId);
-                    if (iLO.isLoading()) {
-                        loading = true;
-                    }
-                    if (!iLO.hasValue()) return ref;
-                    const ing = iLO.getValueEnforcing();
-                    ref = {
-                        ...ref,
-                        ingredient: ing,
-                    };
-                    if (ing.type !== "Recipe") return ref;
-                    if (subIds.has(ing.id)) return ref;
-                    subIds.add(ing.id);
-                    state.subrecipes.push(prepRecipe(ing));
-                    return ref;
-                }),
-            });
-            const recipe = prepRecipe(recipeLO.getValueEnforcing());
-            state.recipeLO = LoadObject.withValue(recipe);
-            if (loading) {
-                state.recipeLO = state.recipeLO.loading();
-            }
-
+            const recipe = recipeLO.getValueEnforcing();
+            state.subrecipes = recipe.subrecipes;
             const profileLO = UserStore.getProfileLO();
             if (!profileLO.hasValue()) return state;
             const me = profileLO.getValueEnforcing();
