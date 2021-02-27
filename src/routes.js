@@ -1,6 +1,7 @@
 import React from "react";
 import { Redirect } from "react-router-dom";
 import Library from "./containers/Library";
+import PlannedBucket from "./containers/PlannedBucket";
 import PlannedRecipe from "./containers/PlannedRecipe";
 import Recipe from "./containers/Recipe";
 import RecipeEdit from "./containers/RecipeEdit";
@@ -28,6 +29,7 @@ const routes = {
         // eslint-disable-next-line react/display-name
         {path: "/tasks", component: () => <Redirect to="/plan" />},
         {path: "/plan/:pid/recipe/:rid", component: PlannedRecipe },
+        {path: "/plan/:pid/bucket/:bid", component: PlannedBucket },
         {path: "/plan", component: Tasks},
         {path: "/shop", component: Shop},
     ]

@@ -1475,6 +1475,23 @@ class TaskStore extends ReduceStore {
             : tasksForIds(s, s.selectedTaskIds);
     }
 
+    getItemsInBucket(planId, bucketId) {
+        /* todo: This is TERRIBLE form. Bucket membership should be tracked like
+            any other data, not scanned for across the entire plan.
+         */
+        const byId = this.getState().byId;
+        const items = [];
+        const stack = [planId];
+        while (stack.length) {
+            const lo = byId[stack.pop()];
+            if (!lo || !lo.hasValue()) continue;
+            const it = lo.getValueEnforcing();
+            if (it.bucketId === bucketId) items.push(it);
+            if (it.subtaskIds) stack.push(...it.subtaskIds);
+        }
+        return items;
+    }
+
     isListDetailVisible() {
         return this.getState().listDetailVisible;
     }

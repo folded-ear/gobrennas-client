@@ -314,6 +314,7 @@ class Task extends React.PureComponent {
         if (buckets && buckets.length > 0) {
             addonAfter.unshift(<TaskBucketChip
                 key="bucket"
+                planId={plan.id}
                 taskId={task.id}
                 bucketId={task.bucketId}
                 buckets={buckets}

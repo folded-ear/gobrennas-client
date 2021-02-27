@@ -9,8 +9,8 @@ import LoadObject from "../util/LoadObject";
 import LoadingIndicator from "../views/common/LoadingIndicator";
 import RecipeDetail from "../views/cook/RecipeDetail";
 
-export const buildFullRecipeLO = id => {
-    let lo = TaskStore.getTaskLO(id);
+export const buildFullRecipeLO = itemLO => {
+    let lo = itemLO;
     if (!lo.hasValue()) return lo;
 
     const subs = [];
@@ -75,38 +75,43 @@ export const buildFullRecipeLO = id => {
     return lo;
 };
 
-const PlannedRecipe = ({match}) => {
-    const pid = parseInt(match.params.pid, 10);
-    const rid = parseInt(match.params.rid, 10);
-    const state = useFluxStore(
-        () => {
-            const allPlansLO = TaskStore.getListsLO();
-            const lo = buildFullRecipeLO(rid);
-            return {
-                allPlansLO,
-                itemLO: lo,
-            };
-        },
+export const useLoadedPlan = pid => {
+    // ensure it's loaded
+    const allPlansLO = useFluxStore(
+        () => TaskStore.getListsLO(),
         [
             TaskStore,
             LibraryStore,
         ],
-        [rid],
     );
-    // ensure the context plan is selected
+    // ensure it's selected
     React.useEffect(
         () => {
-            if (state.allPlansLO.hasValue()) {
+            if (allPlansLO.hasValue()) {
                 Dispatcher.dispatch({
                     type: TaskActions.SELECT_LIST,
                     id: pid,
                 });
             }
         },
-        [state.allPlansLO, pid]
+        [allPlansLO, pid]
+    );
+};
+
+const PlannedRecipe = ({match}) => {
+    const rid = parseInt(match.params.rid, 10);
+    const lo = useFluxStore(
+        () => buildFullRecipeLO(TaskStore.getTaskLO(rid)),
+        [
+            TaskStore,
+            LibraryStore,
+        ],
+        [rid],
     );
 
-    const lo = state.itemLO;
+    const pid = parseInt(match.params.pid, 10);
+    useLoadedPlan(pid);
+
     if (lo.hasValue()) {
         return <RecipeDetail
             anonymous
