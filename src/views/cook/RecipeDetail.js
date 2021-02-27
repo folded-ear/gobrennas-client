@@ -22,6 +22,7 @@ import CopyButton from "../common/CopyButton";
 import DeleteButton from "../common/DeleteButton";
 import EditButton from "../common/EditButton";
 import FoodingerFab from "../common/FoodingerFab";
+import LoadingIndicator from "../common/LoadingIndicator";
 import PageBody from "../common/PageBody";
 import RecipeInfo from "../common/RecipeInfo";
 import Source from "../common/Source";
@@ -96,7 +97,7 @@ SubHeader.propTypes = {
     children: PropTypes.node.isRequired,
 };
 
-const RecipeDetail = ({recipeLO, mine, ownerLO, anonymous}) => {
+const RecipeDetail = ({recipeLO, subrecipes, mine, ownerLO, anonymous}) => {
 
     const classes = useStyles();
 
@@ -110,7 +111,7 @@ const RecipeDetail = ({recipeLO, mine, ownerLO, anonymous}) => {
 
     if (!recipeLO.hasValue()) {
         if (recipeLO.isLoading()) {
-            return <CircularProgress tip="Recipe is loading..." />;
+            return <LoadingIndicator />;
         }
         return <Redirect to="/library" />;
     }
@@ -126,6 +127,7 @@ const RecipeDetail = ({recipeLO, mine, ownerLO, anonymous}) => {
                         variant="h2"
                     >
                         {recipe.name}
+                        {recipeLO.isLoading() && <CircularProgress />}
                     </Typography>
                     {loggedIn && <>
                         <CopyButton
@@ -178,6 +180,7 @@ const RecipeDetail = ({recipeLO, mine, ownerLO, anonymous}) => {
                         .map(label =>
                             <LabelItem key={label} label={label} />)}
 
+                    {/* todo: this does a store hit for the plan, and only makes sense for a library recipe */}
                     {loggedIn && <SendToPlan
                         onClick={planId => Dispatcher.dispatch({
                             type: RecipeActions.SEND_TO_PLAN,
@@ -187,10 +190,10 @@ const RecipeDetail = ({recipeLO, mine, ownerLO, anonymous}) => {
                     />}
                 </Grid>
 
-                {recipe.ingredients != null && recipe.ingredients.map((it, i) =>
+                {subrecipes != null && subrecipes.map(it =>
                     <SubrecipeItem
-                        key={i}
-                        ingredient={it}
+                        key={it.id}
+                        recipe={it}
                         loggedIn={loggedIn}
                     />)}
 
@@ -211,6 +214,7 @@ const RecipeDetail = ({recipeLO, mine, ownerLO, anonymous}) => {
 
 RecipeDetail.propTypes = {
     recipeLO: loadObjectOf(Recipe).isRequired,
+    subrecipes: PropTypes.arrayOf(Recipe),
     anonymous: PropTypes.bool,
     mine: PropTypes.bool,
     ownerLO: loadObjectOf(PropTypes.object),
