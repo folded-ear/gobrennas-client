@@ -3,13 +3,23 @@ import {
     Grid,
     Typography,
 } from "@material-ui/core";
+import makeStyles from "@material-ui/core/styles/makeStyles";
 import PropTypes from "prop-types";
 import React from "react";
 import { Recipe } from "../../data/RecipeTypes";
 import CollapseIconButton from "../plan/CollapseIconButton";
 import IngredientDirectionsRow from "./IngredientDirectionsRow";
 
+const useStyles = makeStyles({
+    time: {
+        display: "inline-block",
+        marginLeft: "1em",
+        fontSize: "80%",
+    },
+});
+
 const SubrecipeItem = ({recipe, loggedIn}) => {
+    const classes = useStyles();
     const [expanded, setExpanded] = React.useState(false);
     return <>
         <Grid item xs={12}>
@@ -26,6 +36,13 @@ const SubrecipeItem = ({recipe, loggedIn}) => {
                 >
                     {recipe.name}
                 </span>
+                {recipe.totalTime && <Typography
+                    variant={"subtitle1"}
+                    component={"span"}
+                    className={classes.time}
+                >
+                    ({recipe.totalTime} minutes)
+                </Typography>}
             </Typography>
         </Grid>
         {expanded && <>
