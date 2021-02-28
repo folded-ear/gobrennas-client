@@ -19,10 +19,18 @@ export const buildFullRecipeLO = (planId, bucketId) => {
         .buckets
         .find(b => b.id === bucketId);
     if (!bucket) return LoadObject.empty();
+    let items = TaskStore.getItemsInBucket(planId, bucketId);
+    if (items.length === 0) return LoadObject.empty();
+    if (items.length === 1) {
+        return buildSingleTaskRecipeLO(LoadObject.withValue(items[0]))
+            .map(it => ({
+                ...it,
+                name: `${it.name} (${getBucketLabel(bucket)})`,
+            }));
+    }
     return buildSingleTaskRecipeLO(LoadObject.withValue({
         name: getBucketLabel(bucket),
-        subtaskIds: TaskStore.getItemsInBucket(planId, bucketId)
-            .map(it => it.id),
+        subtaskIds: items.map(it => it.id),
     }));
 };
 
