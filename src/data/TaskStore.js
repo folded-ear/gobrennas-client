@@ -1019,6 +1019,13 @@ const saveBucket = (state, bucket) => {
         serializeBucket(bucket));
 };
 
+const doInteractiveStatusChange = (state, id, status) => {
+    if (willStatusDelete(status) && id === state.activeTaskId) {
+        state = focusDelta(state, id, 1);
+    }
+    return queueStatusUpdate(state, id, status);
+};
+
 class TaskStore extends ReduceStore {
 
     getInitialState() {
@@ -1214,11 +1221,12 @@ class TaskStore extends ReduceStore {
             }
 
             case TaskActions.SET_STATUS: {
-                if (willStatusDelete(action.status) && action.id === state.activeTaskId) {
-                    state = focusDelta(state, action.id, 1);
-                }
-                state = queueStatusUpdate(state, action.id, action.status);
-                return state;
+                return doInteractiveStatusChange(state, action.id, action.status);
+            }
+
+            case TaskActions.BULK_SET_STATUS: {
+                return action.ids.reduce((s, id) =>
+                    doInteractiveStatusChange(s, id, action.status), state);
             }
 
             case ShoppingActions.SET_INGREDIENT_STATUS: {
@@ -1436,14 +1444,42 @@ class TaskStore extends ReduceStore {
 
     getSubtaskLOs(id) {
         const s = this.getState();
-        const p = taskForId(s, id);
-        return losForIds(s, p.subtaskIds);
+        const t = taskForId(s, id);
+        return losForIds(s, t.subtaskIds);
     }
 
     getComponentLOs(id) {
         const s = this.getState();
-        const p = taskForId(s, id);
-        return losForIds(s, p.componentIds);
+        const t = taskForId(s, id);
+        return losForIds(s, t.componentIds);
+    }
+
+    getNonDescendantComponents(id) {
+        const state = this.getState();
+        const t = taskForId(state, id);
+        if (!t.componentIds) return [];
+        const queue = t.componentIds.slice();
+        const result = [];
+        while (queue.length) {
+            const comp = taskForId(state, queue.shift());
+            // walk upward and see if its within the tree...
+            let curr = comp;
+            let descendant = false;
+            while (curr.parentId != null) {
+                if (curr.parentId === id) {
+                    descendant = true;
+                    break;
+                }
+                curr = taskForId(state, curr.parentId);
+            }
+            // process the component...
+            if (descendant) {
+                comp.componentIds && queue.push(...comp.componentIds);
+            } else {
+                result.push(comp);
+            }
+        }
+        return result;
     }
 
     getActiveListLO() {

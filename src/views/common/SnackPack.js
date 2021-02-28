@@ -70,7 +70,8 @@ function SnackPack() {
         onExited={handleExited}
         message={messageInfo ? messageInfo.message : undefined}
         className={fabVisible ? classes.snackbar : null}
-        action={
+        action={<>
+            {messageInfo && messageInfo.renderAction ? messageInfo.renderAction(e => handleClose(e, "action")) : null}
             <IconButton
                 aria-label="close"
                 color="inherit"
@@ -79,7 +80,7 @@ function SnackPack() {
             >
                 <CloseIcon />
             </IconButton>
-        }
+        </>}
     />;
 
 }

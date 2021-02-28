@@ -39,6 +39,10 @@ const TaskActions = {
         id: clientOrDatabaseIdType.isRequired,
         status: PropTypes.string.isRequired,
     }),
+    BULK_SET_STATUS: typedAction("task/bulk-set-status", {
+        ids: PropTypes.arrayOf(clientOrDatabaseIdType).isRequired,
+        status: PropTypes.string.isRequired,
+    }),
     UNDO_SET_STATUS: "task/undo-set-status",
     MOVE_NEXT: "task/move-next",
     MOVE_PREVIOUS: "task/move-previous",
