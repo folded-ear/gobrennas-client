@@ -42,7 +42,8 @@ class PreferencesStore extends ReduceStore {
                     ? setPref(state, Prefs.ACTIVE_TASK_LIST, lo.getValueEnforcing().id)
                     : state;
             }
-            case TaskActions.SELECT_LIST: {
+            case TaskActions.SELECT_LIST:
+            case TaskActions.LIST_CREATED: {
                 return setPref(state, Prefs.ACTIVE_TASK_LIST, action.id);
             }
             case UserActions.SET_DEV_MODE: {
