@@ -1486,7 +1486,10 @@ class TaskStore extends ReduceStore {
             const lo = byId[stack.pop()];
             if (!lo || !lo.hasValue()) continue;
             const it = lo.getValueEnforcing();
-            if (it.bucketId === bucketId) items.push(it);
+            if (it.bucketId === bucketId) {
+                items.push(it);
+                continue;
+            }
             if (it.subtaskIds) stack.push(...it.subtaskIds);
         }
         return items;
