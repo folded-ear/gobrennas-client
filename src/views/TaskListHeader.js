@@ -123,6 +123,7 @@ class TaskListHeader extends React.PureComponent {
             activeList,
             allLists: allListsUnsorted,
             listDetailVisible,
+            hasBuckets,
         } = this.props;
         const allLists = allListsUnsorted
             ? allListsUnsorted.slice().sort(byNameComparator)
@@ -144,7 +145,7 @@ class TaskListHeader extends React.PureComponent {
                 >
                     <CollapseAll />
                 </IconButton>
-                <Tooltip
+                {hasBuckets && <Tooltip
                     title="Sort plan in bucket order"
                     placement="bottom-start"
                 >
@@ -154,7 +155,7 @@ class TaskListHeader extends React.PureComponent {
                     >
                         <DynamicFeed />
                     </IconButton>
-                </Tooltip>
+                </Tooltip>}
                 <Drawer
                     open={listDetailVisible}
                     anchor="right"
