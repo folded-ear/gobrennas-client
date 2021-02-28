@@ -32,9 +32,13 @@ export const buildFullRecipeLO = (planId, bucketId) => {
         name: getBucketLabel(bucket),
         subtaskIds: items.map(it => it.id),
     })).map(r => {
+        const idToIdx = new Map();
+        r.subtaskIds.forEach((id, i) => idToIdx.set(id, i));
+        const itToSubIdx = new Map();
+        r.subrecipes.forEach(it => itToSubIdx.set(it, idToIdx.has(it.id) ? idToIdx.get(it.id) : -1));
         const withPhoto = r.subrecipes.slice().sort((a, b) => {
-            const ai = r.subtaskIds.indexOf(a.id);
-            const bi = r.subtaskIds.indexOf(b.id);
+            const ai = itToSubIdx.get(a);
+            const bi = itToSubIdx.get(b);
             if (ai >= 0 && bi < 0) return -1;
             if (ai < 0 && bi >= 0) return +1;
             return 0;
