@@ -14,10 +14,10 @@ import {
 import TaskStatus from "../../data/TaskStatus";
 import TaskStore, { bucketType } from "../../data/TaskStore";
 import LoadObject from "../../util/LoadObject";
-import LinkIfRecipe from "../common/LinkIfRecipe";
 import LoadingIconButton from "../common/LoadingIconButton";
 import PlaceholderIconButton from "../common/PlaceholderIconButton";
 import CollapseIconButton from "./CollapseIconButton";
+import CookButton from "./CookButton";
 import DontChangeStatusButton from "./DontChangeStatusButton";
 import Item from "./Item";
 import StatusIconButton from "./StatusIconButton";
@@ -302,13 +302,12 @@ class Task extends React.PureComponent {
                     disabled={ancestorDeleting}
                 />,
         ];
-        if (task.ingredientId) {
-            addonAfter.unshift(<LinkIfRecipe
-                key="recipe"
+        if (parent || task.fromRecipe) {
+            addonAfter.unshift(<CookButton
+                key="cook"
                 size="small"
                 planId={plan.id}
                 taskId={task.id}
-                ingredientId={task.ingredientId}
             />);
         }
         if (buckets && buckets.length > 0) {

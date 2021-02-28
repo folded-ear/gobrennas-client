@@ -1,4 +1,5 @@
 import React from "react";
+import LibraryStore from "../data/LibraryStore";
 import { isExpanded } from "../data/tasks";
 import TaskStore from "../data/TaskStore";
 import useFluxStore from "../data/useFluxStore";
@@ -11,9 +12,20 @@ const listTheTree = (id, ancestorDeleting=false, depth=0) => {
         depth
     }));
     for (let i = list.length - 1; i >= 0; i--) {
-        const lo = list[i].lo;
+        let lo = list[i].lo;
         if (!lo.hasValue()) continue;
         const t = lo.getValueEnforcing();
+        if (t.ingredientId) {
+            const iLO = LibraryStore.getIngredientById(t.ingredientId);
+            if (iLO.hasValue()) {
+                const ing = iLO.getValueEnforcing();
+                list[i].lo = lo = lo.map(t => ({
+                    ...t,
+                    ingredient: ing,
+                    fromRecipe: ing.type === "Recipe",
+                }));
+            }
+        }
         if (!isExpanded(t)) continue;
         list.splice(i + 1, 0, ...listTheTree(
             t.id,
@@ -45,7 +57,10 @@ const Tasks = () => {
                     : taskOrId => selectedTasks.some(t => (taskOrId.id || taskOrId) === t.id),
             };
         },
-        [TaskStore],
+        [
+            TaskStore,
+            LibraryStore,
+        ],
     );
     return <TaskList {...state} />;
 };

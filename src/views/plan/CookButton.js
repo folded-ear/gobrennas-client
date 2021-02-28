@@ -5,14 +5,9 @@ import {
 import { Kitchen } from "@material-ui/icons";
 import PropTypes from "prop-types";
 import React from "react";
-import useIngredientLO from "../../data/useIngredientLO";
 import history from "../../util/history";
 
-const LinkIfRecipe = ({planId, taskId, ingredientId, ...props}) => {
-    const lo = useIngredientLO(ingredientId);
-    if (!lo || !lo.hasValue()) return null;
-    const ing = lo.getValueEnforcing();
-    if (ing.type !== "Recipe") return null;
+const CookButton = ({planId, taskId, ...props}) => {
     return (
         <Tooltip
             title="Cook / Kitchen View"
@@ -28,10 +23,9 @@ const LinkIfRecipe = ({planId, taskId, ingredientId, ...props}) => {
     );
 };
 
-LinkIfRecipe.propTypes = {
+CookButton.propTypes = {
     planId: PropTypes.number.isRequired,
     taskId: PropTypes.number.isRequired,
-    ingredientId: PropTypes.number.isRequired,
 };
 
-export default LinkIfRecipe;
+export default CookButton;
