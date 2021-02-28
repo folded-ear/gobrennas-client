@@ -15,82 +15,74 @@ import TaskListHeader from "../TaskListHeader";
 import LoadingTask from "./LoadingTask";
 import Task from "./Task";
 
-class TaskList extends React.PureComponent {
+function TaskList(props) {
+    const {
+        allLists,
+        activeListLO,
+        listDetailVisible,
+        taskTuples,
+        isTaskActive,
+        isTaskSelected,
+    } = props;
 
-    constructor(...args) {
-        super(...args);
-        this.onAddNew = this.onAddNew.bind(this);
+    if (!allLists.hasValue()) {
+        return <LoadingIndicator
+            primary="Loading task lists..."
+        />;
     }
 
-    onAddNew(e) {
+    const handleAddNew = e => {
         e.preventDefault();
         Dispatcher.dispatch({
             type: TaskActions.CREATE_TASK_AT_END,
         });
-    }
+    };
 
-    render() {
-        const {
-            allLists,
-            activeListLO,
-            listDetailVisible,
-            taskTuples,
-            isTaskActive,
-            isTaskSelected,
-        } = this.props;
-        if (!allLists.hasValue()) {
-            return <LoadingIndicator
-                primary="Loading task lists..."
-            />;
-        }
-
-        const plan = activeListLO.getValue();
-        const buckets = plan && plan.buckets;
-        return <PageBody hasFab>
-            <Box p={2}>
-                <TaskListHeader
-                    allLists={allLists.getValueEnforcing()}
-                    activeList={plan}
-                    listDetailVisible={listDetailVisible}
-                    hasBuckets={!!buckets}
-                />
-            </Box>
-            <List>
-                {taskTuples.map(item => {
-                    const {
-                        lo,
-                        depth,
-                        ancestorDeleting,
-                    } = item;
-                    if (lo.hasValue()) {
-                        const t = lo.getValueEnforcing();
-                        return <Task
-                            key={t.id}
-                            plan={plan}
-                            depth={depth}
-                            task={t}
-                            ancestorDeleting={ancestorDeleting}
-                            loadObject={lo}
-                            active={isTaskActive(t)}
-                            selected={isTaskSelected(t)}
-                            buckets={buckets}
-                        />;
-                    } else {
-                        return <LoadingTask
-                            key={lo.id}
-                            depth={depth}
-                        />;
-                    }
-                })}
-            </List>
-            <FoodingerFab
-                onClick={this.onAddNew}
-            >
-                <Add />
-            </FoodingerFab>
-        </PageBody>;
-    }
-
+    const plan = activeListLO.getValue();
+    const buckets = plan && plan.buckets;
+    return <PageBody hasFab>
+        <Box p={2}>
+            <TaskListHeader
+                allLists={allLists.getValueEnforcing()}
+                activeList={plan}
+                listDetailVisible={listDetailVisible}
+                hasBuckets={!!buckets}
+            />
+        </Box>
+        <List>
+            {taskTuples.map(item => {
+                const {
+                    lo,
+                    depth,
+                    ancestorDeleting,
+                } = item;
+                if (lo.hasValue()) {
+                    const t = lo.getValueEnforcing();
+                    return <Task
+                        key={t.id}
+                        plan={plan}
+                        depth={depth}
+                        task={t}
+                        ancestorDeleting={ancestorDeleting}
+                        loadObject={lo}
+                        active={isTaskActive(t)}
+                        selected={isTaskSelected(t)}
+                        buckets={buckets}
+                    />;
+                } else {
+                    return <LoadingTask
+                        key={lo.id}
+                        depth={depth}
+                    />;
+                }
+            })}
+        </List>
+        <FoodingerFab
+            onClick={handleAddNew}
+        >
+            <Add />
+        </FoodingerFab>
+    </PageBody>;
 }
 
 TaskList.propTypes = {
