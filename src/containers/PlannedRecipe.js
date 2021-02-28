@@ -31,32 +31,44 @@ export const buildFullRecipeLO = itemLO => {
             })
             .map(lo => lo.getValueEnforcing());
     };
-    const prepRecipe = item => ({
-        ...item,
-        ingredients: computeKids(item).map(ref => {
-            ref = {
-                ...ref,
-                raw: ref.name,
-            };
-            let recurse = ref.subtaskIds && ref.subtaskIds.length;
-            if (ref.ingredientId) {
-                const iLO = LibraryStore.getIngredientById(ref.ingredientId);
-                if (iLO.isLoading()) {
-                    loading = true;
+    const prepRecipe = (item, rLO) => {
+        item = {
+            ...item,
+            ingredients: computeKids(item).map(ref => {
+                ref = {
+                    ...ref,
+                    raw: ref.name,
+                };
+                let recurse = ref.subtaskIds && ref.subtaskIds.length;
+                let iLO;
+                if (ref.ingredientId) {
+                    iLO = LibraryStore.getIngredientById(ref.ingredientId);
+                    if (iLO.isLoading()) {
+                        loading = true;
+                    }
+                    if (iLO.hasValue()) {
+                        const ing = iLO.getValueEnforcing();
+                        ref.ingredient = ing;
+                        recurse = recurse || ing.type === "Recipe";
+                    }
                 }
-                if (!iLO.hasValue()) return ref;
-                const ing = iLO.getValueEnforcing();
-                ref.ingredient = ing;
-                ref.name = ing.name;
-                Object.keys(ing)
-                    .filter(k => !ref.hasOwnProperty(k))
-                    .forEach(k => ref[k] = ing[k]);
-                recurse = recurse || ing.type === "Recipe";
-            }
-            if (recurse) subs.push(prepRecipe(ref));
-            return ref;
-        }),
-    });
+                if (recurse) subs.push(prepRecipe(ref, iLO));
+                return ref;
+            }),
+        };
+        if (!item.ingredientId) return item;
+        rLO = rLO || LibraryStore.getIngredientById(item.ingredientId);
+        if (rLO.isLoading()) {
+            loading = true;
+        }
+        if (!rLO.hasValue()) return item;
+        const r = rLO.getValueEnforcing();
+        item.name = r.name;
+        Object.keys(r)
+            .filter(k => !item.hasOwnProperty(k))
+            .forEach(k => item[k] = r[k]);
+        return item;
+    };
     const recipe = prepRecipe(lo.getValueEnforcing());
     recipe.subrecipes = subs;
     lo = LoadObject.withValue(recipe);
