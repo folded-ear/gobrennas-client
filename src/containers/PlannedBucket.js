@@ -31,7 +31,20 @@ export const buildFullRecipeLO = (planId, bucketId) => {
     return buildSingleTaskRecipeLO(LoadObject.withValue({
         name: getBucketLabel(bucket),
         subtaskIds: items.map(it => it.id),
-    }));
+    })).map(r => {
+        const withPhoto = r.subrecipes.slice().sort((a, b) => {
+            const ai = r.subtaskIds.indexOf(a.id);
+            const bi = r.subtaskIds.indexOf(b.id);
+            if (ai >= 0 && bi < 0) return -1;
+            if (ai < 0 && bi >= 0) return +1;
+            return 0;
+        }).find(it => it.photo);
+        return withPhoto ? {
+            ...r,
+            photo: withPhoto.photo,
+            photoFocus: withPhoto.photoFocus,
+        } : r;
+    });
 };
 
 const PlannedBucket = ({match}) => {
