@@ -15,6 +15,7 @@ import FluxRoute from "./views/common/FluxRoute";
 import LoadingIndicator from "./views/common/LoadingIndicator";
 import NotFound from "./views/common/NotFound";
 import PrivateRoute from "./views/common/PrivateRoute";
+import SnackPack from "./views/common/SnackPack";
 import NewVersionAvailable from "./views/NewVersionAvailable";
 import Login from "./views/user/Login";
 
@@ -87,6 +88,7 @@ const App = () => {
             />
             <FluxRoute component={NotFound} />
         </Switch>
+        <SnackPack />
     </ThemeProvider>;
 };
 
