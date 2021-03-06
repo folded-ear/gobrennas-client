@@ -37,9 +37,8 @@ const SearchFilter = ({term, onFilter, onChange, onClear}) => {
                 </InputAdornment>
             }
             endAdornment={
-                onClear && <InputAdornment position="end">
+                onClear && term && <InputAdornment position="end">
                     <IconButton
-                        disabled={!term}
                         onClick={onClear}
                     >
                         <Clear />
