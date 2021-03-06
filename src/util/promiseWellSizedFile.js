@@ -17,7 +17,7 @@ const promiseWellSizedFile = fileOrString => new Promise((resolve, reject) => {
                 // little low. PNG will be way over-reduced, but whatever. WebP
                 // is around a third smaller than JPEG, so have to reduce it
                 // even further so it'll still fit when reencoded.
-                const baseFactor = fileOrString.type === "image/webp" ? 0.66 : 0.9;
+                const baseFactor = fileOrString.type === "image/webp" ? 0.6 : 0.8;
                 const factor = MAX_UPLOAD_BYTES / fileOrString.size * baseFactor;
                 const srcArea = img.width * img.height;
                 const targetArea = Math.floor(srcArea * factor);
