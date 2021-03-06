@@ -25,6 +25,7 @@ import Dispatcher from "../../data/dispatcher";
 import RecipeActions from "../../data/RecipeActions";
 import { Recipe } from "../../data/RecipeTypes";
 import useDraftRecipeLO from "../../data/useDraftRecipeLO";
+import useWindowSize from "../../data/useWindowSize";
 import ImageDropZone from "../../util/ImageDropZone";
 import TextractFormAugment from "../../util/TextractFormAugment";
 import ElEdit from "../ElEdit";
@@ -70,6 +71,7 @@ const removeLabel = (label, index) => {
 
 const RecipeForm = ({title, onSave, onSaveCopy, onCancel, extraButtons}) => {
     const lo = useDraftRecipeLO();
+    const windowSize = useWindowSize();
     const classes = useStyles();
     const draft = lo.getValueEnforcing();
     const MARGIN = 2;
@@ -218,6 +220,7 @@ const RecipeForm = ({title, onSave, onSaveCopy, onCancel, extraButtons}) => {
                 label="Directions"
                 multiline
                 rows={6}
+                rowsMax={(windowSize.height - 75) / 2 / 18 /* aiming for something around 50vh */}
                 value={draft.directions}
                 onChange={handleUpdate}
                 placeholder="Recipe Directions"
