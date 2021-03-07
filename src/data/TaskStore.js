@@ -1573,6 +1573,7 @@ TaskStore.stateTypes = {
             //  core
             id: clientOrDatabaseIdType.isRequired,
             name: PropTypes.string.isRequired,
+            notes: PropTypes.string,
             status: PropTypes.string.isRequired,
             parentId: PropTypes.number,
             subtaskIds: PropTypes.arrayOf(clientOrDatabaseIdType),

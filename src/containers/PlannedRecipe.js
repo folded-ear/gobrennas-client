@@ -56,6 +56,10 @@ export const buildFullRecipeLO = itemLO => {
                 return ref;
             }),
         };
+        if (item.notes) {
+            // replace the recipe's directions
+            item.directions = item.notes;
+        }
         if (!item.ingredientId) return item;
         rLO = rLO || LibraryStore.getIngredientById(item.ingredientId);
         if (rLO.isLoading()) {
@@ -84,17 +88,19 @@ export const useLoadedPlan = pid => {
         () => TaskStore.getListsLO(),
         [
             TaskStore,
-            LibraryStore,
         ],
     );
     // ensure it's selected
     React.useEffect(
         () => {
             if (allPlansLO.hasValue()) {
-                Dispatcher.dispatch({
+                // The contract implies that effects trigger after the render
+                // cycle completes, but doesn't guarantee it. The setTimeout
+                // avoids a reentrant dispatch if the effect isn't deferred.
+                setTimeout(() => Dispatcher.dispatch({
                     type: TaskActions.SELECT_LIST,
                     id: pid,
-                });
+                }));
             }
         },
         [allPlansLO, pid]
