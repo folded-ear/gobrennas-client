@@ -19,7 +19,9 @@ const useStyles = makeStyles(() => ({
         textAlign: "right",
     },
     name: {
-        textDecoration: "#999 dotted underline",
+        textDecorationColor: "#999",
+        textDecorationStyle: "dotted",
+        textDecorationLine: "underline",
     }
 }));
 
