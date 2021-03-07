@@ -58,7 +58,7 @@ class ShopList extends React.PureComponent {
                             key={it.id}
                             depth={it.depth}
                             item={it}
-                            active={it.expanded}
+                            active={it.active}
                         />;
                     }
                 })}

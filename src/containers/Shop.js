@@ -41,7 +41,7 @@ const gatherLeaves = item => {
         }));
 };
 
-const groupItems = (plans, expandedId) => {
+const groupItems = (plans, expandedId, activeItem) => {
     const leaves = plans
         .flatMap(gatherLeaves);
     if (plans.length === 1) {
@@ -125,24 +125,37 @@ const groupItems = (plans, expandedId) => {
         depth: 0,
         ...it,
     })));
-    return theTree;
+    return activeItem
+        ? theTree.map(it => {
+            if (it.id === activeItem.id && it._type === activeItem.type) {
+                it = {
+                    ...it,
+                    active: true,
+                };
+            }
+            return it;
+        })
+        : theTree;
 };
 
 const Shop = () => {
-    const expandedId = useFluxStore(
-        () => ShoppingStore.getExpandedIngredientId(),
+    const [expandedId, activeItem] = useFluxStore(
+        () => [
+            ShoppingStore.getExpandedIngredientId(),
+            ShoppingStore.getActiveItem(),
+        ],
         [ShoppingStore]
     );
     const [planLO, itemTuples] = useFluxStore(
         () => {
             const planLO = TaskStore.getActiveListLO();
             return [planLO, planLO.hasValue()
-                ? groupItems([planLO.getValueEnforcing()], expandedId)
+                ? groupItems([planLO.getValueEnforcing()], expandedId, activeItem)
                 : [],
             ];
         },
         [TaskStore, LibraryStore],
-        [expandedId]
+        [expandedId, activeItem]
     );
     return <ShopList
         planLO={planLO}
