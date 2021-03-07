@@ -16,6 +16,7 @@ import TaskStore, { bucketType } from "../../data/TaskStore";
 import LoadObject from "../../util/LoadObject";
 import LoadingIconButton from "../common/LoadingIconButton";
 import PlaceholderIconButton from "../common/PlaceholderIconButton";
+import IngredientItem from "../IngredientItem";
 import CollapseIconButton from "./CollapseIconButton";
 import CookButton from "./CookButton";
 import DontChangeStatusButton from "./DontChangeStatusButton";
@@ -247,6 +248,7 @@ class Task extends React.PureComponent {
         const section = isSection(task);
         const parent = isParent(task);
         const expanded = isExpanded(task);
+        const recipeIsh = parent || task.fromRecipe;
         const question = isQuestionable(task);
         const deleting = task._next_status === TaskStatus.DELETED;
         const acquiring = task._next_status === TaskStatus.ACQUIRED;
@@ -302,7 +304,7 @@ class Task extends React.PureComponent {
                     disabled={ancestorDeleting}
                 />,
         ];
-        if (parent || task.fromRecipe) {
+        if (recipeIsh) {
             addonAfter.unshift(<CookButton
                 key="cook"
                 size="small"
@@ -351,9 +353,17 @@ class Task extends React.PureComponent {
                     onKeyDown={this.onKeyDown}
                 />
                 : <ListItemText
-                    primary={task.name}
                     className={classes.text}
-                />}
+                >
+                    {recipeIsh || !task.ingredient
+                        ? task.name
+                        : <IngredientItem
+                            ingRef={task}
+                            hideRecipeLink
+                            hideSendToPlan
+                            inline
+                        />}
+                </ListItemText>}
         </Item>;
     }
 

@@ -8,6 +8,7 @@ import ShoppingActions from "../../data/ShoppingActions";
 import TaskStatus from "../../data/TaskStatus";
 import LoadingIconButton from "../common/LoadingIconButton";
 import PlaceholderIconButton from "../common/PlaceholderIconButton";
+import IngredientItem from "../IngredientItem";
 import DontChangeStatusButton from "../plan/DontChangeStatusButton";
 import Item from "../plan/Item";
 import StatusIconButton from "../plan/StatusIconButton";
@@ -173,9 +174,17 @@ class TaskItem extends React.PureComponent {
                 />
                 : <ListItemText
                     className={classes.text}
-                    primary={item.name}
                     secondary={item.path.map(p => p.name).join(" / ")}
-                />}
+                >
+                    {!item.ingredient
+                        ? item.name
+                        : <IngredientItem
+                            ingRef={item}
+                            hideRecipeLink
+                            hideSendToPlan
+                            inline
+                        />}
+                </ListItemText>}
         </Item>;
     }
 

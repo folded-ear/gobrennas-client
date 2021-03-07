@@ -36,7 +36,7 @@ Augment.propTypes = {
     suffix: PropTypes.string,
 };
 
-const IngredientItem = ({ingRef: ref, loggedIn}) => {
+const IngredientItem = ({ingRef: ref, hideRecipeLink, hideSendToPlan, inline}) => {
     const classes = useStyles();
 
     let left, right;
@@ -49,9 +49,9 @@ const IngredientItem = ({ingRef: ref, loggedIn}) => {
 
     if (ref.ingredient == null || typeof ref.ingredient === "string") {
         right = ref.quantity == null
-            ? ref.raw
+            ? (ref.raw || ref.name)
             : ref.preparation;
-        if (loggedIn) {
+        if (!hideSendToPlan) {
             right = <>
                 {right}
                 {" "}
@@ -73,7 +73,7 @@ const IngredientItem = ({ingRef: ref, loggedIn}) => {
             <span className={classes.name}>
                 {ingredient.name}
             </span>
-            {isRecipe && <>
+            {isRecipe && !hideRecipeLink && <>
                 {" "}
                 <IconButton
                     size={"small"}
@@ -87,7 +87,7 @@ const IngredientItem = ({ingRef: ref, loggedIn}) => {
                 text={ref.preparation}
                 prefix=", "
             />
-            {!isRecipe && loggedIn && <>
+            {!isRecipe && !hideSendToPlan && <>
                 {" "}
                 <SendToPlan
                     onClick={planId => Dispatcher.dispatch({
@@ -102,6 +102,14 @@ const IngredientItem = ({ingRef: ref, loggedIn}) => {
         </>;
     }
 
+    if (inline) {
+        return <span>
+            {left}
+            {" "}
+            {right}
+        </span>;
+    }
+
     return <Grid container spacing={2}>
         <Grid item xs={3} className={classes.quantity}>
             {left}
@@ -114,7 +122,9 @@ const IngredientItem = ({ingRef: ref, loggedIn}) => {
 
 IngredientItem.propTypes = {
     ingRef: IngredientRef.isRequired,
-    loggedIn: PropTypes.bool,
+    hideRecipeLink: PropTypes.bool,
+    hideSendToPlan: PropTypes.bool,
+    inline: PropTypes.bool,
 };
 
 export default IngredientItem;

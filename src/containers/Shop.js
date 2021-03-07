@@ -112,9 +112,11 @@ const groupItems = (plans, expandedId, activeItem) => {
             deleting: items.every(it => it.deleting || it.status === TaskStatus.DELETED),
         });
         if (expanded) {
+            const ingredient = lo.hasValue() ? lo.getValueEnforcing() : null;
             theTree.push(...items.map(it => ({
                 _type: "task",
                 depth: 1,
+                ingredient,
                 ...it,
             })));
         }

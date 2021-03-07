@@ -21,7 +21,8 @@ const IngredientDirectionsRow = ({recipe, loggedIn, hideHeadings}) => <>
                     <ListItem key={i}>
                         <IngredientItem
                             ingRef={it}
-                            loggedIn={loggedIn}
+                            hideRecipeLink={!loggedIn}
+                            hideSendToPlan={!loggedIn}
                         />
                     </ListItem>)}
             </List>
