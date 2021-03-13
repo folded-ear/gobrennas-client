@@ -166,8 +166,8 @@ class LibraryStore extends ReduceStore {
                 return {
                     ...state,
                     recipeIds: state.recipeIds
-                        .mapLO(lo => lo.setValue(action.data.map(r => r.id)).done()),
-                    byId: action.data.reduce((byId, r) =>
+                        .mapLO(lo => lo.setValue(action.data.content.map(r => r.id)).done()),
+                    byId: action.data.content.reduce((byId, r) =>
                         byId.set(r.id, LoadObject.withValue(adaptTime(r))), state.byId),
                 };
             }
