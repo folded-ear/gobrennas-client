@@ -1,4 +1,5 @@
 import BaseAxios from "axios";
+import qs from "qs";
 import { API_BASE_URL } from "../constants";
 import promiseFlux from "../util/promiseFlux";
 import socket from "../util/socket";
@@ -12,7 +13,7 @@ const LibraryApi = {
     
     loadLibrary: (scope, filter) => {
         promiseFlux(
-            axios.get(`/?scope=${encodeURIComponent(scope)}&filter=${encodeURIComponent(filter.trim())}`),
+            axios.get(`/?${qs.stringify({scope, filter: filter.trim()})}`),
             data => ({
                 type: LibraryActions.LIBRARY_LOADED,
                 data: data.data,
