@@ -34,13 +34,11 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-const updateFilter = (e) => {
-    const {value: filter} = e.target;
+const updateFilter = filter =>
     Dispatcher.dispatch({
         type: LibraryActions.UPDATE_FILTER,
         filter,
     });
-};
 
 const clearFilter = () =>
     Dispatcher.dispatch({
@@ -60,9 +58,7 @@ const RecipesList = (props: {}) => {
     const {me, filter, scope, libraryLO} = props;
 
     let body;
-    if (libraryLO.isLoading()) {
-        body = <LoadingIndicator />;
-    } else if (libraryLO.hasValue()) {
+    if (libraryLO.hasValue()) {
         const lib = libraryLO.getValueEnforcing();
         if (lib.length > 0) {
             body = <Grid
@@ -100,6 +96,8 @@ const RecipesList = (props: {}) => {
                 </Typography>
             </Paper>;
         }
+    } else {
+        body = <LoadingIndicator />;
     }
     return <Content>
         <Paper elevation={1} variant="outlined" className={classes.search}>

@@ -17,7 +17,7 @@ const useStyles = makeStyles((theme) => ({
     margin: theme.spacing(1),
 }));
 
-const SearchFilter = ({term, onFilter, onChange, onClear}) => {
+const SearchFilter = ({term, onChange, onClear}) => {
     const classes = useStyles();
     return (<FormControl
         fullWidth
@@ -27,8 +27,7 @@ const SearchFilter = ({term, onFilter, onChange, onClear}) => {
         <OutlinedInput
             id="input-with-icon-adornment"
             autoComplete="off"
-            onChange={onChange}
-            onKeyDown={onFilter}
+            onChange={e => onChange(e.target.value)}
             value={term}
             labelWidth={195}
             startAdornment={
@@ -51,7 +50,6 @@ const SearchFilter = ({term, onFilter, onChange, onClear}) => {
 
 SearchFilter.propTypes = {
     term: PropTypes.string.isRequired,
-    onFilter: PropTypes.func,
     onChange: PropTypes.func.isRequired,
     onClear: PropTypes.func,
 };

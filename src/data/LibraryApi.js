@@ -11,12 +11,14 @@ const axios = BaseAxios.create({
 
 const LibraryApi = {
     
-    loadLibrary: (scope, filter) => {
+    searchLibrary: (scope, filter) => {
         promiseFlux(
             axios.get(`/?${qs.stringify({scope, filter: filter.trim()})}`),
             data => ({
-                type: LibraryActions.LIBRARY_LOADED,
+                type: LibraryActions.SEARCH_LOADED,
                 data: data.data,
+                scope,
+                filter,
             }),
         );
     },

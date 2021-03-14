@@ -8,12 +8,13 @@ const FluxRoute = ({render, component: Component, ...rest}) => (
     <Route
         {...rest}
         render={props => {
-            const { match: next } = props;
+            const { match, location } = props;
             const curr = RouteStore.getState();
-            if (curr == null || next.url !== curr.url) {
+            if (curr == null || match.url !== curr.url) {
                 const work = () => Dispatcher.dispatch({
                     type: RouteActions.MATCH,
-                    match: next,
+                    match,
+                    location,
                 });
                 Dispatcher.isDispatching()
                     ? setTimeout(work)
