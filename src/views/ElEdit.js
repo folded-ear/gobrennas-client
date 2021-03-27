@@ -1,5 +1,6 @@
 import {
     CircularProgress,
+    Grid,
     InputAdornment,
     TextField,
 } from "@material-ui/core";
@@ -193,6 +194,7 @@ class ElEdit extends React.PureComponent {
         const {
             name,
             value,
+            direction = "row",
         } = this.props;
         const {
             raw,
@@ -204,12 +206,16 @@ class ElEdit extends React.PureComponent {
         } = this.state;
         const hasSuggestions = suggestions && suggestions.length > 0;
 
-        const indicator = <InputAdornment>{n == null
-            ? <ErrorOutline color="error" />
-            : <CheckCircleOutline color="disabled" />
-        }</InputAdornment>;
+        const indicator = <InputAdornment
+            position={"start"}
+        >
+            {n == null
+                ? <ErrorOutline color="error" />
+                : <CheckCircleOutline color="disabled" />
+            }
+        </InputAdornment>;
 
-        return <>
+        return <Grid container direction={direction}>
             <Autocomplete
                 size={"small"}
                 name={`${name}.raw`}
@@ -219,7 +225,7 @@ class ElEdit extends React.PureComponent {
                 freeSolo
                 handleHomeEndKeys={hasSuggestions}
                 disableClearable
-                style={{width: "50%"}}
+                style={{width: direction === "row" ? "50%" : "auto"}}
                 options={hasSuggestions ? suggestions.map((option) => {
                     return (option.result);
                 }) : []}
@@ -246,7 +252,7 @@ class ElEdit extends React.PureComponent {
                     {p && <span>{n ? ", " : null}{p}</span>}
                 </Hunk>
             }
-        </>;
+        </Grid>;
     }
 }
 
@@ -263,6 +269,7 @@ Hunk.propTypes = {
 
 ElEdit.propTypes = {
     name: PropTypes.string.isRequired,
+    direction: PropTypes.oneOf(["column", "row"]),
     value: PropTypes.shape({
         raw: PropTypes.string.isRequired,
         quantity: PropTypes.number,

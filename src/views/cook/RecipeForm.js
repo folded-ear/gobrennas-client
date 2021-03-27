@@ -9,6 +9,8 @@ import {
     ListItem,
     TextField,
     Typography,
+    useMediaQuery,
+    useTheme,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import {
@@ -72,6 +74,8 @@ const removeLabel = (label, index) => {
 const RecipeForm = ({title, onSave, onSaveCopy, onCancel, extraButtons}) => {
     const lo = useDraftRecipeLO();
     const windowSize = useWindowSize();
+    const theme = useTheme();
+    const mobile = useMediaQuery(theme.breakpoints.down("xs"));
     const classes = useStyles();
     const draft = lo.getValueEnforcing();
     const MARGIN = 2;
@@ -163,6 +167,7 @@ const RecipeForm = ({title, onSave, onSaveCopy, onCancel, extraButtons}) => {
                 <ListItem key={i} disableGutters>
                     <ElEdit
                         name={`ingredients.${i}`}
+                        direction={mobile ? "column" : "row"}
                         value={it}
                         onChange={handleUpdate}
                         onMultilinePaste={text => Dispatcher.dispatch({
@@ -180,7 +185,7 @@ const RecipeForm = ({title, onSave, onSaveCopy, onCancel, extraButtons}) => {
                         })}
                     />
                     <div style={{marginLeft: "auto", whiteSpace: "nowrap"}}>
-                        <IconButton
+                        {!mobile && <IconButton
                             size="small"
                             tabIndex={-1}
                             onClick={() => Dispatcher.dispatch({
@@ -189,7 +194,7 @@ const RecipeForm = ({title, onSave, onSaveCopy, onCancel, extraButtons}) => {
                             })}
                         >
                             <Add />
-                        </IconButton>
+                        </IconButton>}
                         <IconButton
                             size="small"
                             tabIndex={-1}
