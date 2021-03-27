@@ -6,6 +6,7 @@ import {
     Paper,
     Switch,
     Typography,
+    useScrollTrigger,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import { PostAdd } from "@material-ui/icons";
@@ -31,6 +32,15 @@ const useStyles = makeStyles((theme) => ({
     search: {
         margin: theme.spacing(4, 0),
         padding: theme.spacing(4, 2),
+    },
+    paddedContent: {
+        paddingTop: 255,
+    },
+    fixedSearch: {
+        position: "fixed",
+        zIndex: 1100,
+        padding: theme.spacing(2, 2),
+        top: 80,
     },
     card: {
         display: "flex",
@@ -77,8 +87,12 @@ MessagePaper.propTypes = {
     children: PropTypes.node,
 };
 
-const RecipesList = (props: {}) => {
+function RecipesList(props: {}) {
     const classes = useStyles();
+    const isSearchHidden = useScrollTrigger({
+        disableHysteresis: true,
+        threshold: 250 - 75,
+    });
     const {me, filter, scope, recipesLO, isComplete} = props;
 
     let body;
@@ -147,21 +161,29 @@ const RecipesList = (props: {}) => {
     } else {
         body = <LoadingIndicator />;
     }
-    return <Content>
-        <Paper elevation={1} variant="outlined" className={classes.search}>
-            <Typography variant="h5">Search Recipe Library</Typography>
-            <div style={{float: "right"}}>
-                <FormControlLabel
-                    control={
-                        <Switch checked={scope === SCOPE_EVERYONE}
-                                name="scope"
-                                onChange={toggleScope}
-                                color="primary"
-                        />
-                    }
-                    label={scope === SCOPE_EVERYONE ? "Everyone" : "Mine"}
-                />
-            </div>
+    return <Content
+        className={isSearchHidden ? classes.paddedContent : null}
+    >
+        <Paper
+            elevation={isSearchHidden ? 4 : 1}
+            variant="outlined"
+            className={isSearchHidden ? classes.fixedSearch : classes.search}
+        >
+            {!isSearchHidden && <>
+                <Typography variant="h5">Search Recipe Library</Typography>
+                <div style={{float: "right"}}>
+                    <FormControlLabel
+                        control={
+                            <Switch checked={scope === SCOPE_EVERYONE}
+                                    name="scope"
+                                    onChange={toggleScope}
+                                    color="primary"
+                            />
+                        }
+                        label={scope === SCOPE_EVERYONE ? "Everyone" : "Mine"}
+                    />
+                </div>
+            </>}
             <SearchFilter
                 onChange={updateFilter}
                 term={filter}
@@ -175,7 +197,7 @@ const RecipesList = (props: {}) => {
             <PostAdd />
         </FoodingerFab>
     </Content>;
-};
+}
 
 RecipesList.defaultProps = {
     filter: "",
