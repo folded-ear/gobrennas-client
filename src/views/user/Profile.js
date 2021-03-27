@@ -4,6 +4,7 @@ import Divider from "@material-ui/core/Divider";
 import Switch from "@material-ui/core/Switch";
 import { LockOpen } from "@material-ui/icons";
 import PropTypes from "prop-types";
+import qs from "qs";
 import React from "react";
 import {
     API_IS_SECURE,
@@ -76,8 +77,8 @@ const Profile = ({
         </p>
         <p style={{textAlign: "center"}}>
             <Button
-                href={`javascript:var s=document.createElement('script');s.src='${APP_BASE_URL}/import_bookmarklet.js?token=${encodeURIComponent(
-                    token)}&_='+Date.now();s.id='foodinger-import-bookmarklet';document.body.appendChild(s);`}
+                href={`javascript:s=document.createElement('script');s.src='${APP_BASE_URL}/import_bookmarklet.js?${qs.stringify({
+                    token})}&_='+Date.now();s.id='foodinger-import-bookmarklet';document.body.appendChild(s);`}
                 variant={process.env.NODE_ENV === "production" ? "contained" : "outlined"}
                 color="primary"
             >

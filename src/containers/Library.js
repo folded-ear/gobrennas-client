@@ -22,22 +22,17 @@ const filterRecipes = (rs, filter) => {
             r,
             // name match
             filterFunction(r.name),
-            // label match
-            r.labels ? r.labels
-                .filter(l => l.indexOf("--") !== 0)
-                .filter(filterFunction).length : 0,
-            // directions match
-            filterFunction(r.directions),
         ])
-        // eslint-disable-next-line no-unused-vars
-        .filter(([_, nameMatch, labelMatch, dirMatch]) =>
-            nameMatch || labelMatch || dirMatch)
-        .sort((a, b) => {
-            for (let fi = 1; fi <= 3; fi++) {
-                if (a[fi] > b[fi]) return -1;
-                if (a[fi] < b[fi]) return 1;
-            }
-            return byNameComparator(a[0], b[0]);
+        .filter(([r, nameMatch]) =>
+            nameMatch || filterFunction(r.directions) || (
+                r.labels && r.labels
+                    .filter(l => l.indexOf("--") !== 0)
+                    .filter(filterFunction).length
+            ))
+        .sort(([aR, aNM], [bR, bNM]) => {
+            if (aNM && !bNM) return -1;
+            if (!aNM && bNM) return 1;
+            return byNameComparator(aR, bR);
         })
         .map(([r]) => r);
 };
@@ -47,11 +42,12 @@ const Library = () => {
     const libProps = useFluxStore(
         () => {
             const state = LibraryStore.getState();
-            const filter = state.filter;
+            const filter = state.filter || "";
             return {
                 scope: state.scope,
                 filter,
-                libraryLO: LibraryStore.getLibraryLO()
+                isComplete: LibraryStore.isListingComplete(),
+                recipesLO: LibraryStore.getRecipesLO()
                     .map(recipes => filterRecipes(recipes, filter)),
             };
         },

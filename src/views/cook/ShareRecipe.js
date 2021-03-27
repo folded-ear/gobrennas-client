@@ -105,6 +105,7 @@ const ShareRecipe = ({recipe}) => {
                 value={shareUrl}
                 fullWidth
                 onFocus={e => e.target.select()}
+                autoFocus
             />
         </>;
     }

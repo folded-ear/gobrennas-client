@@ -2,8 +2,9 @@ import socket from "../util/socket";
 import Dispatcher from "./dispatcher";
 
 const LibraryActions = {
-    LOAD_LIBRARY: "library/load-library",
-    LIBRARY_LOADED: "library/library-loaded",
+    SEARCH: "library/search",
+    SEARCH_FARTHER: "library/search-farther",
+    SEARCH_LOADED: "library/search-loaded",
     LOAD_INGREDIENTS: "library/load-ingredients",
     INGREDIENT_LOADED: "library/ingredient-loaded",
     INGREDIENTS_LOADED: "library/ingredients-loaded",

@@ -1,4 +1,5 @@
 import BaseAxios from "axios";
+import qs from "qs";
 import { API_BASE_URL } from "../constants";
 import promiseFlux from "../util/promiseFlux";
 import socket from "../util/socket";
@@ -8,14 +9,24 @@ const axios = BaseAxios.create({
     baseURL: `${API_BASE_URL}/api/recipe`,
 });
 
+export const PAGE_SIZE = 9; // multiple of three; around a window's worth.
+
 const LibraryApi = {
     
-    loadLibrary: (scope, filter) => {
+    searchLibrary: (scope, filter, page=0) => {
+        const params = {
+            scope,
+            filter: filter.trim(),
+            page,
+            pageSize: PAGE_SIZE,
+        };
         promiseFlux(
-            axios.get(`/?scope=${encodeURIComponent(scope)}&filter=${encodeURIComponent(filter.trim())}`),
+            axios.get(`/?${qs.stringify(params)}`),
             data => ({
-                type: LibraryActions.LIBRARY_LOADED,
+                type: LibraryActions.SEARCH_LOADED,
                 data: data.data,
+                scope,
+                filter,
             }),
         );
     },

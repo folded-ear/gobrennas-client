@@ -1,4 +1,5 @@
 import {
+    Box,
     Container as Content,
     FormControlLabel,
     Grid,
@@ -10,6 +11,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import { PostAdd } from "@material-ui/icons";
 import PropTypes from "prop-types";
 import React from "react";
+import dispatcher from "../../data/dispatcher";
 import Dispatcher from "../../data/dispatcher";
 import LibraryActions from "../../data/LibraryActions";
 import {
@@ -20,6 +22,7 @@ import { Recipe } from "../../data/RecipeTypes";
 import history from "../../util/history";
 import { loadObjectOf } from "../../util/loadObjectTypes";
 import FoodingerFab from "../common/FoodingerFab";
+import LazyInfinite from "../common/LazyInfinite";
 import LoadingIndicator from "../common/LoadingIndicator";
 import RecipeCard from "./RecipeCard";
 import SearchFilter from "./SearchFilter";
@@ -34,13 +37,11 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-const updateFilter = (e) => {
-    const {value: filter} = e.target;
+const updateFilter = filter =>
     Dispatcher.dispatch({
         type: LibraryActions.UPDATE_FILTER,
         filter,
     });
-};
 
 const clearFilter = () =>
     Dispatcher.dispatch({
@@ -55,51 +56,96 @@ const toggleScope = (e) => {
     });
 };
 
+function MessagePaper({primary, children}) {
+    return <Paper
+        style={{
+            textAlign: "center",
+        }}
+    >
+        <Box p={2} pb={1}>
+            {children
+                ? children
+                : primary && <Typography variant="h5">
+                    {primary}
+                </Typography>}
+        </Box>
+    </Paper>;
+}
+
+MessagePaper.propTypes = {
+    primary: PropTypes.string,
+    children: PropTypes.node,
+};
+
 const RecipesList = (props: {}) => {
     const classes = useStyles();
-    const {me, filter, scope, libraryLO} = props;
+    const {me, filter, scope, recipesLO, isComplete} = props;
 
     let body;
-    if (libraryLO.isLoading()) {
-        body = <LoadingIndicator />;
-    } else if (libraryLO.hasValue()) {
-        const lib = libraryLO.getValueEnforcing();
+    if (recipesLO.hasValue()) {
+        const lib = recipesLO.getValueEnforcing();
+        const isLoading = recipesLO.isLoading();
         if (lib.length > 0) {
-            body = <Grid
-                container
-                spacing={4}
-                alignItems="stretch"
-            >
-                {lib.map(recipe =>
-                    <Grid
-                        item
-                        md={4}
-                        sm={6}
-                        xs={12}
-                        className={classes.card}
-                        key={`gridid_${recipe.id}`}
-                    >
-                        <RecipeCard recipe={recipe}
-                                    mine={recipe.ownerId === me.id} />
-                    </Grid>,
-                )}
-            </Grid>;
-        } else {
-            body = <Paper
-                style={{
-                    textAlign: "center",
-                    paddingTop: "2em",
-                    paddingBottom: "1em",
+            body = <LazyInfinite
+                loading={isLoading}
+                complete={isComplete}
+                onNeedMore={() => {
+                    if (isComplete) return; // not required, but may as well
+                    setTimeout(() =>
+                        dispatcher.dispatch({
+                            type: LibraryActions.SEARCH_FARTHER,
+                        }));
                 }}
             >
-                <Typography variant="h5">
-                    {filter
-                        ? "Zero recipes matched your filter. 🙁"
-                        : "You don't have any recipes yet!"
-                    }
-                </Typography>
-            </Paper>;
+                <Grid
+                    container
+                    spacing={4}
+                    alignItems="stretch"
+                >
+                    {lib.map(recipe =>
+                        <Grid
+                            item
+                            md={4}
+                            sm={6}
+                            xs={12}
+                            className={classes.card}
+                            key={recipe.id}
+                        >
+                            <RecipeCard
+                                recipe={recipe}
+                                mine={recipe.ownerId === me.id}
+                            />
+                        </Grid>,
+                    )}
+                    {isComplete && lib.length > 5 && <Grid
+                        item
+                        xs={12}
+                    >
+                        <MessagePaper
+                            primary={"That's it. Fin. The end."}
+                        />
+                    </Grid>}
+                    {isLoading && <Grid
+                        item
+                        xs={12}
+                    >
+                        <LoadingIndicator
+                            primary={"Searching..."}
+                        />
+                    </Grid>}
+                </Grid>
+            </LazyInfinite>;
+        } else if (isLoading) {
+            body = <LoadingIndicator />;
+        } else {
+            body = <MessagePaper
+                primary={filter
+                    ? "Zero recipes matched your filter. 🙁"
+                    : "You don't have any recipes yet!"}
+            />;
         }
+    } else {
+        body = <LoadingIndicator />;
     }
     return <Content>
         <Paper elevation={1} variant="outlined" className={classes.search}>
@@ -138,7 +184,8 @@ RecipesList.defaultProps = {
 
 RecipesList.propTypes = {
     me: PropTypes.object.isRequired,
-    libraryLO: loadObjectOf(PropTypes.arrayOf(Recipe)).isRequired,
+    recipesLO: loadObjectOf(PropTypes.arrayOf(Recipe)).isRequired,
+    isComplete: PropTypes.bool.isRequired,
     filter: PropTypes.string.isRequired,
     scope: PropTypes.string.isRequired,
 };
