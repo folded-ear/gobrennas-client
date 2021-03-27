@@ -18,10 +18,8 @@ const useStyles = makeStyles({
 
 const ItemImageUpload = ({recipe, disabled}) => {
     const classes = useStyles();
-    if (disabled) {
-        return null;
-    }
     return <ImageDropZone
+        disabled={disabled}
         className={classes.root}
         onImage={file => Dispatcher.dispatch({
             type: RecipeActions.SET_RECIPE_PHOTO,

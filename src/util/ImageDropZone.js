@@ -1,4 +1,8 @@
-import { AddAPhoto } from "@material-ui/icons";
+import { makeStyles } from "@material-ui/core/styles";
+import {
+    AddAPhoto,
+    PhotoCamera,
+} from "@material-ui/icons";
 import PropTypes from "prop-types";
 import React from "react";
 import ImageOrPreview from "../views/common/ImageOrPreview";
@@ -6,8 +10,42 @@ import buildSequence from "./buildSequence";
 
 const {next} = buildSequence();
 
-const ImageDropZone = ({image, onImage, maxWidth, maxHeight, ...props}) => {
+const useStyles = makeStyles(({maxWidth, maxHeight}) => ({
+    preview: {
+        maxWidth: maxWidth || "400px",
+        maxHeight: maxHeight || "200px",
+    },
+    icon: {
+        margin: "30px 40px",
+    },
+    input: {
+        opacity: 0,
+        height: 0,
+        width: 0,
+    },
+}));
+
+const ImageDropZone = ({
+                           disabled,
+                           image,
+                           onImage,
+                           maxWidth,
+                           maxHeight,
+                           ...props
+                       }) => {
+    const classes = useStyles({maxWidth, maxHeight});
     const [value, setValue] = React.useState([]);
+
+    if (disabled) {
+        return <label
+            {...props}
+        >
+            <PhotoCamera
+                color="disabled"
+                className={classes.icon}
+            />
+        </label>;
+    }
 
     const sendOffFirstFile = files => {
         for (let i = 0; i < files.length; i++) {
@@ -48,26 +86,17 @@ const ImageDropZone = ({image, onImage, maxWidth, maxHeight, ...props}) => {
                 ? <ImageOrPreview
                     src={image}
                     alt={""}
-                    style={{
-                        maxWidth: maxWidth || "400px",
-                        maxHeight: maxHeight || "200px",
-                    }}
+                    className={classes.preview}
                 />
                 : <AddAPhoto
                     color="disabled"
-                    style={{
-                        margin: "30px 40px",
-                    }}
+                    className={classes.icon}
                 />}
             <input
                 id={inputId}
                 accept="image/*"
                 type="file"
-                style={{
-                    opacity: 0,
-                    height: 0,
-                    width: 0,
-                }}
+                className={classes.input}
                 value={value}
                 onChange={handleFileSelect}
             />
@@ -80,6 +109,7 @@ ImageDropZone.propTypes = {
     maxHeight: PropTypes.any,
     onImage: PropTypes.func.isRequired,
     className: PropTypes.string,
+    disabled: PropTypes.bool,
 };
 
 export default ImageDropZone;

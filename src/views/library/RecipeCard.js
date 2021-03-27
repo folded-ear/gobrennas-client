@@ -92,7 +92,9 @@ const RecipeCard = ({recipe, mine}) => {
                     </Link>
                     : <ItemImageUpload
                         className={classes.photo}
-                        recipe={recipe} />
+                        recipe={recipe}
+                        disabled={!mine}
+                    />
                 }
                 <CardContent>
                     <Typography gutterBottom variant="h5" component="h2">
