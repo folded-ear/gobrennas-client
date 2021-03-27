@@ -42,11 +42,12 @@ const Library = () => {
     const libProps = useFluxStore(
         () => {
             const state = LibraryStore.getState();
-            const filter = state.filter;
+            const filter = state.filter || "";
             return {
                 scope: state.scope,
                 filter,
-                libraryLO: LibraryStore.getLibraryLO()
+                isComplete: LibraryStore.isListingComplete(),
+                recipesLO: LibraryStore.getRecipesLO()
                     .map(recipes => filterRecipes(recipes, filter)),
             };
         },

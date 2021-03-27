@@ -35,7 +35,7 @@ export const adaptTime = (recipe) => {
 };
 
 function searchHelper(state) {
-    LibraryApi.searchLibrary(state.scope, state.filter);
+    LibraryApi.searchLibrary(state.scope, state.filter, state.paging.pendingPage);
     history.replace("?" + qs.stringify({
         q: state.filter,
         s: state.scope,
@@ -44,12 +44,34 @@ function searchHelper(state) {
 
 const debouncedHelper = debounce(searchHelper, 300);
 
-function searchLibrary(state, debounce) {
-    debounce ? debouncedHelper(state) : searchHelper(state);
-    return {
+function searchLibrary(state, scope, filter, debounce) {
+    let doSearch = false;
+    if (scope != null && scope !== state.scope) {
+        doSearch = true;
+        state = {
+            ...state,
+            scope: scope,
+        };
+    }
+    if (filter != null && filter !== state.filter) {
+        doSearch = true;
+        state = {
+            ...state,
+            filter: filter,
+        };
+    }
+    if (!doSearch) return state;
+    state = {
         ...state,
+        paging: {
+            page: -1,
+            pendingPage: 0,
+            complete: false,
+        },
         recipeIds: state.recipeIds.mapLO(lo => lo.loading()),
     };
+    debounce ? debouncedHelper(state) : searchHelper(state);
+    return state;
 }
 
 class LibraryStore extends ReduceStore {
@@ -69,8 +91,13 @@ class LibraryStore extends ReduceStore {
                         type: LibraryActions.SEARCH,
                     }),
             ), // LoadObjectState<ID[]>
+            paging: {
+                page: -1,
+                pendingPage: -2,
+                complete: false,
+            },
             scope: SCOPE_MINE,
-            filter: "",
+            filter: null
         };
     }
     
@@ -78,51 +105,42 @@ class LibraryStore extends ReduceStore {
         switch (action.type) {
 
             case LibraryActions.SET_SCOPE: {
-                if (action.scope === state.scope) return state;
-                return searchLibrary({
-                    ...state,
-                    scope: action.scope,
-                });
+                return searchLibrary(state, action.scope);
             }
 
             case RouteActions.MATCH: {
                 if (action.match.url !== "/library") return state;
                 if (!action.location.search) return state;
                 const params = qs.parse(action.location.search, { ignoreQueryPrefix: true });
-                let doSearch = false;
-                if (params.q && params.q !== state.filter) {
-                    doSearch = true;
-                    state = {
-                        ...state,
-                        filter: params.q,
-                    };
-                }
-                if (params.s && params.s !== state.scope) {
-                    doSearch = true;
-                    state = {
-                        ...state,
-                        scope: params.s,
-                    };
-                }
-                return doSearch ? searchLibrary(state) : state;
+                return searchLibrary(state, params.s, params.q);
             }
             
             case LibraryActions.UPDATE_FILTER: {
-                return searchLibrary({
-                    ...state,
-                    filter: action.filter,
-                }, true);
+                return searchLibrary(state, undefined, action.filter, true);
             }
 
             case LibraryActions.CLEAR_FILTER: {
-                return searchLibrary({
-                    ...state,
-                    filter: "",
-                });
+                return searchLibrary(state, undefined, "");
             }
 
             case LibraryActions.SEARCH: {
-                return searchLibrary(state);
+                return searchLibrary(state, undefined, state.filter || "");
+            }
+
+            case LibraryActions.SEARCH_FARTHER: {
+                const paging = state.paging;
+                if (paging.complete) return state;
+                if (paging.page < 0) return state;
+                if (paging.pendingPage !== paging.page) return state;
+                state = {
+                    ...state,
+                    paging: {
+                        ...paging,
+                        pendingPage: paging.pendingPage + 1,
+                    },
+                };
+                debouncedHelper(state);
+                return state;
             }
 
             case RecipeActions.RECIPE_DELETED: {
@@ -203,12 +221,26 @@ class LibraryStore extends ReduceStore {
             case LibraryActions.SEARCH_LOADED: {
                 if (action.filter !== state.filter || action.scope !== state.scope) {
                     // out of order
+                    console.log("OUT OF ORDER - IGNORE", action.filter);
                     return state;
                 }
+                const newIds = action.data.content.map(r => r.id);
                 return {
                     ...state,
+                    paging: {
+                        ...state.paging,
+                        page: action.data.page,
+                        complete: action.data.last,
+                    },
                     recipeIds: state.recipeIds
-                        .mapLO(lo => lo.setValue(action.data.content.map(r => r.id)).done()),
+                        .mapLO(lo => (lo.hasValue() && action.data.page > 0
+                            ? lo.map(v => {
+                                if (newIds.some(it => v.indexOf(it) >= 0)) {
+                                    console.log("DUPLICATE INCOMING ID", v, newIds);
+                                }
+                                return v.concat(newIds);
+                            })
+                            : lo.setValue(newIds)).done()),
                     byId: action.data.content.reduce((byId, r) =>
                         byId.set(r.id, LoadObject.withValue(adaptTime(r))), state.byId),
                 };
@@ -250,13 +282,19 @@ class LibraryStore extends ReduceStore {
         }
     }
     
-    getLibraryLO() {
+    getRecipesLO() {
         return this.getState()
             .recipeIds
             .getLoadObject()
             .map(ids =>
                 ids.map(id =>
                     this.getIngredientById(id).getValueEnforcing()));
+    }
+
+    isListingComplete() {
+        return this.getState()
+            .paging
+            .complete;
     }
 
     getIngredientById(id) {
@@ -310,7 +348,12 @@ LibraryStore.stateTypes = {
     })),
     recipeIds: loadObjectStateOf(PropTypes.arrayOf(clientOrDatabaseIdType)),
     scope: PropTypes.string.isRequired,
-    filter: PropTypes.string.isRequired,
+    filter: PropTypes.string,
+    paging: PropTypes.shape({
+        page: PropTypes.number.isRequired,
+        pendingPage: PropTypes.number.isRequired,
+        complete: PropTypes.bool.isRequired,
+    }),
 };
 
 export default typedStore(new LibraryStore(Dispatcher));

@@ -3,6 +3,7 @@ import Dispatcher from "./dispatcher";
 
 const LibraryActions = {
     SEARCH: "library/search",
+    SEARCH_FARTHER: "library/search-farther",
     SEARCH_LOADED: "library/search-loaded",
     LOAD_INGREDIENTS: "library/load-ingredients",
     INGREDIENT_LOADED: "library/ingredient-loaded",

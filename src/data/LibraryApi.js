@@ -9,11 +9,19 @@ const axios = BaseAxios.create({
     baseURL: `${API_BASE_URL}/api/recipe`,
 });
 
+export const PAGE_SIZE = 9; // multiple of three; around a window's worth.
+
 const LibraryApi = {
     
-    searchLibrary: (scope, filter) => {
+    searchLibrary: (scope, filter, page=0) => {
+        const params = {
+            scope,
+            filter: filter.trim(),
+            page,
+            pageSize: PAGE_SIZE,
+        };
         promiseFlux(
-            axios.get(`/?${qs.stringify({scope, filter: filter.trim()})}`),
+            axios.get(`/?${qs.stringify(params)}`),
             data => ({
                 type: LibraryActions.SEARCH_LOADED,
                 data: data.data,
