@@ -36,10 +36,13 @@ export const adaptTime = (recipe) => {
 
 function searchHelper(state) {
     LibraryApi.searchLibrary(state.scope, state.filter, state.paging.pendingPage);
-    history.replace("?" + qs.stringify({
+    const params = {
         q: state.filter,
-        s: state.scope,
-    }));
+    };
+    if (state.scope !== SCOPE_MINE) {
+        params.s = state.scope;
+    }
+    history.replace("?" + qs.stringify(params));
 }
 
 const debouncedHelper = debounce(searchHelper, 300);
@@ -112,7 +115,7 @@ class LibraryStore extends ReduceStore {
                 if (action.match.url !== "/library") return state;
                 if (!action.location.search) return state;
                 const params = qs.parse(action.location.search, { ignoreQueryPrefix: true });
-                return searchLibrary(state, params.s, params.q);
+                return searchLibrary(state, params.s || SCOPE_MINE, params.q);
             }
             
             case LibraryActions.UPDATE_FILTER: {
