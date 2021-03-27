@@ -35,6 +35,10 @@ const ImageDropZone = ({
                        }) => {
     const classes = useStyles({maxWidth, maxHeight});
     const [value, setValue] = React.useState([]);
+    const inputId = React.useMemo(
+        () => `image-drop-zone-${next()}`,
+        []
+    );
 
     if (disabled) {
         return <label
@@ -73,7 +77,6 @@ const ImageDropZone = ({
         sendOffFirstFile(event.target.files);
     };
 
-    const inputId = `image-drop-zone-${next()}`;
     return (
         <label
             title="Drag and drop an image, or click to select one."
