@@ -84,10 +84,7 @@ const RecipeApi = {
     sendToPlan(recipeId, planId) {
         // todo: send this over a socket too
         promiseFlux(
-            axios.post(`/recipe/${recipeId}/_actions`, {
-                type: "SEND_TO_PLAN",
-                planId,
-            }),
+            axios.post(`/recipe/${recipeId}/_send_to_plan/${planId}`),
             () => ({
                 type: RecipeActions.SENT_TO_PLAN,
                 recipeId,
@@ -96,16 +93,6 @@ const RecipeApi = {
         );
     },
 
-    recognizeItem(raw, cursorPosition = raw.length) { // todo: remove
-        return axios.post(`/recipe/_actions`, {
-            type: "RECOGNIZE_ITEM",
-            raw,
-            cursorPosition,
-        }).then(
-            data => data.data
-        );
-    },
-    
     addLabel(id, label) {
         promiseFlux(
             // this endpoint wants a plain-text post body containing the label
