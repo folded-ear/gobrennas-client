@@ -194,7 +194,6 @@ class ElEdit extends React.PureComponent {
         const {
             name,
             value,
-            direction = "row",
         } = this.props;
         const {
             raw,
@@ -215,43 +214,46 @@ class ElEdit extends React.PureComponent {
             }
         </InputAdornment>;
 
-        return <Grid container direction={direction}>
-            <Autocomplete
-                size={"small"}
-                name={`${name}.raw`}
-                value={raw}
-                onChange={this.handleChange}
-                onInputChange={this.handleChange}
-                freeSolo
-                handleHomeEndKeys={hasSuggestions}
-                disableClearable
-                style={{width: direction === "row" ? "50%" : "auto"}}
-                options={hasSuggestions ? suggestions.map((option) => {
-                    return (option.result);
-                }) : []}
-                renderInput={(params) => {
-                    params.InputProps.startAdornment = indicator;
-                    return (
-                        <TextField
-                            inputRef={this.ref}
-                            {...params}
-                            onPaste={this.onPaste}
-                            onKeyDown={this.onKeyDown}
-                            variant="outlined"
-                        />
-                    );
-                }}
-            />
+        return <Grid container>
+            <Grid item sm={6} xs={12}>
+                <Autocomplete
+                    size={"small"}
+                    name={`${name}.raw`}
+                    value={raw}
+                    onChange={this.handleChange}
+                    onInputChange={this.handleChange}
+                    freeSolo
+                    handleHomeEndKeys={hasSuggestions}
+                    disableClearable
+                    options={hasSuggestions ? suggestions.map((option) => {
+                        return (option.result);
+                    }) : []}
+                    renderInput={(params) => {
+                        params.InputProps.startAdornment = indicator;
+                        return (
+                            <TextField
+                                inputRef={this.ref}
+                                {...params}
+                                onPaste={this.onPaste}
+                                onKeyDown={this.onKeyDown}
+                                variant="outlined"
+                            />
+                        );
+                    }}
+                />
+            </Grid>
 
-            {(!recog || !raw)
-                ? doRecog(raw) ? <Hunk><CircularProgress size={"small"} /></Hunk> : null
-                : <Hunk>
-                    {q && <Hunk style={{backgroundColor: "#fde"}}>{q}</Hunk>}
-                    {u && <Hunk style={{backgroundColor: uv ? "#efd" : "#dfe"}}>{u}</Hunk>}
-                    {n && <Hunk style={{backgroundColor: nv ? "#def" : "#edf"}}>{n}</Hunk>}
-                    {p && <span>{n ? ", " : null}{p}</span>}
-                </Hunk>
-            }
+            <Grid item sm={6} xs={12}>
+                {(!recog || !raw)
+                    ? doRecog(raw) ? <Hunk><CircularProgress size={"small"} /></Hunk> : null
+                    : <Hunk>
+                        {q && <Hunk style={{backgroundColor: "#fde"}}>{q}</Hunk>}
+                        {u && <Hunk style={{backgroundColor: uv ? "#efd" : "#dfe"}}>{u}</Hunk>}
+                        {n && <Hunk style={{backgroundColor: nv ? "#def" : "#edf"}}>{n}</Hunk>}
+                        {p && <span>{n ? ", " : null}{p}</span>}
+                    </Hunk>
+                    }
+            </Grid>
         </Grid>;
     }
 }
@@ -269,7 +271,6 @@ Hunk.propTypes = {
 
 ElEdit.propTypes = {
     name: PropTypes.string.isRequired,
-    direction: PropTypes.oneOf(["column", "row"]),
     value: PropTypes.shape({
         raw: PropTypes.string.isRequired,
         quantity: PropTypes.number,

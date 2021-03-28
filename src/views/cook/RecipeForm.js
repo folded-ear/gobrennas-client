@@ -167,7 +167,6 @@ const RecipeForm = ({title, onSave, onSaveCopy, onCancel, extraButtons}) => {
                 <ListItem key={i} disableGutters>
                     <ElEdit
                         name={`ingredients.${i}`}
-                        direction={mobile ? "column" : "row"}
                         value={it}
                         onChange={handleUpdate}
                         onMultilinePaste={text => Dispatcher.dispatch({
