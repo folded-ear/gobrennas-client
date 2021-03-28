@@ -50,7 +50,7 @@ const RecipeActions = {
         recipeId: PropTypes.number.isRequired,
         planId: PropTypes.number.isRequired,
     }),
-    SENT_TO_PLAN: typedAction("recipe/sent-to-plan", {
+    SENT_TO_PLAN: typedAction("recipe/sent-to-plan", { // todo: remove
         recipeId: PropTypes.number.isRequired,
         planId: PropTypes.number.isRequired,
     }),

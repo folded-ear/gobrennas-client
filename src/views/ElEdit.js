@@ -11,7 +11,7 @@ import {
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import PropTypes from "prop-types";
 import React from "react";
-import RecipeApi from "../data/RecipeApi";
+import ItemApi from "../data/ItemApi";
 import debounce from "../util/debounce";
 import processRecognizedItem from "../util/processRecognizedItem";
 
@@ -64,7 +64,7 @@ class ElEdit extends React.PureComponent {
         } = this.props;
         if (!doRecog(value.raw)) return;
         const cursor = this.getCursorPosition();
-        RecipeApi.recognizeItem(value.raw, cursor)
+        ItemApi.recognizeItem(value.raw, cursor)
             .then(recog => {
                 if (!this._mounted) return;
                 if (recog.raw !== this.props.value.raw) return;
@@ -112,7 +112,7 @@ class ElEdit extends React.PureComponent {
                     };
                 })
                     .filter(s => s.result !== recog.raw);
-                return this.setState({
+                this.setState({
                     recog,
                     q, qv,
                     u, uv,

@@ -82,6 +82,7 @@ const RecipeApi = {
     },
     
     sendToPlan(recipeId, planId) {
+        // todo: send this over a socket too
         promiseFlux(
             axios.post(`/recipe/${recipeId}/_actions`, {
                 type: "SEND_TO_PLAN",
@@ -95,7 +96,7 @@ const RecipeApi = {
         );
     },
 
-    recognizeItem(raw, cursorPosition = raw.length) {
+    recognizeItem(raw, cursorPosition = raw.length) { // todo: remove
         return axios.post(`/recipe/_actions`, {
             type: "RECOGNIZE_ITEM",
             raw,
