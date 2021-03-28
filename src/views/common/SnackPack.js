@@ -4,6 +4,7 @@ import {
 } from "@material-ui/core";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import { Close as CloseIcon } from "@material-ui/icons";
+import { Alert } from "@material-ui/lab";
 import React from "react";
 import dispatcher from "../../data/dispatcher";
 import snackBarStore from "../../data/snackBarStore";
@@ -45,6 +46,8 @@ function SnackPack() {
         }
     }, [snackPack, messageInfo, open]);
 
+    if (!messageInfo) return null;
+
     const handleClose = (event, reason) => {
         setOpen(false);
         messageInfo.onClose && messageInfo.onClose.call(undefined, event, reason);
@@ -58,20 +61,31 @@ function SnackPack() {
         setMessageInfo(undefined);
     };
 
+    let message, children;
+    if (messageInfo.severity) {
+        children = <Alert
+            severity={messageInfo.severity}
+        >
+            {messageInfo.message}
+        </Alert>;
+    } else /*if (messageInfo)*/ {
+        message = messageInfo.message;
+    }
+
     return <Snackbar
-        key={messageInfo ? messageInfo.key : undefined}
+        key={messageInfo.key}
         anchorOrigin={{
             vertical: "bottom",
             horizontal: "left",
         }}
         open={open}
-        autoHideDuration={(messageInfo && messageInfo.hideDelay) || 5000}
+        autoHideDuration={messageInfo.hideDelay || 5000}
         onClose={handleClose}
         onExited={handleExited}
-        message={messageInfo ? messageInfo.message : undefined}
+        message={message}
         className={fabVisible ? classes.snackbar : null}
         action={<>
-            {messageInfo && messageInfo.renderAction ? messageInfo.renderAction(e => handleClose(e, "action")) : null}
+            {messageInfo.renderAction ? messageInfo.renderAction(e => handleClose(e, "action")) : null}
             <IconButton
                 aria-label="close"
                 color="inherit"
@@ -81,7 +95,9 @@ function SnackPack() {
                 <CloseIcon />
             </IconButton>
         </>}
-    />;
+    >
+        {children}
+    </Snackbar>;
 
 }
 

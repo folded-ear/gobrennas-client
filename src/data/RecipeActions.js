@@ -7,6 +7,11 @@ const dissectionComponentType = PropTypes.shape({
     text: PropTypes.string.isRequired,
 });
 
+const sendToPlanShape = {
+    recipeId: PropTypes.number.isRequired,
+    planId: PropTypes.number.isRequired,
+};
+
 const RecipeActions = {
     CREATE_RECIPE: "recipe/create-recipe",
     RECIPE_CREATED: "recipe/recipe-created",
@@ -46,14 +51,9 @@ const RecipeActions = {
         id: PropTypes.number.isRequired,
         label: PropTypes.string.isRequired,
     }),
-    SEND_TO_PLAN: typedAction("recipe/send-to-plan", {
-        recipeId: PropTypes.number.isRequired,
-        planId: PropTypes.number.isRequired,
-    }),
-    SENT_TO_PLAN: typedAction("recipe/sent-to-plan", { // todo: remove
-        recipeId: PropTypes.number.isRequired,
-        planId: PropTypes.number.isRequired,
-    }),
+    SEND_TO_PLAN: typedAction("recipe/send-to-plan", sendToPlanShape),
+    SENT_TO_PLAN: typedAction("recipe/sent-to-plan", sendToPlanShape),
+    ERROR_SENDING_TO_PLAN: typedAction("recipe/error-sending-to-plan", sendToPlanShape),
 };
 
 export default RecipeActions;

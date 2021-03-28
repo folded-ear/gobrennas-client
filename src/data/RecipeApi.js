@@ -82,11 +82,15 @@ const RecipeApi = {
     },
     
     sendToPlan(recipeId, planId) {
-        // todo: send this over a socket too
         promiseFlux(
             axios.post(`/recipe/${recipeId}/_send_to_plan/${planId}`),
             () => ({
                 type: RecipeActions.SENT_TO_PLAN,
+                recipeId,
+                planId,
+            }),
+            () => ({
+                type: RecipeActions.ERROR_SENDING_TO_PLAN,
                 recipeId,
                 planId,
             }),

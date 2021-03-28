@@ -93,16 +93,29 @@ class SnackBarStore extends ReduceStore {
                     .getValueEnforcing();
                 return enqueue(state, {
                     message: `Added ${action.name} to ${plan.name}`,
+                    severity: "success"
                 });
             }
 
-            case RecipeActions.SEND_TO_PLAN: {
+            case RecipeActions.SENT_TO_PLAN: {
                 const plan = TaskStore.getTaskLO(action.planId)
                     .getValueEnforcing();
                 const recipe = LibraryStore.getIngredientById(action.recipeId)
                     .getValueEnforcing();
                 return enqueue(state, {
                     message: `Added ${recipe.name} to ${plan.name}`,
+                    severity: "success"
+                });
+            }
+
+            case RecipeActions.ERROR_SENDING_TO_PLAN: {
+                const plan = TaskStore.getTaskLO(action.planId)
+                    .getValueEnforcing();
+                const recipe = LibraryStore.getIngredientById(action.recipeId)
+                    .getValueEnforcing();
+                return enqueue(state, {
+                    message: `Failed to send ${recipe.name} to ${plan.name}`,
+                    severity: "error",
                 });
             }
 
@@ -126,6 +139,7 @@ SnackBarStore.stateTypes = {
     queue: PropTypes.arrayOf(PropTypes.shape({
         key: PropTypes.number.isRequired,
         message: PropTypes.string.isRequired,
+        severity: PropTypes.string,
         renderAction: PropTypes.func,
         onClose: PropTypes.func,
         hideDelay: PropTypes.number,
