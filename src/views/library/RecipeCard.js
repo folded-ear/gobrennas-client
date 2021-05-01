@@ -15,6 +15,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import Dispatcher from "../../data/dispatcher";
 import FriendStore from "../../data/FriendStore";
+import PreferencesStore from "../../data/PreferencesStore";
 import RecipeActions from "../../data/RecipeActions";
 import { Recipe } from "../../data/RecipeTypes";
 import useFluxStore from "../../data/useFluxStore";
@@ -41,43 +42,17 @@ const useStyles = makeStyles({
 const RecipeCard = ({recipe, mine}) => {
     const friendLO = useFluxStore(
         () => mine
-            ? null
+            ? null // UserStore.getProfileLO()
             : FriendStore.getFriendLO(recipe.ownerId),
         [FriendStore],
         [mine, recipe.ownerId],
     );
+    const devMode = useFluxStore(
+        () => PreferencesStore.isDevMode(),
+        [PreferencesStore],
+        [],
+    );
     const classes = useStyles();
-    const actions = <>
-        <Button
-            variant="contained"
-            color="secondary"
-            disableElevation
-            startIcon={<MenuBook/>}
-            component={Link}
-            to={`/library/recipe/${recipe.id}`}
-        >
-            View
-        </Button>
-        {mine && <Button
-            variant="contained"
-            color="secondary"
-            disableElevation
-            startIcon={<Edit/>}
-            to={`/library/recipe/${recipe.id}/edit`}
-            component={Link}
-        >
-            Edit
-        </Button>}
-        {friendLO && friendLO.hasValue() && <User
-            {...friendLO.getValueEnforcing()}
-            iconOnly
-        />}
-        <SendToPlan onClick={planId => Dispatcher.dispatch({
-            type: RecipeActions.SEND_TO_PLAN,
-            recipeId: recipe.id,
-            planId,
-        })}/>
-    </>;
 
     return (
         <Card
@@ -102,6 +77,17 @@ const RecipeCard = ({recipe, mine}) => {
                     />
                 }
                 <CardContent>
+                    {devMode && friendLO && friendLO.hasValue() && <div
+                        style={{
+                            float: "right",
+                        }}
+                    >
+                        <User
+                            {...friendLO.getValueEnforcing()}
+                            iconOnly
+                            inline
+                        />
+                    </div>}
                     <Typography
                         gutterBottom
                         variant="h5"
@@ -122,9 +108,37 @@ const RecipeCard = ({recipe, mine}) => {
                             <LabelItem key={label} label={label}/>)}
                 </CardContent>
             </div>
-            <CardActions>
-                {actions}
-            </CardActions>
+            {!devMode && <CardActions>
+                <Button
+                    variant="contained"
+                    color="secondary"
+                    disableElevation
+                    startIcon={<MenuBook/>}
+                    component={Link}
+                    to={`/library/recipe/${recipe.id}`}
+                >
+                    View
+                </Button>
+                {mine && <Button
+                    variant="contained"
+                    color="secondary"
+                    disableElevation
+                    startIcon={<Edit/>}
+                    to={`/library/recipe/${recipe.id}/edit`}
+                    component={Link}
+                >
+                    Edit
+                </Button>}
+                {friendLO && friendLO.hasValue() && <User
+                    {...friendLO.getValueEnforcing()}
+                    iconOnly
+                />}
+                <SendToPlan onClick={planId => Dispatcher.dispatch({
+                    type: RecipeActions.SEND_TO_PLAN,
+                    recipeId: recipe.id,
+                    planId,
+                })}/>
+            </CardActions>}
         </Card>
     );
 };
