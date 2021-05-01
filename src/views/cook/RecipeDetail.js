@@ -16,6 +16,7 @@ import { Recipe } from "../../data/RecipeTypes";
 import useWindowSize from "../../data/useWindowSize";
 import history from "../../util/history";
 import { loadObjectOf } from "../../util/loadObjectTypes";
+import { formatDuration } from "../../util/time";
 import CloseButton from "../common/CloseButton";
 import CopyButton from "../common/CopyButton";
 import DeleteButton from "../common/DeleteButton";
@@ -162,7 +163,7 @@ const RecipeDetail = ({recipeLO, subrecipes, mine, ownerLO, anonymous}) => {
                         text={`${recipe.yield} servings`} />}
                     {recipe.totalTime && <RecipeInfo
                         label="Time"
-                        text={`${recipe.totalTime} minutes`} />}
+                        text={formatDuration(recipe.totalTime)} />}
                     {recipe.calories && <RecipeInfo
                         label="Calories"
                         text={`${recipe.calories} per serving`} />}

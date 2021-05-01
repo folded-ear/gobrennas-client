@@ -8,6 +8,23 @@ export const fromMilliseconds = (time) => {
     return time / (60 * 1000);
 };
 
+export const formatDuration = minutes => {
+    minutes = Math.ceil(minutes); // round up
+    if (minutes < 60) {
+        const unit = minutes === 1 ? "minute" : "minutes";
+        return `${minutes} ${unit}`;
+    }
+    const hours = Math.floor(minutes / 60);
+    minutes %= 60;
+    if (minutes === 0) {
+        const unit = hours === 1 ? "hour" : "hours";
+        return `${hours} ${unit}`;
+    } else {
+        const unit = hours === 1 ? "hr" : "hrs";
+        return `${hours} ${unit} ${minutes} min`;
+    }
+};
+
 const TEN_YEARS_FROM_NOW_THIS_CENTURY = new Date().getFullYear() % 100 + 10;
 export const parseLocalDate = date => {
     if (!date) return null;

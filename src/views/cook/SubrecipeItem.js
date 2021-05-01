@@ -7,6 +7,7 @@ import makeStyles from "@material-ui/core/styles/makeStyles";
 import PropTypes from "prop-types";
 import React from "react";
 import { Recipe } from "../../data/RecipeTypes";
+import { formatDuration } from "../../util/time";
 import CollapseIconButton from "../plan/CollapseIconButton";
 import IngredientDirectionsRow from "./IngredientDirectionsRow";
 
@@ -41,7 +42,7 @@ const SubrecipeItem = ({recipe, loggedIn}) => {
                     component={"span"}
                     className={classes.time}
                 >
-                    ({recipe.totalTime} minutes)
+                    ({formatDuration(recipe.totalTime)})
                 </Typography>}
             </Typography>
         </Grid>
