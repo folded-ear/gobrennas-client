@@ -32,6 +32,10 @@ const useStyles = makeStyles({
     photo: {
         height: 140,
     },
+    title: {
+        textDecoration: "none",
+        color: "inherit",
+    },
 });
 
 const RecipeCard = ({recipe, mine}) => {
@@ -98,7 +102,13 @@ const RecipeCard = ({recipe, mine}) => {
                     />
                 }
                 <CardContent>
-                    <Typography gutterBottom variant="h5" component="h2">
+                    <Typography
+                        gutterBottom
+                        variant="h5"
+                        component={Link}
+                        to={`/library/recipe/${recipe.id}`}
+                        className={classes.title}
+                    >
                         {recipe.name}
                     </Typography>
                     {recipe.externalUrl && <RecipeInfo label="Source" text={<Source url={recipe.externalUrl}/>}/>}
