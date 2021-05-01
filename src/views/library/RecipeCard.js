@@ -19,6 +19,7 @@ import RecipeActions from "../../data/RecipeActions";
 import { Recipe } from "../../data/RecipeTypes";
 import useFluxStore from "../../data/useFluxStore";
 import { loadObjectOf } from "../../util/loadObjectTypes";
+import { formatDuration } from "../../util/time";
 import RecipeInfo from "../common/RecipeInfo";
 import Source from "../common/Source";
 import LabelItem from "../LabelItem";
@@ -102,7 +103,7 @@ const RecipeCard = ({recipe, mine}) => {
                     </Typography>
                     {recipe.externalUrl && <RecipeInfo label="Source" text={<Source url={recipe.externalUrl}/>}/>}
                     {recipe.yield && <RecipeInfo label="Yield" text={`${recipe.yield} servings`}/>}
-                    {recipe.totalTime && <RecipeInfo label="Time" text={recipe.totalTime}/>}
+                    {recipe.totalTime && <RecipeInfo label="Time" text={formatDuration(recipe.totalTime)}/>}
                     {recipe.calories && <RecipeInfo label="Calories" text={recipe.calories}/>}
 
                     {recipe.labels && recipe.labels
