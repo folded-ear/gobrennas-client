@@ -1,4 +1,5 @@
 import {
+    Box,
     CircularProgress,
     Grid,
     Toolbar,
@@ -110,6 +111,8 @@ const RecipeDetail = ({recipeLO, subrecipes, mine, ownerLO, anonymous}) => {
 
     const recipe = recipeLO.getValueEnforcing();
 
+    const labelsToDisplay = recipe.labels && recipe.labels
+        .filter(label => label.indexOf("--") !== 0);
     return (
         <PageBody hasFab id="toolbar">
             <SubHeader>
@@ -167,19 +170,21 @@ const RecipeDetail = ({recipeLO, subrecipes, mine, ownerLO, anonymous}) => {
                     {recipe.calories && <RecipeInfo
                         label="Calories"
                         text={`${recipe.calories} per serving`} />}
-                    {recipe.labels && recipe.labels
-                        .filter(label => label.indexOf("--") !== 0)
-                        .map(label =>
+                    {labelsToDisplay && <Box my={1}>
+                        {labelsToDisplay.map(label =>
                             <LabelItem key={label} label={label} />)}
+                    </Box>}
 
                     {/* todo: this does a store hit for the plan, and only makes sense for a library recipe */}
-                    {loggedIn && <SendToPlan
-                        onClick={planId => Dispatcher.dispatch({
-                            type: RecipeActions.SEND_TO_PLAN,
-                            recipeId: recipe.id,
-                            planId,
-                        })}
-                    />}
+                    {loggedIn && <Box mt={1}>
+                        <SendToPlan
+                            onClick={planId => Dispatcher.dispatch({
+                                type: RecipeActions.SEND_TO_PLAN,
+                                recipeId: recipe.id,
+                                planId,
+                            })}
+                        />
+                    </Box>}
                 </Grid>
 
                 {subrecipes != null && subrecipes.map(it =>

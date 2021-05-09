@@ -1,4 +1,5 @@
 import {
+    Box,
     Button,
     Card,
     CardActions,
@@ -54,6 +55,8 @@ const RecipeCard = ({recipe, mine}) => {
     );
     const classes = useStyles();
 
+    const labelsToDisplay = recipe.labels && recipe.labels
+        .filter(label => label.indexOf("--") !== 0);
     return (
         <Card
             style={{
@@ -102,10 +105,10 @@ const RecipeCard = ({recipe, mine}) => {
                     {recipe.totalTime && <RecipeInfo label="Time" text={formatDuration(recipe.totalTime)}/>}
                     {recipe.calories && <RecipeInfo label="Calories" text={recipe.calories}/>}
 
-                    {recipe.labels && recipe.labels
-                        .filter(label => label.indexOf("--") !== 0)
-                        .map(label =>
+                    {labelsToDisplay && <Box my={0.5}>
+                        {labelsToDisplay.map(label =>
                             <LabelItem key={label} label={label}/>)}
+                    </Box>}
                 </CardContent>
             </div>
             {!devMode && <CardActions>
