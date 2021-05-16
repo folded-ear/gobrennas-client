@@ -39,11 +39,15 @@ const RecipeCard = ({recipe, mine}) => {
         [mine, recipe.ownerId],
     );
     const classes = useStyles();
+    const [raised, setRaised] = React.useState(false);
 
     const labelsToDisplay = recipe.labels && recipe.labels
         .filter(label => label.indexOf("--") !== 0);
     return (
         <Card
+            raised={raised}
+            onMouseEnter={() => setRaised(true)}
+            onMouseLeave={() => setRaised(false)}
             style={{
                 width: "100%",
                 display: "flex",
