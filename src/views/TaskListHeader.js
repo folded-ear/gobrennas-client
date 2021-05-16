@@ -29,238 +29,199 @@ import UserById from "./user/UserById";
 const isValidName = name =>
     name != null && name.trim().length > 0;
 
-class TaskListHeader extends React.PureComponent {
+const onShowDrawer = () =>
+    Dispatcher.dispatch({
+        type: TaskActions.LIST_DETAIL_VISIBILITY,
+        visible: true,
+    });
 
-    constructor(props) {
-        super(props);
-        this.state = {
-            name: "",
-            showAdd: false,
-        };
-        this.onShowDrawer = this.onShowDrawer.bind(this);
-        this.onCloseDrawer = this.onCloseDrawer.bind(this);
-        this.onCreate = this.onCreate.bind(this);
-        this.onDuplicate = this.onDuplicate.bind(this);
-        this.onSelect = this.onSelect.bind(this);
-        this.onNameChange = this.onNameChange.bind(this);
-        this.onExpandAll = this.onExpandAll.bind(this);
-        this.onCollapseAll = this.onCollapseAll.bind(this);
-        this.sortByBucket = this.sortByBucket.bind(this);
-    }
+const onCloseDrawer = () =>
+    Dispatcher.dispatch({
+        type: TaskActions.LIST_DETAIL_VISIBILITY,
+        visible: false,
+    });
 
-    onShowDrawer() {
-        Dispatcher.dispatch({
-            type: TaskActions.LIST_DETAIL_VISIBILITY,
-            visible: true,
-        });
-    }
+const onSelect = e =>
+    Dispatcher.dispatch({
+        type: TaskActions.SELECT_LIST,
+        id: e.target.value,
+    });
 
-    onCloseDrawer() {
-        Dispatcher.dispatch({
-            type: TaskActions.LIST_DETAIL_VISIBILITY,
-            visible: false,
-        });
-    }
+const onExpandAll = () =>
+    Dispatcher.dispatch({
+        type: TaskActions.EXPAND_ALL,
+    });
 
-    onNameChange(e) {
-        const {value} = e.target;
-        this.setState({
-            name: value == null ? "" : value,
-        });
-    }
+const onCollapseAll = () =>
+    Dispatcher.dispatch({
+        type: TaskActions.COLLAPSE_ALL,
+    });
 
-    onCreate() {
-        const {name} = this.state;
+const sortByBucket = () =>
+    Dispatcher.dispatch({
+        type: TaskActions.SORT_BY_BUCKET,
+    });
+
+function TaskListHeader({
+                            activeList,
+                            allLists: allListsUnsorted,
+                            listDetailVisible,
+                            hasBuckets,
+                        }) {
+    const allLists = allListsUnsorted
+        ? allListsUnsorted.slice().sort(byNameComparator)
+        : [];
+
+    const [name, setName] = React.useState("");
+    const [showAdd, setShowAdd] = React.useState(false);
+
+    const onCreate = () => {
         if (!isValidName(name)) return;
-        this.setState({
-            name: "",
-        });
+        setName("");
         Dispatcher.dispatch({
             type: TaskActions.CREATE_LIST,
             name: name.trim(),
         });
-    }
+    };
 
-    onDuplicate(e, list) {
-        const {name} = this.state;
+    const onDuplicate = (e, list) => {
         if (!isValidName(name)) return;
-        this.setState({
-            name: "",
-        });
+        setName("");
         Dispatcher.dispatch({
             type: TaskActions.DUPLICATE_LIST,
             name: name.trim(),
             fromId: list.id,
         });
-    }
+    };
 
-    onSelect(e) {
-        Dispatcher.dispatch({
-            type: TaskActions.SELECT_LIST,
-            id: e.target.value,
-        });
-    }
-
-    onExpandAll() {
-        Dispatcher.dispatch({
-            type: TaskActions.EXPAND_ALL,
-        });
-    }
-
-    onCollapseAll() {
-        Dispatcher.dispatch({
-            type: TaskActions.COLLAPSE_ALL,
-        });
-    }
-
-    sortByBucket() {
-        Dispatcher.dispatch({
-            type: TaskActions.SORT_BY_BUCKET,
-        });
-    }
-
-    render() {
-        const {
-            activeList,
-            allLists: allListsUnsorted,
-            listDetailVisible,
-            hasBuckets,
-        } = this.props;
-        const allLists = allListsUnsorted
-            ? allListsUnsorted.slice().sort(byNameComparator)
-            : [];
-        const {
-            name,
-            showAdd,
-        } = this.state;
-        return <Grid container justify={"space-between"}>
-            {activeList && <Grid item>
+    return <Grid container justify={"space-between"}>
+        {activeList && <Grid item>
+            <IconButton
+                aria-label="expand-all"
+                onClick={onExpandAll}
+            >
+                <ExpandAll />
+            </IconButton>
+            <IconButton
+                aria-label="collapse-all"
+                onClick={onCollapseAll}
+            >
+                <CollapseAll />
+            </IconButton>
+            {hasBuckets && <Tooltip
+                title="Sort plan in bucket order"
+                placement="bottom-start"
+            >
                 <IconButton
-                    aria-label="expand-all"
-                    onClick={this.onExpandAll}
+                    aria-label="sort-by-bucket"
+                    onClick={sortByBucket}
                 >
-                    <ExpandAll />
+                    <DynamicFeed />
                 </IconButton>
-                <IconButton
-                    aria-label="collapse-all"
-                    onClick={this.onCollapseAll}
+            </Tooltip>}
+            <Drawer
+                open={listDetailVisible}
+                anchor="right"
+                onClose={onCloseDrawer}
+            >
+                <div
+                    style={{
+                        minHeight: "100%",
+                        minWidth: "40vw",
+                        maxWidth: "90vw",
+                        backgroundColor: "#f7f7f7",
+                    }}
                 >
-                    <CollapseAll />
-                </IconButton>
-                {hasBuckets && <Tooltip
-                    title="Sort plan in bucket order"
-                    placement="bottom-start"
+                    <TaskListSidebar list={activeList} />
+                </div>
+            </Drawer>
+        </Grid>}
+        {allLists.length > 0 && <Grid item>
+            <Grid container>
+                {activeList && activeList.acl && <Grid item>
+                    <UserById
+                        id={activeList.acl.ownerId}
+                        iconOnly
+                    />
+                </Grid>}
+                <Grid item>
+                    <FormControl
+                        variant="outlined"
+                        style={{
+                            minWidth: "120px",
+                        }}
+                        size={"small"}
+                    >
+                        <Select
+                            placeholder="Select a Plan"
+                            value={activeList && activeList.id}
+                            onChange={onSelect}
+                        >
+                            {allLists.map(l =>
+                                <MenuItem
+                                    key={l.id}
+                                    value={l.id}
+                                >
+                                    {l.name}
+                                </MenuItem>,
+                            )}
+                        </Select>
+                    </FormControl>
+                </Grid>
+                {activeList && <Grid item>
+                    <EditButton
+                        onClick={onShowDrawer}
+                    />
+                </Grid>}
+            </Grid>
+        </Grid>}
+        <Grid item>
+            {(showAdd || allLists.length === 0)
+                ? <Grid container>
+                    <Grid item>
+                        <TextField
+                            label="New Plan..."
+                            value={name}
+                            size={"small"}
+                            variant={"outlined"}
+                            onChange={e => {
+                                const {value} = e.target;
+                                setName(value == null ? "" : value);
+                            }}
+                            autoFocus
+                            onKeyUp={e => {
+                                if (e.key === "Escape") {
+                                    setShowAdd(false);
+                                    setName("");
+                                }
+                            }}
+                        />
+                    </Grid>
+                    <Grid item>
+                        <SplitButton
+                            primary={<Add />}
+                            onClick={onCreate}
+                            options={allLists.length > 0 && allLists.map(l => ({
+                                label: `Duplicate "${l.name}"`,
+                                id: l.id,
+                            }))}
+                            onSelect={onDuplicate}
+                            disabled={!isValidName(name)}
+                        />
+                    </Grid>
+                </Grid>
+                : <Tooltip
+                    title="New Plan"
+                    placement="top"
                 >
                     <IconButton
-                        aria-label="sort-by-bucket"
-                        onClick={this.sortByBucket}
+                        onClick={() => setShowAdd(true)}
                     >
-                        <DynamicFeed />
+                        <Add />
                     </IconButton>
                 </Tooltip>}
-                <Drawer
-                    open={listDetailVisible}
-                    anchor="right"
-                    onClose={this.onCloseDrawer}
-                >
-                    <div
-                        style={{
-                            minHeight: "100%",
-                            minWidth: "40vw",
-                            maxWidth: "90vw",
-                            backgroundColor: "#f7f7f7",
-                        }}
-                    >
-                        <TaskListSidebar list={activeList} />
-                    </div>
-                </Drawer>
-            </Grid>}
-            {allLists.length > 0 && <Grid item>
-                <Grid container>
-                    {activeList && activeList.acl && <Grid item>
-                        <UserById
-                            id={activeList.acl.ownerId}
-                            iconOnly
-                        />
-                    </Grid>}
-                    <Grid item>
-                        <FormControl
-                            variant="outlined"
-                            style={{
-                                minWidth: "120px",
-                            }}
-                            size={"small"}
-                        >
-                            <Select
-                                placeholder="Select a Plan"
-                                value={activeList && activeList.id}
-                                onChange={this.onSelect}
-                            >
-                                {allLists.map(l =>
-                                    <MenuItem
-                                        key={l.id}
-                                        value={l.id}
-                                    >
-                                        {l.name}
-                                    </MenuItem>,
-                                )}
-                            </Select>
-                        </FormControl>
-                    </Grid>
-                    {activeList && <Grid item>
-                        <EditButton
-                            onClick={this.onShowDrawer}
-                        />
-                    </Grid>}
-                </Grid>
-            </Grid>}
-            <Grid item>
-                {(showAdd || allLists.length === 0)
-                    ? <Grid container>
-                        <Grid item>
-                            <TextField
-                                label="New Plan..."
-                                value={name}
-                                size={"small"}
-                                variant={"outlined"}
-                                onChange={this.onNameChange}
-                                autoFocus
-                                onKeyUp={e => {
-                                    if (e.key === "Escape") {
-                                        this.setState({
-                                            showAdd: false,
-                                            name: "",
-                                        });
-                                    }
-                                }}
-                            />
-                        </Grid>
-                        <Grid item>
-                            <SplitButton
-                                primary={<Add />}
-                                onClick={this.onCreate}
-                                options={allLists.length > 0 && allLists.map(l => ({
-                                    label: `Duplicate "${l.name}"`,
-                                    id: l.id,
-                                }))}
-                                onSelect={this.onDuplicate}
-                                disabled={!isValidName(name)}
-                            />
-                        </Grid>
-                    </Grid>
-                    : <Tooltip
-                        title="New Plan"
-                        placement="top"
-                    >
-                        <IconButton
-                            onClick={() => this.setState({showAdd: true})}
-                        >
-                            <Add />
-                        </IconButton>
-                    </Tooltip>}
-            </Grid>
-        </Grid>;
-    }
+        </Grid>
+    </Grid>;
 
 }
 
