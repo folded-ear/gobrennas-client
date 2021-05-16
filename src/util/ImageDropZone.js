@@ -3,6 +3,7 @@ import {
     AddAPhoto,
     PhotoCamera,
 } from "@material-ui/icons";
+import clsx from "clsx";
 import PropTypes from "prop-types";
 import React from "react";
 import ImageOrPreview from "../views/common/ImageOrPreview";
@@ -11,6 +12,9 @@ import buildSequence from "./buildSequence";
 const {next} = buildSequence();
 
 const useStyles = makeStyles(({maxWidth, maxHeight}) => ({
+    label: {
+        cursor: "pointer",
+    },
     preview: {
         maxWidth: maxWidth || "400px",
         maxHeight: maxHeight || "200px",
@@ -31,6 +35,7 @@ const ImageDropZone = ({
                            onImage,
                            maxWidth,
                            maxHeight,
+                           className: labelClassName,
                            ...props
                        }) => {
     const classes = useStyles({maxWidth, maxHeight});
@@ -43,6 +48,7 @@ const ImageDropZone = ({
     if (disabled) {
         return <label
             {...props}
+            className={labelClassName}
         >
             <PhotoCamera
                 color="disabled"
@@ -81,6 +87,7 @@ const ImageDropZone = ({
         <label
             title="Drag and drop an image, or click to select one."
             {...props}
+            className={clsx(labelClassName, classes.label)}
             htmlFor={inputId}
             onDrop={handleDrop}
             onDragOver={handleDragOver}
