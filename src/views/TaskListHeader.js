@@ -35,6 +35,7 @@ class TaskListHeader extends React.PureComponent {
         super(props);
         this.state = {
             name: "",
+            showAdd: false,
         };
         this.onShowDrawer = this.onShowDrawer.bind(this);
         this.onCloseDrawer = this.onCloseDrawer.bind(this);
@@ -130,6 +131,7 @@ class TaskListHeader extends React.PureComponent {
             : [];
         const {
             name,
+            showAdd,
         } = this.state;
         return <Grid container justify={"space-between"}>
             {activeList && <Grid item>
@@ -175,9 +177,10 @@ class TaskListHeader extends React.PureComponent {
             </Grid>}
             {allLists.length > 0 && <Grid item>
                 <Grid container>
-                    {activeList && <Grid item>
-                        <EditButton
-                            onClick={this.onShowDrawer}
+                    {activeList && activeList.acl && <Grid item>
+                        <UserById
+                            id={activeList.acl.ownerId}
+                            iconOnly
                         />
                     </Grid>}
                     <Grid item>
@@ -204,38 +207,57 @@ class TaskListHeader extends React.PureComponent {
                             </Select>
                         </FormControl>
                     </Grid>
-                    {activeList && activeList.acl && <Grid item>
-                        <UserById
-                            id={activeList.acl.ownerId}
-                            iconOnly
+                    {activeList && <Grid item>
+                        <EditButton
+                            onClick={this.onShowDrawer}
                         />
                     </Grid>}
                 </Grid>
             </Grid>}
             <Grid item>
-                <Grid container>
-                    <Grid item>
-                        <TextField
-                            label="New Plan..."
-                            value={name}
-                            size={"small"}
-                            variant={"outlined"}
-                            onChange={this.onNameChange}
-                        />
+                {(showAdd || allLists.length === 0)
+                    ? <Grid container>
+                        <Grid item>
+                            <TextField
+                                label="New Plan..."
+                                value={name}
+                                size={"small"}
+                                variant={"outlined"}
+                                onChange={this.onNameChange}
+                                autoFocus
+                                onKeyUp={e => {
+                                    if (e.key === "Escape") {
+                                        this.setState({
+                                            showAdd: false,
+                                            name: "",
+                                        });
+                                    }
+                                }}
+                            />
+                        </Grid>
+                        <Grid item>
+                            <SplitButton
+                                primary={<Add />}
+                                onClick={this.onCreate}
+                                options={allLists.length > 0 && allLists.map(l => ({
+                                    label: `Duplicate "${l.name}"`,
+                                    id: l.id,
+                                }))}
+                                onSelect={this.onDuplicate}
+                                disabled={!isValidName(name)}
+                            />
+                        </Grid>
                     </Grid>
-                    <Grid item>
-                        <SplitButton
-                            primary={<Add />}
-                            onClick={this.onCreate}
-                            options={allLists.length > 0 && allLists.map(l => ({
-                                label: `Duplicate "${l.name}"`,
-                                id: l.id,
-                            }))}
-                            onSelect={this.onDuplicate}
-                            disabled={!isValidName(name)}
-                        />
-                    </Grid>
-                </Grid>
+                    : <Tooltip
+                        title="New Plan"
+                        placement="top"
+                    >
+                        <IconButton
+                            onClick={() => this.setState({showAdd: true})}
+                        >
+                            <Add />
+                        </IconButton>
+                    </Tooltip>}
             </Grid>
         </Grid>;
     }

@@ -41,7 +41,7 @@ function TaskList(props) {
     const plan = activeListLO.getValue();
     const buckets = plan && plan.buckets;
     return <PageBody hasFab>
-        <Box p={2}>
+        <Box py={2}>
             <TaskListHeader
                 allLists={allLists.getValueEnforcing()}
                 activeList={plan}
