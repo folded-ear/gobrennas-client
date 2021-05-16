@@ -1,4 +1,3 @@
-import { Container as Content } from "@material-ui/core";
 import Button from "@material-ui/core/Button";
 import Divider from "@material-ui/core/Divider";
 import Switch from "@material-ui/core/Switch";
@@ -16,6 +15,7 @@ import useIsDevMode from "../../data/useIsDevMode";
 import UserActions from "../../data/UserActions";
 import UserStore from "../../data/UserStore";
 import useWindowSize from "../../data/useWindowSize";
+import PageBody from "../common/PageBody";
 import User from "./User";
 
 const DevMode = () => {
@@ -59,7 +59,7 @@ const Profile = ({
         [UserStore],
     );
 
-    return <Content>
+    return <PageBody>
         {user.imageUrl && <img
             src={user.imageUrl}
             alt={user.name}
@@ -96,7 +96,7 @@ const Profile = ({
         <Divider />
         <div><User {...user} /></div>
         {isDeveloper && <Developer />}
-    </Content>;
+    </PageBody>;
 };
 
 Profile.propTypes = {
