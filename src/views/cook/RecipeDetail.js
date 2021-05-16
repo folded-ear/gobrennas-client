@@ -53,7 +53,7 @@ const useStyles = makeStyles(theme => ({
             flexWrap: "wrap-reverse",
         },
         backgroundColor: "white",
-        padding: theme.spacing(2, 0),
+        padding: 0,
     },
 }));
 
@@ -75,7 +75,8 @@ const SubHeader = ({children}) => {
     return <div
         style={{height}}
     >
-        <div
+        <Box
+            boxShadow={trigger ? 6 : 0}
             ref={inner}
             style={trigger ? {
                 position: "fixed",
@@ -84,12 +85,10 @@ const SubHeader = ({children}) => {
                 top: 75,
                 // appbar zindex
                 zIndex: 1100,
-                // elevation 4
-                boxShadow: "0px 2px 4px -1px rgba(0,0,0,0.2), 0px 4px 5px 0px rgba(0,0,0,0.14), 0px 1px 10px 0px rgba(0,0,0,0.12)",
             } : null}
         >
             {children}
-        </div>
+        </Box>
     </div>;
 };
 
@@ -122,7 +121,9 @@ const RecipeDetail = ({recipeLO, subrecipes, mine, ownerLO, anonymous}) => {
                         variant="h2"
                     >
                         {recipe.name}
-                        {recipeLO.isLoading() && <CircularProgress />}
+                        {recipeLO.isLoading() && <Box display="inline" ml={2}>
+                            <CircularProgress size={20} />
+                        </Box>}
                     </Typography>
                     {loggedIn && <>
                         <CopyButton
