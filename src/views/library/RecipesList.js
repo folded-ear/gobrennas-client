@@ -166,7 +166,6 @@ function RecipesList(props: {}) {
     >
         <Paper
             elevation={isSearchHidden ? 4 : 1}
-            variant="outlined"
             className={isSearchHidden ? classes.fixedSearch : classes.search}
         >
             {!isSearchHidden && <>
