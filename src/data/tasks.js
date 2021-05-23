@@ -10,7 +10,7 @@ const endsWith = (taskOrName, char) => {
 };
 
 export const isSection = taskOrName =>
-    endsWith(taskOrName, ":");
+    taskOrName.fromRecipe || endsWith(taskOrName, ":");
 
 export const isQuestionable = taskOrName =>
     endsWith(taskOrName, "?");
