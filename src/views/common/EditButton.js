@@ -1,18 +1,24 @@
-import React from "react";
+import {
+    IconButton,
+    Tooltip,
+} from "@material-ui/core";
+import { Edit } from "@material-ui/icons";
 import PropTypes from "prop-types";
-import {IconButton, Tooltip} from "@material-ui/core";
-import {Edit} from "@material-ui/icons";
+import React from "react";
 
-const EditButton = ({onClick}) => {
+const EditButton = ({
+                        onClick,
+                        tooltipPlacement = "top",
+                    }) => {
     return (
         <Tooltip
             title="Edit"
-            placement="top"
+            placement={tooltipPlacement}
         >
             <IconButton
                 onClick={onClick}
             >
-                <Edit/>
+                <Edit />
             </IconButton>
         </Tooltip>
     );
@@ -20,6 +26,7 @@ const EditButton = ({onClick}) => {
 
 EditButton.propTypes = {
     onClick: PropTypes.func,
+    tooltipPlacement: PropTypes.string,
 };
 
 export default EditButton;
