@@ -11,13 +11,13 @@ import {
 import {
     Add,
     DynamicFeed,
+    Edit,
 } from "@material-ui/icons";
 import PropTypes from "prop-types";
 import React from "react";
 import Dispatcher from "../data/dispatcher";
 import TaskActions from "../data/TaskActions";
 import { byNameComparator } from "../util/comparators";
-import EditButton from "./common/EditButton";
 import {
     CollapseAll,
     ExpandAll,
@@ -65,8 +65,9 @@ const sortByBucket = () =>
 function TaskListHeader({
                             activeList,
                             allLists: allListsUnsorted,
-                            listDetailVisible,
-                            hasBuckets,
+                            listDetailVisible = false,
+                            hasBuckets = false,
+                            canExpand = true,
                         }) {
     const allLists = allListsUnsorted
         ? allListsUnsorted.slice().sort(byNameComparator)
@@ -96,29 +97,42 @@ function TaskListHeader({
 
     return <Grid container justify={"space-between"}>
         {activeList && <Grid item>
-            <IconButton
-                aria-label="expand-all"
-                onClick={onExpandAll}
+            <Tooltip
+                title="Expand all collapsed items"
+                placement="bottom-start"
             >
-                <ExpandAll />
-            </IconButton>
-            <IconButton
-                aria-label="collapse-all"
-                onClick={onCollapseAll}
+                <IconButton
+                    aria-label="expand-all"
+                    onClick={onExpandAll}
+                    disabled={!canExpand}
+                >
+                    <ExpandAll />
+                </IconButton>
+            </Tooltip>
+            <Tooltip
+                title="Collapse all expanded items"
+                placement="bottom-start"
             >
-                <CollapseAll />
-            </IconButton>
-            {hasBuckets && <Tooltip
+                <IconButton
+                    aria-label="collapse-all"
+                    onClick={onCollapseAll}
+                    disabled={!canExpand}
+                >
+                    <CollapseAll />
+                </IconButton>
+            </Tooltip>
+            <Tooltip
                 title="Sort plan in bucket order"
                 placement="bottom-start"
             >
                 <IconButton
                     aria-label="sort-by-bucket"
                     onClick={sortByBucket}
+                    disabled={!hasBuckets}
                 >
                     <DynamicFeed />
                 </IconButton>
-            </Tooltip>}
+            </Tooltip>
             <Drawer
                 open={listDetailVisible}
                 anchor="right"
@@ -168,11 +182,19 @@ function TaskListHeader({
                         </Select>
                     </FormControl>
                 </Grid>
-                {activeList && <Grid item>
-                    <EditButton
-                        onClick={onShowDrawer}
-                    />
-                </Grid>}
+                <Grid item>
+                    <Tooltip
+                        title="Edit plan, buckets, and access"
+                        placement="bottom"
+                    >
+                        <IconButton
+                            onClick={onShowDrawer}
+                            disabled={!activeList}
+                        >
+                            <Edit />
+                        </IconButton>
+                    </Tooltip>
+                </Grid>
             </Grid>
         </Grid>}
         <Grid item>
@@ -211,8 +233,8 @@ function TaskListHeader({
                     </Grid>
                 </Grid>
                 : <Tooltip
-                    title="New Plan"
-                    placement="top"
+                    title="Create a new plan"
+                    placement="bottom-end"
                 >
                     <IconButton
                         onClick={() => setShowAdd(true)}
@@ -228,8 +250,9 @@ function TaskListHeader({
 TaskListHeader.propTypes = {
     allLists: PropTypes.array.isRequired,
     activeList: PropTypes.object,
-    listDetailVisible: PropTypes.bool.isRequired,
-    hasBuckets: PropTypes.bool.isRequired,
+    listDetailVisible: PropTypes.bool,
+    hasBuckets: PropTypes.bool,
+    canExpand: PropTypes.bool,
 };
 
 export default TaskListHeader;

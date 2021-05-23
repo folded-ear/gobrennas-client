@@ -7,6 +7,7 @@ import PropTypes from "prop-types";
 import React from "react";
 import Dispatcher from "../../data/dispatcher";
 import TaskActions from "../../data/TaskActions";
+import { isParent } from "../../data/tasks";
 import LoadObject from "../../util/LoadObject";
 import FoodingerFab from "../common/FoodingerFab";
 import LoadingIndicator from "../common/LoadingIndicator";
@@ -40,6 +41,8 @@ function TaskList(props) {
 
     const plan = activeListLO.getValue();
     const buckets = plan && plan.buckets;
+    const canExpand = taskTuples.some(t =>
+        t.lo.hasValue() && isParent(t.lo.getValueEnforcing()));
     return <PageBody hasFab>
         <Box py={2}>
             <TaskListHeader
@@ -47,6 +50,7 @@ function TaskList(props) {
                 activeList={plan}
                 listDetailVisible={listDetailVisible}
                 hasBuckets={!!buckets}
+                canExpand={canExpand}
             />
         </Box>
         <List>
