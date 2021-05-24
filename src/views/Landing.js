@@ -1,3 +1,4 @@
+import PropTypes from "prop-types";
 import React from "react";
 import { Redirect } from "react-router-dom";
 import { SESSION_STORAGE_POST_LOGIN } from "../constants/index";
@@ -12,6 +13,10 @@ const Landing = ({authenticated}) => {
         pathname: "/library",
         ...dest,
     }} />;
+};
+
+Landing.propTypes = {
+    authenticated: PropTypes.bool.isRequired,
 };
 
 export default Landing;

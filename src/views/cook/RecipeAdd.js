@@ -16,7 +16,7 @@ const handleCancel = recipe =>
         sourceId: recipe.sourceId,
     });
 
-class RecipeAdd extends Component<{}> {
+class RecipeAdd extends Component {
     render() {
         return (
             <PageBody>

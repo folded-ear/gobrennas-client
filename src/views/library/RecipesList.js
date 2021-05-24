@@ -87,7 +87,7 @@ MessagePaper.propTypes = {
     children: PropTypes.node,
 };
 
-function RecipesList(props: {}) {
+function RecipesList(props = {}) {
     const classes = useStyles();
     const isSearchHidden = useScrollTrigger({
         disableHysteresis: true,

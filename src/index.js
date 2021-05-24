@@ -1,10 +1,10 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import {Router} from "react-router-dom";
+import { Router } from "react-router-dom";
 import App from "./App";
 import Dispatcher from "./data/dispatcher";
 import WindowActions from "./data/WindowActions";
-import * as serviceWorker from "./serviceWorker";
+import * as serviceWorkerRegistration from "./serviceWorkerRegistration";
 import debounce from "./util/debounce";
 import history from "./util/history";
 
@@ -12,7 +12,14 @@ if (process.env.NODE_ENV === "development") {
     Dispatcher.register(require("./util/logAction").default);
 }
 
-ReactDOM.render(<Router history={history}><App /></Router>, document.getElementById("root"));
+ReactDOM.render(
+    <React.StrictMode>
+        <Router history={history}>
+            <App />
+        </Router>
+    </React.StrictMode>,
+    document.getElementById("root"),
+);
 
 /*
  * From here on down, we're wiring up the environment as an actor on the system.
@@ -52,7 +59,7 @@ document.addEventListener("visibilitychange", () =>
     }));
 
 // Learn more about service workers: https://bit.ly/CRA-PWA
-serviceWorker.register({
+serviceWorkerRegistration.register({
     // called when the cache is populated (i.e., offline will work)
     onSuccess: registration => Dispatcher.dispatch({
         type: WindowActions.PWA_CACHE_HOT,

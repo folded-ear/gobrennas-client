@@ -1,4 +1,5 @@
 import { makeStyles } from "@material-ui/core/styles";
+import PropTypes from "prop-types";
 import React from "react";
 
 const useStyles = makeStyles(theme => ({
@@ -38,6 +39,11 @@ const Logo = (props) => {
         <span key="F" className={classes.F}>F</span>,
         small ? "F" : "Foodinger",
     ]);
+};
+
+Logo.propTypes = {
+    version: PropTypes.string,
+    component: PropTypes.object,
 };
 
 export default Logo;
