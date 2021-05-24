@@ -27,7 +27,7 @@
         "react-hooks"
     ],
     "rules": {
-        "no-prototype-builtins": "warn",
+        "no-prototype-builtins": 0,
         "react/prop-types": 1,
         "no-console": 1,
         "semi": ["warn", "always"],

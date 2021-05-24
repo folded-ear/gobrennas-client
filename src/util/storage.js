@@ -7,6 +7,7 @@ export const getJsonItem = (
     try {
         return JSON.parse(value);
     } catch (e) {
+        // eslint-disable-next-line no-console
         console.warn(`Error deserializing '${key}' storage value`, e, value);
         return null;
     }

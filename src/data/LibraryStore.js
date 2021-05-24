@@ -224,6 +224,7 @@ class LibraryStore extends ReduceStore {
             case LibraryActions.SEARCH_LOADED: {
                 if (action.filter !== state.filter || action.scope !== state.scope) {
                     // out of order
+                    // eslint-disable-next-line no-console
                     console.log("OUT OF ORDER - IGNORE", action.filter);
                     return state;
                 }
@@ -239,6 +240,7 @@ class LibraryStore extends ReduceStore {
                         .mapLO(lo => (lo.hasValue() && action.data.page > 0
                             ? lo.map(v => {
                                 if (newIds.some(it => v.indexOf(it) >= 0)) {
+                                    // eslint-disable-next-line no-console
                                     console.log("DUPLICATE INCOMING ID", v, newIds);
                                 }
                                 return v.concat(newIds);

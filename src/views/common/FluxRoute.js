@@ -1,3 +1,4 @@
+import PropTypes from "prop-types";
 import React from "react";
 import { Route } from "react-router-dom";
 import Dispatcher from "../../data/dispatcher";
@@ -28,5 +29,12 @@ const FluxRoute = ({render, component: Component, ...rest}) => (
         }
     />
 );
+
+FluxRoute.propTypes = {
+    render: PropTypes.func,
+    component: PropTypes.elementType,
+    match: PropTypes.object,
+    location: PropTypes.object,
+};
 
 export default FluxRoute;

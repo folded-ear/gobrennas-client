@@ -1,4 +1,5 @@
 import Button from "@material-ui/core/Button";
+import PropTypes from "prop-types";
 import React, { Component } from "react";
 import { Redirect } from "react-router-dom";
 import {
@@ -13,6 +14,7 @@ class Login extends Component {
         // If the OAuth2 login encounters an error, the user is redirected to the /login page with an error.
         // Here we display the error and then remove the error query parameter from the location.
         if (this.props.location.state && this.props.location.state.error) {
+            // eslint-disable-next-line no-console
             console.log(this.props.location.state.error);
         }
     }
@@ -56,5 +58,10 @@ class Login extends Component {
         );
     }
 }
+
+Login.propTypes = {
+    authenticated: PropTypes.bool.isRequired,
+    location: PropTypes.object.isRequired
+};
 
 export default Login;

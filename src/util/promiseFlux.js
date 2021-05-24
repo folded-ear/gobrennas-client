@@ -49,6 +49,7 @@ const promiseFlux = (
     promise,
     resolver,
     rejector = error => {
+        // eslint-disable-next-line no-console
         console.error("Error in Promise", error);
         alert("Error in Promise; your state is jacked.\n\nCheck the console.");
         return {
