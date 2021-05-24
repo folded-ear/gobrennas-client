@@ -18,14 +18,16 @@
         "ecmaFeatures": {
             "jsx": true
         },
-        "ecmaVersion": 2018,
+        "ecmaVersion": 2021,
         "sourceType": "module"
     },
     "plugins": [
+        "jsx-a11y",
         "react",
-        "flowtype"
+        "react-hooks"
     ],
     "rules": {
+        "no-prototype-builtins": "warn",
         "react/prop-types": 1,
         "no-console": 1,
         "semi": ["warn", "always"],
