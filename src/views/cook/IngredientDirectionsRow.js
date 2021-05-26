@@ -11,7 +11,7 @@ import Directions from "../common/Directions";
 import IngredientItem from "../IngredientItem";
 
 const IngredientDirectionsRow = ({recipe, loggedIn, hideHeadings}) => <>
-    <Grid item xs={12} md={5}>
+    <Grid item xs={12} sm={5}>
         {recipe.ingredients && recipe.ingredients.length > 0 && <>
             {!hideHeadings && <Typography variant="h5">
                 Ingredients
@@ -29,7 +29,7 @@ const IngredientDirectionsRow = ({recipe, loggedIn, hideHeadings}) => <>
         </>}
     </Grid>
 
-    <Grid item xs={12} md={7}>
+    <Grid item xs={12} sm={7}>
         {recipe.directions && <React.Fragment>
             {!hideHeadings && <Typography variant="h5">Directions</Typography>}
             <Directions text={recipe.directions} />
