@@ -60,7 +60,7 @@ DoTheDance.propTypes = {
 const SharedRecipe = props => {
     const {
         authenticated,
-        match:  {
+        match: {
             params: {
                 id: rawId,
                 ...params
