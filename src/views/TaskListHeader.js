@@ -79,6 +79,7 @@ function TaskListHeader({
     const onCreate = () => {
         if (!isValidName(name)) return;
         setName("");
+        setShowAdd(false);
         Dispatcher.dispatch({
             type: TaskActions.CREATE_LIST,
             name: name.trim(),
