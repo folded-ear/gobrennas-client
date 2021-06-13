@@ -67,7 +67,6 @@ export const buildFullRecipeLO = itemLO => {
         }
         if (!rLO.hasValue()) return item;
         const r = rLO.getValueEnforcing();
-        item.name = r.name;
         Object.keys(r)
             .filter(k => !item.hasOwnProperty(k))
             .forEach(k => item[k] = r[k]);
