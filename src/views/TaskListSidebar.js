@@ -48,12 +48,13 @@ const TaskListSidebar = ({list}) => {
         [FriendStore],
     );
 
-    const handleRename = (e) => {
-        const {value} = e.target;
+    const [name, setName] = React.useState(list.name);
+
+    const handleRename = () => {
         Dispatcher.dispatch({
             type: TaskActions.RENAME_LIST,
             id: list.id,
-            name: value,
+            name,
         });
     };
 
@@ -99,8 +100,9 @@ const TaskListSidebar = ({list}) => {
             {isAdministrator ? <TextField
                 label="Name"
                 required
-                value={list.name}
-                onChange={handleRename}
+                value={name}
+                onChange={e => setName(e.target.value)}
+                onBlur={handleRename}
                 variant="outlined"
                 fullWidth
             /> : <Typography variant="h2"
