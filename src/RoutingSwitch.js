@@ -18,7 +18,7 @@ function RoutingSwitch(props) {
         ? userLO.getValueEnforcing()
         : null;
 
-    return <Switch>d
+    return <Switch>
         {routes.public.map(route =>
             <FluxRoute
                 key={route.path}
