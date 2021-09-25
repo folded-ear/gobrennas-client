@@ -269,7 +269,7 @@
     };
     const ingStyle = toStyle({
         ...blockRules,
-        whiteSpace: "nowrap",
+        whiteSpace: "pre",
     });
     const dirStyle = toStyle({
         ...blockRules,
