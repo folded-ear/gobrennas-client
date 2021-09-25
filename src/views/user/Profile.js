@@ -78,7 +78,7 @@ const Profile = ({
         <p style={{textAlign: "center"}}>
             <Button
                 href={`javascript:s=document.createElement('script');s.src='${APP_BASE_URL}/import_bookmarklet.js?${qs.stringify({
-                    token})}&_='+Date.now();s.id='foodinger-import-bookmarklet';document.body.appendChild(s);`}
+                    token})}&_='+Date.now();s.id='foodinger-import-bookmarklet';void(document.body.appendChild(s));`}
                 variant={process.env.NODE_ENV === "production" ? "contained" : "outlined"}
                 color="primary"
             >
