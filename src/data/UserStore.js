@@ -5,6 +5,7 @@ import {
     COOKIE_AUTH_TOKEN,
     LOCAL_STORAGE_ACCESS_TOKEN,
 } from "../constants/index";
+import GTag from "../GTag";
 import { getCookie } from "../util/cookies";
 import LoadObjectState from "../util/LoadObjectState";
 import promiseFlux from "../util/promiseFlux";
@@ -24,10 +25,15 @@ const initiateProfileLoad = state => {
     }
     promiseFlux(
         axios.get("/api/user/me"),
-        data => ({
-            type: UserActions.PROFILE_LOADED,
-            data: data.data,
-        }),
+        data => {
+            GTag("set", {
+                uid: data.data.id,
+            });
+            return {
+                type: UserActions.PROFILE_LOADED,
+                data: data.data,
+            };
+        },
         UserActions.PROFILE_LOAD_ERROR,
     );
     return {
