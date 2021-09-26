@@ -17,12 +17,20 @@ import UserStore from "../../data/UserStore";
 import useWindowSize from "../../data/useWindowSize";
 import PageBody from "../common/PageBody";
 import User from "./User";
+import preval from "preval.macro";
+
+const dateTimeStamp = preval`module.exports = new Date().toLocaleString();`;
 
 const DevMode = () => {
     const windowSize = useWindowSize();
-    return <p>
-        Window: {windowSize.width}x{windowSize.height}
-    </p>;
+    return <React.Fragment>
+        <p>
+            Window: {windowSize.width}x{windowSize.height}
+        </p>
+        <p>
+            Build: {dateTimeStamp}
+        </p>
+    </React.Fragment>;
 };
 
 const Developer = () => {
