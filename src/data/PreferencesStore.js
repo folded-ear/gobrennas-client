@@ -64,7 +64,7 @@ class PreferencesStore extends ReduceStore {
     }
 
     isDevMode() {
-        return this.getState().get(Prefs.DEV_MODE);
+        return this.getState().get(Prefs.DEV_MODE) || false;
     }
 }
 
