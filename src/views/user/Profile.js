@@ -59,6 +59,12 @@ const Profile = ({
         [UserStore],
     );
 
+    const cookThisRef = React.useRef();
+    React.useEffect(() => {
+        cookThisRef.current.href = `javascript:s=document.createElement('script');s.src='${APP_BASE_URL}/import_bookmarklet.js?${qs.stringify({
+            token})}&_='+Date.now();s.id='foodinger-import-bookmarklet';void(document.body.appendChild(s));`;
+    }, [cookThisRef.current]);
+
     return <PageBody>
         {user.imageUrl && <img
             src={user.imageUrl}
@@ -77,8 +83,8 @@ const Profile = ({
         </p>
         <p style={{textAlign: "center"}}>
             <Button
-                href={`javascript:s=document.createElement('script');s.src='${APP_BASE_URL}/import_bookmarklet.js?${qs.stringify({
-                    token})}&_='+Date.now();s.id='foodinger-import-bookmarklet';void(document.body.appendChild(s));`}
+                ref={cookThisRef}
+                href="#"
                 variant={process.env.NODE_ENV === "production" ? "contained" : "outlined"}
                 color="primary"
             >
