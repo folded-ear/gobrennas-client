@@ -4,6 +4,7 @@ import { Router } from "react-router-dom";
 import App from "./App";
 import Dispatcher from "./data/dispatcher";
 import WindowActions from "./data/WindowActions";
+import { IsMobileProvider } from "./providers/IsMobile";
 import * as serviceWorkerRegistration from "./serviceWorkerRegistration";
 import debounce from "./util/debounce";
 import history from "./util/history";
@@ -14,9 +15,11 @@ if (process.env.NODE_ENV === "development") {
 
 ReactDOM.render(
     <React.StrictMode>
-        <Router history={history}>
-            <App />
-        </Router>
+        <IsMobileProvider>
+            <Router history={history}>
+                <App />
+            </Router>
+        </IsMobileProvider>
     </React.StrictMode>,
     document.getElementById("root"),
 );
