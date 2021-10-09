@@ -1,7 +1,7 @@
 import React from "react";
 import LibraryStore from "../data/LibraryStore";
 import useFluxStore from "../data/useFluxStore";
-import useProfileLO from "../data/useProfileLO";
+import { useProfileLO } from "../providers/Profile";
 import { byNameComparator } from "../util/comparators";
 import RecipesList from "../views/library/RecipesList";
 
