@@ -2,6 +2,7 @@ import Button from "@material-ui/core/Button";
 import Divider from "@material-ui/core/Divider";
 import Switch from "@material-ui/core/Switch";
 import { LockOpen } from "@material-ui/icons";
+import preval from "preval.macro";
 import PropTypes from "prop-types";
 import qs from "qs";
 import React from "react";
@@ -10,14 +11,13 @@ import {
     APP_BASE_URL,
 } from "../../constants";
 import Dispatcher from "../../data/dispatcher";
-import useFluxStore from "../../data/useFluxStore";
 import useIsDevMode from "../../data/useIsDevMode";
 import UserActions from "../../data/UserActions";
-import UserStore from "../../data/UserStore";
 import useWindowSize from "../../data/useWindowSize";
+import { useIsDeveloper } from "../../providers/Profile";
+import { useToken } from "../../providers/Token";
 import PageBody from "../common/PageBody";
 import User from "./User";
-import preval from "preval.macro";
 
 const dateTimeStamp = preval`module.exports = new Date().toLocaleString();`;
 
@@ -59,18 +59,15 @@ const Developer = () => {
 const Profile = ({
                      currentUser: user,
                  }) => {
-    const [token, isDeveloper] = useFluxStore(
-        () => [
-            UserStore.getToken(),
-            UserStore.isDeveloper(),
-        ],
-        [UserStore],
-    );
+    const token = useToken();
+    const isDeveloper = useIsDeveloper();
 
     const cookThisRef = React.useRef();
     React.useEffect(() => {
-        cookThisRef.current.href = `javascript:s=document.createElement('script');s.src='${APP_BASE_URL}/import_bookmarklet.js?${qs.stringify({
-            token})}&_='+Date.now();s.id='foodinger-import-bookmarklet';void(document.body.appendChild(s));`;
+        cookThisRef.current.href = `javascript:s=document.createElement('script');s.src='${APP_BASE_URL}/import_bookmarklet.js?${qs.stringify(
+            {
+                token,
+            })}&_='+Date.now();s.id='foodinger-import-bookmarklet';void(document.body.appendChild(s));`;
     }, [cookThisRef.current]);
 
     return <PageBody>

@@ -9,7 +9,6 @@ import Dispatcher from "./dispatcher";
 import TaskActions from "./TaskActions";
 import TaskStore from "./TaskStore";
 import UserActions from "./UserActions";
-import UserStore from "./UserStore";
 
 const Prefs = {
     ACTIVE_TASK_LIST: "activeTaskList",
@@ -47,7 +46,6 @@ class PreferencesStore extends ReduceStore {
                 return setPref(state, Prefs.ACTIVE_TASK_LIST, action.id);
             }
             case UserActions.SET_DEV_MODE: {
-                if (!UserStore.isDeveloper()) return state;
                 return setPref(state, Prefs.DEV_MODE, action.enabled);
             }
             default:

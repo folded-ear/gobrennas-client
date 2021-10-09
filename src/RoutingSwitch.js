@@ -1,7 +1,7 @@
 import PropTypes from "prop-types";
 import React from "react";
 import { Switch } from "react-router-dom";
-import useProfileLO from "./data/useProfileLO";
+import { useProfileLO } from "./providers/Profile";
 import FluxRoute from "./views/common/FluxRoute";
 import NotFound from "./views/common/NotFound";
 import PrivateRoute from "./views/common/PrivateRoute";

@@ -20,8 +20,7 @@ import {
     Link,
     withRouter,
 } from "react-router-dom";
-import Dispatcher from "../data/dispatcher";
-import UserActions from "../data/UserActions";
+import { useLogoutHandler } from "../providers/Profile";
 import theme from "../theme";
 import Logo from "../views/common/Logo";
 
@@ -74,10 +73,7 @@ const MobileHeader = ({authenticated, location}) => {
     const colorByHotness = val =>
         topLevelNavSeg === val ? "inherit" : "default";
 
-    const handleLogout = () =>
-        Dispatcher.dispatch({
-            type: UserActions.LOGOUT,
-        });
+    const handleLogout = useLogoutHandler();
 
     return <AppBar
         position="sticky"

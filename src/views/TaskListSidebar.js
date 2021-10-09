@@ -15,7 +15,7 @@ import Dispatcher from "../data/dispatcher";
 import FriendStore from "../data/FriendStore";
 import TaskActions from "../data/TaskActions";
 import useFluxStore from "../data/useFluxStore";
-import useProfileLO from "../data/useProfileLO";
+import { useProfileLO } from "../providers/Profile";
 import DeleteButton from "./common/DeleteButton";
 import LoadingIndicator from "./common/LoadingIndicator";
 import PlanBucketManager from "./plan/PlanBucketManager";
