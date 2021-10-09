@@ -1,7 +1,7 @@
 import PropTypes from "prop-types";
 import React from "react";
 import { Switch } from "react-router-dom";
-import { useProfileLO } from "./providers/Profile";
+import { useIsAuthenticated } from "./providers/Profile";
 import FluxRoute from "./views/common/FluxRoute";
 import NotFound from "./views/common/NotFound";
 import PrivateRoute from "./views/common/PrivateRoute";
@@ -9,14 +9,9 @@ import Login from "./views/user/Login";
 
 function RoutingSwitch(props) {
     const {
-        authenticated,
         routes,
     } = props;
-
-    const userLO = useProfileLO();
-    const currentUser = authenticated
-        ? userLO.getValueEnforcing()
-        : null;
+    const authenticated = useIsAuthenticated();
 
     return <Switch>
         {routes.public.map(route =>
@@ -32,7 +27,6 @@ function RoutingSwitch(props) {
                 key={route.path}
                 path={route.path}
                 component={route.component}
-                currentUser={currentUser}
                 authenticated={authenticated}
             />)}
         <FluxRoute

@@ -25,11 +25,18 @@ const ProfileLOContext = createContext(undefined);
 
 export function ProfileProvider({children}) {
     const token = useToken();
-    const [profileLO, setProfileLO] = useState(LoadObject.empty());
+    const [profileLO, setProfileLO] = useState(undefined);
     useEffect(() => {
-        if (!token) return;
-        if (profileLO.hasValue()) return;
-        if (!profileLO.isDone()) return;
+        if (!token) {
+            if (!profileLO) {
+                setProfileLO(LoadObject.withError(new Error(ProfileState.ERR_NO_TOKEN)));
+            }
+            return;
+        }
+        if (profileLO) {
+            if (profileLO.hasValue()) return;
+            if (!profileLO.isDone()) return;
+        }
         axios.get("/api/user/me")
             .then(data => {
                 GTag("set", {
@@ -43,7 +50,7 @@ export function ProfileProvider({children}) {
                     lo.setError(error).done());
             });
         setProfileLO(lo =>
-            lo.loading());
+            lo ? lo.loading() : LoadObject.loading());
     }, [token, profileLO]);
     return <ProfileLOContext.Provider value={profileLO}>
         {children}
@@ -57,8 +64,43 @@ ProfileProvider.propTypes = {
 export const useProfileLO = () =>
     useContext(ProfileLOContext);
 
+const ProfileState = {
+    AUTHENTICATED: "AUTHENTICATED",
+    INITIALIZING: "INITIALIZING",
+    PENDING: "PENDING",
+    ANONYMOUS: "ANONYMOUS",
+    ERR_NO_TOKEN: "ERR_NO_TOKEN",
+    ERROR: "ERROR",
+};
+
+export const useProfileState = () => {
+    const lo = useProfileLO();
+    if (!lo) return ProfileState.INITIALIZING;
+    if (lo.hasValue()) return ProfileState.AUTHENTICATED;
+    if (!lo.isDone()) return ProfileState.PENDING;
+    if (lo.hasError()) {
+        const message = lo.getErrorEnforcing().message;
+        return ProfileState.hasOwnProperty(message)
+            ? message
+            : ProfileState.ERROR;
+    }
+    return ProfileState.ANONYMOUS;
+};
+
+export const useIsProfileInitializing = () =>
+    useProfileState() === ProfileState.INITIALIZING;
+
+export const useIsProfilePending = () =>
+    useProfileState() === ProfileState.PENDING;
+
 export const useIsAuthenticated = () =>
-    useProfileLO().hasValue();
+    useProfileState() === ProfileState.AUTHENTICATED;
+
+export const useProfile = () =>
+    useProfileLO().getValueEnforcing();
+
+export const useProfileId = () =>
+    useProfile().id;
 
 export const useIsDeveloper = () => {
     const lo = useProfileLO();
@@ -67,9 +109,6 @@ export const useIsDeveloper = () => {
     const profile = lo.getValueEnforcing();
     return profile.roles && profile.roles.indexOf("DEVELOPER") >= 0;
 };
-
-export const useProfileId = () =>
-    useProfileLO().getValueEnforcing().id;
 
 const logoutHandler = () => {
     localStorage.removeItem(LOCAL_STORAGE_ACCESS_TOKEN);

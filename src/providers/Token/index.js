@@ -2,8 +2,7 @@ import PropTypes from "prop-types";
 import React, {
     createContext,
     useContext,
-    useEffect,
-    useState,
+    useMemo,
 } from "react";
 import { COOKIE_AUTH_TOKEN } from "../../constants";
 import { getCookie } from "../../util/cookies";
@@ -11,11 +10,7 @@ import { getCookie } from "../../util/cookies";
 const TokenContext = createContext(true);
 
 export function TokenProvider({children}) {
-    const [token, setToken] = useState(undefined);
-    useEffect(() => {
-        const token = getCookie(COOKIE_AUTH_TOKEN);
-        if (token) setToken(token);
-    }, []);
+    const token = useMemo(getCookie.bind(undefined, COOKIE_AUTH_TOKEN), []);
     return <TokenContext.Provider value={token}>
         {children}
     </TokenContext.Provider>;
