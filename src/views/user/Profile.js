@@ -19,7 +19,7 @@ import { useIsDeveloper } from "../../providers/Profile";
 import PageBody from "../common/PageBody";
 import User from "./User";
 
-const dateTimeStamp = preval`module.exports = new Date().toLocaleString();`;
+const dateTimeStamp = preval`module.exports = new Date().toISOString();`;
 
 const DevMode = () => {
     const windowSize = useWindowSize();
