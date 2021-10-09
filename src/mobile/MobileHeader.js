@@ -11,6 +11,7 @@ import {
     EventNote,
     ExitToApp,
     ListAlt,
+    MeetingRoom,
     MenuBook,
 } from "@material-ui/icons";
 import classnames from "classnames";
@@ -94,6 +95,9 @@ const MobileHeader = ({authenticated, location}) => {
                 </TinyNav>
                 <TinyNav location={location} navTo="/shop">
                     <ListAlt />
+                </TinyNav>
+                <TinyNav location={location} navTo="/pantry">
+                    <MeetingRoom />
                 </TinyNav>
             </Box>}
             {authenticated && <IconButton

@@ -12,6 +12,7 @@ import {
     EventNote,
     ExitToApp,
     ListAlt,
+    MeetingRoom,
     MenuBook,
 } from "@material-ui/icons";
 import PropTypes from "prop-types";
@@ -91,6 +92,13 @@ const DesktopHeader = ({authenticated, location}) => {
                     component={Link}
                     to="/shop"
                     value="shop"
+                />
+                <BigNav
+                    icon={<MeetingRoom />}
+                    label="Pantry"
+                    component={Link}
+                    to="/pantry"
+                    value="pantry"
                 />
             </Tabs>}
             {authenticated && <IconButton
