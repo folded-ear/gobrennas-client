@@ -14,8 +14,8 @@ import Dispatcher from "../../data/dispatcher";
 import useIsDevMode from "../../data/useIsDevMode";
 import UserActions from "../../data/UserActions";
 import useWindowSize from "../../data/useWindowSize";
+import { useAuthToken } from "../../providers/AuthToken";
 import { useIsDeveloper } from "../../providers/Profile";
-import { useToken } from "../../providers/Token";
 import PageBody from "../common/PageBody";
 import User from "./User";
 
@@ -59,7 +59,7 @@ const Developer = () => {
 const Profile = ({
                      currentUser: user,
                  }) => {
-    const token = useToken();
+    const token = useAuthToken();
     const isDeveloper = useIsDeveloper();
 
     const cookThisRef = React.useRef();

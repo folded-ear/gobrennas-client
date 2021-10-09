@@ -4,9 +4,9 @@ import { Router } from "react-router-dom";
 import App from "./App";
 import Dispatcher from "./data/dispatcher";
 import WindowActions from "./data/WindowActions";
+import { AuthTokenProvider } from "./providers/AuthToken";
 import { IsMobileProvider } from "./providers/IsMobile";
 import { ProfileProvider } from "./providers/Profile";
-import { TokenProvider } from "./providers/Token";
 import * as serviceWorkerRegistration from "./serviceWorkerRegistration";
 import debounce from "./util/debounce";
 import history from "./util/history";
@@ -18,7 +18,7 @@ if (process.env.NODE_ENV === "development") {
 ReactDOM.render(
     [
         React.StrictMode,
-        TokenProvider,
+        AuthTokenProvider,
         ProfileProvider,
         IsMobileProvider,
     ].reverse().reduce(

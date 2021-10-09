@@ -9,10 +9,10 @@ import React, {
 import {
     API_BASE_URL,
     LOCAL_STORAGE_ACCESS_TOKEN,
-} from "../../constants";
-import GTag from "../../GTag";
-import LoadObject from "../../util/LoadObject";
-import { useToken } from "../Token";
+} from "../constants";
+import GTag from "../GTag";
+import LoadObject from "../util/LoadObject";
+import { useAuthToken } from "./AuthToken";
 
 // global side effect to ensure cookies are passed
 BaseAxios.defaults.withCredentials = true;
@@ -24,7 +24,7 @@ const axios = BaseAxios.create({
 const ProfileLOContext = createContext(undefined);
 
 export function ProfileProvider({children}) {
-    const token = useToken();
+    const token = useAuthToken();
     const [profileLO, setProfileLO] = useState(undefined);
     useEffect(() => {
         if (!token) {
