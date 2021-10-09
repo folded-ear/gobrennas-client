@@ -30,7 +30,6 @@ import {
     isParent,
 } from "./tasks";
 import TaskStatus, { willStatusDelete } from "./TaskStatus";
-import UserStore from "./UserStore";
 
 /*
  * This store is way too muddled. But leaving it that way for the moment, to
@@ -48,9 +47,6 @@ const _newTask = name => ({
 
 const createList = (state, name, optionalPlanIdToCopy) => {
     const task = _newTask(name);
-    task.acl = {
-        ownerId: UserStore.getProfileLO().getValueEnforcing().id,
-    };
     TaskApi.createList(name, task.id, optionalPlanIdToCopy);
     return {
         ...mapTaskLO(state, task.id, () =>
