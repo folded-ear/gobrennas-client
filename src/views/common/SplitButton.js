@@ -25,6 +25,7 @@ const SplitButton = props => {
         onSelect,
         options,
         disabled,
+        dropdownDisabled = disabled,
     } = props;
     const classes = useStyles();
     const [open, setOpen] = React.useState(false);
@@ -70,7 +71,7 @@ const SplitButton = props => {
                     <Button
                         size="small"
                         onClick={handleToggle}
-                        disabled={disabled || !options || !options.length}
+                        disabled={dropdownDisabled || !options || !options.length}
                     >
                         <ArrowDropDownIcon />
                     </Button>
@@ -118,11 +119,12 @@ SplitButton.propTypes = {
     primary: PropTypes.node.isRequired,
     onClick: PropTypes.func.isRequired,
     options: PropTypes.arrayOf(PropTypes.shape({
-        id: PropTypes.number.isRequired,
+        id: PropTypes.any.isRequired,
         label: PropTypes.string.isRequired,
     })),
     onSelect: PropTypes.func.isRequired,
     disabled: PropTypes.bool,
+    dropdownDisabled: PropTypes.bool,
 };
 
 export default SplitButton;
