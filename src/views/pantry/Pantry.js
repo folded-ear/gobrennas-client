@@ -34,8 +34,7 @@ export default function Pantry() {
     useEffect(reloadInventory, []);
 
     const disabled = useMemo(() =>
-        // todo: support count/each (that is, no units) too...
-        !adjust.ingredient || !adjust.units, [adjust]);
+        !adjust.ingredient, [adjust]);
 
     function handleCommit() {
         if (disabled) return;
