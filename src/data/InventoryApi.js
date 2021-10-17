@@ -7,6 +7,7 @@ const axios = BaseAxios.create({
 
 const InventoryApi = {
     promiseInventory: () => axios.get("/"),
+    promiseAddTransaction: (tx) => axios.post("/tx", tx),
 };
 
 export default InventoryApi;

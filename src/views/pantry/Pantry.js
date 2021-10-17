@@ -25,19 +25,24 @@ const txTypes = [
 export default function Pantry() {
     const [stuff, setStuff] = useState();
     const [adjust, setAdjust] = useState({raw: ""});
-    const [tx, setTx] = useState(txTypes[1]); // consume
-    useEffect(() => {
+    const [tx, setTx] = useState(txTypes[1] /* consume */);
+    const reloadInventory = () => {
         InventoryApi.promiseInventory()
             .then(data => data.data)
             .then(setStuff);
-    }, []);
+    };
+    useEffect(reloadInventory, []);
 
     const disabled = useMemo(() =>
+        // todo: support count/each (that is, no units) too...
         !adjust.ingredient || !adjust.units, [adjust]);
 
     function handleCommit() {
         if (disabled) return;
-        console.log("commit", adjust, tx, ...arguments);
+        InventoryApi.promiseAddTransaction({
+            ...adjust,
+            type: tx.id,
+        }).then(reloadInventory);
         setAdjust({raw: ""});
     }
 
