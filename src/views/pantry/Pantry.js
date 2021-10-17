@@ -36,9 +36,6 @@ export default function Pantry() {
         !adjust.ingredient || !adjust.units, [adjust]);
 
     function handleCommit() {
-        // there's a bug in ElEdit where after selecting a suggestion, it still
-        // thinks it has suggestions, even though it's not rendering them. So
-        // hitting Enter doesn't work. It's not a `disabled` flow issue. :)
         if (disabled) return;
         console.log("commit", adjust, tx, ...arguments);
         setAdjust({raw: ""});

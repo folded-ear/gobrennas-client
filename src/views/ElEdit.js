@@ -156,7 +156,6 @@ class ElEdit extends React.PureComponent {
     }
 
     onKeyDown(e) {
-        const {suggestions} = this.state;
         const {
             value,
         } = e.target;
@@ -167,7 +166,7 @@ class ElEdit extends React.PureComponent {
             onDelete,
             onPressEnter,
         } = this.props;
-        const hasSuggestions = suggestions && suggestions.length > 0;
+        const hasSuggestions = this._hasSuggestions();
 
         switch (key) { // eslint-disable-line default-case
             case "Enter":
@@ -190,6 +189,15 @@ class ElEdit extends React.PureComponent {
         }
     }
 
+    _hasSuggestions() {
+        const {suggestions} = this.state;
+        if (!suggestions) return false;
+        if (suggestions.length === 0) return false;
+        if (suggestions.length > 1) return true;
+        const {value: {raw}} = this.props;
+        return suggestions[0] !== raw;
+    }
+
     render() {
         const {
             name,
@@ -203,7 +211,7 @@ class ElEdit extends React.PureComponent {
             q, u, uv, n, nv, p,
             suggestions,
         } = this.state;
-        const hasSuggestions = suggestions && suggestions.length > 0;
+        const hasSuggestions = this._hasSuggestions();
 
         const indicator = <InputAdornment
             position={"start"}
