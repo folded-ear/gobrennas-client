@@ -11,6 +11,7 @@ import {
     EventNote,
     ExitToApp,
     ListAlt,
+    MeetingRoom,
     MenuBook,
 } from "@material-ui/icons";
 import classnames from "classnames";
@@ -20,11 +21,12 @@ import {
     Link,
     withRouter,
 } from "react-router-dom";
+import useIsDevMode from "../data/useIsDevMode";
 import { useLogoutHandler } from "../providers/Profile";
 import theme from "../theme";
 import Logo from "../views/common/Logo";
 
-const styles = makeStyles(theme => ({
+const useStyles = makeStyles(theme => ({
     root: {
         flexGrow: 1,
         height: theme.header.height,
@@ -45,7 +47,7 @@ const styles = makeStyles(theme => ({
 }));
 
 const TinyNav = ({children, navTo, location}) => {
-    const classes = styles();
+    const classes = useStyles();
     const activeNavTo = "/" + location.pathname.split("/")[1];
     return (<IconButton
         className={classnames(
@@ -68,7 +70,8 @@ TinyNav.propTypes = {
 
 const MobileHeader = ({authenticated, location}) => {
     const smallLogo = useMediaQuery(theme.breakpoints.down("xs"));
-    const classes = styles();
+    const classes = useStyles();
+    const devMode = useIsDevMode();
     const topLevelNavSeg = location.pathname.split("/")[1];
     const colorByHotness = val =>
         topLevelNavSeg === val ? "inherit" : "default";
@@ -95,6 +98,9 @@ const MobileHeader = ({authenticated, location}) => {
                 <TinyNav location={location} navTo="/shop">
                     <ListAlt />
                 </TinyNav>
+                {devMode && <TinyNav location={location} navTo="/pantry">
+                    <MeetingRoom />
+                </TinyNav>}
             </Box>}
             {authenticated && <IconButton
                 component={Link}
