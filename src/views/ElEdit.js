@@ -1,7 +1,7 @@
 import {
-    CircularProgress,
     Grid,
     InputAdornment,
+    LinearProgress,
     TextField,
 } from "@material-ui/core";
 import {
@@ -253,11 +253,14 @@ class ElEdit extends React.PureComponent {
 
             <Grid item sm={6} xs={12}>
                 {(!recog || !raw)
-                    ? doRecog(raw) ? <Hunk><CircularProgress size={"small"} /></Hunk> : null
+                    ? doRecog(raw) ? <Hunk><LinearProgress /></Hunk> : null
                     : <Hunk>
-                        {q && <Hunk style={{backgroundColor: "#fde"}}>{q}</Hunk>}
-                        {u && <Hunk style={{backgroundColor: uv ? "#efd" : "#dfe"}}>{u}</Hunk>}
-                        {n && <Hunk style={{backgroundColor: nv ? "#def" : "#edf"}}>{n}</Hunk>}
+                        {q &&
+                        <Hunk style={{ backgroundColor: "#fde" }}>{q}</Hunk>}
+                        {u && <Hunk
+                            style={{ backgroundColor: uv ? "#efd" : "#dfe" }}>{u}</Hunk>}
+                        {n && <Hunk
+                            style={{ backgroundColor: nv ? "#def" : "#edf" }}>{n}</Hunk>}
                         {p && <span>{n ? ", " : null}{p}</span>}
                     </Hunk>
                     }

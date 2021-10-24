@@ -1,6 +1,7 @@
 import {
     Card,
     CardContent,
+    makeStyles,
     Typography,
 } from "@material-ui/core";
 import { DataGrid } from "@mui/x-data-grid";
@@ -14,40 +15,46 @@ import InventoryApi from "../../data/InventoryApi";
 import LoadingIndicator from "../common/LoadingIndicator";
 import { formatQuantity } from "./formatQuantity";
 
-const cols = [
-    {
-        field: "type",
-        headerName: "Action",
-        sortable: false,
-        width: 100,
-        flex: 1,
+const useStyles = makeStyles(theme => ({
+    gridHeader: {
+        backgroundColor: theme.palette.grey[200],
     },
-    {
-        field: "quantity",
-        headerName: "Quantity",
-        sortable: false,
-        width: 100,
-        flex: 2,
-    },
-    {
-        field: "createdAt",
-        headerName: "Date",
-        sortable: false,
-        width: 100,
-        flex: 2,
-    },
-];
+}));
 
 function Detail({
                     item,
                 }) {
-    const [history, setHistory] = useState();
+    const classes = useStyles();
+    const [ history, setHistory ] = useState();
     const reloadHistory = () => {
         InventoryApi.promiseTransactionHistory(item.id)
             .then(data => data.data)
             .then(setHistory);
     };
-    useEffect(reloadHistory, [item]);
+    useEffect(reloadHistory, [ item ]);
+
+    const cols = useMemo(() => [
+        {
+            field: "type",
+            headerName: "Action",
+            flex: 1,
+        },
+        {
+            field: "quantity",
+            headerName: "Quantity",
+            flex: 2,
+        },
+        {
+            field: "createdAt",
+            headerName: "Date",
+            flex: 2,
+        },
+    ].map(c => ({
+        headerClassName: classes.gridHeader,
+        sortable: false,
+        width: 100,
+        ...c,
+    })), [ classes ]);
 
     const rows = useMemo(() => {
         if (!history) return [];
@@ -89,10 +96,10 @@ function Detail({
 Detail.propTypes = {
     item: PropTypes.shape({
         id: PropTypes.number.isRequired,
-        ingredient: PropTypes.arrayOf(PropTypes.shape({
+        ingredient: PropTypes.shape({
             id: PropTypes.number.isRequired,
             name: PropTypes.string.isRequired,
-        })),
+        }),
         quantity: PropTypes.arrayOf(PropTypes.shape({
             quantity: PropTypes.number.isRequired,
             units: PropTypes.string,

@@ -23,22 +23,29 @@ const DEFAULT_TX_TYPE = txTypes[1]; /* consume */
 const EMPTY_REF = {raw: ""};
 
 function OneShotEdit({
+                         ingredient,
                          onCommit,
                      }) {
-    const [txType, setTxType] = useState(DEFAULT_TX_TYPE);
-    const [ref, setRef] = useState(EMPTY_REF);
+    const [ txType, setTxType ] = useState(DEFAULT_TX_TYPE);
+    const [ ref, setRef ] = useState(EMPTY_REF);
+    useEffect(() => {
+        if (!ingredient) return;
+        if (ref.raw === "" || (ref.raw.startsWith("\"") && ref.raw.endsWith("\""))) {
+            setRef({ raw: `"${ingredient}"` });
+        }
+    }, [ ingredient ]);
 
     // kludge for something with the circular progress hunk drawing stupid.
-    const [maxHeight, setMaxHeight] = useState("unset");
+    const [ maxHeight, setMaxHeight ] = useState("unset");
     const elEditRef = useRef();
     useEffect(() => {
         if (!elEditRef.current) return;
         const height = elEditRef.current.clientHeight;
-        setMaxHeight(height + "px");
-    }, [elEditRef.current]);
+        setMaxHeight(height * 1.5 + "px");
+    }, [ elEditRef.current ]);
 
     const disabled = useMemo(() =>
-        !ref.ingredient, [ref]);
+        !ref.quantity || !ref.ingredient, [ ref ]);
 
     function handleCommit() {
         if (disabled) return;
@@ -62,7 +69,8 @@ function OneShotEdit({
     }
 
     return <Grid container>
-        <Grid item style={{flexGrow: 1, maxHeight}} ref={elEditRef}>
+        <Grid item style={{ flexGrow: 1, maxHeight, overflow: "hidden" }}
+              ref={elEditRef}>
             <ElEdit
                 name={"adjust"}
                 value={ref}
@@ -85,6 +93,7 @@ function OneShotEdit({
 
 OneShotEdit.propTypes = {
     onCommit: PropTypes.func,
+    ingredient: PropTypes.string,
 };
 
 export default OneShotEdit;
