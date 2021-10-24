@@ -21,10 +21,11 @@ import {
     Link,
     withRouter,
 } from "react-router-dom";
+import useIsDevMode from "../data/useIsDevMode";
 import { useLogoutHandler } from "../providers/Profile";
 import Logo from "../views/common/Logo";
 
-const styles = makeStyles(theme => ({
+const useStyles = makeStyles(theme => ({
     root: {
         flexGrow: 1,
         height: theme.header.height,
@@ -49,7 +50,8 @@ const BigNav = withStyles((theme) => ({
 }))((props) => <Tab {...props} />);
 
 const DesktopHeader = ({authenticated, location}) => {
-    const classes = styles();
+    const classes = useStyles();
+    const devMode = useIsDevMode();
     const topLevelNavSeg = location.pathname.split("/")[1];
     const colorByHotness = val =>
         topLevelNavSeg === val ? "inherit" : "default";
@@ -93,13 +95,13 @@ const DesktopHeader = ({authenticated, location}) => {
                     to="/shop"
                     value="shop"
                 />
-                <BigNav
+                {devMode && <BigNav
                     icon={<MeetingRoom />}
                     label="Pantry"
                     component={Link}
                     to="/pantry"
                     value="pantry"
-                />
+                />}
             </Tabs>}
             {authenticated && <IconButton
                 component={Link}
