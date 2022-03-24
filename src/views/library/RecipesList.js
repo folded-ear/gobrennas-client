@@ -181,7 +181,8 @@ function RecipesList(props = {}) {
                                     color="primary"
                             />
                         }
-                        label={scope === SCOPE_EVERYONE ? "Everyone" : "Mine"}
+                        label={"Everyone"}
+                        labelPlacement={"start"}
                     />
                 </div>
             </>}
