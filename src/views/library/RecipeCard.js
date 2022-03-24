@@ -1,14 +1,21 @@
 import {
     Box,
+    Button,
     Card,
+    CardActions,
     CardContent,
     Typography,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
+import {
+    MenuBook,
+} from "@material-ui/icons";
 import PropTypes from "prop-types";
 import React from "react";
 import { Link } from "react-router-dom";
+import Dispatcher from "../../data/dispatcher";
 import FriendStore from "../../data/FriendStore";
+import RecipeActions from "../../data/RecipeActions";
 import { Recipe } from "../../data/RecipeTypes";
 import useFluxStore from "../../data/useFluxStore";
 import { loadObjectOf } from "../../util/loadObjectTypes";
@@ -16,6 +23,7 @@ import { formatDuration } from "../../util/time";
 import RecipeInfo from "../common/RecipeInfo";
 import Source from "../common/Source";
 import LabelItem from "../LabelItem";
+import SendToPlan from "../SendToPlan";
 import User from "../user/User";
 import ItemImage from "./ItemImage";
 import ItemImageUpload from "./ItemImageUpload";
@@ -100,6 +108,23 @@ const RecipeCard = ({recipe, mine}) => {
                     </Box>}
                 </CardContent>
             </div>
+            <CardActions>
+                <Button
+                    variant="contained"
+                    color="secondary"
+                    disableElevation
+                    startIcon={<MenuBook/>}
+                    component={Link}
+                    to={`/library/recipe/${recipe.id}`}
+                >
+                    View
+                </Button>
+                <SendToPlan onClick={planId => Dispatcher.dispatch({
+                    type: RecipeActions.SEND_TO_PLAN,
+                    recipeId: recipe.id,
+                    planId,
+                })}/>
+            </CardActions>
         </Card>
     );
 };
