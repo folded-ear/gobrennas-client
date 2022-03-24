@@ -38,13 +38,15 @@ const useStyles = makeStyles({
     },
 });
 
-const RecipeCard = ({recipe, mine}) => {
-    const friendLO = useFluxStore(
-        () => mine
-            ? null // UserStore.getProfileLO()
-            : FriendStore.getFriendLO(recipe.ownerId),
+const RecipeCard = ({recipe, mine, indicateMine, me}) => {
+    const owner = useFluxStore(
+        () => {
+            if (mine) return indicateMine ? me : null;
+            const lo = FriendStore.getFriendLO(recipe.ownerId);
+            return lo.hasValue() ? lo.getValueEnforcing() : null;
+        },
         [FriendStore],
-        [mine, recipe.ownerId],
+        [mine, indicateMine, me, recipe.ownerId],
     );
     const classes = useStyles();
     const [raised, setRaised] = React.useState(false);
@@ -77,13 +79,13 @@ const RecipeCard = ({recipe, mine}) => {
                     />
                 }
                 <CardContent>
-                    {friendLO && friendLO.hasValue() && <div
+                    {owner && <div
                         style={{
                             float: "right",
                         }}
                     >
                         <User
-                            {...friendLO.getValueEnforcing()}
+                            {...owner}
                             iconOnly
                             inline
                         />
@@ -133,6 +135,8 @@ RecipeCard.propTypes = {
     recipe: Recipe,
     mine: PropTypes.bool,
     ownerLO: loadObjectOf(PropTypes.object),
+    me: PropTypes.object,
+    indicateMine: PropTypes.bool,
 };
 
 export default RecipeCard;

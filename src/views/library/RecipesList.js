@@ -127,6 +127,8 @@ function RecipesList(props = {}) {
                         >
                             <RecipeCard
                                 recipe={recipe}
+                                me={me}
+                                indicateMine={scope === SCOPE_EVERYONE}
                                 mine={recipe.ownerId === me.id}
                             />
                         </Grid>,
