@@ -10,9 +10,9 @@ import {
     AccountCircle,
     EventNote,
     ExitToApp,
-    ListAlt,
     MeetingRoom,
     MenuBook,
+    ShoppingCart as Shop,
 } from "@material-ui/icons";
 import classnames from "classnames";
 import PropTypes from "prop-types";
@@ -96,7 +96,7 @@ const MobileHeader = ({authenticated, location}) => {
                     <EventNote />
                 </TinyNav>
                 <TinyNav location={location} navTo="/shop">
-                    <ListAlt />
+                    <Shop />
                 </TinyNav>
                 {devMode && <TinyNav location={location} navTo="/pantry">
                     <MeetingRoom />

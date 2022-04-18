@@ -11,9 +11,9 @@ import {
     AccountCircle,
     EventNote,
     ExitToApp,
-    ListAlt,
     MeetingRoom,
     MenuBook,
+    ShoppingCart as Shop,
 } from "@material-ui/icons";
 import PropTypes from "prop-types";
 import React from "react";
@@ -89,7 +89,7 @@ const DesktopHeader = ({authenticated, location}) => {
                     value="plan"
                 />
                 <BigNav
-                    icon={<ListAlt />}
+                    icon={<Shop />}
                     label="Shop"
                     component={Link}
                     to="/shop"
