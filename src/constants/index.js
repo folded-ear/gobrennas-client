@@ -1,5 +1,9 @@
-export const APP_BASE_URL = process.env.NODE_ENV === "development" ? "http://localhost:3001" : "https://cook.brennaswitzer.com";
-export const API_BASE_URL = process.env.NODE_ENV === "development" ? "http://localhost:8080" : "https://cook.brennaswitzer.com";
+export const APP_BASE_URL = process.env.NODE_ENV === "development"
+    ? "http://localhost:3001"
+    : "https://cook.brennaswitzer.com";
+export const API_BASE_URL = process.env.NODE_ENV === "development"
+    ? "http://localhost:8080"
+    : "https://cook.brennaswitzer.com";
 export const API_IS_SECURE = API_BASE_URL.indexOf("https:") === 0;
 export const COOKIE_AUTH_TOKEN = "FTOKEN";
 export const LOCAL_STORAGE_ACCESS_TOKEN = "accessToken";
