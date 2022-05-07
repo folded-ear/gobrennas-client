@@ -12,7 +12,6 @@ import {
 } from "../constants";
 import GTag from "../GTag";
 import LoadObject from "../util/LoadObject";
-import { useAuthToken } from "./AuthToken";
 
 // global side effect to ensure cookies are passed
 BaseAxios.defaults.withCredentials = true;
@@ -24,18 +23,12 @@ const axios = BaseAxios.create({
 const ProfileLOContext = createContext(undefined);
 
 export function ProfileProvider({children}) {
-    const token = useAuthToken();
     const [profileLO, setProfileLO] = useState(undefined);
     useEffect(() => {
-        if (!token) {
-            if (!profileLO) {
-                setProfileLO(LoadObject.withError(new Error(ProfileState.ERR_NO_TOKEN)));
-            }
-            return;
-        }
         if (profileLO) {
             if (profileLO.hasValue()) return;
             if (!profileLO.isDone()) return;
+            if (profileLO.hasError()) return;
         }
         axios.get("/api/user/me")
             .then(data => {
@@ -46,12 +39,16 @@ export function ProfileProvider({children}) {
                     lo.setValue(data.data).done());
             })
             .catch(error => {
-                setProfileLO(lo =>
-                    lo.setError(error).done());
+                if (error.response && error.response.status === 401) {
+                    setProfileLO(LoadObject.withError(new Error(ProfileState.ERR_NO_TOKEN)));
+                } else {
+                    setProfileLO(lo =>
+                        lo.setError(error).done());
+                }
             });
         setProfileLO(lo =>
             lo ? lo.loading() : LoadObject.loading());
-    }, [token, profileLO]);
+    }, [ profileLO ]);
     return <ProfileLOContext.Provider value={profileLO}>
         {children}
     </ProfileLOContext.Provider>;
