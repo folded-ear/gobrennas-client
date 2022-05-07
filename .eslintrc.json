@@ -30,9 +30,20 @@
         "no-prototype-builtins": 0,
         "react/prop-types": 1,
         "no-console": 1,
-        "semi": ["warn", "always"],
+        "semi": [
+            "warn",
+            "always"
+        ],
         "no-unused-vars": "warn",
-        "quotes": ["warn", "double", { "avoidEscape": true, "allowTemplateLiterals": true }]
+        "quotes": [
+            "warn",
+            "double",
+            {
+                "avoidEscape": true,
+                "allowTemplateLiterals": true
+            }
+        ],
+        "no-debugger": "warn"
     },
     "settings": {
         "react": {
