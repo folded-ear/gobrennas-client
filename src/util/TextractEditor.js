@@ -282,7 +282,7 @@ const TextractEditor = ({image, textract, renderActions, onClose}) => {
                         style={{
                             width: "100%",
                             height: `calc(${rotation % 180 === 0 ? scaledHeight : scaledWidth}px - 100px)`,
-                            whiteSpace: "nowrap",
+                            whiteSpace: "pre",
                         }}
                     />
                     {renderActions && renderActions(selectedText)}
