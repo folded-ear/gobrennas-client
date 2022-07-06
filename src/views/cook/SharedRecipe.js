@@ -36,7 +36,7 @@ const DoTheDance = props => {
                     });
                     setOwner(owner);
                 },
-                () => alert("There was an error loading the recipe. Refresh?")
+                () => alert("This recipe no longer exists. Sorry."),
             );
     }, [slug, secret, id]);
     if (!owner) {
