@@ -1,25 +1,35 @@
-(function() {
-    const scripts = [...document.getElementsByTagName("script")]
-        .filter(el => el.id === "foodinger-import-bookmarklet");
+const getUrlParts = (scripts) => {
     const parts = scripts[scripts.length - 1].src.split("?");
     let appRoot = parts[0].split("/");
     appRoot.pop();
     appRoot = appRoot.join("/");
     let apiRoot = appRoot.replace(/^https?:\/\/localhost:3001(\/|$)/, "http://localhost:8080$1") + "/api";
-    const QS = parts[1].split("&")
+    const querystring = parts[1].split("&")
         .map(p => p.split("="))
         .reduce((m, a) => ({
             ...m,
             [a.shift()]: a.join("="),
         }), {});
+
+    return {
+        appRoot,
+        apiRoot,
+        querystring,
+    }
+}
+
+(function() {
+    const scripts = [...document.getElementsByTagName("script")]
+        .filter(el => el.id === "foodinger-import-bookmarklet");
+
+    const { appRoot, apiRoot, querystring } = getUrlParts(scripts)
     const authHeaders = {
-        "Authorization": `Bearer ${QS.token || "garbage"}`,
+        "Authorization": `Bearer ${querystring.token || "garbage"}`,
     };
     fetch(apiRoot + "/user/me", {
         credentials: "include",
         headers: authHeaders,
-    })
-        .then(r => {
+    }).then(r => {
             if (!r.ok) {
                 throw new Error("stale token");
             }
@@ -120,6 +130,7 @@
             : grabList(grabSelectedNode()));
         tearDownGrab();
     }, 250);
+
     const findSelectHandler = (e) => {
         e.preventDefault();
         if (!e.target.src) return;
@@ -444,6 +455,7 @@
     };
     render();
 
+    /** This section autoprocesses based on selectors on common cooking sites **/
     for (const auto of [
         // return truthy to indicate autoprocessing did it's thing.
         () => {
@@ -457,11 +469,11 @@
         },
         () => {
             if (!store.url.includes("cooking.nytimes.com")) return;
-            const r = document.querySelector("#content .recipe");
-            store.title = grabString(r.querySelector(".recipe-title"));
-            store.ingredients = grabList(r.querySelector(".recipe-ingredients"));
-            store.directions = grabList(r.querySelector(".recipe-steps"));
-            store.photo = findImage(r.querySelector(".media-container img"));
+            const r = document.querySelector("main .recipe");
+            store.title = grabString(r.querySelector("[class*=contenttitle]"));
+            store.ingredients = grabList(r.querySelector("[class^=ingredients_ingredients] ul"));
+            store.directions = grabList(r.querySelector("[class^=preparation_steps]"));
+            store.photo = findImage(r.querySelector("[class^=recipeheaderimage] img"));
             return true;
         },
         () => {
