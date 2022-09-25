@@ -29,7 +29,7 @@ import { Recipe } from "../../data/RecipeTypes";
 import useDraftRecipeLO from "../../data/useDraftRecipeLO";
 import useWindowSize from "../../data/useWindowSize";
 import ImageDropZone from "../../util/ImageDropZone";
-import TextractFormAugment from "../../util/TextractFormAugment";
+import TextractFormAugment from "./TextractFormAugment";
 import ElEdit from "../ElEdit";
 import PositionPicker from "../PositionPicker";
 

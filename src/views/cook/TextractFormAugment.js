@@ -1,11 +1,11 @@
 import BaseAxios from "axios";
 import PropTypes from "prop-types";
 import React from "react";
-import { API_BASE_URL } from "../constants";
-import LoadingIndicator from "../views/common/LoadingIndicator";
-import ClientId from "./ClientId";
-import LoadObject from "./LoadObject";
-import promiseWellSizedFile from "./promiseWellSizedFile";
+import { API_BASE_URL } from "../../constants/index";
+import LoadingIndicator from "../common/LoadingIndicator";
+import ClientId from "../../util/ClientId";
+import LoadObject from "../../util/LoadObject";
+import promiseWellSizedFile from "../../util/promiseWellSizedFile";
 import TextractButton from "./TextractButton";
 import TextractEditor from "./TextractEditor";
 import TextractQueueBrowser from "./TextractQueueBrowser";
@@ -14,8 +14,8 @@ const axios = BaseAxios.create({
     baseURL: `${API_BASE_URL}/api/textract`,
 });
 
-const TextractFormAugment = ({renderActions}) => {
-    const [browserOpen, setBrowserOpen] = React.useState(false);
+const TextractFormAugment = ({ renderActions }) => {
+    const [ browserOpen, setBrowserOpen ] = React.useState(false);
     const [jobLO, setJobLO] = React.useState(LoadObject.empty());
     const [creating, setCreating] = React.useState([]);
     const [deleting, setDeleting] = React.useState([]);

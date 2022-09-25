@@ -12,10 +12,10 @@ import {
 } from "@material-ui/icons";
 import PropTypes from "prop-types";
 import React from "react";
-import useFluxStore from "../data/useFluxStore";
-import WindowStore from "../data/WindowStore";
-import { findSvg } from "./findAncestorByName";
-import getPositionWithin from "./getPositionWithin";
+import useFluxStore from "../../data/useFluxStore";
+import WindowStore from "../../data/WindowStore";
+import { findSvg } from "../../util/findAncestorByName";
+import getPositionWithin from "../../util/getPositionWithin";
 
 const useStyles = makeStyles({
     rotateRight: {

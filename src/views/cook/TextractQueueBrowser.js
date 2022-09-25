@@ -10,10 +10,10 @@ import { makeStyles } from "@material-ui/core/styles";
 import { Close } from "@material-ui/icons";
 import PropTypes from "prop-types";
 import React from "react";
-import socket from "../util/socket";
-import DeleteButton from "../views/common/DeleteButton";
-import { clientOrDatabaseIdType } from "./ClientId";
-import ImageDropZone from "./ImageDropZone";
+import socket from "../../util/socket";
+import DeleteButton from "../common/DeleteButton";
+import { clientOrDatabaseIdType } from "../../util/ClientId";
+import ImageDropZone from "../../util/ImageDropZone";
 
 const useStyles = makeStyles({
     drawer: {
