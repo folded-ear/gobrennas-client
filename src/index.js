@@ -11,10 +11,16 @@ import * as serviceWorkerRegistration from "./serviceWorkerRegistration";
 import debounce from "./util/debounce";
 import history from "./util/history";
 import {ApolloClient} from "./providers/ApolloClient";
+import {
+    QueryClient,
+    QueryClientProvider,
+} from "react-query";
 
 if (process.env.NODE_ENV === "development") {
     Dispatcher.register(require("./util/logAction").default);
 }
+
+const queryClient = new QueryClient();
 
 ReactDOM.render(
     [
@@ -25,9 +31,11 @@ ReactDOM.render(
         IsMobileProvider,
     ].reverse().reduce(
         (kids, Decorator) => <Decorator>{kids}</Decorator>,
-        <Router history={history}>
-            <App />
-        </Router>,
+        <QueryClientProvider client={queryClient}>
+            <Router history={history}>
+                <App />
+            </Router>
+        </QueryClientProvider>,
     ),
     document.getElementById("root"),
 );

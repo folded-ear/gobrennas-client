@@ -10,10 +10,11 @@ import { makeStyles } from "@material-ui/core/styles";
 import { Close } from "@material-ui/icons";
 import PropTypes from "prop-types";
 import React from "react";
-import socket from "../../util/socket";
 import DeleteButton from "../common/DeleteButton";
 import { clientOrDatabaseIdType } from "../../util/ClientId";
 import ImageDropZone from "../../util/ImageDropZone";
+import { useQuery } from "react-query";
+import TextractApi from "../../data/TextractApi";
 
 const useStyles = makeStyles({
     drawer: {
@@ -130,17 +131,20 @@ Ui.propTypes = {
 };
 
 const TextractQueueBrowser = props => {
-    const [queue, setQueue] = React.useState([]);
-    React.useEffect(() => {
-        const sub = socket.subscribe("/user/queue/textract", (msg) =>
-            setQueue(msg.body.map(p => ({
-                id: p.id,
-                url: p.photo.url,
-                name: p.photo.filename,
-                ready: p.ready,
-            }))));
-        return () => sub.unsubscribe();
-    }, []);
+    const {
+        data: queue = [],
+    } = useQuery("textract-jobs", () =>
+            TextractApi.promiseJobList()
+                .then(d => d.data.map(job => ({
+                    id: job.id,
+                    url: job.photo.url,
+                    name: job.photo.filename,
+                    ready: job.ready,
+                }))),
+        {
+            refetchInterval: 5000,
+        },
+    );
     return <Ui
         queue={queue}
         {...props}
