@@ -2,18 +2,22 @@ import BaseAxios from "axios";
 import qs from "qs";
 import { API_BASE_URL } from "../constants";
 import promiseFlux from "../util/promiseFlux";
-import socket from "../util/socket";
 import LibraryActions from "./LibraryActions";
+import queryClient from "./queryClient";
 
-const axios = BaseAxios.create({
+const recipeAxios = BaseAxios.create({
     baseURL: `${API_BASE_URL}/api/recipe`,
+});
+
+const pantryItemAxios = BaseAxios.create({
+    baseURL: `${API_BASE_URL}/api/pantryitem`,
 });
 
 export const PAGE_SIZE = 9; // multiple of three; around a window's worth.
 
 const LibraryApi = {
-    
-    searchLibrary: (scope, filter, page=0) => {
+
+    searchLibrary: (scope, filter, page = 0) => {
         const params = {
             scope,
             filter: filter.trim(),
@@ -21,7 +25,7 @@ const LibraryApi = {
             pageSize: PAGE_SIZE,
         };
         promiseFlux(
-            axios.get(`/?${qs.stringify(params)}`),
+            recipeAxios.get(`/?${qs.stringify(params)}`),
             data => ({
                 type: LibraryActions.SEARCH_LOADED,
                 data: data.data,
@@ -33,32 +37,36 @@ const LibraryApi = {
 
     getIngredient(id) {
         promiseFlux(
-            axios.get(`/or-ingredient/${id}`),
+            recipeAxios.get(`/or-ingredient/${id}`),
             data => ({
                 type: LibraryActions.INGREDIENT_LOADED,
                 id,
                 data: data.data,
-            })
+            }),
         );
     },
 
     getIngredientInBulk(ids) {
         promiseFlux(
-            axios.get(`/bulk-ingredients/${ids}`),
+            recipeAxios.get(`/bulk-ingredients/${ids}`),
             data => ({
                 type: LibraryActions.INGREDIENTS_LOADED,
                 ids,
                 data: data.data,
-            })
+            }),
         );
     },
 
+    getPantryItemsUpdatedSince(cutoff) {
+        return pantryItemAxios.get(`/all-since?cutoff=${cutoff}`);
+    },
+
     orderForStore(id, targetId, after) {
-        socket.publish("/api/pantry-item/order-for-store", {
+        return pantryItemAxios.post(`/order-for-store`, {
             id,
             targetId,
             after: !!after,
-        });
+        }).then(queryClient.invalidateQueries("pantry-items"));
     },
 
 };
