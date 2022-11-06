@@ -1,5 +1,6 @@
 import React from "react";
 import { Redirect } from "react-router-dom";
+import PropTypes from "prop-types";
 
 function getUrlParameter(name, location) {
     name = name.replace(/[[]/, "\\[").replace(/[\]]/, "\\]");
@@ -23,10 +24,14 @@ const OAuth2RedirectHandler = ({location}) => {
             pathname: "/login",
             state: {
                 from: location,
-                error: error
-            }
-        }}/>;
+                error: error,
+            },
+        }} />;
     }
+};
+
+OAuth2RedirectHandler.propTypes = {
+    location: PropTypes.object.isRequired,
 };
 
 export default OAuth2RedirectHandler;

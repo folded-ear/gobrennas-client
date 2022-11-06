@@ -9,6 +9,7 @@ import {
 } from "@material-ui/icons";
 import React from "react";
 import useActivePlannerLO from "../data/useActivePlannerLO";
+import PropTypes from "prop-types";
 
 const useStyles = makeStyles({
     button: {
@@ -49,6 +50,11 @@ const SendToPlan = ({onClick, iconOnly}) => {
             </span>
         </Button>;
     }
+};
+
+SendToPlan.propTypes = {
+    onClick: PropTypes.func.isRequired,
+    iconOnly: PropTypes.bool,
 };
 
 export default SendToPlan;
