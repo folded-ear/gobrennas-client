@@ -1,0 +1,84 @@
+# This file was generated based on ".graphqlconfig". Do not edit manually.
+
+schema {
+    query: Query
+}
+
+interface AccessControlled {
+    grants: [AccessControlEntry]
+    id: ID!
+    owner: User
+}
+
+interface Node {
+    id: ID!
+}
+
+type AccessControlEntry {
+    level: AccessLevel
+    user: User
+}
+
+type Plan implements AccessControlled & Node {
+    buckets: [PlanBucket]
+    grants: [AccessControlEntry]
+    id: ID!
+    name: String!
+    owner: User
+}
+
+type PlanBucket {
+    date: Date!
+    id: ID!
+    name: String!
+}
+
+"Represents a single item on a plan"
+type PlanItem implements Node {
+    bucket: PlanBucket
+    components: [PlanItem]
+    id: ID!
+    name: String!
+    notes: String
+    parent: PlanItem
+    preparation: String
+    quantity: NonNegativeFloat
+    status: TaskStatus!
+    subtasks: [PlanItem]
+    units: String
+}
+
+type Query {
+    getCurrentUser: User
+    getPlanItem(id: ID!): PlanItem
+    getPlans: [Plan]
+    node(id: ID!): Node
+}
+
+type User {
+    email: String
+    id: ID!
+    imageUrl: String
+    name: String
+    provider: String
+}
+
+enum AccessLevel {
+    ADMINISTER
+    CHANGE
+    VIEW
+}
+
+"enum"
+enum TaskStatus {
+    ACQUIRED
+    COMPLETED
+    DELETED
+    NEEDED
+}
+
+"An RFC-3339 compliant Full Date Scalar"
+scalar Date
+
+"An Float scalar that must be greater than or equal to zero"
+scalar NonNegativeFloat

@@ -12,6 +12,7 @@ import SharedRecipe from "./views/cook/SharedRecipe";
 import Landing from "./views/Landing";
 import Pantry from "./views/pantry/Pantry";
 import OAuth2RedirectHandler from "./views/user/OAuth2RedirectHandler";
+import {UserProfileView} from "./views/UserProfile/UserProfileView";
 import Profile from "./views/user/Profile";
 
 const routes = {
@@ -21,6 +22,7 @@ const routes = {
         {path: "/share/recipe/:slug/:secret/:id", component: SharedRecipe },
     ],
     private: [
+        {path: "/user-profile",  component: UserProfileView},
         {path: "/profile",  component: Profile},
         {path: "/library/recipe/:id/edit", component: RecipeEdit},
         {path: "/library/recipe/:id/make-copy", component: RecipeAdd},

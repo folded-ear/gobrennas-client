@@ -10,6 +10,7 @@ import { ProfileProvider } from "./providers/Profile";
 import * as serviceWorkerRegistration from "./serviceWorkerRegistration";
 import debounce from "./util/debounce";
 import history from "./util/history";
+import {ApolloClient} from "./providers/ApolloClient";
 
 if (process.env.NODE_ENV === "development") {
     Dispatcher.register(require("./util/logAction").default);
@@ -18,6 +19,7 @@ if (process.env.NODE_ENV === "development") {
 ReactDOM.render(
     [
         React.StrictMode,
+        ApolloClient,
         AuthTokenProvider,
         ProfileProvider,
         IsMobileProvider,
