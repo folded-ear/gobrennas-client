@@ -11,6 +11,9 @@ import * as serviceWorkerRegistration from "./serviceWorkerRegistration";
 import debounce from "./util/debounce";
 import history from "./util/history";
 import {ApolloClient} from "./providers/ApolloClient";
+import { QueryClientProvider } from "react-query";
+import PantryItemSynchronizer from "./data/PantryItemSynchronizer";
+import queryClient from "./data/queryClient";
 
 if (process.env.NODE_ENV === "development") {
     Dispatcher.register(require("./util/logAction").default);
@@ -25,9 +28,12 @@ ReactDOM.render(
         IsMobileProvider,
     ].reverse().reduce(
         (kids, Decorator) => <Decorator>{kids}</Decorator>,
-        <Router history={history}>
-            <App />
-        </Router>,
+        <QueryClientProvider client={queryClient}>
+            <Router history={history}>
+                <PantryItemSynchronizer />
+                <App />
+            </Router>
+        </QueryClientProvider>,
     ),
     document.getElementById("root"),
 );
