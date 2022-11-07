@@ -14,16 +14,16 @@ import {
     Delete as DeleteIcon,
 } from "@material-ui/icons";
 import React from "react";
-import dispatcher from "../../data/dispatcher";
-import TaskActions from "../../data/TaskActions";
-import TaskStore from "../../data/TaskStore";
-import useFluxStore from "../../data/useFluxStore";
+import dispatcher from "data/dispatcher";
+import TaskActions from "features/Planner/data/TaskActions";
+import TaskStore from "features/Planner/data/TaskStore";
+import useFluxStore from "data/useFluxStore";
 import {
     formatLocalDate,
     parseLocalDate,
-} from "../../util/time";
-import LocalTextField from "../common/LocalTextField";
-import getBucketLabel from "./getBucketLabel";
+} from "util/time";
+import LocalTextField from "views/common/LocalTextField";
+import getBucketLabel from "features/Planner/components/getBucketLabel";
 
 const BucketManager = () => {
     const {

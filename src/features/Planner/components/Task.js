@@ -3,27 +3,27 @@ import Input from "@material-ui/core/Input";
 import classnames from "classnames";
 import PropTypes from "prop-types";
 import React from "react";
-import Dispatcher from "../../data/dispatcher";
-import TaskActions from "../../data/TaskActions";
+import Dispatcher from "data/dispatcher";
+import TaskActions from "features/Planner/data/TaskActions";
 import {
     isExpanded,
     isParent,
     isQuestionable,
     isSection,
-} from "../../data/tasks";
-import TaskStatus from "../../data/TaskStatus";
-import TaskStore, { bucketType } from "../../data/TaskStore";
-import LoadObject from "../../util/LoadObject";
-import LoadingIconButton from "../common/LoadingIconButton";
-import PlaceholderIconButton from "../common/PlaceholderIconButton";
-import IngredientItem from "../IngredientItem";
-import CollapseIconButton from "./CollapseIconButton";
-import CookButton from "./CookButton";
-import DontChangeStatusButton from "./DontChangeStatusButton";
-import Item from "./Item";
-import StatusIconButton from "./StatusIconButton";
-import TaskBucketChip from "./TaskBucketChip";
-import withItemStyles from "./withItemStyles";
+} from "features/Planner/data/tasks";
+import TaskStatus from "features/Planner/data/TaskStatus";
+import TaskStore, { bucketType } from "features/Planner/data/TaskStore";
+import LoadObject from "util/LoadObject";
+import LoadingIconButton from "views/common/LoadingIconButton";
+import PlaceholderIconButton from "views/common/PlaceholderIconButton";
+import IngredientItem from "views/IngredientItem";
+import CollapseIconButton from "global/components/CollapseIconButton";
+import CookButton from "features/Planner/components/CookButton";
+import DontChangeStatusButton from "features/Planner/components/DontChangeStatusButton";
+import Item from "features/Planner/components/Item";
+import StatusIconButton from "features/Planner/components/StatusIconButton";
+import TaskBucketChip from "features/Planner/components/TaskBucketChip";
+import withItemStyles from "features/Planner/components/withItemStyles";
 
 class Task extends React.PureComponent {
 

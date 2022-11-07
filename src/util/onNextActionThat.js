@@ -1,4 +1,4 @@
-import Dispatcher from "../data/dispatcher";
+import Dispatcher from "data/dispatcher";
 
 /*
  * I am an attempt to provide a graceful way to hook actions from w/in action

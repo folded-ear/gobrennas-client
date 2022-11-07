@@ -21,7 +21,7 @@ import {
     Link,
     withRouter,
 } from "react-router-dom";
-import useIsDevMode from "../data/useIsDevMode";
+import useIsDevMode from "data/useIsDevMode";
 import { useLogoutHandler } from "../providers/Profile";
 import theme from "../theme";
 import Logo from "../views/common/Logo";

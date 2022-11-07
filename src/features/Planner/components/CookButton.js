@@ -5,7 +5,7 @@ import {
 import { Kitchen } from "@material-ui/icons";
 import PropTypes from "prop-types";
 import React from "react";
-import history from "../../util/history";
+import history from "util/history";
 
 const CookButton = ({planId, taskId, ...props}) => {
     return (

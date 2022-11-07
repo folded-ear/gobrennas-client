@@ -1,4 +1,4 @@
-import Dispatcher from "../data/dispatcher";
+import Dispatcher from "data/dispatcher";
 
 const timeoutRegistry = new Map();
 

@@ -1,7 +1,7 @@
 import PropTypes from "prop-types";
 import React from "react";
-import useFriendLO from "../../data/useFriendLO";
-import User from "./User";
+import useFriendLO from "data/useFriendLO";
+import User from "views/user/User";
 
 const UserById = ({id, iconOnly}) => {
     const user = useFriendLO(id).getValue();

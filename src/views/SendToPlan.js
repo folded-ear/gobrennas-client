@@ -8,7 +8,7 @@ import {
     ExitToApp,
 } from "@material-ui/icons";
 import React from "react";
-import useActivePlannerLO from "../data/useActivePlannerLO";
+import useActivePlannerLO from "data/useActivePlannerLO";
 import PropTypes from "prop-types";
 
 const useStyles = makeStyles({

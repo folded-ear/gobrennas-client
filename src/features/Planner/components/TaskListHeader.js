@@ -15,16 +15,16 @@ import {
 } from "@material-ui/icons";
 import PropTypes from "prop-types";
 import React from "react";
-import Dispatcher from "../data/dispatcher";
-import TaskActions from "../data/TaskActions";
-import { byNameComparator } from "../util/comparators";
+import Dispatcher from "data/dispatcher";
+import TaskActions from "features/Planner/data/TaskActions";
+import { byNameComparator } from "util/comparators";
 import {
     CollapseAll,
     ExpandAll,
-} from "./common/icons";
-import SplitButton from "./common/SplitButton";
-import TaskListSidebar from "./TaskListSidebar";
-import UserById from "./user/UserById";
+} from "views/common/icons";
+import SplitButton from "views/common/SplitButton";
+import TaskListSidebar from "features/Planner/components/TaskListSidebar";
+import UserById from "features/Planner/components/UserById";
 
 const isValidName = name =>
     name != null && name.trim().length > 0;

@@ -1,9 +1,9 @@
 import { makeStyles } from "@material-ui/core/styles";
 import PropTypes from "prop-types";
 import React from "react";
-import { findSvg } from "../util/findAncestorByName";
-import getPositionWithin from "../util/getPositionWithin";
-import ImageOrPreview from "./common/ImageOrPreview";
+import { findSvg } from "util/findAncestorByName";
+import getPositionWithin from "util/getPositionWithin";
+import ImageOrPreview from "views/common/ImageOrPreview";
 
 const useStyles = makeStyles(theme => ({
     root: {

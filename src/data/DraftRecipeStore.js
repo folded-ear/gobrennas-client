@@ -1,9 +1,9 @@
 import dotProp from "dot-prop-immutable";
 import { ReduceStore } from "flux/utils";
-import ClientId from "../util/ClientId";
-import history from "../util/history";
-import LoadObject from "../util/LoadObject";
-import { toMilliseconds } from "../util/time";
+import ClientId from "util/ClientId";
+import history from "util/history";
+import LoadObject from "util/LoadObject";
+import { toMilliseconds } from "util/time";
 import Dispatcher from "./dispatcher";
 import LibraryActions from "features/RecipeLibrary/data/LibraryActions";
 import LibraryStore from "features/RecipeLibrary/data/LibraryStore";

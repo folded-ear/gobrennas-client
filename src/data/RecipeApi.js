@@ -1,7 +1,7 @@
 import BaseAxios from "axios";
 import { API_BASE_URL } from "../constants/index";
-import promiseFlux from "../util/promiseFlux";
-import promiseWellSizedFile from "../util/promiseWellSizedFile";
+import promiseFlux from "util/promiseFlux";
+import promiseWellSizedFile from "util/promiseWellSizedFile";
 import RecipeActions from "./RecipeActions";
 
 const axios = BaseAxios.create({

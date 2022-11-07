@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import typedAction from "../util/typedAction";
+import typedAction from "util/typedAction";
 
 const dissectionComponentType = PropTypes.shape({
     start: PropTypes.number.isRequired,

@@ -1,12 +1,12 @@
 import React from "react";
 import { Redirect } from "react-router-dom";
 import {LibraryController as Library} from "features/RecipeLibrary/LibraryController";
+import {PlannerController as Planner} from "features/Planner/PlannerController";
 import PlannedBucket from "./containers/PlannedBucket";
 import PlannedRecipe from "./containers/PlannedRecipe";
 import Recipe from "./containers/Recipe";
 import RecipeEdit from "./containers/RecipeEdit";
 import Shop from "./containers/Shop";
-import Tasks from "./containers/Tasks";
 import RecipeAdd from "./views/cook/RecipeAdd";
 import SharedRecipe from "./views/cook/SharedRecipe";
 import Landing from "./views/Landing";
@@ -33,7 +33,7 @@ const routes = {
         {path: "/tasks", component: () => <Redirect to="/plan" />},
         {path: "/plan/:pid/recipe/:rid", component: PlannedRecipe},
         {path: "/plan/:pid/bucket/:bid", component: PlannedBucket},
-        {path: "/plan", component: Tasks},
+        {path: "/plan", component: Planner},
         {path: "/shop", component: Shop},
         {path: "/pantry", component: Pantry},
     ]

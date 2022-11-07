@@ -1,6 +1,6 @@
 import PropTypes from "prop-types";
-import { clientOrDatabaseIdType } from "../util/ClientId";
-import typedAction from "../util/typedAction";
+import { clientOrDatabaseIdType } from "util/ClientId";
+import typedAction from "util/typedAction";
 
 const TaskActions = {
     // user actions (client-only)

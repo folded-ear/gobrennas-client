@@ -10,17 +10,17 @@ import Select from "@material-ui/core/Select";
 import TextField from "@material-ui/core/TextField";
 import PropTypes from "prop-types";
 import React from "react";
-import AccessLevel, { includesLevel } from "../data/AccessLevel";
-import Dispatcher from "../data/dispatcher";
-import FriendStore from "../data/FriendStore";
-import TaskActions from "../data/TaskActions";
-import useFluxStore from "../data/useFluxStore";
-import { useProfileLO } from "../providers/Profile";
-import DeleteButton from "./common/DeleteButton";
-import LoadingIndicator from "./common/LoadingIndicator";
-import PlanBucketManager from "./plan/PlanBucketManager";
-import SidebarUnit from "./plan/SidebarUnit";
-import User from "./user/User";
+import AccessLevel, { includesLevel } from "data/AccessLevel";
+import Dispatcher from "data/dispatcher";
+import FriendStore from "data/FriendStore";
+import TaskActions from "features/Planner/data/TaskActions";
+import useFluxStore from "data/useFluxStore";
+import { useProfileLO } from "providers/Profile";
+import DeleteButton from "views/common/DeleteButton";
+import LoadingIndicator from "views/common/LoadingIndicator";
+import PlanBucketManager from "features/Planner/components/PlanBucketManager";
+import SidebarUnit from "features/Planner/components/SidebarUnit";
+import User from "views/user/User";
 
 const LEVEL_NO_ACCESS = "NO_ACCESS";
 

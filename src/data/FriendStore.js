@@ -1,8 +1,8 @@
 import BaseAxios from "axios";
 import { ReduceStore } from "flux/utils";
 import { API_BASE_URL } from "../constants/index";
-import LoadObjectState from "../util/LoadObjectState";
-import promiseFlux from "../util/promiseFlux";
+import LoadObjectState from "util/LoadObjectState";
+import promiseFlux from "util/promiseFlux";
 import Dispatcher from "./dispatcher";
 import FriendActions from "./FriendActions";
 

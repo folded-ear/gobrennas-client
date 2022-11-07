@@ -1,11 +1,11 @@
 import PropTypes from "prop-types";
 import React from "react";
 import { Redirect } from "react-router-dom";
-import FriendStore from "../data/FriendStore";
+import FriendStore from "data/FriendStore";
 import LibraryStore from "features/RecipeLibrary/data/LibraryStore";
-import useFluxStore from "../data/useFluxStore";
+import useFluxStore from "data/useFluxStore";
 import { useProfileLO } from "../providers/Profile";
-import LoadObject from "../util/LoadObject";
+import LoadObject from "util/LoadObject";
 import LoadingIndicator from "../views/common/LoadingIndicator";
 import RecipeDetail from "../views/cook/RecipeDetail";
 

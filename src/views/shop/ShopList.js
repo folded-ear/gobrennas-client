@@ -3,15 +3,15 @@ import List from "@material-ui/core/List";
 import Add from "@material-ui/icons/Add";
 import PropTypes from "prop-types";
 import React from "react";
-import Dispatcher from "../../data/dispatcher";
-import ShoppingActions from "../../data/ShoppingActions";
-import { clientOrDatabaseIdType } from "../../util/ClientId";
-import { loadObjectOf } from "../../util/loadObjectTypes";
-import FoodingerFab from "../common/FoodingerFab";
-import LoadingIndicator from "../common/LoadingIndicator";
-import PageBody from "../common/PageBody";
-import Ingredient from "./IngredientItem";
-import TaskItem from "./TaskItem";
+import Dispatcher from "data/dispatcher";
+import ShoppingActions from "data/ShoppingActions";
+import { clientOrDatabaseIdType } from "util/ClientId";
+import { loadObjectOf } from "util/loadObjectTypes";
+import FoodingerFab from "views/common/FoodingerFab";
+import LoadingIndicator from "views/common/LoadingIndicator";
+import PageBody from "views/common/PageBody";
+import Ingredient from "views/shop/IngredientItem";
+import TaskItem from "views/shop/TaskItem";
 import {
     baseItemPropTypes,
     itemPropTypes,

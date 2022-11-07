@@ -1,9 +1,9 @@
 import React from "react";
 import LibraryStore from "features/RecipeLibrary/data/LibraryStore";
-import { isExpanded } from "../data/tasks";
-import TaskStore from "../data/TaskStore";
-import useFluxStore from "../data/useFluxStore";
-import TaskList from "../views/plan/TaskList";
+import { isExpanded } from "features/Planner/data/tasks";
+import TaskStore from "features/Planner/data/TaskStore";
+import useFluxStore from "data/useFluxStore";
+import TaskList from "features/Planner/components/TaskList";
 
 const listTheTree = (id, ancestorDeleting=false, depth=0) => {
     const list = TaskStore.getSubtaskLOs(id).map(lo => ({
@@ -35,7 +35,7 @@ const listTheTree = (id, ancestorDeleting=false, depth=0) => {
     return list;
 };
 
-const Tasks = () => {
+export const PlannerController = () => {
     const state = useFluxStore(
         () => {
             const allLists = TaskStore.getLists();
@@ -64,5 +64,3 @@ const Tasks = () => {
     );
     return <TaskList {...state} />;
 };
-
-export default Tasks;

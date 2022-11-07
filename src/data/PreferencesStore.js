@@ -4,10 +4,10 @@ import { LOCAL_STORAGE_PREFERENCES } from "../constants/index";
 import {
     getJsonItem,
     setJsonItem,
-} from "../util/storage";
+} from "util/storage";
 import Dispatcher from "./dispatcher";
-import TaskActions from "./TaskActions";
-import TaskStore from "./TaskStore";
+import TaskActions from "features/Planner/data/TaskActions";
+import TaskStore from "features/Planner/data/TaskStore";
 import UserActions from "./UserActions";
 
 const Prefs = {

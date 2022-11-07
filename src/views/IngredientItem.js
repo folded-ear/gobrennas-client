@@ -6,12 +6,12 @@ import { makeStyles } from "@material-ui/core/styles";
 import LinkIcon from "@material-ui/icons/Link";
 import PropTypes from "prop-types";
 import React from "react";
-import Dispatcher from "../data/dispatcher";
-import PantryItemActions from "../data/PantryItemActions";
-import { IngredientRef } from "../data/RecipeTypes";
-import TaskActions from "../data/TaskActions";
-import history from "../util/history";
-import Quantity from "./common/Quantity";
+import Dispatcher from "data/dispatcher";
+import PantryItemActions from "data/PantryItemActions";
+import { IngredientRef } from "data/RecipeTypes";
+import TaskActions from "features/Planner/data/TaskActions";
+import history from "util/history";
+import Quantity from "views/common/Quantity";
 import SendToPlan from "./SendToPlan";
 
 const useStyles = makeStyles(() => ({

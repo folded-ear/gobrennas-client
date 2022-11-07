@@ -10,13 +10,13 @@ import {
 } from "@material-ui/icons";
 import PropTypes from "prop-types";
 import React from "react";
-import dispatcher from "../../data/dispatcher";
-import TaskActions from "../../data/TaskActions";
-import { bucketType } from "../../data/TaskStore";
-import { clientOrDatabaseIdType } from "../../util/ClientId";
-import history from "../../util/history";
-import { humanDate } from "../../util/time";
-import getBucketLabel from "./getBucketLabel";
+import dispatcher from "data/dispatcher";
+import TaskActions from "features/Planner/data/TaskActions";
+import { bucketType } from "features/Planner/data/TaskStore";
+import { clientOrDatabaseIdType } from "util/ClientId";
+import history from "util/history";
+import { humanDate } from "util/time";
+import getBucketLabel from "features/Planner/components/getBucketLabel";
 
 const BucketChip = ({
     planId,

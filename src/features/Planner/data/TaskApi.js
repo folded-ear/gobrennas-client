@@ -1,8 +1,8 @@
 import BaseAxios from "axios";
-import { API_BASE_URL } from "../constants/index";
-import promiseFlux from "../util/promiseFlux";
-import serializeObjectOfPromiseFns from "../util/serializeObjectOfPromiseFns";
-import TaskActions from "./TaskActions";
+import { API_BASE_URL } from "constants/index";
+import promiseFlux from "util/promiseFlux";
+import serializeObjectOfPromiseFns from "util/serializeObjectOfPromiseFns";
+import TaskActions from "features/Planner/data/TaskActions";
 
 const axios = BaseAxios.create({
     baseURL: `${API_BASE_URL}/api/tasks`,

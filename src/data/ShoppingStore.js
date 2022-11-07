@@ -1,10 +1,10 @@
 import { ReduceStore } from "flux/utils";
 import PropTypes from "prop-types";
-import typedStore from "../util/typedStore";
+import typedStore from "util/typedStore";
 import Dispatcher from "./dispatcher";
 import PantryItemActions from "./PantryItemActions";
 import ShoppingActions from "./ShoppingActions";
-import TaskStore from "./TaskStore";
+import TaskStore from "features/Planner/data/TaskStore";
 
 const placeFocus = (state, id, type) => ({
     ...state,

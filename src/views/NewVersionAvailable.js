@@ -1,8 +1,8 @@
 import Button from "@material-ui/core/Button";
 import React from "react";
-import Dispatcher from "../data/dispatcher";
-import WindowActions from "../data/WindowActions";
-import Banner from "./common/Banner";
+import Dispatcher from "data/dispatcher";
+import WindowActions from "data/WindowActions";
+import Banner from "views/common/Banner";
 
 const NewVersionAvailable = () =>
     <Banner

@@ -5,14 +5,14 @@ import PropTypes from "prop-types";
 import React from "react";
 import Dispatcher from "../../data/dispatcher";
 import ShoppingActions from "../../data/ShoppingActions";
-import TaskStatus from "../../data/TaskStatus";
+import TaskStatus from "features/Planner/data/TaskStatus";
 import LoadingIconButton from "../common/LoadingIconButton";
 import PlaceholderIconButton from "../common/PlaceholderIconButton";
 import IngredientItem from "../IngredientItem";
-import DontChangeStatusButton from "../plan/DontChangeStatusButton";
-import Item from "../plan/Item";
-import StatusIconButton from "../plan/StatusIconButton";
-import withItemStyles from "../plan/withItemStyles";
+import DontChangeStatusButton from "features/Planner/components/DontChangeStatusButton";
+import Item from "features/Planner/components/Item";
+import StatusIconButton from "features/Planner/components/StatusIconButton";
+import withItemStyles from "features/Planner/components/withItemStyles";
 import {
     baseItemPropTypes,
     itemPropTypes,

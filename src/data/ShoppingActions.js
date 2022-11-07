@@ -1,4 +1,4 @@
-import TaskActions from "./TaskActions";
+import TaskActions from "features/Planner/data/TaskActions";
 
 const ShoppingActions = {
     TOGGLE_PLAN: "shopping/toggle-plan",

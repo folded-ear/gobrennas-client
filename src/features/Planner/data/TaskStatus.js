@@ -9,7 +9,7 @@ import {
     completeColor,
     deleteColor,
     neededColor,
-} from "../views/common/colors";
+} from "views/common/colors";
 
 const TaskStatus = {
     NEEDED: "NEEDED",

@@ -1,4 +1,4 @@
-import { humanDate } from "../../util/time";
+import { humanDate } from "util/time";
 
 const getBucketLabel = b => {
     if (b.name) return b.name;

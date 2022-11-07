@@ -1,12 +1,12 @@
 import PropTypes from "prop-types";
 import React from "react";
 import LibraryStore from "features/RecipeLibrary/data/LibraryStore";
-import TaskStore from "../data/TaskStore";
-import useFluxStore from "../data/useFluxStore";
-import LoadObject from "../util/LoadObject";
-import LoadingIndicator from "../views/common/LoadingIndicator";
-import RecipeDetail from "../views/cook/RecipeDetail";
-import getBucketLabel from "../views/plan/getBucketLabel";
+import TaskStore from "features/Planner/data/TaskStore";
+import useFluxStore from "data/useFluxStore";
+import LoadObject from "util/LoadObject";
+import LoadingIndicator from "views/common/LoadingIndicator";
+import RecipeDetail from "views/cook/RecipeDetail";
+import getBucketLabel from "features/Planner/components/getBucketLabel";
 import {
     buildFullRecipeLO as buildSingleTaskRecipeLO,
     useLoadedPlan,

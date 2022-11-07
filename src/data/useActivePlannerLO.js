@@ -1,4 +1,4 @@
-import TaskStore from "./TaskStore";
+import TaskStore from "features/Planner/data/TaskStore";
 import useFluxStore from "./useFluxStore";
 
 const useActivePlannerLO = () => useFluxStore(

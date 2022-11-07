@@ -5,16 +5,16 @@ import React from "react";
 import Dispatcher from "../../data/dispatcher";
 import PantryItemActions from "../../data/PantryItemActions";
 import ShoppingActions from "../../data/ShoppingActions";
-import TaskStatus from "../../data/TaskStatus";
+import TaskStatus from "features/Planner/data/TaskStatus";
 import { clientOrDatabaseIdType } from "../../util/ClientId";
 import LoadingIconButton from "../common/LoadingIconButton";
 import OxfordList from "../common/OxfordList";
 import Quantity from "../common/Quantity";
-import CollapseIconButton from "../plan/CollapseIconButton";
-import DontChangeStatusButton from "../plan/DontChangeStatusButton";
-import Item from "../plan/Item";
-import StatusIconButton from "../plan/StatusIconButton";
-import withItemStyles from "../plan/withItemStyles";
+import CollapseIconButton from "global/components/CollapseIconButton";
+import DontChangeStatusButton from "features/Planner/components/DontChangeStatusButton";
+import Item from "features/Planner/components/Item";
+import StatusIconButton from "features/Planner/components/StatusIconButton";
+import withItemStyles from "features/Planner/components/withItemStyles";
 import {
     itemPropTypes,
     tuplePropTypes,

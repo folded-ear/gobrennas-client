@@ -6,7 +6,7 @@ import {
     neededColor,
     questionColor,
     selectionColor,
-} from "../common/colors";
+} from "views/common/colors";
 
 const withItemStyles = withStyles({
     text: {

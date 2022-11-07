@@ -5,16 +5,16 @@ import {
 import Add from "@material-ui/icons/Add";
 import PropTypes from "prop-types";
 import React from "react";
-import Dispatcher from "../../data/dispatcher";
-import TaskActions from "../../data/TaskActions";
-import { isParent } from "../../data/tasks";
-import LoadObject from "../../util/LoadObject";
-import FoodingerFab from "../common/FoodingerFab";
-import LoadingIndicator from "../common/LoadingIndicator";
-import PageBody from "../common/PageBody";
-import TaskListHeader from "../TaskListHeader";
-import LoadingTask from "./LoadingTask";
-import Task from "./Task";
+import Dispatcher from "data/dispatcher";
+import TaskActions from "features/Planner/data/TaskActions";
+import { isParent } from "features/Planner/data/tasks";
+import LoadObject from "util/LoadObject";
+import FoodingerFab from "views/common/FoodingerFab";
+import LoadingIndicator from "views/common/LoadingIndicator";
+import PageBody from "views/common/PageBody";
+import TaskListHeader from "features/Planner/components/TaskListHeader";
+import LoadingTask from "features/Planner/components/LoadingTask";
+import Task from "features/Planner/components/Task";
 
 function TaskList(props) {
     const {

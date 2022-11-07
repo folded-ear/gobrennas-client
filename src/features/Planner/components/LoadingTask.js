@@ -2,7 +2,7 @@ import grey from "@material-ui/core/colors/grey";
 import ListItemText from "@material-ui/core/ListItemText";
 import PropTypes from "prop-types";
 import React from "react";
-import LoadingIconButton from "../common/LoadingIconButton";
+import LoadingIconButton from "views/common/LoadingIconButton";
 import Item from "./Item";
 
 function LoadingTask({

@@ -1,4 +1,4 @@
-import Dispatcher from "../data/dispatcher";
+import Dispatcher from "data/dispatcher";
 
 // this will be given jitter of up to 50% in either direction
 const ARTIFICIAL_SETTLEMENT_DELAY = 150;

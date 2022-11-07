@@ -11,9 +11,9 @@ import {
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import PropTypes from "prop-types";
 import React from "react";
-import ItemApi from "../data/ItemApi";
-import debounce from "../util/debounce";
-import processRecognizedItem from "../util/processRecognizedItem";
+import ItemApi from "data/ItemApi";
+import debounce from "util/debounce";
+import processRecognizedItem from "util/processRecognizedItem";
 
 const doRecog = raw =>
     raw != null && raw.trim().length >= 2;

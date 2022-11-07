@@ -1,10 +1,10 @@
 import PropTypes from "prop-types";
 import React from "react";
-import Dispatcher from "../../data/dispatcher";
-import TaskActions from "../../data/TaskActions";
-import TaskStatus, { getColorForStatus } from "../../data/TaskStatus";
-import { clientOrDatabaseIdType } from "../../util/ClientId";
-import { coloredButton } from "../common/colors";
+import Dispatcher from "data/dispatcher";
+import TaskActions from "features/Planner/data/TaskActions";
+import TaskStatus, { getColorForStatus } from "features/Planner/data/TaskStatus";
+import { clientOrDatabaseIdType } from "util/ClientId";
+import { coloredButton } from "views/common/colors";
 
 const buttonLookup = {}; // Map<next, Button>
 const findButton = next => {
