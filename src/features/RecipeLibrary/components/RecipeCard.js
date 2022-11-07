@@ -13,20 +13,20 @@ import {
 import PropTypes from "prop-types";
 import React from "react";
 import { Link } from "react-router-dom";
-import Dispatcher from "../../data/dispatcher";
-import FriendStore from "../../data/FriendStore";
-import RecipeActions from "../../data/RecipeActions";
-import { Recipe } from "../../data/RecipeTypes";
-import useFluxStore from "../../data/useFluxStore";
-import { loadObjectOf } from "../../util/loadObjectTypes";
-import { formatDuration } from "../../util/time";
-import RecipeInfo from "../common/RecipeInfo";
-import Source from "../common/Source";
-import LabelItem from "../LabelItem";
-import SendToPlan from "../SendToPlan";
-import User from "../user/User";
-import ItemImage from "./ItemImage";
-import ItemImageUpload from "./ItemImageUpload";
+import Dispatcher from "data/dispatcher";
+import FriendStore from "data/FriendStore";
+import RecipeActions from "data/RecipeActions";
+import { Recipe } from "data/RecipeTypes";
+import useFluxStore from "data/useFluxStore";
+import { loadObjectOf } from "util/loadObjectTypes";
+import { formatDuration } from "util/time";
+import RecipeInfo from "views/common/RecipeInfo";
+import Source from "views/common/Source";
+import LabelItem from "features/RecipeLibrary/components/LabelItem";
+import SendToPlan from "features/RecipeLibrary/components/SendToPlan";
+import User from "views/user/User";
+import ItemImage from "features/RecipeLibrary/components/ItemImage";
+import ItemImageUpload from "features/RecipeLibrary/components/ItemImageUpload";
 
 const useStyles = makeStyles({
     photo: {

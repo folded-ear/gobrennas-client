@@ -2,26 +2,26 @@ import { ReduceStore } from "flux/utils";
 import invariant from "invariant";
 import PropTypes from "prop-types";
 import qs from "qs";
-import { removeDistinct } from "../util/arrayAsSet";
-import { clientOrDatabaseIdType } from "../util/ClientId";
-import debounce from "../util/debounce";
-import history from "../util/history";
-import LoadObject from "../util/LoadObject";
-import LoadObjectMap from "../util/LoadObjectMap";
-import LoadObjectState from "../util/LoadObjectState";
+import { removeDistinct } from "util/arrayAsSet";
+import { clientOrDatabaseIdType } from "util/ClientId";
+import debounce from "util/debounce";
+import history from "util/history";
+import LoadObject from "util/LoadObject";
+import LoadObjectMap from "util/LoadObjectMap";
+import LoadObjectState from "util/LoadObjectState";
 import {
     loadObjectMapOf,
     loadObjectStateOf,
-} from "../util/loadObjectTypes";
-import { fromMilliseconds } from "../util/time";
-import typedStore from "../util/typedStore";
-import Dispatcher from "./dispatcher";
+} from "util/loadObjectTypes";
+import { fromMilliseconds } from "util/time";
+import typedStore from "util/typedStore";
+import Dispatcher from "data/dispatcher";
 import LibraryActions from "./LibraryActions";
-import LibraryApi from "./LibraryApi";
-import PantryItemActions from "./PantryItemActions";
-import RecipeActions from "./RecipeActions";
-import RecipeApi from "./RecipeApi";
-import RouteActions from "./RouteActions";
+import LibraryApi from "features/RecipeLibrary/data/LibraryApi";
+import PantryItemActions from "data/PantryItemActions";
+import RecipeActions from "data/RecipeActions";
+import RecipeApi from "data/RecipeApi";
+import RouteActions from "data/RouteActions";
 
 export const SCOPE_MINE = "mine";
 export const SCOPE_EVERYONE = "everyone";

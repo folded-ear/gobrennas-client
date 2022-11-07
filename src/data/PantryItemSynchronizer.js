@@ -1,7 +1,7 @@
 import React from "react";
 import { useQuery } from "react-query";
-import LibraryApi from "./LibraryApi";
-import LibraryActions from "./LibraryActions";
+import LibraryApi from "features/RecipeLibrary/data/LibraryApi";
+import LibraryActions from "features/RecipeLibrary/data/LibraryActions";
 import Dispatcher from "./dispatcher";
 
 function PantryItemSynchronizer() {

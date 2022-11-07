@@ -12,21 +12,21 @@ import { makeStyles } from "@material-ui/core/styles";
 import { PostAdd } from "@material-ui/icons";
 import PropTypes from "prop-types";
 import React from "react";
-import dispatcher from "../../data/dispatcher";
-import Dispatcher from "../../data/dispatcher";
-import LibraryActions from "../../data/LibraryActions";
+import dispatcher from "data/dispatcher";
+import Dispatcher from "data/dispatcher";
+import LibraryActions from "features/RecipeLibrary/data/LibraryActions";
 import {
     SCOPE_EVERYONE,
     SCOPE_MINE,
-} from "../../data/LibraryStore";
-import { Recipe } from "../../data/RecipeTypes";
-import history from "../../util/history";
-import { loadObjectOf } from "../../util/loadObjectTypes";
-import FoodingerFab from "../common/FoodingerFab";
-import LazyInfinite from "../common/LazyInfinite";
-import LoadingIndicator from "../common/LoadingIndicator";
-import RecipeCard from "./RecipeCard";
-import SearchFilter from "./SearchFilter";
+} from "features/RecipeLibrary/data/LibraryStore";
+import { Recipe } from "data/RecipeTypes";
+import history from "util/history";
+import { loadObjectOf } from "util/loadObjectTypes";
+import FoodingerFab from "views/common/FoodingerFab";
+import LazyInfinite from "views/common/LazyInfinite";
+import LoadingIndicator from "views/common/LoadingIndicator";
+import RecipeCard from "features/RecipeLibrary/components/RecipeCard";
+import SearchFilter from "features/RecipeLibrary/components/SearchFilter";
 
 const useStyles = makeStyles((theme) => ({
     search: {

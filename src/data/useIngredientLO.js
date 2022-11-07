@@ -1,4 +1,4 @@
-import LibraryStore from "./LibraryStore";
+import LibraryStore from "features/RecipeLibrary/data/LibraryStore";
 import useFluxStore from "./useFluxStore";
 
 const useIngredientLO = id => useFluxStore(

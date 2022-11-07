@@ -2,13 +2,13 @@ import BaseAxios from "axios";
 import PropTypes from "prop-types";
 import React from "react";
 import { Redirect } from "react-router-dom";
-import { API_BASE_URL } from "../../constants";
-import { buildFullRecipeLO } from "../../containers/Recipe";
-import Dispatcher from "../../data/dispatcher";
-import LibraryActions from "../../data/LibraryActions";
+import { API_BASE_URL } from "constants/index";
+import { buildFullRecipeLO } from "containers/Recipe";
+import Dispatcher from "data/dispatcher";
 import LoadObject from "../../util/LoadObject";
 import LoadingIndicator from "../common/LoadingIndicator";
 import RecipeDetail from "./RecipeDetail";
+import LibraryActions from "features/RecipeLibrary/data/LibraryActions";
 
 const axios = BaseAxios.create({
     baseURL: `${API_BASE_URL}/shared/recipe`,

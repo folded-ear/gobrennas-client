@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import React from "react";
 import typedStore from "../util/typedStore";
 import dispatcher from "./dispatcher";
-import LibraryStore from "./LibraryStore";
+import LibraryStore from "features/RecipeLibrary/data/LibraryStore";
 import PantryItemActions from "./PantryItemActions";
 import RecipeActions from "./RecipeActions";
 import TaskActions from "./TaskActions";

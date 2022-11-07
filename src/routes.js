@@ -1,6 +1,6 @@
 import React from "react";
 import { Redirect } from "react-router-dom";
-import Library from "./containers/Library";
+import {LibraryController as Library} from "features/RecipeLibrary/LibraryController";
 import PlannedBucket from "./containers/PlannedBucket";
 import PlannedRecipe from "./containers/PlannedRecipe";
 import Recipe from "./containers/Recipe";

@@ -2,7 +2,7 @@ import PropTypes from "prop-types";
 import React from "react";
 import { Redirect } from "react-router-dom";
 import FriendStore from "../data/FriendStore";
-import LibraryStore from "../data/LibraryStore";
+import LibraryStore from "features/RecipeLibrary/data/LibraryStore";
 import useFluxStore from "../data/useFluxStore";
 import { useProfileLO } from "../providers/Profile";
 import LoadObject from "../util/LoadObject";

@@ -1,6 +1,6 @@
 import PropTypes from "prop-types";
 import React from "react";
-import LibraryStore from "../data/LibraryStore";
+import LibraryStore from "features/RecipeLibrary/data/LibraryStore";
 import TaskStore from "../data/TaskStore";
 import useFluxStore from "../data/useFluxStore";
 import LoadObject from "../util/LoadObject";

@@ -1,7 +1,7 @@
 import { CardMedia } from "@material-ui/core";
 import PropTypes from "prop-types";
 import React from "react";
-import { Recipe } from "../../data/RecipeTypes";
+import { Recipe } from "data/RecipeTypes";
 
 const ItemImage = ({recipe, style, ...props}) => {
     const x = recipe.photoFocus ? recipe.photoFocus[0] * 100 : 50;

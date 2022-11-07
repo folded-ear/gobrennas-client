@@ -1,5 +1,5 @@
 import React from "react";
-import LibraryStore from "../data/LibraryStore";
+import LibraryStore from "features/RecipeLibrary/data/LibraryStore";
 import { isExpanded } from "../data/tasks";
 import TaskStore from "../data/TaskStore";
 import useFluxStore from "../data/useFluxStore";
