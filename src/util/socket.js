@@ -149,4 +149,4 @@ export class JsonSocketAdapter {
 
 }
 
-export default new JsonSocketAdapter();
+export default new JsonSocketAdapter(); // todo: cull

@@ -183,7 +183,7 @@ const refreshActiveListSubscription = state => {
 
 const subscribeToListUpdates = (state, id) => {
     state = doUnsub(state, "updateSub");
-    const updateSub = socket.subscribe(`/topic/plan/${id}`, ({body}) => {
+    const updateSub = socket.subscribe(`/topic/plan/${id}`, ({ body }) => { // todo: cull
         switch (body.type) {
             case "tree-mutation":
                 Dispatcher.dispatch({
@@ -413,7 +413,7 @@ const renameTask = (state, id, name) =>
 
 const assignToBucket = (state, id, bucketId) => {
     if (ClientId.is(id)) return state;
-    socket.publish(`/api/plan/${state.activeListId}/assign-bucket`, {
+    socket.publish(`/api/plan/${state.activeListId}/assign-bucket`, { // todo: replace
         id,
         bucketId,
     });
@@ -770,7 +770,7 @@ const mutateTree = (state, spec) => {
     }
     // ensure we're not positioning something based on itself
     if (spec.ids.some(id => id === spec.afterId)) return state;
-    socket.publish(`/api/plan/${state.activeListId}/mutate-tree`, spec);
+    socket.publish(`/api/plan/${state.activeListId}/mutate-tree`, spec); // todo: replace
     // do it now so the UI updates; the future message will be a race-y no-op
     return treeMutated(state, spec);
 };
@@ -1010,9 +1010,10 @@ const serializeBucket = b => b.date
 
 const saveBucket = (state, bucket) => {
     const action = ClientId.is(bucket.id) ? "create" : "update";
-    socket.publish(
+    socket.publish( // todo: replace
         `/api/plan/${state.activeListId}/buckets/${action}`,
-        serializeBucket(bucket));
+        serializeBucket(bucket),
+    );
 };
 
 const doInteractiveStatusChange = (state, id, status) => {
@@ -1346,7 +1347,10 @@ class TaskStore extends ReduceStore {
                 return mapPlanBuckets(state, action.planId, bs => {
                     const idx = bs.findIndex(b => b.id === action.id);
                     if (idx >= 0 && !ClientId.is(action.id)) {
-                        socket.publish(`/api/plan/${state.activeListId}/buckets/delete`, {id: action.id});
+                        socket.publish( // todo: replace
+                            `/api/plan/${state.activeListId}/buckets/delete`,
+                            { id: action.id },
+                        );
                     }
                     return removeAtIndex(bs, idx);
                 });
@@ -1405,10 +1409,13 @@ class TaskStore extends ReduceStore {
                 for (var i = 0, l = desiredIds.length; i < l; i++) {
                     // Spec is {ids, parentId, afterId}
                     if (plan.subtaskIds[i] !== desiredIds[i]) {
-                        socket.publish(`/api/plan/${state.activeListId}/reorder-items`, {
-                            id: state.activeListId,
-                            subitemIds: desiredIds,
-                        });
+                        socket.publish( // todo: replace
+                            `/api/plan/${state.activeListId}/reorder-items`,
+                            {
+                                id: state.activeListId,
+                                subitemIds: desiredIds,
+                            },
+                        );
                         break;
                     }
                 }
