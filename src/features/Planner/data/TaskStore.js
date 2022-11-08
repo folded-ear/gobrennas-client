@@ -30,6 +30,7 @@ import {
     isParent,
 } from "features/Planner/data/tasks";
 import TaskStatus, { willStatusDelete } from "features/Planner/data/TaskStatus";
+import PlanApi from "./PlanApi";
 
 /*
  * This store is way too muddled. But leaving it that way for the moment, to
@@ -160,56 +161,14 @@ const selectList = (state, id) => {
     } else {
         state = addTask(state, id, "");
     }
-    return refreshActiveListSubscription(state);
+    PlanApi.getDescendantsAsList(state.activeListId);
+    return state;
 };
 
-const refreshActiveListSubscription = state => {
-    state = doUnsub(state, "bootstrapSub");
-    if (state.activeListId == null) return state;
-    // leave this subscription hot, so if we get disconnected, it'll re-trigger
-    // when we reconnect, and download everything again.
-    const bootstrapSub = socket.subscribe(`/api/plan/${state.activeListId}`, message => {
-        Dispatcher.dispatch({
-            type: TaskActions.LIST_DATA_BOOTSTRAPPED,
-            id: state.activeListId,
-            data: message.body,
-        });
-    });
-    return {
-        ...state,
-        bootstrapSub,
-    };
-};
-
-const subscribeToListUpdates = (state, id) => {
+const subscribeToListUpdates = (state, id) => { // todo: cull
     state = doUnsub(state, "updateSub");
-    const updateSub = socket.subscribe(`/topic/plan/${id}`, ({ body }) => { // todo: cull
+    const updateSub = socket.subscribe(`/topic/plan/${id}`, ({ body }) => { // todo: cull (now bucket-only)
         switch (body.type) {
-            case "tree-mutation":
-                Dispatcher.dispatch({
-                    type: TaskActions.TREE_MUTATED,
-                    ...body.info,
-                });
-                return;
-            case "create":
-                Dispatcher.dispatch({
-                    type: TaskActions.TREE_CREATE,
-                    data: body.info,
-                    newIds: body.newIds,
-                });
-                return;
-            case "update":
-                Dispatcher.dispatch({
-                    type: TaskActions.UPDATED,
-                    data: body.info,
-                });
-                return;
-            case "delete":
-                Dispatcher.dispatch({
-                    type: TaskActions.DELETED,
-                    id: body.id,
-                });
-                return;
             case "create-bucket":
                 Dispatcher.dispatch({
                     type: TaskActions.BUCKET_CREATED,
@@ -243,7 +202,7 @@ const subscribeToListUpdates = (state, id) => {
     };
 };
 
-const doUnsub = (state, key) => {
+const doUnsub = (state, key) => { // todo: cull
     if (state[key]) {
         state[key].unsubscribe();
         state = {
@@ -1036,7 +995,6 @@ class TaskStore extends ReduceStore {
                     type: TaskActions.LOAD_LISTS,
                 })), // LoadObjectState<Array<ID>>
             byId: {}, // Map<ID, LoadObject<Task>>
-            bootstrapSub: null,
             updateSub: null,
         };
     }
@@ -1141,7 +1099,12 @@ class TaskStore extends ReduceStore {
             case TaskActions.LIST_DATA_BOOTSTRAPPED: {
                 return tasksLoaded(
                     subscribeToListUpdates(state, action.id),
-                    action.data);
+                    action.data,
+                );
+            }
+
+            case TaskActions.LIST_DELTAS: {
+                return tasksLoaded(state, action.data);
             }
 
             case TaskActions.TREE_CREATE: {
@@ -1465,7 +1428,7 @@ class TaskStore extends ReduceStore {
         const result = [];
         while (queue.length) {
             const comp = taskForId(state, queue.shift());
-            // walk upward and see if its within the tree...
+            // walk upward and see if it's within the tree...
             let curr = comp;
             let descendant = false;
             while (curr.parentId != null) {
@@ -1602,7 +1565,6 @@ TaskStore.stateTypes = {
             _next_status: PropTypes.string,
         }))
     ).isRequired,
-    bootstrapSub: PropTypes.object,
     updateSub: PropTypes.object,
 };
 

@@ -99,12 +99,13 @@ const TaskActions = {
     LIST_DELETED: "task/list-deleted",
     LIST_GRANT_SET: "task/list-grant-set",
     LIST_GRANT_CLEARED: "task/list-grant-cleared",
-    // socket actions
-    LIST_DATA_BOOTSTRAPPED: "task/list-data-bootstrapped",
-    TREE_MUTATED: "task/tree-mutated",
+    LIST_DELTAS: "task/list-deltas",
     TREE_CREATE: "task/tree-create",
     UPDATED: "task/updated",
     DELETED: "task/deleted",
+    // socket actions
+    LIST_DATA_BOOTSTRAPPED: "task/list-data-bootstrapped",
+    TREE_MUTATED: "task/tree-mutated",
     // deferred actions
     FLUSH_RENAMES: "task/flush-renames",
     FLUSH_STATUS_UPDATES: "task/flush-status-updates",

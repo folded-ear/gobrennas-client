@@ -15,6 +15,7 @@ import PageBody from "views/common/PageBody";
 import TaskListHeader from "features/Planner/components/TaskListHeader";
 import LoadingTask from "features/Planner/components/LoadingTask";
 import Task from "features/Planner/components/Task";
+import PlanItemSynchronizer from "../data/PlanItemSynchronizer";
 
 function TaskList(props) {
     const {
@@ -44,6 +45,8 @@ function TaskList(props) {
     const canExpand = taskTuples.some(t =>
         t.lo.hasValue() && isParent(t.lo.getValueEnforcing()));
     return <PageBody hasFab>
+        {!!plan && <PlanItemSynchronizer
+            planId={plan.id} />}
         <Box py={2}>
             <TaskListHeader
                 allLists={allLists.getValueEnforcing()}
