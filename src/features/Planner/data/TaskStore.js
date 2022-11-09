@@ -309,7 +309,7 @@ const flushTasksToRename = state => {
     for (const id of tasksToRename) {
         const task = taskForId(state, id);
         if (!ClientId.is(id)) {
-            socket.publish(`/api/plan/${state.activeListId}/rename`, {
+            PlanApi.renameItem(state.activeListId, {
                 id,
                 name: task.name,
             });
@@ -328,7 +328,7 @@ const flushTasksToRename = state => {
             requeue.add(id);
             continue;
         }
-        socket.publish(`/api/plan/${state.activeListId}/create`, {
+        PlanApi.createItem(state.activeListId, {
             id,
             parentId: task.parentId,
             afterId,
@@ -500,9 +500,7 @@ const unqueueTaskId = id => {
 
 const doTaskDelete = (state, id) => {
     unqueueTaskId(id);
-    socket.publish(`/api/plan/${state.activeListId}/delete`, {
-        id,
-    });
+    PlanApi.deleteItem(state.activeListId, id);
     return state;
 };
 
@@ -510,9 +508,9 @@ const setTaskStatus = (state, id, status) => {
     if (willStatusDelete(status)) {
         unqueueTaskId(id);
     }
-    socket.publish(`/api/plan/${state.activeListId}/status`, {
+    PlanApi.updateItemStatus(state.activeListId, {
         id,
-        status
+        status,
     });
     return state;
 };
