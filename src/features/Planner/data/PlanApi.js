@@ -54,6 +54,16 @@ const PlanApi = {
         axios.post(`/${planId}/mutate-tree`, body);
     },
 
+    reorderSubitems(id, subitemIds) {
+        axios.post(
+            `/${id}/reorder-subitems`,
+            {
+                id,
+                subitemIds,
+            },
+        );
+    },
+
     getDescendantsAsList: id =>
         promiseFlux(
             axios.get(`/${id}/descendants`),

@@ -1367,20 +1367,17 @@ class TaskStore extends ReduceStore {
                     .map(t => [t.id, t.bucketId ? bucketIdOrder[t.bucketId] : -1])
                     .sort((pa, pb) => pa[1] - pb[1])
                     .map(pair => pair[0]);
-                for (var i = 0, l = desiredIds.length; i < l; i++) {
-                    // Spec is {ids, parentId, afterId}
+                for (let i = 0, l = desiredIds.length; i < l; i++) {
                     if (plan.subtaskIds[i] !== desiredIds[i]) {
-                        socket.publish( // todo: replace
-                            `/api/plan/${state.activeListId}/reorder-items`,
-                            {
-                                id: state.activeListId,
-                                subitemIds: desiredIds,
-                            },
-                        );
-                        break;
+                        PlanApi.reorderSubitems(plan.id, desiredIds);
+                        // update immediately; the coming delta will be a no-op
+                        return mapTask(state, plan.id, v => ({
+                            ...v,
+                            subtaskIds: desiredIds,
+                        }));
                     }
                 }
-                return state;
+                return state; // no-op
             }
 
             case TaskActions.FLUSH_RENAMES:
