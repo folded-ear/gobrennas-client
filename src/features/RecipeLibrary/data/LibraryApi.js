@@ -66,7 +66,8 @@ const LibraryApi = {
             id,
             targetId,
             after: !!after,
-        }).then(queryClient.invalidateQueries("pantry-items"));
+        }).finally(() =>
+            queryClient.invalidateQueries("pantry-items"));
     },
 
 };
