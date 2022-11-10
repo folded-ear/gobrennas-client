@@ -50,6 +50,10 @@ const PlanApi = {
                 },
         ),
 
+    mutateTree(planId, body) {
+        axios.post(`/${planId}/mutate-tree`, body);
+    },
+
     getDescendantsAsList: id =>
         promiseFlux(
             axios.get(`/${id}/descendants`),

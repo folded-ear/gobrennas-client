@@ -727,8 +727,8 @@ const mutateTree = (state, spec) => {
     }
     // ensure we're not positioning something based on itself
     if (spec.ids.some(id => id === spec.afterId)) return state;
-    socket.publish(`/api/plan/${state.activeListId}/mutate-tree`, spec); // todo: replace
-    // do it now so the UI updates; the future message will be a race-y no-op
+    PlanApi.mutateTree(state.activeListId, spec);
+    // do it now so the UI updates; the future delta will be a race-y no-op
     return treeMutated(state, spec);
 };
 
