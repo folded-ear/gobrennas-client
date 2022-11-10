@@ -29,11 +29,11 @@ import Source from "../common/Source";
 import LabelItem from "../LabelItem";
 import ItemImage from "features/RecipeLibrary/components/ItemImage";
 import ItemImageUpload from "features/RecipeLibrary/components/ItemImageUpload";
-import SendToPlan from "../SendToPlan";
 import User from "../user/User";
 import IngredientDirectionsRow from "./IngredientDirectionsRow";
 import ShareRecipe from "./ShareRecipe";
 import SubrecipeItem from "./SubrecipeItem";
+import SendToPlan from "features/RecipeLibrary/components/SendToPlan";
 
 const useStyles = makeStyles(theme => ({
     name: {

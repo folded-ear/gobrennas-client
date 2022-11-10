@@ -12,7 +12,7 @@ import { IngredientRef } from "data/RecipeTypes";
 import TaskActions from "features/Planner/data/TaskActions";
 import history from "util/history";
 import Quantity from "views/common/Quantity";
-import SendToPlan from "./SendToPlan";
+import SendToPlan from "features/RecipeLibrary/components/SendToPlan";
 
 const useStyles = makeStyles(() => ({
     quantity: {
