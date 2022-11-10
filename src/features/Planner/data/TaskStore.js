@@ -465,10 +465,12 @@ const setTaskStatus = (state, id, status) => {
 
 const flushStatusUpdates = state => {
     if (statusUpdatesToFlush.size === 0) return state;
-    for (const [id, status] of Array.from(statusUpdatesToFlush)) {
-        state = setTaskStatus(state, id, status);
+    const [ id, status ] = statusUpdatesToFlush.entries().next().value; // the next value of the iterator, not the value of the entry!
+    state = setTaskStatus(state, id, status);
+    statusUpdatesToFlush.delete(id);
+    if (statusUpdatesToFlush.size > 0) {
+        inTheFuture(TaskActions.FLUSH_STATUS_UPDATES, 1);
     }
-    statusUpdatesToFlush.clear();
     return state;
 };
 
