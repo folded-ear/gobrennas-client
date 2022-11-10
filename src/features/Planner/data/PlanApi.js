@@ -82,7 +82,14 @@ const PlanApi = {
         ),
 
     getItemsUpdatedSince: (id, cutoff) =>
-        axios.get(`/${id}/all-since?cutoff=${cutoff}`),
+        promiseFlux(
+            axios.get(`/${id}/all-since?cutoff=${cutoff}`),
+            r => ({
+                type: TaskActions.LIST_DELTAS,
+                id,
+                data: r.data,
+            }),
+        ),
 
     createBucket: (planId, body) =>
         promiseFlux(

@@ -10,10 +10,11 @@ import { ProfileProvider } from "./providers/Profile";
 import * as serviceWorkerRegistration from "./serviceWorkerRegistration";
 import debounce from "./util/debounce";
 import history from "./util/history";
-import {ApolloClient} from "./providers/ApolloClient";
+import { ApolloClient } from "./providers/ApolloClient";
 import { QueryClientProvider } from "react-query";
 import PantryItemSynchronizer from "./data/PantryItemSynchronizer";
 import queryClient from "./data/queryClient";
+import PlanItemSynchronizer from "features/Planner/data/PlanItemSynchronizer";
 
 if (process.env.NODE_ENV === "development") {
     Dispatcher.register(require("./util/logAction").default);
@@ -31,6 +32,7 @@ ReactDOM.render(
         <QueryClientProvider client={queryClient}>
             <Router history={history}>
                 <PantryItemSynchronizer />
+                <PlanItemSynchronizer />
                 <App />
             </Router>
         </QueryClientProvider>,

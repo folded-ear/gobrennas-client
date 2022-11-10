@@ -1,23 +1,18 @@
-import Dispatcher from "../../../data/dispatcher";
 import PlanApi from "./PlanApi";
-import TaskActions from "./TaskActions";
-import useSynchronizer from "../../../util/useSynchronizer";
+import useSynchronizer from "util/useSynchronizer";
+import useActivePlannerLO from "data/useActivePlannerLO";
 
-function PlanItemSynchronizer({ planId }) {
+function PlanItemSynchronizer() {
+    const lo = useActivePlannerLO();
+    const planId = lo.hasValue()
+        ? lo.getValueEnforcing().id
+        : null;
     useSynchronizer(
         [ "plan", planId, "items" ],
         ts =>
-            PlanApi.getItemsUpdatedSince(planId, ts)
-                .then(data => data.data)
-                .then(data => {
-                    if (!data) return;
-                    if (data.length === 0) return;
-                    Dispatcher.dispatch({
-                        type: TaskActions.LIST_DELTAS,
-                        id: planId,
-                        data,
-                    });
-                }),
+            planId
+                ? PlanApi.getItemsUpdatedSince(planId, ts)
+                : Promise.resolve(),
     );
     return null;
 }
