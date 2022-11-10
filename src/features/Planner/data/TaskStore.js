@@ -372,10 +372,7 @@ const renameTask = (state, id, name) =>
 
 const assignToBucket = (state, id, bucketId) => {
     if (ClientId.is(id)) return state;
-    socket.publish(`/api/plan/${state.activeListId}/assign-bucket`, { // todo: replace
-        id,
-        bucketId,
-    });
+    PlanApi.assignBucket(state.activeListId, id, bucketId);
     return mapTask(state, id, t => ({
         ...t,
         bucketId,

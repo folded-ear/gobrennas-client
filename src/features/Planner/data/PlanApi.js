@@ -54,6 +54,13 @@ const PlanApi = {
         axios.post(`/${planId}/mutate-tree`, body);
     },
 
+    assignBucket(planId, id, bucketId) {
+        axios.post(`/${planId}/assign-bucket`, {
+            id,
+            bucketId,
+        });
+    },
+
     reorderSubitems(id, subitemIds) {
         axios.post(
             `/${id}/reorder-subitems`,
