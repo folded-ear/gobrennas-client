@@ -963,11 +963,10 @@ const serializeBucket = b => b.date
     : b;
 
 const saveBucket = (state, bucket) => {
-    const action = ClientId.is(bucket.id) ? "create" : "update";
-    socket.publish( // todo: replace
-        `/api/plan/${state.activeListId}/buckets/${action}`,
-        serializeBucket(bucket),
-    );
+    const body = serializeBucket(bucket);
+    ClientId.is(bucket.id)
+        ? PlanApi.createBucket(state.activeListId, body)
+        : PlanApi.updateBucket(state.activeListId, bucket.id, body);
 };
 
 const doInteractiveStatusChange = (state, id, status) => {
@@ -1305,10 +1304,7 @@ class TaskStore extends ReduceStore {
                 return mapPlanBuckets(state, action.planId, bs => {
                     const idx = bs.findIndex(b => b.id === action.id);
                     if (idx >= 0 && !ClientId.is(action.id)) {
-                        socket.publish( // todo: replace
-                            `/api/plan/${state.activeListId}/buckets/delete`,
-                            { id: action.id },
-                        );
+                        PlanApi.deleteBucket(state.activeListId, action.id);
                     }
                     return removeAtIndex(bs, idx);
                 });

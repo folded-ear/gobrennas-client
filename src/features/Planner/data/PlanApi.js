@@ -83,6 +83,37 @@ const PlanApi = {
 
     getItemsUpdatedSince: (id, cutoff) =>
         axios.get(`/${id}/all-since?cutoff=${cutoff}`),
+
+    createBucket: (planId, body) =>
+        promiseFlux(
+            axios.post(`/${planId}/buckets`, body),
+            ({ data }) => ({
+                type: TaskActions.BUCKET_CREATED,
+                planId,
+                data: data.info,
+                oldId: data.newIds[data.id],
+            }),
+        ),
+
+    updateBucket: (planId, id, body) =>
+        promiseFlux(
+            axios.put(`/${planId}/buckets/${id}`, body),
+            ({ data }) => ({
+                type: TaskActions.BUCKET_UPDATED,
+                planId,
+                data: data.info,
+            }),
+        ),
+
+    deleteBucket: (planId, id) =>
+        promiseFlux(
+            axios.delete(`/${planId}/buckets/${id}`),
+            ({ data }) => ({
+                type: TaskActions.BUCKET_DELETED,
+                planId,
+                id: data.id,
+            }),
+        ),
 };
 
 export default PlanApi;
