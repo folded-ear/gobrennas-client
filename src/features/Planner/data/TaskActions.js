@@ -105,7 +105,6 @@ const TaskActions = {
     DELETED: "task/deleted",
     // socket actions
     LIST_DATA_BOOTSTRAPPED: "task/list-data-bootstrapped",
-    TREE_MUTATED: "task/tree-mutated",
     // deferred actions
     FLUSH_RENAMES: "task/flush-renames",
     FLUSH_STATUS_UPDATES: "task/flush-status-updates",

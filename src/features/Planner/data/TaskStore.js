@@ -12,7 +12,6 @@ import {
     loadObjectOf,
     loadObjectStateOf,
 } from "util/loadObjectTypes";
-import socket from "util/socket";
 import {
     formatLocalDate,
     parseLocalDate,
@@ -162,54 +161,6 @@ const selectList = (state, id) => {
         state = addTask(state, id, "");
     }
     PlanApi.getDescendantsAsList(state.activeListId);
-    return state;
-};
-
-const subscribeToListUpdates = (state, id) => { // todo: cull
-    state = doUnsub(state, "updateSub");
-    const updateSub = socket.subscribe(`/topic/plan/${id}`, ({ body }) => { // todo: cull (now bucket-only)
-        switch (body.type) {
-            case "create-bucket":
-                Dispatcher.dispatch({
-                    type: TaskActions.BUCKET_CREATED,
-                    planId: id,
-                    data: body.info,
-                    oldId: body.newIds[body.id],
-                });
-                return;
-            case "update-bucket":
-                Dispatcher.dispatch({
-                    type: TaskActions.BUCKET_UPDATED,
-                    planId: id,
-                    data: body.info,
-                });
-                return;
-            case "delete-bucket":
-                Dispatcher.dispatch({
-                    type: TaskActions.BUCKET_DELETED,
-                    planId: id,
-                    id: body.id,
-                });
-                return;
-            default:
-                // eslint-disable-next-line no-console
-                console.warn("Unrecognized Task Message", body);
-        }
-    });
-    return {
-        ...state,
-        updateSub,
-    };
-};
-
-const doUnsub = (state, key) => { // todo: cull
-    if (state[key]) {
-        state[key].unsubscribe();
-        state = {
-            ...state,
-            [key]: null,
-        };
-    }
     return state;
 };
 
@@ -989,7 +940,6 @@ class TaskStore extends ReduceStore {
                     type: TaskActions.LOAD_LISTS,
                 })), // LoadObjectState<Array<ID>>
             byId: {}, // Map<ID, LoadObject<Task>>
-            updateSub: null,
         };
     }
 
@@ -1090,13 +1040,7 @@ class TaskStore extends ReduceStore {
                 ], lo => lo.done());
             }
 
-            case TaskActions.LIST_DATA_BOOTSTRAPPED: {
-                return tasksLoaded(
-                    subscribeToListUpdates(state, action.id),
-                    action.data,
-                );
-            }
-
+            case TaskActions.LIST_DATA_BOOTSTRAPPED:
             case TaskActions.LIST_DELTAS: {
                 return tasksLoaded(state, action.data);
             }
@@ -1230,10 +1174,6 @@ class TaskStore extends ReduceStore {
 
             case TaskActions.MOVE_SUBTREE: {
                 return moveSubtree(state, action);
-            }
-
-            case TaskActions.TREE_MUTATED: {
-                return treeMutated(state, action);
             }
 
             case TaskActions.TOGGLE_EXPANDED: {
@@ -1553,7 +1493,6 @@ TaskStore.stateTypes = {
             _next_status: PropTypes.string,
         }))
     ).isRequired,
-    updateSub: PropTypes.object,
 };
 
 export default typedStore(new TaskStore(Dispatcher));
