@@ -14,6 +14,7 @@ import {ApolloClient} from "./providers/ApolloClient";
 import { QueryClientProvider } from "react-query";
 import PantryItemSynchronizer from "./data/PantryItemSynchronizer";
 import queryClient from "./data/queryClient";
+import PlanItemSynchronizer from "features/Planner/data/PlanItemSynchronizer";
 
 if (process.env.NODE_ENV === "development") {
     Dispatcher.register(require("./util/logAction").default);
@@ -31,6 +32,7 @@ ReactDOM.render(
         <QueryClientProvider client={queryClient}>
             <Router history={history}>
                 <PantryItemSynchronizer />
+                <PlanItemSynchronizer />
                 <App />
             </Router>
         </QueryClientProvider>,

@@ -5,11 +5,11 @@ import TaskStore from "features/Planner/data/TaskStore";
 import useFluxStore from "data/useFluxStore";
 import TaskList from "features/Planner/components/TaskList";
 
-const listTheTree = (id, ancestorDeleting=false, depth=0) => {
+const listTheTree = (id, ancestorDeleting = false, depth = 0) => {
     const list = TaskStore.getSubtaskLOs(id).map(lo => ({
         lo,
         ancestorDeleting,
-        depth
+        depth,
     }));
     for (let i = list.length - 1; i >= 0; i--) {
         let lo = list[i].lo;

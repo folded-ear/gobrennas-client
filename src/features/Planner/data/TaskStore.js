@@ -12,7 +12,6 @@ import {
     loadObjectOf,
     loadObjectStateOf,
 } from "util/loadObjectTypes";
-import socket from "util/socket";
 import {
     formatLocalDate,
     parseLocalDate,
@@ -30,6 +29,7 @@ import {
     isParent,
 } from "features/Planner/data/tasks";
 import TaskStatus, { willStatusDelete } from "features/Planner/data/TaskStatus";
+import PlanApi from "./PlanApi";
 
 /*
  * This store is way too muddled. But leaving it that way for the moment, to
@@ -160,97 +160,7 @@ const selectList = (state, id) => {
     } else {
         state = addTask(state, id, "");
     }
-    return refreshActiveListSubscription(state);
-};
-
-const refreshActiveListSubscription = state => {
-    state = doUnsub(state, "bootstrapSub");
-    if (state.activeListId == null) return state;
-    // leave this subscription hot, so if we get disconnected, it'll re-trigger
-    // when we reconnect, and download everything again.
-    const bootstrapSub = socket.subscribe(`/api/plan/${state.activeListId}`, message => {
-        Dispatcher.dispatch({
-            type: TaskActions.LIST_DATA_BOOTSTRAPPED,
-            id: state.activeListId,
-            data: message.body,
-        });
-    });
-    return {
-        ...state,
-        bootstrapSub,
-    };
-};
-
-const subscribeToListUpdates = (state, id) => {
-    state = doUnsub(state, "updateSub");
-    const updateSub = socket.subscribe(`/topic/plan/${id}`, ({body}) => {
-        switch (body.type) {
-            case "tree-mutation":
-                Dispatcher.dispatch({
-                    type: TaskActions.TREE_MUTATED,
-                    ...body.info,
-                });
-                return;
-            case "create":
-                Dispatcher.dispatch({
-                    type: TaskActions.TREE_CREATE,
-                    data: body.info,
-                    newIds: body.newIds,
-                });
-                return;
-            case "update":
-                Dispatcher.dispatch({
-                    type: TaskActions.UPDATED,
-                    data: body.info,
-                });
-                return;
-            case "delete":
-                Dispatcher.dispatch({
-                    type: TaskActions.DELETED,
-                    id: body.id,
-                });
-                return;
-            case "create-bucket":
-                Dispatcher.dispatch({
-                    type: TaskActions.BUCKET_CREATED,
-                    planId: id,
-                    data: body.info,
-                    oldId: body.newIds[body.id],
-                });
-                return;
-            case "update-bucket":
-                Dispatcher.dispatch({
-                    type: TaskActions.BUCKET_UPDATED,
-                    planId: id,
-                    data: body.info,
-                });
-                return;
-            case "delete-bucket":
-                Dispatcher.dispatch({
-                    type: TaskActions.BUCKET_DELETED,
-                    planId: id,
-                    id: body.id,
-                });
-                return;
-            default:
-                // eslint-disable-next-line no-console
-                console.warn("Unrecognized Task Message", body);
-        }
-    });
-    return {
-        ...state,
-        updateSub,
-    };
-};
-
-const doUnsub = (state, key) => {
-    if (state[key]) {
-        state[key].unsubscribe();
-        state = {
-            ...state,
-            [key]: null,
-        };
-    }
+    PlanApi.getDescendantsAsList(state.activeListId);
     return state;
 };
 
@@ -350,7 +260,7 @@ const flushTasksToRename = state => {
     for (const id of tasksToRename) {
         const task = taskForId(state, id);
         if (!ClientId.is(id)) {
-            socket.publish(`/api/plan/${state.activeListId}/rename`, {
+            PlanApi.renameItem(state.activeListId, {
                 id,
                 name: task.name,
             });
@@ -369,7 +279,7 @@ const flushTasksToRename = state => {
             requeue.add(id);
             continue;
         }
-        socket.publish(`/api/plan/${state.activeListId}/create`, {
+        PlanApi.createItem(state.activeListId, {
             id,
             parentId: task.parentId,
             afterId,
@@ -413,10 +323,7 @@ const renameTask = (state, id, name) =>
 
 const assignToBucket = (state, id, bucketId) => {
     if (ClientId.is(id)) return state;
-    socket.publish(`/api/plan/${state.activeListId}/assign-bucket`, {
-        id,
-        bucketId,
-    });
+    PlanApi.assignBucket(state.activeListId, id, bucketId);
     return mapTask(state, id, t => ({
         ...t,
         bucketId,
@@ -541,9 +448,7 @@ const unqueueTaskId = id => {
 
 const doTaskDelete = (state, id) => {
     unqueueTaskId(id);
-    socket.publish(`/api/plan/${state.activeListId}/delete`, {
-        id,
-    });
+    PlanApi.deleteItem(state.activeListId, id);
     return state;
 };
 
@@ -551,19 +456,21 @@ const setTaskStatus = (state, id, status) => {
     if (willStatusDelete(status)) {
         unqueueTaskId(id);
     }
-    socket.publish(`/api/plan/${state.activeListId}/status`, {
+    PlanApi.updateItemStatus(state.activeListId, {
         id,
-        status
+        status,
     });
     return state;
 };
 
 const flushStatusUpdates = state => {
     if (statusUpdatesToFlush.size === 0) return state;
-    for (const [id, status] of Array.from(statusUpdatesToFlush)) {
-        state = setTaskStatus(state, id, status);
+    const [ id, status ] = statusUpdatesToFlush.entries().next().value; // the next value of the iterator, not the value of the entry!
+    state = setTaskStatus(state, id, status);
+    statusUpdatesToFlush.delete(id);
+    if (statusUpdatesToFlush.size > 0) {
+        inTheFuture(TaskActions.FLUSH_STATUS_UPDATES, 1);
     }
-    statusUpdatesToFlush.clear();
     return state;
 };
 
@@ -770,8 +677,8 @@ const mutateTree = (state, spec) => {
     }
     // ensure we're not positioning something based on itself
     if (spec.ids.some(id => id === spec.afterId)) return state;
-    socket.publish(`/api/plan/${state.activeListId}/mutate-tree`, spec);
-    // do it now so the UI updates; the future message will be a race-y no-op
+    PlanApi.mutateTree(state.activeListId, spec);
+    // do it now so the UI updates; the future delta will be a race-y no-op
     return treeMutated(state, spec);
 };
 
@@ -1009,10 +916,10 @@ const serializeBucket = b => b.date
     : b;
 
 const saveBucket = (state, bucket) => {
-    const action = ClientId.is(bucket.id) ? "create" : "update";
-    socket.publish(
-        `/api/plan/${state.activeListId}/buckets/${action}`,
-        serializeBucket(bucket));
+    const body = serializeBucket(bucket);
+    ClientId.is(bucket.id)
+        ? PlanApi.createBucket(state.activeListId, body)
+        : PlanApi.updateBucket(state.activeListId, bucket.id, body);
 };
 
 const doInteractiveStatusChange = (state, id, status) => {
@@ -1035,8 +942,6 @@ class TaskStore extends ReduceStore {
                     type: TaskActions.LOAD_LISTS,
                 })), // LoadObjectState<Array<ID>>
             byId: {}, // Map<ID, LoadObject<Task>>
-            bootstrapSub: null,
-            updateSub: null,
         };
     }
 
@@ -1137,10 +1042,9 @@ class TaskStore extends ReduceStore {
                 ], lo => lo.done());
             }
 
-            case TaskActions.LIST_DATA_BOOTSTRAPPED: {
-                return tasksLoaded(
-                    subscribeToListUpdates(state, action.id),
-                    action.data);
+            case TaskActions.LIST_DATA_BOOTSTRAPPED:
+            case TaskActions.LIST_DELTAS: {
+                return tasksLoaded(state, action.data);
             }
 
             case TaskActions.TREE_CREATE: {
@@ -1274,10 +1178,6 @@ class TaskStore extends ReduceStore {
                 return moveSubtree(state, action);
             }
 
-            case TaskActions.TREE_MUTATED: {
-                return treeMutated(state, action);
-            }
-
             case TaskActions.TOGGLE_EXPANDED: {
                 return toggleExpanded(state, action.id);
             }
@@ -1346,7 +1246,7 @@ class TaskStore extends ReduceStore {
                 return mapPlanBuckets(state, action.planId, bs => {
                     const idx = bs.findIndex(b => b.id === action.id);
                     if (idx >= 0 && !ClientId.is(action.id)) {
-                        socket.publish(`/api/plan/${state.activeListId}/buckets/delete`, {id: action.id});
+                        PlanApi.deleteBucket(state.activeListId, action.id);
                     }
                     return removeAtIndex(bs, idx);
                 });
@@ -1402,17 +1302,17 @@ class TaskStore extends ReduceStore {
                     .map(t => [t.id, t.bucketId ? bucketIdOrder[t.bucketId] : -1])
                     .sort((pa, pb) => pa[1] - pb[1])
                     .map(pair => pair[0]);
-                for (var i = 0, l = desiredIds.length; i < l; i++) {
-                    // Spec is {ids, parentId, afterId}
+                for (let i = 0, l = desiredIds.length; i < l; i++) {
                     if (plan.subtaskIds[i] !== desiredIds[i]) {
-                        socket.publish(`/api/plan/${state.activeListId}/reorder-items`, {
-                            id: state.activeListId,
-                            subitemIds: desiredIds,
-                        });
-                        break;
+                        PlanApi.reorderSubitems(plan.id, desiredIds);
+                        // update immediately; the coming delta will be a no-op
+                        return mapTask(state, plan.id, v => ({
+                            ...v,
+                            subtaskIds: desiredIds,
+                        }));
                     }
                 }
-                return state;
+                return state; // no-op
             }
 
             case TaskActions.FLUSH_RENAMES:
@@ -1458,7 +1358,7 @@ class TaskStore extends ReduceStore {
         const result = [];
         while (queue.length) {
             const comp = taskForId(state, queue.shift());
-            // walk upward and see if its within the tree...
+            // walk upward and see if it's within the tree...
             let curr = comp;
             let descendant = false;
             while (curr.parentId != null) {
@@ -1595,8 +1495,6 @@ TaskStore.stateTypes = {
             _next_status: PropTypes.string,
         }))
     ).isRequired,
-    bootstrapSub: PropTypes.object,
-    updateSub: PropTypes.object,
 };
 
 export default typedStore(new TaskStore(Dispatcher));

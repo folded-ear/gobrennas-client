@@ -57,16 +57,23 @@ const LibraryApi = {
         );
     },
 
-    getPantryItemsUpdatedSince(cutoff) {
-        return pantryItemAxios.get(`/all-since?cutoff=${cutoff}`);
-    },
+    getPantryItemsUpdatedSince: cutoff =>
+        promiseFlux(
+            pantryItemAxios.get(`/all-since?cutoff=${cutoff}`),
+            r => ({
+                type: LibraryActions.INGREDIENTS_LOADED,
+                ids: r.data.map(it => it.id),
+                data: r.data,
+            }),
+        ),
 
     orderForStore(id, targetId, after) {
         return pantryItemAxios.post(`/order-for-store`, {
             id,
             targetId,
             after: !!after,
-        }).then(queryClient.invalidateQueries("pantry-items"));
+        }).finally(() =>
+            queryClient.invalidateQueries("pantry-items"));
     },
 
 };

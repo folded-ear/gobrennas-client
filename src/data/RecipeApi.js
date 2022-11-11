@@ -3,6 +3,7 @@ import { API_BASE_URL } from "../constants/index";
 import promiseFlux from "util/promiseFlux";
 import promiseWellSizedFile from "util/promiseWellSizedFile";
 import RecipeActions from "./RecipeActions";
+import queryClient from "data/queryClient";
 
 const axios = BaseAxios.create({
     baseURL: `${API_BASE_URL}/api`,
@@ -94,7 +95,8 @@ const RecipeApi = {
                 recipeId,
                 planId,
             }),
-        );
+        ).finally(() =>
+            queryClient.invalidateQueries([ "plan", planId, "items" ]));
     },
 
     addLabel(id, label) {
