@@ -7,9 +7,6 @@ import Banner from "views/common/Banner";
 const NewVersionAvailable = () =>
     <Banner
         severity="info"
-        onClose={() => Dispatcher.dispatch({
-            type: WindowActions.IGNORE_NEW_VERSION,
-        })}
     >
         Foodinger has updated!
         {" "}
@@ -20,16 +17,7 @@ const NewVersionAvailable = () =>
             onClick={() => Dispatcher.dispatch({
                 type: WindowActions.LAUNCH_NEW_VERSION,
             })}>
-            Upgrade
-        </Button>
-        {" "}
-        <Button
-            size="small"
-            variant="outlined"
-            onClick={() => Dispatcher.dispatch({
-                type: WindowActions.IGNORE_NEW_VERSION,
-            })}>
-            Ignore
+            Relaunch
         </Button>
     </Banner>;
 
