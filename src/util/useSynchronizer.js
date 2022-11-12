@@ -9,10 +9,11 @@ const useSynchronizer = (queryKey, queryFn, options = {}) => {
     );
     useQuery(
         queryKey,
-        () => queryFn(ts).then(data => {
-            setTs(Date.now());
-            return data;
-        }),
+        () => {
+            const nextTs = Date.now();
+            return queryFn(ts)
+                .finally(() => setTs(nextTs));
+        },
         {
             refetchInterval,
             refetchIntervalInBackground: false,

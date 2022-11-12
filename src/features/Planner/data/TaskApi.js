@@ -1,6 +1,6 @@
 import BaseAxios from "axios";
 import { API_BASE_URL } from "constants/index";
-import promiseFlux from "util/promiseFlux";
+import promiseFlux, { soakUpUnauthorized } from "util/promiseFlux";
 import serializeObjectOfPromiseFns from "util/serializeObjectOfPromiseFns";
 import TaskActions from "features/Planner/data/TaskActions";
 
@@ -28,10 +28,11 @@ const TaskApi = {
     loadLists: () =>
         promiseFlux(
             axios.get(`/`),
-            ({data}) => ({
+            ({ data }) => ({
                 type: TaskActions.LISTS_LOADED,
                 data,
             }),
+            soakUpUnauthorized,
         ),
 
     deleteList: (id) =>

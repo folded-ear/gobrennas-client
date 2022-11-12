@@ -1,7 +1,7 @@
 import BaseAxios from "axios";
 import qs from "qs";
 import { API_BASE_URL } from "constants/index";
-import promiseFlux from "util/promiseFlux";
+import promiseFlux, { soakUpUnauthorized } from "util/promiseFlux";
 import queryClient from "data/queryClient";
 import LibraryActions from "features/RecipeLibrary/data/LibraryActions";
 
@@ -65,6 +65,7 @@ const LibraryApi = {
                 ids: r.data.map(it => it.id),
                 data: r.data,
             }),
+            soakUpUnauthorized,
         ),
 
     orderForStore(id, targetId, after) {

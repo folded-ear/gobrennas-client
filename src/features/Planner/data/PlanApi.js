@@ -1,6 +1,6 @@
 import BaseAxios from "axios";
-import { API_BASE_URL } from "../../../constants/index";
-import promiseFlux from "../../../util/promiseFlux";
+import { API_BASE_URL } from "constants/index";
+import promiseFlux, { soakUpUnauthorized } from "util/promiseFlux";
 import TaskActions from "./TaskActions";
 
 const axios = BaseAxios.create({
@@ -89,6 +89,7 @@ const PlanApi = {
                 id,
                 data: r.data,
             }),
+            soakUpUnauthorized,
         ),
 
     createBucket: (planId, body) =>

@@ -24,6 +24,23 @@ if (process.env.NODE_ENV !== "production" && ARTIFICIAL_SETTLEMENT_DELAY > 0) {
     };
 }
 
+const fallthrough = error => ({
+    type: "promise-flux/error-fallthrough",
+    error,
+});
+
+export const soakUpUnauthorized = error => {
+    if (error && error.response && error.response.status === 401) {
+        // eslint-disable-next-line no-console
+        console.warn("Unauthorized", error);
+        return fallthrough(error);
+    } else {
+        throw error;
+    }
+};
+
+let promiseRejectionCount = 0;
+
 /**
  * I adapt Promises (which are gross) to Flux actions (which are sexy). The
  * resolve and reject params define what to do when the Promise settles, and can
@@ -51,11 +68,12 @@ const promiseFlux = (
     rejector = error => {
         // eslint-disable-next-line no-console
         console.error("Error in Promise", error);
-        alert("Error in Promise; your state is jacked.\n\nCheck the console.");
-        return {
-            type: "promise-flux/error-fallthrough",
-            error,
-        };
+        promiseRejectionCount++;
+        const exp = Math.pow(2, Math.floor(Math.log2(promiseRejectionCount)));
+        if (promiseRejectionCount === exp) {
+            alert(`Error in Promise; your state is jacked.\n\nCheck the console.`);
+        }
+        return fallthrough(error);
     },
 ) => promise.then(
     helper("data", resolver),
