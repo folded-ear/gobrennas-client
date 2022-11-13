@@ -1,68 +1,67 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# Foodinger!
 
-## Available Scripts
+[![CI/CD](https://github.com/folded-ear/foodinger/actions/workflows/ci-cd.yaml/badge.svg)](https://github.com/folded-ear/foodinger/actions/workflows/ci-cd.yaml)
 
-In the project directory, you can run:
+I'm a cookbook! I'm a todo list! I'm a meal planning package! I'm awesome!
 
-### `npm start`
+> Your _face_ is a cookbook!
 
-Runs the app in the development mode.<br>
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+## Build and Test
 
-The page will reload if you make edits.<br>
-You will also see any lint errors in the console.
+You'll need Java 8, Maven 3, and Node 14 to build. More specific versions may be
+stipulated at some point. And shush about "old Node"; Maven 3 is the same age as
+_Node itself_, so Node 14 is pretty damn new. Take your ADHD pills and let's
+keep going.
 
-### `npm test`
+The easiest way is to install `nvm` (see https://github.com/nvm-sh/nvm ) and use
+the included `mvnw` script:
 
-Launches the test runner in the interactive watch mode.<br>
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+    nvm install
+    cd client
+    npm install
+    npm run build
+    cd ..
+    ./mvnw package
 
-### `npm run build`
+Now you'll have a nice self-running JAR file in the `target` directory. Which
+we'll immediately forget about, because it's for deployment, not development.
+However, you _did_ just run the full regression suite (as would `./mvnw test`)!
 
-Builds the app for production to the `build` folder.<br>
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## Run (For Development)
 
-The build is minified and the filenames include the hashes.<br>
-Your app is ready to be deployed!
+You'll need a recent-ish Postgres (let's say 10 or newer) database to run
+against. If you're using a decent OS - or Docker Desktop; 🙄 - you'll have
+`docker` available, which is a great choice:
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+    docker run -d --name pg -p 5432:5432 -e POSTGRES_PASSWORD=passwd postgres:10
 
-### `npm run eject`
+If you already have existing PG infrastructure, create a new database (unless
+your `postgres` database remains pristine, and you want to use it).
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+To run the app, you'll need two terminals, one for the server:
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+    DB_HOST=localhost \
+    DB_PORT=5432 \
+    DB_NAME=postgres \
+    DB_USER=postgres \
+    DB_PASS=passwd \
+    ./mvnw spring-boot:run
 
-Instead, it will copy all the configuration files and the transitive dependencies (Webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+and one for the client:
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+    cd client
+    npm start
 
-## Learn More
+The latter should have opened http://localhost:3001/ in your default browser,
+but if not, hit that link manually. BAM.
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+You probably want to create a `src/main/resources/application-default.yml` with
+setting (look to the other `application*.yml` in that directory for inspiration)
+instead of using environment variables. But either works.
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+## Run (For Production)
 
-### Code Splitting
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/code-splitting
-
-### Analyzing the Bundle Size
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size
-
-### Making a Progressive Web App
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app
-
-### Advanced Configuration
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/advanced-configuration
-
-### Deployment
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/deployment
-
-### `npm run build` fails to minify
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
+That self-running JAR from the "Build and Test" section is perfect! Except you
+also need Google Auth secrets, DNS configuration, the right hostnames, the
+`package.json` config, and a bunch of mess. All of which is normal "host this
+thing" boilerplate and has nothing to do with Foodinger. So figure it out. :)
