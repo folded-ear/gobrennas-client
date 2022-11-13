@@ -1,67 +1,40 @@
-# Foodinger!
+# Brenna's Food Software Client
 
-[![CI/CD](https://github.com/folded-ear/foodinger/actions/workflows/ci-cd.yaml/badge.svg)](https://github.com/folded-ear/foodinger/actions/workflows/ci-cd.yaml)
+Do you use food? Do you use software? Brenna's Food Software is for you!
 
-I'm a cookbook! I'm a todo list! I'm a meal planning package! I'm awesome!
+> Your _face_ is ~~a cookbook~~ food software!
 
-> Your _face_ is a cookbook!
+## Build
 
-## Build and Test
+You'll need Node 14 to build. A more specific version may be stipulated at some
+point.
 
-You'll need Java 8, Maven 3, and Node 14 to build. More specific versions may be
-stipulated at some point. And shush about "old Node"; Maven 3 is the same age as
-_Node itself_, so Node 14 is pretty damn new. Take your ADHD pills and let's
-keep going.
+The easiest way is to install `nvm` (see https://github.com/nvm-sh/nvm ):
 
-The easiest way is to install `nvm` (see https://github.com/nvm-sh/nvm ) and use
-the included `mvnw` script:
+```bash
+nvm install
+npm install
+npm run build
+```
 
-    nvm install
-    cd client
-    npm install
-    npm run build
-    cd ..
-    ./mvnw package
-
-Now you'll have a nice self-running JAR file in the `target` directory. Which
-we'll immediately forget about, because it's for deployment, not development.
-However, you _did_ just run the full regression suite (as would `./mvnw test`)!
+Now you'll have a nice ready-to-deploy website in the `build` directory! And
+it's useless without an API to connect to.
 
 ## Run (For Development)
 
-You'll need a recent-ish Postgres (let's say 10 or newer) database to run
-against. If you're using a decent OS - or Docker Desktop; 🙄 - you'll have
-`docker` available, which is a great choice:
+You'll need Node 14 to run, just like above. Assuming you've got an API running
+at http://localhost:5000 (see https://github.com/folded-ear/gobrennas-api):
 
-    docker run -d --name pg -p 5432:5432 -e POSTGRES_PASSWORD=passwd postgres:10
+```bash
+nvm install # if needed
+npm install # if needed
+npm start
+```
 
-If you already have existing PG infrastructure, create a new database (unless
-your `postgres` database remains pristine, and you want to use it).
-
-To run the app, you'll need two terminals, one for the server:
-
-    DB_HOST=localhost \
-    DB_PORT=5432 \
-    DB_NAME=postgres \
-    DB_USER=postgres \
-    DB_PASS=passwd \
-    ./mvnw spring-boot:run
-
-and one for the client:
-
-    cd client
-    npm start
-
-The latter should have opened http://localhost:3001/ in your default browser,
-but if not, hit that link manually. BAM.
-
-You probably want to create a `src/main/resources/application-default.yml` with
-setting (look to the other `application*.yml` in that directory for inspiration)
-instead of using environment variables. But either works.
+That should have opened http://localhost:3001/ in your default browser, but if
+not, click the link. The client isn't useful without an API; see above.
 
 ## Run (For Production)
 
-That self-running JAR from the "Build and Test" section is perfect! Except you
-also need Google Auth secrets, DNS configuration, the right hostnames, the
-`package.json` config, and a bunch of mess. All of which is normal "host this
-thing" boilerplate and has nothing to do with Foodinger. So figure it out. :)
+That static website from the "Build" section is perfect! Stick it somewhere! Or
+hit https://gobrennas.com/ to see it in action.
