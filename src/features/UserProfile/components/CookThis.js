@@ -1,7 +1,8 @@
 import * as React from "react";
 import Button from "@material-ui/core/Button";
 import {
-    API_BASE_URL,API_IS_SECURE,
+    API_BASE_URL,
+    API_IS_SECURE,
     APP_BASE_URL,
 } from "constants/index";
 import { LockOpen } from "@material-ui/icons";
@@ -12,30 +13,29 @@ export const CookThis = () => {
     const cookThisRef = React.useRef();
     const token = useAuthToken();
     React.useEffect(() => {
-        cookThisRef.current.href = `javascript:s=document.createElement('script');s.src='${APP_BASE_URL}/import_bookmarklet.js?${qs.stringify(
+        cookThisRef.current.href = `javascript:s=document.createElement('script');s.src='${API_BASE_URL}/import_bookmarklet.js?${qs.stringify(
             {
-                apiRoot: API_BASE_URL,
+                appRoot: APP_BASE_URL,
                 token,
             })}&_='+Date.now();s.id='foodinger-import-bookmarklet';void(document.body.appendChild(s));`;
-    }, [cookThisRef.current]);
+    }, [ cookThisRef.current ]);
 
-    return (
-        <>
-            <a name="cook-this"></a>
-            <h2 id="cook-this">Cook This!</h2>
-            <p>&quot;Cook This!&quot; helps import recipes into Brenna&apos;s
-                Food Software. Drag it to your bookmarks bar, and then click it
-                when viewing a recipe online.
-            </p>
-            <p style={{ textAlign: "center" }}>
-                <Button
-                    ref={cookThisRef}
-                    href="#"
-                    variant={process.env.NODE_ENV === "production" ? "contained" : "outlined"}
-                    color="primary"
-                >
-                    {process.env.NODE_ENV === "production"
-                        ? "Cook This!"
+    return (<>
+        <a name="cook-this"></a>
+        <h2 id="cook-this">Cook This!</h2>
+        <p>&quot;Cook This!&quot; helps import recipes into Brenna&apos;s
+            Food Software. Drag it to your bookmarks bar, and then click it
+            when viewing a recipe online.
+        </p>
+        <p style={{ textAlign: "center" }}>
+            <Button
+                ref={cookThisRef}
+                href="#"
+                variant={process.env.NODE_ENV === "production" ? "contained" : "outlined"}
+                color="primary"
+            >
+                {process.env.NODE_ENV === "production"
+                    ? "Cook This!"
                     : "DEV Cook This!"}
             </Button>
         </p>
@@ -46,7 +46,6 @@ export const CookThis = () => {
             Sorry, man.
             <LockOpen />
         </p>}
-    </>
-    );
+    </>);
 };
 
