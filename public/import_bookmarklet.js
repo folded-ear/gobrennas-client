@@ -403,11 +403,9 @@ function getUrlParts(scripts) {
     };
     const renderStale = $div => {
         $div.innerHTML = `<h1 style="${headerStyle}">Update Cook This!</h1>
-        <div style="margin: 0 5%">
-            <p>Cook This! needs an update. Delete it, reinstall below, and then
-            click it again!</p>
-            <iframe width="100%" height="250" src="${appRoot}/profile#cook-this" />
-        </div>
+        <p>Cook This! needs an update. Delete it, reinstall from <a
+        href="https://gobrennas.com/profile#cook-this" target="_blank">your
+        profile</a>, then return to this page and click it!</p>
         `;
     };
     const renderImporting = $div => {
