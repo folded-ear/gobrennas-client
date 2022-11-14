@@ -15,9 +15,10 @@ const useStyles = makeStyles(theme => ({
             whiteSpace: "nowrap",
             textDecoration: "none",
         },
-        F: {
+        B: {
             transform: "scaleX(-1)",
             display: "inline-block",
+            color: "#d3b8ae",
         },
     })
 );
@@ -36,8 +37,8 @@ const Logo = (props) => {
         ...ptps,
         className: classes.root,
     }, [
-        <span key="F" className={classes.F}>F</span>,
-        small ? "F" : "Foodinger",
+        <span key="B" className={classes.B}>B</span>,
+        small ? "F" : "FoodSoftware",
     ]);
 };
 
