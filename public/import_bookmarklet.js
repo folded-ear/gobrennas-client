@@ -1,12 +1,8 @@
-const getUrlParts = (scripts) => {
+function getUrlParts(scripts) {
     const parts = scripts[scripts.length - 1].src.split("?");
     let appRoot = parts[0].split("/");
     appRoot.pop();
     appRoot = appRoot.join("/");
-    let apiRoot = appRoot.replace(
-        /^https?:\/\/localhost:3001(\/|$)/,
-        "http://localhost:5000$1",
-    ) + "/api";
     const querystring = parts[1].split("&")
         .map(p => p.split("="))
         .reduce((m, a) => ({
@@ -16,16 +12,16 @@ const getUrlParts = (scripts) => {
 
     return {
         appRoot,
-        apiRoot,
+        apiRoot: (querystring.apiRoot || appRoot) + "/api",
         querystring,
-    }
+    };
 }
 
 (function() {
     const scripts = [...document.getElementsByTagName("script")]
         .filter(el => el.id === "foodinger-import-bookmarklet");
 
-    const { appRoot, apiRoot, querystring } = getUrlParts(scripts)
+    const { appRoot, apiRoot, querystring } = getUrlParts(scripts);
     const authHeaders = {
         "Authorization": `Bearer ${querystring.token || "garbage"}`,
     };
@@ -203,9 +199,9 @@ const getUrlParts = (scripts) => {
                 return response.blob();
             })
             .then(blob => {
-                return new File([blob], filename, {type: blob.type});
+                return new File([ blob ], filename, { type: blob.type });
             })
-            .catch(e => null);
+            .catch(() => null);
     };
     const camelToDashed = n =>
         n.replace(/([a-z0-9])([A-Z])/g, (match, a, b) =>
@@ -325,7 +321,7 @@ const getUrlParts = (scripts) => {
         <div style="${formItemStyle}">
             <label style="${labelStyle}"></label>
             <button style="${importBtnStyle}" onclick="${GATEWAY_PROP}.findPhoto()">Find Photo</button>
-            <img id="photo" src="${store.photoURL}" style="${photoStyle}"/>
+            <img id="photo" src="${store.photoURL}" style="${photoStyle}" alt="photo" />
         </div>
         <div style="${formItemStyle}">
             <label style="${labelStyle}"></label>
@@ -474,9 +470,12 @@ const getUrlParts = (scripts) => {
             if (!store.url.includes("cooking.nytimes.com")) return;
             const r = document.querySelector("main .recipe");
             store.title = grabString(r.querySelector("[class*=contenttitle]"));
-            store.ingredients = grabList(r.querySelector("[class^=ingredients_ingredients] ul"));
-            store.directions = grabList(r.querySelector("[class^=preparation_steps]"));
-            store.photo = findImage(r.querySelector("[class^=recipeheaderimage] img"));
+            store.ingredients = grabList(r.querySelector(
+                "[class^=ingredients_ingredients] ul"));
+            store.directions = grabList(r.querySelector(
+                "[class^=preparation_steps]"));
+            findImage(r.querySelector("[class^=recipeheaderimage] img"));
+            store.photo = null;
             return true;
         },
         () => {

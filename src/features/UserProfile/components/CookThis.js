@@ -1,6 +1,8 @@
 import * as React from "react";
 import Button from "@material-ui/core/Button";
-import {API_IS_SECURE, APP_BASE_URL} from "../../../constants";
+import {API_BASE_URL,
+    API_IS_SECURE,
+    APP_BASE_URL} from "../../../constants";
 import {LockOpen} from "@material-ui/icons";
 import qs from "qs";
 import {useAuthToken} from "../../../providers/AuthToken";
@@ -11,6 +13,7 @@ export const CookThis = () => {
     React.useEffect(() => {
         cookThisRef.current.href = `javascript:s=document.createElement('script');s.src='${APP_BASE_URL}/import_bookmarklet.js?${qs.stringify(
             {
+                apiRoot: API_BASE_URL,
                 token,
             })}&_='+Date.now();s.id='foodinger-import-bookmarklet';void(document.body.appendChild(s));`;
     }, [cookThisRef.current]);
