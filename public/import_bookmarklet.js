@@ -3,7 +3,10 @@ const getUrlParts = (scripts) => {
     let appRoot = parts[0].split("/");
     appRoot.pop();
     appRoot = appRoot.join("/");
-    let apiRoot = appRoot.replace(/^https?:\/\/localhost:3001(\/|$)/, "http://localhost:8080$1") + "/api";
+    let apiRoot = appRoot.replace(
+        /^https?:\/\/localhost:3001(\/|$)/,
+        "http://localhost:5000$1",
+    ) + "/api";
     const querystring = parts[1].split("&")
         .map(p => p.split("="))
         .reduce((m, a) => ({

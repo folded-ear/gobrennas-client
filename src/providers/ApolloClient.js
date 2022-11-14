@@ -1,10 +1,16 @@
-import {ApolloClient as ApolloClientInstance, ApolloProvider, createHttpLink, InMemoryCache} from "@apollo/client";
+import {
+    ApolloClient as ApolloClientInstance,
+    ApolloProvider,
+    createHttpLink,
+    InMemoryCache,
+} from "@apollo/client";
 import PropTypes from "prop-types";
 import * as React from "react";
+import { API_BASE_URL } from "constants/index";
 
 
 const link = createHttpLink({
-    uri: "http://localhost:8080/graphql",
+    uri: `${API_BASE_URL}/graphql`,
     credentials: "include",
 });
 
