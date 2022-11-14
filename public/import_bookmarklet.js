@@ -286,7 +286,7 @@ function getUrlParts(scripts) {
     });
     const renderForm = $div => {
         // noinspection CheckTagEmptyBody
-        $div.innerHTML = `<h1 style="${headerStyle}">Foodinger Import</h1>
+        $div.innerHTML = `<h1 style="${headerStyle}">Cook This!</h1>
         <div style="${formItemStyle}">
             <label style="${labelStyle}">Title:</label>
             <input style="${valueStyle}" name="title" />
@@ -402,10 +402,12 @@ function getUrlParts(scripts) {
         };
     };
     const renderStale = $div => {
-        $div.innerHTML = `<h1 style="${headerStyle}">Stale Bookmarklet</h1>
-        <p>Your import bookmarklet is stale. Go update it from
-        <a href="${appRoot}/profile" target="_blank">your Profile</a>,
-        and then return to this page and click it!</p>
+        $div.innerHTML = `<h1 style="${headerStyle}">Update Cook This!</h1>
+        <div style="margin: 0 5%">
+            <p>Cook This! needs an update. Delete it, reinstall below, and then
+            click it again!</p>
+            <iframe width="100%" height="250" src="${appRoot}/profile#cook-this" />
+        </div>
         `;
     };
     const renderImporting = $div => {

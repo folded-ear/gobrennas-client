@@ -8,7 +8,7 @@ const NewVersionAvailable = () =>
     <Banner
         severity="info"
     >
-        Foodinger has updated!
+        Brenna&apos;s Food Software has updated!
         {" "}
         <Button
             size="small"

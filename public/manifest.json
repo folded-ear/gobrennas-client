@@ -1,16 +1,16 @@
 {
-  "short_name": "Foodinger",
-  "name": "Foodinger",
-  "icons": [
-    {
-      "src": "android-chrome-512x512.png",
-      "sizes": "512x512",
-      "type": "image/png"
-    },
-    {
-      "src": "android-chrome-384x384.png",
-      "sizes": "384x384",
-      "type": "image/png"
+    "short_name": "Food Software",
+    "name": "Brenna's Food Software",
+    "icons": [
+        {
+            "src": "android-chrome-512x512.png",
+            "sizes": "512x512",
+            "type": "image/png"
+        },
+        {
+            "src": "android-chrome-384x384.png",
+            "sizes": "384x384",
+            "type": "image/png"
     },
     {
       "src": "android-chrome-192x192.png",

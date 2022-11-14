@@ -6,7 +6,13 @@ import {
     GOOGLE_AUTH_URL,
     SESSION_STORAGE_POST_LOGIN,
 } from "../../constants";
-import { setJsonItem } from "../../util/storage";
+import { setJsonItem } from "util/storage";
+import {
+    Box,
+    Container,
+    Paper,
+    Typography,
+} from "@material-ui/core";
 
 class Login extends Component {
     
@@ -43,18 +49,39 @@ class Login extends Component {
             );
         }
         return (
-            <div className="login-container">
-                <div className="login-content">
-                    <h1>Welcome to Foodinger</h1>
-                    <Button
-                        color="primary"
-                        variant="outlined"
-                        href={GOOGLE_AUTH_URL}
-                    >
-                        Login with Google
-                    </Button>
-                </div>
-            </div>
+            <Container maxWidth={"sm"}>
+                <Box m={2}>
+                    <Paper elevation={3}>
+                        <Box p={3}>
+                            <Typography variant={"h2"}
+                                        component={"h1"}
+                                        align={"center"}>
+                                Brenna&apos;s Food Software
+                            </Typography>
+                            <Box my={3} align={"center"}>
+                                <Button
+                                    color="primary"
+                                    variant="outlined"
+                                    href={GOOGLE_AUTH_URL}
+                                >
+                                    Login with Google
+                                </Button>
+                            </Box>
+                            <Typography paragraph>
+                                Brenna&apos;s Food Software is a recipe library,
+                                meal planner, and digital shopping list. At the
+                                store with your partner or kids? Split up,
+                                without tearing the list in half. Preparing a
+                                holiday meal? Organize the tasks so the day -
+                                the prep at least - is stress-free.
+                            </Typography>
+                            <Typography paragraph>
+                                Happy cooking!
+                            </Typography>
+                        </Box>
+                    </Paper>
+                </Box>
+            </Container>
         );
     }
 }
