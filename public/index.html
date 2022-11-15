@@ -25,14 +25,6 @@
         Learn how to configure a non-root public URL by running `npm run build`.
       -->
       <title>Brenna's Food Software</title>
-      <script>
-          if ("www.gobrennas.com" === location.hostname) {
-              location.replace(location.href.replace(
-                  "//www.gobrennas.com/",
-                  "//gobrennas.com/",
-              ));
-          }
-      </script>
       <% if (process.env.NODE_ENV === 'production') { %>
       <!-- Global site tag (gtag.js) - Google Analytics -->
       <script async
