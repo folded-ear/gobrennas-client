@@ -2,7 +2,7 @@ import CssBaseline from "@material-ui/core/CssBaseline";
 import { ThemeProvider } from "@material-ui/core/styles";
 import React from "react";
 import useIsNewVersionAvailable from "data/useIsNewVersionAvailable";
-import { useIsAuthenticated } from "../providers/Profile";
+import { useIsAuthenticated } from "providers/Profile";
 import routes from "../routes";
 import RoutingSwitch from "../RoutingSwitch";
 import theme from "../theme";
