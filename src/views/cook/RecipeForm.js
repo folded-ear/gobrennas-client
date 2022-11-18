@@ -164,7 +164,7 @@ const RecipeForm = ({title, onSave, onSaveCopy, onCancel, extraButtons}) => {
         </Box>
         <List>
             {draft.ingredients.map((it, i) =>
-                <ListItem key={i} disableGutters>
+                <ListItem key={it.id} disableGutters>
                     <ElEdit
                         name={`ingredients.${i}`}
                         value={it}

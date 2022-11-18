@@ -11,16 +11,21 @@ import RecipeActions from "./RecipeActions";
 import RecipeApi from "./RecipeApi";
 import RouteActions from "./RouteActions";
 
+const newIngredient = (raw = "") => ({
+    id: ClientId.next(),
+    raw,
+});
+
 const buildTemplate = () => ({
     id: ClientId.next(),
     name: "",
     externalUrl: "",
-    ingredients: [{raw: ""}],
+    ingredients: [ newIngredient() ],
     directions: "",
     "yield": null,
     totalTime: null,
     calories: null,
-    labels: []
+    labels: [],
 });
 
 const buildWirePacket = recipe => {
@@ -46,7 +51,7 @@ const loadRecipeIfPossible = draftLO => {
         if (s.ingredients == null || s.ingredients.length === 0) {
             s = {
                 ...s,
-                ingredients: [{raw: ""}]
+                ingredients: [ newIngredient() ],
             };
         }
         return s;
@@ -122,9 +127,7 @@ class DraftRecipeStore extends ReduceStore {
 
             case RecipeActions.NEW_DRAFT_INGREDIENT_YO: {
                 return state.map(s => {
-                    const ing = {
-                        raw: "",
-                    };
+                    const ing = newIngredient();
                     const ingredients = s.ingredients == null
                         ? []
                         : s.ingredients.slice(0);
@@ -172,12 +175,11 @@ class DraftRecipeStore extends ReduceStore {
                         // if pasting into an empty on, delete it
                         ingredients.splice(idx--, 1);
                     }
-                    action.text
+                    ingredients.splice(++idx, 0, ...action.text
                         .split("\n")
                         .map(it => it.trim())
                         .filter(it => it.length > 0)
-                        .forEach(raw =>
-                            ingredients.splice(++idx, 0, {raw}));
+                        .map(newIngredient));
                     return {
                         ...s,
                         ingredients,
