@@ -18,10 +18,9 @@ export const CookThis = () => {
                 appRoot: APP_BASE_URL,
                 token,
             })}&_='+Date.now();s.id='foodinger-import-bookmarklet';void(document.body.appendChild(s));`;
-    }, [ cookThisRef.current ]);
+    }, [ token ]);
 
     return (<>
-        <a name="cook-this"></a>
         <h2 id="cook-this">Cook This!</h2>
         <p>&quot;Cook This!&quot; helps import recipes into Brenna&apos;s
             Food Software. Drag it to your bookmarks bar, and then click it

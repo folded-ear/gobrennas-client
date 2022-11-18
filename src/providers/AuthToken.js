@@ -10,7 +10,10 @@ import { getCookie } from "util/cookies";
 const AuthTokenContext = createContext(true);
 
 export function AuthTokenProvider({children}) {
-    const token = useMemo(getCookie.bind(undefined, COOKIE_AUTH_TOKEN), []);
+    const token = useMemo(
+        () => getCookie(COOKIE_AUTH_TOKEN),
+        [],
+    );
     return <AuthTokenContext.Provider value={token}>
         {children}
     </AuthTokenContext.Provider>;

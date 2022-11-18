@@ -1,9 +1,9 @@
 import {
-    createMuiTheme,
+    createTheme,
     responsiveFontSizes,
 } from "@material-ui/core/styles";
 
-let theme = createMuiTheme({
+let theme = createTheme({
     palette: {
         primary: {
             light: "#f9683a",

@@ -33,7 +33,7 @@ function OneShotEdit({
         if (ref.raw === "" || (ref.raw.startsWith("\"") && ref.raw.endsWith("\""))) {
             setRef({ raw: `"${ingredient}"` });
         }
-    }, [ ingredient ]);
+    }, [ ingredient, ref.raw ]);
 
     // kludge for something with the circular progress hunk drawing stupid.
     const [ maxHeight, setMaxHeight ] = useState("unset");
@@ -42,7 +42,7 @@ function OneShotEdit({
         if (!elEditRef.current) return;
         const height = elEditRef.current.clientHeight;
         setMaxHeight(height * 1.5 + "px");
-    }, [ elEditRef.current ]);
+    }, []);
 
     const disabled = useMemo(() =>
         !ref.quantity || !ref.ingredient, [ ref ]);

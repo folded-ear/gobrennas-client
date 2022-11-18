@@ -2,8 +2,10 @@
 FROM node:14-alpine as build
 WORKDIR /app
 COPY . ./
+ENV CI=true
 RUN npm ci
 RUN npx browserslist@latest --update-db
+RUN npm run test
 RUN npm run build
 
 # server environment

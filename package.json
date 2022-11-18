@@ -21,11 +21,9 @@
     "preval.macro": "^5.0.0",
     "prop-types": "^15.7.2",
     "qs": "^6.10.1",
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2",
     "react-query": "^3.39.2",
     "react-router-dom": "^5.2.0",
-    "react-showdown": "^1.6.0",
+    "react-showdown": "^2.3.1",
     "workbox-background-sync": "^5.1.4",
     "workbox-broadcast-update": "^5.1.4",
     "workbox-cacheable-response": "^5.1.4",
@@ -39,6 +37,9 @@
     "workbox-strategies": "^5.1.4",
     "workbox-streams": "^5.1.4"
   },
+  "resolutions": {
+    "react-error-overlay": "6.0.9"
+  },
   "scripts": {
     "start": "PORT=3001 react-scripts start",
     "build": "react-scripts build",
@@ -48,7 +49,48 @@
     "lint": "eslint ./src"
   },
   "eslintConfig": {
-    "extends": "react-app"
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ],
+    "rules": {
+      "no-prototype-builtins": 0,
+      "react/prop-types": 1,
+      "no-console": 1,
+      "semi": [
+        "warn",
+        "always"
+      ],
+      "no-unused-vars": "warn",
+      "quotes": [
+        "warn",
+        "double",
+        {
+          "avoidEscape": true,
+          "allowTemplateLiterals": true
+        }
+      ],
+      "no-debugger": "warn"
+    },
+    "settings": {
+      "propWrapperFunctions": [
+        "forbidExtraProps",
+        {
+          "property": "freeze",
+          "object": "Object"
+        },
+        {
+          "property": "myFavoriteWrapper"
+        }
+      ],
+      "linkComponents": [
+        "Hyperlink",
+        {
+          "name": "Link",
+          "linkAttribute": "to"
+        }
+      ]
+    }
   },
   "browserslist": {
     "production": [
@@ -66,12 +108,10 @@
     "@testing-library/jest-dom": "^5.12.0",
     "@testing-library/react": "^11.2.7",
     "@testing-library/user-event": "^12.8.3",
-    "eslint-config-airbnb": "^18.2.1",
-    "eslint-plugin-import": "^2.23.3",
-    "eslint-plugin-jsx-a11y": "^6.4.1",
-    "eslint-plugin-react": "^7.23.2",
-    "eslint-plugin-react-hooks": "^4.2.0",
+    "react-error-overlay": "6.0.9",
     "node-sass": "^4.12.0",
-    "react-scripts": "^4.0.3"
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "react-scripts": "5.0.1"
   }
 }

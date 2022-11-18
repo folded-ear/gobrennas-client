@@ -1,11 +1,6 @@
 import PropTypes from "prop-types";
 import React from "react";
-import { Converter } from "react-showdown";
-
-const converter = new Converter({
-    strikethrough: true,
-    simpleLineBreaks: true,
-});
+import MarkdownView from "react-showdown";
 
 const Markdown = ({
                       text,
@@ -14,7 +9,13 @@ const Markdown = ({
         return null;
     }
     return <div className="markdown">
-        {converter.convert(text)}
+        <MarkdownView
+            markdown={text}
+            options={{
+                strikethrough: true,
+                simpleLineBreaks: true,
+            }}
+        />
     </div>;
 };
 
