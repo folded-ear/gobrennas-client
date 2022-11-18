@@ -50,9 +50,15 @@ const IngredientItem = ({ingRef: ref, hideRecipeLink, hideSendToPlan, inline}) =
     }
 
     if (ref.ingredient == null || typeof ref.ingredient === "string") {
-        right = ref.quantity == null
-            ? (ref.raw || ref.name)
-            : ref.preparation;
+        if (ref.ingredientId != null) {
+            // still loading...
+            left = null;
+            right = ref.raw || ref.name;
+        } else {
+            right = ref.quantity == null
+                ? (ref.raw || ref.name)
+                : ref.preparation;
+        }
         if (!hideSendToPlan) {
             right = <>
                 {right}
