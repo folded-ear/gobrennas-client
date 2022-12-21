@@ -19,7 +19,8 @@ import PlaceholderIconButton from "views/common/PlaceholderIconButton";
 import IngredientItem from "views/IngredientItem";
 import CollapseIconButton from "global/components/CollapseIconButton";
 import CookButton from "features/Planner/components/CookButton";
-import DontChangeStatusButton from "features/Planner/components/DontChangeStatusButton";
+import DontChangeStatusButton
+    from "features/Planner/components/DontChangeStatusButton";
 import Item from "features/Planner/components/Item";
 import StatusIconButton from "features/Planner/components/StatusIconButton";
 import TaskBucketChip from "features/Planner/components/TaskBucketChip";
@@ -351,9 +352,11 @@ class Task extends React.PureComponent {
                     onPaste={this.onPaste}
                     onCopy={this.onCopy}
                     onKeyDown={this.onKeyDown}
+                    onDoubleClick={parent ? this.onToggleExpanded : null}
                 />
                 : <ListItemText
                     className={classes.text}
+                    onDoubleClick={parent ? this.onToggleExpanded : null}
                 >
                     {recipeIsh || !task.ingredient
                         ? task.name
