@@ -27,6 +27,7 @@ import useIsDevMode from "data/useIsDevMode";
 import { useLogoutHandler } from "../providers/Profile";
 import Logo from "../views/common/Logo";
 import Menu from "@material-ui/core/Menu";
+import { useIsMobile } from "../providers/IsMobile";
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -34,6 +35,10 @@ const useStyles = makeStyles(theme => ({
         "& .MuiTab-root": {
             minWidth: 72,
             marginRight: theme.spacing(2),
+            [theme.breakpoints.down("sm")]: {
+                minWidth: 0,
+                marginRight: 0,
+            },
         },
     },
     grow: {
@@ -47,8 +52,11 @@ const useStyles = makeStyles(theme => ({
     },
     indicator: {
         backgroundColor: "white",
-        height: "4px",
+        height: 4,
         bottom: 0,
+        [theme.breakpoints.down("sm")]: {
+            height: 2,
+        },
     },
     profileTab: {
         marginRight: 0,
@@ -57,6 +65,7 @@ const useStyles = makeStyles(theme => ({
 
 const DesktopHeader = ({authenticated, location}) => {
     const classes = useStyles();
+    const isMobile = useIsMobile();
     const devMode = useIsDevMode();
     const topLevelNavSeg = location.pathname.split("/")[1];
 
@@ -111,13 +120,14 @@ const DesktopHeader = ({authenticated, location}) => {
         </Menu>
     );
 
-    return <div className={classes.grow}>
+    return <>
         <AppBar
             position="sticky"
             className={classes.root}
         >
             <Toolbar>
                 <Logo
+                    version={isMobile ? "small" : null}
                     component={Link}
                     to="/library"
                 />
@@ -131,28 +141,28 @@ const DesktopHeader = ({authenticated, location}) => {
                     <Tab
                         component={Link}
                         icon={<LibraryIcon />}
-                        label="Library"
+                        label={isMobile ? null : "Library"}
                         to="/library"
                         value="library"
                     />
                     <Tab
                         component={Link}
                         icon={<PlanIcon />}
-                        label="Plan"
+                        label={isMobile ? null : "Plan"}
                         to="/plan"
                         value="plan"
                     />
                     <Tab
                         component={Link}
                         icon={<ShopIcon />}
-                        label="Shop"
+                        label={isMobile ? null : "Shop"}
                         to="/shop"
                         value="shop"
                     />
                     {devMode && <Tab
                         component={Link}
                         icon={<PantryIcon />}
-                        label="Pantry"
+                        label={isMobile ? null : "Pantry"}
                         to="/pantry"
                         value="pantry"
                     />}
@@ -168,7 +178,7 @@ const DesktopHeader = ({authenticated, location}) => {
             </Toolbar>
         </AppBar>
         {renderMenu}
-    </div>;
+    </>;
 };
 
 DesktopHeader.propTypes = {
