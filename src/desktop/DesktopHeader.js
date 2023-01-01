@@ -8,12 +8,12 @@ import {
 import { makeStyles } from "@material-ui/core/styles";
 import withStyles from "@material-ui/core/styles/withStyles";
 import {
-    AccountCircle,
-    EventNote,
-    ExitToApp,
-    MeetingRoom,
-    MenuBook,
-    ShoppingCart as Shop,
+    AccountCircle as ProfileIcon,
+    EventNote as PlanIcon,
+    ExitToApp as LogoutIcon,
+    MeetingRoom as PantryIcon,
+    MenuBook as LibraryIcon,
+    ShoppingCart as ShopIcon,
 } from "@material-ui/icons";
 import PropTypes from "prop-types";
 import React from "react";
@@ -75,28 +75,28 @@ const DesktopHeader = ({authenticated, location}) => {
                 TabIndicatorProps={{className: classes.indicator}}
             >
                 <BigNav
-                    icon={<MenuBook />}
+                    icon={<LibraryIcon />}
                     label="Library"
                     component={Link}
                     to="/library"
                     value="library"
                 />
                 <BigNav
-                    icon={<EventNote />}
+                    icon={<PlanIcon />}
                     label="Plan"
                     component={Link}
                     to="/plan"
                     value="plan"
                 />
                 <BigNav
-                    icon={<Shop />}
+                    icon={<ShopIcon />}
                     label="Shop"
                     component={Link}
                     to="/shop"
                     value="shop"
                 />
                 {devMode && <BigNav
-                    icon={<MeetingRoom />}
+                    icon={<PantryIcon />}
                     label="Pantry"
                     component={Link}
                     to="/pantry"
@@ -110,14 +110,14 @@ const DesktopHeader = ({authenticated, location}) => {
                 title="Profile"
                 color={colorByHotness("profile")}
             >
-                <AccountCircle />
+                <ProfileIcon />
             </IconButton>}
             {authenticated && <IconButton
                 onClick={handleLogout}
                 title="Logout"
                 color={colorByHotness("__logout__")}
             >
-                <ExitToApp />
+                <LogoutIcon />
             </IconButton>}
         </Toolbar>
     </AppBar>;
