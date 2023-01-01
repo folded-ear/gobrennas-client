@@ -59,7 +59,10 @@ const useStyles = makeStyles(theme => ({
         },
     },
     profileTab: {
-        marginRight: 0,
+        "&.MuiTab-root": {
+            minWidth: 0,
+            marginRight: 0,
+        },
     },
 }));
 
