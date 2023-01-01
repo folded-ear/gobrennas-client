@@ -27,7 +27,7 @@ ReactDOM.render(
         AuthTokenProvider,
         ProfileProvider,
         IsMobileProvider,
-    ].reverse().reduce(
+    ].reduceRight(
         (kids, Decorator) => <Decorator>{kids}</Decorator>,
         <QueryClientProvider client={queryClient}>
             <Router history={history}>
