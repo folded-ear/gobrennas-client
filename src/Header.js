@@ -1,6 +1,7 @@
 import {
     AppBar,
     ListItemIcon,
+    Menu,
     MenuItem,
     Tab,
     Tabs,
@@ -24,10 +25,9 @@ import {
     withRouter,
 } from "react-router-dom";
 import useIsDevMode from "data/useIsDevMode";
-import { useLogoutHandler } from "../providers/Profile";
-import Logo from "../views/common/Logo";
-import Menu from "@material-ui/core/Menu";
-import { useIsMobile } from "../providers/IsMobile";
+import { useLogoutHandler } from "./providers/Profile";
+import Logo from "./views/common/Logo";
+import { useIsMobile } from "./providers/IsMobile";
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -63,7 +63,7 @@ const useStyles = makeStyles(theme => ({
     },
 }));
 
-const DesktopHeader = ({authenticated, location}) => {
+const Header = ({ authenticated, location }) => {
     const classes = useStyles();
     const isMobile = useIsMobile();
     const devMode = useIsDevMode();
@@ -181,9 +181,9 @@ const DesktopHeader = ({authenticated, location}) => {
     </>;
 };
 
-DesktopHeader.propTypes = {
+Header.propTypes = {
     authenticated: PropTypes.bool,
     location: PropTypes.object.isRequired, // react-router BS
 };
 
-export default withRouter(DesktopHeader);
+export default withRouter(Header);
