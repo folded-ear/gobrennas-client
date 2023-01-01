@@ -1,12 +1,13 @@
 import {
     AppBar,
-    IconButton,
+    ListItemIcon,
+    MenuItem,
     Tab,
     Tabs,
     Toolbar,
+    Typography,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import withStyles from "@material-ui/core/styles/withStyles";
 import {
     AccountCircle as ProfileIcon,
     EventNote as PlanIcon,
@@ -19,108 +20,155 @@ import PropTypes from "prop-types";
 import React from "react";
 import {
     Link,
+    useHistory,
     withRouter,
 } from "react-router-dom";
 import useIsDevMode from "data/useIsDevMode";
 import { useLogoutHandler } from "../providers/Profile";
 import Logo from "../views/common/Logo";
+import Menu from "@material-ui/core/Menu";
 
 const useStyles = makeStyles(theme => ({
     root: {
-        flexGrow: 1,
         height: theme.header.height,
+        "& .MuiTab-root": {
+            minWidth: 72,
+            marginRight: theme.spacing(2),
+        },
+    },
+    grow: {
+        flexGrow: 1,
     },
     bar: {
-        flexGrow: 1,
         minWidth: "195px",
+        "& .MuiTabs-flexContainer": {
+            alignItems: "center",
+        },
     },
     indicator: {
         backgroundColor: "white",
         height: "4px",
-        bottom: 0
+        bottom: 0,
+    },
+    profileTab: {
+        marginRight: 0,
     },
 }));
-
-const BigNav = withStyles((theme) => ({
-    root: {
-        textTransform: "uppercase",
-        minWidth: 72, // the default is 160
-        marginRight: theme.spacing(2),
-    },
-}))((props) => <Tab {...props} />);
 
 const DesktopHeader = ({authenticated, location}) => {
     const classes = useStyles();
     const devMode = useIsDevMode();
     const topLevelNavSeg = location.pathname.split("/")[1];
-    const colorByHotness = val =>
-        topLevelNavSeg === val ? "inherit" : "default";
 
-    const handleLogout = useLogoutHandler();
+    const history = useHistory();
+    const handleProfile = e => {
+        e.stopPropagation();
+        history.push("/profile");
+        handleMenuClose();
+    };
+    const doLogout = useLogoutHandler();
+    const handleLogout = e => {
+        e.preventDefault();
+        e.stopPropagation();
+        handleMenuClose();
+        doLogout();
+    };
 
-    return <AppBar
-        position="sticky"
-        className={classes.root}
-    >
-        <Toolbar>
-            <Logo
-                component={Link}
-                to="/library"
-            />
-            {authenticated && <Tabs
-                selectionFollowsFocus
-                className={classes.bar}
-                value={topLevelNavSeg}
-                textColor="inherit"
-                TabIndicatorProps={{className: classes.indicator}}
-            >
-                <BigNav
-                    icon={<LibraryIcon />}
-                    label="Library"
+    // this mess basically lifted as-is from https://v4.mui.com/components/app-bar/#app-bar-with-a-primary-search-field
+    const [ anchorEl, setAnchorEl ] = React.useState(null);
+    const isMenuOpen = Boolean(anchorEl);
+    const handleProfileMenuOpen = (event) =>
+        setAnchorEl(event.currentTarget);
+    const handleMenuClose = () =>
+        setAnchorEl(null);
+    const menuId = "profile-menu";
+    const renderMenu = (
+        <Menu
+            anchorEl={anchorEl}
+            anchorOrigin={{ vertical: "top", horizontal: "right" }}
+            id={menuId}
+            keepMounted
+            transformOrigin={{ vertical: "top", horizontal: "right" }}
+            open={isMenuOpen}
+            onClose={handleMenuClose}
+        >
+            <MenuItem onClick={handleProfile}>
+                <ListItemIcon>
+                    <ProfileIcon />
+                </ListItemIcon>
+                <Typography noWrap>
+                    Profile
+                </Typography>
+            </MenuItem>
+            <MenuItem onClick={handleLogout}>
+                <ListItemIcon>
+                    <LogoutIcon />
+                </ListItemIcon>
+                <Typography noWrap>
+                    Logout
+                </Typography>
+            </MenuItem>
+        </Menu>
+    );
+
+    return <div className={classes.grow}>
+        <AppBar
+            position="sticky"
+            className={classes.root}
+        >
+            <Toolbar>
+                <Logo
                     component={Link}
                     to="/library"
-                    value="library"
                 />
-                <BigNav
-                    icon={<PlanIcon />}
-                    label="Plan"
-                    component={Link}
-                    to="/plan"
-                    value="plan"
-                />
-                <BigNav
-                    icon={<ShopIcon />}
-                    label="Shop"
-                    component={Link}
-                    to="/shop"
-                    value="shop"
-                />
-                {devMode && <BigNav
-                    icon={<PantryIcon />}
-                    label="Pantry"
-                    component={Link}
-                    to="/pantry"
-                    value="pantry"
-                />}
-            </Tabs>}
-            {authenticated && <IconButton
-                component={Link}
-                to="/profile"
-                value="profile"
-                title="Profile"
-                color={colorByHotness("profile")}
-            >
-                <ProfileIcon />
-            </IconButton>}
-            {authenticated && <IconButton
-                onClick={handleLogout}
-                title="Logout"
-                color={colorByHotness("__logout__")}
-            >
-                <LogoutIcon />
-            </IconButton>}
-        </Toolbar>
-    </AppBar>;
+                {authenticated && <Tabs
+                    selectionFollowsFocus
+                    className={`${classes.bar} ${classes.grow}`}
+                    value={topLevelNavSeg}
+                    textColor="inherit"
+                    TabIndicatorProps={{ className: classes.indicator }}
+                >
+                    <Tab
+                        component={Link}
+                        icon={<LibraryIcon />}
+                        label="Library"
+                        to="/library"
+                        value="library"
+                    />
+                    <Tab
+                        component={Link}
+                        icon={<PlanIcon />}
+                        label="Plan"
+                        to="/plan"
+                        value="plan"
+                    />
+                    <Tab
+                        component={Link}
+                        icon={<ShopIcon />}
+                        label="Shop"
+                        to="/shop"
+                        value="shop"
+                    />
+                    {devMode && <Tab
+                        component={Link}
+                        icon={<PantryIcon />}
+                        label="Pantry"
+                        to="/pantry"
+                        value="pantry"
+                    />}
+                    <div className={classes.grow} />
+                    <Tab
+                        className={classes.profileTab}
+                        component={"a"}
+                        icon={<ProfileIcon />}
+                        onClick={handleProfileMenuOpen}
+                        value="profile"
+                    />
+                </Tabs>}
+            </Toolbar>
+        </AppBar>
+        {renderMenu}
+    </div>;
 };
 
 DesktopHeader.propTypes = {
