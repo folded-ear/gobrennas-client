@@ -7,10 +7,9 @@ const useStyles = makeStyles(theme => ({
             fontSize: "3em",
             color: "white",
             fontWeight: "bold",
-            margin: ({small}) =>
-                theme.spacing(small ? 1 : 3),
-            marginRight: ({small}) =>
-                theme.spacing(small ? 2 : 6),
+            margin: ({ small }) => small
+                ? theme.spacing(1, 2, 1, 0)
+                : theme.spacing(3, 6, 3, 0),
             fontFamily: "Stint Ultra Condensed",
             whiteSpace: "nowrap",
             textDecoration: "none",
