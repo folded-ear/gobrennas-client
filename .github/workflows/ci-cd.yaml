@@ -15,3 +15,15 @@ jobs:
       - run: npm ci
       - run: npm test
       - run: npm run build
+  deploy:
+    if: github.ref == 'refs/heads/master'
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger Cloud Build
+        uses: distributhor/workflow-webhook@v2
+        env:
+          webhook_url: ${{ secrets.CLOUD_BUILD_WEBHOOK }}
+          # this is supposed to be optional, but it isn't?
+          webhook_secret: "sQJpDqXGNpUER9YTperNqpDK3YJgBWloGpyt5I63KgJlMMWQ8hmiC7EuJpGPB9TX52jYRGh4MWMNrKTMi0e0BmRbaxwxLItzhqpk"
+          verbose: true
