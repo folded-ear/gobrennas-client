@@ -1,0 +1,29 @@
+steps:
+  - id: docker build
+    name: 'gcr.io/cloud-builders/docker'
+    args: [ 'build', '-t', '$_IMAGE', '.' ]
+  - id: docker push
+    name: 'gcr.io/cloud-builders/docker'
+    args: [ 'push', '$_IMAGE' ]
+  - id: Deploy to Cloud Run
+    name: 'gcr.io/cloud-builders/gcloud'
+    args:
+      - run
+      - services
+      - update
+      - $_SERVICE_NAME
+      - --platform
+      - managed
+      - --image
+      - $_IMAGE
+      - --labels
+      - commit-sha=$COMMIT_SHA,gcb-build-id=$BUILD_ID
+      - --region
+      - us-west1
+
+images:
+  - $_IMAGE
+
+substitutions:
+  _SERVICE_NAME: gobrennas-com
+  _IMAGE: 'us.gcr.io/$PROJECT_ID/$REPO_NAME/$_SERVICE_NAME:$COMMIT_SHA'
