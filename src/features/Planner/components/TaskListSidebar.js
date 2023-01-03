@@ -120,7 +120,8 @@ const TaskListSidebar = ({list}) => {
                         <ListItem
                             key={f.id}
                         >
-                            <Grid container spacing={1} justify="space-between"
+                            <Grid container spacing={1}
+                                  justifyContent="space-between"
                                   alignItems="center">
                                 <Grid item>
                                     <User {...f} />
@@ -128,7 +129,7 @@ const TaskListSidebar = ({list}) => {
                                 <Grid item>
                                     {isAdministrator ? <Select
                                         value={grants[f.id] || LEVEL_NO_ACCESS}
-                                        style={{color: grants[f.id] ? "inherit" : "#ccc"}}
+                                        style={{ color: grants[f.id] ? "inherit" : "#ccc" }}
                                         onChange={e => handleGrantChange(
                                             f.id,
                                             e.target.value,

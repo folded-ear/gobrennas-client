@@ -96,7 +96,7 @@ function TaskListHeader({
         });
     };
 
-    return <Grid container justify={"space-between"}>
+    return <Grid container justifyContent={"space-between"}>
         {activeList && <Grid item>
             <Tooltip
                 title="Expand all collapsed items"

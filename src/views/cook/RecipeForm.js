@@ -223,8 +223,8 @@ const RecipeForm = ({title, onSave, onSaveCopy, onCancel, extraButtons}) => {
                 name="directions"
                 label="Directions"
                 multiline
-                rows={6}
-                rowsMax={(windowSize.height - 75) / 2 / 18 /* aiming for something around 50vh */}
+                minRows={6}
+                maxRows={(windowSize.height - 75) / 2 / 18 /* aiming for something around 50vh */}
                 value={draft.directions}
                 onChange={handleUpdate}
                 placeholder="Recipe Directions"
@@ -280,7 +280,7 @@ const RecipeForm = ({title, onSave, onSaveCopy, onCancel, extraButtons}) => {
                 placeholder="Type and press enter to add labels"
             />
         </Box>
-        <Grid container justify={"space-between"}>
+        <Grid container justifyContent={"space-between"}>
             <Grid item>
                 <Button
                     className={classes.button}
