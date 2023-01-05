@@ -19,7 +19,7 @@ const LIST_TIMERS = gql`
             all {
                 id
                 initialDuration
-                duration
+                endAt
                 remaining
                 paused
             }
@@ -32,8 +32,7 @@ const PAUSE_TIMER = gql`
         timer {
             pause(id: $id){
                 id
-                initialDuration
-                duration
+                endAt
                 remaining
                 paused
             }
@@ -46,8 +45,7 @@ const RESUME_TIMER = gql`
         timer {
             resume(id: $id){
                 id
-                initialDuration
-                duration
+                endAt
                 remaining
                 paused
             }
@@ -56,12 +54,11 @@ const RESUME_TIMER = gql`
 `;
 
 const ADD_TIME = gql`
-    mutation addTimeToTimer($id: ID!, $duration: NonNegativeInt!) {
+    mutation addTimeToTimer($id: ID!, $duration: PositiveInt!) {
         timer {
             addTime(id: $id, duration: $duration) {
                 id
-                initialDuration
-                duration
+                endAt
                 remaining
                 paused
             }
@@ -90,13 +87,19 @@ function useTimerList() {
     );
     const query = useMemo(() => ({
         ...raw,
-        data: (raw.data && raw.data.timer.all) || [],
+        data: (raw.data && raw.data.timer.all.map(it => ({
+            ...it,
+            endAt: it.endAt && Date.parse(it.endAt),
+        }))) || [],
     }), [ raw ]);
 
     useEffect(() => {
-        const running = query.data.filter(t => !t.paused && t.remaining > 0);
+        const now = Date.now();
+        const running = query.data.filter(it =>
+            !it.paused && it.endAt > now);
         if (running.length === 0) return;
-        const refetchIn = Math.min(...running.map(it => it.remaining)) * 1000;
+        const refetchIn = Math.min(...running.map(it =>
+            it.endAt - now));
         if (refetchIn < POLL_INTERVAL) {
             const id = setTimeout(() => query.refetch(), refetchIn);
             return () => clearTimeout(id);
@@ -107,7 +110,7 @@ function useTimerList() {
 }
 
 function HeaderTab({ label: defaultLabel }) {
-    const { data: timers, refetch } = useTimerList();
+    const { data: timers } = useTimerList();
     const [ deleteTimer ] = useMutation(DELETE_TIMER);
     const [ pauseTimer ] = useMutation(PAUSE_TIMER);
     const [ resumeTimer ] = useMutation(RESUME_TIMER);
@@ -118,48 +121,49 @@ function HeaderTab({ label: defaultLabel }) {
         alert("can't create. yet.");
     }
 
-    function handleAddTime(id, duration) {
+    function handleAddTime(timer, duration) {
         addTimeToTimer({
             variables: {
-                id,
+                id: timer.id,
                 duration,
             },
         });
     }
 
-    function handlePause(id) {
+    function handlePause(timer) {
         pauseTimer({
             variables: {
-                id,
+                id: timer.id,
             },
         });
     }
 
-    function handleResume(id) {
+    function handleResume(timer) {
         resumeTimer({
             variables: {
-                id,
+                id: timer.id,
             },
         });
     }
 
-    function handleDelete(id) {
-        deleteTimer({ // todo: shouldn't need the refresh to resync?
+    function handleDelete(timer) {
+        deleteTimer({
             variables: {
-                id,
+                id: timer.id,
             },
-        }).then(() => refetch());
+            refetchQueries: [ "listAllTimers" ],
+        });
     }
 
-    function handleRestTo(id, duration) {
-        // todo: combine these into a single query
-        handleDelete(id);
+    function handleResetTo(timer, duration) {
+        // todo: combine these into a single mutation?
+        handleDelete(timer);
         handleCreate(duration);
     }
 
     return <>
         <NavTab
-            timers={timers}
+            timers={drawerOpen ? [] : timers}
             defaultLabel={defaultLabel}
             onClick={() => setDrawerOpen(true)}
         />
@@ -175,7 +179,7 @@ function HeaderTab({ label: defaultLabel }) {
         />
         <TimerAlert
             timers={timers}
-            onAddTime={handleRestTo}
+            onAddTime={handleResetTo}
             onStop={handleDelete}
         />
     </>;

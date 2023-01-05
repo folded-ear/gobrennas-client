@@ -15,7 +15,7 @@ import {
     Pause as PauseIcon,
     PlayArrow as PlayIcon,
 } from "@material-ui/icons";
-import Countdown from "./Countdown";
+import TimeLeft from "./TimeLeft";
 import AddTimeButton from "./AddTimeButton";
 import { arrayOfTimersType } from "../types/types";
 
@@ -40,21 +40,21 @@ function TimerDrawer({
                     <Grid container alignItems={"center"}
                           justifyContent={"flex-end"}>
                         <Box mx={1}>
-                            <Countdown {...it} />
+                            <TimeLeft timer={it} />
                         </Box>
                         <AddTimeButton
                             id={it.id}
                             seconds={60}
-                            onClick={sec => onAddTime(it.id, sec)}
+                            onClick={sec => onAddTime(it, sec)}
                         />
                         {it.paused
-                            ? <IconButton onClick={() => onResume(it.id)}>
+                            ? <IconButton onClick={() => onResume(it)}>
                                 <PlayIcon />
                             </IconButton>
-                            : <IconButton onClick={() => onPause(it.id)}>
+                            : <IconButton onClick={() => onPause(it)}>
                                 <PauseIcon />
                             </IconButton>}
-                        <IconButton onClick={() => onDelete(it.id)}>
+                        <IconButton onClick={() => onDelete(it)}>
                             <DeleteIcon />
                         </IconButton>
                     </Grid>

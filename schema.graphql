@@ -65,11 +65,13 @@ type Timer implements AccessControlled & Node {
     "Whether the timer is complete."
     complete: Boolean!
     "Number of seconds the timer is currently set for."
-    duration: NonNegativeInt!
+    duration: PositiveInt!
+    "When the timer reached or will reach completion; null if paused."
+    endAt: DateTime
     grants: [AccessControlEntry!]!
     id: ID!
     "Number of seconds the timer was originally created for."
-    initialDuration: NonNegativeInt!
+    initialDuration: PositiveInt!
     owner: User!
     "Whether the timer is paused."
     paused: Boolean!
@@ -85,9 +87,9 @@ type TimerMutation {
     Add the specified duration to the specified timer, which may not be
     complete, but may be paused.
     """
-    addTime(duration: NonNegativeInt!, id: ID!): Timer!
+    addTime(duration: PositiveInt!, id: ID!): Timer!
     "Create a new timer with the specified duration and start it."
-    create(duration: NonNegativeInt!): Timer!
+    create(duration: PositiveInt!): Timer!
     """
 
     Ensure the specified timer has been deleted, regardless of its status or
@@ -129,8 +131,11 @@ enum TaskStatus {
 "An RFC-3339 compliant Full Date Scalar"
 scalar Date
 
+"An RFC-3339 compliant DateTime Scalar"
+scalar DateTime
+
 "An Float scalar that must be greater than or equal to zero"
 scalar NonNegativeFloat
 
-"An Int scalar that must be greater than or equal to zero"
-scalar NonNegativeInt
+"An Int scalar that must be a positive value"
+scalar PositiveInt

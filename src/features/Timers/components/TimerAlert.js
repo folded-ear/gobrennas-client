@@ -14,7 +14,7 @@ import {
 import AddTimeButton from "./AddTimeButton";
 import { Stop as StopIcon } from "@material-ui/icons";
 import { formatTimer } from "../../../util/time";
-import TimeSince from "./TimeSince";
+import TimeLeft from "./TimeLeft";
 import { arrayOfTimersType } from "../types/types";
 
 function TimerAlert({
@@ -25,7 +25,7 @@ function TimerAlert({
     const [ completed, setCompleted ] = useState([]);
 
     useEffect(() => {
-        setCompleted(timers.filter(t => t.remaining <= 0)
+        setCompleted(timers.filter(it => it.remaining <= 0)
             .sort((a, b) => a.remaining - b.remaining));
     }, [ timers ]);
 
@@ -45,18 +45,16 @@ function TimerAlert({
         </DialogTitle>
         <DialogContent>
             <DialogContentText id="alert-dialog-description">
-                <TimeSince
-                    when={Date.now() + it.remaining * 1000}
-                /> ago, actually.
+                <TimeLeft timer={it} /> ago, actually.
             </DialogContentText>
         </DialogContent>
         <DialogActions>
             <AddTimeButton
                 seconds={60}
-                onClick={sec => onAddTime(it.id, sec)}
+                onClick={sec => onAddTime(it, sec)}
             />
             <IconButton
-                onClick={() => onStop(it.id)}
+                onClick={() => onStop(it)}
             >
                 <StopIcon />
             </IconButton>
