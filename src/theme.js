@@ -1,6 +1,6 @@
 import {
-    createTheme,
     responsiveFontSizes,
+    unstable_createMuiStrictModeTheme as createTheme,
 } from "@material-ui/core/styles";
 
 let theme = createTheme({
