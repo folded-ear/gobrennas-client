@@ -12,7 +12,10 @@ import {
     IconButton,
 } from "@material-ui/core";
 import AddTimeButton from "./AddTimeButton";
-import { Stop as StopIcon } from "@material-ui/icons";
+import {
+    Replay as ResetIcon,
+    Stop as StopIcon,
+} from "@material-ui/icons";
 import { formatTimer } from "../../../util/time";
 import TimeLeft from "./TimeLeft";
 import { arrayOfTimersType } from "../types/types";
@@ -20,19 +23,19 @@ import { arrayOfTimersType } from "../types/types";
 function TimerAlert({
                         timers,
                         onAddTime,
+                        onReset,
                         onStop,
                     }) {
-    const [ completed, setCompleted ] = useState([]);
+    const [ completed, setCompleted ] = useState(undefined);
 
     useEffect(() => {
         setCompleted(timers.filter(it => it.remaining <= 0)
-            .sort((a, b) => a.remaining - b.remaining));
+            .sort((a, b) => a.remaining - b.remaining)[0]);
     }, [ timers ]);
 
-    if (completed.length === 0) {
+    if (!completed) {
         return null;
     }
-    const it = completed[0];
 
     return <Dialog
         open={true}
@@ -41,20 +44,25 @@ function TimerAlert({
     >
         {/* todo: make this play noise! */}
         <DialogTitle id="timer-alert-title">
-            {formatTimer(it.initialDuration)} Timer Complete!
+            {formatTimer(completed.initialDuration)} Timer Complete!
         </DialogTitle>
         <DialogContent>
             <DialogContentText id="alert-dialog-description">
-                <TimeLeft timer={it} /> ago, actually.
+                And it's been <TimeLeft timer={completed} /> since.
             </DialogContentText>
         </DialogContent>
         <DialogActions>
             <AddTimeButton
                 seconds={60}
-                onClick={sec => onAddTime(it, sec)}
+                onClick={sec => onAddTime(completed, sec)}
             />
             <IconButton
-                onClick={() => onStop(it)}
+                onClick={() => onReset(completed)}
+            >
+                <ResetIcon />
+            </IconButton>
+            <IconButton
+                onClick={() => onStop(completed)}
             >
                 <StopIcon />
             </IconButton>
@@ -65,6 +73,7 @@ function TimerAlert({
 TimerAlert.propTypes = {
     timers: arrayOfTimersType,
     onAddTime: PropTypes.func.isRequired,
+    onReset: PropTypes.func.isRequired,
     onStop: PropTypes.func.isRequired,
 };
 

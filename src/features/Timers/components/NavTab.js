@@ -36,7 +36,7 @@ function NavTab({
             )
             .filter(it => it.remaining >= 0);
         if (hotTimers.length === 0) return null;
-        return hotTimers.reduce((n, t) =>
+        return hotTimers.reduce((n, t) => // minBy(Timer::remaining)
             n.remaining < t.remaining ? n : t);
     }, [ timers ]);
 

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import PropTypes from "prop-types";
 import {
     Box,
@@ -9,6 +9,7 @@ import {
     ListItem,
     ListItemText,
     ListSubheader,
+    TextField,
 } from "@material-ui/core";
 import {
     Delete as DeleteIcon,
@@ -18,6 +19,10 @@ import {
 import TimeLeft from "./TimeLeft";
 import AddTimeButton from "./AddTimeButton";
 import { arrayOfTimersType } from "../types/types";
+
+function isValid(seconds) {
+    return !isNaN(seconds) && seconds > 0;
+}
 
 function TimerDrawer({
                          timers,
@@ -29,6 +34,24 @@ function TimerDrawer({
                          onResume,
                          onDelete,
                      }) {
+
+    const [ seconds, setSeconds ] = useState(0);
+
+    function handleKeyDown(e) {
+        if (e.key === "Enter") {
+            e.preventDefault();
+            e.stopPropagation();
+            handleCreate();
+        }
+    }
+
+    function handleCreate() {
+        if (isValid(seconds)) {
+            onCreate(seconds);
+        }
+        setSeconds(0);
+    }
+
     return <Drawer
         anchor={"right"}
         open={open}
@@ -40,7 +63,8 @@ function TimerDrawer({
                     <Grid container alignItems={"center"}
                           justifyContent={"flex-end"}>
                         <Box mx={1}>
-                            <TimeLeft timer={it} />
+                            <TimeLeft timer={it}
+                                      overageIndicator={"+"} />
                         </Box>
                         <AddTimeButton
                             id={it.id}
@@ -61,6 +85,34 @@ function TimerDrawer({
                 } />
             </ListItem>)}
         </List>
+        <Box mx={1}>
+            <Grid container>
+                <Grid item>
+                    <TextField
+                        variant={"outlined"}
+                        label={"New Timer"}
+                        helperText={"Length in seconds"}
+                        margin="dense"
+                        type={"number"}
+                        value={seconds === 0 ? "" : seconds}
+                        onChange={e => setSeconds(parseInt(e.target.value))}
+                        onKeyDown={handleKeyDown}
+                        inputProps={{
+                            step: 1,
+                            min: 0,
+                        }}
+                    />
+                </Grid>
+                <Grid item>
+                    <IconButton
+                        onClick={handleCreate}
+                        disabled={!isValid(seconds)}
+                    >
+                        <PlayIcon />
+                    </IconButton>
+                </Grid>
+            </Grid>
+        </Box>
     </Drawer>;
 }
 

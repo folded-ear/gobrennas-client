@@ -27,6 +27,20 @@ const LIST_TIMERS = gql`
     }
 `;
 
+const CREATE_TIMER = gql`
+    mutation createTimer($duration: PositiveInt!){
+        timer {
+            create(duration: $duration) {
+                id
+                initialDuration
+                endAt
+                remaining
+                paused
+            }
+        }
+    }
+`;
+
 const PAUSE_TIMER = gql`
     mutation pauseTimer($id: ID!) {
         timer {
@@ -41,7 +55,7 @@ const PAUSE_TIMER = gql`
 `;
 
 const RESUME_TIMER = gql`
-    mutation pauseTimer($id: ID!) {
+    mutation resumeTimer($id: ID!) {
         timer {
             resume(id: $id){
                 id
@@ -70,6 +84,15 @@ const DELETE_TIMER = gql`
     mutation deleteTimer($id: ID!) {
         timer {
             delete(id: $id)
+        }
+    }
+`;
+
+const RESET_TIMER = gql`
+    mutation resetTimer($id: ID!, $duration: PositiveInt!) {
+        timer {
+            delete(id: $id)
+            create(duration: $duration) { id }
         }
     }
 `;
@@ -111,14 +134,21 @@ function useTimerList() {
 
 function HeaderTab({ label: defaultLabel }) {
     const { data: timers } = useTimerList();
+    const [ createTimer ] = useMutation(CREATE_TIMER);
     const [ deleteTimer ] = useMutation(DELETE_TIMER);
     const [ pauseTimer ] = useMutation(PAUSE_TIMER);
     const [ resumeTimer ] = useMutation(RESUME_TIMER);
     const [ addTimeToTimer ] = useMutation(ADD_TIME);
+    const [ resetTimer ] = useMutation(RESET_TIMER);
     const [ drawerOpen, setDrawerOpen ] = useState(false);
 
     function handleCreate(duration) {
-        alert("can't create. yet.");
+        createTimer({
+            variables: {
+                duration,
+            },
+            refetchQueries: [ "listAllTimers" ],
+        });
     }
 
     function handleAddTime(timer, duration) {
@@ -155,10 +185,18 @@ function HeaderTab({ label: defaultLabel }) {
         });
     }
 
+    function handleReset(timer) {
+        handleResetTo(timer, timer.initialDuration);
+    }
+
     function handleResetTo(timer, duration) {
-        // todo: combine these into a single mutation?
-        handleDelete(timer);
-        handleCreate(duration);
+        resetTimer({
+            variables: {
+                id: timer.id,
+                duration,
+            },
+            refetchQueries: [ "listAllTimers" ],
+        });
     }
 
     return <>
@@ -179,6 +217,7 @@ function HeaderTab({ label: defaultLabel }) {
         />
         <TimerAlert
             timers={timers}
+            onReset={handleReset}
             onAddTime={handleResetTo}
             onStop={handleDelete}
         />

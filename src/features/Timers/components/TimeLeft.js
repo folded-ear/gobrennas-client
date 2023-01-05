@@ -2,24 +2,28 @@ import {
     useEffect,
     useState,
 } from "react";
+import PropTypes from "prop-types";
 import { formatTimer } from "../../../util/time";
 import { timerType } from "../types/types";
 
-const seconds = since =>
-    Math.abs(Date.now() - since) / 1000;
+const secondsLeft = end =>
+    (end - Date.now()) / 1000;
 
-function Updater({ when }) {
-    const [ sec, setSec ] = useState(seconds(when));
+function Updater({
+                     when,
+                     overageIndicator,
+                 }) {
+    const [ sec, setSec ] = useState(secondsLeft(when));
     useEffect(
         () => {
-            const id = setInterval(() => {
-                setSec(seconds(when));
-            }, 1000);
+            const update = () => setSec(secondsLeft(when));
+            const id = setInterval(update, 1000);
+            update();
             return () => clearInterval(id);
         },
         [ when ],
     );
-    return formatTimer(sec);
+    return (sec < 0 ? overageIndicator : "") + formatTimer(Math.abs(sec));
 }
 
 function TimeLeft({
@@ -28,14 +32,16 @@ function TimeLeft({
                           remaining,
                           paused,
                       },
+                      overageIndicator = "",
                   }) {
     return paused
         ? formatTimer(remaining)
-        : <Updater when={endAt} />;
+        : <Updater when={endAt} overageIndicator={overageIndicator} />;
 }
 
 TimeLeft.propTypes = {
     timer: timerType.isRequired,
+    overageIndicator: PropTypes.string,
 };
 
 export default TimeLeft;
