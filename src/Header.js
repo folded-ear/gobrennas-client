@@ -28,7 +28,7 @@ import useIsDevMode from "data/useIsDevMode";
 import { useLogoutHandler } from "./providers/Profile";
 import Logo from "./views/common/Logo";
 import { useIsMobile } from "./providers/IsMobile";
-import TimersTab from "./features/Timers/components/HeaderTab";
+import TimersTab from "./features/Timers/HeaderTab";
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -45,7 +45,11 @@ const useStyles = makeStyles(theme => ({
     grow: {
         flexGrow: 1,
     },
+    growALittle: {
+        flexGrow: 0.5,
+    },
     bar: {
+        flexGrow: 1,
         minWidth: "195px",
         "& .MuiTabs-flexContainer": {
             alignItems: "center",
@@ -144,7 +148,7 @@ const Header = ({ authenticated, location }) => {
                 />
                 {authenticated && <Tabs
                     selectionFollowsFocus
-                    className={`${classes.bar} ${classes.grow}`}
+                    className={classes.bar}
                     value={topLevelNavSeg}
                     textColor="inherit"
                     TabIndicatorProps={{ className: classes.indicator }}
@@ -173,7 +177,7 @@ const Header = ({ authenticated, location }) => {
                         to="/pantry"
                         value="pantry"
                     />}
-                    <div className={classes.grow} />
+                    <div className={classes.growALittle} />
                     <TimersTab
                         label={isMobile ? null : "Timers"}
                     />
