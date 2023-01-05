@@ -19,6 +19,7 @@ import {
 import { formatTimer } from "../../../util/time";
 import TimeLeft from "./TimeLeft";
 import { arrayOfTimersType } from "../types/types";
+import alarm from "../media/alarm.mp3";
 
 function TimerAlert({
                         timers,
@@ -42,7 +43,6 @@ function TimerAlert({
         aria-labelledby="timer-alert-title"
         aria-describedby="timer-alert-description"
     >
-        {/* todo: make this play noise! */}
         <DialogTitle id="timer-alert-title">
             {formatTimer(completed.initialDuration)} Timer Complete!
         </DialogTitle>
@@ -50,6 +50,7 @@ function TimerAlert({
             <DialogContentText id="alert-dialog-description">
                 And it's been <TimeLeft timer={completed} /> since.
             </DialogContentText>
+            <audio src={alarm} autoPlay loop />
         </DialogContent>
         <DialogActions>
             <AddTimeButton
