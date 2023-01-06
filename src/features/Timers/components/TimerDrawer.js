@@ -70,12 +70,15 @@ function TimerDrawer({
     const [ doDelete ] = useDeleteTimer();
 
     useEffect(() => {
-        if (!open) setShowNew(false);
-    }, [ open ]);
+        setShowNew(open && timers.length === 0);
+    }, [ open, timers.length ]);
 
-    function handleCreate(seconds) {
-        doCreate(seconds);
-        setShowNew(false);
+    function handleFab() {
+        if (timers.length === 0) {
+            onClose();
+        } else {
+            setShowNew(v => !v);
+        }
     }
 
     return <Drawer
@@ -93,7 +96,7 @@ function TimerDrawer({
                 <Fab
                     className={classes.fab}
                     size={"small"}
-                    onClick={() => setShowNew(v => !v)}
+                    onClick={handleFab}
                     title={showNew
                         ? "Close timer form"
                         : "Create a new timer"}
@@ -105,7 +108,7 @@ function TimerDrawer({
             </ListSubheader>
             {showNew && <>
                 <Box m={1}>
-                    <NewTimer onCreate={handleCreate} />
+                    <NewTimer onCreate={doCreate} />
                 </Box>
                 <Divider />
             </>}
