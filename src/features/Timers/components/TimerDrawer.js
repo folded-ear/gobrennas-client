@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React from "react";
 import PropTypes from "prop-types";
 import {
     Box,
+    Divider,
     Drawer,
     Grid,
     IconButton,
@@ -9,7 +10,7 @@ import {
     ListItem,
     ListItemText,
     ListSubheader,
-    TextField,
+    makeStyles,
 } from "@material-ui/core";
 import {
     Delete as DeleteIcon,
@@ -21,53 +22,44 @@ import AddTimeButton from "./AddTimeButton";
 import { useTimerList } from "../data/TimerContext";
 import {
     useAddTimeToTimer,
-    useCreateTimer,
     useDeleteTimer,
     usePauseTimer,
     useResumeTimer,
 } from "../data/queries";
+import NewTimer from "./NewTimer";
 
-function isValid(seconds) {
-    return !isNaN(seconds) && seconds > 0;
-}
+const useStyles = makeStyles((theme) => ({
+    root: {
+        minWidth: "20em",
+    },
+    heading: {
+        backgroundColor: theme.palette.background.paper,
+    },
+}));
 
 function TimerDrawer({
                          open,
                          onClose,
                      }) {
+    const classes = useStyles();
     const { data: timers } = useTimerList();
-    const [ seconds, setSeconds ] = useState(0);
-    const [ doCreate ] = useCreateTimer();
     const [ doAddTime ] = useAddTimeToTimer();
     const [ doPause ] = usePauseTimer();
     const [ doResume ] = useResumeTimer();
     const [ doDelete ] = useDeleteTimer();
-
-    function handleKeyDown(e) {
-        if (e.key === "Enter") {
-            e.preventDefault();
-            e.stopPropagation();
-            handleCreate();
-        }
-    }
-
-    function handleCreate() {
-        if (isValid(seconds)) {
-            doCreate(seconds);
-        }
-        setSeconds(0);
-    }
 
     return <Drawer
         anchor={"right"}
         open={open}
         onClose={onClose}
     >
-        <List subheader={<ListSubheader>Timers</ListSubheader>}>
+        <List className={classes.root}>
+            <ListSubheader className={classes.heading}>Timers</ListSubheader>
             {timers.map(it => <ListItem key={it.id}>
                 <ListItemText primary={
-                    <Grid container alignItems={"center"}
-                          justifyContent={"flex-end"}>
+                    <Grid container
+                          alignItems={"center"}
+                          justifyContent={"space-between"}>
                         <Box mx={1}>
                             <TimeLeft timer={it}
                                       overageIndicator={"+"} />
@@ -91,33 +83,9 @@ function TimerDrawer({
                 } />
             </ListItem>)}
         </List>
+        <Divider />
         <Box mx={1}>
-            <Grid container>
-                <Grid item>
-                    <TextField
-                        variant={"outlined"}
-                        label={"New Timer"}
-                        helperText={"Length in seconds"}
-                        margin="dense"
-                        type={"number"}
-                        value={seconds === 0 ? "" : seconds}
-                        onChange={e => setSeconds(parseInt(e.target.value))}
-                        onKeyDown={handleKeyDown}
-                        inputProps={{
-                            step: 1,
-                            min: 0,
-                        }}
-                    />
-                </Grid>
-                <Grid item>
-                    <IconButton
-                        onClick={handleCreate}
-                        disabled={!isValid(seconds)}
-                    >
-                        <PlayIcon />
-                    </IconButton>
-                </Grid>
-            </Grid>
+            <NewTimer />
         </Box>
     </Drawer>;
 }
