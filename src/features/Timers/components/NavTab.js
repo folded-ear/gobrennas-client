@@ -10,7 +10,7 @@ import {
     Pause,
     Timer,
 } from "@material-ui/icons";
-import { arrayOfTimersType } from "../types/types";
+import { useTimerList } from "../data/TimerContext";
 
 const BottomRightBadge = withStyles({
     badge: {
@@ -19,10 +19,10 @@ const BottomRightBadge = withStyles({
 })(TopRightBadge);
 
 function NavTab({
-                    timers,
                     defaultLabel,
                     onClick,
                 }) {
+    const { data: timers } = useTimerList();
     const next = useMemo(() => {
         if (!timers || timers.length === 0) return null;
         const now = Date.now();
@@ -69,7 +69,6 @@ function NavTab({
 }
 
 NavTab.propTypes = {
-    timers: arrayOfTimersType,
     defaultLabel: PropTypes.string,
     onClick: PropTypes.func,
 };

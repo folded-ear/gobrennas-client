@@ -18,24 +18,30 @@ import {
 } from "@material-ui/icons";
 import TimeLeft from "./TimeLeft";
 import AddTimeButton from "./AddTimeButton";
-import { arrayOfTimersType } from "../types/types";
+import { useTimerList } from "../data/TimerContext";
+import {
+    useAddTimeToTimer,
+    useCreateTimer,
+    useDeleteTimer,
+    usePauseTimer,
+    useResumeTimer,
+} from "../data/queries";
 
 function isValid(seconds) {
     return !isNaN(seconds) && seconds > 0;
 }
 
 function TimerDrawer({
-                         timers,
                          open,
                          onClose,
-                         onCreate,
-                         onAddTime,
-                         onPause,
-                         onResume,
-                         onDelete,
                      }) {
-
+    const { data: timers } = useTimerList();
     const [ seconds, setSeconds ] = useState(0);
+    const [ doCreate ] = useCreateTimer();
+    const [ doAddTime ] = useAddTimeToTimer();
+    const [ doPause ] = usePauseTimer();
+    const [ doResume ] = useResumeTimer();
+    const [ doDelete ] = useDeleteTimer();
 
     function handleKeyDown(e) {
         if (e.key === "Enter") {
@@ -47,7 +53,7 @@ function TimerDrawer({
 
     function handleCreate() {
         if (isValid(seconds)) {
-            onCreate(seconds);
+            doCreate(seconds);
         }
         setSeconds(0);
     }
@@ -69,16 +75,16 @@ function TimerDrawer({
                         <AddTimeButton
                             id={it.id}
                             seconds={60}
-                            onClick={sec => onAddTime(it, sec)}
+                            onClick={sec => doAddTime(it.id, sec)}
                         />
                         {it.paused
-                            ? <IconButton onClick={() => onResume(it)}>
+                            ? <IconButton onClick={() => doResume(it.id)}>
                                 <PlayIcon />
                             </IconButton>
-                            : <IconButton onClick={() => onPause(it)}>
+                            : <IconButton onClick={() => doPause(it.id)}>
                                 <PauseIcon />
                             </IconButton>}
-                        <IconButton onClick={() => onDelete(it)}>
+                        <IconButton onClick={() => doDelete(it.id)}>
                             <DeleteIcon />
                         </IconButton>
                     </Grid>
@@ -117,14 +123,8 @@ function TimerDrawer({
 }
 
 TimerDrawer.propTypes = {
-    timers: arrayOfTimersType,
     open: PropTypes.bool.isRequired,
     onClose: PropTypes.func.isRequired,
-    onCreate: PropTypes.func.isRequired,
-    onAddTime: PropTypes.func.isRequired,
-    onPause: PropTypes.func.isRequired,
-    onResume: PropTypes.func.isRequired,
-    onDelete: PropTypes.func.isRequired,
 };
 
 export default TimerDrawer;

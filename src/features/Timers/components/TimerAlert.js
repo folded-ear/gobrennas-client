@@ -2,7 +2,6 @@ import React, {
     useEffect,
     useState,
 } from "react";
-import PropTypes from "prop-types";
 import {
     Dialog,
     DialogActions,
@@ -18,16 +17,18 @@ import {
 } from "@material-ui/icons";
 import { formatTimer } from "../../../util/time";
 import TimeLeft from "./TimeLeft";
-import { arrayOfTimersType } from "../types/types";
 import alarm from "../media/alarm.mp3";
+import { useTimerList } from "../data/TimerContext";
+import {
+    useDeleteTimer,
+    useResetTimer,
+} from "../data/queries";
 
-function TimerAlert({
-                        timers,
-                        onAddTime,
-                        onReset,
-                        onStop,
-                    }) {
+function TimerAlert() {
+    const { data: timers } = useTimerList();
     const [ completed, setCompleted ] = useState(undefined);
+    const [ doReset ] = useResetTimer();
+    const [ doDelete ] = useDeleteTimer();
 
     useEffect(() => {
         setCompleted(timers.filter(it => it.remaining <= 0)
@@ -37,6 +38,13 @@ function TimerAlert({
     if (!completed) {
         return null;
     }
+
+    const handleAddTime = duration =>
+        doReset(completed.id, duration);
+    const handleReset = () =>
+        doReset(completed.id, completed.initialDuration);
+    const handleStop = () =>
+        doDelete(completed.id);
 
     return <Dialog
         open={true}
@@ -55,27 +63,20 @@ function TimerAlert({
         <DialogActions>
             <AddTimeButton
                 seconds={60}
-                onClick={sec => onAddTime(completed, sec)}
+                onClick={handleAddTime}
             />
             <IconButton
-                onClick={() => onReset(completed)}
+                onClick={handleReset}
             >
                 <ResetIcon />
             </IconButton>
             <IconButton
-                onClick={() => onStop(completed)}
+                onClick={handleStop}
             >
                 <StopIcon />
             </IconButton>
         </DialogActions>
     </Dialog>;
 }
-
-TimerAlert.propTypes = {
-    timers: arrayOfTimersType,
-    onAddTime: PropTypes.func.isRequired,
-    onReset: PropTypes.func.isRequired,
-    onStop: PropTypes.func.isRequired,
-};
 
 export default TimerAlert;
