@@ -7,11 +7,13 @@ function AddTimeButton({
                            seconds,
                            onClick,
                        }) {
+    const text = formatTimer(seconds);
     return <Button
         variant={"text"}
         onClick={() => onClick(seconds)}
+        title={`Add ${text} to timer`}
     >
-        +{formatTimer(seconds)}
+        +{text}
     </Button>;
 }
 

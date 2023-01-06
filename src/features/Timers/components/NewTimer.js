@@ -133,6 +133,7 @@ function NewTimer({ onCreate }) {
         <Button
             onClick={handleCreate}
             disabled={!isValid(seconds)}
+            title={"Start new timer"}
         >
             <PlayIcon />
         </Button>

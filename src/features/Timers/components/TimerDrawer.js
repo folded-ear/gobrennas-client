@@ -94,6 +94,9 @@ function TimerDrawer({
                     className={classes.fab}
                     size={"small"}
                     onClick={() => setShowNew(v => !v)}
+                    title={showNew
+                        ? "Close timer form"
+                        : "Create a new timer"}
                 >
                     {showNew
                         ? <CloseIcon />
@@ -123,13 +126,16 @@ function TimerDrawer({
                             onClick={sec => doAddTime(it.id, sec)}
                         />
                         {it.paused
-                            ? <IconButton onClick={() => doResume(it.id)}>
+                            ? <IconButton title="Resume timer"
+                                          onClick={() => doResume(it.id)}>
                                 <PlayIcon />
                             </IconButton>
-                            : <IconButton onClick={() => doPause(it.id)}>
+                            : <IconButton title="Pause timer"
+                                          onClick={() => doPause(it.id)}>
                                 <PauseIcon />
                             </IconButton>}
-                        <IconButton onClick={() => doDelete(it.id)}>
+                        <IconButton title="Delete timer"
+                                    onClick={() => doDelete(it.id)}>
                             <DeleteIcon />
                         </IconButton>
                     </Grid>
