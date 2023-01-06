@@ -13,13 +13,14 @@ import {
     BackspaceOutlined as BackspaceIcon,
     PlayArrow as PlayIcon,
 } from "@material-ui/icons";
-import { useCreateTimer } from "../data/queries";
 import clsx from "clsx";
 
 const useStyles = makeStyles(() => ({
     root: {
         display: "grid",
         grid: "auto-flow / repeat(3, 1fr)",
+        gridTemplateRows: "auto repeat(5, 1fr)",
+        gap: "0.5em",
         "& Button": {
             fontSize: 24,
         },
@@ -61,11 +62,10 @@ function isValid(seconds) {
     return !isNaN(seconds) && seconds > 0;
 }
 
-function NewTimer() {
+function NewTimer({ onCreate }) {
     const classes = useStyles();
     const [ text, setText ] = useState("");
     const [ seconds, setSeconds ] = useState(0);
-    const [ doCreate ] = useCreateTimer();
 
     useEffect(() => {
         const n = parseInt(text);
@@ -81,7 +81,7 @@ function NewTimer() {
 
     function handleCreate() {
         if (isValid(seconds)) {
-            doCreate(seconds);
+            onCreate(seconds);
         }
         setText("");
     }
@@ -114,17 +114,17 @@ function NewTimer() {
         <Mag value={text.slice(-2)}
              label={"s"}
              hot={text.length > 0} />
-        <Button onClick={handleDigit}>1</Button>
-        <Button onClick={handleDigit}>2</Button>
-        <Button onClick={handleDigit}>3</Button>
-        <Button onClick={handleDigit}>4</Button>
-        <Button onClick={handleDigit}>5</Button>
-        <Button onClick={handleDigit}>6</Button>
-        <Button onClick={handleDigit}>7</Button>
-        <Button onClick={handleDigit}>8</Button>
-        <Button onClick={handleDigit}>9</Button>
-        <Button onClick={handleDigit}>00</Button>
-        <Button onClick={handleDigit}>0</Button>
+        <Button variant={"outlined"} onClick={handleDigit}>1</Button>
+        <Button variant={"outlined"} onClick={handleDigit}>2</Button>
+        <Button variant={"outlined"} onClick={handleDigit}>3</Button>
+        <Button variant={"outlined"} onClick={handleDigit}>4</Button>
+        <Button variant={"outlined"} onClick={handleDigit}>5</Button>
+        <Button variant={"outlined"} onClick={handleDigit}>6</Button>
+        <Button variant={"outlined"} onClick={handleDigit}>7</Button>
+        <Button variant={"outlined"} onClick={handleDigit}>8</Button>
+        <Button variant={"outlined"} onClick={handleDigit}>9</Button>
+        <Button variant={"outlined"} onClick={handleDigit}>00</Button>
+        <Button variant={"outlined"} onClick={handleDigit}>0</Button>
         <Button onClick={handleBackspace}
                 disabled={text.length === 0}>
             <BackspaceIcon fontSize={"inherit"} />
@@ -138,5 +138,9 @@ function NewTimer() {
         </Button>
     </Box>;
 }
+
+NewTimer.propTypes = {
+    onCreate: PropTypes.func.isRequired,
+};
 
 export default NewTimer;

@@ -1,9 +1,13 @@
-import React from "react";
+import React, {
+    useEffect,
+    useState,
+} from "react";
 import PropTypes from "prop-types";
 import {
     Box,
     Divider,
     Drawer,
+    Fab,
     Grid,
     IconButton,
     List,
@@ -13,6 +17,8 @@ import {
     makeStyles,
 } from "@material-ui/core";
 import {
+    Add as AddIcon,
+    Close as CloseIcon,
     Delete as DeleteIcon,
     Pause as PauseIcon,
     PlayArrow as PlayIcon,
@@ -22,6 +28,7 @@ import AddTimeButton from "./AddTimeButton";
 import { useTimerList } from "../data/TimerContext";
 import {
     useAddTimeToTimer,
+    useCreateTimer,
     useDeleteTimer,
     usePauseTimer,
     useResumeTimer,
@@ -30,10 +37,22 @@ import NewTimer from "./NewTimer";
 
 const useStyles = makeStyles((theme) => ({
     root: {
-        minWidth: "20em",
+        width: "24em",
+        maxWidth: "75vw",
+    },
+    fab: {
+        position: "absolute",
+        right: theme.spacing(1),
     },
     heading: {
+        fontSize: 18,
         backgroundColor: theme.palette.background.paper,
+    },
+    display: {
+        fontSize: 20,
+        flexGrow: 1,
+        textAlign: "right",
+        marginRight: theme.spacing(1),
     },
 }));
 
@@ -42,11 +61,22 @@ function TimerDrawer({
                          onClose,
                      }) {
     const classes = useStyles();
+    const [ showNew, setShowNew ] = useState(false);
     const { data: timers } = useTimerList();
+    const [ doCreate ] = useCreateTimer();
     const [ doAddTime ] = useAddTimeToTimer();
     const [ doPause ] = usePauseTimer();
     const [ doResume ] = useResumeTimer();
     const [ doDelete ] = useDeleteTimer();
+
+    useEffect(() => {
+        if (!open) setShowNew(false);
+    }, [ open ]);
+
+    function handleCreate(seconds) {
+        doCreate(seconds);
+        setShowNew(false);
+    }
 
     return <Drawer
         anchor={"right"}
@@ -54,18 +84,41 @@ function TimerDrawer({
         onClose={onClose}
     >
         <List className={classes.root}>
-            <ListSubheader className={classes.heading}>Timers</ListSubheader>
+            <ListSubheader className={classes.heading}>
+                {timers.length === 0
+                    ? "Set Timer"
+                    : timers.length === 1
+                        ? "Timer"
+                        : "Timers"}
+                <Fab
+                    className={classes.fab}
+                    size={"small"}
+                    onClick={() => setShowNew(v => !v)}
+                >
+                    {showNew
+                        ? <CloseIcon />
+                        : <AddIcon />}
+                </Fab>
+            </ListSubheader>
+            {showNew && <>
+                <Box m={1}>
+                    <NewTimer onCreate={handleCreate} />
+                </Box>
+                <Divider />
+            </>}
             {timers.map(it => <ListItem key={it.id}>
                 <ListItemText primary={
                     <Grid container
                           alignItems={"center"}
-                          justifyContent={"space-between"}>
-                        <Box mx={1}>
-                            <TimeLeft timer={it}
-                                      overageIndicator={"+"} />
+                          justifyContent={"flex-end"}>
+                        <Box className={classes.display}>
+                            <TimeLeft
+                                timer={it}
+                                overageIndicator={"+"}
+                                progress
+                            />
                         </Box>
                         <AddTimeButton
-                            id={it.id}
                             seconds={60}
                             onClick={sec => doAddTime(it.id, sec)}
                         />
@@ -83,10 +136,6 @@ function TimerDrawer({
                 } />
             </ListItem>)}
         </List>
-        <Divider />
-        <Box mx={1}>
-            <NewTimer />
-        </Box>
     </Drawer>;
 }
 

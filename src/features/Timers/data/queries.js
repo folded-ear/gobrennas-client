@@ -21,6 +21,7 @@ const LIST_TIMERS = gql`
             all {
                 id
                 initialDuration
+                duration
                 endAt
                 remaining
                 paused
@@ -46,6 +47,7 @@ const CREATE_TIMER = gql`
             create(duration: $duration) {
                 id
                 initialDuration
+                duration
                 endAt
                 remaining
                 paused
@@ -110,6 +112,7 @@ const ADD_TIME = gql`
         timer {
             addTime(id: $id, duration: $duration) {
                 id
+                duration
                 endAt
                 remaining
                 paused
