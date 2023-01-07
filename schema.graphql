@@ -2,12 +2,12 @@
 
 schema {
     query: Query
+    mutation: Mutation
 }
 
 interface AccessControlled {
-    grants: [AccessControlEntry]
-    id: ID!
-    owner: User
+    grants: [AccessControlEntry!]!
+    owner: User!
 }
 
 interface Node {
@@ -19,12 +19,16 @@ type AccessControlEntry {
     user: User
 }
 
+type Mutation {
+    timer: TimerMutation
+}
+
 type Plan implements AccessControlled & Node {
     buckets: [PlanBucket]
-    grants: [AccessControlEntry]
+    grants: [AccessControlEntry!]!
     id: ID!
     name: String!
-    owner: User
+    owner: User!
 }
 
 type PlanBucket {
@@ -53,6 +57,54 @@ type Query {
     getPlanItem(id: ID!): PlanItem
     getPlans: [Plan]
     node(id: ID!): Node
+    timer: TimerQuery
+}
+
+"Represents a pause-able timer of user-specified length."
+type Timer implements AccessControlled & Node {
+    "Whether the timer is complete."
+    complete: Boolean!
+    "Number of seconds the timer is currently set for."
+    duration: PositiveInt!
+    "When the timer reached or will reach completion; null if paused."
+    endAt: DateTime
+    grants: [AccessControlEntry!]!
+    id: ID!
+    "Number of seconds the timer was originally created for."
+    initialDuration: PositiveInt!
+    owner: User!
+    "Whether the timer is paused."
+    paused: Boolean!
+    "Number of seconds remaining; negative if already complete."
+    remaining: Int!
+    "Whether the timer is running."
+    running: Boolean!
+}
+
+type TimerMutation {
+    """
+
+    Add the specified duration to the specified timer, which may not be
+    complete, but may be paused.
+    """
+    addTime(duration: PositiveInt!, id: ID!): Timer!
+    "Create a new timer with the specified duration and start it."
+    create(duration: PositiveInt!): Timer!
+    """
+
+    Ensure the specified timer has been deleted, regardless of its status or
+    existence, returning whether any action was taken.
+    """
+    delete(id: ID!): Boolean!
+    "Pause the specified running timer."
+    pause(id: ID!): Timer!
+    "Resume the specified paused timer."
+    resume(id: ID!): Timer!
+}
+
+type TimerQuery {
+    all: [Timer!]!
+    byId(id: ID!): Timer!
 }
 
 type User {
@@ -69,7 +121,6 @@ enum AccessLevel {
     VIEW
 }
 
-"enum"
 enum TaskStatus {
     ACQUIRED
     COMPLETED
@@ -80,5 +131,11 @@ enum TaskStatus {
 "An RFC-3339 compliant Full Date Scalar"
 scalar Date
 
+"An RFC-3339 compliant DateTime Scalar"
+scalar DateTime
+
 "An Float scalar that must be greater than or equal to zero"
 scalar NonNegativeFloat
+
+"An Int scalar that must be a positive value"
+scalar PositiveInt

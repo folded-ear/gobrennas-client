@@ -25,6 +25,21 @@ export const formatDuration = minutes => {
     }
 };
 
+export const formatTimer = seconds => {
+    if (seconds == null || isNaN(seconds)) return "";
+    const neg = seconds < 0;
+    if (neg) seconds = -seconds;
+    const hr = Math.floor(seconds / 3600);
+    const min = Math.floor(seconds % 3600 / 60);
+    const sec = Math.floor(seconds % 60);
+    let result = hr === 0
+        ? min
+        : hr + ":" + pad(min);
+    result += ":" + pad(sec);
+    if (neg) result = "-" + result;
+    return result;
+};
+
 const TEN_YEARS_FROM_NOW_THIS_CENTURY = new Date().getFullYear() % 100 + 10;
 export const parseLocalDate = date => {
     if (!date) return null;

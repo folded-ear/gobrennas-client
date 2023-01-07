@@ -15,6 +15,7 @@ import { QueryClientProvider } from "react-query";
 import PantryItemSynchronizer from "./data/PantryItemSynchronizer";
 import queryClient from "./data/queryClient";
 import PlanItemSynchronizer from "features/Planner/data/PlanItemSynchronizer";
+import { TimerProvider } from "./features/Timers/data/TimerContext";
 
 if (process.env.NODE_ENV === "development") {
     Dispatcher.register(require("./util/logAction").default);
@@ -27,7 +28,8 @@ ReactDOM.render(
         AuthTokenProvider,
         ProfileProvider,
         IsMobileProvider,
-    ].reverse().reduce(
+        TimerProvider,
+    ].reduceRight(
         (kids, Decorator) => <Decorator>{kids}</Decorator>,
         <QueryClientProvider client={queryClient}>
             <Router history={history}>

@@ -28,6 +28,7 @@ import useIsDevMode from "data/useIsDevMode";
 import { useLogoutHandler } from "./providers/Profile";
 import Logo from "./views/common/Logo";
 import { useIsMobile } from "./providers/IsMobile";
+import TimersTab from "./features/Timers/HeaderTab";
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -44,7 +45,11 @@ const useStyles = makeStyles(theme => ({
     grow: {
         flexGrow: 1,
     },
+    growALittle: {
+        flexGrow: 0.5,
+    },
     bar: {
+        flexGrow: 1,
         minWidth: "195px",
         "& .MuiTabs-flexContainer": {
             alignItems: "center",
@@ -65,6 +70,13 @@ const useStyles = makeStyles(theme => ({
         },
     },
 }));
+
+function LinkTab(props) {
+    return <Tab
+        component={Link}
+        {...props}
+    />;
+}
 
 const Header = ({ authenticated, location }) => {
     const classes = useStyles();
@@ -136,39 +148,39 @@ const Header = ({ authenticated, location }) => {
                 />
                 {authenticated && <Tabs
                     selectionFollowsFocus
-                    className={`${classes.bar} ${classes.grow}`}
+                    className={classes.bar}
                     value={topLevelNavSeg}
                     textColor="inherit"
                     TabIndicatorProps={{ className: classes.indicator }}
                 >
-                    <Tab
-                        component={Link}
+                    <LinkTab
                         icon={<LibraryIcon />}
                         label={isMobile ? null : "Library"}
                         to="/library"
                         value="library"
                     />
-                    <Tab
-                        component={Link}
+                    <LinkTab
                         icon={<PlanIcon />}
                         label={isMobile ? null : "Plan"}
                         to="/plan"
                         value="plan"
                     />
-                    <Tab
-                        component={Link}
+                    <LinkTab
                         icon={<ShopIcon />}
                         label={isMobile ? null : "Shop"}
                         to="/shop"
                         value="shop"
                     />
-                    {devMode && <Tab
-                        component={Link}
+                    {devMode && <LinkTab
                         icon={<PantryIcon />}
                         label={isMobile ? null : "Pantry"}
                         to="/pantry"
                         value="pantry"
                     />}
+                    <div className={classes.growALittle} />
+                    <TimersTab
+                        label={isMobile ? null : "Timers"}
+                    />
                     <div className={classes.grow} />
                     <Tab
                         className={classes.profileTab}
