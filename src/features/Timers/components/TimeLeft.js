@@ -26,7 +26,7 @@ function Viz({
             {body}
             <LinearProgress
                 variant="determinate"
-                value={(duration - remaining) / duration * 100} />
+                value={(duration - remaining) / duration * 100 + 100} />
         </Box>;
     }
     return body;
