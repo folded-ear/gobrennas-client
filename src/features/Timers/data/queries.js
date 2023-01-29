@@ -1,9 +1,6 @@
-import {
-    gql,
-    useMutation,
-    useQuery,
-} from "@apollo/client";
+import { gql, useMutation, useQuery, } from "@apollo/client";
 import { useMemo } from "react";
+import { useIsAuthenticated } from "../../../providers/Profile";
 
 const useWrappedMutation = (mutation, options, wrapWork) => {
     const [ work, ...rest ] = useMutation(mutation, options);
@@ -31,15 +28,18 @@ const LIST_TIMERS = gql`
 `;
 
 /** You don't want this one; you want `TimerContext.js`'s `useTimerList`. */
-export const useRawListOfAllTimers = (pollInterval = 15_000) =>
-    useQuery(
+export const useRawListOfAllTimers = (pollInterval = 15_000) => {
+    const authenticated = useIsAuthenticated();
+    return useQuery(
         LIST_TIMERS,
         {
+            skip: !authenticated,
             pollInterval: pollInterval,
             // respond fast, but always keep current
             fetchPolicy: "cache-and-network",
         },
     );
+};
 
 const CREATE_TIMER = gql`
     mutation createTimer($duration: PositiveInt!){
