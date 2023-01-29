@@ -1,10 +1,10 @@
-import PropTypes from "prop-types";
-import React from "react";
 import Dispatcher from "data/dispatcher";
-import LibraryStore from "features/RecipeLibrary/data/LibraryStore";
+import useFluxStore from "data/useFluxStore";
 import TaskActions from "features/Planner/data/TaskActions";
 import TaskStore from "features/Planner/data/TaskStore";
-import useFluxStore from "data/useFluxStore";
+import LibraryStore from "features/RecipeLibrary/data/LibraryStore";
+import PropTypes from "prop-types";
+import React from "react";
 import LoadObject from "util/LoadObject";
 import LoadingIndicator from "../views/common/LoadingIndicator";
 import RecipeDetail from "../views/cook/RecipeDetail";
@@ -122,7 +122,6 @@ const PlannedRecipe = ({match}) => {
 
     if (lo.hasValue()) {
         return <RecipeDetail
-            anonymous
             recipeLO={lo}
             subrecipes={lo.getValueEnforcing().subrecipes}
             ownerLO={LoadObject.empty()}
