@@ -1,4 +1,5 @@
 import Dispatcher from "data/dispatcher";
+import { askUserToReauth, isAuthError } from "../providers/Profile";
 
 // this will be given jitter of up to 50% in either direction
 const ARTIFICIAL_SETTLEMENT_DELAY = 150;
@@ -30,9 +31,10 @@ const fallthrough = error => ({
 });
 
 export const soakUpUnauthorized = error => {
-    if (error && error.response && error.response.status === 401) {
+    if (isAuthError(error)) {
         // eslint-disable-next-line no-console
         console.warn("Unauthorized", error);
+        askUserToReauth();
         return fallthrough(error);
     } else {
         throw error;
@@ -40,6 +42,14 @@ export const soakUpUnauthorized = error => {
 };
 
 let promiseRejectionCount = 0;
+
+const informUserOfPromiseError = () => {
+    promiseRejectionCount++;
+    const exp = Math.pow(2, Math.floor(Math.log2(promiseRejectionCount)));
+    if (promiseRejectionCount === exp) {
+        alert(`Error in Promise; your state is jacked.\n\nCheck the console.`);
+    }
+};
 
 /**
  * I adapt Promises (which are gross) to Flux actions (which are sexy). The
@@ -68,10 +78,8 @@ const promiseFlux = (
     rejector = error => {
         // eslint-disable-next-line no-console
         console.error("Error in Promise", error);
-        promiseRejectionCount++;
-        const exp = Math.pow(2, Math.floor(Math.log2(promiseRejectionCount)));
-        if (promiseRejectionCount === exp) {
-            alert(`Error in Promise; your state is jacked.\n\nCheck the console.`);
+        if (!isAuthError(error) || !askUserToReauth()) {
+            informUserOfPromiseError();
         }
         return fallthrough(error);
     },

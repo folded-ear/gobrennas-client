@@ -1,17 +1,9 @@
 import BaseAxios from "axios";
 import PropTypes from "prop-types";
-import React, {
-    createContext,
-    useContext,
-    useEffect,
-    useState,
-} from "react";
-import {
-    API_BASE_URL,
-    LOCAL_STORAGE_ACCESS_TOKEN,
-} from "../constants";
-import GTag from "../GTag";
+import React, { createContext, useCallback, useContext, useEffect, useState, } from "react";
 import LoadObject from "util/LoadObject";
+import { API_BASE_URL, LOCAL_STORAGE_ACCESS_TOKEN, } from "../constants";
+import GTag from "../GTag";
 
 // global side effect to ensure cookies are passed
 BaseAxios.defaults.withCredentials = true;
@@ -22,8 +14,18 @@ const axios = BaseAxios.create({
 
 const ProfileLOContext = createContext(undefined);
 
-export function ProfileProvider({children}) {
-    const [profileLO, setProfileLO] = useState(undefined);
+let globalProfileLoadObject;
+
+export function ProfileProvider({ children }) {
+    const [ profileLO, setProfileLO ] = useState(undefined);
+
+    const doSetProfileLO = useCallback(valueOrUpdater => {
+        const next = typeof valueOrUpdater === "function"
+            ? valueOrUpdater(globalProfileLoadObject)
+            : valueOrUpdater;
+        setProfileLO(globalProfileLoadObject = next);
+    }, [ setProfileLO ]);
+
     useEffect(() => {
         if (profileLO) {
             if (profileLO.hasValue()) return;
@@ -35,20 +37,20 @@ export function ProfileProvider({children}) {
                 GTag("set", {
                     uid: data.data.id,
                 });
-                setProfileLO(lo =>
+                doSetProfileLO(lo =>
                     lo.setValue(data.data).done());
             })
             .catch(error => {
-                if (error.response && error.response.status === 401) {
-                    setProfileLO(LoadObject.withError(new Error(ProfileState.ERR_NO_TOKEN)));
+                if (isAuthError(error)) {
+                    doSetProfileLO(LoadObject.withError(new Error(ProfileState.ERR_NO_TOKEN)));
                 } else {
-                    setProfileLO(lo =>
+                    doSetProfileLO(lo =>
                         lo.setError(error).done());
                 }
             });
-        setProfileLO(lo =>
+        doSetProfileLO(lo =>
             lo ? lo.loading() : LoadObject.loading());
-    }, [ profileLO ]);
+    }, [ profileLO, doSetProfileLO ]);
     return <ProfileLOContext.Provider value={profileLO}>
         {children}
     </ProfileLOContext.Provider>;
@@ -56,6 +58,31 @@ export function ProfileProvider({children}) {
 
 ProfileProvider.propTypes = {
     children: PropTypes.node,
+};
+
+export const isAuthError = error =>
+    error && ((error.response && error.response.status === 401)
+        || (error.extensions && error.extensions.type === "NoUserPrincipalException"));
+
+let lastReauthPrompt = 0;
+const promptForReauthFrequency = 10 * 60 * 1000;
+
+export const askUserToReauth = () => {
+    if (!globalProfileLoadObject || !globalProfileLoadObject.hasValue()) {
+        return false;
+    }
+    const now = Date.now();
+    if (now < lastReauthPrompt + promptForReauthFrequency) {
+        // eslint-disable-next-line no-console
+        console.log("Asking user to reauth skipped - too soon again");
+        return false;
+    }
+    lastReauthPrompt = now;
+    // eslint-disable-next-line no-restricted-globals
+    if (confirm("Your session has terminated.\n\nLog back in?")) {
+        logoutHandler();
+    }
+    return true;
 };
 
 export const useProfileLO = () =>

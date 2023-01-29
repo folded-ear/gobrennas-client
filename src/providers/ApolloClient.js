@@ -1,21 +1,29 @@
-import {
-    ApolloClient as ApolloClientInstance,
-    ApolloProvider,
-    createHttpLink,
-    InMemoryCache,
-} from "@apollo/client";
+import { ApolloClient as ApolloClientInstance, ApolloProvider, from, HttpLink, InMemoryCache, } from "@apollo/client";
+import { onError } from "@apollo/client/link/error";
 import PropTypes from "prop-types";
 import * as React from "react";
-import { API_BASE_URL } from "constants/index";
+import { API_BASE_URL } from "../constants";
+import { askUserToReauth, isAuthError, } from "./Profile";
 
-const link = createHttpLink({
+const httpLink = new HttpLink({
     uri: `${API_BASE_URL}/graphql`,
     credentials: "include",
 });
 
+const errorLink = onError(({ graphQLErrors }) => {
+    if (!graphQLErrors) return;
+    graphQLErrors.forEach((error) => {
+        // eslint-disable-next-line no-console
+        console.error("Error in GraphQL", error);
+        if (isAuthError(error)) {
+            askUserToReauth();
+        }
+    });
+});
+
 const client = new ApolloClientInstance({
     cache: new InMemoryCache(),
-    link
+    link: from([ errorLink, httpLink ]),
 });
 
 export function ApolloClient({ children }) {
