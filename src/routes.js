@@ -15,6 +15,7 @@ import OAuth2RedirectHandler from "views/user/OAuth2RedirectHandler";
 import { UserProfileView } from "views/UserProfile/UserProfileView";
 import Profile from "./views/user/Profile";
 import Foodinger from "views/Foodinger";
+import {Something} from "./views/library/Something"
 
 const routes = {
     public: [
@@ -38,6 +39,7 @@ const routes = {
         {path: "/plan", component: Planner},
         {path: "/shop", component: Shop},
         {path: "/pantry", component: Pantry},
+        {path: "/something", component: Something}
     ]
 };
 
