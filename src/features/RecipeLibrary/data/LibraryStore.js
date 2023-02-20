@@ -1,3 +1,9 @@
+import Dispatcher from "data/dispatcher";
+import PantryItemActions from "data/PantryItemActions";
+import RecipeActions from "data/RecipeActions";
+import RecipeApi from "data/RecipeApi";
+import RouteActions from "data/RouteActions";
+import LibraryApi from "features/RecipeLibrary/data/LibraryApi";
 import { ReduceStore } from "flux/utils";
 import invariant from "invariant";
 import PropTypes from "prop-types";
@@ -9,19 +15,10 @@ import history from "util/history";
 import LoadObject from "util/LoadObject";
 import LoadObjectMap from "util/LoadObjectMap";
 import LoadObjectState from "util/LoadObjectState";
-import {
-    loadObjectMapOf,
-    loadObjectStateOf,
-} from "util/loadObjectTypes";
+import { loadObjectMapOf, loadObjectStateOf, } from "util/loadObjectTypes";
 import { fromMilliseconds } from "util/time";
 import typedStore from "util/typedStore";
-import Dispatcher from "data/dispatcher";
 import LibraryActions from "./LibraryActions";
-import LibraryApi from "features/RecipeLibrary/data/LibraryApi";
-import PantryItemActions from "data/PantryItemActions";
-import RecipeActions from "data/RecipeActions";
-import RecipeApi from "data/RecipeApi";
-import RouteActions from "data/RouteActions";
 
 export const SCOPE_MINE = "mine";
 export const SCOPE_EVERYONE = "everyone";
@@ -47,7 +44,7 @@ function searchHelper(state) {
 
 const debouncedHelper = debounce(searchHelper, 300);
 
-function searchLibrary(state, scope, filter, debounce) {
+function searchLibrary(state, scope, filter) {
     let doSearch = false;
     if (scope != null && scope !== state.scope) {
         doSearch = true;
@@ -73,7 +70,7 @@ function searchLibrary(state, scope, filter, debounce) {
         },
         recipeIds: state.recipeIds.mapLO(lo => lo.loading()),
     };
-    debounce ? debouncedHelper(state) : searchHelper(state);
+    searchHelper(state);
     return state;
 }
 
@@ -103,7 +100,7 @@ class LibraryStore extends ReduceStore {
             filter: null
         };
     }
-    
+
     reduce(state, action) {
         switch (action.type) {
 
@@ -117,9 +114,9 @@ class LibraryStore extends ReduceStore {
                 const params = qs.parse(action.location.search, { ignoreQueryPrefix: true });
                 return searchLibrary(state, params.s || SCOPE_MINE, params.q);
             }
-            
+
             case LibraryActions.UPDATE_FILTER: {
-                return searchLibrary(state, undefined, action.filter, true);
+                return searchLibrary(state, undefined, action.filter);
             }
 
             case LibraryActions.CLEAR_FILTER: {
@@ -286,7 +283,7 @@ class LibraryStore extends ReduceStore {
             }
         }
     }
-    
+
     getRecipesLO() {
         return this.getState()
             .recipeIds
@@ -310,7 +307,7 @@ class LibraryStore extends ReduceStore {
         }
         return lo;
     }
-    
+
     getRecipeById(selectedRecipe) {
         invariant(
             typeof selectedRecipe === "number",

@@ -1,62 +1,61 @@
 import {
     Box,
+    Button,
     Container as Content,
+    Divider,
     FormControlLabel,
     Grid,
+    IconButton,
+    InputBase,
     Paper,
     Switch,
     Typography,
     useScrollTrigger,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import { PostAdd } from "@material-ui/icons";
-import PropTypes from "prop-types";
-import React from "react";
-import dispatcher from "data/dispatcher";
+import { PostAdd as AddIcon, Search as SearchIcon, } from "@material-ui/icons";
 import Dispatcher from "data/dispatcher";
-import LibraryActions from "features/RecipeLibrary/data/LibraryActions";
-import {
-    SCOPE_EVERYONE,
-    SCOPE_MINE,
-} from "features/RecipeLibrary/data/LibraryStore";
 import { Recipe } from "data/RecipeTypes";
+import RecipeCard from "features/RecipeLibrary/components/RecipeCard";
+import LibraryActions from "features/RecipeLibrary/data/LibraryActions";
+import { SCOPE_EVERYONE, SCOPE_MINE, } from "features/RecipeLibrary/data/LibraryStore";
+import PropTypes from "prop-types";
+import { useIsMobile } from "providers/IsMobile";
+import React, { useEffect, useState } from "react";
 import history from "util/history";
 import { loadObjectOf } from "util/loadObjectTypes";
 import FoodingerFab from "views/common/FoodingerFab";
 import LazyInfinite from "views/common/LazyInfinite";
 import LoadingIndicator from "views/common/LoadingIndicator";
-import RecipeCard from "features/RecipeLibrary/components/RecipeCard";
-import SearchFilter from "features/RecipeLibrary/components/SearchFilter";
 
-const useStyles = makeStyles((theme) => ({
-    search: {
-        margin: theme.spacing(4, 0),
-        padding: theme.spacing(4, 2),
-    },
-    paddedContent: {
-        paddingTop: 255,
-    },
-    fixedSearch: {
-        position: "fixed",
-        zIndex: 1100,
-        padding: theme.spacing(2, 2),
-        top: 80,
-    },
-    card: {
+const useStyles = makeStyles((theme) => {
+    const search = {
+        margin: theme.spacing(2, 0),
+        padding: theme.spacing(1),
         display: "flex",
-    },
-}));
-
-const updateFilter = filter =>
-    Dispatcher.dispatch({
-        type: LibraryActions.UPDATE_FILTER,
-        filter,
+        alignItems: "center",
+    };
+    return ({
+        search,
+        paddedContent: {
+            paddingTop: 85,
+        },
+        fixedSearch: {
+            ...search,
+            position: "fixed",
+            zIndex: 1100,
+            top: 70,
+            minWidth: "70%",
+        },
+        divider: {
+            height: theme.spacing(4),
+            margin: theme.spacing(0, 1),
+        },
+        card: {
+            display: "flex",
+        },
     });
-
-const clearFilter = () =>
-    Dispatcher.dispatch({
-        type: LibraryActions.CLEAR_FILTER,
-    });
+});
 
 const toggleScope = (e) => {
     const everyone = e.target.checked;
@@ -66,7 +65,7 @@ const toggleScope = (e) => {
     });
 };
 
-function MessagePaper({primary, children}) {
+function MessagePaper({ primary, children }) {
     return <Paper
         style={{
             textAlign: "center",
@@ -76,8 +75,8 @@ function MessagePaper({primary, children}) {
             {children
                 ? children
                 : primary && <Typography variant="h5">
-                    {primary}
-                </Typography>}
+                {primary}
+            </Typography>}
         </Box>
     </Paper>;
 }
@@ -89,11 +88,29 @@ MessagePaper.propTypes = {
 
 function RecipesList(props = {}) {
     const classes = useStyles();
-    const isSearchHidden = useScrollTrigger({
+    const isSearchFloating = useScrollTrigger({
         disableHysteresis: true,
-        threshold: 250 - 75,
+        threshold: 0,
     });
-    const {me, filter, scope, recipesLO, isComplete} = props;
+    const isMobile = useIsMobile();
+    const { me, filter, scope, recipesLO, isComplete } = props;
+    const [ unsavedFilter, setUnsavedFilter ] = useState(filter);
+    useEffect(() => {
+        setUnsavedFilter(filter);
+    }, [ filter ]);
+
+    function handleSearchChange(e) {
+        setUnsavedFilter(e.target.value);
+    }
+
+    function handleSearch(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        Dispatcher.dispatch({
+            type: LibraryActions.UPDATE_FILTER,
+            filter: unsavedFilter,
+        });
+    }
 
     let body;
     if (recipesLO.hasValue()) {
@@ -106,7 +123,7 @@ function RecipesList(props = {}) {
                 onNeedMore={() => {
                     if (isComplete) return; // not required, but may as well
                     setTimeout(() =>
-                        dispatcher.dispatch({
+                        Dispatcher.dispatch({
                             type: LibraryActions.SEARCH_FARTHER,
                         }));
                 }}
@@ -164,39 +181,58 @@ function RecipesList(props = {}) {
         body = <LoadingIndicator />;
     }
     return <Content
-        className={isSearchHidden ? classes.paddedContent : null}
+        className={isSearchFloating ? classes.paddedContent : null}
     >
         <Paper
-            elevation={isSearchHidden ? 4 : 1}
-            className={isSearchHidden ? classes.fixedSearch : classes.search}
+            elevation={isSearchFloating ? 4 : 1}
+            className={isSearchFloating ? classes.fixedSearch : classes.search}
         >
-            {!isSearchHidden && <>
-                <Typography variant="h5">Search Recipe Library</Typography>
-                <div style={{float: "right"}}>
-                    <FormControlLabel
-                        control={
-                            <Switch checked={scope === SCOPE_EVERYONE}
-                                    name="scope"
-                                    onChange={toggleScope}
-                                    color="primary"
-                            />
-                        }
-                        label={"Everyone"}
-                        labelPlacement={"start"}
+            <InputBase
+                value={unsavedFilter}
+                onChange={handleSearchChange}
+                className={classes.input}
+                placeholder="Search Recipes"
+                style={{ flexGrow: 2 }}
+                onKeyDown={e => {
+                    if (e.key === "Enter") {
+                        handleSearch(e);
+                    }
+                }}
+            />
+            {isMobile || isSearchFloating
+                ? <IconButton
+                    color={"primary"}
+                    onClick={handleSearch}
+                >
+                    <SearchIcon />
+                </IconButton>
+                : <Button
+                    variant={"contained"}
+                    onClick={handleSearch}
+                    color="primary"
+                    type="submit"
+                    aria-label="search"
+                    startIcon={<SearchIcon />}>
+                    Search
+                </Button>}
+            <Divider className={classes.divider} orientation="vertical" />
+            <FormControlLabel
+                control={
+                    <Switch checked={scope === SCOPE_EVERYONE}
+                            name="scope"
+                            onChange={toggleScope}
+                            color="primary"
                     />
-                </div>
-            </>}
-            <SearchFilter
-                onChange={updateFilter}
-                term={filter}
-                onClear={clearFilter}
+                }
+                label={"Everyone"}
+                labelPlacement={"start"}
             />
         </Paper>
         {body}
         <FoodingerFab
             onClick={() => history.push(`/add`)}
         >
-            <PostAdd />
+            <AddIcon />
         </FoodingerFab>
     </Content>;
 }
