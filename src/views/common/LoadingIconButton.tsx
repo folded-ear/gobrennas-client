@@ -6,6 +6,7 @@ import {
 import { grey } from "@material-ui/core/colors";
 import PropTypes from "prop-types";
 import React from "react";
+import {MUISize} from "../../types";
 
 const CircProg = withStyles({
     root: {
@@ -13,9 +14,14 @@ const CircProg = withStyles({
     },
 })(CircularProgress);
 
+type ProgressProps = {
+    size?: number;
+    style?: any;
+}
+
 const LoadingIconButton = ({size = "small", ...props}) => {
     // this is _weak_.
-    const cpProps = {};
+    const cpProps : ProgressProps = {};
     if (size === "small") {
         cpProps.size = 24;
         cpProps.style = {
@@ -25,7 +31,7 @@ const LoadingIconButton = ({size = "small", ...props}) => {
     // this is admittedly pretty silly. ok, really silly.
     return <IconButton
         aria-label="loading"
-        size={size}
+        size={size as MUISize}
         disabled
         {...props}
     >

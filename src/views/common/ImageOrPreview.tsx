@@ -13,7 +13,7 @@ import React from "react";
  */
 const ImageOrPreview = ({src, ...props}) => {
     const [srcUrl, setSrcUrl] = React.useState(
-        typeof src === "string" ? src : null
+        typeof src === "string" ? src : undefined
     );
     React.useEffect(() => {
         if (typeof src !== "string") {
