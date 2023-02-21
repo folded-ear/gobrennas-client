@@ -29,7 +29,7 @@ const SplitButton = props => {
     } = props;
     const classes = useStyles();
     const [open, setOpen] = React.useState(false);
-    const anchorRef = React.useRef(null);
+    const anchorRef = React.useRef<HTMLDivElement>(null);
     const [selectedOption, setSelectedOption] = React.useState(null);
 
     const handleClick = (event) => {

@@ -5,7 +5,7 @@ import debounce from "../../util/debounce";
 
 function LazyInfinite({children, complete, onNeedMore, loading}) {
     const windowSize = useWindowSize();
-    const ref = React.createRef();
+    const ref = React.createRef<HTMLDivElement>();
     React.useEffect(
         () => {
             if (loading || complete || !ref.current) return;
