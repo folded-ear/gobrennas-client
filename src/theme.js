@@ -1,9 +1,9 @@
 import {
-    responsiveFontSizes,
+    responsiveFontSizes, Theme,
     unstable_createMuiStrictModeTheme as createTheme,
 } from "@material-ui/core/styles";
 
-let theme = createTheme({
+let theme : Theme = createTheme({
     palette: {
         primary: {
             light: "#f9683a",
@@ -14,12 +14,6 @@ let theme = createTheme({
         secondary: {
             main: "#f2f3ef",
             contrastText: "#000",
-        },
-        light: {
-            main: "#fff3e0",
-        },
-        dark: {
-            main: "#333333"
         },
         background: {
             default: "#f7f7f7"
@@ -50,9 +44,6 @@ let theme = createTheme({
             textTransform: "uppercase",
             marginBottom: ".5em"
         }
-    },
-    header: {
-        height: "75px"
     },
     overrides: {
         MuiTextField: {

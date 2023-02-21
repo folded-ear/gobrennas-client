@@ -29,12 +29,13 @@ import { useLogoutHandler } from "./providers/Profile";
 import Logo from "./views/common/Logo";
 import { useIsMobile } from "./providers/IsMobile";
 import TimersTab from "./features/Timers/HeaderTab";
+import {HEADER_HEIGHT, TAB_WIDTH_MIN} from "./constants/layout";
 
 const useStyles = makeStyles(theme => ({
     root: {
-        height: theme.header.height,
+        height: `${HEADER_HEIGHT}px`,
         "& .MuiTab-root": {
-            minWidth: 72,
+            minWidth: TAB_WIDTH_MIN,
             marginRight: theme.spacing(2),
             [theme.breakpoints.down("sm")]: {
                 minWidth: 0,
@@ -134,6 +135,7 @@ const Header = ({ authenticated, location }) => {
             </MenuItem>
         </Menu>
     );
+
 
     return <>
         <AppBar
