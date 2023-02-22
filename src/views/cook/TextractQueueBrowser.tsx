@@ -88,9 +88,9 @@ const Ui = ({onSelect, onClose, onUpload, onDelete, queue: persistent, deleting,
                 </GridListTile>
                 {queue.map(j => <GridListTile
                     key={j.id}
-                    onClick={j.state === "ready" ? () => onSelect(j.id) : null}
-                    className={j.state === "ready" ? classes.ready : classes.inactive}
-                    title={j.ready ? "Use this photo" : null}
+                    // onClick={j.state === "ready" ? () => onSelect(j.id) : null}
+                    // className={j.state === "ready" ? classes.ready : classes.inactive}
+                    // title={j.ready ? "Use this photo" : null}
                 >
                     <img src={j.url} alt={j.name} />
                     <GridListTileBar

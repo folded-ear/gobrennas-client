@@ -5,23 +5,38 @@ import ClientId from "../../util/ClientId";
 import LoadObject from "../../util/LoadObject";
 import promiseWellSizedFile from "../../util/promiseWellSizedFile";
 import TextractButton from "./TextractButton";
-import TextractEditor from "./TextractEditor";
+import TextractEditor, { Textract } from "./TextractEditor";
 import TextractQueueBrowser from "./TextractQueueBrowser";
 import TextractApi from "../../data/TextractApi";
 import { useQueryClient } from "react-query";
 
+type TextractJob = {
+    image: string,
+    textract: Textract[]
+}
+
+type PhotoUpload = {
+    id: string,
+    url: string,
+    name: string,
+    ready: boolean,
+}
+
 const TextractFormAugment = ({ renderActions }) => {
     const [ browserOpen, setBrowserOpen ] = React.useState(false);
     const [ jobLO, setJobLO ] = React.useState(LoadObject.empty());
-    const [ creating, setCreating ] = React.useState([]);
+    const [ creating, setCreating ] = React.useState<PhotoUpload[]>([]);
     const [ deleting, setDeleting ] = React.useState([]);
     const queryClient = useQueryClient();
+
+    const {image, textract} = jobLO.getValueEnforcing() as TextractJob
     return <>
         <TextractButton
             onClick={() => setBrowserOpen(true)}
         />
         {jobLO.hasValue() && <TextractEditor
-            {...jobLO.getValueEnforcing()}
+            image={image}
+            textract={textract}
             onClose={() => setJobLO(LoadObject.empty())}
             renderActions={renderActions}
         />}

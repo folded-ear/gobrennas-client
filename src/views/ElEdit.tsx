@@ -14,18 +14,61 @@ import React from "react";
 import ItemApi from "data/ItemApi";
 import debounce from "util/debounce";
 import processRecognizedItem from "util/processRecognizedItem";
+import { Ingredient } from "../types";
 
 const doRecog = raw =>
     raw != null && raw.trim().length >= 2;
 
-class ElEdit extends React.PureComponent {
+type Value = {
+    raw: string,
+    quantity?: number,
+    uomId?: number,
+    units?: string,
+    ingredientId?: number,
+    ingredient?: Ingredient,
+    preparation?: string,
+}
 
-    constructor(...args) {
-        super(...args);
-        this.ref = React.createRef();
+type Target = {
+    target: {
+        name: string,
+        value: Value,
+    }
+}
+
+type ElEditProps = {
+    name: string,
+    value: Value,
+    onChange: (e: Target) => void,
+    onPressEnter: () => void,
+    onDelete?: () => void,
+    onMultilinePaste?: (text: any) => void,
+}
+
+type ElEditState = {
+    recog: any,
+    suggestions?: any,
+    quantity?: number,
+    quantityValue?: number,
+    unit?: string,
+    unitValue?: number,
+    ingredientName?: string,
+    nameValue?: number,
+    preparation?: string
+}
+
+class ElEdit extends React.PureComponent<ElEditProps, ElEditState> {
+    private _mounted: boolean;
+    private ref: React.RefObject<HTMLInputElement>;
+    private recognizeDebounced: ((...args) => void) | any;
+
+    constructor(args: ElEditProps) {
+        super(args);
+        this.ref = React.createRef<HTMLInputElement>();
         this._mounted = false;
         this.state = {
             recog: null,
+            suggestions: undefined,
         };
         this.recognizeDebounced = debounce(this.recognize.bind(this));
         this.handleChange = this.handleChange.bind(this);
@@ -50,7 +93,7 @@ class ElEdit extends React.PureComponent {
     getCursorPosition() {
         const el = this.ref.current;
         if (el == null) return 0;
-        const c = el.selectionStart;
+        const c = el.selectionStart || 0;
         const raw = el.value || "";
         return Math.min(Math.max(c, 0), raw.length);
     }
@@ -114,10 +157,11 @@ class ElEdit extends React.PureComponent {
                     .filter(s => s.result !== recog.raw);
                 this.setState({
                     recog,
-                    q, qv,
-                    u, uv,
-                    n, nv,
-                    p,
+                    quantity: q,
+                    quantityValue: qv,
+                    unit: u, unitValue: uv,
+                    ingredientName: n, nameValue: nv,
+                    preparation: p,
                     suggestions,
                 });
             });
@@ -208,7 +252,7 @@ class ElEdit extends React.PureComponent {
         } = value;
         const {
             recog,
-            q, u, uv, n, nv, p,
+            quantity, unit, unitValue, ingredientName, nameValue, preparation,
             suggestions,
         } = this.state;
         const hasSuggestions = this._hasSuggestions();
@@ -216,7 +260,7 @@ class ElEdit extends React.PureComponent {
         const indicator = <InputAdornment
             position={"start"}
         >
-            {n == null
+            {ingredientName == null
                 ? <ErrorOutline color="error" />
                 : <CheckCircleOutline color="disabled" />
             }
@@ -226,7 +270,7 @@ class ElEdit extends React.PureComponent {
             <Grid item sm={6} xs={12}>
                 <Autocomplete
                     size={"small"}
-                    name={`${name}.raw`}
+                    id={`${ingredientName}.raw`}
                     value={raw}
                     onChange={this.handleChange}
                     onInputChange={this.handleChange}
@@ -255,13 +299,13 @@ class ElEdit extends React.PureComponent {
                 {(!recog || !raw)
                     ? doRecog(raw) ? <Hunk><LinearProgress /></Hunk> : null
                     : <Hunk>
-                        {q &&
-                        <Hunk style={{ backgroundColor: "#fde" }}>{q}</Hunk>}
-                        {u && <Hunk
-                            style={{ backgroundColor: uv ? "#efd" : "#dfe" }}>{u}</Hunk>}
-                        {n && <Hunk
-                            style={{ backgroundColor: nv ? "#def" : "#edf" }}>{n}</Hunk>}
-                        {p && <span>{n ? ", " : null}{p}</span>}
+                        {quantity &&
+                        <Hunk style={{ backgroundColor: "#fde" }}>{quantity}</Hunk>}
+                        {unit && <Hunk
+                            style={{ backgroundColor: unitValue ? "#efd" : "#dfe" }}>{unit}</Hunk>}
+                        {ingredientName && <Hunk
+                            style={{ backgroundColor: nameValue ? "#def" : "#edf" }}>{ingredientName}</Hunk>}
+                        {preparation && <span>{ingredientName ? ", " : null}{preparation}</span>}
                     </Hunk>
                     }
             </Grid>
@@ -278,21 +322,6 @@ const Hunk = ({children, style}) => <span style={{
 Hunk.propTypes = {
     children: PropTypes.node.isRequired,
     style: PropTypes.object,
-};
-
-ElEdit.propTypes = {
-    name: PropTypes.string.isRequired,
-    value: PropTypes.shape({
-        raw: PropTypes.string.isRequired,
-        quantity: PropTypes.number,
-        units: PropTypes.string,
-        ingredientId: PropTypes.number,
-        preparation: PropTypes.string,
-    }).isRequired,
-    onChange: PropTypes.func.isRequired,
-    onPressEnter: PropTypes.func,
-    onDelete: PropTypes.func,
-    onMultilinePaste: PropTypes.func,
 };
 
 export default ElEdit;

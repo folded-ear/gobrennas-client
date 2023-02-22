@@ -271,7 +271,6 @@ const RecipeForm = ({title, onSave, onSaveCopy, onCancel, extraButtons}) => {
         </Box>
         <Box my={MARGIN}>
             <ChipInput
-                name="labels"
                 value={draft.labels}
                 onAdd={addLabel}
                 onDelete={removeLabel}

@@ -1,19 +1,10 @@
-import {
-    Card,
-    CardContent,
-    makeStyles,
-    Typography,
-} from "@material-ui/core";
-import { DataGrid } from "@mui/x-data-grid";
+import {Card, CardContent, makeStyles, Typography,} from "@material-ui/core";
+import {DataGrid} from "@mui/x-data-grid";
 import PropTypes from "prop-types";
-import React, {
-    useEffect,
-    useMemo,
-    useState,
-} from "react";
+import React, {useEffect, useMemo, useState,} from "react";
 import InventoryApi from "../../data/InventoryApi";
 import LoadingIndicator from "../common/LoadingIndicator";
-import { formatQuantity } from "./formatQuantity";
+import {formatQuantity} from "./formatQuantity";
 
 const useStyles = makeStyles(theme => ({
     gridHeader: {

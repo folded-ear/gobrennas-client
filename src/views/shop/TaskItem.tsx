@@ -1,7 +1,6 @@
 import { ListItemText } from "@material-ui/core";
 import Input from "@material-ui/core/Input";
 import classnames from "classnames";
-import PropTypes from "prop-types";
 import React from "react";
 import Dispatcher from "../../data/dispatcher";
 import ShoppingActions from "../../data/ShoppingActions";
@@ -19,14 +18,26 @@ import {
     tuplePropTypes,
 } from "./types";
 
-class TaskItem extends React.PureComponent {
+type TaskItemProps = tuplePropTypes & {
+    depth: number,
+    item: itemPropTypes & {
+        question: boolean,
+        path: baseItemPropTypes[]
+        ingredient: any,
+        status: any,
+        _next_status: any,
+    }
+}
+
+class TaskItem extends React.PureComponent<TaskItemProps> {
+    private inputRef: React.RefObject<HTMLInputElement>;
 
     constructor(props) {
         super(props);
         this.onChange = this.onChange.bind(this);
         this.onClick = this.onClick.bind(this);
         this.onKeyDown = this.onKeyDown.bind(this);
-        this.inputRef = React.createRef();
+        this.inputRef = React.createRef<HTMLInputElement>();
     }
 
     onChange(e) {
@@ -100,11 +111,11 @@ class TaskItem extends React.PureComponent {
     }
 
     componentDidMount() {
-        if (this.props.active) this.inputRef.current.focus();
+        if (this.props.active && this.inputRef?.current) this.inputRef.current.focus();
     }
 
     componentDidUpdate() {
-        if (this.props.active) this.inputRef.current.focus();
+        if (this.props.active && this.inputRef?.current ) this.inputRef.current.focus();
     }
 
     render() {
@@ -119,7 +130,6 @@ class TaskItem extends React.PureComponent {
             loading,
             deleting,
             acquiring,
-            needing,
         } = item;
         let addonBefore = [
             <PlaceholderIconButton
@@ -158,7 +168,6 @@ class TaskItem extends React.PureComponent {
                 [classes.question]: question,
                 [classes.active]: active,
                 [classes.acquiring]: acquiring,
-                [classes.needing]: needing,
                 [classes.deleting]: deleting,
             })}
         >
@@ -189,15 +198,5 @@ class TaskItem extends React.PureComponent {
     }
 
 }
-
-TaskItem.propTypes = {
-    ...tuplePropTypes,
-    item: PropTypes.shape({
-        ...itemPropTypes,
-        depth: PropTypes.number.isRequired,
-        question: PropTypes.bool.isRequired,
-        path: PropTypes.arrayOf(PropTypes.shape(baseItemPropTypes)).isRequired,
-    }).isRequired,
-};
 
 export default withItemStyles(TaskItem);

@@ -1,12 +1,9 @@
 import { Typography } from "@material-ui/core";
 import List from "@material-ui/core/List";
 import Add from "@material-ui/icons/Add";
-import PropTypes from "prop-types";
 import React from "react";
 import Dispatcher from "data/dispatcher";
 import ShoppingActions from "data/ShoppingActions";
-import { clientOrDatabaseIdType } from "util/ClientId";
-import { loadObjectOf } from "util/loadObjectTypes";
 import FoodingerFab from "views/common/FoodingerFab";
 import LoadingIndicator from "views/common/LoadingIndicator";
 import PageBody from "views/common/PageBody";
@@ -16,11 +13,30 @@ import {
     baseItemPropTypes,
     itemPropTypes,
 } from "./types";
+import LoadObject from "../../util/LoadObject";
+import { Plan } from "../../types";
 
-class ShopList extends React.PureComponent {
+type ShopListProps = {
+    planLO: LoadObject<Plan>
+    itemTuples: itemPropTypes & {
+      id: string,
+      _type: "ingredient" | "task",
+      active: boolean;
+      depth: number;
+      expanded: boolean,
+      itemIds: string[],
+      quantities: {
+          quantity: number,
+          uomId?: number,
+      }[],
+      path: baseItemPropTypes[]
+    }[]
+}
 
-    constructor(...args) {
-        super(...args);
+class ShopList extends React.PureComponent<ShopListProps> {
+
+    constructor(args: ShopListProps) {
+        super(args);
         this.onAddNew = this.onAddNew.bind(this);
     }
 
@@ -72,28 +88,5 @@ class ShopList extends React.PureComponent {
     }
 
 }
-
-ShopList.propTypes = {
-    planLO: loadObjectOf(
-        PropTypes.shape({
-            id: clientOrDatabaseIdType.isRequired,
-            name: PropTypes.string.isRequired,
-        })).isRequired,
-    itemTuples: PropTypes.arrayOf(
-        PropTypes.shape({
-            _type: PropTypes.oneOf(["ingredient", "task"]),
-            ...itemPropTypes,
-            // for ingredient
-            expanded: PropTypes.bool,
-            itemIds: PropTypes.arrayOf(clientOrDatabaseIdType),
-            quantities: PropTypes.arrayOf(
-                PropTypes.shape({
-                    quantity: PropTypes.number.isRequired,
-                    uomId: PropTypes.number, // missing means "count"
-                })),
-            // for item
-            path: PropTypes.arrayOf(PropTypes.shape(baseItemPropTypes)),
-        })).isRequired,
-};
 
 export default ShopList;

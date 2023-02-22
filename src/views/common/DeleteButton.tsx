@@ -8,7 +8,7 @@ import DialogActions from "@material-ui/core/DialogActions";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import { Delete } from "@material-ui/icons";
 import PropTypes from "prop-types";
-import React from "react";
+import * as React from "react";
 
 const DeleteIcon = ({onClick, ...props}) => (
     <Tooltip title="Delete" placement="top">
@@ -22,7 +22,16 @@ DeleteIcon.propTypes = {
     onClick: PropTypes.func
 };
 
-const DeleteButton = ({type, onConfirm, label, onClick, onCancel, ...props}) => {
+type DeleteButtonProps = {
+    type: string,
+    onConfirm: () => void,
+    label?: string,
+    onClick?: () => void,
+    onCancel?: () => void,
+    className?: string,
+}
+
+const DeleteButton: React.FC<DeleteButtonProps> = ({type, onConfirm, label, onClick, onCancel, ...props}) => {
     const [open, setOpen] = React.useState(false);
     const handleOpen = e => {
         e.stopPropagation();
@@ -73,14 +82,6 @@ const DeleteButton = ({type, onConfirm, label, onClick, onCancel, ...props}) => 
             </DialogActions>
         </Dialog>
     </>;
-};
-
-DeleteButton.propTypes = {
-    type: PropTypes.string.isRequired,
-    onConfirm: PropTypes.func.isRequired,
-    label: PropTypes.string,
-    onClick: PropTypes.func,
-    onCancel: PropTypes.func,
 };
 
 export default DeleteButton;

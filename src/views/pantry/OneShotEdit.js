@@ -1,11 +1,6 @@
-import { Grid } from "@material-ui/core";
+import {Grid} from "@material-ui/core";
 import PropTypes from "prop-types";
-import React, {
-    useEffect,
-    useMemo,
-    useRef,
-    useState,
-} from "react";
+import React, {useEffect, useMemo, useRef, useState,} from "react";
 import InventoryApi from "../../data/InventoryApi";
 import SplitButton from "../common/SplitButton";
 import ElEdit from "../ElEdit";

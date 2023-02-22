@@ -1,5 +1,4 @@
 import Button from "@material-ui/core/Button";
-import PropTypes from "prop-types";
 import React, { Component } from "react";
 import { Redirect } from "react-router-dom";
 import {
@@ -14,7 +13,12 @@ import {
     Typography,
 } from "@material-ui/core";
 
-class Login extends Component {
+type LoginProps = {
+    authenticated: boolean,
+    location: any
+}
+
+class Login extends Component<LoginProps> {
     
     componentDidMount() {
         // If the OAuth2 login encounters an error, the user is redirected to the /login page with an error.
@@ -40,10 +44,12 @@ class Login extends Component {
         }
 
         if (location != null && location.state != null && location.state.from != null) {
+
             setJsonItem(
                 SESSION_STORAGE_POST_LOGIN,
                 location.state.from,
                 sessionStorage,
+                // @ts-ignore
                 (k, v) => // omit Router's internal key value
                     k === "key" ? undefined : v
             );
@@ -58,7 +64,7 @@ class Login extends Component {
                                         align={"center"}>
                                 Brenna&apos;s Food Software
                             </Typography>
-                            <Box my={3} align={"center"}>
+                            <Box my={3} alignContent={"center"}>
                                 <Button
                                     color="primary"
                                     variant="outlined"
@@ -85,10 +91,5 @@ class Login extends Component {
         );
     }
 }
-
-Login.propTypes = {
-    authenticated: PropTypes.bool.isRequired,
-    location: PropTypes.object.isRequired
-};
 
 export default Login;
