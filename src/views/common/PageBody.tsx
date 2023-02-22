@@ -1,13 +1,13 @@
 import { Container } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import classnames from "classnames";
-import PropTypes from "prop-types";
 import React from "react";
+import {HEADER_HEIGHT} from "../../constants/layout";
 
 const useStyles = makeStyles(theme => ({
     root: {
         backgroundColor: "white",
-        minHeight: `calc(100vh - ${theme.header.height})`,
+        minHeight: `calc(100vh - ${HEADER_HEIGHT}px)`,
         paddingBottom: theme.spacing(2),
     },
     hasFab: {
@@ -15,7 +15,13 @@ const useStyles = makeStyles(theme => ({
     }
 }));
 
-const PageBody = ({children, hasFab, className, ...props}) => {
+type PageBodyProps = {
+    children: any,
+    hasFab?: boolean,
+    className?: string,
+}
+
+const PageBody: React.FC<PageBodyProps> = ({children, hasFab, className, ...props}) => {
     const classes = useStyles();
     return <Container
         className={classnames(classes.root, className, {
@@ -25,12 +31,6 @@ const PageBody = ({children, hasFab, className, ...props}) => {
     >
         {children}
     </Container>;
-};
-
-PageBody.propTypes = {
-    children: PropTypes.node.isRequired,
-    className: PropTypes.string,
-    hasFab: PropTypes.bool,
 };
 
 export default PageBody;

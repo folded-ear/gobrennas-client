@@ -20,6 +20,7 @@ const CloseButton = ({onClick}) => {
 
 CloseButton.propTypes = {
     onClick: PropTypes.func,
+    size: PropTypes.string,
 };
 
 export default CloseButton;

@@ -17,7 +17,6 @@ import {
     MenuBook as LibraryIcon,
     ShoppingCart as ShopIcon,
 } from "@material-ui/icons";
-import PropTypes from "prop-types";
 import React from "react";
 import {
     Link,
@@ -29,12 +28,17 @@ import { useLogoutHandler } from "./providers/Profile";
 import Logo from "./views/common/Logo";
 import { useIsMobile } from "./providers/IsMobile";
 import TimersTab from "./features/Timers/HeaderTab";
+import {
+    HEADER_HEIGHT,
+    TAB_WIDTH_MIN
+} from "./constants/layout";
+import { RouteComponentProps } from "react-router";
 
 const useStyles = makeStyles(theme => ({
     root: {
-        height: theme.header.height,
+        height: `${HEADER_HEIGHT}px`,
         "& .MuiTab-root": {
-            minWidth: 72,
+            minWidth: TAB_WIDTH_MIN,
             marginRight: theme.spacing(2),
             [theme.breakpoints.down("sm")]: {
                 minWidth: 0,
@@ -78,7 +82,17 @@ function LinkTab(props) {
     />;
 }
 
-const Header = ({ authenticated, location }) => {
+// Type whatever you expect in 'this.props.match.params.*'
+type PathParamsType = {
+    param: string,
+}
+
+// Your component own properties
+type HeaderProps = RouteComponentProps<PathParamsType> & {
+    authenticated: boolean,
+}
+
+const Header: React.FC<HeaderProps> = ({authenticated, location}) => {
     const classes = useStyles();
     const isMobile = useIsMobile();
     const devMode = useIsDevMode();
@@ -99,7 +113,7 @@ const Header = ({ authenticated, location }) => {
     };
 
     // this mess basically lifted as-is from https://v4.mui.com/components/app-bar/#app-bar-with-a-primary-search-field
-    const [ anchorEl, setAnchorEl ] = React.useState(null);
+    const [anchorEl, setAnchorEl] = React.useState(null);
     const isMenuOpen = Boolean(anchorEl);
     const handleProfileMenuOpen = (event) =>
         setAnchorEl(event.currentTarget);
@@ -109,16 +123,16 @@ const Header = ({ authenticated, location }) => {
     const renderMenu = (
         <Menu
             anchorEl={anchorEl}
-            anchorOrigin={{ vertical: "top", horizontal: "right" }}
+            anchorOrigin={{vertical: "top", horizontal: "right"}}
             id={menuId}
             keepMounted
-            transformOrigin={{ vertical: "top", horizontal: "right" }}
+            transformOrigin={{vertical: "top", horizontal: "right"}}
             open={isMenuOpen}
             onClose={handleMenuClose}
         >
             <MenuItem onClick={handleProfile}>
                 <ListItemIcon>
-                    <ProfileIcon />
+                    <ProfileIcon/>
                 </ListItemIcon>
                 <Typography noWrap>
                     Profile
@@ -126,7 +140,7 @@ const Header = ({ authenticated, location }) => {
             </MenuItem>
             <MenuItem onClick={handleLogout}>
                 <ListItemIcon>
-                    <LogoutIcon />
+                    <LogoutIcon/>
                 </ListItemIcon>
                 <Typography noWrap>
                     Logout
@@ -134,6 +148,7 @@ const Header = ({ authenticated, location }) => {
             </MenuItem>
         </Menu>
     );
+
 
     return <>
         <AppBar
@@ -151,41 +166,41 @@ const Header = ({ authenticated, location }) => {
                     className={classes.bar}
                     value={topLevelNavSeg}
                     textColor="inherit"
-                    TabIndicatorProps={{ className: classes.indicator }}
+                    TabIndicatorProps={{className: classes.indicator}}
                 >
                     <LinkTab
-                        icon={<LibraryIcon />}
+                        icon={<LibraryIcon/>}
                         label={isMobile ? null : "Library"}
                         to="/library"
                         value="library"
                     />
                     <LinkTab
-                        icon={<PlanIcon />}
+                        icon={<PlanIcon/>}
                         label={isMobile ? null : "Plan"}
                         to="/plan"
                         value="plan"
                     />
                     <LinkTab
-                        icon={<ShopIcon />}
+                        icon={<ShopIcon/>}
                         label={isMobile ? null : "Shop"}
                         to="/shop"
                         value="shop"
                     />
                     {devMode && <LinkTab
-                        icon={<PantryIcon />}
+                        icon={<PantryIcon/>}
                         label={isMobile ? null : "Pantry"}
                         to="/pantry"
                         value="pantry"
                     />}
-                    <div className={classes.growALittle} />
+                    <div className={classes.growALittle}/>
                     <TimersTab
                         label={isMobile ? null : "Timers"}
                     />
-                    <div className={classes.grow} />
+                    <div className={classes.grow}/>
                     <Tab
                         className={classes.profileTab}
                         component={"a"}
-                        icon={<ProfileIcon />}
+                        icon={<ProfileIcon/>}
                         onClick={handleProfileMenuOpen}
                         value="profile"
                     />
@@ -194,11 +209,6 @@ const Header = ({ authenticated, location }) => {
         </AppBar>
         {renderMenu}
     </>;
-};
-
-Header.propTypes = {
-    authenticated: PropTypes.bool,
-    location: PropTypes.object.isRequired, // react-router BS
 };
 
 export default withRouter(Header);

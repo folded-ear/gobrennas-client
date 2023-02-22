@@ -1,4 +1,4 @@
-import React from "react";
+import * as React from "react";
 import "./App.scss";
 import useIsNewVersionAvailable from "./data/useIsNewVersionAvailable";
 import { useIsAuthenticated } from "./providers/Profile";

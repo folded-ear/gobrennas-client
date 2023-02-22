@@ -19,9 +19,10 @@ const FoodingerFab = ({children, ...props}) => {
         setTimeout(() => dispatcher.dispatch({
             type: UiActions.SHOW_FAB,
         }));
-        return () => setTimeout(() => dispatcher.dispatch({
-            type: UiActions.HIDE_FAB,
-        }));
+        return () => {
+            setTimeout(() => dispatcher.dispatch({
+                type: UiActions.HIDE_FAB,
+            }));};
     }, []);
     return <Fab
         color="primary"

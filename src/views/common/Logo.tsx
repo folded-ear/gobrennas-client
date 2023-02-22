@@ -7,7 +7,7 @@ const useStyles = makeStyles(theme => ({
             fontSize: "3em",
             color: "white",
             fontWeight: "bold",
-            margin: ({ small }) => small
+            margin: ({ small }: {small: boolean}) => small
                 ? theme.spacing(1, 2, 1, 0)
                 : theme.spacing(3, 6, 3, 0),
             fontFamily: "Stint Ultra Condensed",
@@ -26,6 +26,7 @@ const Logo = (props) => {
     const {
         version,
         component = "div",
+        to,
         ...ptps
     } = props;
     const small = version === "small";
@@ -44,6 +45,7 @@ const Logo = (props) => {
 Logo.propTypes = {
     version: PropTypes.string,
     component: PropTypes.object,
+    to: PropTypes.string,
 };
 
 export default Logo;

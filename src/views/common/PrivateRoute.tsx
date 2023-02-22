@@ -25,9 +25,7 @@ function AnonymousHelper({location}) {
             pathname: "/login",
             state: {from: location},
         }}
-    >
-        Login?
-    </Redirect>;
+    />;
 }
 
 AnonymousHelper.propTypes = {
