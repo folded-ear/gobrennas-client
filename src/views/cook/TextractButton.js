@@ -1,12 +1,6 @@
-import {
-    Box,
-    Button,
-} from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
-import {
-    CameraAlt,
-    MenuBook,
-} from "@material-ui/icons";
+import {Box, Button,} from "@material-ui/core";
+import {makeStyles} from "@material-ui/core/styles";
+import {CameraAlt, MenuBook,} from "@material-ui/icons";
 import PropTypes from "prop-types";
 import React from "react";
 

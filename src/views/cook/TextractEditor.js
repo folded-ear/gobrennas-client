@@ -1,19 +1,11 @@
-import {
-    Box,
-    Grid,
-    IconButton,
-    Typography,
-} from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
-import {
-    Close,
-    RotateLeft,
-    RotateRight,
-} from "@material-ui/icons";
+import {Box, Grid, IconButton, Typography,} from "@material-ui/core";
+import {makeStyles} from "@material-ui/core/styles";
+import {Close, RotateLeft, RotateRight,} from "@material-ui/icons";
+import PropTypes from "prop-types";
 import React from "react";
 import useFluxStore from "../../data/useFluxStore";
 import WindowStore from "../../data/WindowStore";
-import { findSvg } from "../../util/findAncestorByName";
+import {findSvg} from "../../util/findAncestorByName";
 import getPositionWithin from "../../util/getPositionWithin";
 
 const useStyles = makeStyles({
@@ -42,39 +34,7 @@ const overlaps = (a, b) =>
     a.top + a.height >= b.top &&
     a.top <= b.top + b.height;
 
-type DrawnBox = {
-    x1: number,
-    y1: number,
-    x2?: number,
-    y2?: number,
-}
-
-type SelectedRegion = {
-    top: number,
-    left: number,
-    height?: number,
-    width?: number,
-
-}
-
-export type Textract = {
-    text: string,
-    box: {
-        top: number,
-        left: number,
-        width: number,
-        height: number,
-    }
-}
-
-type TextractEditorProps = {
-    image: string,
-    textract: Textract[],
-    renderActions: (actions?: string[]) => JSX.Element
-    onClose: () => void
-}
-
-const TextractEditor: React.FC<TextractEditorProps> = ({image, textract, renderActions, onClose}) => {
+const TextractEditor = ({image, textract, renderActions, onClose}) => {
     if (!textract) textract = [];
     const classes = useStyles();
     const windowSize = useFluxStore(
@@ -85,10 +45,10 @@ const TextractEditor: React.FC<TextractEditorProps> = ({image, textract, renderA
     const scaleFactor = maxWidth / (rotation % 180 === 0 ? width : height);
     const scaledWidth = width * scaleFactor;
     const scaledHeight = height * scaleFactor;
-    const [drawnBox, setDrawnBox] = React.useState<DrawnBox | null>(null);
-    const [selectedRegion, setSelectedRegion] = React.useState<SelectedRegion | null>(null);
+    const [drawnBox, setDrawnBox] = React.useState(null);
+    const [selectedRegion, setSelectedRegion] = React.useState(null);
     const [partitionedLines, setPartitionedLines] = React.useState([textract, []]);
-    const [selectedText, setSelectedText] = React.useState<string[]>([]);
+    const [selectedText, setSelectedText] = React.useState([]);
     React.useEffect(
         () => {
             const partition = selectedRegion == null
@@ -96,7 +56,7 @@ const TextractEditor: React.FC<TextractEditorProps> = ({image, textract, renderA
                 : textract.reduce((agg, t) => {
                     agg[overlaps(selectedRegion, t.box) ? 1 : 0].push(t);
                     return agg;
-                }, [[] as Textract[], []]);
+                }, [[], []]);
             setPartitionedLines(partition);
             const toSortBox = box => {
                 if (rotation === 90) {
@@ -177,13 +137,12 @@ const TextractEditor: React.FC<TextractEditorProps> = ({image, textract, renderA
     const updateBoxDraw = e => {
         const [x, y] = getXY(e);
         const b = {
-            x1: drawnBox?.x1 || 0,
-            y1: drawnBox?.y1 || 0,
+            ...drawnBox,
             x2: x,
             y2: y,
         };
         setDrawnBox(b);
-        const sel: SelectedRegion = {
+        const sel = {
             top: Math.min(b.y1, b.y2) / scaledHeight,
             left: Math.min(b.x1, b.x2) / scaledWidth,
         };
@@ -193,7 +152,7 @@ const TextractEditor: React.FC<TextractEditorProps> = ({image, textract, renderA
     };
     const endBoxDraw = e => {
         const [x, y] = getXY(e);
-        if (drawnBox?.x1 === x && drawnBox?.y1 === y) {
+        if (drawnBox.x1 === x && drawnBox.y1 === y) {
             setSelectedRegion({
                 top: y / scaledHeight,
                 left: x / scaledWidth,
@@ -211,7 +170,7 @@ const TextractEditor: React.FC<TextractEditorProps> = ({image, textract, renderA
             width={box.width * width}
             height={box.height * height}
         />;
-    let rotationStyles: any = null;
+    let rotationStyles = null;
     if (rotation === 90) {
         rotationStyles = {
             transformOrigin: "top left",
@@ -241,11 +200,11 @@ const TextractEditor: React.FC<TextractEditorProps> = ({image, textract, renderA
                         width={scaledWidth}
                         height={scaledHeight}
                         onLoad={e => {
-                            const img = e.target as HTMLImageElement;
+                            const img = e.target;
                             setSize([
                                 img.naturalWidth,
                                 img.naturalHeight,
-                                (img.parentNode as HTMLElement).clientWidth,
+                                img.parentNode.clientWidth,
                             ]);
                         }}
                         style={rotationStyles}
@@ -256,9 +215,7 @@ const TextractEditor: React.FC<TextractEditorProps> = ({image, textract, renderA
                         height={scaledHeight}
                         preserveAspectRatio="none"
                         onPointerDown={startBoxDraw}
-                        // @ts-ignore
                         onPointerMove={drawnBox && updateBoxDraw}
-                        // @ts-ignore
                         onPointerUp={drawnBox && endBoxDraw}
                         strokeWidth={1}
                         className={classes.svg}
@@ -296,7 +253,6 @@ const TextractEditor: React.FC<TextractEditorProps> = ({image, textract, renderA
             </Grid>
             <Grid item xs={12} sm={6}>
                 <Box style={{position: "relative"}}>
-                    <>
                     <IconButton
                         onClick={onClose}
                         size={"small"}
@@ -307,7 +263,7 @@ const TextractEditor: React.FC<TextractEditorProps> = ({image, textract, renderA
                     >
                         <Close />
                     </IconButton>
-                    <Typography component={"p"} variant={"h6"}>
+                    <Typography as={"p"} variant={"h6"}>
                         Select some text on your photo.
                     </Typography>
                     <textarea
@@ -321,11 +277,25 @@ const TextractEditor: React.FC<TextractEditorProps> = ({image, textract, renderA
                         }}
                     />
                     {renderActions && renderActions(selectedText)}
-                    </>
                 </Box>
             </Grid>
         </Grid>
     </Box>;
+};
+
+TextractEditor.propTypes = {
+    image: PropTypes.string.isRequired,
+    textract: PropTypes.arrayOf(PropTypes.shape({
+        text: PropTypes.string.isRequired,
+        box: PropTypes.shape({
+            top: PropTypes.number.isRequired,
+            left: PropTypes.number.isRequired,
+            width: PropTypes.number.isRequired,
+            height: PropTypes.number.isRequired,
+        }).isRequired,
+    })).isRequired,
+    renderActions: PropTypes.func.isRequired, // passed a Array<String>
+    onClose: PropTypes.func.isRequired,
 };
 
 export default TextractEditor;
