@@ -243,10 +243,7 @@ class ElEdit extends React.PureComponent<ElEditProps, ElEditState> {
     }
 
     render() {
-        const {
-            name,
-            value,
-        } = this.props;
+        const { value } = this.props;
         const {
             raw,
         } = value;
