@@ -16,7 +16,10 @@ import {
     API_BASE_URL,
     APP_BASE_URL,
 } from "../../constants";
-import { Recipe } from "../../data/RecipeTypes";
+import {
+    Recipe,
+    SharedRecipe,
+} from "../../types";
 import LoadObject from "../../util/LoadObject";
 
 const axios = BaseAxios.create({
@@ -40,7 +43,10 @@ const useStyles = makeStyles(theme => {
     };
 });
 
-const ShareRecipe = ({recipe}) => {
+type ShareRecipeProps = {
+    recipe: Recipe
+}
+const ShareRecipe : React.FC<ShareRecipeProps> = ({recipe}) => {
     const classes = useStyles();
     const [open, setOpen] = React.useState(false);
     const [lo, setLo] = React.useState(LoadObject.empty());
@@ -49,7 +55,7 @@ const ShareRecipe = ({recipe}) => {
             if (!open) {
                 return;
             }
-            if (lo.hasValue() && lo.getValue().id === recipe.id) {
+            if (lo.hasValue() && (lo.getValue() as SharedRecipe).id === recipe.id) {
                 return;
             }
             setLo(LoadObject.loading().setValue({
@@ -96,7 +102,7 @@ const ShareRecipe = ({recipe}) => {
             </div>
         </div>;
     } else { // got it!
-        const info = lo.getValueEnforcing();
+        const info = lo.getValueEnforcing() as SharedRecipe;
         const shareUrl = `${APP_BASE_URL}/share/recipe/${info.slug}/${info.secret}/${info.id}`;
         body = <>
             <p>Share this link to allow non-users to access your recipe:
@@ -125,10 +131,6 @@ const ShareRecipe = ({recipe}) => {
             </Paper>
         </Modal>
     </>;
-};
-
-ShareRecipe.propTypes = {
-    recipe: Recipe.isRequired,
 };
 
 export default ShareRecipe;

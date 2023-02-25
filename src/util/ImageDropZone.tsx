@@ -4,14 +4,19 @@ import {
     PhotoCamera,
 } from "@material-ui/icons";
 import clsx from "clsx";
-import PropTypes from "prop-types";
-import React from "react";
+import * as React from "react";
 import ImageOrPreview from "../views/common/ImageOrPreview";
 import buildSequence from "./buildSequence";
 
 const {next} = buildSequence();
 
-const useStyles = makeStyles(({maxWidth, maxHeight}) => ({
+const useStyles = makeStyles(({
+    maxWidth,
+    maxHeight
+} :{
+    maxWidth: any,
+    maxHeight: any
+}) => ({
     label: {
         cursor: "pointer",
     },
@@ -29,13 +34,24 @@ const useStyles = makeStyles(({maxWidth, maxHeight}) => ({
     },
 }));
 
-const ImageDropZone = ({
-                           disabled,
-                           image,
+type ImageDropZoneProps = {
+    onImage: (f: string) => void
+    image?: any,
+    maxWidth?: any,
+    maxHeight?: any,
+    className?: string,
+    disabled?: boolean,
+    style?: any,
+}
+
+
+const ImageDropZone : React.FC<ImageDropZoneProps> = ({
+                           disabled = undefined,
+                           image = undefined,
                            onImage,
-                           maxWidth,
-                           maxHeight,
-                           className: labelClassName,
+                           maxWidth = undefined,
+                           maxHeight = undefined,
+                           className: labelClassName = undefined,
                            ...props
                        }) => {
     const classes = useStyles({maxWidth, maxHeight});
@@ -111,15 +127,6 @@ const ImageDropZone = ({
                 onChange={handleFileSelect}
             />
         </label>);
-};
-
-ImageDropZone.propTypes = {
-    image: PropTypes.any, // URL (as string) or Blob (File) object
-    maxWidth: PropTypes.any,
-    maxHeight: PropTypes.any,
-    onImage: PropTypes.func.isRequired,
-    className: PropTypes.string,
-    disabled: PropTypes.bool,
 };
 
 export default ImageDropZone;

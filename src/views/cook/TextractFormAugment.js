@@ -8,7 +8,7 @@ import TextractButton from "./TextractButton";
 import TextractEditor from "./TextractEditor";
 import TextractQueueBrowser from "./TextractQueueBrowser";
 import TextractApi from "../../data/TextractApi";
-import { useQueryClient } from "react-query";
+import {useQueryClient} from "react-query";
 
 const TextractFormAugment = ({ renderActions }) => {
     const [ browserOpen, setBrowserOpen ] = React.useState(false);

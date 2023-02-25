@@ -2,7 +2,7 @@ import { Container } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import classnames from "classnames";
 import React from "react";
-import {HEADER_HEIGHT} from "../../constants/layout";
+import { HEADER_HEIGHT } from "../../constants/layout";
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -19,6 +19,7 @@ type PageBodyProps = {
     children: any,
     hasFab?: boolean,
     className?: string,
+    id?: string,
 }
 
 const PageBody: React.FC<PageBodyProps> = ({children, hasFab, className, ...props}) => {

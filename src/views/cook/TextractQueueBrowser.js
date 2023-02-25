@@ -1,19 +1,13 @@
-import {
-    GridList,
-    GridListTile,
-    GridListTileBar,
-    IconButton,
-    Typography,
-} from "@material-ui/core";
+import {GridList, GridListTile, GridListTileBar, IconButton, Typography,} from "@material-ui/core";
 import Drawer from "@material-ui/core/Drawer";
-import { makeStyles } from "@material-ui/core/styles";
-import { Close } from "@material-ui/icons";
+import {makeStyles} from "@material-ui/core/styles";
+import {Close} from "@material-ui/icons";
 import PropTypes from "prop-types";
 import React from "react";
 import DeleteButton from "../common/DeleteButton";
-import { clientOrDatabaseIdType } from "../../util/ClientId";
+import {clientOrDatabaseIdType} from "../../util/ClientId";
 import ImageDropZone from "../../util/ImageDropZone";
-import { useQuery } from "react-query";
+import {useQuery} from "react-query";
 import TextractApi from "../../data/TextractApi";
 
 const useStyles = makeStyles({

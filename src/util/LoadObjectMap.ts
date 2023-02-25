@@ -1,15 +1,4 @@
 /* eslint-disable */
-/**
- * Copyright (c) 2014-present, Facebook, Inc.
- * All rights reserved.
- *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
- *
- * @flow
- */
-
 import Immutable from "immutable";
 import LoadObject from "./LoadObject";
 
@@ -32,14 +21,14 @@ import LoadObject from "./LoadObject";
  *     Generally this means setting them to loading. Dispatching an action is
  *     synchronous and generally what should be done in `loadAll()`.
  */
+
 class LoadObjectMap<K, V> {
     _data: Immutable.Map<K, LoadObject<V>>;
     _loadAll: (key: Set<K>) => void;
     _shouldLoad: (lo: LoadObject<V>) => boolean;
-
     // Mutable state on this map so we don't accidently load something many times.
     _preventLoadsForThisFrame: Set<K>;
-    _clearPreventLoadsForThisFrame: mixed;
+    _clearPreventLoadsForThisFrame: unknown;
 
     constructor(
         loadAll: (keys: Set<K>) => void,
@@ -47,7 +36,9 @@ class LoadObjectMap<K, V> {
     ) {
         this._data = Immutable.Map();
         this._loadAll = loadAll;
+
         this._shouldLoad = shouldLoad || (lo => lo.isEmpty());
+
         this._preventLoadsForThisFrame = new Set();
         this._clearPreventLoadsForThisFrame = null;
     }
@@ -55,24 +46,25 @@ class LoadObjectMap<K, V> {
     // Some trickery so that we always return a load object, and call the provided
     // load function when appropriate.
     get(key: K): LoadObject<V> {
-        const lo = this._data.has(key)
+        const lo : LoadObject<V> | undefined = this._data.has(key)
             ? this._data.get(key)
             : LoadObject.empty();
-        if (!this._preventLoadsForThisFrame.has(key) && this._shouldLoad(lo)) {
+
+        if (!this._preventLoadsForThisFrame.has(key) && this._shouldLoad(lo!)) {
             // This must be done asynchronously to avoid nested dispatches.
             this._preventLoadsForThisFrame.add(key);
+
             if (!this._clearPreventLoadsForThisFrame) {
-                this._clearPreventLoadsForThisFrame = setTimeout(
-                    () => {
-                        this._loadAll(this._preventLoadsForThisFrame);
-                        this._preventLoadsForThisFrame = new Set();
-                        this._clearPreventLoadsForThisFrame = null;
-                    },
-                    0,
-                );
+                this._clearPreventLoadsForThisFrame = setTimeout(() => {
+                    this._loadAll(this._preventLoadsForThisFrame);
+
+                    this._preventLoadsForThisFrame = new Set();
+                    this._clearPreventLoadsForThisFrame = null;
+                }, 0);
             }
         }
-        return lo;
+
+        return lo as LoadObject<V>;
     }
 
     getKeys(): Array<K> {
@@ -107,12 +99,12 @@ class LoadObjectMap<K, V> {
         this._data.forEach(fn);
     }
 
+    // @ts-ignore
     get size(): number {
         return this._data.size;
     }
 
     ////////// A selection of mutation functions found on Immutable.Map //////////
-
     delete(key: K): LoadObjectMap<K, V> {
         return this._mutate(() => this._data.delete(key));
     }
@@ -134,14 +126,17 @@ class LoadObjectMap<K, V> {
         key: K,
         fn: (lo: LoadObject<V>) => LoadObject<V>,
     ): LoadObjectMap<K, V> {
+        // @ts-ignore
         return this._mutate(() => this._data.update(key, fn));
     }
 
     _mutate(fn: () => Immutable.Map<K, LoadObject<V>>): LoadObjectMap<K, V> {
         const nextData = fn();
+
         if (nextData === this._data) {
             return this;
         }
+
         const nextThis = new LoadObjectMap(this._loadAll, this._shouldLoad);
         nextThis._data = nextData;
         return nextThis;

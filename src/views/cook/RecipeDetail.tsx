@@ -34,6 +34,7 @@ import IngredientDirectionsRow from "./IngredientDirectionsRow";
 import ShareRecipe from "./ShareRecipe";
 import SubrecipeItem from "./SubrecipeItem";
 import SendToPlan from "features/RecipeLibrary/components/SendToPlan";
+import { OptionalNumberish } from "../../types";
 
 const useStyles = makeStyles(theme => ({
     name: {
@@ -59,12 +60,12 @@ const useStyles = makeStyles(theme => ({
 
 const SubHeader = ({children}) => {
     const windowSize = useWindowSize();
-    const [height, setHeight] = React.useState("auto");
-    const [width, setWidth] = React.useState("auto");
-    const inner = React.useRef();
+    const [height, setHeight] = React.useState<OptionalNumberish>("auto");
+    const [width, setWidth] = React.useState<OptionalNumberish>("auto");
+    const inner = React.useRef<HTMLDivElement>();
     React.useLayoutEffect(() => {
-        setHeight(inner.current.clientHeight);
-        setWidth(inner.current.parentNode.clientWidth);
+        setHeight(inner?.current?.clientHeight);
+        setWidth((inner?.current?.parentNode as HTMLElement).clientWidth);
     }, [windowSize.width]);
     const trigger = useScrollTrigger({
         disableHysteresis: true,
@@ -77,6 +78,7 @@ const SubHeader = ({children}) => {
     >
         <Box
             boxShadow={trigger ? 6 : 0}
+            // @ts-ignore
             ref={inner}
             style={trigger ? {
                 position: "fixed",
@@ -85,7 +87,7 @@ const SubHeader = ({children}) => {
                 top: 75,
                 // appbar zindex
                 zIndex: 1100,
-            } : null}
+            } : undefined}
         >
             {children}
         </Box>
@@ -211,10 +213,12 @@ const RecipeDetail = ({recipeLO, subrecipes, mine, ownerLO, anonymous}) => {
 };
 
 RecipeDetail.propTypes = {
+    // @ts-ignore
     recipeLO: loadObjectOf(Recipe).isRequired,
     subrecipes: PropTypes.arrayOf(Recipe),
     anonymous: PropTypes.bool,
     mine: PropTypes.bool,
+    // @ts-ignore
     ownerLO: loadObjectOf(PropTypes.object).isRequired,
 };
 

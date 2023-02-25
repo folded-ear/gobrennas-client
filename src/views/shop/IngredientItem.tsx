@@ -1,12 +1,10 @@
 import { ListItemText } from "@material-ui/core";
 import classnames from "classnames";
-import PropTypes from "prop-types";
 import React from "react";
 import Dispatcher from "../../data/dispatcher";
 import PantryItemActions from "../../data/PantryItemActions";
 import ShoppingActions from "../../data/ShoppingActions";
 import TaskStatus from "features/Planner/data/TaskStatus";
-import { clientOrDatabaseIdType } from "../../util/ClientId";
 import LoadingIconButton from "../common/LoadingIconButton";
 import OxfordList from "../common/OxfordList";
 import Quantity from "../common/Quantity";
@@ -16,11 +14,24 @@ import Item from "features/Planner/components/Item";
 import StatusIconButton from "features/Planner/components/StatusIconButton";
 import withItemStyles from "features/Planner/components/withItemStyles";
 import {
+    baseItemPropTypes,
     itemPropTypes,
     tuplePropTypes,
 } from "./types";
 
-class IngredientItem extends React.PureComponent {
+type IngredientItemProps = tuplePropTypes & {
+    item: itemPropTypes & baseItemPropTypes & {
+        expanded: boolean,
+        itemIds: string[],
+        quantities: {
+            units: any;
+            quantity: number,
+            uomId?: number,
+        }[]
+    }
+}
+
+class IngredientItem extends React.PureComponent<IngredientItemProps> {
 
     constructor(props) {
         super(props);
@@ -165,19 +176,5 @@ class IngredientItem extends React.PureComponent {
     }
 
 }
-
-IngredientItem.propTypes = {
-    ...tuplePropTypes,
-    item: PropTypes.shape({
-        ...itemPropTypes,
-        expanded: PropTypes.bool.isRequired,
-        itemIds: PropTypes.arrayOf(clientOrDatabaseIdType).isRequired,
-        quantities: PropTypes.arrayOf(
-            PropTypes.shape({
-                quantity: PropTypes.number.isRequired,
-                uomId: PropTypes.number, // missing means "count"
-            })).isRequired,
-    }).isRequired,
-};
 
 export default withItemStyles(IngredientItem);

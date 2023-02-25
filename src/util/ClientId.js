@@ -1,9 +1,6 @@
 import PropTypes from "prop-types";
 import buildSequence from "./buildSequence";
-import {
-    createChainableTypeChecker,
-    PropTypeError,
-} from "./typeHelpers";
+import {createChainableTypeChecker, PropTypeError,} from "./typeHelpers";
 
 const {
     PREFIX,
@@ -37,5 +34,6 @@ export const clientOrDatabaseIdType = PropTypes.oneOfType([
     PropTypes.number,
     ClientId.propType,
 ]);
+
 
 export default ClientId;

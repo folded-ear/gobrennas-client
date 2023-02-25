@@ -1,20 +1,11 @@
-import {
-    Box,
-    Grid,
-    IconButton,
-    Typography,
-} from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
-import {
-    Close,
-    RotateLeft,
-    RotateRight,
-} from "@material-ui/icons";
+import {Box, Grid, IconButton, Typography,} from "@material-ui/core";
+import {makeStyles} from "@material-ui/core/styles";
+import {Close, RotateLeft, RotateRight,} from "@material-ui/icons";
 import PropTypes from "prop-types";
 import React from "react";
 import useFluxStore from "../../data/useFluxStore";
 import WindowStore from "../../data/WindowStore";
-import { findSvg } from "../../util/findAncestorByName";
+import {findSvg} from "../../util/findAncestorByName";
 import getPositionWithin from "../../util/getPositionWithin";
 
 const useStyles = makeStyles({
