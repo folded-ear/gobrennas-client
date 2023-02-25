@@ -1,22 +1,10 @@
 /* eslint-disable */
-/**
- * Copyright (c) 2014-present, Facebook, Inc.
- * All rights reserved.
- *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
- *
- * @flow
- */
-
 type LoadObjectOperation =
-| 'NONE'
-| 'CREATING'
-| 'LOADING'
-| 'UPDATING'
-| 'DELETING'
-;
+    | "NONE"
+    | "CREATING"
+    | "LOADING"
+    | "UPDATING"
+    | "DELETING";
 
 /**
  * A secret key that is used to prevent direct construction of these objects,
@@ -47,10 +35,11 @@ const SECRET = "SECRET_" + Math.random();
  *   return <div>{loadObject.getValue().text}</div>;
  *
  */
+
 class LoadObject<V> {
     _operation: LoadObjectOperation;
-    _value: ?V;
-    _error: ?Error;
+    _value: V | null | undefined;
+    _error: Error | null | undefined;
     _hasValue: boolean;
 
     /**
@@ -59,8 +48,8 @@ class LoadObject<V> {
     constructor(
         secret: string,
         operation: LoadObjectOperation,
-        value: ?V,
-        error: ?Error,
+        value: V | null | undefined,
+        error: Error | null | undefined,
         hasValue: boolean,
     ) {
         if (secret !== SECRET) {
@@ -69,6 +58,7 @@ class LoadObject<V> {
                 "LoadObject.loading(), LoadObject.empty()",
             );
         }
+
         this._operation = operation;
         this._value = value;
         this._error = error;
@@ -76,12 +66,11 @@ class LoadObject<V> {
     }
 
     // Convenient getters
-
     getOperation(): LoadObjectOperation {
         return this._operation;
     }
 
-    getValue(): ?V {
+    getValue(): V | null | undefined {
         return this._value;
     }
 
@@ -89,12 +78,13 @@ class LoadObject<V> {
         if (!this.hasValue()) {
             throw new Error("Expected load object to have a value set.");
         }
+
         // We check hasValue and cast rather than checking if value is null so that
         // it's possible to have "null" values that are set.
-        return (this._value: any);
+        return this._value as any;
     }
 
-    getError(): ?Error {
+    getError(): Error | null | undefined {
         return this._error;
     }
 
@@ -102,6 +92,7 @@ class LoadObject<V> {
         if (!this._error) {
             throw new Error("Expected load object to have an error set.");
         }
+
         return this._error;
     }
 
@@ -122,11 +113,11 @@ class LoadObject<V> {
     }
 
     // Convenient setters
-
     setOperation(operation: LoadObjectOperation): LoadObject<V> {
         if (this._operation === operation) {
             return this;
         }
+
         return new LoadObject(
             SECRET,
             operation,
@@ -137,9 +128,10 @@ class LoadObject<V> {
     }
 
     setValue(value: V): LoadObject<V> {
-        if (this._value === value && this._hasValue === true) {
+        if (this._value === value && this._hasValue) {
             return this;
         }
+
         return new LoadObject(
             SECRET,
             this._operation,
@@ -153,6 +145,7 @@ class LoadObject<V> {
         if (this._error === error) {
             return this;
         }
+
         return new LoadObject(
             SECRET,
             this._operation,
@@ -166,6 +159,7 @@ class LoadObject<V> {
         if (this._operation === "NONE") {
             return this;
         }
+
         return new LoadObject(
             SECRET,
             "NONE",
@@ -176,13 +170,14 @@ class LoadObject<V> {
     }
 
     removeValue(): LoadObject<V> {
-        if (this._value === undefined && this._hasValue === false) {
+        if (this._value === undefined && !this._hasValue) {
             return this;
         }
+
         return new LoadObject(
             SECRET,
             this._operation,
-            undefined,
+            undefined as V,
             this._error,
             false,
         );
@@ -192,6 +187,7 @@ class LoadObject<V> {
         if (this._error === undefined) {
             return this;
         }
+
         return new LoadObject(
             SECRET,
             this._operation,
@@ -205,15 +201,17 @@ class LoadObject<V> {
         if (!this.hasValue()) {
             return this;
         }
+
         const v = fn(this.getValueEnforcing());
+
         if (v === this._value) {
             return this;
         }
+
         return this.setValue(v);
     }
 
     // Provide some helper methods to check specific operations
-
     isDone(): boolean {
         return !this.hasOperation();
     }
@@ -235,7 +233,6 @@ class LoadObject<V> {
     }
 
     // Provide some helpers for mutating the operations
-
     done(): LoadObject<V> {
         return this.removeOperation();
     }
@@ -257,75 +254,32 @@ class LoadObject<V> {
     }
 
     // Static helpers for creating LoadObjects
-
     static empty<V>(): LoadObject<V> {
-        return new LoadObject(
-            SECRET,
-            "NONE",
-            undefined,
-            undefined,
-            false,
-        );
+        return new LoadObject(SECRET, "NONE", undefined as V, undefined, false);
     }
 
     static creating<V>(): LoadObject<V> {
-        return new LoadObject(
-            SECRET,
-            "CREATING",
-            undefined,
-            undefined,
-            false
-        );
+        return new LoadObject(SECRET, "CREATING", undefined as V, undefined, false);
     }
 
     static loading<V>(): LoadObject<V> {
-        return new LoadObject(
-            SECRET,
-            "LOADING",
-            undefined,
-            undefined,
-            false
-        );
+        return new LoadObject(SECRET, "LOADING", undefined as V, undefined, false);
     }
 
     static updating<V>(): LoadObject<V> {
-        return new LoadObject(
-            SECRET,
-            "UPDATING",
-            undefined,
-            undefined,
-            false
-        );
+        return new LoadObject(SECRET, "UPDATING", undefined as V, undefined, false);
     }
 
     static deleting<V>(): LoadObject<V> {
-        return new LoadObject(
-            SECRET,
-            "DELETING",
-            undefined,
-            undefined,
-            false
-        );
+        return new LoadObject(SECRET, "DELETING", undefined as V, undefined, false);
     }
 
     static withError<V>(error: Error): LoadObject<V> {
-        return new LoadObject(
-            SECRET,
-            "NONE",
-            undefined,
-            error,
-            false
-        );
+        return new LoadObject(SECRET, "NONE", undefined as V, error, false);
     }
 
     static withValue<V>(value: V): LoadObject<V> {
-        return new LoadObject(
-            SECRET,
-            "NONE",
-            value,
-            undefined,
-            true
-        );
+        return new LoadObject(SECRET, "NONE", value, undefined, true);
     }
 }
 
