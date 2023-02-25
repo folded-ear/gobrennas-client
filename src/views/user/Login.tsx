@@ -64,7 +64,7 @@ class Login extends Component<LoginProps> {
                                         align={"center"}>
                                 Brenna&apos;s Food Software
                             </Typography>
-                            <Box my={3} alignContent={"center"}>
+                            <Box my={3} style={{textAlign: "center"}}>
                                 <Button
                                     color="primary"
                                     variant="outlined"
