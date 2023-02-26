@@ -69,6 +69,7 @@ function OneShotEdit({
                 value={ref}
                 onChange={e => setRef(e.target.value)}
                 onPressEnter={handleCommit}
+                placeholder={"E.g., 1 qt chicken stock"}
             />
         </Grid>
         <Grid item>

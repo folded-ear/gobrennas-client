@@ -12,20 +12,14 @@ import {
     useMediaQuery,
     useTheme,
 } from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
-import {
-    Add,
-    Cancel,
-    Delete,
-    FileCopy,
-    Save,
-} from "@material-ui/icons";
+import {makeStyles} from "@material-ui/core/styles";
+import {Add, Cancel, Delete, FileCopy, Save,} from "@material-ui/icons";
 import ChipInput from "material-ui-chip-input";
 import PropTypes from "prop-types";
 import React from "react";
 import Dispatcher from "../../data/dispatcher";
 import RecipeActions from "../../data/RecipeActions";
-import { Recipe } from "../../data/RecipeTypes";
+import {Recipe} from "../../data/RecipeTypes";
 import useDraftRecipeLO from "../../data/useDraftRecipeLO";
 import useWindowSize from "../../data/useWindowSize";
 import ImageDropZone from "../../util/ImageDropZone";
@@ -182,6 +176,9 @@ const RecipeForm = ({title, onSave, onSaveCopy, onCancel, extraButtons}) => {
                             type: RecipeActions.KILL_DRAFT_INGREDIENT_YO,
                             index: i,
                         })}
+                        placeholder={i === 0
+                            ? "E.g., 1 cup onion, diced fine"
+                            : ""}
                     />
                     <div style={{marginLeft: "auto", whiteSpace: "nowrap"}}>
                         {!mobile && <IconButton

@@ -1,20 +1,12 @@
-import {
-    Grid,
-    InputAdornment,
-    LinearProgress,
-    TextField,
-} from "@material-ui/core";
-import {
-    CheckCircleOutline,
-    ErrorOutline,
-} from "@material-ui/icons";
+import {Grid, InputAdornment, LinearProgress, TextField,} from "@material-ui/core";
+import {CheckCircleOutline, ErrorOutline,} from "@material-ui/icons";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import PropTypes from "prop-types";
 import React from "react";
 import ItemApi from "data/ItemApi";
 import debounce from "util/debounce";
 import processRecognizedItem from "util/processRecognizedItem";
-import { Ingredient } from "../types";
+import {Ingredient} from "../types";
 
 const doRecog = raw =>
     raw != null && raw.trim().length >= 2;
@@ -43,6 +35,7 @@ type ElEditProps = {
     onPressEnter: () => void,
     onDelete?: () => void,
     onMultilinePaste?: (text: any) => void,
+    placeholder?: string,
 }
 
 type ElEditState = {
@@ -243,7 +236,10 @@ class ElEdit extends React.PureComponent<ElEditProps, ElEditState> {
     }
 
     render() {
-        const { value } = this.props;
+        const {
+            value,
+            placeholder,
+        } = this.props;
         const {
             raw,
         } = value;
@@ -263,7 +259,7 @@ class ElEdit extends React.PureComponent<ElEditProps, ElEditState> {
             }
         </InputAdornment>;
 
-        return <Grid container>
+        return <Grid container alignItems={"center"}>
             <Grid item sm={6} xs={12}>
                 <Autocomplete
                     size={"small"}
@@ -286,6 +282,7 @@ class ElEdit extends React.PureComponent<ElEditProps, ElEditState> {
                                 onPaste={this.onPaste}
                                 onKeyDown={this.onKeyDown}
                                 variant="outlined"
+                                placeholder={placeholder}
                             />
                         );
                     }}
