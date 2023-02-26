@@ -1,10 +1,11 @@
-import {Card, CardContent, makeStyles, Typography,} from "@material-ui/core";
-import {DataGrid} from "@mui/x-data-grid";
+import { Card, CardContent, CardHeader, IconButton, makeStyles, } from "@material-ui/core";
+import { Close as CloseIcon } from "@material-ui/icons";
+import { DataGrid } from "@mui/x-data-grid";
 import PropTypes from "prop-types";
-import React, {useEffect, useMemo, useState,} from "react";
+import React, { useEffect, useMemo, useState, } from "react";
 import InventoryApi from "../../data/InventoryApi";
 import LoadingIndicator from "../common/LoadingIndicator";
-import {formatQuantity} from "./formatQuantity";
+import { formatQuantity } from "./formatQuantity";
 
 const useStyles = makeStyles(theme => ({
     gridHeader: {
@@ -14,6 +15,7 @@ const useStyles = makeStyles(theme => ({
 
 function Detail({
                     item,
+                    onClose,
                 }) {
     const classes = useStyles();
     const [ history, setHistory ] = useState();
@@ -63,11 +65,20 @@ function Detail({
     }
 
     return <Card>
-        <CardContent>
-            <Typography variant="h5" component="h2">
-                {item.ingredient.name}
-            </Typography>
-            <div style={{height: "50vh"}}>
+        <CardHeader
+            style={{ paddingBottom: 0 }}
+            action={
+                <IconButton
+                    aria-label="close"
+                    onClick={onClose}
+                >
+                    <CloseIcon/>
+                </IconButton>
+            }
+            title={item.ingredient.name}
+        />
+        <CardContent style={{ paddingTop: 0 }}>
+            <div style={{ height: "50vh" }}>
                 <DataGrid
                     density={"compact"}
                     disableColumnMenu
@@ -96,5 +107,6 @@ Detail.propTypes = {
             units: PropTypes.string,
         })),
     }).isRequired,
+    onClose: PropTypes.func,
 };
 export default Detail;

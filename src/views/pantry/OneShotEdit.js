@@ -24,8 +24,11 @@ function OneShotEdit({
     const [ txType, setTxType ] = useState(DEFAULT_TX_TYPE);
     const [ ref, setRef ] = useState(EMPTY_REF);
     useEffect(() => {
-        if (!ingredient) return;
-        setRef({ raw: `"${ingredient}"` });
+        setRef({
+            raw: ingredient
+                ? `"${ingredient}"`
+                : ""
+        });
     }, [ ingredient ]);
 
     // kludge for something with the circular progress hunk drawing stupid.

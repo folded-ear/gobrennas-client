@@ -1,14 +1,6 @@
-import {
-    Grid,
-    makeStyles,
-    Typography,
-} from "@material-ui/core";
+import { Grid, makeStyles, Typography, } from "@material-ui/core";
 import { DataGrid } from "@mui/x-data-grid";
-import React, {
-    useEffect,
-    useMemo,
-    useState,
-} from "react";
+import React, { useEffect, useMemo, useState, } from "react";
 import InventoryApi from "../../data/InventoryApi";
 import { useIsMobile } from "../../providers/IsMobile";
 import LoadingIndicator from "../common/LoadingIndicator";
@@ -105,6 +97,7 @@ export default function Pantry() {
             <Grid item style={{ flexGrow: "2" }}>
                 <Detail
                     item={selection}
+                    onClose={() => handleSelection([])}
                 />
             </Grid>}
         </Grid>
