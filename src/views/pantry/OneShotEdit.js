@@ -77,7 +77,7 @@ function OneShotEdit({
                 primary={txType.label}
                 disabled={disabled}
                 dropdownDisabled={false}
-                options={txTypes.filter(it => it !== txType)}
+                options={txTypes}
                 onClick={handleCommit}
                 onSelect={handleSelectTx}
             />
