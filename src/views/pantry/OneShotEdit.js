@@ -1,6 +1,6 @@
-import {Grid} from "@material-ui/core";
+import { Grid } from "@material-ui/core";
 import PropTypes from "prop-types";
-import React, {useEffect, useMemo, useRef, useState,} from "react";
+import React, { useEffect, useMemo, useRef, useState, } from "react";
 import InventoryApi from "../../data/InventoryApi";
 import SplitButton from "../common/SplitButton";
 import ElEdit from "../ElEdit";
@@ -25,10 +25,8 @@ function OneShotEdit({
     const [ ref, setRef ] = useState(EMPTY_REF);
     useEffect(() => {
         if (!ingredient) return;
-        if (ref.raw === "" || (ref.raw.startsWith("\"") && ref.raw.endsWith("\""))) {
-            setRef({ raw: `"${ingredient}"` });
-        }
-    }, [ ingredient, ref.raw ]);
+        setRef({ raw: `"${ingredient}"` });
+    }, [ ingredient ]);
 
     // kludge for something with the circular progress hunk drawing stupid.
     const [ maxHeight, setMaxHeight ] = useState("unset");
