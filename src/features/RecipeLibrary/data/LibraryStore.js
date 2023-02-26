@@ -116,7 +116,10 @@ class LibraryStore extends ReduceStore {
             }
 
             case LibraryActions.UPDATE_FILTER: {
-                return searchLibrary(state, undefined, action.filter);
+                return searchLibrary({
+                    ...state,
+                    filter: null, // guarantee a re-search
+                }, undefined, action.filter);
             }
 
             case LibraryActions.CLEAR_FILTER: {
