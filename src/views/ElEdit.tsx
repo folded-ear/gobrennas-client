@@ -12,6 +12,7 @@ const doRecog = raw =>
     raw != null && raw.trim().length >= 2;
 
 type Value = {
+    id: string | number,
     raw: string,
     quantity?: number,
     uomId?: number,
@@ -121,6 +122,7 @@ class ElEdit extends React.PureComponent<ElEditProps, ElEditState> {
                     target: {
                         name,
                         value: {
+                            id: value.id,
                             raw,
                             quantity: qv,
                             uomId: uv,
@@ -171,6 +173,7 @@ class ElEdit extends React.PureComponent<ElEditProps, ElEditState> {
             target: {
                 name,
                 value: {
+                    id: value.id,
                     raw: val,
                 },
             },

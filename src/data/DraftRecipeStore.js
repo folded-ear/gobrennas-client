@@ -1,12 +1,12 @@
 import dotProp from "dot-prop-immutable";
+import LibraryActions from "features/RecipeLibrary/data/LibraryActions";
+import LibraryStore from "features/RecipeLibrary/data/LibraryStore";
 import { ReduceStore } from "flux/utils";
 import ClientId from "util/ClientId";
 import history from "util/history";
 import LoadObject from "util/LoadObject";
 import { toMilliseconds } from "util/time";
 import Dispatcher from "./dispatcher";
-import LibraryActions from "features/RecipeLibrary/data/LibraryActions";
-import LibraryStore from "features/RecipeLibrary/data/LibraryStore";
 import RecipeActions from "./RecipeActions";
 import RecipeApi from "./RecipeApi";
 import RouteActions from "./RouteActions";
@@ -29,9 +29,17 @@ const buildTemplate = () => ({
 });
 
 const buildWirePacket = recipe => {
-    recipe.type = "Recipe";
-    recipe.totalTime = toMilliseconds(recipe.totalTime);
-    delete recipe.rawIngredients;
+    recipe = {
+        ...recipe,
+        type: "Recipe",
+        totalTime: toMilliseconds(recipe.totalTime),
+        ingredients: recipe.ingredients.map(it => {
+            it = { ...it };
+            delete it.id;
+            return it;
+        }),
+    };
+    delete recipe.rawIngredients; // shouldn't exist
     return recipe;
 };
 
@@ -47,15 +55,15 @@ const loadRecipeIfPossible = draftLO => {
         ...state,
         ...recipe,
         id: state.id, // in case it's a copy
-    }).done().map(s => {
-        if (s.ingredients == null || s.ingredients.length === 0) {
-            s = {
-                ...s,
-                ingredients: [ newIngredient() ],
-            };
-        }
-        return s;
-    });
+    }).done().map(s => ({
+        ...s,
+        ingredients: s.ingredients == null || s.ingredients.length === 0
+            ? [ newIngredient() ]
+            : s.ingredients.map((it, i) => ({
+                id: i,
+                ...it,
+            })),
+    }));
 };
 
 class DraftRecipeStore extends ReduceStore {
