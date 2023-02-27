@@ -1,7 +1,10 @@
 import React from "react";
 import PropTypes from "prop-types";
-import {IconButton, Tooltip} from "@material-ui/core";
-import {Close} from "@material-ui/icons";
+import {
+    IconButton,
+    Tooltip
+} from "@mui/material";
+import { Close } from "@mui/icons-material";
 
 const CloseButton = ({onClick}) => {
     return (

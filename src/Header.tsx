@@ -7,8 +7,8 @@ import {
     Tabs,
     Toolbar,
     Typography,
-} from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
+} from "@mui/material";
+import { makeStyles } from "@mui/styles";
 import {
     AccountCircle as ProfileIcon,
     EventNote as PlanIcon,
@@ -16,7 +16,7 @@ import {
     MeetingRoom as PantryIcon,
     MenuBook as LibraryIcon,
     ShoppingCart as ShopIcon,
-} from "@material-ui/icons";
+} from "@mui/icons-material";
 import React from "react";
 import {
     Link,

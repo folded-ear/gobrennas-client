@@ -1,6 +1,6 @@
-import {Box, Grid, IconButton, Typography,} from "@material-ui/core";
-import {makeStyles} from "@material-ui/core/styles";
-import {Close, RotateLeft, RotateRight,} from "@material-ui/icons";
+import {Box, Grid, IconButton, Typography,} from "@mui/material";
+import {makeStyles} from "@mui/styles";
+import {Close, RotateLeft, RotateRight,} from "@mui/icons-material";
 import PropTypes from "prop-types";
 import React from "react";
 import useFluxStore from "../../data/useFluxStore";

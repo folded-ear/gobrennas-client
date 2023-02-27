@@ -1,9 +1,6 @@
-import { useMediaQuery } from "@material-ui/core";
+import {useMediaQuery} from "@mui/material";
 import PropTypes from "prop-types";
-import React, {
-    createContext,
-    useContext,
-} from "react";
+import React, {createContext, useContext,} from "react";
 import theme from "../theme";
 
 const MobileContext = createContext(true);

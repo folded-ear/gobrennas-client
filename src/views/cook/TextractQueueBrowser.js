@@ -1,7 +1,7 @@
-import {GridList, GridListTile, GridListTileBar, IconButton, Typography,} from "@material-ui/core";
-import Drawer from "@material-ui/core/Drawer";
-import {makeStyles} from "@material-ui/core/styles";
-import {Close} from "@material-ui/icons";
+import {GridList, GridListTile, GridListTileBar, IconButton, Typography,} from "@mui/material";
+import Drawer from "@mui/material/Drawer";
+import {makeStyles} from "@mui/styles";
+import {Close} from "@mui/icons-material";
 import PropTypes from "prop-types";
 import React from "react";
 import DeleteButton from "../common/DeleteButton";

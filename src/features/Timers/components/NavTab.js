@@ -1,16 +1,9 @@
-import React, { useMemo } from "react";
+import React, {useMemo} from "react";
 import PropTypes from "prop-types";
 import TimeLeft from "./TimeLeft";
-import {
-    Badge as TopRightBadge,
-    Tab,
-    withStyles,
-} from "@material-ui/core";
-import {
-    Pause,
-    Timer,
-} from "@material-ui/icons";
-import { useTimerList } from "../data/TimerContext";
+import {Badge as TopRightBadge, Tab, withStyles,} from "@mui/material";
+import {Pause, Timer,} from "@mui/icons-material";
+import {useTimerList} from "../data/TimerContext";
 
 const BottomRightBadge = withStyles({
     badge: {

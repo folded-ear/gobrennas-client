@@ -1,5 +1,5 @@
-import { ListItemText } from "@material-ui/core";
-import Input from "@material-ui/core/Input";
+import { ListItemText } from "@mui/material";
+import Input from "@mui/material/Input";
 import classnames from "classnames";
 import React from "react";
 import Dispatcher from "../../data/dispatcher";

@@ -1,8 +1,9 @@
 import {
     IconButton,
-    Tooltip, TooltipProps,
-} from "@material-ui/core";
-import { Edit } from "@material-ui/icons";
+    Tooltip,
+    TooltipProps,
+} from "@mui/material";
+import { Edit } from "@mui/icons-material";
 import PropTypes from "prop-types";
 import React from "react";
 

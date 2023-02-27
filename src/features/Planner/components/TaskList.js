@@ -1,13 +1,10 @@
-import {
-    Box,
-    List,
-} from "@material-ui/core";
-import Add from "@material-ui/icons/Add";
+import {Box, List,} from "@material-ui/core";
+import Add from "@mui/icons-material/Add";
 import PropTypes from "prop-types";
 import React from "react";
 import Dispatcher from "data/dispatcher";
 import TaskActions from "features/Planner/data/TaskActions";
-import { isParent } from "features/Planner/data/tasks";
+import {isParent} from "features/Planner/data/tasks";
 import LoadObject from "util/LoadObject";
 import FoodingerFab from "views/common/FoodingerFab";
 import LoadingIndicator from "views/common/LoadingIndicator";

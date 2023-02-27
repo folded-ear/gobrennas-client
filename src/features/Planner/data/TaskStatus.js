@@ -1,15 +1,6 @@
-import { deepPurple } from "@material-ui/core/colors";
-import {
-    Check,
-    DeleteForeverOutlined,
-    QuestionAnswer,
-} from "@material-ui/icons";
-import {
-    acquiredColor,
-    completeColor,
-    deleteColor,
-    neededColor,
-} from "views/common/colors";
+import {deepPurple} from "@material-ui/core/colors";
+import {Check, DeleteForeverOutlined, QuestionAnswer,} from "@mui/icons-material";
+import {acquiredColor, completeColor, deleteColor, neededColor,} from "views/common/colors";
 
 const TaskStatus = {
     NEEDED: "NEEDED",

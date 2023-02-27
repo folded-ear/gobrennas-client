@@ -1,7 +1,4 @@
-import React, {
-    useEffect,
-    useState,
-} from "react";
+import React, {useEffect, useState,} from "react";
 import PropTypes from "prop-types";
 import {
     Box,
@@ -15,24 +12,18 @@ import {
     ListItemText,
     ListSubheader,
     makeStyles,
-} from "@material-ui/core";
+} from "@mui/material";
 import {
     Add as AddIcon,
     Close as CloseIcon,
     Delete as DeleteIcon,
     Pause as PauseIcon,
     PlayArrow as PlayIcon,
-} from "@material-ui/icons";
+} from "@mui/icons-material";
 import TimeLeft from "./TimeLeft";
 import AddTimeButton from "./AddTimeButton";
-import { useTimerList } from "../data/TimerContext";
-import {
-    useAddTimeToTimer,
-    useCreateTimer,
-    useDeleteTimer,
-    usePauseTimer,
-    useResumeTimer,
-} from "../data/queries";
+import {useTimerList} from "../data/TimerContext";
+import {useAddTimeToTimer, useCreateTimer, useDeleteTimer, usePauseTimer, useResumeTimer,} from "../data/queries";
 import NewTimer from "./NewTimer";
 
 const useStyles = makeStyles((theme) => ({

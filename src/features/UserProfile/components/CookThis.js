@@ -1,13 +1,9 @@
 import * as React from "react";
-import Button from "@material-ui/core/Button";
-import {
-    API_BASE_URL,
-    API_IS_SECURE,
-    APP_BASE_URL,
-} from "constants/index";
-import { LockOpen } from "@material-ui/icons";
+import Button from "@mui/material/Button";
+import {API_BASE_URL, API_IS_SECURE, APP_BASE_URL,} from "constants/index";
+import {LockOpen} from "@mui/icons-material";
 import qs from "qs";
-import { useAuthToken } from "providers/AuthToken";
+import {useAuthToken} from "providers/AuthToken";
 
 export const CookThis = () => {
     const cookThisRef = React.useRef();

@@ -2,8 +2,8 @@ import {
     Button,
     IconButton,
     withStyles,
-} from "@material-ui/core";
-import { deepPurple } from "@material-ui/core/colors";
+} from "@mui/material";
+import { deepPurple } from "@mui/material/colors";
 
 export {
     yellow as questionColor,
@@ -12,7 +12,7 @@ export {
     grey as neededColor,
     lime as acquiredColor,
     red as deleteColor,
-} from "@material-ui/core/colors";
+} from "@mui/material/colors";
 
 export const coloredIconNoOp = palette =>
     withStyles({

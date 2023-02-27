@@ -2,11 +2,11 @@ import {
     CircularProgress,
     IconButton,
     withStyles,
-} from "@material-ui/core";
-import { grey } from "@material-ui/core/colors";
+} from "@mui/material";
+import { grey } from "@mui/material/colors";
 import PropTypes from "prop-types";
 import React from "react";
-import {MUISize} from "../../types";
+import { MUISize } from "../../types";
 
 const CircProg = withStyles({
     root: {

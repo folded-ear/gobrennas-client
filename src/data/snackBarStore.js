@@ -1,5 +1,5 @@
-import { Button } from "@material-ui/core";
-import { ReduceStore } from "flux/utils";
+import {Button} from "@mui/material";
+import {ReduceStore} from "flux/utils";
 import PropTypes from "prop-types";
 import React from "react";
 import typedStore from "util/typedStore";
@@ -8,7 +8,7 @@ import LibraryStore from "features/RecipeLibrary/data/LibraryStore";
 import PantryItemActions from "./PantryItemActions";
 import RecipeActions from "./RecipeActions";
 import TaskActions from "features/Planner/data/TaskActions";
-import { willStatusDelete } from "features/Planner/data/TaskStatus";
+import {willStatusDelete} from "features/Planner/data/TaskStatus";
 import TaskStore from "features/Planner/data/TaskStore";
 import UiActions from "./UiActions";
 

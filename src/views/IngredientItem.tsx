@@ -1,9 +1,9 @@
 import {
     Grid,
     IconButton,
-} from "@material-ui/core";
+} from "@mui/material";
 import { makeStyles } from "@material-ui/core/styles";
-import LinkIcon from "@material-ui/icons/Link";
+import LinkIcon from "@mui/icons-material/Link";
 import PropTypes from "prop-types";
 import React from "react";
 import Dispatcher from "data/dispatcher";

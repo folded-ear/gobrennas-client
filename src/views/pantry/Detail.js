@@ -1,11 +1,11 @@
-import { Card, CardContent, CardHeader, IconButton, makeStyles, } from "@material-ui/core";
-import { Close as CloseIcon } from "@material-ui/icons";
-import { DataGrid } from "@mui/x-data-grid";
+import {Card, CardContent, CardHeader, IconButton, makeStyles,} from "@mui/material";
+import {Close as CloseIcon} from "@mui/icons-material";
+import {DataGrid} from "@mui/x-data-grid";
 import PropTypes from "prop-types";
-import React, { useEffect, useMemo, useState, } from "react";
+import React, {useEffect, useMemo, useState,} from "react";
 import InventoryApi from "../../data/InventoryApi";
 import LoadingIndicator from "../common/LoadingIndicator";
-import { formatQuantity } from "./formatQuantity";
+import {formatQuantity} from "./formatQuantity";
 
 const useStyles = makeStyles(theme => ({
     gridHeader: {

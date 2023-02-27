@@ -2,8 +2,8 @@ import * as React from "react";
 import useIsDevMode from "data/useIsDevMode";
 import Dispatcher from "data/dispatcher";
 import UserActions from "data/UserActions";
-import Divider from "@material-ui/core/Divider";
-import Switch from "@material-ui/core/Switch";
+import Divider from "@mui/material/Divider";
+import Switch from "@mui/material/Switch";
 import useWindowSize from "data/useWindowSize";
 import preval from "preval.macro";
 

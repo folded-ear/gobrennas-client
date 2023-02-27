@@ -2,15 +2,15 @@ import * as React from "react";
 import {
     IconButton,
     Snackbar,
-} from "@material-ui/core";
-import makeStyles from "@material-ui/core/styles/makeStyles";
-import { Close as CloseIcon } from "@material-ui/icons";
-import {Alert, Color} from "@material-ui/lab";
+} from "@mui/material";
+import makeStyles from "@mui/styles/makeStyles";
+import { Close as CloseIcon } from "@mui/icons-material";
 import dispatcher from "../../data/dispatcher";
 import snackBarStore from "../../data/snackBarStore";
 import UiActions from "../../data/UiActions";
 import useFluxStore from "../../data/useFluxStore";
-import {SnackbarCloseReason} from "@material-ui/core/Snackbar/Snackbar";
+import { SnackbarCloseReason } from "@mui/material/Snackbar/Snackbar";
+import {Alert, Color} from "from "@mui/lab";
 
 const useStyles = makeStyles(theme => ({
     snackbar: {

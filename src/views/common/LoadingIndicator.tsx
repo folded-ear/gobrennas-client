@@ -1,6 +1,6 @@
-import { Typography } from "@material-ui/core";
-import CircularProgress from "@material-ui/core/CircularProgress";
-import Paper from "@material-ui/core/Paper";
+import { Typography } from "@mui/material";
+import CircularProgress from "@mui/material/CircularProgress";
+import Paper from "@mui/material/Paper";
 import PropTypes from "prop-types";
 import React from "react";
 

@@ -1,9 +1,9 @@
-import Box from "@material-ui/core/Box";
-import grey from "@material-ui/core/colors/grey";
+import Box from "@mui/material/Box";
+import grey from "@mui/material/colors/grey";
 import {
     HelpOutline,
     InfoOutlined,
-} from "@material-ui/icons";
+} from "@mui/icons-material";
 import PropTypes from "prop-types";
 import React from "react";
 import CloseButton from "./CloseButton";

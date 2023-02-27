@@ -1,8 +1,5 @@
-import {
-    IconButton,
-    Tooltip,
-} from "@material-ui/core";
-import { Kitchen } from "@material-ui/icons";
+import {IconButton, Tooltip,} from "@material-ui/core";
+import {Kitchen} from "@mui/icons-material";
 import PropTypes from "prop-types";
 import React from "react";
 import history from "util/history";

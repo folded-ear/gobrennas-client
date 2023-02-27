@@ -1,12 +1,20 @@
-import {Grid, InputAdornment, LinearProgress, TextField,} from "@material-ui/core";
-import {CheckCircleOutline, ErrorOutline,} from "@material-ui/icons";
-import Autocomplete from "@material-ui/lab/Autocomplete";
+import {
+    Grid,
+    InputAdornment,
+    LinearProgress,
+    TextField,
+} from "@mui/material";
+import {
+    CheckCircleOutline,
+    ErrorOutline,
+} from "@mui/icons-material";
 import PropTypes from "prop-types";
 import React from "react";
 import ItemApi from "data/ItemApi";
 import debounce from "util/debounce";
 import processRecognizedItem from "util/processRecognizedItem";
-import {Ingredient} from "../types";
+import { Ingredient } from "../types";
+import Autocomplete from "from "@mui/lab/Autocomplete";
 
 const doRecog = raw =>
     raw != null && raw.trim().length >= 2;

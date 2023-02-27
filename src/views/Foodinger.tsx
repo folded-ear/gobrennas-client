@@ -4,7 +4,7 @@ import {
     Container,
     Paper,
     Typography,
-} from "@material-ui/core";
+} from "@mui/material";
 import { useIsMobile } from "providers/IsMobile";
 
 function Foodinger() {

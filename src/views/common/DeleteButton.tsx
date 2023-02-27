@@ -2,11 +2,11 @@ import {
     Button,
     IconButton,
     Tooltip,
-} from "@material-ui/core";
-import Dialog from "@material-ui/core/Dialog";
-import DialogActions from "@material-ui/core/DialogActions";
-import DialogTitle from "@material-ui/core/DialogTitle";
-import { Delete } from "@material-ui/icons";
+} from "@mui/material";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogTitle from "@mui/material/DialogTitle";
+import { Delete } from "@mui/icons-material";
 import PropTypes from "prop-types";
 import * as React from "react";
 

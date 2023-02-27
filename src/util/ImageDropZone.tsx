@@ -1,8 +1,8 @@
-import { makeStyles } from "@material-ui/core/styles";
+import { makeStyles } from "@mui/styles";
 import {
     AddAPhoto,
     PhotoCamera,
-} from "@material-ui/icons";
+} from "@mui/icons-material";
 import clsx from "clsx";
 import * as React from "react";
 import ImageOrPreview from "../views/common/ImageOrPreview";

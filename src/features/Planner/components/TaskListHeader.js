@@ -1,27 +1,11 @@
-import {
-    Drawer,
-    FormControl,
-    Grid,
-    IconButton,
-    MenuItem,
-    Select,
-    TextField,
-    Tooltip,
-} from "@material-ui/core";
-import {
-    Add,
-    DynamicFeed,
-    Edit,
-} from "@material-ui/icons";
+import {Drawer, FormControl, Grid, IconButton, MenuItem, Select, TextField, Tooltip,} from "@material-ui/core";
+import {Add, DynamicFeed, Edit,} from "@mui/icons-material";
 import PropTypes from "prop-types";
 import React from "react";
 import Dispatcher from "data/dispatcher";
 import TaskActions from "features/Planner/data/TaskActions";
-import { byNameComparator } from "util/comparators";
-import {
-    CollapseAll,
-    ExpandAll,
-} from "views/common/icons";
+import {byNameComparator} from "util/comparators";
+import {CollapseAll, ExpandAll,} from "views/common/icons";
 import SplitButton from "views/common/SplitButton";
 import TaskListSidebar from "features/Planner/components/TaskListSidebar";
 import UserById from "features/Planner/components/UserById";

@@ -1,27 +1,14 @@
-import {
-    Table,
-    TableBody,
-    TableContainer,
-    TableHead,
-    TableRow,
-} from "@material-ui/core";
+import {Table, TableBody, TableContainer, TableHead, TableRow,} from "@material-ui/core";
 import IconButton from "@material-ui/core/IconButton";
 import TableCell from "@material-ui/core/TableCell";
 import Tooltip from "@material-ui/core/Tooltip";
-import {
-    Add as AddIcon,
-    AddToPhotos as GenerateIcon,
-    Delete as DeleteIcon,
-} from "@material-ui/icons";
+import {Add as AddIcon, AddToPhotos as GenerateIcon, Delete as DeleteIcon,} from "@mui/icons-material";
 import React from "react";
 import dispatcher from "data/dispatcher";
 import TaskActions from "features/Planner/data/TaskActions";
 import TaskStore from "features/Planner/data/TaskStore";
 import useFluxStore from "data/useFluxStore";
-import {
-    formatLocalDate,
-    parseLocalDate,
-} from "util/time";
+import {formatLocalDate, parseLocalDate,} from "util/time";
 import LocalTextField from "views/common/LocalTextField";
 import getBucketLabel from "features/Planner/components/getBucketLabel";
 

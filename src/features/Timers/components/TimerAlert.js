@@ -1,28 +1,12 @@
-import React, {
-    useEffect,
-    useState,
-} from "react";
-import {
-    Dialog,
-    DialogActions,
-    DialogContent,
-    DialogContentText,
-    DialogTitle,
-    IconButton,
-} from "@material-ui/core";
+import React, {useEffect, useState,} from "react";
+import {Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, IconButton,} from "@mui/material";
 import AddTimeButton from "./AddTimeButton";
-import {
-    Replay as ResetIcon,
-    Stop as StopIcon,
-} from "@material-ui/icons";
-import { formatTimer } from "../../../util/time";
+import {Replay as ResetIcon, Stop as StopIcon,} from "@mui/icons-material";
+import {formatTimer} from "../../../util/time";
 import TimeLeft from "./TimeLeft";
 import alarm from "../media/alarm.mp3";
-import { useTimerList } from "../data/TimerContext";
-import {
-    useDeleteTimer,
-    useResetTimer,
-} from "../data/queries";
+import {useTimerList} from "../data/TimerContext";
+import {useDeleteTimer, useResetTimer,} from "../data/queries";
 
 function TimerAlert() {
     const { data: timers } = useTimerList();

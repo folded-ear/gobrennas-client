@@ -11,19 +11,19 @@ import {
     Switch,
     Typography,
     useScrollTrigger,
-} from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
-import { PostAdd as AddIcon, Search as SearchIcon, } from "@material-ui/icons";
+} from "@mui/material";
+import {makeStyles} from "@mui/styles";
+import {PostAdd as AddIcon, Search as SearchIcon,} from "@mui/icons-material";
 import Dispatcher from "data/dispatcher";
-import { Recipe } from "data/RecipeTypes";
+import {Recipe} from "data/RecipeTypes";
 import RecipeCard from "features/RecipeLibrary/components/RecipeCard";
 import LibraryActions from "features/RecipeLibrary/data/LibraryActions";
-import { SCOPE_EVERYONE, SCOPE_MINE, } from "features/RecipeLibrary/data/LibraryStore";
+import {SCOPE_EVERYONE, SCOPE_MINE,} from "features/RecipeLibrary/data/LibraryStore";
 import PropTypes from "prop-types";
-import { useIsMobile } from "providers/IsMobile";
-import React, { useEffect, useState } from "react";
+import {useIsMobile} from "providers/IsMobile";
+import React, {useEffect, useState} from "react";
 import history from "util/history";
-import { loadObjectOf } from "util/loadObjectTypes";
+import {loadObjectOf} from "util/loadObjectTypes";
 import FoodingerFab from "views/common/FoodingerFab";
 import LazyInfinite from "views/common/LazyInfinite";
 import LoadingIndicator from "views/common/LoadingIndicator";

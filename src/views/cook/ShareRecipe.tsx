@@ -9,7 +9,7 @@ import {
     Tooltip,
 } from "@material-ui/core";
 import makeStyles from "@material-ui/core/styles/makeStyles";
-import { Share } from "@material-ui/icons";
+import { Share } from "@mui/icons-material";
 import BaseAxios from "axios";
 import React from "react";
 import {

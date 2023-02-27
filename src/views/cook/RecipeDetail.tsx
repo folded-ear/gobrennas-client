@@ -1,6 +1,6 @@
 import {Box, CircularProgress, Grid, Toolbar, Typography, useScrollTrigger,} from "@material-ui/core";
 import {makeStyles} from "@material-ui/core/styles";
-import {PostAdd} from "@material-ui/icons";
+import {PostAdd} from "@mui/icons-material";
 import PropTypes from "prop-types";
 import React from "react";
 import Dispatcher from "../../data/dispatcher";

@@ -1,7 +1,8 @@
 import {
-    responsiveFontSizes, Theme,
+    responsiveFontSizes,
+    Theme,
     unstable_createMuiStrictModeTheme as createTheme,
-} from "@material-ui/core/styles";
+} from "@mui/styles";
 
 let theme : Theme = createTheme({
     palette: {
