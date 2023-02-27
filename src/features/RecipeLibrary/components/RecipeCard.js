@@ -20,6 +20,8 @@ import Source from "views/common/Source";
 import User from "views/user/User";
 import FavoriteIndicator from "../../Favorites/components/Indicator";
 
+;
+
 const useStyles = makeStyles({
     photo: {
         height: 140,

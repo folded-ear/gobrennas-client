@@ -1,10 +1,9 @@
 import {
+    adaptV4Theme,
     responsiveFontSizes,
     Theme,
     unstable_createMuiStrictModeTheme as createTheme,
-} from "@mui/styles";
-
-import { adaptV4Theme } from '@mui/material/styles';
+} from "@mui/material/styles";
 
 let theme : Theme = createTheme(adaptV4Theme({
     palette: {

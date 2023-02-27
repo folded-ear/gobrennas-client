@@ -1,5 +1,6 @@
 import * as React from "react";
 import {
+    AlertColor,
     IconButton,
     Snackbar,
 } from "@mui/material";
@@ -9,11 +10,7 @@ import dispatcher from "../../data/dispatcher";
 import snackBarStore from "../../data/snackBarStore";
 import UiActions from "../../data/UiActions";
 import useFluxStore from "../../data/useFluxStore";
-import { SnackbarCloseReason } from "@mui/material/Snackbar/Snackbar";
-import {
-    Alert,
-    Color
-} from "@mui/lab";
+import { Alert, } from "@mui/lab";
 
 const useStyles = makeStyles(theme => ({
     snackbar: {
@@ -30,8 +27,8 @@ type MessageInfo = {
     renderAction: any;
     key: string;
     message: string;
-    onClose: (event: React.SyntheticEvent<any>, reason: SnackbarCloseReason) => void;
-    severity: Color;
+    onClose: (event?: React.SyntheticEvent | Event, reason?: string) => void;
+    severity: AlertColor;
     hideDelay?: number;
 } | undefined
 
@@ -64,7 +61,7 @@ function SnackPack() {
 
     if (!messageInfo) return null;
 
-    const handleClose = (event: React.SyntheticEvent<any>, reason: SnackbarCloseReason) => {
+    const handleClose = (event?: React.SyntheticEvent | Event, reason?: string) => {
         setOpen(false);
         messageInfo.onClose && messageInfo.onClose.call(undefined, event, reason);
         dispatcher.dispatch({

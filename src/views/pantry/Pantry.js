@@ -1,4 +1,5 @@
-import {Grid, makeStyles, Typography,} from "@mui/material";
+import {Grid, Typography,} from "@mui/material";
+import {makeStyles} from "@mui/styles";
 import {DataGrid} from "@mui/x-data-grid";
 import React, {useEffect, useMemo, useState,} from "react";
 import InventoryApi from "../../data/InventoryApi";

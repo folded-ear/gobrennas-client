@@ -6,6 +6,8 @@ import RecipeActions from "data/RecipeActions";
 import {Recipe} from "data/RecipeTypes";
 import ImageDropZone from "util/ImageDropZone";
 
+;
+
 const useStyles = makeStyles({
     root: {
         display: "block",

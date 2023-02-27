@@ -28,6 +28,8 @@ import FoodingerFab from "views/common/FoodingerFab";
 import LazyInfinite from "views/common/LazyInfinite";
 import LoadingIndicator from "views/common/LoadingIndicator";
 
+;
+
 const useStyles = makeStyles((theme) => {
     const search = {
         margin: theme.spacing(2, 0),

@@ -10,6 +10,8 @@ import ImageDropZone from "../../util/ImageDropZone";
 import {useQuery} from "react-query";
 import TextractApi from "../../data/TextractApi";
 
+;
+
 const useStyles = makeStyles({
     drawer: {
         minHeight: "100%",

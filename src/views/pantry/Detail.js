@@ -1,4 +1,5 @@
-import {Card, CardContent, CardHeader, IconButton, makeStyles,} from "@mui/material";
+import {Card, CardContent, CardHeader, IconButton,} from "@mui/material";
+import {makeStyles} from "@mui/styles";
 import {Close as CloseIcon} from "@mui/icons-material";
 import {DataGrid} from "@mui/x-data-grid";
 import PropTypes from "prop-types";

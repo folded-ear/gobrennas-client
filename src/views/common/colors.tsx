@@ -1,8 +1,8 @@
 import {
     Button,
     IconButton,
-    withStyles,
 } from "@mui/material";
+import { withStyles } from "@mui/styles";
 import { deepPurple } from "@mui/material/colors";
 
 export {
