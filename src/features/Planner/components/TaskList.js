@@ -1,4 +1,4 @@
-import {Box, List,} from "@material-ui/core";
+import {Box, List,} from "@mui/material";
 import Add from "@mui/icons-material/Add";
 import PropTypes from "prop-types";
 import React from "react";

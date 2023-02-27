@@ -1,7 +1,7 @@
-import ListItem from "@material-ui/core/ListItem";
-import ListItemIcon from "@material-ui/core/ListItemIcon";
-import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
-import withStyles from "@material-ui/core/styles/withStyles";
+import ListItem from "@mui/material/ListItem";
+import ListItemIcon from "@mui/material/ListItemIcon";
+import ListItemSecondaryAction from "@mui/material/ListItemSecondaryAction";
+import withStyles from "@mui/styles/withStyles";
 import PropTypes from "prop-types";
 import React from "react";
 

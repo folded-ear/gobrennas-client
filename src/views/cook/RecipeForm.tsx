@@ -11,8 +11,8 @@ import {
     Typography,
     useMediaQuery,
     useTheme,
-} from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
+} from "@mui/material";
+import makeStyles from '@mui/styles/makeStyles';
 import {
     Add,
     Cancel,
@@ -75,7 +75,7 @@ const RecipeForm = ({title, onSave, onSaveCopy, onCancel, extraButtons}) => {
     const lo = useDraftRecipeLO();
     const windowSize = useWindowSize();
     const theme = useTheme();
-    const mobile = useMediaQuery(theme.breakpoints.down("xs"));
+    const mobile = useMediaQuery(theme.breakpoints.down('sm'));
     const classes = useStyles();
     const draft = lo.getValueEnforcing();
     const MARGIN = 2;

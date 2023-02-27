@@ -30,37 +30,35 @@ function TimerAlert() {
     const handleStop = () =>
         doDelete(completed.id);
 
-    return <Dialog
-        open={true}
-        aria-labelledby="timer-alert-title"
-        aria-describedby="timer-alert-description"
-    >
-        <DialogTitle id="timer-alert-title">
-            {formatTimer(completed.initialDuration)} Timer Complete!
-        </DialogTitle>
-        <DialogContent>
-            <DialogContentText id="alert-dialog-description">
-                And it's been <TimeLeft timer={completed} /> since.
-            </DialogContentText>
-            <audio src={alarm} autoPlay loop />
-        </DialogContent>
-        <DialogActions>
-            <AddTimeButton
-                seconds={60}
-                onClick={handleAddTime}
-            />
-            <IconButton
-                onClick={handleReset}
-            >
-                <ResetIcon />
-            </IconButton>
-            <IconButton
-                onClick={handleStop}
-            >
-                <StopIcon />
-            </IconButton>
-        </DialogActions>
-    </Dialog>;
+    return (
+        <Dialog
+            open={true}
+            aria-labelledby="timer-alert-title"
+            aria-describedby="timer-alert-description"
+        >
+            <DialogTitle id="timer-alert-title">
+                {formatTimer(completed.initialDuration)} Timer Complete!
+            </DialogTitle>
+            <DialogContent>
+                <DialogContentText id="alert-dialog-description">
+                    And it's been <TimeLeft timer={completed} /> since.
+                </DialogContentText>
+                <audio src={alarm} autoPlay loop />
+            </DialogContent>
+            <DialogActions>
+                <AddTimeButton
+                    seconds={60}
+                    onClick={handleAddTime}
+                />
+                <IconButton onClick={handleReset} size="large">
+                    <ResetIcon />
+                </IconButton>
+                <IconButton onClick={handleStop} size="large">
+                    <StopIcon />
+                </IconButton>
+            </DialogActions>
+        </Dialog>
+    );
 }
 
 export default TimerAlert;

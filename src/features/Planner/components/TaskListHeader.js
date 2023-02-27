@@ -1,4 +1,4 @@
-import {Drawer, FormControl, Grid, IconButton, MenuItem, Select, TextField, Tooltip,} from "@material-ui/core";
+import {Drawer, FormControl, Grid, IconButton, MenuItem, Select, TextField, Tooltip,} from "@mui/material";
 import {Add, DynamicFeed, Edit,} from "@mui/icons-material";
 import PropTypes from "prop-types";
 import React from "react";
@@ -80,155 +80,152 @@ function TaskListHeader({
         });
     };
 
-    return <Grid container justifyContent={"space-between"}>
-        {activeList && <Grid item>
-            <Tooltip
-                title="Expand all collapsed items"
-                placement="bottom-start"
-            >
-                <IconButton
-                    aria-label="expand-all"
-                    onClick={onExpandAll}
-                    disabled={!canExpand}
-                >
-                    <ExpandAll />
-                </IconButton>
-            </Tooltip>
-            <Tooltip
-                title="Collapse all expanded items"
-                placement="bottom-start"
-            >
-                <IconButton
-                    aria-label="collapse-all"
-                    onClick={onCollapseAll}
-                    disabled={!canExpand}
-                >
-                    <CollapseAll />
-                </IconButton>
-            </Tooltip>
-            <Tooltip
-                title="Sort plan in bucket order"
-                placement="bottom-start"
-            >
-                <IconButton
-                    aria-label="sort-by-bucket"
-                    onClick={sortByBucket}
-                    disabled={!hasBuckets}
-                >
-                    <DynamicFeed />
-                </IconButton>
-            </Tooltip>
-            <Drawer
-                open={listDetailVisible}
-                anchor="right"
-                onClose={onCloseDrawer}
-            >
-                <div
-                    style={{
-                        minHeight: "100%",
-                        minWidth: "40vw",
-                        maxWidth: "90vw",
-                        backgroundColor: "#f7f7f7",
-                    }}
-                >
-                    <TaskListSidebar list={activeList} />
-                </div>
-            </Drawer>
-        </Grid>}
-        {allLists.length > 0 && <Grid item>
-            <Grid container>
-                {activeList && activeList.acl && <Grid item>
-                    <UserById
-                        id={activeList.acl.ownerId}
-                        iconOnly
-                    />
-                </Grid>}
-                <Grid item>
-                    <FormControl
-                        variant="outlined"
-                        style={{
-                            minWidth: "120px",
-                        }}
-                        size={"small"}
-                    >
-                        <Select
-                            placeholder="Select a Plan"
-                            value={activeList && activeList.id}
-                            onChange={onSelect}
-                        >
-                            {allLists.map(l =>
-                                <MenuItem
-                                    key={l.id}
-                                    value={l.id}
-                                >
-                                    {l.name}
-                                </MenuItem>,
-                            )}
-                        </Select>
-                    </FormControl>
-                </Grid>
-                <Grid item>
-                    <Tooltip
-                        title="Edit plan, buckets, and access"
-                        placement="bottom"
-                    >
-                        <IconButton
-                            onClick={onShowDrawer}
-                            disabled={!activeList}
-                        >
-                            <Edit />
-                        </IconButton>
-                    </Tooltip>
-                </Grid>
-            </Grid>
-        </Grid>}
-        <Grid item>
-            {(showAdd || allLists.length === 0)
-                ? <Grid container>
-                    <Grid item>
-                        <TextField
-                            label="New Plan..."
-                            value={name}
-                            size={"small"}
-                            variant={"outlined"}
-                            onChange={e => {
-                                const {value} = e.target;
-                                setName(value == null ? "" : value);
-                            }}
-                            autoFocus
-                            onKeyUp={e => {
-                                if (e.key === "Escape") {
-                                    setShowAdd(false);
-                                    setName("");
-                                }
-                            }}
-                        />
-                    </Grid>
-                    <Grid item>
-                        <SplitButton
-                            primary={<Add />}
-                            onClick={onCreate}
-                            options={allLists.length > 0 && allLists.map(l => ({
-                                label: `Duplicate "${l.name}"`,
-                                id: l.id,
-                            }))}
-                            onSelect={onDuplicate}
-                            disabled={!isValidName(name)}
-                        />
-                    </Grid>
-                </Grid>
-                : <Tooltip
-                    title="Create a new plan"
-                    placement="bottom-end"
+    return (
+        <Grid container justifyContent={"space-between"}>
+            {activeList && <Grid item>
+                <Tooltip
+                    title="Expand all collapsed items"
+                    placement="bottom-start"
                 >
                     <IconButton
-                        onClick={() => setShowAdd(true)}
-                    >
-                        <Add />
+                        aria-label="expand-all"
+                        onClick={onExpandAll}
+                        disabled={!canExpand}
+                        size="large">
+                        <ExpandAll />
                     </IconButton>
-                </Tooltip>}
+                </Tooltip>
+                <Tooltip
+                    title="Collapse all expanded items"
+                    placement="bottom-start"
+                >
+                    <IconButton
+                        aria-label="collapse-all"
+                        onClick={onCollapseAll}
+                        disabled={!canExpand}
+                        size="large">
+                        <CollapseAll />
+                    </IconButton>
+                </Tooltip>
+                <Tooltip
+                    title="Sort plan in bucket order"
+                    placement="bottom-start"
+                >
+                    <IconButton
+                        aria-label="sort-by-bucket"
+                        onClick={sortByBucket}
+                        disabled={!hasBuckets}
+                        size="large">
+                        <DynamicFeed />
+                    </IconButton>
+                </Tooltip>
+                <Drawer
+                    open={listDetailVisible}
+                    anchor="right"
+                    onClose={onCloseDrawer}
+                >
+                    <div
+                        style={{
+                            minHeight: "100%",
+                            minWidth: "40vw",
+                            maxWidth: "90vw",
+                            backgroundColor: "#f7f7f7",
+                        }}
+                    >
+                        <TaskListSidebar list={activeList} />
+                    </div>
+                </Drawer>
+            </Grid>}
+            {allLists.length > 0 && <Grid item>
+                <Grid container>
+                    {activeList && activeList.acl && <Grid item>
+                        <UserById
+                            id={activeList.acl.ownerId}
+                            iconOnly
+                        />
+                    </Grid>}
+                    <Grid item>
+                        <FormControl
+                            variant="outlined"
+                            style={{
+                                minWidth: "120px",
+                            }}
+                            size={"small"}
+                        >
+                            <Select
+                                placeholder="Select a Plan"
+                                value={activeList && activeList.id}
+                                onChange={onSelect}
+                            >
+                                {allLists.map(l =>
+                                    <MenuItem
+                                        key={l.id}
+                                        value={l.id}
+                                    >
+                                        {l.name}
+                                    </MenuItem>,
+                                )}
+                            </Select>
+                        </FormControl>
+                    </Grid>
+                    <Grid item>
+                        <Tooltip
+                            title="Edit plan, buckets, and access"
+                            placement="bottom"
+                        >
+                            <IconButton onClick={onShowDrawer} disabled={!activeList} size="large">
+                                <Edit />
+                            </IconButton>
+                        </Tooltip>
+                    </Grid>
+                </Grid>
+            </Grid>}
+            <Grid item>
+                {(showAdd || allLists.length === 0)
+                    ? <Grid container>
+                        <Grid item>
+                            <TextField
+                                label="New Plan..."
+                                value={name}
+                                size={"small"}
+                                variant={"outlined"}
+                                onChange={e => {
+                                    const {value} = e.target;
+                                    setName(value == null ? "" : value);
+                                }}
+                                autoFocus
+                                onKeyUp={e => {
+                                    if (e.key === "Escape") {
+                                        setShowAdd(false);
+                                        setName("");
+                                    }
+                                }}
+                            />
+                        </Grid>
+                        <Grid item>
+                            <SplitButton
+                                primary={<Add />}
+                                onClick={onCreate}
+                                options={allLists.length > 0 && allLists.map(l => ({
+                                    label: `Duplicate "${l.name}"`,
+                                    id: l.id,
+                                }))}
+                                onSelect={onDuplicate}
+                                disabled={!isValidName(name)}
+                            />
+                        </Grid>
+                    </Grid>
+                    : <Tooltip
+                        title="Create a new plan"
+                        placement="bottom-end"
+                    >
+                        <IconButton onClick={() => setShowAdd(true)} size="large">
+                            <Add />
+                        </IconButton>
+                    </Tooltip>}
+            </Grid>
         </Grid>
-    </Grid>;
+    );
 
 }
 

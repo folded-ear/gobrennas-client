@@ -1,6 +1,6 @@
-import {Chip, Divider,} from "@material-ui/core";
-import Menu from "@material-ui/core/Menu";
-import MenuItem from "@material-ui/core/MenuItem";
+import {Chip, Divider,} from "@mui/material";
+import Menu from "@mui/material/Menu";
+import MenuItem from "@mui/material/MenuItem";
 import {HighlightOff as DeleteIcon, Kitchen,} from "@mui/icons-material";
 import PropTypes from "prop-types";
 import React from "react";

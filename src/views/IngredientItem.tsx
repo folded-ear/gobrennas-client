@@ -2,7 +2,7 @@ import {
     Grid,
     IconButton,
 } from "@mui/material";
-import { makeStyles } from "@material-ui/core/styles";
+import makeStyles from '@mui/styles/makeStyles';
 import LinkIcon from "@mui/icons-material/Link";
 import PropTypes from "prop-types";
 import React from "react";

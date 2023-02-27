@@ -1,7 +1,7 @@
-import {Table, TableBody, TableContainer, TableHead, TableRow,} from "@material-ui/core";
-import IconButton from "@material-ui/core/IconButton";
-import TableCell from "@material-ui/core/TableCell";
-import Tooltip from "@material-ui/core/Tooltip";
+import {Table, TableBody, TableContainer, TableHead, TableRow,} from "@mui/material";
+import IconButton from "@mui/material/IconButton";
+import TableCell from "@mui/material/TableCell";
+import Tooltip from "@mui/material/Tooltip";
 import {Add as AddIcon, AddToPhotos as GenerateIcon, Delete as DeleteIcon,} from "@mui/icons-material";
 import React from "react";
 import dispatcher from "data/dispatcher";

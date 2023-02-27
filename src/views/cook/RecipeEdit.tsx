@@ -1,4 +1,4 @@
-import { CircularProgress } from "@material-ui/core";
+import { CircularProgress } from "@mui/material";
 import React from "react";
 import { Redirect } from "react-router-dom";
 import Dispatcher from "../../data/dispatcher";

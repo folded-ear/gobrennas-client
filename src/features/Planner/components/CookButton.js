@@ -1,4 +1,4 @@
-import {IconButton, Tooltip,} from "@material-ui/core";
+import {IconButton, Tooltip,} from "@mui/material";
 import {Kitchen} from "@mui/icons-material";
 import PropTypes from "prop-types";
 import React from "react";
@@ -13,7 +13,7 @@ const CookButton = ({planId, taskId, ...props}) => {
             <IconButton
                 onClick={() => history.push(`/plan/${planId}/recipe/${taskId}`)}
                 {...props}
-            >
+                size="large">
                 <Kitchen />
             </IconButton>
         </Tooltip>

@@ -4,7 +4,9 @@ import {
     unstable_createMuiStrictModeTheme as createTheme,
 } from "@mui/styles";
 
-let theme : Theme = createTheme({
+import { adaptV4Theme } from '@mui/material/styles';
+
+let theme : Theme = createTheme(adaptV4Theme({
     palette: {
         primary: {
             light: "#f9683a",
@@ -53,7 +55,7 @@ let theme : Theme = createTheme({
             }
         }
     }
-});
+}));
 theme = responsiveFontSizes(theme);
 
 export default theme;

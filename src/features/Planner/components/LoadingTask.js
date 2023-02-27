@@ -1,9 +1,9 @@
-import grey from "@material-ui/core/colors/grey";
-import ListItemText from "@material-ui/core/ListItemText";
+import ListItemText from "@mui/material/ListItemText";
 import PropTypes from "prop-types";
 import React from "react";
 import LoadingIconButton from "views/common/LoadingIconButton";
 import Item from "./Item";
+import {grey} from "@mui/material/colors";
 
 function LoadingTask({
      depth,

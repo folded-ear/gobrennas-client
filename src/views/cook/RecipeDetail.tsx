@@ -1,5 +1,5 @@
-import {Box, CircularProgress, Grid, Toolbar, Typography, useScrollTrigger,} from "@material-ui/core";
-import {makeStyles} from "@material-ui/core/styles";
+import {Box, CircularProgress, Grid, Toolbar, Typography, useScrollTrigger,} from "@mui/material";
+import makeStyles from '@mui/styles/makeStyles';
 import {PostAdd} from "@mui/icons-material";
 import PropTypes from "prop-types";
 import React from "react";
@@ -33,7 +33,7 @@ import FavoriteIndicator from "../../features/Favorites/components/Indicator";
 const useStyles = makeStyles(theme => ({
     name: {
         flexGrow: 1,
-        [theme.breakpoints.down("xs")]: {
+        [theme.breakpoints.down('sm')]: {
             width: "100%",
         },
     },
@@ -44,7 +44,7 @@ const useStyles = makeStyles(theme => ({
         marginRight: theme.spacing(4),
     },
     toolbar: {
-        [theme.breakpoints.down("xs")]: {
+        [theme.breakpoints.down('sm')]: {
             flexWrap: "wrap-reverse",
         },
         backgroundColor: "white",

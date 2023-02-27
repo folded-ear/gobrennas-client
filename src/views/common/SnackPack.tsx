@@ -10,11 +10,14 @@ import snackBarStore from "../../data/snackBarStore";
 import UiActions from "../../data/UiActions";
 import useFluxStore from "../../data/useFluxStore";
 import { SnackbarCloseReason } from "@mui/material/Snackbar/Snackbar";
-import {Alert, Color} from "from "@mui/lab";
+import {
+    Alert,
+    Color
+} from "@mui/lab";
 
 const useStyles = makeStyles(theme => ({
     snackbar: {
-        [theme.breakpoints.down("xs")]: {
+        [theme.breakpoints.down('sm')]: {
             bottom: 90,
         },
     },
@@ -94,32 +97,35 @@ function SnackPack() {
         message = messageInfo.message;
     }
 
-    return <Snackbar
-        key={messageInfo.key}
-        anchorOrigin={{
-            vertical: "bottom",
-            horizontal: "left",
-        }}
-        open={open}
-        autoHideDuration={messageInfo.hideDelay || 5000}
-        onClose={handleClose}
-        onExited={handleExited}
-        message={message}
-        className={fabVisible ? classes.snackbar : undefined}
-        action={<>
-            {messageInfo.renderAction ? messageInfo.renderAction(e => handleClose(e, "timeout")) : null}
-            <IconButton
-                aria-label="close"
-                color="inherit"
-                className={classes.close}
-                onClick={handleClickToClose}
-            >
-                <CloseIcon />
-            </IconButton>
-        </>}
-    >
-        {children}
-    </Snackbar>;
+    return (
+        <Snackbar
+            key={messageInfo.key}
+            anchorOrigin={{
+                vertical: "bottom",
+                horizontal: "left",
+            }}
+            open={open}
+            autoHideDuration={messageInfo.hideDelay || 5000}
+            onClose={handleClose}
+            message={message}
+            className={fabVisible ? classes.snackbar : undefined}
+            action={<>
+                {messageInfo.renderAction ? messageInfo.renderAction(e => handleClose(e, "timeout")) : null}
+                <IconButton
+                    aria-label="close"
+                    color="inherit"
+                    className={classes.close}
+                    onClick={handleClickToClose}
+                    size="large">
+                    <CloseIcon />
+                </IconButton>
+            </>}
+            TransitionProps={{
+                onExited: handleExited
+            }}>
+            {children}
+        </Snackbar>
+    );
 
 }
 

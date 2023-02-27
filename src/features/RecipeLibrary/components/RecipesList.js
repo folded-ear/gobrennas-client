@@ -180,61 +180,60 @@ function RecipesList(props = {}) {
     } else {
         body = <LoadingIndicator />;
     }
-    return <Content
-        className={isSearchFloating ? classes.paddedContent : null}
-    >
-        <Paper
-            elevation={isSearchFloating ? 4 : 1}
-            className={isSearchFloating ? classes.fixedSearch : classes.search}
+    return (
+        <Content
+            className={isSearchFloating ? classes.paddedContent : null}
         >
-            <InputBase
-                value={unsavedFilter}
-                onChange={handleSearchChange}
-                className={classes.input}
-                placeholder="Search Recipes"
-                style={{ flexGrow: 2 }}
-                onKeyDown={e => {
-                    if (e.key === "Enter") {
-                        handleSearch(e);
+            <Paper
+                elevation={isSearchFloating ? 4 : 1}
+                className={isSearchFloating ? classes.fixedSearch : classes.search}
+            >
+                <InputBase
+                    value={unsavedFilter}
+                    onChange={handleSearchChange}
+                    className={classes.input}
+                    placeholder="Search Recipes"
+                    style={{ flexGrow: 2 }}
+                    onKeyDown={e => {
+                        if (e.key === "Enter") {
+                            handleSearch(e);
+                        }
+                    }}
+                />
+                {isMobile || isSearchFloating
+                    ? <IconButton color={"primary"} onClick={handleSearch} size="large">
+                        <SearchIcon />
+                    </IconButton>
+                    : <Button
+                        variant={"contained"}
+                        onClick={handleSearch}
+                        color="primary"
+                        type="submit"
+                        aria-label="search"
+                        startIcon={<SearchIcon />}>
+                        Search
+                    </Button>}
+                <Divider className={classes.divider} orientation="vertical" />
+                <FormControlLabel
+                    control={
+                        <Switch checked={scope === SCOPE_EVERYONE}
+                                name="scope"
+                                onChange={toggleScope}
+                                color="primary"
+                        />
                     }
-                }}
-            />
-            {isMobile || isSearchFloating
-                ? <IconButton
-                    color={"primary"}
-                    onClick={handleSearch}
-                >
-                    <SearchIcon />
-                </IconButton>
-                : <Button
-                    variant={"contained"}
-                    onClick={handleSearch}
-                    color="primary"
-                    type="submit"
-                    aria-label="search"
-                    startIcon={<SearchIcon />}>
-                    Search
-                </Button>}
-            <Divider className={classes.divider} orientation="vertical" />
-            <FormControlLabel
-                control={
-                    <Switch checked={scope === SCOPE_EVERYONE}
-                            name="scope"
-                            onChange={toggleScope}
-                            color="primary"
-                    />
-                }
-                label={"Everyone"}
-                labelPlacement={"start"}
-            />
-        </Paper>
-        {body}
-        <FoodingerFab
-            onClick={() => history.push(`/add`)}
-        >
-            <AddIcon />
-        </FoodingerFab>
-    </Content>;
+                    label={"Everyone"}
+                    labelPlacement={"start"}
+                />
+            </Paper>
+            {body}
+            <FoodingerFab
+                onClick={() => history.push(`/add`)}
+            >
+                <AddIcon />
+            </FoodingerFab>
+        </Content>
+    );
 }
 
 RecipesList.defaultProps = {
