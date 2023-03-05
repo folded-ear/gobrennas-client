@@ -27,3 +27,4 @@ yarn-debug.log*
 yarn-error.log*
 
 /src/*.tokens
+/src/__generated__/

@@ -28,7 +28,6 @@
     "react-query": "^3.39.2",
     "react-router-dom": "^5.2.0",
     "react-showdown": "^2.3.1",
-    "typescript": "^4.9.5",
     "workbox-background-sync": "^5.1.4",
     "workbox-broadcast-update": "^5.1.4",
     "workbox-cacheable-response": "^5.1.4",
@@ -46,8 +45,11 @@
     "react-error-overlay": "6.0.9"
   },
   "scripts": {
+    "prestart": "npm run compile",
     "start": "PORT=3001 react-scripts start",
+    "prebuild": "npm run compile",
     "build": "react-scripts build",
+    "compile": "graphql-codegen",
     "test": "react-scripts test",
     "posttest": "eslint --max-warnings 0 ./src",
     "eject": "react-scripts eject",
@@ -58,6 +60,9 @@
     "extends": [
       "react-app",
       "react-app/jest"
+    ],
+    "ignorePatterns": [
+      "**/__generated__/**/*"
     ],
     "rules": {
       "no-prototype-builtins": 0,
@@ -111,6 +116,8 @@
     ]
   },
   "devDependencies": {
+    "@graphql-codegen/cli": "^3.2.1",
+    "@graphql-codegen/client-preset": "^2.1.0",
     "@testing-library/jest-dom": "^5.12.0",
     "@testing-library/react": "^11.2.7",
     "@testing-library/user-event": "^12.8.3",
@@ -119,6 +126,7 @@
     "react-dom": "^17.0.2",
     "react-error-overlay": "6.0.9",
     "react-scripts": "5.0.1",
-    "sass": "^1.57.1"
+    "sass": "^1.57.1",
+    "typescript": "^4.9.5"
   }
 }
