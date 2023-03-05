@@ -1,23 +1,16 @@
-import {
-    Box,
-    CircularProgress,
-    Grid,
-    Toolbar,
-    Typography,
-    useScrollTrigger,
-} from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
-import { PostAdd } from "@material-ui/icons";
+import {Box, CircularProgress, Grid, Toolbar, Typography, useScrollTrigger,} from "@material-ui/core";
+import {makeStyles} from "@material-ui/core/styles";
+import {PostAdd} from "@material-ui/icons";
 import PropTypes from "prop-types";
 import React from "react";
 import Dispatcher from "../../data/dispatcher";
 import RecipeActions from "../../data/RecipeActions";
 import RecipeApi from "../../data/RecipeApi";
-import { Recipe } from "../../data/RecipeTypes";
+import {Recipe} from "../../data/RecipeTypes";
 import useWindowSize from "../../data/useWindowSize";
 import history from "../../util/history";
-import { loadObjectOf } from "../../util/loadObjectTypes";
-import { formatDuration } from "../../util/time";
+import {loadObjectOf} from "../../util/loadObjectTypes";
+import {formatDuration} from "../../util/time";
 import CloseButton from "../common/CloseButton";
 import CopyButton from "../common/CopyButton";
 import DeleteButton from "../common/DeleteButton";
@@ -34,7 +27,8 @@ import IngredientDirectionsRow from "./IngredientDirectionsRow";
 import ShareRecipe from "./ShareRecipe";
 import SubrecipeItem from "./SubrecipeItem";
 import SendToPlan from "features/RecipeLibrary/components/SendToPlan";
-import { OptionalNumberish } from "../../types";
+import {OptionalNumberish} from "../../types";
+import FavoriteIndicator from "../../features/Favorites/components/Indicator";
 
 const useStyles = makeStyles(theme => ({
     name: {
@@ -98,7 +92,7 @@ SubHeader.propTypes = {
     children: PropTypes.node.isRequired,
 };
 
-const RecipeDetail = ({recipeLO, subrecipes, mine, ownerLO, anonymous}) => {
+const RecipeDetail = ({recipeLO, subrecipes, mine, ownerLO, anonymous, canFavorite}) => {
 
     const classes = useStyles();
 
@@ -118,6 +112,8 @@ const RecipeDetail = ({recipeLO, subrecipes, mine, ownerLO, anonymous}) => {
         <PageBody hasFab id="toolbar">
             <SubHeader>
                 <Toolbar className={classes.toolbar}>
+                    {canFavorite && <FavoriteIndicator type={"Recipe"}
+                                                       id={recipe.id} />}
                     <Typography
                         className={classes.name}
                         variant="h2"
@@ -220,6 +216,7 @@ RecipeDetail.propTypes = {
     mine: PropTypes.bool,
     // @ts-ignore
     ownerLO: loadObjectOf(PropTypes.object).isRequired,
+    canFavorite: PropTypes.bool,
 };
 
 export default RecipeDetail;
