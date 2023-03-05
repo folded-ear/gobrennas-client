@@ -19,7 +19,43 @@ type AccessControlEntry {
     user: User
 }
 
+type Favorite implements Node {
+    id: ID!
+    "The name/title of the object that is a favorite."
+    name: String!
+    "The ID of the object that is a favorite."
+    objectId: ID!
+    "The type of object that is a favorite."
+    objectType: String!
+    owner: User!
+}
+
+type FavoriteMutation {
+    """
+
+    Add the specified object to the current user's favorites, if not already
+    present, and returns the favorite.
+    """
+    markFavorite(objectId: ID!, objectType: String!): Favorite!
+    """
+
+    Remove the specified object from the current user's favorites, and return
+    whether any action was required to ensure this.
+    """
+    removeFavorite(objectId: ID!, objectType: String!): Boolean!
+}
+
+type FavoriteQuery {
+    "Retrieve the current user's favorites."
+    all: [Favorite!]!
+    "Retrieve the current user's favorite of the specified object, if exists."
+    byObject(objectId: ID!, objectType: String!): Favorite
+    "Retrieve the current user's for the specified object type."
+    byType(objectType: String!): [Favorite!]!
+}
+
 type Mutation {
+    favorite: FavoriteMutation
     timer: TimerMutation
 }
 
@@ -53,6 +89,7 @@ type PlanItem implements Node {
 }
 
 type Query {
+    favorite: FavoriteQuery
     getCurrentUser: User
     getPlanItem(id: ID!): PlanItem
     getPlans: [Plan]
