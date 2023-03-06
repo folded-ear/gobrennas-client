@@ -1,32 +1,24 @@
-import {
-    Box,
-    Button,
-    Card,
-    CardActions,
-    CardContent,
-    Typography,
-} from "@material-ui/core";
+import { Box, Button, Card, CardActions, CardContent, Grid, Typography, } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import {
-    MenuBook,
-} from "@material-ui/icons";
-import PropTypes from "prop-types";
-import React from "react";
-import { Link } from "react-router-dom";
+import { MenuBook, } from "@material-ui/icons";
 import Dispatcher from "data/dispatcher";
 import FriendStore from "data/FriendStore";
 import RecipeActions from "data/RecipeActions";
 import { Recipe } from "data/RecipeTypes";
 import useFluxStore from "data/useFluxStore";
+import ItemImage from "features/RecipeLibrary/components/ItemImage";
+import ItemImageUpload from "features/RecipeLibrary/components/ItemImageUpload";
+import LabelItem from "features/RecipeLibrary/components/LabelItem";
+import SendToPlan from "features/RecipeLibrary/components/SendToPlan";
+import PropTypes from "prop-types";
+import React from "react";
+import { Link } from "react-router-dom";
 import { loadObjectOf } from "util/loadObjectTypes";
 import { formatDuration } from "util/time";
 import RecipeInfo from "views/common/RecipeInfo";
 import Source from "views/common/Source";
-import LabelItem from "features/RecipeLibrary/components/LabelItem";
-import SendToPlan from "features/RecipeLibrary/components/SendToPlan";
 import User from "views/user/User";
-import ItemImage from "features/RecipeLibrary/components/ItemImage";
-import ItemImageUpload from "features/RecipeLibrary/components/ItemImageUpload";
+import FavoriteIndicator from "../../Favorites/components/Indicator";
 
 const useStyles = makeStyles({
     photo: {
@@ -79,34 +71,44 @@ const RecipeCard = ({recipe, mine, indicateMine, me}) => {
                     />
                 }
                 <CardContent>
-                    {owner && <div
-                        style={{
-                            float: "right",
-                        }}
-                    >
-                        <User
-                            {...owner}
-                            iconOnly
-                            inline
-                        />
-                    </div>}
-                    <Typography
-                        gutterBottom
-                        variant="h5"
-                        component={Link}
-                        to={`/library/recipe/${recipe.id}`}
-                        className={classes.title}
-                    >
-                        {recipe.name}
-                    </Typography>
-                    {recipe.externalUrl && <RecipeInfo label="Source" text={<Source url={recipe.externalUrl}/>}/>}
-                    {recipe.yield && <RecipeInfo label="Yield" text={`${recipe.yield} servings`}/>}
-                    {recipe.totalTime && <RecipeInfo label="Time" text={formatDuration(recipe.totalTime)}/>}
-                    {recipe.calories && <RecipeInfo label="Calories" text={recipe.calories}/>}
+                    <Grid container alignItems={"center"}>
+                        <Grid item>
+                            <FavoriteIndicator type={"Recipe"}
+                                               id={recipe.id} />
+                        </Grid>
+                        <Grid item style={{ flexGrow: 1 }}>
+                            <Typography
+                                gutterBottom
+                                variant="h5"
+                                component={Link}
+                                to={`/library/recipe/${recipe.id}`}
+                                className={classes.title}
+                            >
+                                {recipe.name}
+                            </Typography>
+                        </Grid>
+                        <Grid item>
+                            {owner && <div
+                                style={{
+                                    float: "right",
+                                }}
+                            >
+                                <User
+                                    {...owner}
+                                    iconOnly
+                                    inline
+                                />
+                            </div>}
+                        </Grid>
+                    </Grid>
+                    {recipe.externalUrl && <RecipeInfo label="Source" text={<Source url={recipe.externalUrl} />} />}
+                    {recipe.yield && <RecipeInfo label="Yield" text={`${recipe.yield} servings`} />}
+                    {recipe.totalTime && <RecipeInfo label="Time" text={formatDuration(recipe.totalTime)} />}
+                    {recipe.calories && <RecipeInfo label="Calories" text={recipe.calories} />}
 
                     {labelsToDisplay && <Box my={0.5}>
                         {labelsToDisplay.map(label =>
-                            <LabelItem key={label} label={label}/>)}
+                            <LabelItem key={label} label={label} />)}
                     </Box>}
                 </CardContent>
             </div>
