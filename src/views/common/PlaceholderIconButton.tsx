@@ -12,7 +12,7 @@ const useStyles = makeStyles(({
 const PlaceholderIconButton = props => {
     const classes = useStyles();
     return (
-        <IconButton className={classes.root} disabled {...props} size="large">
+        <IconButton className={classes.root} disabled {...props} size="small">
             <Blank />
         </IconButton>
     );
