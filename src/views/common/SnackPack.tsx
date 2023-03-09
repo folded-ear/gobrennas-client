@@ -14,7 +14,7 @@ import { Alert, } from "@mui/lab";
 
 const useStyles = makeStyles(theme => ({
     snackbar: {
-        [theme.breakpoints.down('sm')]: {
+        [theme.breakpoints.down("sm")]: {
             bottom: 90,
         },
     },

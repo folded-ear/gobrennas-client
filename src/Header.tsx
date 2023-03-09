@@ -40,7 +40,7 @@ const useStyles = makeStyles(theme => ({
         "& .MuiTab-root": {
             minWidth: TAB_WIDTH_MIN,
             marginRight: theme.spacing(2),
-            [theme.breakpoints.down('md')]: {
+            [theme.breakpoints.down("md")]: {
                 minWidth: 0,
                 marginRight: 0,
             },
@@ -63,7 +63,7 @@ const useStyles = makeStyles(theme => ({
         backgroundColor: "white",
         height: 4,
         bottom: 0,
-        [theme.breakpoints.down('md')]: {
+        [theme.breakpoints.down("md")]: {
             height: 2,
         },
     },

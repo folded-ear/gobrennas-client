@@ -12,7 +12,7 @@ import {
     useMediaQuery,
     useTheme,
 } from "@mui/material";
-import makeStyles from '@mui/styles/makeStyles';
+import makeStyles from "@mui/styles/makeStyles";
 import {
     Add,
     Cancel,
@@ -75,7 +75,7 @@ const RecipeForm = ({title, onSave, onSaveCopy, onCancel, extraButtons}) => {
     const lo = useDraftRecipeLO();
     const windowSize = useWindowSize();
     const theme = useTheme();
-    const mobile = useMediaQuery(theme.breakpoints.down('sm'));
+    const mobile = useMediaQuery(theme.breakpoints.down("sm"));
     const classes = useStyles();
     const draft = lo.getValueEnforcing();
     const MARGIN = 2;

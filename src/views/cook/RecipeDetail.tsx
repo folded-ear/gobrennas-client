@@ -1,16 +1,23 @@
-import {Box, CircularProgress, Grid, Toolbar, Typography, useScrollTrigger,} from "@mui/material";
-import makeStyles from '@mui/styles/makeStyles';
-import {PostAdd} from "@mui/icons-material";
+import {
+    Box,
+    CircularProgress,
+    Grid,
+    Toolbar,
+    Typography,
+    useScrollTrigger,
+} from "@mui/material";
+import makeStyles from "@mui/styles/makeStyles";
+import { PostAdd } from "@mui/icons-material";
 import PropTypes from "prop-types";
 import React from "react";
 import Dispatcher from "../../data/dispatcher";
 import RecipeActions from "../../data/RecipeActions";
 import RecipeApi from "../../data/RecipeApi";
-import {Recipe} from "../../data/RecipeTypes";
+import { Recipe } from "../../data/RecipeTypes";
 import useWindowSize from "../../data/useWindowSize";
 import history from "../../util/history";
-import {loadObjectOf} from "../../util/loadObjectTypes";
-import {formatDuration} from "../../util/time";
+import { loadObjectOf } from "../../util/loadObjectTypes";
+import { formatDuration } from "../../util/time";
 import CloseButton from "../common/CloseButton";
 import CopyButton from "../common/CopyButton";
 import DeleteButton from "../common/DeleteButton";
@@ -27,13 +34,13 @@ import IngredientDirectionsRow from "./IngredientDirectionsRow";
 import ShareRecipe from "./ShareRecipe";
 import SubrecipeItem from "./SubrecipeItem";
 import SendToPlan from "features/RecipeLibrary/components/SendToPlan";
-import {OptionalNumberish} from "../../types";
+import { OptionalNumberish } from "../../types";
 import FavoriteIndicator from "../../features/Favorites/components/Indicator";
 
 const useStyles = makeStyles(theme => ({
     name: {
         flexGrow: 1,
-        [theme.breakpoints.down('sm')]: {
+        [theme.breakpoints.down("sm")]: {
             width: "100%",
         },
     },
@@ -44,7 +51,7 @@ const useStyles = makeStyles(theme => ({
         marginRight: theme.spacing(4),
     },
     toolbar: {
-        [theme.breakpoints.down('sm')]: {
+        [theme.breakpoints.down("sm")]: {
             flexWrap: "wrap-reverse",
         },
         backgroundColor: "white",
