@@ -1,4 +1,4 @@
-import {Box, Button, Card, CardActions, CardContent,Grid, Typography,} from "@mui/material";
+import {Box, Button, Card, CardActions, CardContent,Grid, Typography,Stack} from "@mui/material";
 import {makeStyles} from "@mui/styles";
 import {MenuBook,} from "@mui/icons-material";
 import Dispatcher from "data/dispatcher";
@@ -57,7 +57,7 @@ const RecipeCard = ({recipe, mine, indicateMine, me}) => {
                 flexDirection: "column"
             }}
         >
-            <div>
+            <>
                 {recipe.photo
                     ? <Link to={`/library/recipe/${recipe.id}`}>
                         <ItemImage
@@ -111,8 +111,9 @@ const RecipeCard = ({recipe, mine, indicateMine, me}) => {
                             <LabelItem key={label} label={label} />)}
                     </Box>}
                 </CardContent>
-            </div>
+            </>
             <CardActions>
+                <Stack direction="row" spacing={2}>
                 <Button
                     variant="contained"
                     color="secondary"
@@ -123,11 +124,12 @@ const RecipeCard = ({recipe, mine, indicateMine, me}) => {
                 >
                     View
                 </Button>
-                <SendToPlan onClick={planId => Dispatcher.dispatch({
+                <SendToPlan size="small" onClick={planId => Dispatcher.dispatch({
                     type: RecipeActions.SEND_TO_PLAN,
                     recipeId: recipe.id,
                     planId,
                 })}/>
+                </Stack>
             </CardActions>
         </Card>
     );
