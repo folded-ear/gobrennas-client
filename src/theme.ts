@@ -1,11 +1,10 @@
 import {
-    adaptV4Theme,
     responsiveFontSizes,
     Theme,
     unstable_createMuiStrictModeTheme as createTheme,
 } from "@mui/material/styles";
 
-let theme : Theme = createTheme(adaptV4Theme({
+let theme : Theme = createTheme({
     palette: {
         primary: {
             light: "#f9683a",
@@ -47,14 +46,16 @@ let theme : Theme = createTheme(adaptV4Theme({
             marginBottom: ".5em"
         }
     },
-    overrides: {
+    components: {
         MuiTextField: {
-            root: {
-                backgroundColor: "white"
+            styleOverrides: {
+                root: {
+                    backgroundColor: "white"
+                }
             }
         }
     }
-}));
+});
 theme = responsiveFontSizes(theme);
 
 export default theme;
