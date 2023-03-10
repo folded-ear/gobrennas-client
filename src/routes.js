@@ -7,7 +7,6 @@ import PlannedRecipe from "./containers/PlannedRecipe";
 import Recipe from "./containers/Recipe";
 import RecipeEdit from "./containers/RecipeEdit";
 import Shop from "./containers/Shop";
-import RecipeAdd from "./views/cook/RecipeAdd";
 import SharedRecipe from "./views/cook/SharedRecipe";
 import Landing from "./views/Landing";
 import Pantry from "./views/pantry/Pantry";
@@ -15,6 +14,7 @@ import OAuth2RedirectHandler from "views/user/OAuth2RedirectHandler";
 import {UserProfileView} from "views/UserProfile/UserProfileView";
 import Profile from "./views/user/Profile";
 import Foodinger from "views/Foodinger";
+import RecipeAdd from "./features/RecipeEdit/RecipeAdd";
 
 const routes = {
     public: [

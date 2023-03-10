@@ -6,10 +6,10 @@ import RecipeActions from "../../data/RecipeActions";
 import RecipeApi from "../../data/RecipeApi";
 import { Recipe } from "../../data/RecipeTypes";
 import { loadObjectOf } from "../../util/loadObjectTypes";
-import DeleteButton from "../common/DeleteButton";
-import PageBody from "../common/PageBody";
 import { handleSave as handleSaveCopy } from "./RecipeAdd";
 import RecipeForm from "./RecipeForm";
+import PageBody from "../../views/common/PageBody";
+import DeleteButton from "../../views/common/DeleteButton";
 
 const handleDelete = (id) => {
     RecipeApi.deleteRecipe(id);

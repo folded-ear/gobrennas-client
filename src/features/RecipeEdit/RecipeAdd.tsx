@@ -1,8 +1,8 @@
 import React, { Component } from "react";
 import Dispatcher from "../../data/dispatcher";
 import RecipeActions from "../../data/RecipeActions";
-import PageBody from "../common/PageBody";
 import RecipeForm from "./RecipeForm";
+import PageBody from "../../views/common/PageBody";
 
 export const handleSave = recipe =>
     Dispatcher.dispatch({

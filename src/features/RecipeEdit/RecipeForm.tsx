@@ -20,7 +20,7 @@ import {
     FileCopy,
     Save,
 } from "@mui/icons-material";
-import ChipInput from "material-ui-chip-input";
+// import ChipInput from "material-ui-chip-input";
 import PropTypes from "prop-types";
 import React from "react";
 import Dispatcher from "../../data/dispatcher";
@@ -29,9 +29,9 @@ import { Recipe } from "../../data/RecipeTypes";
 import useDraftRecipeLO from "../../data/useDraftRecipeLO";
 import useWindowSize from "../../data/useWindowSize";
 import ImageDropZone from "../../util/ImageDropZone";
-import TextractFormAugment from "./TextractFormAugment";
-import ElEdit from "../ElEdit";
-import PositionPicker from "../PositionPicker";
+import ElEdit from "../../views/ElEdit";
+import TextractFormAugment from "../../views/cook/TextractFormAugment";
+import PositionPicker from "../../views/PositionPicker";
 
 const useStyles = makeStyles((theme) => ({
     button: {
@@ -273,14 +273,15 @@ const RecipeForm = ({title, onSave, onSaveCopy, onCancel, extraButtons}) => {
             </Grid>
         </Box>
         <Box my={MARGIN}>
-            <ChipInput
-                value={draft.labels}
-                onAdd={addLabel}
-                onDelete={removeLabel}
-                fullWidth
-                label="Labels"
-                placeholder="Type and press enter to add labels"
-            />
+            something
+            {/*<ChipInput*/}
+            {/*    value={draft.labels}*/}
+            {/*    onAdd={addLabel}*/}
+            {/*    onDelete={removeLabel}*/}
+            {/*    fullWidth*/}
+            {/*    label="Labels"*/}
+            {/*    placeholder="Type and press enter to add labels"*/}
+            {/*/>*/}
         </Box>
         <Grid container justifyContent={"space-between"}>
             <Grid item>
