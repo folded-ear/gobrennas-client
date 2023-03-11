@@ -6,7 +6,7 @@ import Dispatcher from "data/dispatcher";
 import TaskActions from "features/Planner/data/TaskActions";
 import {byNameComparator} from "util/comparators";
 import {CollapseAll, ExpandAll,} from "views/common/icons";
-import SplitButton from "views/common/SplitButton";
+import SplitButton from "global/components/SplitButton";
 import TaskListSidebar from "features/Planner/components/TaskListSidebar";
 import UserById from "features/Planner/components/UserById";
 

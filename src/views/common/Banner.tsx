@@ -6,7 +6,7 @@ import {
 } from "@mui/icons-material";
 import PropTypes from "prop-types";
 import React from "react";
-import CloseButton from "./CloseButton";
+import CloseButton from "global/components/CloseButton";
 import { lightBlue } from "@mui/material/colors";
 
 const Banner = ({

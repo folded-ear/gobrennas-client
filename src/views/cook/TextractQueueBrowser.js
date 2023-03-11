@@ -4,7 +4,7 @@ import {makeStyles} from "@mui/styles";
 import {Close} from "@mui/icons-material";
 import PropTypes from "prop-types";
 import React from "react";
-import DeleteButton from "../common/DeleteButton";
+import DeleteButton from "global/components/DeleteButton";
 import {clientOrDatabaseIdType} from "../../util/ClientId";
 import ImageDropZone from "../../util/ImageDropZone";
 import {useQuery} from "react-query";

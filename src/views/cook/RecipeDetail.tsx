@@ -18,10 +18,10 @@ import useWindowSize from "../../data/useWindowSize";
 import history from "../../util/history";
 import { loadObjectOf } from "../../util/loadObjectTypes";
 import { formatDuration } from "../../util/time";
-import CloseButton from "../common/CloseButton";
-import CopyButton from "../common/CopyButton";
-import DeleteButton from "../common/DeleteButton";
-import EditButton from "../common/EditButton";
+import CloseButton from "global/components/CloseButton";
+import CopyButton from "global/components/CopyButton";
+import DeleteButton from "global/components/DeleteButton";
+import EditButton from "global/components/EditButton";
 import FoodingerFab from "../common/FoodingerFab";
 import PageBody from "../common/PageBody";
 import RecipeInfo from "../common/RecipeInfo";
@@ -34,7 +34,7 @@ import IngredientDirectionsRow from "./IngredientDirectionsRow";
 import ShareRecipe from "./ShareRecipe";
 import SubrecipeItem from "./SubrecipeItem";
 import SendToPlan from "features/RecipeLibrary/components/SendToPlan";
-import { OptionalNumberish } from "../../global/types/types";
+import { OptionalNumberish } from "global/types/types";
 import FavoriteIndicator from "../../features/Favorites/components/Indicator";
 
 const useStyles = makeStyles(theme => ({

@@ -9,7 +9,7 @@ import { loadObjectOf } from "../../util/loadObjectTypes";
 import { handleSave as handleSaveCopy } from "./RecipeAdd";
 import RecipeForm from "./RecipeForm";
 import PageBody from "../../views/common/PageBody";
-import DeleteButton from "../../views/common/DeleteButton";
+import DeleteButton from "global/components/DeleteButton";
 
 const handleDelete = (id) => {
     RecipeApi.deleteRecipe(id);

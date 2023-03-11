@@ -5,7 +5,7 @@ import {
     getIconForStatus
 } from "features/Planner/constants";
 import { TaskStatus } from "features/Planner/types";
-import { coloredIconNoOp } from "../../global/components/ColoredIconNoOp";
+import { coloredIconNoOp } from "global/components/ColoredIconNoOp";
 
 const buttonLookup = {}; // Map<next, Button>
 const findButton = status => {

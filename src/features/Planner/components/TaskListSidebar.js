@@ -13,7 +13,7 @@ import FriendStore from "data/FriendStore";
 import TaskActions from "features/Planner/data/TaskActions";
 import useFluxStore from "data/useFluxStore";
 import {useProfileLO} from "providers/Profile";
-import DeleteButton from "views/common/DeleteButton";
+import DeleteButton from "global/components/DeleteButton";
 import LoadingIndicator from "views/common/LoadingIndicator";
 import PlanBucketManager from "features/Planner/components/PlanBucketManager";
 import SidebarUnit from "features/Planner/components/SidebarUnit";
