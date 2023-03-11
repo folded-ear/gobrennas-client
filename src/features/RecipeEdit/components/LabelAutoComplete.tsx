@@ -2,30 +2,30 @@ import * as React from "react"
 import Autocomplete from "@mui/lab/Autocomplete";
 import { Stack } from "@mui/material";
 import TextField from "@mui/material/TextField";
+import { Label } from "../RecipeForm";
 
 type LabelAutoCompleteProps = {
+    labels: Label[],
     onLabelChange: (e, labels, reason) => void
 }
 
-export const LabelAutoComplete: React.FC<LabelAutoCompleteProps> = ({onLabelChange}) => {
+export const LabelAutoComplete: React.FC<LabelAutoCompleteProps> = ({labels, onLabelChange}) => {
 
-    const top100Films = [
-        { title: 'The Shawshank Redemption', year: 1994 },
-        { title: 'The Godfather', year: 1972 },
-        { title: 'The Godfather: Part II', year: 1974 },
-        { title: 'The Dark Knight', year: 2008 },
-        { title: '12 Angry Men', year: 1957 },
-        { title: "Schindler's List", year: 1993 },
-        { title: 'Pulp Fiction', year: 1994 },
+    const labelList = [
+        { title: 'Benjamin' },
+        { title: 'Desserts' },
+        { title: 'Quick' },
     ];
+    console.log(labels)
+
     return (
         <Stack spacing={3} sx={{ width: 500 }}>
             <Autocomplete
                 multiple
                 id="tags-standard"
-                options={top100Films}
+                options={labelList}
                 getOptionLabel={(option) => option.title}
-                defaultValue={[top100Films[0]]}
+                value={labels}
                 onChange={onLabelChange}
                 renderInput={(params) => {
                     return (

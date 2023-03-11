@@ -38,6 +38,7 @@ const buildWirePacket = recipe => {
             delete it.id;
             return it;
         }),
+        labels: recipe.labels.map(label => label.title)
     };
     delete recipe.rawIngredients; // shouldn't exist
     return recipe;
@@ -63,6 +64,9 @@ const loadRecipeIfPossible = draftLO => {
                 id: i,
                 ...it,
             })),
+    })).map(s => ({
+        ...s,
+        labels: s.labels.map(label => ({title: label}))
     }));
 };
 
@@ -122,15 +126,9 @@ class DraftRecipeStore extends ReduceStore {
                 return state;
             }
 
-            case RecipeActions.NEW_DRAFT_LABEL: {
-                state = state.map( s => dotProp.set(s, "labels", s.labels.concat([action.data])));
-                return state;
-            }
-            
-            case RecipeActions.REMOVE_DRAFT_LABEL: {
-                const { index } = action.data;
-                state = state.map( s => dotProp.delete(s, `labels.${index}`));
-                return state;
+            case RecipeActions.DRAFT_LABEL_UPDATED: {
+                state = state.map(s => dotProp.set(s, "labels", action.data))
+                return state
             }
 
             case RecipeActions.NEW_DRAFT_INGREDIENT_YO: {

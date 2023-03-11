@@ -34,7 +34,7 @@ import TextractFormAugment from "../../views/cook/TextractFormAugment";
 import PositionPicker from "../../views/PositionPicker";
 import { LabelAutoComplete } from "./components/LabelAutoComplete";
 
-type Label = {
+export type Label = {
     title: string
 }
 const useStyles = makeStyles((theme) => ({
@@ -63,31 +63,13 @@ const handleNumericUpdate = (e) => {
 
 const handleLabelChange = (e, labels: Label[], reason: AutocompleteChangeReason) => {
     // One of "createOption", "selectOption", "removeOption", "blur" or "clear".
-    // console.log(e)
-    // console.log(labels)
-    // console.log(reason)
-
     if(reason === "selectOption" || "createOption" || "removeOption") {
         Dispatcher.dispatch({
-            type: RecipeActions.DRAFT_RECIPE_UPDATED,
-            data: {key: "labels", value: labels.map( label => label.title.replace(/\/+/g, "-"))},
+            type: RecipeActions.DRAFT_LABEL_UPDATED,
+            data: labels.map( label => ({...label, title: label.title.replace(/\/+/g, "-")})),
         });
     }
 }
-
-const handleAddLabel = (labels: string[]) => {
-    Dispatcher.dispatch({
-        type: RecipeActions.NEW_DRAFT_LABEL,
-        data: labels.map( label => label.replace(/\/+/g, "-")),
-    });
-};
-
-const removeLabel = (label, index) => {
-    Dispatcher.dispatch({
-        type: RecipeActions.REMOVE_DRAFT_LABEL,
-        data: {label, index},
-    });
-};
 
 const RecipeForm = ({title, onSave, onSaveCopy, onCancel, extraButtons}) => {
     const lo = useDraftRecipeLO();
@@ -291,7 +273,7 @@ const RecipeForm = ({title, onSave, onSaveCopy, onCancel, extraButtons}) => {
             </Grid>
         </Box>
         <Box my={MARGIN}>
-            <LabelAutoComplete onLabelChange={handleLabelChange} />
+            <LabelAutoComplete labels={draft.labels} onLabelChange={handleLabelChange} />
         </Box>
         <Grid container justifyContent={"space-between"}>
             <Grid item>

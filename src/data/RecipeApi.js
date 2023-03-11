@@ -1,5 +1,5 @@
 import BaseAxios from "axios";
-import { API_BASE_URL } from "../constants/index";
+import {API_BASE_URL} from "../constants/index";
 import promiseFlux from "util/promiseFlux";
 import promiseWellSizedFile from "util/promiseWellSizedFile";
 import RecipeActions from "./RecipeActions";
@@ -99,6 +99,16 @@ const RecipeApi = {
             queryClient.invalidateQueries([ "plan", planId, "items" ]));
     },
 
+    updateLabels(recipeId, labels) {
+        promiseFlux(
+            axios.post(`/recipe/${recipeId}/update_labels`,labels),
+            () => ({
+                type: RecipeActions.LABELS_UPDATED,
+                recipeId,
+                labels
+            }),
+        );
+    },
     addLabel(id, label) {
         promiseFlux(
             // this endpoint wants a plain-text post body containing the label
@@ -112,7 +122,6 @@ const RecipeApi = {
             }),
         );
     },
-
     removeLabel(id, label) {
         promiseFlux(
             axios.delete(`/recipe/${id}/labels/${encodeURIComponent(label)}`),
