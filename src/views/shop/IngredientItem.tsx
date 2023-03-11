@@ -4,7 +4,7 @@ import React from "react";
 import Dispatcher from "../../data/dispatcher";
 import PantryItemActions from "../../data/PantryItemActions";
 import ShoppingActions from "../../data/ShoppingActions";
-import TaskStatus from "features/Planner/data/TaskStatus";
+import { TaskStatus } from "features/Planner/types";
 import LoadingIconButton from "../common/LoadingIconButton";
 import OxfordList from "../common/OxfordList";
 import Quantity from "../common/Quantity";

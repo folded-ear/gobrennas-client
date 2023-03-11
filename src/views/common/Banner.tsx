@@ -7,7 +7,7 @@ import {
 import PropTypes from "prop-types";
 import React from "react";
 import CloseButton from "./CloseButton";
-import { selectionColor } from "./colors";
+import { lightBlue } from "@mui/material/colors";
 
 const Banner = ({
                     severity,
@@ -19,7 +19,7 @@ const Banner = ({
         alignItems="center"
         style={{
             backgroundColor: severity === "info"
-                ? selectionColor[100]
+                ? lightBlue[100]
                 : grey[200],
         }}
     >
