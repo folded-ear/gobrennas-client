@@ -1,6 +1,6 @@
 import * as React from "react"
 import RecipeEdit from "./RecipeEdit";
 
-export const RecipeFormController = () => {
+export const RecipeEditController = () => {
     return (<RecipeEdit />)
 }

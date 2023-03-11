@@ -1,4 +1,5 @@
 import {
+    AutocompleteChangeReason,
     Box,
     Button,
     ButtonGroup,
@@ -20,7 +21,6 @@ import {
     FileCopy,
     Save,
 } from "@mui/icons-material";
-// import ChipInput from "material-ui-chip-input";
 import PropTypes from "prop-types";
 import React from "react";
 import Dispatcher from "../../data/dispatcher";
@@ -32,7 +32,11 @@ import ImageDropZone from "../../util/ImageDropZone";
 import ElEdit from "../../views/ElEdit";
 import TextractFormAugment from "../../views/cook/TextractFormAugment";
 import PositionPicker from "../../views/PositionPicker";
+import { LabelAutoComplete } from "./components/LabelAutoComplete";
 
+type Label = {
+    title: string
+}
 const useStyles = makeStyles((theme) => ({
     button: {
         margin: theme.spacing(1),
@@ -57,10 +61,24 @@ const handleNumericUpdate = (e) => {
     updateDraft(key, isNaN(v) ? null : v);
 };
 
-const addLabel = (label) => {
+const handleLabelChange = (e, labels: Label[], reason: AutocompleteChangeReason) => {
+    // One of "createOption", "selectOption", "removeOption", "blur" or "clear".
+    // console.log(e)
+    // console.log(labels)
+    // console.log(reason)
+
+    if(reason === "selectOption" || "createOption" || "removeOption") {
+        Dispatcher.dispatch({
+            type: RecipeActions.DRAFT_RECIPE_UPDATED,
+            data: {key: "labels", value: labels.map( label => label.title.replace(/\/+/g, "-"))},
+        });
+    }
+}
+
+const handleAddLabel = (labels: string[]) => {
     Dispatcher.dispatch({
         type: RecipeActions.NEW_DRAFT_LABEL,
-        data: label.replace(/\/+/g, "-"),
+        data: labels.map( label => label.replace(/\/+/g, "-")),
     });
 };
 
@@ -273,15 +291,7 @@ const RecipeForm = ({title, onSave, onSaveCopy, onCancel, extraButtons}) => {
             </Grid>
         </Box>
         <Box my={MARGIN}>
-            something
-            {/*<ChipInput*/}
-            {/*    value={draft.labels}*/}
-            {/*    onAdd={addLabel}*/}
-            {/*    onDelete={removeLabel}*/}
-            {/*    fullWidth*/}
-            {/*    label="Labels"*/}
-            {/*    placeholder="Type and press enter to add labels"*/}
-            {/*/>*/}
+            <LabelAutoComplete onLabelChange={handleLabelChange} />
         </Box>
         <Grid container justifyContent={"space-between"}>
             <Grid item>
