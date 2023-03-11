@@ -6,7 +6,7 @@ import { withStyles } from "@mui/styles";
 import { grey } from "@mui/material/colors";
 import PropTypes from "prop-types";
 import React from "react";
-import { MUISize } from "../../types";
+import { MUISize } from "../../global/types/types";
 
 const CircProg = withStyles({
     root: {

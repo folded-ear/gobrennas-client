@@ -19,7 +19,7 @@ import {
 import {
     Recipe,
     SharedRecipe,
-} from "../../types";
+} from "../../global/types/types";
 import LoadObject from "../../util/LoadObject";
 
 const axios = BaseAxios.create({

@@ -13,7 +13,7 @@ import React from "react";
 import ItemApi from "data/ItemApi";
 import debounce from "util/debounce";
 import processRecognizedItem from "util/processRecognizedItem";
-import { Ingredient } from "../types";
+import { Ingredient } from "../global/types/types";
 import Autocomplete from "@mui/lab/Autocomplete";
 
 const doRecog = raw =>

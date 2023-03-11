@@ -14,7 +14,7 @@ import {
     itemPropTypes,
 } from "./types";
 import LoadObject from "../../util/LoadObject";
-import { Plan } from "../../types";
+import { Plan } from "../../global/types/types";
 
 type ShopListProps = {
     planLO: LoadObject<Plan>
