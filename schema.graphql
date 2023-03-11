@@ -102,6 +102,16 @@ type LibraryQuery {
     ): RecipeConnection!
 }
 
+type Label implements Node {
+    id: ID!
+    "Unique label name."
+    name: String!
+}
+
+type LabelsQuery {
+    all: [Label!]!
+}
+
 type Mutation {
     favorite: FavoriteMutation
     timer: TimerMutation
@@ -179,6 +189,7 @@ type Query {
     getPlanItem(id: ID!): PlanItem
     getPlans: [Plan]
     library: LibraryQuery
+    labels: LabelsQuery
     node(id: ID!): Node
     timer: TimerQuery
 }
