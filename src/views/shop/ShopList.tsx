@@ -1,6 +1,6 @@
-import { Typography } from "@material-ui/core";
-import List from "@material-ui/core/List";
-import Add from "@material-ui/icons/Add";
+import { Typography } from "@mui/material";
+import List from "@mui/material/List";
+import Add from "@mui/icons-material/Add";
 import React from "react";
 import Dispatcher from "data/dispatcher";
 import ShoppingActions from "data/ShoppingActions";
@@ -14,7 +14,7 @@ import {
     itemPropTypes,
 } from "./types";
 import LoadObject from "../../util/LoadObject";
-import { Plan } from "../../types";
+import { Plan } from "global/types/types";
 
 type ShopListProps = {
     planLO: LoadObject<Plan>

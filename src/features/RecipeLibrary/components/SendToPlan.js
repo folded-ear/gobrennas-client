@@ -1,12 +1,6 @@
-import {
-    Button,
-    IconButton,
-} from "@material-ui/core";
-import makeStyles from "@material-ui/core/styles/makeStyles";
-import {
-    AddShoppingCart,
-    ExitToApp,
-} from "@material-ui/icons";
+import {Button, IconButton,} from "@mui/material";
+import makeStyles from "@mui/styles/makeStyles";
+import {AddShoppingCart, ExitToApp,} from "@mui/icons-material";
 import React from "react";
 import useActivePlannerLO from "data/useActivePlannerLO";
 import PropTypes from "prop-types";

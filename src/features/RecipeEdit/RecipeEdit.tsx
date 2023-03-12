@@ -1,15 +1,17 @@
-import { CircularProgress } from "@material-ui/core";
+import { CircularProgress } from "@mui/material";
 import React from "react";
 import { Redirect } from "react-router-dom";
-import Dispatcher from "../../data/dispatcher";
-import RecipeActions from "../../data/RecipeActions";
-import RecipeApi from "../../data/RecipeApi";
-import { Recipe } from "../../data/RecipeTypes";
-import { loadObjectOf } from "../../util/loadObjectTypes";
-import DeleteButton from "../common/DeleteButton";
-import PageBody from "../common/PageBody";
+import Dispatcher from "data/dispatcher";
+import RecipeActions from "data/RecipeActions";
+import RecipeApi from "data/RecipeApi";
 import { handleSave as handleSaveCopy } from "./RecipeAdd";
-import RecipeForm from "./RecipeForm";
+import RecipeForm, { Label } from "./RecipeForm";
+import PageBody from "views/common/PageBody";
+import DeleteButton from "global/components/DeleteButton";
+import {
+    LoadObject,
+    Recipe
+} from "global/types/types";
 
 const handleDelete = (id) => {
     RecipeApi.deleteRecipe(id);
@@ -27,8 +29,12 @@ const handleCancel = recipe =>
         id: recipe.id,
     });
 
-const RecipeEdit = ({recipeLO}) => {
+type RecipeEditProps = {
+    recipeLO: LoadObject<Recipe>,
+    labelList: Label[]
+}
 
+export const RecipeEdit : React.FC<RecipeEditProps> = ({recipeLO, labelList}) => {
     if (!recipeLO.hasValue()) {
         if (recipeLO.isLoading()) {
             return <CircularProgress />;
@@ -43,6 +49,7 @@ const RecipeEdit = ({recipeLO}) => {
             onSave={handleSave}
             onSaveCopy={handleSaveCopy}
             onCancel={handleCancel}
+            labelList={labelList}
             extraButtons={
                 <DeleteButton
                     type="recipe"
@@ -52,9 +59,3 @@ const RecipeEdit = ({recipeLO}) => {
         />
     </PageBody>;
 };
-
-RecipeEdit.propTypes = {
-    recipeLO: loadObjectOf(Recipe),
-};
-
-export default RecipeEdit;

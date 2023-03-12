@@ -1,14 +1,16 @@
-import {GridList, GridListTile, GridListTileBar, IconButton, Typography,} from "@material-ui/core";
-import Drawer from "@material-ui/core/Drawer";
-import {makeStyles} from "@material-ui/core/styles";
-import {Close} from "@material-ui/icons";
+import {IconButton, ImageList, ImageListItem, ImageListItemBar, Typography,} from "@mui/material";
+import Drawer from "@mui/material/Drawer";
+import {makeStyles} from "@mui/styles";
+import {Close} from "@mui/icons-material";
 import PropTypes from "prop-types";
 import React from "react";
-import DeleteButton from "../common/DeleteButton";
+import DeleteButton from "global/components/DeleteButton";
 import {clientOrDatabaseIdType} from "../../util/ClientId";
 import ImageDropZone from "../../util/ImageDropZone";
 import {useQuery} from "react-query";
 import TextractApi from "../../data/TextractApi";
+
+;
 
 const useStyles = makeStyles({
     drawer: {
@@ -56,51 +58,50 @@ const Ui = ({onSelect, onClose, onUpload, onDelete, queue: persistent, deleting,
             ? "deleting"
             : j.ready ? "ready" : "extracting",
     })));
-    return <Drawer
-        open
-        anchor="right"
-        onClose={onClose}
-    >
-        <div
-            className={classes.drawer}
+    return (
+        <Drawer
+            open
+            anchor="right"
+            onClose={onClose}
         >
-            <IconButton
-                onClick={onClose}
-                className={classes.closeButton}
+            <div
+                className={classes.drawer}
             >
-                <Close />
-            </IconButton>
-            <Typography variant="h3">
-                Select Photo
-            </Typography>
-            <GridList>
-                <GridListTile>
-                    <ImageDropZone
-                        className={classes.dropZone}
-                        onImage={onUpload}
-                    />
-                </GridListTile>
-                {queue.map(j => <GridListTile
-                    key={j.id}
-                    onClick={j.state === "ready" ? () => onSelect(j.id) : null}
-                    className={j.state === "ready" ? classes.ready : classes.inactive}
-                    title={j.ready ? "Use this photo" : null}
-                >
-                    <img src={j.url} alt={j.name} />
-                    <GridListTileBar
-                        title={j.name}
-                        subtitle={j.ready ? null : (j.state + "...")}
-                        actionIcon={(j.state === "ready" || j.state === "extracting") &&
-                        <DeleteButton
-                            type="photo"
-                            onConfirm={() => onDelete(j.id)}
-                            className={classes.deleteButton}
-                        />}
-                    />
-                </GridListTile>)}
-            </GridList>
-        </div>
-    </Drawer>;
+                <IconButton onClick={onClose} className={classes.closeButton} size="large">
+                    <Close />
+                </IconButton>
+                <Typography variant="h3">
+                    Select Photo
+                </Typography>
+                <ImageList>
+                    <ImageListItem>
+                        <ImageDropZone
+                            className={classes.dropZone}
+                            onImage={onUpload}
+                        />
+                    </ImageListItem>
+                    {queue.map(j => <ImageListItem
+                        key={j.id}
+                        onClick={j.state === "ready" ? () => onSelect(j.id) : null}
+                        className={j.state === "ready" ? classes.ready : classes.inactive}
+                        title={j.ready ? "Use this photo" : null}
+                    >
+                        <img src={j.url} alt={j.name} />
+                        <ImageListItemBar
+                            title={j.name}
+                            subtitle={j.ready ? null : (j.state + "...")}
+                            actionIcon={(j.state === "ready" || j.state === "extracting") &&
+                            <DeleteButton
+                                type="photo"
+                                onConfirm={() => onDelete(j.id)}
+                                className={classes.deleteButton}
+                            />}
+                        />
+                    </ImageListItem>)}
+                </ImageList>
+            </div>
+        </Drawer>
+    );
 };
 
 const Job = PropTypes.shape({

@@ -1,14 +1,8 @@
-import React, {
-    useEffect,
-    useState,
-} from "react";
+import React, {useEffect, useState,} from "react";
 import PropTypes from "prop-types";
-import { formatTimer } from "../../../util/time";
-import { timerType } from "../types/types";
-import {
-    Box,
-    LinearProgress,
-} from "@material-ui/core";
+import {formatTimer} from "../../../util/time";
+import {timerType} from "../types/types";
+import {Box, LinearProgress,} from "@mui/material";
 
 const secondsLeft = end =>
     (end - Date.now()) / 1000;

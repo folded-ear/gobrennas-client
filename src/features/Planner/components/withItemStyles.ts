@@ -1,12 +1,6 @@
-import withStyles from "@material-ui/core/styles/withStyles";
-import {
-    acquiredColor,
-    completeColor,
-    deleteColor,
-    neededColor,
-    questionColor,
-    selectionColor,
-} from "views/common/colors";
+import withStyles from "@mui/styles/withStyles";
+import { taskStatusConfig } from "../constants";
+import { TaskStatus } from "../types";
 
 const withItemStyles = withStyles({
     text: {
@@ -24,28 +18,28 @@ const withItemStyles = withStyles({
         },
     },
     question: {
-        backgroundColor: questionColor[100],
+        backgroundColor: taskStatusConfig[TaskStatus.OPTIONAL].color,
     },
     active: {
-        backgroundColor: selectionColor[100],
+        backgroundColor: taskStatusConfig[TaskStatus.SELECTED].color,
     },
     selected: {
-        backgroundColor: selectionColor[50],
+        backgroundColor: taskStatusConfig[TaskStatus.SELECTED].color,
     },
     acquiring: {
-        backgroundColor: acquiredColor[50],
+        backgroundColor: taskStatusConfig[TaskStatus.ACQUIRED].color,
     },
     needing: {
-        backgroundColor: neededColor[100],
+        backgroundColor: taskStatusConfig[TaskStatus.NEEDED].color,
     },
     deleting: {
         opacity: 0.8,
         textDecoration: "line-through",
-        backgroundColor: deleteColor[50],
+        backgroundColor: taskStatusConfig[TaskStatus.DELETED].color,
     },
     completing: {
         opacity: 0.8,
-        backgroundColor: completeColor[50],
+        backgroundColor: taskStatusConfig[TaskStatus.COMPLETED].color,
     },
     ancestorDeleting: {
         opacity: 0.6,

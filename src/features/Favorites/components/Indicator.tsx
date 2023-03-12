@@ -1,6 +1,13 @@
-import {IconButton} from "@material-ui/core";
-import {Star, StarBorder} from "@material-ui/icons";
-import {useIsFavorite, useMarkFavorite, useRemoveFavorite} from "../data/queries";
+import {
+    Star,
+    StarBorder
+} from "@mui/icons-material";
+import {
+    useIsFavorite,
+    useMarkFavorite,
+    useRemoveFavorite
+} from "../data/queries";
+import { IconButton } from "@mui/material";
 
 interface Props {
     type: string,

@@ -1,6 +1,13 @@
-import {useMutation, useQuery} from "@apollo/client";
-import {useCallback, useEffect, useState} from "react";
-import {gql} from "../../../__generated__";
+import {
+    gql,
+    useMutation,
+    useQuery
+} from "@apollo/client";
+import {
+    useCallback,
+    useEffect,
+    useState
+} from "react";
 
 export type IdCallback = (number) => boolean;
 

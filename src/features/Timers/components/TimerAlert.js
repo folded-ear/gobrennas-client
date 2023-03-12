@@ -1,28 +1,12 @@
-import React, {
-    useEffect,
-    useState,
-} from "react";
-import {
-    Dialog,
-    DialogActions,
-    DialogContent,
-    DialogContentText,
-    DialogTitle,
-    IconButton,
-} from "@material-ui/core";
+import React, {useEffect, useState,} from "react";
+import {Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, IconButton,} from "@mui/material";
 import AddTimeButton from "./AddTimeButton";
-import {
-    Replay as ResetIcon,
-    Stop as StopIcon,
-} from "@material-ui/icons";
-import { formatTimer } from "../../../util/time";
+import {Replay as ResetIcon, Stop as StopIcon,} from "@mui/icons-material";
+import {formatTimer} from "../../../util/time";
 import TimeLeft from "./TimeLeft";
 import alarm from "../media/alarm.mp3";
-import { useTimerList } from "../data/TimerContext";
-import {
-    useDeleteTimer,
-    useResetTimer,
-} from "../data/queries";
+import {useTimerList} from "../data/TimerContext";
+import {useDeleteTimer, useResetTimer,} from "../data/queries";
 
 function TimerAlert() {
     const { data: timers } = useTimerList();
@@ -46,37 +30,35 @@ function TimerAlert() {
     const handleStop = () =>
         doDelete(completed.id);
 
-    return <Dialog
-        open={true}
-        aria-labelledby="timer-alert-title"
-        aria-describedby="timer-alert-description"
-    >
-        <DialogTitle id="timer-alert-title">
-            {formatTimer(completed.initialDuration)} Timer Complete!
-        </DialogTitle>
-        <DialogContent>
-            <DialogContentText id="alert-dialog-description">
-                And it's been <TimeLeft timer={completed} /> since.
-            </DialogContentText>
-            <audio src={alarm} autoPlay loop />
-        </DialogContent>
-        <DialogActions>
-            <AddTimeButton
-                seconds={60}
-                onClick={handleAddTime}
-            />
-            <IconButton
-                onClick={handleReset}
-            >
-                <ResetIcon />
-            </IconButton>
-            <IconButton
-                onClick={handleStop}
-            >
-                <StopIcon />
-            </IconButton>
-        </DialogActions>
-    </Dialog>;
+    return (
+        <Dialog
+            open={true}
+            aria-labelledby="timer-alert-title"
+            aria-describedby="timer-alert-description"
+        >
+            <DialogTitle id="timer-alert-title">
+                {formatTimer(completed.initialDuration)} Timer Complete!
+            </DialogTitle>
+            <DialogContent>
+                <DialogContentText id="alert-dialog-description">
+                    And it's been <TimeLeft timer={completed} /> since.
+                </DialogContentText>
+                <audio src={alarm} autoPlay loop />
+            </DialogContent>
+            <DialogActions>
+                <AddTimeButton
+                    seconds={60}
+                    onClick={handleAddTime}
+                />
+                <IconButton onClick={handleReset} size="large">
+                    <ResetIcon />
+                </IconButton>
+                <IconButton onClick={handleStop} size="large">
+                    <StopIcon />
+                </IconButton>
+            </DialogActions>
+        </Dialog>
+    );
 }
 
 export default TimerAlert;

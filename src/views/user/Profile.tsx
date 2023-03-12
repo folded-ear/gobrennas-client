@@ -1,4 +1,4 @@
-import Divider from "@material-ui/core/Divider";
+import Divider from "@mui/material/Divider";
 import PropTypes from "prop-types";
 import React from "react";
 import { useIsDeveloper } from "providers/Profile";

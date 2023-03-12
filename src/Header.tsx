@@ -7,8 +7,8 @@ import {
     Tabs,
     Toolbar,
     Typography,
-} from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
+} from "@mui/material";
+import { makeStyles } from "@mui/styles";
 import {
     AccountCircle as ProfileIcon,
     EventNote as PlanIcon,
@@ -16,7 +16,7 @@ import {
     MeetingRoom as PantryIcon,
     MenuBook as LibraryIcon,
     ShoppingCart as ShopIcon,
-} from "@material-ui/icons";
+} from "@mui/icons-material";
 import React from "react";
 import {
     Link,
@@ -40,7 +40,7 @@ const useStyles = makeStyles(theme => ({
         "& .MuiTab-root": {
             minWidth: TAB_WIDTH_MIN,
             marginRight: theme.spacing(2),
-            [theme.breakpoints.down("sm")]: {
+            [theme.breakpoints.down("md")]: {
                 minWidth: 0,
                 marginRight: 0,
             },
@@ -63,7 +63,7 @@ const useStyles = makeStyles(theme => ({
         backgroundColor: "white",
         height: 4,
         bottom: 0,
-        [theme.breakpoints.down("sm")]: {
+        [theme.breakpoints.down("md")]: {
             height: 2,
         },
     },

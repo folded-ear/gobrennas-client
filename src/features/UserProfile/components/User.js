@@ -1,6 +1,6 @@
-import makeStyles from "@material-ui/core/styles/makeStyles";
-import Avatar from "@material-ui/core/Avatar";
-import Box from "@material-ui/core/Box";
+import makeStyles from "@mui/styles/makeStyles";
+import Avatar from "@mui/material/Avatar";
+import Box from "@mui/material/Box";
 import React from "@types/react";
 import PropTypes from "prop-types";
 

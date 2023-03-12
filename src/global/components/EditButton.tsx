@@ -1,8 +1,9 @@
 import {
     IconButton,
-    Tooltip, TooltipProps,
-} from "@material-ui/core";
-import { Edit } from "@material-ui/icons";
+    Tooltip,
+    TooltipProps,
+} from "@mui/material";
+import { Edit } from "@mui/icons-material";
 import PropTypes from "prop-types";
 import React from "react";
 
@@ -15,9 +16,7 @@ const EditButton = ({
             title="Edit"
             placement={tooltipPlacement as TooltipProps["placement"]}
         >
-            <IconButton
-                onClick={onClick}
-            >
+            <IconButton onClick={onClick} size="large">
                 <Edit />
             </IconButton>
         </Tooltip>

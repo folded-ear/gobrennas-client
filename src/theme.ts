@@ -1,7 +1,8 @@
 import {
-    responsiveFontSizes, Theme,
-    unstable_createMuiStrictModeTheme as createTheme,
-} from "@material-ui/core/styles";
+    createTheme,
+    responsiveFontSizes,
+    Theme,
+} from "@mui/material/styles";
 
 let theme : Theme = createTheme({
     palette: {
@@ -45,10 +46,12 @@ let theme : Theme = createTheme({
             marginBottom: ".5em"
         }
     },
-    overrides: {
+    components: {
         MuiTextField: {
-            root: {
-                backgroundColor: "white"
+            styleOverrides: {
+                root: {
+                    backgroundColor: "white"
+                }
             }
         }
     }

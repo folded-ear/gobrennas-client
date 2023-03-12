@@ -3,7 +3,7 @@ import {
     List,
     ListItem,
     Typography,
-} from "@material-ui/core";
+} from "@mui/material";
 import PropTypes from "prop-types";
 import React from "react";
 import { Recipe } from "../../data/RecipeTypes";

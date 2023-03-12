@@ -1,5 +1,5 @@
-import { Container } from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
+import { Container } from "@mui/material";
+import { makeStyles } from "@mui/styles";
 import classnames from "classnames";
 import React from "react";
 import { HEADER_HEIGHT } from "../../constants/layout";

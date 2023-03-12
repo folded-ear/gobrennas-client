@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Button } from "@material-ui/core";
-import { formatTimer } from "../../../util/time";
+import {Button} from "@mui/material";
+import {formatTimer} from "../../../util/time";
 
 function AddTimeButton({
                            seconds,

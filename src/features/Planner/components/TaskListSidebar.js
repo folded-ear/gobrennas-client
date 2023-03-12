@@ -1,22 +1,19 @@
-import {
-    MenuItem,
-    Typography,
-} from "@material-ui/core";
-import Box from "@material-ui/core/Box";
-import Grid from "@material-ui/core/Grid";
-import List from "@material-ui/core/List";
-import ListItem from "@material-ui/core/ListItem";
-import Select from "@material-ui/core/Select";
-import TextField from "@material-ui/core/TextField";
+import {MenuItem, Typography,} from "@mui/material";
+import Box from "@mui/material/Box";
+import Grid from "@mui/material/Grid";
+import List from "@mui/material/List";
+import ListItem from "@mui/material/ListItem";
+import Select from "@mui/material/Select";
+import TextField from "@mui/material/TextField";
 import PropTypes from "prop-types";
 import React from "react";
-import AccessLevel, { includesLevel } from "data/AccessLevel";
+import AccessLevel, {includesLevel} from "data/AccessLevel";
 import Dispatcher from "data/dispatcher";
 import FriendStore from "data/FriendStore";
 import TaskActions from "features/Planner/data/TaskActions";
 import useFluxStore from "data/useFluxStore";
-import { useProfileLO } from "providers/Profile";
-import DeleteButton from "views/common/DeleteButton";
+import {useProfileLO} from "providers/Profile";
+import DeleteButton from "global/components/DeleteButton";
 import LoadingIndicator from "views/common/LoadingIndicator";
 import PlanBucketManager from "features/Planner/components/PlanBucketManager";
 import SidebarUnit from "features/Planner/components/SidebarUnit";

@@ -1,5 +1,5 @@
 import * as React from "react";
-import Divider from "@material-ui/core/Divider";
+import Divider from "@mui/material/Divider";
 import {useGetCurrentUser} from "./hooks/useGetCurrentUser";
 import User from "../../views/user/User";
 import {selectCurrentUser} from "./selectors/selectCurrentUser";

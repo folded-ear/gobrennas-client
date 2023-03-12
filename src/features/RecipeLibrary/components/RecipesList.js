@@ -11,22 +11,24 @@ import {
     Switch,
     Typography,
     useScrollTrigger,
-} from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
-import { PostAdd as AddIcon, Search as SearchIcon, } from "@material-ui/icons";
+} from "@mui/material";
+import {makeStyles} from "@mui/styles";
+import {PostAdd as AddIcon, Search as SearchIcon,} from "@mui/icons-material";
 import Dispatcher from "data/dispatcher";
-import { Recipe } from "data/RecipeTypes";
+import {Recipe} from "data/RecipeTypes";
 import RecipeCard from "features/RecipeLibrary/components/RecipeCard";
 import LibraryActions from "features/RecipeLibrary/data/LibraryActions";
-import { SCOPE_EVERYONE, SCOPE_MINE, } from "features/RecipeLibrary/data/LibraryStore";
+import {SCOPE_EVERYONE, SCOPE_MINE,} from "features/RecipeLibrary/data/LibraryStore";
 import PropTypes from "prop-types";
-import { useIsMobile } from "providers/IsMobile";
-import React, { useEffect, useState } from "react";
+import {useIsMobile} from "providers/IsMobile";
+import React, {useEffect, useState} from "react";
 import history from "util/history";
-import { loadObjectOf } from "util/loadObjectTypes";
+import {loadObjectOf} from "util/loadObjectTypes";
 import FoodingerFab from "views/common/FoodingerFab";
 import LazyInfinite from "views/common/LazyInfinite";
 import LoadingIndicator from "views/common/LoadingIndicator";
+
+;
 
 const useStyles = makeStyles((theme) => {
     const search = {
@@ -180,61 +182,60 @@ function RecipesList(props = {}) {
     } else {
         body = <LoadingIndicator />;
     }
-    return <Content
-        className={isSearchFloating ? classes.paddedContent : null}
-    >
-        <Paper
-            elevation={isSearchFloating ? 4 : 1}
-            className={isSearchFloating ? classes.fixedSearch : classes.search}
+    return (
+        <Content
+            className={isSearchFloating ? classes.paddedContent : null}
         >
-            <InputBase
-                value={unsavedFilter}
-                onChange={handleSearchChange}
-                className={classes.input}
-                placeholder="Search Recipes"
-                style={{ flexGrow: 2 }}
-                onKeyDown={e => {
-                    if (e.key === "Enter") {
-                        handleSearch(e);
+            <Paper
+                elevation={isSearchFloating ? 4 : 1}
+                className={isSearchFloating ? classes.fixedSearch : classes.search}
+            >
+                <InputBase
+                    value={unsavedFilter}
+                    onChange={handleSearchChange}
+                    className={classes.input}
+                    placeholder="Search Recipes"
+                    style={{ flexGrow: 2 }}
+                    onKeyDown={e => {
+                        if (e.key === "Enter") {
+                            handleSearch(e);
+                        }
+                    }}
+                />
+                {isMobile || isSearchFloating
+                    ? <IconButton color={"primary"} onClick={handleSearch} size="large">
+                        <SearchIcon />
+                    </IconButton>
+                    : <Button
+                        variant={"contained"}
+                        onClick={handleSearch}
+                        color="primary"
+                        type="submit"
+                        aria-label="search"
+                        startIcon={<SearchIcon />}>
+                        Search
+                    </Button>}
+                <Divider className={classes.divider} orientation="vertical" />
+                <FormControlLabel
+                    control={
+                        <Switch checked={scope === SCOPE_EVERYONE}
+                                name="scope"
+                                onChange={toggleScope}
+                                color="primary"
+                        />
                     }
-                }}
-            />
-            {isMobile || isSearchFloating
-                ? <IconButton
-                    color={"primary"}
-                    onClick={handleSearch}
-                >
-                    <SearchIcon />
-                </IconButton>
-                : <Button
-                    variant={"contained"}
-                    onClick={handleSearch}
-                    color="primary"
-                    type="submit"
-                    aria-label="search"
-                    startIcon={<SearchIcon />}>
-                    Search
-                </Button>}
-            <Divider className={classes.divider} orientation="vertical" />
-            <FormControlLabel
-                control={
-                    <Switch checked={scope === SCOPE_EVERYONE}
-                            name="scope"
-                            onChange={toggleScope}
-                            color="primary"
-                    />
-                }
-                label={"Everyone"}
-                labelPlacement={"start"}
-            />
-        </Paper>
-        {body}
-        <FoodingerFab
-            onClick={() => history.push(`/add`)}
-        >
-            <AddIcon />
-        </FoodingerFab>
-    </Content>;
+                    label={"Everyone"}
+                    labelPlacement={"start"}
+                />
+            </Paper>
+            {body}
+            <FoodingerFab
+                onClick={() => history.push(`/add`)}
+            >
+                <AddIcon />
+            </FoodingerFab>
+        </Content>
+    );
 }
 
 RecipesList.defaultProps = {

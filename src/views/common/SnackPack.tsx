@@ -1,20 +1,20 @@
 import * as React from "react";
 import {
+    AlertColor,
     IconButton,
     Snackbar,
-} from "@material-ui/core";
-import makeStyles from "@material-ui/core/styles/makeStyles";
-import { Close as CloseIcon } from "@material-ui/icons";
-import {Alert, Color} from "@material-ui/lab";
+} from "@mui/material";
+import makeStyles from "@mui/styles/makeStyles";
+import { Close as CloseIcon } from "@mui/icons-material";
 import dispatcher from "../../data/dispatcher";
 import snackBarStore from "../../data/snackBarStore";
 import UiActions from "../../data/UiActions";
 import useFluxStore from "../../data/useFluxStore";
-import {SnackbarCloseReason} from "@material-ui/core/Snackbar/Snackbar";
+import { Alert, } from "@mui/lab";
 
 const useStyles = makeStyles(theme => ({
     snackbar: {
-        [theme.breakpoints.down("xs")]: {
+        [theme.breakpoints.down("sm")]: {
             bottom: 90,
         },
     },
@@ -27,8 +27,8 @@ type MessageInfo = {
     renderAction: any;
     key: string;
     message: string;
-    onClose: (event: React.SyntheticEvent<any>, reason: SnackbarCloseReason) => void;
-    severity: Color;
+    onClose: (event?: React.SyntheticEvent | Event, reason?: string) => void;
+    severity: AlertColor;
     hideDelay?: number;
 } | undefined
 
@@ -61,7 +61,7 @@ function SnackPack() {
 
     if (!messageInfo) return null;
 
-    const handleClose = (event: React.SyntheticEvent<any>, reason: SnackbarCloseReason) => {
+    const handleClose = (event?: React.SyntheticEvent | Event, reason?: string) => {
         setOpen(false);
         messageInfo.onClose && messageInfo.onClose.call(undefined, event, reason);
         dispatcher.dispatch({
@@ -94,32 +94,35 @@ function SnackPack() {
         message = messageInfo.message;
     }
 
-    return <Snackbar
-        key={messageInfo.key}
-        anchorOrigin={{
-            vertical: "bottom",
-            horizontal: "left",
-        }}
-        open={open}
-        autoHideDuration={messageInfo.hideDelay || 5000}
-        onClose={handleClose}
-        onExited={handleExited}
-        message={message}
-        className={fabVisible ? classes.snackbar : undefined}
-        action={<>
-            {messageInfo.renderAction ? messageInfo.renderAction(e => handleClose(e, "timeout")) : null}
-            <IconButton
-                aria-label="close"
-                color="inherit"
-                className={classes.close}
-                onClick={handleClickToClose}
-            >
-                <CloseIcon />
-            </IconButton>
-        </>}
-    >
-        {children}
-    </Snackbar>;
+    return (
+        <Snackbar
+            key={messageInfo.key}
+            anchorOrigin={{
+                vertical: "bottom",
+                horizontal: "left",
+            }}
+            open={open}
+            autoHideDuration={messageInfo.hideDelay || 5000}
+            onClose={handleClose}
+            message={message}
+            className={fabVisible ? classes.snackbar : undefined}
+            action={<>
+                {messageInfo.renderAction ? messageInfo.renderAction(e => handleClose(e, "timeout")) : null}
+                <IconButton
+                    aria-label="close"
+                    color="inherit"
+                    className={classes.close}
+                    onClick={handleClickToClose}
+                    size="large">
+                    <CloseIcon />
+                </IconButton>
+            </>}
+            TransitionProps={{
+                onExited: handleExited
+            }}>
+            {children}
+        </Snackbar>
+    );
 
 }
 

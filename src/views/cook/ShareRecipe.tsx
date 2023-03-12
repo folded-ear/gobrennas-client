@@ -7,9 +7,9 @@ import {
     Paper,
     TextField,
     Tooltip,
-} from "@material-ui/core";
-import makeStyles from "@material-ui/core/styles/makeStyles";
-import { Share } from "@material-ui/icons";
+} from "@mui/material";
+import makeStyles from "@mui/styles/makeStyles";
+import { Share } from "@mui/icons-material";
 import BaseAxios from "axios";
 import React from "react";
 import {
@@ -19,7 +19,7 @@ import {
 import {
     Recipe,
     SharedRecipe,
-} from "../../types";
+} from "global/types/types";
 import LoadObject from "../../util/LoadObject";
 
 const axios = BaseAxios.create({
@@ -74,9 +74,7 @@ const ShareRecipe : React.FC<ShareRecipeProps> = ({recipe}) => {
         title="Share this recipe"
         placement="top"
     >
-        <IconButton
-            onClick={() => setOpen(true)}
-        >
+        <IconButton onClick={() => setOpen(true)} size="large">
             <Share />
         </IconButton>
     </Tooltip>;

@@ -2,8 +2,8 @@ import {
     Divider,
     Grid,
     Typography,
-} from "@material-ui/core";
-import makeStyles from "@material-ui/core/styles/makeStyles";
+} from "@mui/material";
+import makeStyles from "@mui/styles/makeStyles";
 import PropTypes from "prop-types";
 import React from "react";
 import { Recipe } from "../../data/RecipeTypes";

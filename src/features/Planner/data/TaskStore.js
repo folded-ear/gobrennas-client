@@ -1,21 +1,15 @@
 import dotProp from "dot-prop-immutable";
-import { ReduceStore } from "flux/utils";
+import {ReduceStore} from "flux/utils";
 import invariant from "invariant";
 import PropTypes from "prop-types";
-import { removeAtIndex } from "util/arrayAsSet";
-import ClientId, { clientOrDatabaseIdType } from "util/ClientId";
-import { bucketComparator } from "util/comparators";
+import {removeAtIndex} from "util/arrayAsSet";
+import ClientId, {clientOrDatabaseIdType} from "util/ClientId";
+import {bucketComparator} from "util/comparators";
 import inTheFuture from "util/inTheFuture";
 import LoadObject from "util/LoadObject";
 import LoadObjectState from "util/LoadObjectState";
-import {
-    loadObjectOf,
-    loadObjectStateOf,
-} from "util/loadObjectTypes";
-import {
-    formatLocalDate,
-    parseLocalDate,
-} from "util/time";
+import {loadObjectOf, loadObjectStateOf,} from "util/loadObjectTypes";
+import {formatLocalDate, parseLocalDate,} from "util/time";
 import typedStore from "util/typedStore";
 import AccessLevel from "data/AccessLevel";
 import Dispatcher from "data/dispatcher";
@@ -24,12 +18,10 @@ import PreferencesStore from "data/PreferencesStore";
 import ShoppingActions from "data/ShoppingActions";
 import TaskActions from "features/Planner/data/TaskActions";
 import TaskApi from "features/Planner/data/TaskApi";
-import {
-    isExpanded,
-    isParent,
-} from "features/Planner/data/tasks";
-import TaskStatus, { willStatusDelete } from "features/Planner/data/TaskStatus";
+import {isExpanded, isParent,} from "features/Planner/data/tasks";
 import PlanApi from "./PlanApi";
+import {willStatusDelete} from "../constants";
+import {TaskStatus} from "../types";
 
 /*
  * This store is way too muddled. But leaving it that way for the moment, to

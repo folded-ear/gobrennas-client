@@ -1,10 +1,10 @@
-import { ListItemText } from "@material-ui/core";
-import Input from "@material-ui/core/Input";
+import { ListItemText } from "@mui/material";
+import Input from "@mui/material/Input";
 import classnames from "classnames";
 import React from "react";
 import Dispatcher from "../../data/dispatcher";
 import ShoppingActions from "../../data/ShoppingActions";
-import TaskStatus from "features/Planner/data/TaskStatus";
+import { TaskStatus } from "features/Planner/types";
 import LoadingIconButton from "../common/LoadingIconButton";
 import PlaceholderIconButton from "../common/PlaceholderIconButton";
 import IngredientItem from "../IngredientItem";

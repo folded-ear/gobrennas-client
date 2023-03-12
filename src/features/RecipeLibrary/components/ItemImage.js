@@ -1,4 +1,4 @@
-import {CardMedia} from "@material-ui/core";
+import {CardMedia} from "@mui/material";
 import PropTypes from "prop-types";
 import React from "react";
 import {Recipe} from "data/RecipeTypes";

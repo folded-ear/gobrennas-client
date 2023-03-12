@@ -1,11 +1,11 @@
 import dotProp from "dot-prop-immutable";
 import LibraryActions from "features/RecipeLibrary/data/LibraryActions";
 import LibraryStore from "features/RecipeLibrary/data/LibraryStore";
-import { ReduceStore } from "flux/utils";
+import {ReduceStore} from "flux/utils";
 import ClientId from "util/ClientId";
 import history from "util/history";
 import LoadObject from "util/LoadObject";
-import { toMilliseconds } from "util/time";
+import {toMilliseconds} from "util/time";
 import Dispatcher from "./dispatcher";
 import RecipeActions from "./RecipeActions";
 import RecipeApi from "./RecipeApi";
@@ -38,6 +38,7 @@ const buildWirePacket = recipe => {
             delete it.id;
             return it;
         }),
+        labels: recipe.labels.map(label => label.name)
     };
     delete recipe.rawIngredients; // shouldn't exist
     return recipe;
@@ -63,6 +64,9 @@ const loadRecipeIfPossible = draftLO => {
                 id: i,
                 ...it,
             })),
+    })).map(s => ({
+        ...s,
+        labels: s.labels.map(label => ({name: label}))
     }));
 };
 
@@ -121,15 +125,9 @@ class DraftRecipeStore extends ReduceStore {
                 state = state.map(s => dotProp.set(s, key, value));
                 return state;
             }
-    
-            case RecipeActions.NEW_DRAFT_LABEL: {
-                state = state.map( s => dotProp.set(s, "labels", s.labels.concat([action.data])));
-                return state;
-            }
-            
-            case RecipeActions.REMOVE_DRAFT_LABEL: {
-                const { index } = action.data;
-                state = state.map( s => dotProp.delete(s, `labels.${index}`));
+
+            case RecipeActions.DRAFT_LABEL_UPDATED: {
+                state = state.map(s => dotProp.set(s, "labels", action.data));
                 return state;
             }
 

@@ -1,12 +1,13 @@
-import { Grid, makeStyles, Typography, } from "@material-ui/core";
-import { DataGrid } from "@mui/x-data-grid";
-import React, { useEffect, useMemo, useState, } from "react";
+import {Grid, Typography,} from "@mui/material";
+import {makeStyles} from "@mui/styles";
+import {DataGrid} from "@mui/x-data-grid";
+import React, {useEffect, useMemo, useState,} from "react";
 import InventoryApi from "../../data/InventoryApi";
-import { useIsMobile } from "../../providers/IsMobile";
+import {useIsMobile} from "../../providers/IsMobile";
 import LoadingIndicator from "../common/LoadingIndicator";
 import PageBody from "../common/PageBody";
 import Detail from "./Detail";
-import { formatQuantity } from "./formatQuantity";
+import {formatQuantity} from "./formatQuantity";
 import OneShotEdit from "./OneShotEdit";
 
 const useStyles = makeStyles(theme => ({

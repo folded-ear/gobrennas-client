@@ -1,21 +1,15 @@
-import {
-    Chip,
-    Divider,
-} from "@material-ui/core";
-import Menu from "@material-ui/core/Menu";
-import MenuItem from "@material-ui/core/MenuItem";
-import {
-    HighlightOff as DeleteIcon,
-    Kitchen,
-} from "@material-ui/icons";
+import {Chip, Divider,} from "@mui/material";
+import Menu from "@mui/material/Menu";
+import MenuItem from "@mui/material/MenuItem";
+import {HighlightOff as DeleteIcon, Kitchen,} from "@mui/icons-material";
 import PropTypes from "prop-types";
 import React from "react";
 import dispatcher from "data/dispatcher";
 import TaskActions from "features/Planner/data/TaskActions";
-import { bucketType } from "features/Planner/data/TaskStore";
-import { clientOrDatabaseIdType } from "util/ClientId";
+import {bucketType} from "features/Planner/data/TaskStore";
+import {clientOrDatabaseIdType} from "util/ClientId";
 import history from "util/history";
-import { humanDate } from "util/time";
+import {humanDate} from "util/time";
 import getBucketLabel from "features/Planner/components/getBucketLabel";
 
 const BucketChip = ({

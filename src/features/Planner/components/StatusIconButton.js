@@ -1,11 +1,12 @@
-import {Tooltip} from "@material-ui/core";
+import {Tooltip} from "@mui/material";
 import PropTypes from "prop-types";
 import React from "react";
 import Dispatcher from "data/dispatcher";
 import TaskActions from "features/Planner/data/TaskActions";
-import TaskStatus, {getColorForStatus, getIconForStatus,} from "features/Planner/data/TaskStatus";
+import {getColorForStatus, getIconForStatus} from "features/Planner/constants";
 import {clientOrDatabaseIdType} from "util/ClientId";
-import {coloredIconButton} from "views/common/colors";
+import {coloredIconButton} from "global/components/ColoredIconButton";
+import {TaskStatus} from "../types";
 
 const buttonLookup = {}; // Map<next, Map<curr, Button>>
 const findButton = (next, curr) => {

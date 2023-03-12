@@ -28,8 +28,7 @@ const RecipeActions = {
     LOAD_EMPTY_RECIPE: "recipe/load-empty-recipe",
     LOAD_RECIPE_DRAFT: "recipe/load-recipe/draft",
     DRAFT_RECIPE_UPDATED: "recipe/draft-recipe-updated",
-    NEW_DRAFT_LABEL: "recipe/new-draft-label",
-    REMOVE_DRAFT_LABEL: "recipe/remove-draft-label",
+    DRAFT_LABEL_UPDATED: "recipe/draft-label-updated",
     SAVE_DRAFT_RECIPE: "recipe/save-draft-recipe",
     RAW_INGREDIENT_DISSECTED: typedAction("recipe/raw-ingredient-dissected", {
         recipeId: PropTypes.number.isRequired,
@@ -51,6 +50,7 @@ const RecipeActions = {
         id: PropTypes.number.isRequired,
         label: PropTypes.string.isRequired,
     }),
+    LABELS_UPDATED: "recipe/labels-updated",
     SEND_TO_PLAN: typedAction("recipe/send-to-plan", sendToPlanShape),
     SENT_TO_PLAN: typedAction("recipe/sent-to-plan", sendToPlanShape),
     ERROR_SENDING_TO_PLAN: typedAction("recipe/error-sending-to-plan", sendToPlanShape),

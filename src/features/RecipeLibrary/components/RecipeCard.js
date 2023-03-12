@@ -1,10 +1,10 @@
-import { Box, Button, Card, CardActions, CardContent, Grid, Typography, } from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
-import { MenuBook, } from "@material-ui/icons";
+import {Box, Button, Card, CardActions, CardContent,Grid, Typography,Stack} from "@mui/material";
+import {makeStyles} from "@mui/styles";
+import {MenuBook,} from "@mui/icons-material";
 import Dispatcher from "data/dispatcher";
 import FriendStore from "data/FriendStore";
 import RecipeActions from "data/RecipeActions";
-import { Recipe } from "data/RecipeTypes";
+import {Recipe} from "data/RecipeTypes";
 import useFluxStore from "data/useFluxStore";
 import ItemImage from "features/RecipeLibrary/components/ItemImage";
 import ItemImageUpload from "features/RecipeLibrary/components/ItemImageUpload";
@@ -13,8 +13,8 @@ import SendToPlan from "features/RecipeLibrary/components/SendToPlan";
 import PropTypes from "prop-types";
 import React from "react";
 import { Link } from "react-router-dom";
-import { loadObjectOf } from "util/loadObjectTypes";
-import { formatDuration } from "util/time";
+import {loadObjectOf} from "util/loadObjectTypes";
+import {formatDuration} from "util/time";
 import RecipeInfo from "views/common/RecipeInfo";
 import Source from "views/common/Source";
 import User from "views/user/User";
@@ -57,7 +57,7 @@ const RecipeCard = ({recipe, mine, indicateMine, me}) => {
                 flexDirection: "column"
             }}
         >
-            <div>
+            <>
                 {recipe.photo
                     ? <Link to={`/library/recipe/${recipe.id}`}>
                         <ItemImage
@@ -111,8 +111,9 @@ const RecipeCard = ({recipe, mine, indicateMine, me}) => {
                             <LabelItem key={label} label={label} />)}
                     </Box>}
                 </CardContent>
-            </div>
+            </>
             <CardActions>
+                <Stack direction="row" spacing={2}>
                 <Button
                     variant="contained"
                     color="secondary"
@@ -123,11 +124,12 @@ const RecipeCard = ({recipe, mine, indicateMine, me}) => {
                 >
                     View
                 </Button>
-                <SendToPlan onClick={planId => Dispatcher.dispatch({
+                <SendToPlan size="small" onClick={planId => Dispatcher.dispatch({
                     type: RecipeActions.SEND_TO_PLAN,
                     recipeId: recipe.id,
                     planId,
                 })}/>
+                </Stack>
             </CardActions>
         </Card>
     );

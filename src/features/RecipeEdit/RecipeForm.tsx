@@ -1,4 +1,5 @@
 import {
+    AutocompleteChangeReason,
     Box,
     Button,
     ButtonGroup,
@@ -11,22 +12,31 @@ import {
     Typography,
     useMediaQuery,
     useTheme,
-} from "@material-ui/core";
-import {makeStyles} from "@material-ui/core/styles";
-import {Add, Cancel, Delete, FileCopy, Save,} from "@material-ui/icons";
-import ChipInput from "material-ui-chip-input";
+} from "@mui/material";
+import makeStyles from "@mui/styles/makeStyles";
+import {
+    Add,
+    Cancel,
+    Delete,
+    FileCopy,
+    Save,
+} from "@mui/icons-material";
 import PropTypes from "prop-types";
 import React from "react";
-import Dispatcher from "../../data/dispatcher";
-import RecipeActions from "../../data/RecipeActions";
-import {Recipe} from "../../data/RecipeTypes";
-import useDraftRecipeLO from "../../data/useDraftRecipeLO";
-import useWindowSize from "../../data/useWindowSize";
-import ImageDropZone from "../../util/ImageDropZone";
-import TextractFormAugment from "./TextractFormAugment";
-import ElEdit from "../ElEdit";
-import PositionPicker from "../PositionPicker";
+import Dispatcher from "data/dispatcher";
+import RecipeActions from "data/RecipeActions";
+import { Recipe } from "data/RecipeTypes";
+import useDraftRecipeLO from "data/useDraftRecipeLO";
+import useWindowSize from "data/useWindowSize";
+import ImageDropZone from "util/ImageDropZone";
+import ElEdit from "views/ElEdit";
+import TextractFormAugment from "views/cook/TextractFormAugment";
+import PositionPicker from "views/PositionPicker";
+import { LabelAutoComplete } from "./components/LabelAutoComplete";
 
+export type Label = {
+    name: string
+}
 const useStyles = makeStyles((theme) => ({
     button: {
         margin: theme.spacing(1),
@@ -51,25 +61,21 @@ const handleNumericUpdate = (e) => {
     updateDraft(key, isNaN(v) ? null : v);
 };
 
-const addLabel = (label) => {
-    Dispatcher.dispatch({
-        type: RecipeActions.NEW_DRAFT_LABEL,
-        data: label.replace(/\/+/g, "-"),
-    });
+const handleLabelChange = (e, labels: Label[], reason: AutocompleteChangeReason) => {
+    // One of "createOption", "selectOption", "removeOption", "blur" or "clear".
+    if(reason === "selectOption" || "createOption" || "removeOption") {
+        Dispatcher.dispatch({
+            type: RecipeActions.DRAFT_LABEL_UPDATED,
+            data: labels.map( label => ({...label, name: label.name.replace(/\/+/g, "-")})),
+        });
+    }
 };
 
-const removeLabel = (label, index) => {
-    Dispatcher.dispatch({
-        type: RecipeActions.REMOVE_DRAFT_LABEL,
-        data: {label, index},
-    });
-};
-
-const RecipeForm = ({title, onSave, onSaveCopy, onCancel, extraButtons}) => {
+const RecipeForm = ({title, onSave, onSaveCopy, onCancel, extraButtons, labelList}) => {
     const lo = useDraftRecipeLO();
     const windowSize = useWindowSize();
     const theme = useTheme();
-    const mobile = useMediaQuery(theme.breakpoints.down("xs"));
+    const mobile = useMediaQuery(theme.breakpoints.down("sm"));
     const classes = useStyles();
     const draft = lo.getValueEnforcing();
     const MARGIN = 2;
@@ -267,13 +273,10 @@ const RecipeForm = ({title, onSave, onSaveCopy, onCancel, extraButtons}) => {
             </Grid>
         </Box>
         <Box my={MARGIN}>
-            <ChipInput
-                value={draft.labels}
-                onAdd={addLabel}
-                onDelete={removeLabel}
-                fullWidth
-                label="Labels"
-                placeholder="Type and press enter to add labels"
+            <LabelAutoComplete
+                labelList={labelList}
+                recipeLabels={draft.labels}
+                onLabelChange={handleLabelChange}
             />
         </Box>
         <Grid container justifyContent={"space-between"}>
@@ -317,6 +320,7 @@ RecipeForm.propTypes = {
     onSaveCopy: PropTypes.func,
     onCancel: PropTypes.func,
     draft: Recipe,
+    labelList: PropTypes.any,
     extraButtons: PropTypes.node,
 };
 

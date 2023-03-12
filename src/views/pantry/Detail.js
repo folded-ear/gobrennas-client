@@ -1,11 +1,12 @@
-import { Card, CardContent, CardHeader, IconButton, makeStyles, } from "@material-ui/core";
-import { Close as CloseIcon } from "@material-ui/icons";
-import { DataGrid } from "@mui/x-data-grid";
+import {Card, CardContent, CardHeader, IconButton,} from "@mui/material";
+import {makeStyles} from "@mui/styles";
+import {Close as CloseIcon} from "@mui/icons-material";
+import {DataGrid} from "@mui/x-data-grid";
 import PropTypes from "prop-types";
-import React, { useEffect, useMemo, useState, } from "react";
+import React, {useEffect, useMemo, useState,} from "react";
 import InventoryApi from "../../data/InventoryApi";
 import LoadingIndicator from "../common/LoadingIndicator";
-import { formatQuantity } from "./formatQuantity";
+import {formatQuantity} from "./formatQuantity";
 
 const useStyles = makeStyles(theme => ({
     gridHeader: {
@@ -64,35 +65,34 @@ function Detail({
         return <LoadingIndicator />;
     }
 
-    return <Card>
-        <CardHeader
-            style={{ paddingBottom: 0 }}
-            action={
-                <IconButton
-                    aria-label="close"
-                    onClick={onClose}
-                >
-                    <CloseIcon/>
-                </IconButton>
-            }
-            title={item.ingredient.name}
-        />
-        <CardContent style={{ paddingTop: 0 }}>
-            <div style={{ height: "50vh" }}>
-                <DataGrid
-                    density={"compact"}
-                    disableColumnMenu
-                    columns={cols}
-                    rows={rows}
-                    pagination
-                    paginationMode={"server"}
-                    page={history.page}
-                    pageSize={history.pageSize}
-                />
-            </div>
-            {/*<pre>{JSON.stringify(history, null, 2)}</pre>*/}
-        </CardContent>
-    </Card>;
+    return (
+        <Card>
+            <CardHeader
+                style={{ paddingBottom: 0 }}
+                action={
+                    <IconButton aria-label="close" onClick={onClose} size="large">
+                        <CloseIcon/>
+                    </IconButton>
+                }
+                title={item.ingredient.name}
+            />
+            <CardContent style={{ paddingTop: 0 }}>
+                <div style={{ height: "50vh" }}>
+                    <DataGrid
+                        density={"compact"}
+                        disableColumnMenu
+                        columns={cols}
+                        rows={rows}
+                        pagination
+                        paginationMode={"server"}
+                        page={history.page}
+                        pageSize={history.pageSize}
+                    />
+                </div>
+                {/*<pre>{JSON.stringify(history, null, 2)}</pre>*/}
+            </CardContent>
+        </Card>
+    );
 }
 
 Detail.propTypes = {

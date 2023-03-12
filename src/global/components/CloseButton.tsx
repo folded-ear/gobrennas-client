@@ -1,7 +1,10 @@
 import React from "react";
 import PropTypes from "prop-types";
-import {IconButton, Tooltip} from "@material-ui/core";
-import {Close} from "@material-ui/icons";
+import {
+    IconButton,
+    Tooltip
+} from "@mui/material";
+import { Close } from "@mui/icons-material";
 
 const CloseButton = ({onClick}) => {
     return (
@@ -9,9 +12,7 @@ const CloseButton = ({onClick}) => {
             title="Close"
             placement="top"
         >
-            <IconButton
-                onClick={onClick}
-            >
+            <IconButton onClick={onClick} size="large">
                 <Close/>
             </IconButton>
         </Tooltip>

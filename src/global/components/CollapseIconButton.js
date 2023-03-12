@@ -1,8 +1,5 @@
-import IconButton from "@material-ui/core/IconButton";
-import {
-    ArrowDropDown,
-    ArrowRight,
-} from "@material-ui/icons";
+import IconButton from "@mui/material/IconButton";
+import {ArrowDropDown, ArrowRight,} from "@mui/icons-material";
 import PropTypes from "prop-types";
 import React from "react";
 

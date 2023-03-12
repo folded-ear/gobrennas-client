@@ -1,12 +1,14 @@
-import {Box, Grid, IconButton, Typography,} from "@material-ui/core";
-import {makeStyles} from "@material-ui/core/styles";
-import {Close, RotateLeft, RotateRight,} from "@material-ui/icons";
+import {Box, Grid, IconButton, Typography,} from "@mui/material";
+import {makeStyles} from "@mui/styles";
+import {Close, RotateLeft, RotateRight,} from "@mui/icons-material";
 import PropTypes from "prop-types";
 import React from "react";
 import useFluxStore from "../../data/useFluxStore";
 import WindowStore from "../../data/WindowStore";
 import {findSvg} from "../../util/findAncestorByName";
 import getPositionWithin from "../../util/getPositionWithin";
+
+;
 
 const useStyles = makeStyles({
     rotateRight: {
@@ -188,99 +190,101 @@ const TextractEditor = ({image, textract, renderActions, onClose}) => {
             marginBottom: `${scaledWidth - scaledHeight}px`,
         };
     }
-    return <Box m={2}>
-        <Grid container spacing={2}>
-            <Grid item xs={12} sm={6}>
-                <Box style={{
-                    position: "relative",
-                }}>
-                    <img
-                        src={`${image}${image.indexOf("?") < 0 ? "?" : "&"}w=${windowSize.width}`}
-                        alt="to extract"
-                        width={scaledWidth}
-                        height={scaledHeight}
-                        onLoad={e => {
-                            const img = e.target;
-                            setSize([
-                                img.naturalWidth,
-                                img.naturalHeight,
-                                img.parentNode.clientWidth,
-                            ]);
-                        }}
-                        style={rotationStyles}
-                    />
-                    <svg
-                        viewBox={`0 0 ${width} ${height}`}
-                        width={scaledWidth}
-                        height={scaledHeight}
-                        preserveAspectRatio="none"
-                        onPointerDown={startBoxDraw}
-                        onPointerMove={drawnBox && updateBoxDraw}
-                        onPointerUp={drawnBox && endBoxDraw}
-                        strokeWidth={1}
-                        className={classes.svg}
-                        style={rotationStyles}
-                    >
-                        <g stroke="#ff0000">
-                            <g fill="none">
-                                {partitionedLines[0].map(t => rect(t.box))}
-                            </g>
-                            <g fill="#99ffff" fillOpacity={0.4}>
-                                {partitionedLines[1].map(t => rect(t.box))}
-                            </g>
-                        </g>
-                        {selectedRegion && <g
-                            fill="#ffff00"
-                            fillOpacity={0.3}
-                            stroke="#ffff00"
+    return (
+        <Box m={2}>
+            <Grid container spacing={2}>
+                <Grid item xs={12} sm={6}>
+                    <Box style={{
+                        position: "relative",
+                    }}>
+                        <img
+                            src={`${image}${image.indexOf("?") < 0 ? "?" : "&"}w=${windowSize.width}`}
+                            alt="to extract"
+                            width={scaledWidth}
+                            height={scaledHeight}
+                            onLoad={e => {
+                                const img = e.target;
+                                setSize([
+                                    img.naturalWidth,
+                                    img.naturalHeight,
+                                    img.parentNode.clientWidth,
+                                ]);
+                            }}
+                            style={rotationStyles}
+                        />
+                        <svg
+                            viewBox={`0 0 ${width} ${height}`}
+                            width={scaledWidth}
+                            height={scaledHeight}
+                            preserveAspectRatio="none"
+                            onPointerDown={startBoxDraw}
+                            onPointerMove={drawnBox && updateBoxDraw}
+                            onPointerUp={drawnBox && endBoxDraw}
+                            strokeWidth={1}
+                            className={classes.svg}
+                            style={rotationStyles}
                         >
-                            {rect(selectedRegion)}
-                        </g>}
-                    </svg>
-                    <IconButton
-                        onClick={() => setRotation(r => (r + 90) % 360)}
-                        className={classes.rotateRight}
-                    >
-                        <RotateRight />
-                    </IconButton>
-                    <IconButton
-                        onClick={() => setRotation(r => (r - 90 + 360) % 360)}
-                        className={classes.rotateLeft}
-                    >
-                        <RotateLeft />
-                    </IconButton>
-                </Box>
+                            <g stroke="#ff0000">
+                                <g fill="none">
+                                    {partitionedLines[0].map(t => rect(t.box))}
+                                </g>
+                                <g fill="#99ffff" fillOpacity={0.4}>
+                                    {partitionedLines[1].map(t => rect(t.box))}
+                                </g>
+                            </g>
+                            {selectedRegion && <g
+                                fill="#ffff00"
+                                fillOpacity={0.3}
+                                stroke="#ffff00"
+                            >
+                                {rect(selectedRegion)}
+                            </g>}
+                        </svg>
+                        <IconButton
+                            onClick={() => setRotation(r => (r + 90) % 360)}
+                            className={classes.rotateRight}
+                            size="large">
+                            <RotateRight />
+                        </IconButton>
+                        <IconButton
+                            onClick={() => setRotation(r => (r - 90 + 360) % 360)}
+                            className={classes.rotateLeft}
+                            size="large">
+                            <RotateLeft />
+                        </IconButton>
+                    </Box>
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                    <Box style={{position: "relative"}}>
+                        <IconButton
+                            onClick={onClose}
+                            size={"small"}
+                            style={{
+                                position: "absolute",
+                                right: 0,
+                            }}
+                        >
+                            <Close />
+                        </IconButton>
+                        <Typography as={"p"} variant={"h6"}>
+                            Select some text on your photo.
+                        </Typography>
+                        <textarea
+                            value={selectedText.join("\n")}
+                            onChange={e => setSelectedText(e.target.value
+                                .split("\n"))}
+                            style={{
+                                width: "100%",
+                                height: `calc(${rotation % 180 === 0 ? scaledHeight : scaledWidth}px - 100px)`,
+                                whiteSpace: "pre",
+                            }}
+                        />
+                        {renderActions && renderActions(selectedText)}
+                    </Box>
+                </Grid>
             </Grid>
-            <Grid item xs={12} sm={6}>
-                <Box style={{position: "relative"}}>
-                    <IconButton
-                        onClick={onClose}
-                        size={"small"}
-                        style={{
-                            position: "absolute",
-                            right: 0,
-                        }}
-                    >
-                        <Close />
-                    </IconButton>
-                    <Typography as={"p"} variant={"h6"}>
-                        Select some text on your photo.
-                    </Typography>
-                    <textarea
-                        value={selectedText.join("\n")}
-                        onChange={e => setSelectedText(e.target.value
-                            .split("\n"))}
-                        style={{
-                            width: "100%",
-                            height: `calc(${rotation % 180 === 0 ? scaledHeight : scaledWidth}px - 100px)`,
-                            whiteSpace: "pre",
-                        }}
-                    />
-                    {renderActions && renderActions(selectedText)}
-                </Box>
-            </Grid>
-        </Grid>
-    </Box>;
+        </Box>
+    );
 };
 
 TextractEditor.propTypes = {
