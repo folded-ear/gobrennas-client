@@ -23,15 +23,15 @@ import {
 } from "@mui/icons-material";
 import PropTypes from "prop-types";
 import React from "react";
-import Dispatcher from "../../data/dispatcher";
-import RecipeActions from "../../data/RecipeActions";
-import { Recipe } from "../../data/RecipeTypes";
-import useDraftRecipeLO from "../../data/useDraftRecipeLO";
-import useWindowSize from "../../data/useWindowSize";
-import ImageDropZone from "../../util/ImageDropZone";
-import ElEdit from "../../views/ElEdit";
-import TextractFormAugment from "../../views/cook/TextractFormAugment";
-import PositionPicker from "../../views/PositionPicker";
+import Dispatcher from "data/dispatcher";
+import RecipeActions from "data/RecipeActions";
+import { Recipe } from "data/RecipeTypes";
+import useDraftRecipeLO from "data/useDraftRecipeLO";
+import useWindowSize from "data/useWindowSize";
+import ImageDropZone from "util/ImageDropZone";
+import ElEdit from "views/ElEdit";
+import TextractFormAugment from "views/cook/TextractFormAugment";
+import PositionPicker from "views/PositionPicker";
 import { LabelAutoComplete } from "./components/LabelAutoComplete";
 
 export type Label = {
