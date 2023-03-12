@@ -25,7 +25,6 @@
     "history": "^4.10.1",
     "immutable": "^4.0.0-rc.12",
     "invariant": "^2.2.4",
-    "material-ui-chip-input": "^1.0.0",
     "preval.macro": "^5.0.0",
     "prop-types": "^15.7.2",
     "qs": "^6.10.1",
