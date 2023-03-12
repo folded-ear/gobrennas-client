@@ -6,16 +6,30 @@ schema {
 }
 
 interface AccessControlled {
+    "The ACL describing grants of access, by the other, to other users."
     grants: [AccessControlEntry!]!
     owner: User!
+}
+
+interface Ingredient {
+    id: ID!
+    labels: [String!]
+    name: String
 }
 
 interface Node {
     id: ID!
 }
 
+interface Owned {
+    "The user who owns this object."
+    owner: User!
+}
+
 type AccessControlEntry {
+    "The level of access the user has been granted."
     level: AccessLevel
+    "The user who has been granted access to an AccessControlled object."
     user: User
 }
 
@@ -54,12 +68,78 @@ type FavoriteQuery {
     byType(objectType: String!): [Favorite!]!
 }
 
+type IngredientRef {
+    ingredient: Ingredient
+    preparation: String
+    quantity: Quantity
+    raw: String!
+}
+
+type LibraryQuery {
+    pantryItem: PantryItem
+    "Search the recipe library."
+    recipes(
+        """
+
+        Cursor to find results after. This should be omitted to retrieve the
+        first page.
+        """
+        after: Cursor,
+        """
+
+        How many recipes to return in the connection. If not specified, 10
+        will be returned.
+        """
+        first: NonNegativeInt! = 10,
+        """
+
+        The textual query to filter results by. Can include simple words, as
+        well as quoted phrases.
+        """
+        query: String = "",
+        "The scope to search for recipes within."
+        scope: LibrarySearchScope! = MINE
+    ): RecipeConnection!
+}
+
 type Mutation {
     favorite: FavoriteMutation
     timer: TimerMutation
 }
 
-type Plan implements AccessControlled & Node {
+type PageInfo {
+    "The last cursor returned in this page's edges."
+    endCursor: Cursor
+    """
+
+    Whether this connection has a next page, or null if included in the
+    result of a backward paging operation.
+    """
+    hasNextPage: Boolean!
+    """
+
+    Whether this connection has a previous page, or null if included in the
+    result of a forward paging operation.
+    """
+    hasPreviousPage: Boolean!
+    "The first cursor returned in this page's edges."
+    startCursor: Cursor
+}
+
+type PantryItem implements Ingredient & Node {
+    aisle: String
+    id: ID!
+    labels: [String!]
+    name: String
+    storeOrder: Int
+}
+
+type Photo {
+    focus: [Float!]
+    url: String!
+}
+
+type Plan implements AccessControlled & Node & Owned {
     buckets: [PlanBucket]
     grants: [AccessControlEntry!]!
     id: ID!
@@ -88,17 +168,48 @@ type PlanItem implements Node {
     units: String
 }
 
+type Quantity {
+    quantity: Float!
+    units: UnitOfMeasure
+}
+
 type Query {
     favorite: FavoriteQuery
     getCurrentUser: User
     getPlanItem(id: ID!): PlanItem
     getPlans: [Plan]
+    library: LibraryQuery
     node(id: ID!): Node
     timer: TimerQuery
 }
 
+type Recipe implements Ingredient & Node & Owned {
+    calories: Int
+    directions: String
+    externalUrl: String
+    favorite: Boolean!
+    id: ID!
+    ingredients: [IngredientRef!]!
+    labels: [String!]
+    name: String
+    owner: User!
+    photo: Photo
+    totalTime: Int
+    yield: Int
+}
+
+type RecipeConnection {
+    edges: [RecipeConnectionEdge!]!
+    pageInfo: PageInfo!
+}
+
+type RecipeConnectionEdge {
+    cursor: Cursor!
+    node: Recipe!
+}
+
 "Represents a pause-able timer of user-specified length."
-type Timer implements AccessControlled & Node {
+type Timer implements AccessControlled & Node & Owned {
     "Whether the timer is complete."
     complete: Boolean!
     "Number of seconds the timer is currently set for."
@@ -144,6 +255,11 @@ type TimerQuery {
     byId(id: ID!): Timer!
 }
 
+type UnitOfMeasure implements Node {
+    id: ID!
+    name: String!
+}
+
 type User {
     email: String
     id: ID!
@@ -158,12 +274,20 @@ enum AccessLevel {
     VIEW
 }
 
+enum LibrarySearchScope {
+    EVERYONE
+    MINE
+}
+
 enum TaskStatus {
     ACQUIRED
     COMPLETED
     DELETED
     NEEDED
 }
+
+"The type of a cursor, an opaque string used for walking connections."
+scalar Cursor
 
 "An RFC-3339 compliant Full Date Scalar"
 scalar Date
@@ -173,6 +297,9 @@ scalar DateTime
 
 "An Float scalar that must be greater than or equal to zero"
 scalar NonNegativeFloat
+
+"An Int scalar that must be greater than or equal to zero"
+scalar NonNegativeInt
 
 "An Int scalar that must be a positive value"
 scalar PositiveInt
