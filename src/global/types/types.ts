@@ -43,3 +43,10 @@ export type SharedRecipe = {
 }
 
 export type Plan = any
+
+export type LoadObject<T> = {
+    value: T,
+    hasValue: () => boolean,
+    isLoading: () => boolean
+    getValueEnforcing: () => T
+}

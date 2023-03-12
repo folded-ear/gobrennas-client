@@ -1,31 +1,27 @@
-import * as React from "react"
+import * as React from "react";
 import Autocomplete from "@mui/lab/Autocomplete";
 import { Stack } from "@mui/material";
 import TextField from "@mui/material/TextField";
 import { Label } from "../RecipeForm";
 
 type LabelAutoCompleteProps = {
-    labels: Label[],
+    recipeLabels: Label[],
+    labelList: Label[],
     onLabelChange: (e, labels, reason) => void
 }
 
-export const LabelAutoComplete: React.FC<LabelAutoCompleteProps> = ({labels, onLabelChange}) => {
-
-    const labelList = [
-        { title: 'Benjamin' },
-        { title: 'Desserts' },
-        { title: 'Quick' },
-    ];
-    console.log(labels)
-
-    return (
-        <Stack spacing={3} sx={{ width: 500 }}>
+export const LabelAutoComplete: React.FC<LabelAutoCompleteProps> = ({
+        recipeLabels,
+        labelList,
+        onLabelChange
+    }) => (
+        <Stack spacing={3} sx={{width: 500}}>
             <Autocomplete
                 multiple
                 id="tags-standard"
                 options={labelList}
-                getOptionLabel={(option) => option.title}
-                value={labels}
+                getOptionLabel={(option) => option.name}
+                value={recipeLabels}
                 onChange={onLabelChange}
                 renderInput={(params) => {
                     return (
@@ -39,4 +35,3 @@ export const LabelAutoComplete: React.FC<LabelAutoCompleteProps> = ({labels, onL
                 }}
             />
         </Stack>);
-}

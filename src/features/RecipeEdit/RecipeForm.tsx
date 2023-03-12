@@ -35,7 +35,7 @@ import PositionPicker from "../../views/PositionPicker";
 import { LabelAutoComplete } from "./components/LabelAutoComplete";
 
 export type Label = {
-    title: string
+    name: string
 }
 const useStyles = makeStyles((theme) => ({
     button: {
@@ -66,12 +66,12 @@ const handleLabelChange = (e, labels: Label[], reason: AutocompleteChangeReason)
     if(reason === "selectOption" || "createOption" || "removeOption") {
         Dispatcher.dispatch({
             type: RecipeActions.DRAFT_LABEL_UPDATED,
-            data: labels.map( label => ({...label, title: label.title.replace(/\/+/g, "-")})),
+            data: labels.map( label => ({...label, name: label.name.replace(/\/+/g, "-")})),
         });
     }
-}
+};
 
-const RecipeForm = ({title, onSave, onSaveCopy, onCancel, extraButtons}) => {
+const RecipeForm = ({title, onSave, onSaveCopy, onCancel, extraButtons, labelList}) => {
     const lo = useDraftRecipeLO();
     const windowSize = useWindowSize();
     const theme = useTheme();
@@ -273,7 +273,11 @@ const RecipeForm = ({title, onSave, onSaveCopy, onCancel, extraButtons}) => {
             </Grid>
         </Box>
         <Box my={MARGIN}>
-            <LabelAutoComplete labels={draft.labels} onLabelChange={handleLabelChange} />
+            <LabelAutoComplete
+                labelList={labelList}
+                recipeLabels={draft.labels}
+                onLabelChange={handleLabelChange}
+            />
         </Box>
         <Grid container justifyContent={"space-between"}>
             <Grid item>
@@ -316,6 +320,7 @@ RecipeForm.propTypes = {
     onSaveCopy: PropTypes.func,
     onCancel: PropTypes.func,
     draft: Recipe,
+    labelList: PropTypes.any,
     extraButtons: PropTypes.node,
 };
 

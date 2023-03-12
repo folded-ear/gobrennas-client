@@ -5,7 +5,7 @@ import {PlannerController as Planner} from "features/Planner/PlannerController";
 import PlannedBucket from "./containers/PlannedBucket";
 import PlannedRecipe from "./containers/PlannedRecipe";
 import Recipe from "./containers/Recipe";
-import RecipeEdit from "./containers/RecipeEdit";
+import RecipeEditController from "./features/RecipeEdit/RecipeEditController";
 import Shop from "./containers/Shop";
 import SharedRecipe from "./views/cook/SharedRecipe";
 import Landing from "./views/Landing";
@@ -26,7 +26,7 @@ const routes = {
     private: [
         {path: "/user-profile",  component: UserProfileView},
         {path: "/profile",  component: Profile},
-        {path: "/library/recipe/:id/edit", component: RecipeEdit},
+        {path: "/library/recipe/:id/edit", component: RecipeEditController},
         {path: "/library/recipe/:id/make-copy", component: RecipeAdd},
         {path: "/library/recipe/:id", component: Recipe},
         {path: "/library", component: Library},

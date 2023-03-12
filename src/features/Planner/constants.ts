@@ -39,7 +39,7 @@ export const taskStatusConfig = {
         color: lightBlue[100],
         icon: Check,
     },
-}
+};
 
 export const willStatusDelete = status =>
     status === TaskStatus.COMPLETED || status === TaskStatus.DELETED;
