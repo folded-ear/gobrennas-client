@@ -6,10 +6,10 @@ export const coloredButton = (palette = deepPurple) =>
     // this blindly copied from https://v4-5-2.material-ui.com/components/buttons/#customized-buttons
     withStyles(theme => ({
         root: {
-            color: theme.palette.getContrastText(palette[500]),
+            color: theme.palette.white,
             backgroundColor: palette[500],
             "&:hover": {
-                color: theme.palette.getContrastText(palette[700]),
+                color: theme.palette.white,
                 backgroundColor: palette[700],
             },
         },
