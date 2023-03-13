@@ -60,7 +60,6 @@ const handleNumericUpdate = (e) => {
 
 const handleLabelChange = (e, labels: string[], reason: AutocompleteChangeReason) => {
     // One of "createOption", "selectOption", "removeOption", "blur" or "clear".
-    console.log(labels)
     if(reason === "selectOption" || "createOption" || "removeOption") {
         Dispatcher.dispatch({
             type: RecipeActions.DRAFT_LABEL_UPDATED,
