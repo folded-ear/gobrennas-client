@@ -1,7 +1,7 @@
 import React from "react";
 import Dispatcher from "../../data/dispatcher";
 import RecipeActions from "../../data/RecipeActions";
-import RecipeForm, { Label } from "./RecipeForm";
+import RecipeForm from "./RecipeForm";
 import PageBody from "../../views/common/PageBody";
 
 export const handleSave = recipe =>
@@ -17,7 +17,7 @@ const handleCancel = recipe =>
     });
 
 type RecipeAddProps = {
-    labelList: Label[]
+    labelList: string[]
 }
 export const RecipeAdd: React.FC<RecipeAddProps> = ({labelList}) => (
             <PageBody>

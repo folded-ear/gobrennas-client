@@ -34,9 +34,6 @@ import TextractFormAugment from "views/cook/TextractFormAugment";
 import PositionPicker from "views/PositionPicker";
 import { LabelAutoComplete } from "./components/LabelAutoComplete";
 
-export type Label = {
-    name: string
-}
 const useStyles = makeStyles((theme) => ({
     button: {
         margin: theme.spacing(1),
@@ -61,12 +58,13 @@ const handleNumericUpdate = (e) => {
     updateDraft(key, isNaN(v) ? null : v);
 };
 
-const handleLabelChange = (e, labels: Label[], reason: AutocompleteChangeReason) => {
+const handleLabelChange = (e, labels: string[], reason: AutocompleteChangeReason) => {
     // One of "createOption", "selectOption", "removeOption", "blur" or "clear".
+    console.log(labels)
     if(reason === "selectOption" || "createOption" || "removeOption") {
         Dispatcher.dispatch({
             type: RecipeActions.DRAFT_LABEL_UPDATED,
-            data: labels.map( label => ({...label, name: label.name.replace(/\/+/g, "-")})),
+            data: labels.map( label => label.replace(/\/+/g, "-")),
         });
     }
 };

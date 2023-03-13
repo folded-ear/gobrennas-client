@@ -38,7 +38,7 @@ const buildWirePacket = recipe => {
             delete it.id;
             return it;
         }),
-        labels: recipe.labels.map(label => label.name)
+        labels: recipe.labels
     };
     delete recipe.rawIngredients; // shouldn't exist
     return recipe;
@@ -64,9 +64,6 @@ const loadRecipeIfPossible = draftLO => {
                 id: i,
                 ...it,
             })),
-    })).map(s => ({
-        ...s,
-        labels: s.labels.map(label => ({name: label}))
     }));
 };
 
