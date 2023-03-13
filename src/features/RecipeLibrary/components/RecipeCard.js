@@ -1,6 +1,6 @@
-import {Box, Button, Card, CardActions, CardContent,Grid, Typography,Stack} from "@mui/material";
-import {makeStyles} from "@mui/styles";
 import {MenuBook,} from "@mui/icons-material";
+import {Box, Button, Card, CardActions, CardContent, Grid, Stack, Typography} from "@mui/material";
+import {makeStyles} from "@mui/styles";
 import Dispatcher from "data/dispatcher";
 import FriendStore from "data/FriendStore";
 import RecipeActions from "data/RecipeActions";
@@ -12,7 +12,7 @@ import LabelItem from "features/RecipeLibrary/components/LabelItem";
 import SendToPlan from "features/RecipeLibrary/components/SendToPlan";
 import PropTypes from "prop-types";
 import React from "react";
-import { Link } from "react-router-dom";
+import {Link} from "react-router-dom";
 import {loadObjectOf} from "util/loadObjectTypes";
 import {formatDuration} from "util/time";
 import RecipeInfo from "views/common/RecipeInfo";
@@ -70,8 +70,8 @@ const RecipeCard = ({recipe, mine, indicateMine, me}) => {
                         disabled={!mine}
                     />
                 }
-                <CardContent>
-                    <Grid container alignItems={"center"}>
+                <CardContent style={{ flexGrow: 2 }}>
+                    <Grid container alignItems={"center"} wrap={"nowrap"}>
                         <Grid item>
                             <FavoriteIndicator type={"Recipe"}
                                                id={recipe.id} />

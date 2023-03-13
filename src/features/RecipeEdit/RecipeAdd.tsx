@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React from "react";
 import Dispatcher from "../../data/dispatcher";
 import RecipeActions from "../../data/RecipeActions";
 import RecipeForm from "./RecipeForm";
@@ -16,18 +16,16 @@ const handleCancel = recipe =>
         sourceId: recipe.sourceId,
     });
 
-class RecipeAdd extends Component {
-    render() {
-        return (
+type RecipeAddProps = {
+    labelList: string[]
+}
+export const RecipeAdd: React.FC<RecipeAddProps> = ({labelList}) => (
             <PageBody>
                 <RecipeForm
                     title={"Add A New Recipe"}
                     onSave={handleSave}
                     onCancel={handleCancel}
+                    labelList={labelList}
                 />
             </PageBody>
         );
-    }
-}
-
-export default RecipeAdd;

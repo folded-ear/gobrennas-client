@@ -1,11 +1,10 @@
 import PropTypes from "prop-types";
 import React from "react";
-import {
+import { coloredIconNoOp } from "../common/colors";
+import TaskStatus, {
     getColorForStatus,
     getIconForStatus
-} from "features/Planner/constants";
-import { TaskStatus } from "features/Planner/types";
-import { coloredIconNoOp } from "global/components/ColoredIconNoOp";
+} from "../../features/Planner/data/TaskStatus";
 
 const buttonLookup = {}; // Map<next, Button>
 const findButton = status => {

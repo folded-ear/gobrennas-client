@@ -12,7 +12,7 @@ import * as React from "react";
 
 const DeleteIcon = ({onClick, ...props}) => (
     <Tooltip title="Delete" placement="top">
-        <IconButton onClick={onClick} {...props} size="large">
+        <IconButton onClick={onClick} {...props}>
             <Delete/>
         </IconButton>
     </Tooltip>

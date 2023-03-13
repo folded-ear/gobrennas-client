@@ -5,9 +5,9 @@ import Dispatcher from "data/dispatcher";
 import RecipeActions from "data/RecipeActions";
 import RecipeApi from "data/RecipeApi";
 import { handleSave as handleSaveCopy } from "./RecipeAdd";
-import RecipeForm, { Label } from "./RecipeForm";
+import RecipeForm from "./RecipeForm";
 import PageBody from "views/common/PageBody";
-import DeleteButton from "global/components/DeleteButton";
+import DeleteButton from "views/common/DeleteButton";
 import {
     LoadObject,
     Recipe
@@ -31,7 +31,7 @@ const handleCancel = recipe =>
 
 type RecipeEditProps = {
     recipeLO: LoadObject<Recipe>,
-    labelList: Label[]
+    labelList: string[]
 }
 
 export const RecipeEdit : React.FC<RecipeEditProps> = ({recipeLO, labelList}) => {

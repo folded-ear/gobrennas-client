@@ -4,7 +4,7 @@ import {
     IconButton,
     Snackbar,
 } from "@mui/material";
-import makeStyles from "@mui/styles/makeStyles";
+import { makeStyles } from "@mui/styles";
 import { Close as CloseIcon } from "@mui/icons-material";
 import dispatcher from "../../data/dispatcher";
 import snackBarStore from "../../data/snackBarStore";

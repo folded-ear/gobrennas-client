@@ -12,7 +12,9 @@ const CloseButton = ({onClick}) => {
             title="Close"
             placement="top"
         >
-            <IconButton onClick={onClick} size="large">
+            <IconButton
+                onClick={onClick}
+            >
                 <Close/>
             </IconButton>
         </Tooltip>

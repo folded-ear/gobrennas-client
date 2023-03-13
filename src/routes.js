@@ -14,7 +14,7 @@ import OAuth2RedirectHandler from "views/user/OAuth2RedirectHandler";
 import {UserProfileView} from "views/UserProfile/UserProfileView";
 import Profile from "./views/user/Profile";
 import Foodinger from "views/Foodinger";
-import RecipeAdd from "./features/RecipeEdit/RecipeAdd";
+import {RecipeAddController} from "./features/RecipeEdit/RecipeAddController";
 
 const routes = {
     public: [
@@ -27,10 +27,10 @@ const routes = {
         {path: "/user-profile",  component: UserProfileView},
         {path: "/profile",  component: Profile},
         {path: "/library/recipe/:id/edit", component: RecipeEditController},
-        {path: "/library/recipe/:id/make-copy", component: RecipeAdd},
+        {path: "/library/recipe/:id/make-copy", component: RecipeAddController},
         {path: "/library/recipe/:id", component: Recipe},
         {path: "/library", component: Library},
-        {path: "/add", component: RecipeAdd},
+        {path: "/add", component: RecipeAddController},
         // eslint-disable-next-line react/display-name
         {path: "/tasks", component: () => <Redirect to="/plan" />},
         {path: "/plan/:pid/recipe/:rid", component: PlannedRecipe},

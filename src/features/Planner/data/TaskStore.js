@@ -19,9 +19,8 @@ import ShoppingActions from "data/ShoppingActions";
 import TaskActions from "features/Planner/data/TaskActions";
 import TaskApi from "features/Planner/data/TaskApi";
 import {isExpanded, isParent,} from "features/Planner/data/tasks";
+import TaskStatus, {willStatusDelete} from "features/Planner/data/TaskStatus";
 import PlanApi from "./PlanApi";
-import {willStatusDelete} from "../constants";
-import {TaskStatus} from "../types";
 
 /*
  * This store is way too muddled. But leaving it that way for the moment, to
