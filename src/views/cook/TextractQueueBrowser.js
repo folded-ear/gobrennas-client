@@ -4,13 +4,11 @@ import {makeStyles} from "@mui/styles";
 import {Close} from "@mui/icons-material";
 import PropTypes from "prop-types";
 import React from "react";
-import DeleteButton from "global/components/DeleteButton";
+import DeleteButton from "views/common/DeleteButton";
 import {clientOrDatabaseIdType} from "../../util/ClientId";
 import ImageDropZone from "../../util/ImageDropZone";
 import {useQuery} from "react-query";
 import TextractApi from "../../data/TextractApi";
-
-;
 
 const useStyles = makeStyles({
     drawer: {

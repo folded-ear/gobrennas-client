@@ -7,7 +7,7 @@ import RecipeApi from "data/RecipeApi";
 import { handleSave as handleSaveCopy } from "./RecipeAdd";
 import RecipeForm, { Label } from "./RecipeForm";
 import PageBody from "views/common/PageBody";
-import DeleteButton from "global/components/DeleteButton";
+import DeleteButton from "views/common/DeleteButton";
 import {
     LoadObject,
     Recipe

@@ -6,7 +6,7 @@ import React from "react";
 import Dispatcher from "data/dispatcher";
 import TaskActions from "features/Planner/data/TaskActions";
 import {isExpanded, isParent, isQuestionable, isSection,} from "features/Planner/data/tasks";
-import {TaskStatus} from "features/Planner/types";
+import TaskStatus from "features/Planner/data/TaskStatus";
 import TaskStore, {bucketType} from "features/Planner/data/TaskStore";
 import LoadObject from "util/LoadObject";
 import LoadingIconButton from "views/common/LoadingIconButton";

@@ -16,7 +16,9 @@ const EditButton = ({
             title="Edit"
             placement={tooltipPlacement as TooltipProps["placement"]}
         >
-            <IconButton onClick={onClick} size="large">
+            <IconButton
+                onClick={onClick}
+            >
                 <Edit />
             </IconButton>
         </Tooltip>

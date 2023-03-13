@@ -2,7 +2,7 @@ import {Grid} from "@mui/material";
 import PropTypes from "prop-types";
 import React, {useEffect, useMemo, useRef, useState,} from "react";
 import InventoryApi from "../../data/InventoryApi";
-import SplitButton from "global/components/SplitButton";
+import SplitButton from "../common/SplitButton";
 import ElEdit from "../ElEdit";
 
 const txTypes = [

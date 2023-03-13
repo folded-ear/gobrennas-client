@@ -2,7 +2,7 @@ import React from "react";
 import LibraryStore from "features/RecipeLibrary/data/LibraryStore";
 import ShoppingStore from "data/ShoppingStore";
 import {isParent, isQuestionable, isSection,} from "features/Planner/data/tasks";
-import {TaskStatus} from "features/Planner/types";
+import TaskStatus from "features/Planner/data/TaskStatus";
 import TaskStore from "features/Planner/data/TaskStore";
 import useFluxStore from "data/useFluxStore";
 import groupBy from "util/groupBy";

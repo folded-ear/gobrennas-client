@@ -12,7 +12,9 @@ const CopyButton = ({title, onClick}) => {
             title={title}
             placement="top"
         >
-            <IconButton onClick={onClick} size="large">
+            <IconButton
+                onClick={onClick}
+            >
                 <FileCopy/>
             </IconButton>
         </Tooltip>

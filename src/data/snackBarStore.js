@@ -10,7 +10,7 @@ import RecipeActions from "./RecipeActions";
 import TaskActions from "features/Planner/data/TaskActions";
 import TaskStore from "features/Planner/data/TaskStore";
 import UiActions from "./UiActions";
-import {willStatusDelete} from "../features/Planner/constants";
+import {willStatusDelete} from "features/Planner/data/TaskStatus";
 
 const enqueue = (state, item) => {
     return {

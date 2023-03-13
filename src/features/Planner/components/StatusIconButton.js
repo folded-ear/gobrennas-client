@@ -3,10 +3,9 @@ import PropTypes from "prop-types";
 import React from "react";
 import Dispatcher from "data/dispatcher";
 import TaskActions from "features/Planner/data/TaskActions";
-import {getColorForStatus, getIconForStatus} from "features/Planner/constants";
+import TaskStatus, {getColorForStatus, getIconForStatus,} from "features/Planner/data/TaskStatus";
 import {clientOrDatabaseIdType} from "util/ClientId";
-import {coloredIconButton} from "global/components/ColoredIconButton";
-import {TaskStatus} from "../types";
+import {coloredIconButton} from "views/common/colors";
 
 const buttonLookup = {}; // Map<next, Map<curr, Button>>
 const findButton = (next, curr) => {

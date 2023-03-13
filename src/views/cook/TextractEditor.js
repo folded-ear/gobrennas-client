@@ -8,8 +8,6 @@ import WindowStore from "../../data/WindowStore";
 import {findSvg} from "../../util/findAncestorByName";
 import getPositionWithin from "../../util/getPositionWithin";
 
-;
-
 const useStyles = makeStyles({
     rotateRight: {
         position: "absolute",
