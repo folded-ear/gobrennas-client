@@ -14,13 +14,13 @@ import Item from "features/Planner/components/Item";
 import StatusIconButton from "features/Planner/components/StatusIconButton";
 import withItemStyles from "features/Planner/components/withItemStyles";
 import {
-    baseItemPropTypes,
-    itemPropTypes,
-    tuplePropTypes,
+    BaseItemProp,
+    ItemProps,
+    TupleProps,
 } from "./types";
 
-type IngredientItemProps = tuplePropTypes & {
-    item: itemPropTypes & baseItemPropTypes & {
+type IngredientItemProps = TupleProps & {
+    item: ItemProps & BaseItemProp & {
         expanded: boolean,
         itemIds: string[],
         quantities: {

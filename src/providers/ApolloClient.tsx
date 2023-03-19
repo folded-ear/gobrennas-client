@@ -1,10 +1,19 @@
-import { ApolloClient as ApolloClientInstance, ApolloProvider, from, HttpLink, InMemoryCache, } from "@apollo/client";
+import {
+    ApolloClient as ApolloClientInstance,
+    ApolloProvider,
+    from,
+    HttpLink,
+    InMemoryCache,
+} from "@apollo/client";
 import { onError } from "@apollo/client/link/error";
 import { relayStylePagination } from "@apollo/client/utilities";
-import PropTypes from "prop-types";
 import * as React from "react";
+import { PropsWithChildren } from "react";
 import { API_BASE_URL } from "../constants";
-import { askUserToReauth, isAuthError, } from "./Profile";
+import {
+    askUserToReauth,
+    isAuthError,
+} from "./Profile";
 
 const httpLink = new HttpLink({
     uri: `${API_BASE_URL}/graphql`,
@@ -44,12 +53,8 @@ const client = new ApolloClientInstance({
     link: from([ errorLink, httpLink ]),
 });
 
-export function ApolloClient({ children }) {
+export function ApolloClient({ children }: PropsWithChildren) {
     return <ApolloProvider client={client}>
         {children}
     </ApolloProvider>;
 }
-
-ApolloClient.propTypes = {
-    children: PropTypes.node.isRequired,
-};

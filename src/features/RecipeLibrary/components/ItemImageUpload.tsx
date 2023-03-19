@@ -1,4 +1,4 @@
-import {makeStyles} from "@mui/styles";
+import { makeStyles } from "@mui/styles";
 import Dispatcher from "data/dispatcher";
 import RecipeActions from "data/RecipeActions";
 import React from "react";
@@ -19,7 +19,10 @@ interface Props {
     disabled: boolean,
 }
 
-const ItemImageUpload = ({recipeId, disabled}: Props) => {
+const ItemImageUpload: React.FC<Props> = ({
+                                              recipeId,
+                                              disabled,
+                                          }) => {
     const classes = useStyles();
     return <ImageDropZone
         disabled={disabled}

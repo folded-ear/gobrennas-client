@@ -1,7 +1,6 @@
 import Avatar from "@mui/material/Avatar";
 import Box from "@mui/material/Box";
 import makeStyles from "@mui/styles/makeStyles";
-import PropTypes from "prop-types";
 import React from "react";
 
 const useStyles = makeStyles((theme) => ({
@@ -26,14 +25,23 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-const User = ({
-    name,
-    email,
-    imageUrl,
-    size,
-    iconOnly = false,
-    inline = false,
-}) => {
+interface Props {
+    name?: string,
+    email: string,
+    imageUrl?: string,
+    size: "small" | "large",
+    iconOnly?: boolean,
+    inline?: boolean,
+}
+
+const User: React.FC<Props> = ({
+                                   name,
+                                   email,
+                                   imageUrl,
+                                   size,
+                                   iconOnly = false,
+                                   inline = false,
+                               }) => {
     const classes = useStyles();
     const avatar = <Avatar
         src={imageUrl}
@@ -52,18 +60,6 @@ const User = ({
             {name || email}
         </React.Fragment>}
     </Box>;
-};
-
-User.propTypes = {
-    name: PropTypes.string,
-    email: PropTypes.string,
-    imageUrl: PropTypes.string,
-    size: PropTypes.oneOf([
-        "small",
-        "large",
-    ]),
-    iconOnly: PropTypes.bool,
-    inline: PropTypes.bool,
 };
 
 export default User;

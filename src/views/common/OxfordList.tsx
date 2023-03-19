@@ -1,11 +1,16 @@
-import PropTypes from "prop-types";
-import React from "react";
+import React, { ReactNode } from "react";
 
-const OxfordList = ({
-    children: kids,
-    prefix,
-    suffix,
-}) => {
+interface Props {
+    prefix: ReactNode,
+    suffix: ReactNode,
+    children: ReactNode[],
+}
+
+const OxfordList: React.FC<Props> = ({
+                                         children: kids,
+                                         prefix,
+                                         suffix,
+                                     }) => {
     // zero is null
     if (kids.length === 0) return null;
     // one is self
@@ -36,12 +41,6 @@ const OxfordList = ({
         {last}
         {suffix}
     </>;
-};
-
-OxfordList.propTypes = {
-    prefix: PropTypes.node,
-    children: PropTypes.arrayOf(PropTypes.node),
-    suffix: PropTypes.node,
 };
 
 export default OxfordList;

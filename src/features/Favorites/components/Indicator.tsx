@@ -1,16 +1,24 @@
-import {Star, StarBorder} from "@mui/icons-material";
-import {useIsFavorite, useMarkFavorite, useRemoveFavorite} from "../data/queries";
-import {IconButton} from "@mui/material";
+import React from "react";
+import {
+    Star,
+    StarBorder,
+} from "@mui/icons-material";
+import {
+    useIsFavorite,
+    useMarkFavorite,
+    useRemoveFavorite,
+} from "../data/queries";
+import { IconButton } from "@mui/material";
 
 interface Props {
     type: string,
     id: string | number,
 }
 
-export default function Indicator({
-                                      type,
-                                      id,
-                                  }: Props) {
+const Indicator: React.FC<Props> = ({
+                                        type,
+                                        id,
+                                    }) => {
     const removeFavorite = useRemoveFavorite(type);
     const markFavorite = useMarkFavorite(type);
     const isFavorite = useIsFavorite();
@@ -33,4 +41,6 @@ export default function Indicator({
     >
         {favorite ? <Star /> : <StarBorder />}
     </IconButton>;
-}
+};
+
+export default Indicator;

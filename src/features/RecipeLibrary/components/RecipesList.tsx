@@ -62,10 +62,13 @@ const useStyles = makeStyles((theme) => {
 
 interface MessagePaperProps {
     primary: string,
-    children?: ReactNode | undefined,
+    children?: ReactNode,
 }
 
-function MessagePaper({primary, children}: MessagePaperProps) {
+const MessagePaper: React.FC<MessagePaperProps> = ({
+                                                       primary,
+                                                       children,
+                                                   }) => {
     return <Paper
         style={{
             textAlign: "center",
@@ -79,7 +82,7 @@ function MessagePaper({primary, children}: MessagePaperProps) {
             </Typography>}
         </Box>
     </Paper>;
-}
+};
 
 interface RecipesListProps {
     me: any, // todo
@@ -92,16 +95,16 @@ interface RecipesListProps {
     onNeedMore: () => void,
 }
 
-function RecipesList({
-                         me,
-                         scope = LibrarySearchScope.Mine,
-                         filter = "",
-                         recipes,
-                         isLoading,
-                         isComplete,
-                         onSearch,
-                         onNeedMore,
-                     }: RecipesListProps) {
+const RecipesList: React.FC<RecipesListProps> = ({
+                                                     me,
+                                                     scope = LibrarySearchScope.Mine,
+                                                     filter = "",
+                                                     recipes,
+                                                     isLoading,
+                                                     isComplete,
+                                                     onSearch,
+                                                     onNeedMore,
+                                                 }) => {
     const classes = useStyles();
     const isSearchFloating = useScrollTrigger({
         disableHysteresis: true,
@@ -258,6 +261,6 @@ function RecipesList({
             </FoodingerFab>
         </Content>
     );
-}
+};
 
 export default RecipesList;

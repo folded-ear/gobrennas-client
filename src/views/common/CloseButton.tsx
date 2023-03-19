@@ -1,12 +1,15 @@
-import React from "react";
-import PropTypes from "prop-types";
+import React, { MouseEventHandler } from "react";
 import {
     IconButton,
-    Tooltip
+    Tooltip,
 } from "@mui/material";
 import { Close } from "@mui/icons-material";
 
-const CloseButton = ({onClick}) => {
+interface Props {
+    onClick?: MouseEventHandler
+}
+
+const CloseButton: React.FC<Props> = ({ onClick }) => {
     return (
         <Tooltip
             title="Close"
@@ -15,15 +18,10 @@ const CloseButton = ({onClick}) => {
             <IconButton
                 onClick={onClick}
             >
-                <Close/>
+                <Close />
             </IconButton>
         </Tooltip>
     );
-};
-
-CloseButton.propTypes = {
-    onClick: PropTypes.func,
-    size: PropTypes.string,
 };
 
 export default CloseButton;

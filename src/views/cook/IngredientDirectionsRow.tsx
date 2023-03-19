@@ -4,13 +4,22 @@ import {
     ListItem,
     Typography,
 } from "@mui/material";
-import PropTypes from "prop-types";
 import React from "react";
-import { Recipe } from "../../data/RecipeTypes";
 import Directions from "../common/Directions";
-import IngredientItem from "../IngredientItem";
+import IngredientItem, { IngredientRef } from "../IngredientItem";
 
-const IngredientDirectionsRow = ({recipe, loggedIn, hideHeadings}) => <>
+interface Recipe {
+    ingredients: IngredientRef[],
+    directions?: string,
+}
+
+interface Props {
+    recipe: Recipe,
+    loggedIn?: boolean,
+    hideHeadings?: boolean,
+}
+
+const IngredientDirectionsRow: React.FC<Props> = ({ recipe, loggedIn, hideHeadings }) => <>
     <Grid item xs={12} sm={5}>
         {recipe.ingredients && recipe.ingredients.length > 0 && <>
             {!hideHeadings && <Typography variant="h5">
@@ -36,11 +45,5 @@ const IngredientDirectionsRow = ({recipe, loggedIn, hideHeadings}) => <>
         </React.Fragment>}
     </Grid>
 </>;
-
-IngredientDirectionsRow.propTypes = {
-    recipe: Recipe.isRequired,
-    loggedIn: PropTypes.bool,
-    hideHeadings: PropTypes.bool,
-};
 
 export default IngredientDirectionsRow;

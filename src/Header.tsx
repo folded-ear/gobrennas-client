@@ -30,7 +30,7 @@ import { useIsMobile } from "./providers/IsMobile";
 import TimersTab from "./features/Timers/HeaderTab";
 import {
     HEADER_HEIGHT,
-    TAB_WIDTH_MIN
+    TAB_WIDTH_MIN,
 } from "./constants/layout";
 import { RouteComponentProps } from "react-router";
 
@@ -157,7 +157,7 @@ const Header: React.FC<HeaderProps> = ({authenticated, location}) => {
         >
             <Toolbar>
                 <Logo
-                    version={isMobile ? "small" : null}
+                    version={isMobile ? "small" : undefined}
                     component={Link}
                     to="/library"
                 />
@@ -166,7 +166,7 @@ const Header: React.FC<HeaderProps> = ({authenticated, location}) => {
                     className={classes.bar}
                     value={topLevelNavSeg}
                     textColor="inherit"
-                    TabIndicatorProps={{className: classes.indicator}}
+                    TabIndicatorProps={{ className: classes.indicator }}
                 >
                     <LinkTab
                         icon={<LibraryIcon/>}

@@ -1,13 +1,16 @@
 import { Typography } from "@mui/material";
 import CircularProgress from "@mui/material/CircularProgress";
 import Paper from "@mui/material/Paper";
-import PropTypes from "prop-types";
-import React from "react";
+import React, { PropsWithChildren } from "react";
 
-export default function LoadingIndicator({
-    primary = "Loading ...",
-    children,
-}) {
+interface Props extends PropsWithChildren {
+    primary?: string,
+}
+
+const LoadingIndicator: React.FC<Props> = ({
+                                               primary = "Loading ...",
+                                               children,
+                                           }) => {
     return <Paper
         style={{
             textAlign: "center",
@@ -19,12 +22,9 @@ export default function LoadingIndicator({
         {children
             ? children
             : primary && <Typography component="p">
-                {primary}
-            </Typography>}
+            {primary}
+        </Typography>}
     </Paper>;
-}
-
-LoadingIndicator.propTypes = {
-    primary: PropTypes.string,
-    children: PropTypes.node,
 };
+
+export default LoadingIndicator;

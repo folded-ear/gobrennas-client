@@ -54,14 +54,19 @@ export interface RecipeType {
     yield?: number | null;
 }
 
-interface RecipeCardProps {
+interface Props {
     recipe: RecipeType,
     mine: boolean,
     indicateMine: boolean,
-    me: any,
+    me: any, // todo
 }
 
-const RecipeCard = ({recipe, mine, indicateMine, me}: RecipeCardProps) => {
+const RecipeCard: React.FC<Props> = ({
+                                         recipe,
+                                         mine,
+                                         indicateMine,
+                                         me,
+                                     }) => {
     const owner = useFluxStore(
         () => {
             if (mine) return indicateMine ? me : null;

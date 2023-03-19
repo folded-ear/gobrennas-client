@@ -4,7 +4,6 @@ import {
 } from "@mui/material";
 import { withStyles } from "@mui/styles";
 import { grey } from "@mui/material/colors";
-import PropTypes from "prop-types";
 import React from "react";
 import { MUISize } from "global/types/types";
 
@@ -19,9 +18,16 @@ type ProgressProps = {
     style?: any;
 }
 
-const LoadingIconButton = ({size = "small", ...props}) => {
+interface Props {
+    size?: MUISize,
+}
+
+const LoadingIconButton: React.FC<Props> = ({
+                                                size = "small",
+                                                ...props
+                                            }) => {
     // this is _weak_.
-    const cpProps : ProgressProps = {};
+    const cpProps: ProgressProps = {};
     if (size === "small") {
         cpProps.size = 24;
         cpProps.style = {
@@ -31,7 +37,7 @@ const LoadingIconButton = ({size = "small", ...props}) => {
     // this is admittedly pretty silly. ok, really silly.
     return <IconButton
         aria-label="loading"
-        size={size as MUISize}
+        size={size}
         disabled
         {...props}
     >
@@ -41,10 +47,6 @@ const LoadingIconButton = ({size = "small", ...props}) => {
             {...cpProps}
         />
     </IconButton>;
-};
-
-LoadingIconButton.propTypes = {
-    size: PropTypes.oneOf(["small", "medium"]),
 };
 
 export default LoadingIconButton;

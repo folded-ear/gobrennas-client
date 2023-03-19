@@ -10,15 +10,15 @@ import PageBody from "views/common/PageBody";
 import Ingredient from "views/shop/IngredientItem";
 import TaskItem from "views/shop/TaskItem";
 import {
-    baseItemPropTypes,
-    itemPropTypes,
+    BaseItemProp,
+    ItemProps,
 } from "./types";
 import LoadObject from "../../util/LoadObject";
 import { Plan } from "global/types/types";
 
 type ShopListProps = {
     planLO: LoadObject<Plan>
-    itemTuples: itemPropTypes & {
+    itemTuples: ItemProps & {
       id: string,
       _type: "ingredient" | "task",
       active: boolean;
@@ -29,7 +29,7 @@ type ShopListProps = {
           quantity: number,
           uomId?: number,
       }[],
-      path: baseItemPropTypes[]
+      path: BaseItemProp[]
     }[]
 }
 

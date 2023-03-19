@@ -1,7 +1,6 @@
 import Fab from "@mui/material/Fab";
 import { makeStyles } from "@mui/styles";
-import PropTypes from "prop-types";
-import React from "react";
+import React, { PropsWithChildren } from "react";
 import dispatcher from "../../data/dispatcher";
 import UiActions from "../../data/UiActions";
 
@@ -13,7 +12,12 @@ const useStyles = makeStyles(theme => ({
     },
 }));
 
-const FoodingerFab = ({children, ...props}) => {
+type Props = PropsWithChildren<any>;
+
+const FoodingerFab: React.FC<Props> = ({
+                                           children,
+                                           ...props
+                                       }) => {
     const classes = useStyles();
     React.useEffect(() => {
         setTimeout(() => dispatcher.dispatch({
@@ -22,7 +26,8 @@ const FoodingerFab = ({children, ...props}) => {
         return () => {
             setTimeout(() => dispatcher.dispatch({
                 type: UiActions.HIDE_FAB,
-            }));};
+            }));
+        };
     }, []);
     return <Fab
         color="primary"
@@ -32,10 +37,6 @@ const FoodingerFab = ({children, ...props}) => {
     >
         {children}
     </Fab>;
-};
-
-FoodingerFab.propTypes = {
-    children: PropTypes.node.isRequired,
 };
 
 export default FoodingerFab;
