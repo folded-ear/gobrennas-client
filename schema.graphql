@@ -14,7 +14,7 @@ interface AccessControlled {
 interface Ingredient {
     id: ID!
     labels: [String!]
-    name: String
+    name: String!
 }
 
 interface Node {
@@ -140,7 +140,7 @@ type PantryItem implements Ingredient & Node {
     aisle: String
     id: ID!
     labels: [String!]
-    name: String
+    name: String!
     storeOrder: Int
 }
 
@@ -202,7 +202,7 @@ type Recipe implements Ingredient & Node & Owned {
     id: ID!
     ingredients: [IngredientRef!]!
     labels: [String!]
-    name: String
+    name: String!
     owner: User!
     photo: Photo
     totalTime: Int
