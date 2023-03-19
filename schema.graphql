@@ -75,6 +75,16 @@ type IngredientRef {
     raw: String!
 }
 
+type Label implements Node {
+    id: ID!
+    "Unique label name."
+    name: String!
+}
+
+type LabelsQuery {
+    all: [Label!]!
+}
+
 type LibraryQuery {
     pantryItem: PantryItem
     "Search the recipe library."
@@ -100,16 +110,6 @@ type LibraryQuery {
         "The scope to search for recipes within."
         scope: LibrarySearchScope! = MINE
     ): RecipeConnection!
-}
-
-type Label implements Node {
-    id: ID!
-    "Unique label name."
-    name: String!
-}
-
-type LabelsQuery {
-    all: [Label!]!
 }
 
 type Mutation {
@@ -188,8 +188,8 @@ type Query {
     getCurrentUser: User
     getPlanItem(id: ID!): PlanItem
     getPlans: [Plan]
-    library: LibraryQuery
     labels: LabelsQuery
+    library: LibraryQuery
     node(id: ID!): Node
     timer: TimerQuery
 }

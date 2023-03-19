@@ -1,17 +1,10 @@
-import {
-    Star,
-    StarBorder
-} from "@mui/icons-material";
-import {
-    useIsFavorite,
-    useMarkFavorite,
-    useRemoveFavorite
-} from "../data/queries";
-import { IconButton } from "@mui/material";
+import {Star, StarBorder} from "@mui/icons-material";
+import {useIsFavorite, useMarkFavorite, useRemoveFavorite} from "../data/queries";
+import {IconButton} from "@mui/material";
 
 interface Props {
     type: string,
-    id: number,
+    id: string | number,
 }
 
 export default function Indicator({

@@ -4,21 +4,19 @@ import {makeStyles} from "@mui/styles";
 import Dispatcher from "data/dispatcher";
 import FriendStore from "data/FriendStore";
 import RecipeActions from "data/RecipeActions";
-import {Recipe} from "data/RecipeTypes";
 import useFluxStore from "data/useFluxStore";
 import ItemImage from "features/RecipeLibrary/components/ItemImage";
 import ItemImageUpload from "features/RecipeLibrary/components/ItemImageUpload";
 import LabelItem from "features/RecipeLibrary/components/LabelItem";
 import SendToPlan from "features/RecipeLibrary/components/SendToPlan";
-import PropTypes from "prop-types";
 import React from "react";
 import {Link} from "react-router-dom";
-import {loadObjectOf} from "util/loadObjectTypes";
 import {formatDuration} from "util/time";
 import RecipeInfo from "views/common/RecipeInfo";
 import Source from "views/common/Source";
 import User from "views/user/User";
 import FavoriteIndicator from "../../Favorites/components/Indicator";
+import {Recipe} from "../../../__generated__/graphql";
 
 const useStyles = makeStyles({
     photo: {
@@ -30,16 +28,24 @@ const useStyles = makeStyles({
     },
 });
 
-const RecipeCard = ({recipe, mine, indicateMine, me}) => {
+interface Props {
+    recipe: Recipe,
+    mine: boolean,
+    indicateMine: boolean,
+    me: any,
+}
+
+const RecipeCard = ({recipe, mine, indicateMine, me}: Props) => {
     const owner = useFluxStore(
         () => {
             if (mine) return indicateMine ? me : null;
-            const lo = FriendStore.getFriendLO(recipe.ownerId);
+            const lo = FriendStore.getFriendLO(recipe.owner.id);
             return lo.hasValue() ? lo.getValueEnforcing() : null;
         },
         [FriendStore],
-        [mine, indicateMine, me, recipe.ownerId],
+        [mine, indicateMine, me, recipe.owner.id],
     );
+    console.log("BEB", indicateMine, owner)
     const classes = useStyles();
     const [raised, setRaised] = React.useState(false);
 
@@ -65,7 +71,7 @@ const RecipeCard = ({recipe, mine, indicateMine, me}) => {
                             recipe={recipe} />
                     </Link>
                     : <ItemImageUpload
-                        className={classes.photo}
+                        // className={classes.photo}
                         recipe={recipe}
                         disabled={!mine}
                     />
@@ -114,33 +120,25 @@ const RecipeCard = ({recipe, mine, indicateMine, me}) => {
             </>
             <CardActions>
                 <Stack direction="row" spacing={2}>
-                <Button
-                    variant="contained"
-                    color="secondary"
-                    disableElevation
-                    startIcon={<MenuBook/>}
-                    component={Link}
-                    to={`/library/recipe/${recipe.id}`}
-                >
-                    View
-                </Button>
-                <SendToPlan size="small" onClick={planId => Dispatcher.dispatch({
-                    type: RecipeActions.SEND_TO_PLAN,
-                    recipeId: recipe.id,
-                    planId,
-                })}/>
+                    <Button
+                        variant="contained"
+                        color="secondary"
+                        disableElevation
+                        startIcon={<MenuBook />}
+                        component={Link}
+                        to={`/library/recipe/${recipe.id}`}
+                    >
+                        View
+                    </Button>
+                    <SendToPlan onClick={planId => Dispatcher.dispatch({
+                        type: RecipeActions.SEND_TO_PLAN,
+                        recipeId: recipe.id,
+                        planId,
+                    })} />
                 </Stack>
             </CardActions>
         </Card>
     );
-};
-
-RecipeCard.propTypes = {
-    recipe: Recipe,
-    mine: PropTypes.bool,
-    ownerLO: loadObjectOf(PropTypes.object),
-    me: PropTypes.object,
-    indicateMine: PropTypes.bool,
 };
 
 export default RecipeCard;
