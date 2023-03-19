@@ -1,6 +1,15 @@
-import {MenuBook,} from "@mui/icons-material";
-import {Box, Button, Card, CardActions, CardContent, Grid, Stack, Typography} from "@mui/material";
-import {makeStyles} from "@mui/styles";
+import { MenuBook } from "@mui/icons-material";
+import {
+    Box,
+    Button,
+    Card,
+    CardActions,
+    CardContent,
+    Grid,
+    Stack,
+    Typography,
+} from "@mui/material";
+import { makeStyles } from "@mui/styles";
 import Dispatcher from "data/dispatcher";
 import FriendStore from "data/FriendStore";
 import RecipeActions from "data/RecipeActions";
@@ -10,13 +19,16 @@ import ItemImageUpload from "features/RecipeLibrary/components/ItemImageUpload";
 import LabelItem from "features/RecipeLibrary/components/LabelItem";
 import SendToPlan from "features/RecipeLibrary/components/SendToPlan";
 import React from "react";
-import {Link} from "react-router-dom";
-import {formatDuration} from "util/time";
+import { Link } from "react-router-dom";
+import { formatDuration } from "util/time";
 import RecipeInfo from "views/common/RecipeInfo";
 import Source from "views/common/Source";
 import User from "views/user/User";
 import FavoriteIndicator from "../../Favorites/components/Indicator";
-import {Recipe} from "../../../__generated__/graphql";
+import {
+    Photo,
+    User as UserType,
+} from "../../../__generated__/graphql";
 
 const useStyles = makeStyles({
     photo: {
@@ -28,24 +40,37 @@ const useStyles = makeStyles({
     },
 });
 
-interface Props {
-    recipe: Recipe,
+export interface RecipeType {
+    id: string;
+    calories?: number | null;
+    directions?: string;
+    externalUrl?: string | null;
+    favorite: boolean;
+    labels?: string[] | null;
+    name: string;
+    owner: UserType;
+    photo?: Photo | null;
+    totalTime?: number | null;
+    yield?: number | null;
+}
+
+interface RecipeCardProps {
+    recipe: RecipeType,
     mine: boolean,
     indicateMine: boolean,
     me: any,
 }
 
-const RecipeCard = ({recipe, mine, indicateMine, me}: Props) => {
+const RecipeCard = ({recipe, mine, indicateMine, me}: RecipeCardProps) => {
     const owner = useFluxStore(
         () => {
             if (mine) return indicateMine ? me : null;
             const lo = FriendStore.getFriendLO(recipe.owner.id);
             return lo.hasValue() ? lo.getValueEnforcing() : null;
         },
-        [FriendStore],
-        [mine, indicateMine, me, recipe.owner.id],
+        [ FriendStore ],
+        [ mine, indicateMine, me, recipe.owner.id ],
     );
-    console.log("BEB", indicateMine, owner)
     const classes = useStyles();
     const [raised, setRaised] = React.useState(false);
 
@@ -68,11 +93,12 @@ const RecipeCard = ({recipe, mine, indicateMine, me}: Props) => {
                     ? <Link to={`/library/recipe/${recipe.id}`}>
                         <ItemImage
                             className={classes.photo}
-                            recipe={recipe} />
+                            url={recipe.photo.url}
+                            focus={recipe.photo.focus}
+                            title={recipe.name!!} />
                     </Link>
                     : <ItemImageUpload
-                        // className={classes.photo}
-                        recipe={recipe}
+                        recipeId={recipe.id}
                         disabled={!mine}
                     />
                 }

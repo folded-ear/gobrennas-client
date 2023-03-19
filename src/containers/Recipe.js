@@ -76,7 +76,8 @@ const Recipe = ({match}) => {
 
     if (state.recipeLO.hasValue()) {
         return <RecipeDetail {...state}
-                             canFavorite />;
+                             canFavorite
+                             canShare />;
     }
 
     if (state.recipeLO.isLoading()) {

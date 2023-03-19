@@ -1,23 +1,16 @@
-import {
-    Box,
-    CircularProgress,
-    Grid,
-    Toolbar,
-    Typography,
-    useScrollTrigger,
-} from "@mui/material";
+import {Box, CircularProgress, Grid, Toolbar, Typography, useScrollTrigger,} from "@mui/material";
 import makeStyles from "@mui/styles/makeStyles";
-import { PostAdd } from "@mui/icons-material";
+import {PostAdd} from "@mui/icons-material";
 import PropTypes from "prop-types";
 import React from "react";
 import Dispatcher from "../../data/dispatcher";
 import RecipeActions from "../../data/RecipeActions";
 import RecipeApi from "../../data/RecipeApi";
-import { Recipe } from "../../data/RecipeTypes";
+import {Recipe} from "../../data/RecipeTypes";
 import useWindowSize from "../../data/useWindowSize";
 import history from "../../util/history";
-import { loadObjectOf } from "../../util/loadObjectTypes";
-import { formatDuration } from "../../util/time";
+import {loadObjectOf} from "../../util/loadObjectTypes";
+import {formatDuration} from "../../util/time";
 import CloseButton from "../common/CloseButton";
 import CopyButton from "../common/CopyButton";
 import DeleteButton from "../common/DeleteButton";
@@ -34,7 +27,7 @@ import IngredientDirectionsRow from "./IngredientDirectionsRow";
 import ShareRecipe from "./ShareRecipe";
 import SubrecipeItem from "./SubrecipeItem";
 import SendToPlan from "features/RecipeLibrary/components/SendToPlan";
-import { OptionalNumberish } from "global/types/types";
+import {OptionalNumberish} from "global/types/types";
 import FavoriteIndicator from "../../features/Favorites/components/Indicator";
 
 const useStyles = makeStyles(theme => ({
@@ -99,7 +92,21 @@ SubHeader.propTypes = {
     children: PropTypes.node.isRequired,
 };
 
-const RecipeDetail = ({recipeLO, subrecipes, mine, ownerLO, anonymous, canFavorite}) => {
+function extractRecipePhoto(recipe: any) { // todo: remove
+    if (!recipe || !recipe.photo) return null;
+    if (typeof recipe.photo === "string") {
+        // REST supplied
+        return {
+            url: recipe.photo,
+            focus: recipe.photoFocus,
+        };
+    } else {
+        // GraphQL supplied
+        return recipe.photo;
+    }
+}
+
+const RecipeDetail = ({recipeLO, subrecipes, mine, ownerLO, anonymous, canFavorite, canShare}) => {
 
     const classes = useStyles();
 
@@ -112,6 +119,7 @@ const RecipeDetail = ({recipeLO, subrecipes, mine, ownerLO, anonymous, canFavori
     }
 
     const recipe = recipeLO.getValueEnforcing();
+    const photo = extractRecipePhoto(recipe);
 
     const labelsToDisplay = recipe.labels && recipe.labels
         .filter(label => label.indexOf("--") !== 0);
@@ -135,9 +143,9 @@ const RecipeDetail = ({recipeLO, subrecipes, mine, ownerLO, anonymous, canFavori
                             title={mine ? "Copy" : "Duplicate to My Library"}
                             onClick={() => history.push(`/library/recipe/${recipe.id}/make-copy`)}
                         />
-                        <ShareRecipe
+                        {canShare && <ShareRecipe
                             recipe={recipe}
-                        />
+                        />}
                         {mine && <EditButton
                             onClick={() => history.push(`/library/recipe/${recipe.id}/edit`)}
                         />}
@@ -158,10 +166,13 @@ const RecipeDetail = ({recipeLO, subrecipes, mine, ownerLO, anonymous, canFavori
             </SubHeader>
             <Grid container spacing={1}>
                 <Grid item xs={5}>
-                    {recipe.photo
+                    {photo
                         ? <ItemImage className={classes.imageContainer}
-                                     recipe={recipe} />
-                        : <ItemImageUpload recipe={recipe} disabled={!mine} />}
+                                     url={photo.url}
+                                     focus={photo.focus}
+                                     title={recipe.name} />
+                        : <ItemImageUpload recipeId={recipe.id}
+                                           disabled={!mine} />}
                 </Grid>
                 <Grid item xs={5}>
                     {recipe.externalUrl && <RecipeInfo
@@ -224,6 +235,7 @@ RecipeDetail.propTypes = {
     // @ts-ignore
     ownerLO: loadObjectOf(PropTypes.object).isRequired,
     canFavorite: PropTypes.bool,
+    canShare: PropTypes.bool,
 };
 
 export default RecipeDetail;

@@ -1,4 +1,8 @@
-import { Clear as ClearIcon, PostAdd as AddIcon, Search as SearchIcon } from "@mui/icons-material";
+import {
+    Clear as ClearIcon,
+    PostAdd as AddIcon,
+    Search as SearchIcon,
+} from "@mui/icons-material";
 import {
     Box,
     Button,
@@ -15,10 +19,12 @@ import {
     useScrollTrigger,
 } from "@mui/material";
 import { makeStyles } from "@mui/styles";
-import RecipeCard from "features/RecipeLibrary/components/RecipeCard";
-import PropTypes from "prop-types";
+import RecipeCard, { RecipeType } from "features/RecipeLibrary/components/RecipeCard";
 import { useIsMobile } from "providers/IsMobile";
-import React, { useState } from "react";
+import React, {
+    ReactNode,
+    useState,
+} from "react";
 import history from "util/history";
 import FoodingerFab from "views/common/FoodingerFab";
 import LazyInfinite from "views/common/LazyInfinite";
@@ -54,7 +60,12 @@ const useStyles = makeStyles((theme) => {
     });
 });
 
-function MessagePaper({ primary, children }) {
+interface MessagePaperProps {
+    primary: string,
+    children?: ReactNode | undefined,
+}
+
+function MessagePaper({primary, children}: MessagePaperProps) {
     return <Paper
         style={{
             textAlign: "center",
@@ -70,12 +81,27 @@ function MessagePaper({ primary, children }) {
     </Paper>;
 }
 
-MessagePaper.propTypes = {
-    primary: PropTypes.string,
-    children: PropTypes.node,
-};
+interface RecipesListProps {
+    me: any, // todo
+    filter?: string,
+    scope?: LibrarySearchScope,
+    isLoading: boolean,
+    isComplete: boolean,
+    recipes?: Array<RecipeType>,
+    onSearch: (filter: String, scope: LibrarySearchScope) => void,
+    onNeedMore: () => void,
+}
 
-function RecipesList({ me, scope, filter, recipes, isLoading, isComplete, onSearch, onNeedMore }) {
+function RecipesList({
+                         me,
+                         scope = LibrarySearchScope.Mine,
+                         filter = "",
+                         recipes,
+                         isLoading,
+                         isComplete,
+                         onSearch,
+                         onNeedMore,
+                     }: RecipesListProps) {
     const classes = useStyles();
     const isSearchFloating = useScrollTrigger({
         disableHysteresis: true,
@@ -134,7 +160,7 @@ function RecipesList({ me, scope, filter, recipes, isLoading, isComplete, onSear
                                 recipe={recipe}
                                 me={me}
                                 indicateMine={scope === LibrarySearchScope.Everyone}
-                                mine={recipe.ownerId === me.id}
+                                mine={recipe.owner.id === ("" + me.id)}
                             />
                         </Grid>,
                     )}
@@ -170,7 +196,7 @@ function RecipesList({ me, scope, filter, recipes, isLoading, isComplete, onSear
     }
     return (
         <Content
-            className={isSearchFloating ? classes.paddedContent : null}
+            className={isSearchFloating ? classes.paddedContent : undefined}
         >
             <Paper
                 elevation={isSearchFloating ? 4 : 1}
@@ -179,7 +205,6 @@ function RecipesList({ me, scope, filter, recipes, isLoading, isComplete, onSear
                 <InputBase
                     value={unsavedFilter}
                     onChange={handleSearchChange}
-                    className={classes.input}
                     placeholder="Search Recipes"
                     style={{ flexGrow: 2 }}
                     onKeyDown={e => {
@@ -234,21 +259,5 @@ function RecipesList({ me, scope, filter, recipes, isLoading, isComplete, onSear
         </Content>
     );
 }
-
-RecipesList.defaultProps = {
-    filter: "",
-    scope: LibrarySearchScope.Mine,
-};
-
-RecipesList.propTypes = {
-    me: PropTypes.object.isRequired,
-    filter: PropTypes.string.isRequired,
-    scope: PropTypes.string.isRequired,
-    isLoading: PropTypes.bool.isRequired,
-    isComplete: PropTypes.bool.isRequired,
-    recipes: PropTypes.array,
-    onSearch: PropTypes.func.isRequired,
-    onNeedMore: PropTypes.func.isRequired,
-};
 
 export default RecipesList;
