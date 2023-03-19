@@ -1,3 +1,4 @@
+import { Clear as ClearIcon, PostAdd as AddIcon, Search as SearchIcon } from "@mui/icons-material";
 import {
     Box,
     Button,
@@ -6,29 +7,27 @@ import {
     FormControlLabel,
     Grid,
     IconButton,
+    InputAdornment,
     InputBase,
     Paper,
     Switch,
     Typography,
     useScrollTrigger,
 } from "@mui/material";
-import {makeStyles} from "@mui/styles";
-import {PostAdd as AddIcon, Search as SearchIcon,} from "@mui/icons-material";
+import { makeStyles } from "@mui/styles";
 import Dispatcher from "data/dispatcher";
-import {Recipe} from "data/RecipeTypes";
+import { Recipe } from "data/RecipeTypes";
 import RecipeCard from "features/RecipeLibrary/components/RecipeCard";
 import LibraryActions from "features/RecipeLibrary/data/LibraryActions";
-import {SCOPE_EVERYONE, SCOPE_MINE,} from "features/RecipeLibrary/data/LibraryStore";
+import { SCOPE_EVERYONE, SCOPE_MINE } from "features/RecipeLibrary/data/LibraryStore";
 import PropTypes from "prop-types";
-import {useIsMobile} from "providers/IsMobile";
-import React, {useEffect, useState} from "react";
+import { useIsMobile } from "providers/IsMobile";
+import React, { useEffect, useState } from "react";
 import history from "util/history";
-import {loadObjectOf} from "util/loadObjectTypes";
+import { loadObjectOf } from "util/loadObjectTypes";
 import FoodingerFab from "views/common/FoodingerFab";
 import LazyInfinite from "views/common/LazyInfinite";
 import LoadingIndicator from "views/common/LoadingIndicator";
-
-;
 
 const useStyles = makeStyles((theme) => {
     const search = {
@@ -103,6 +102,12 @@ function RecipesList(props = {}) {
 
     function handleSearchChange(e) {
         setUnsavedFilter(e.target.value);
+    }
+
+    function handleClear(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        setUnsavedFilter("");
     }
 
     function handleSearch(e) {
@@ -201,6 +206,17 @@ function RecipesList(props = {}) {
                             handleSearch(e);
                         }
                     }}
+                    endAdornment={
+                        unsavedFilter
+                            ? <InputAdornment position="end">
+                                <IconButton
+                                    onClick={e => handleClear(e)}
+                                >
+                                    <ClearIcon />
+                                </IconButton>
+                            </InputAdornment>
+                            : undefined
+                    }
                 />
                 {isMobile || isSearchFloating
                     ? <IconButton color={"primary"} onClick={handleSearch} size="large">
