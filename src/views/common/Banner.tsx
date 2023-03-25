@@ -4,16 +4,23 @@ import {
     HelpOutline,
     InfoOutlined,
 } from "@mui/icons-material";
-import PropTypes from "prop-types";
-import React from "react";
+import React, {
+    MouseEventHandler,
+    PropsWithChildren,
+} from "react";
 import CloseButton from "views/common/CloseButton";
 import { lightBlue } from "@mui/material/colors";
 
-const Banner = ({
-                    severity,
-                    children,
-                    onClose,
-                }) => {
+interface Props extends PropsWithChildren {
+    severity?: "info",
+    onClose?: MouseEventHandler,
+}
+
+const Banner: React.FC<Props> = ({
+                                     severity,
+                                     children,
+                                     onClose,
+                                 }) => {
     return <Box
         display="flex"
         alignItems="center"
@@ -37,17 +44,10 @@ const Banner = ({
         </Box>
         {onClose && <Box>
             <CloseButton
-                size="small"
                 onClick={onClose}
             />
         </Box>}
     </Box>;
-};
-
-Banner.propTypes = {
-    severity: PropTypes.oneOf(["info"]),
-    children: PropTypes.node.isRequired,
-    onClose: PropTypes.func,
 };
 
 export default Banner;

@@ -1,10 +1,13 @@
-import PropTypes from "prop-types";
 import React from "react";
 import MarkdownView from "react-showdown";
 
-const Markdown = ({
-                      text,
-                  }) => {
+interface Props {
+    text: string,
+}
+
+const Markdown: React.FC<Props> = ({
+                                       text,
+                                   }) => {
     if (!text) {
         return null;
     }
@@ -17,10 +20,6 @@ const Markdown = ({
             }}
         />
     </div>;
-};
-
-Markdown.propTypes = {
-    text: PropTypes.string.isRequired,
 };
 
 export default Markdown;

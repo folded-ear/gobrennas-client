@@ -4,17 +4,21 @@ import {
     TooltipProps,
 } from "@mui/material";
 import { Edit } from "@mui/icons-material";
-import PropTypes from "prop-types";
-import React from "react";
+import React, { MouseEventHandler } from "react";
 
-const EditButton = ({
-                        onClick,
-                        tooltipPlacement = "top",
-                    }) => {
+interface Props {
+    tooltipPlacement?: TooltipProps["placement"],
+    onClick: MouseEventHandler,
+}
+
+const EditButton: React.FC<Props> = ({
+                                         onClick,
+                                         tooltipPlacement = "top",
+                                     }) => {
     return (
         <Tooltip
             title="Edit"
-            placement={tooltipPlacement as TooltipProps["placement"]}
+            placement={tooltipPlacement}
         >
             <IconButton
                 onClick={onClick}
@@ -23,11 +27,6 @@ const EditButton = ({
             </IconButton>
         </Tooltip>
     );
-};
-
-EditButton.propTypes = {
-    onClick: PropTypes.func,
-    tooltipPlacement: PropTypes.string,
 };
 
 export default EditButton;

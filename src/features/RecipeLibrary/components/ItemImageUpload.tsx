@@ -1,9 +1,7 @@
-import {makeStyles} from "@mui/styles";
-import PropTypes from "prop-types";
-import React from "react";
+import { makeStyles } from "@mui/styles";
 import Dispatcher from "data/dispatcher";
 import RecipeActions from "data/RecipeActions";
-import {Recipe} from "data/RecipeTypes";
+import React from "react";
 import ImageDropZone from "util/ImageDropZone";
 
 const useStyles = makeStyles({
@@ -16,22 +14,25 @@ const useStyles = makeStyles({
     },
 });
 
-const ItemImageUpload = ({recipe, disabled}) => {
+interface Props {
+    recipeId: string | number,
+    disabled: boolean,
+}
+
+const ItemImageUpload: React.FC<Props> = ({
+                                              recipeId,
+                                              disabled,
+                                          }) => {
     const classes = useStyles();
     return <ImageDropZone
         disabled={disabled}
         className={classes.root}
         onImage={file => Dispatcher.dispatch({
             type: RecipeActions.SET_RECIPE_PHOTO,
-            id: recipe.id,
+            id: recipeId,
             photo: file,
         })}
     />;
-};
-
-ItemImageUpload.propTypes = {
-    recipe: Recipe,
-    disabled: PropTypes.bool,
 };
 
 export default ItemImageUpload;

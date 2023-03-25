@@ -14,7 +14,7 @@ interface AccessControlled {
 interface Ingredient {
     id: ID!
     labels: [String!]
-    name: String
+    name: String!
 }
 
 interface Node {
@@ -75,6 +75,16 @@ type IngredientRef {
     raw: String!
 }
 
+type Label implements Node {
+    id: ID!
+    "Unique label name."
+    name: String!
+}
+
+type LabelsQuery {
+    all: [Label!]!
+}
+
 type LibraryQuery {
     pantryItem: PantryItem
     "Search the recipe library."
@@ -100,16 +110,6 @@ type LibraryQuery {
         "The scope to search for recipes within."
         scope: LibrarySearchScope! = MINE
     ): RecipeConnection!
-}
-
-type Label implements Node {
-    id: ID!
-    "Unique label name."
-    name: String!
-}
-
-type LabelsQuery {
-    all: [Label!]!
 }
 
 type Mutation {
@@ -140,7 +140,7 @@ type PantryItem implements Ingredient & Node {
     aisle: String
     id: ID!
     labels: [String!]
-    name: String
+    name: String!
     storeOrder: Int
 }
 
@@ -188,8 +188,8 @@ type Query {
     getCurrentUser: User
     getPlanItem(id: ID!): PlanItem
     getPlans: [Plan]
-    library: LibraryQuery
     labels: LabelsQuery
+    library: LibraryQuery
     node(id: ID!): Node
     timer: TimerQuery
 }
@@ -202,10 +202,10 @@ type Recipe implements Ingredient & Node & Owned {
     id: ID!
     ingredients: [IngredientRef!]!
     labels: [String!]
-    name: String
+    name: String!
     owner: User!
     photo: Photo
-    totalTime: Int
+    totalTime(unit: ChronoUnit = MINUTES): Int
     yield: Int
 }
 
@@ -283,6 +283,13 @@ enum AccessLevel {
     ADMINISTER
     CHANGE
     VIEW
+}
+
+enum ChronoUnit {
+    HOURS
+    MILLIS
+    MINUTES
+    SECONDS
 }
 
 enum LibrarySearchScope {

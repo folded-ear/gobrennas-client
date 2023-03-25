@@ -1,27 +1,26 @@
 import SvgIcon from "@mui/material/SvgIcon";
-import PropTypes from "prop-types";
 import React from "react";
 
-const Bar = ({y=12}) =>
+interface BarProps {
+    y?: number,
+}
+
+const Bar: React.FC<BarProps> = ({ y = 12 }) =>
     <g transform={`translate(12, ${y})`}>
         <rect x={-10} y={-1} width={20} height={2} />
     </g>;
 
-Bar.propTypes = {
-    y: PropTypes.number,
-};
+interface CaretProps {
+    y?: number,
+    transform?: string
+}
 
-const Caret = ({y=12, transform = ""}) =>
+const Caret: React.FC<CaretProps> = ({ y = 12, transform = "" }) =>
     <g transform={`translate(12, ${y})`}>
         <g transform={transform}>
             <polygon points={`-6,3 6,3 0,-3`} />
         </g>
     </g>;
-
-Caret.propTypes = {
-    y: PropTypes.number,
-    transform: PropTypes.string,
-};
 
 export const ExpandAll = () =>
     <SvgIcon>

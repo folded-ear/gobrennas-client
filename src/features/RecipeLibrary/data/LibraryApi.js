@@ -1,9 +1,8 @@
 import BaseAxios from "axios";
-import qs from "qs";
 import { API_BASE_URL } from "constants/index";
-import promiseFlux, { soakUpUnauthorized } from "util/promiseFlux";
 import queryClient from "data/queryClient";
 import LibraryActions from "features/RecipeLibrary/data/LibraryActions";
+import promiseFlux, { soakUpUnauthorized } from "util/promiseFlux";
 
 const recipeAxios = BaseAxios.create({
     baseURL: `${API_BASE_URL}/api/recipe`,
@@ -16,24 +15,6 @@ const pantryItemAxios = BaseAxios.create({
 export const PAGE_SIZE = 9; // multiple of three; around a window's worth.
 
 const LibraryApi = {
-
-    searchLibrary: (scope, filter, page = 0) => {
-        const params = {
-            scope,
-            filter: filter.trim(),
-            page,
-            pageSize: PAGE_SIZE,
-        };
-        promiseFlux(
-            recipeAxios.get(`/?${qs.stringify(params)}`),
-            data => ({
-                type: LibraryActions.SEARCH_LOADED,
-                data: data.data,
-                scope,
-                filter,
-            }),
-        );
-    },
 
     getIngredient(id) {
         promiseFlux(

@@ -1,4 +1,8 @@
-import { Clear as ClearIcon, PostAdd as AddIcon, Search as SearchIcon } from "@mui/icons-material";
+import {
+    Clear as ClearIcon,
+    PostAdd as AddIcon,
+    Search as SearchIcon,
+} from "@mui/icons-material";
 import {
     Box,
     Button,
@@ -15,19 +19,17 @@ import {
     useScrollTrigger,
 } from "@mui/material";
 import { makeStyles } from "@mui/styles";
-import Dispatcher from "data/dispatcher";
-import { Recipe } from "data/RecipeTypes";
-import RecipeCard from "features/RecipeLibrary/components/RecipeCard";
-import LibraryActions from "features/RecipeLibrary/data/LibraryActions";
-import { SCOPE_EVERYONE, SCOPE_MINE } from "features/RecipeLibrary/data/LibraryStore";
-import PropTypes from "prop-types";
+import RecipeCard, { RecipeType } from "features/RecipeLibrary/components/RecipeCard";
 import { useIsMobile } from "providers/IsMobile";
-import React, { useEffect, useState } from "react";
+import React, {
+    ReactNode,
+    useState,
+} from "react";
 import history from "util/history";
-import { loadObjectOf } from "util/loadObjectTypes";
 import FoodingerFab from "views/common/FoodingerFab";
 import LazyInfinite from "views/common/LazyInfinite";
 import LoadingIndicator from "views/common/LoadingIndicator";
+import { LibrarySearchScope } from "../../../__generated__/graphql";
 
 const useStyles = makeStyles((theme) => {
     const search = {
@@ -58,15 +60,15 @@ const useStyles = makeStyles((theme) => {
     });
 });
 
-const toggleScope = (e) => {
-    const everyone = e.target.checked;
-    Dispatcher.dispatch({
-        type: LibraryActions.SET_SCOPE,
-        scope: everyone ? SCOPE_EVERYONE : SCOPE_MINE,
-    });
-};
+interface MessagePaperProps {
+    primary: string,
+    children?: ReactNode,
+}
 
-function MessagePaper({ primary, children }) {
+const MessagePaper: React.FC<MessagePaperProps> = ({
+                                                       primary,
+                                                       children,
+                                                   }) => {
     return <Paper
         style={{
             textAlign: "center",
@@ -80,25 +82,36 @@ function MessagePaper({ primary, children }) {
             </Typography>}
         </Box>
     </Paper>;
-}
-
-MessagePaper.propTypes = {
-    primary: PropTypes.string,
-    children: PropTypes.node,
 };
 
-function RecipesList(props = {}) {
+interface RecipesListProps {
+    me: any, // todo
+    filter?: string,
+    scope?: LibrarySearchScope,
+    isLoading: boolean,
+    isComplete: boolean,
+    recipes?: Array<RecipeType>,
+    onSearch: (filter: String, scope: LibrarySearchScope) => void,
+    onNeedMore: () => void,
+}
+
+const RecipesList: React.FC<RecipesListProps> = ({
+                                                     me,
+                                                     scope = LibrarySearchScope.Mine,
+                                                     filter = "",
+                                                     recipes,
+                                                     isLoading,
+                                                     isComplete,
+                                                     onSearch,
+                                                     onNeedMore,
+                                                 }) => {
     const classes = useStyles();
     const isSearchFloating = useScrollTrigger({
         disableHysteresis: true,
         threshold: 0,
     });
     const isMobile = useIsMobile();
-    const { me, filter, scope, recipesLO, isComplete } = props;
     const [ unsavedFilter, setUnsavedFilter ] = useState(filter);
-    useEffect(() => {
-        setUnsavedFilter(filter);
-    }, [ filter ]);
 
     function handleSearchChange(e) {
         setUnsavedFilter(e.target.value);
@@ -108,39 +121,36 @@ function RecipesList(props = {}) {
         e.preventDefault();
         e.stopPropagation();
         setUnsavedFilter("");
+        onSearch(unsavedFilter, scope);
     }
 
     function handleSearch(e) {
         e.preventDefault();
         e.stopPropagation();
-        Dispatcher.dispatch({
-            type: LibraryActions.UPDATE_FILTER,
-            filter: unsavedFilter,
-        });
+        onSearch(unsavedFilter, scope);
+    }
+
+    function toggleScope(e) {
+        const scope = e.target.checked
+            ? LibrarySearchScope.Everyone
+            : LibrarySearchScope.Mine;
+        onSearch(filter, scope);
     }
 
     let body;
-    if (recipesLO.hasValue()) {
-        const lib = recipesLO.getValueEnforcing();
-        const isLoading = recipesLO.isLoading();
-        if (lib.length > 0) {
+    if (!!recipes) {
+        if (recipes.length > 0) {
             body = <LazyInfinite
                 loading={isLoading}
                 complete={isComplete}
-                onNeedMore={() => {
-                    if (isComplete) return; // not required, but may as well
-                    setTimeout(() =>
-                        Dispatcher.dispatch({
-                            type: LibraryActions.SEARCH_FARTHER,
-                        }));
-                }}
+                onNeedMore={onNeedMore}
             >
                 <Grid
                     container
                     spacing={4}
                     alignItems="stretch"
                 >
-                    {lib.map(recipe =>
+                    {recipes.map(recipe =>
                         <Grid
                             item
                             md={4}
@@ -152,12 +162,12 @@ function RecipesList(props = {}) {
                             <RecipeCard
                                 recipe={recipe}
                                 me={me}
-                                indicateMine={scope === SCOPE_EVERYONE}
-                                mine={recipe.ownerId === me.id}
+                                indicateMine={scope === LibrarySearchScope.Everyone}
+                                mine={recipe.owner.id === ("" + me.id)}
                             />
                         </Grid>,
                     )}
-                    {isComplete && lib.length > 5 && <Grid
+                    {isComplete && recipes.length > 5 && <Grid
                         item
                         xs={12}
                     >
@@ -189,7 +199,7 @@ function RecipesList(props = {}) {
     }
     return (
         <Content
-            className={isSearchFloating ? classes.paddedContent : null}
+            className={isSearchFloating ? classes.paddedContent : undefined}
         >
             <Paper
                 elevation={isSearchFloating ? 4 : 1}
@@ -198,7 +208,6 @@ function RecipesList(props = {}) {
                 <InputBase
                     value={unsavedFilter}
                     onChange={handleSearchChange}
-                    className={classes.input}
                     placeholder="Search Recipes"
                     style={{ flexGrow: 2 }}
                     onKeyDown={e => {
@@ -234,7 +243,7 @@ function RecipesList(props = {}) {
                 <Divider className={classes.divider} orientation="vertical" />
                 <FormControlLabel
                     control={
-                        <Switch checked={scope === SCOPE_EVERYONE}
+                        <Switch checked={scope === LibrarySearchScope.Everyone}
                                 name="scope"
                                 onChange={toggleScope}
                                 color="primary"
@@ -252,19 +261,6 @@ function RecipesList(props = {}) {
             </FoodingerFab>
         </Content>
     );
-}
-
-RecipesList.defaultProps = {
-    filter: "",
-    scope: "mine",
-};
-
-RecipesList.propTypes = {
-    me: PropTypes.object.isRequired,
-    recipesLO: loadObjectOf(PropTypes.arrayOf(Recipe)).isRequired,
-    isComplete: PropTypes.bool.isRequired,
-    filter: PropTypes.string.isRequired,
-    scope: PropTypes.string.isRequired,
 };
 
 export default RecipesList;

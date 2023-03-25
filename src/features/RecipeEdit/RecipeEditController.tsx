@@ -5,7 +5,9 @@ import { withRouter } from "react-router-dom";
 import useIngredientLO from "data/useIngredientLO";
 import { RouteComponentProps } from "react-router";
 
-const RecipeEditController = ({match}: RouteComponentProps<{id?: string}>) => {
+type Props = RouteComponentProps<{ id?: string }>;
+
+const RecipeEditController: React.FC<Props> = ({ match }) => {
     const id = match.params?.id || "";
     const lo = useIngredientLO(parseInt(id, 10));
     const { data: labelList } = useGetAllLabels();

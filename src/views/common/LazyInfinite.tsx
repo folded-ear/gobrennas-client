@@ -1,9 +1,19 @@
-import PropTypes from "prop-types";
-import React from "react";
+import React, { PropsWithChildren } from "react";
 import useWindowSize from "../../data/useWindowSize";
 import debounce from "../../util/debounce";
 
-function LazyInfinite({children, complete, onNeedMore, loading}) {
+interface Props extends PropsWithChildren {
+    onNeedMore: () => void,
+    complete?: boolean,
+    loading?: boolean,
+}
+
+const LazyInfinite: React.FC<Props> = ({
+                                           children,
+                                           complete,
+                                           onNeedMore,
+                                           loading,
+                                       }) => {
     const windowSize = useWindowSize();
     const ref = React.createRef<HTMLDivElement>();
     React.useEffect(
@@ -23,18 +33,11 @@ function LazyInfinite({children, complete, onNeedMore, loading}) {
             return () =>
                 window.removeEventListener("scroll", handler);
         },
-        [ref, onNeedMore, windowSize, complete, loading]
+        [ ref, onNeedMore, windowSize, complete, loading ],
     );
     return <div ref={ref}>
         {children}
     </div>;
-}
-
-LazyInfinite.propTypes = {
-    onNeedMore: PropTypes.func.isRequired,
-    children: PropTypes.node,
-    complete: PropTypes.bool,
-    loading: PropTypes.bool,
 };
 
 export default LazyInfinite;

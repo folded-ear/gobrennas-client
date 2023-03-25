@@ -1,14 +1,14 @@
-export type tuplePropTypes = {
+export type TupleProps = {
     active: boolean,
     classes: any,
 };
 
-export type baseItemPropTypes = {
+export type BaseItemProp = {
     id: string | number
     name: string,
 };
 
-export type itemPropTypes = baseItemPropTypes & {
+export type ItemProps = BaseItemProp & {
     loading: boolean,
     deleting: boolean,
     acquiring: boolean,

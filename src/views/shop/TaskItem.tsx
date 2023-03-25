@@ -13,16 +13,16 @@ import Item from "features/Planner/components/Item";
 import StatusIconButton from "features/Planner/components/StatusIconButton";
 import withItemStyles from "features/Planner/components/withItemStyles";
 import {
-    baseItemPropTypes,
-    itemPropTypes,
-    tuplePropTypes,
+    BaseItemProp,
+    ItemProps,
+    TupleProps,
 } from "./types";
 
-type TaskItemProps = tuplePropTypes & {
+type TaskItemProps = TupleProps & {
     depth: number,
-    item: itemPropTypes & {
+    item: ItemProps & {
         question: boolean,
-        path: baseItemPropTypes[]
+        path: BaseItemProp[]
         ingredient: any,
         status: any,
         _next_status: any,

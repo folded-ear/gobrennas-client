@@ -1,19 +1,23 @@
 import TextField from "@mui/material/TextField";
-import PropTypes from "prop-types";
-import React from "react";
+import React, { ChangeEventHandler } from "react";
 
-const LocalTextField = ({
-    value,
-    onChange,
-    ...props
-}) => {
+interface Props {
+    value: string,
+    onChange: ChangeEventHandler,
+}
+
+const LocalTextField: React.FC<Props> = ({
+                                             value,
+                                             onChange,
+                                             ...props
+                                         }) => {
     const [
         localValue,
         setLocalValue,
     ] = React.useState(value || "");
     React.useEffect(() =>
-        setLocalValue(value || ""),
-        [value]);
+            setLocalValue(value || ""),
+        [ value ]);
     return <TextField
         value={localValue}
         onChange={e => setLocalValue(e.target.value)}
@@ -25,11 +29,6 @@ const LocalTextField = ({
         }}
         {...props}
     />;
-};
-
-LocalTextField.propTypes = {
-    value: PropTypes.string,
-    onChange: PropTypes.func,
 };
 
 export default LocalTextField;

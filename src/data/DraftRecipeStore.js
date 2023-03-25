@@ -1,11 +1,11 @@
 import dotProp from "dot-prop-immutable";
 import LibraryActions from "features/RecipeLibrary/data/LibraryActions";
 import LibraryStore from "features/RecipeLibrary/data/LibraryStore";
-import {ReduceStore} from "flux/utils";
+import { ReduceStore } from "flux/utils";
 import ClientId from "util/ClientId";
 import history from "util/history";
 import LoadObject from "util/LoadObject";
-import {toMilliseconds} from "util/time";
+import { toMilliseconds } from "util/time";
 import Dispatcher from "./dispatcher";
 import RecipeActions from "./RecipeActions";
 import RecipeApi from "./RecipeApi";
@@ -109,8 +109,7 @@ class DraftRecipeStore extends ReduceStore {
             }
 
             case LibraryActions.INGREDIENT_LOADED:
-            case LibraryActions.INGREDIENTS_LOADED:
-            case LibraryActions.SEARCH_LOADED: {
+            case LibraryActions.INGREDIENTS_LOADED: {
                 Dispatcher.waitFor([
                     LibraryStore.getDispatchToken(),
                 ]);

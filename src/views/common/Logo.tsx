@@ -1,6 +1,5 @@
 import { makeStyles } from "@mui/styles";
-import PropTypes from "prop-types";
-import React from "react";
+import React, { ComponentType } from "react";
 
 const useStyles = makeStyles(theme => ({
         root: {
@@ -22,30 +21,29 @@ const useStyles = makeStyles(theme => ({
     })
 );
 
-const Logo = (props) => {
-    const {
-        version,
-        component = "div",
-        to,
-        ...ptps
-    } = props;
+interface Props<P> {
+    version?: "small",
+    component?: ComponentType<P> | string,
+
+    [__prop: string]: any // for whatever stuff the component wants
+}
+
+const Logo: React.FC<Props<any>> = ({
+                                        version,
+                                        component = "div",
+                                        ...props
+                                    }) => {
     const small = version === "small";
     const classes = useStyles({
         small,
     });
     return React.createElement(component, {
-        ...ptps,
+        ...props,
         className: classes.root,
     }, [
         <span key="B" className={classes.B}>B</span>,
         small ? "F" : "FoodSoftware",
     ]);
-};
-
-Logo.propTypes = {
-    version: PropTypes.string,
-    component: PropTypes.object,
-    to: PropTypes.string,
 };
 
 export default Logo;

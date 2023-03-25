@@ -2,26 +2,18 @@ import Dispatcher from "data/dispatcher";
 import PantryItemActions from "data/PantryItemActions";
 import RecipeActions from "data/RecipeActions";
 import RecipeApi from "data/RecipeApi";
-import RouteActions from "data/RouteActions";
 import LibraryApi from "features/RecipeLibrary/data/LibraryApi";
 import { ReduceStore } from "flux/utils";
 import invariant from "invariant";
 import PropTypes from "prop-types";
-import qs from "qs";
-import { removeDistinct } from "util/arrayAsSet";
 import { clientOrDatabaseIdType } from "util/ClientId";
-import debounce from "util/debounce";
 import history from "util/history";
 import LoadObject from "util/LoadObject";
 import LoadObjectMap from "util/LoadObjectMap";
-import LoadObjectState from "util/LoadObjectState";
-import { loadObjectMapOf, loadObjectStateOf, } from "util/loadObjectTypes";
+import { loadObjectMapOf, } from "util/loadObjectTypes";
 import { fromMilliseconds } from "util/time";
 import typedStore from "util/typedStore";
 import LibraryActions from "./LibraryActions";
-
-export const SCOPE_MINE = "mine";
-export const SCOPE_EVERYONE = "everyone";
 
 export const adaptTime = (recipe) => {
     if (!recipe.totalTime) return recipe;
@@ -30,49 +22,6 @@ export const adaptTime = (recipe) => {
         totalTime: fromMilliseconds(recipe.totalTime),
     };
 };
-
-function searchHelper(state) {
-    LibraryApi.searchLibrary(state.scope, state.filter, state.paging.pendingPage);
-    const params = {
-        q: state.filter,
-    };
-    if (state.scope !== SCOPE_MINE) {
-        params.s = state.scope;
-    }
-    history.replace("?" + qs.stringify(params));
-}
-
-const debouncedHelper = debounce(searchHelper, 300);
-
-function searchLibrary(state, scope, filter) {
-    let doSearch = false;
-    if (scope != null && scope !== state.scope) {
-        doSearch = true;
-        state = {
-            ...state,
-            scope: scope,
-        };
-    }
-    if (filter != null && filter !== state.filter) {
-        doSearch = true;
-        state = {
-            ...state,
-            filter: filter,
-        };
-    }
-    if (!doSearch) return state;
-    state = {
-        ...state,
-        paging: {
-            page: -1,
-            pendingPage: 0,
-            complete: false,
-        },
-        recipeIds: state.recipeIds.mapLO(lo => lo.loading()),
-    };
-    searchHelper(state);
-    return state;
-}
 
 class LibraryStore extends ReduceStore {
 
@@ -84,75 +33,17 @@ class LibraryStore extends ReduceStore {
                     type: LibraryActions.LOAD_INGREDIENTS,
                     ids: [...ids],
                 })), // LoadObjectMap<ID, Ingredient>
-            // used for bootstrapping (at the moment)
-            recipeIds: new LoadObjectState(
-                () =>
-                    Dispatcher.dispatch({
-                        type: LibraryActions.SEARCH,
-                    }),
-            ), // LoadObjectState<ID[]>
-            paging: {
-                page: -1,
-                pendingPage: -2,
-                complete: false,
-            },
-            scope: SCOPE_MINE,
-            filter: null
         };
     }
 
     reduce(state, action) {
         switch (action.type) {
 
-            case LibraryActions.SET_SCOPE: {
-                return searchLibrary(state, action.scope);
-            }
-
-            case RouteActions.MATCH: {
-                if (action.match.url !== "/library") return state;
-                if (!action.location.search) return state;
-                const params = qs.parse(action.location.search, { ignoreQueryPrefix: true });
-                return searchLibrary(state, params.s || SCOPE_MINE, params.q);
-            }
-
-            case LibraryActions.UPDATE_FILTER: {
-                return searchLibrary({
-                    ...state,
-                    filter: null, // guarantee a re-search
-                }, undefined, action.filter);
-            }
-
-            case LibraryActions.CLEAR_FILTER: {
-                return searchLibrary(state, undefined, "");
-            }
-
-            case LibraryActions.SEARCH: {
-                return searchLibrary(state, undefined, state.filter || "");
-            }
-
-            case LibraryActions.SEARCH_FARTHER: {
-                const paging = state.paging;
-                if (paging.complete) return state;
-                if (paging.page < 0) return state;
-                if (paging.pendingPage !== paging.page) return state;
-                state = {
-                    ...state,
-                    paging: {
-                        ...paging,
-                        pendingPage: paging.pendingPage + 1,
-                    },
-                };
-                debouncedHelper(state);
-                return state;
-            }
-
             case RecipeActions.RECIPE_DELETED: {
                 history.push("/library");
                 return {
                     ...state,
                     byId: state.byId.delete(action.id),
-                    recipeIds: state.recipeIds.map(ids =>
-                        removeDistinct(ids, action.id)),
                 };
             }
 
@@ -171,8 +62,6 @@ class LibraryStore extends ReduceStore {
                         .set(action.data.id,
                             LoadObject.withValue(adaptTime(action.data)))
                         .delete(action.id),
-                    recipeIds: state.recipeIds.map(ids =>
-                        ids.concat(action.data.id))
                 };
             }
 
@@ -228,24 +117,8 @@ class LibraryStore extends ReduceStore {
                     console.log("OUT OF ORDER - IGNORE", action.filter);
                     return state;
                 }
-                const newIds = action.data.content.map(r => r.id);
                 return {
                     ...state,
-                    paging: {
-                        ...state.paging,
-                        page: action.data.page,
-                        complete: action.data.last,
-                    },
-                    recipeIds: state.recipeIds
-                        .mapLO(lo => (lo.hasValue() && action.data.page > 0
-                            ? lo.map(v => {
-                                if (newIds.some(it => v.indexOf(it) >= 0)) {
-                                    // eslint-disable-next-line no-console
-                                    console.log("DUPLICATE INCOMING ID", v, newIds);
-                                }
-                                return v.concat(newIds);
-                            })
-                            : lo.setValue(newIds)).done()),
                     byId: action.data.content.reduce((byId, r) =>
                         byId.set(r.id, LoadObject.withValue(adaptTime(r))), state.byId),
                 };
@@ -285,21 +158,6 @@ class LibraryStore extends ReduceStore {
                 return state;
             }
         }
-    }
-
-    getRecipesLO() {
-        return this.getState()
-            .recipeIds
-            .getLoadObject()
-            .map(ids =>
-                ids.map(id =>
-                    this.getIngredientById(id).getValueEnforcing()));
-    }
-
-    isListingComplete() {
-        return this.getState()
-            .paging
-            .complete;
     }
 
     getIngredientById(id) {
@@ -351,14 +209,6 @@ LibraryStore.stateTypes = {
         // pantry item
         storeOrder: PropTypes.number,
     })),
-    recipeIds: loadObjectStateOf(PropTypes.arrayOf(clientOrDatabaseIdType)),
-    scope: PropTypes.string.isRequired,
-    filter: PropTypes.string,
-    paging: PropTypes.shape({
-        page: PropTypes.number.isRequired,
-        pendingPage: PropTypes.number.isRequired,
-        complete: PropTypes.bool.isRequired,
-    }),
 };
 
 export default typedStore(new LibraryStore(Dispatcher));

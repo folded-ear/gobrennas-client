@@ -1,8 +1,8 @@
 import BaseAxios from "axios";
 import { ReduceStore } from "flux/utils";
-import { API_BASE_URL } from "../constants/index";
 import LoadObjectState from "util/LoadObjectState";
 import promiseFlux from "util/promiseFlux";
+import { API_BASE_URL } from "../constants/index";
 import Dispatcher from "./dispatcher";
 import FriendActions from "./FriendActions";
 
@@ -37,7 +37,11 @@ class FriendStore extends ReduceStore {
             }
 
             case FriendActions.FRIEND_LIST_LOADED: {
-                return state.mapLO(lo => lo.setValue(action.data).done());
+                return state.mapLO(lo => lo.setValue(action.data
+                    .map(f => ({
+                        ...f,
+                        id_s: "" + f.id,
+                    }))).done());
             }
 
             default:
@@ -50,8 +54,9 @@ class FriendStore extends ReduceStore {
     }
 
     getFriendLO(id) {
+        const id_s = "" + id;
         return this.getFriendsLO()
-            .map(fs => fs.find(f => f.id === id));
+            .map(fs => fs.find(f => f.id_s === id_s));
     }
 
 }

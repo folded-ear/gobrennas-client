@@ -4,11 +4,9 @@ import {
 } from "@mui/material";
 import makeStyles from "@mui/styles/makeStyles";
 import LinkIcon from "@mui/icons-material/Link";
-import PropTypes from "prop-types";
 import React from "react";
 import Dispatcher from "data/dispatcher";
 import PantryItemActions from "data/PantryItemActions";
-import { IngredientRef } from "data/RecipeTypes";
 import TaskActions from "features/Planner/data/TaskActions";
 import history from "util/history";
 import Quantity from "views/common/Quantity";
@@ -22,23 +20,51 @@ const useStyles = makeStyles(() => ({
         textDecorationColor: "#999",
         textDecorationStyle: "dotted",
         textDecorationLine: "underline",
-    }
+    },
 }));
 
-const Augment = ({text, prefix, suffix}) => text
+interface AugmentProps {
+    text?: string | number,
+    prefix?: string,
+    suffix?: string,
+}
+
+const Augment: React.FC<AugmentProps> = ({
+                                             text,
+                                             prefix,
+                                             suffix,
+                                         }) => text
     ? <>{prefix}{text}{suffix}</>
     : null;
 
-Augment.propTypes = {
-    text: PropTypes.oneOfType([
-        PropTypes.string,
-        PropTypes.number,
-    ]),
-    prefix: PropTypes.string,
-    suffix: PropTypes.string,
-};
+export interface Ingredient {
+    type: "Recipe" | "PantryItem"
+    name: string
+    id: string | number
+}
 
-const IngredientItem = ({ingRef: ref, hideRecipeLink, hideSendToPlan, inline}) => {
+export interface IngredientRef {
+    /**
+     * You might think this is required, but when shopping, a ref might be to
+     * a napalm entry, and thus only have a name.
+     */
+    raw?: string
+    quantity?: number
+    units?: string
+    name?: string
+    preparation?: string
+    ingredient?: string | Ingredient
+    ingredientId?: string | number
+}
+
+interface Props {
+    ingRef: IngredientRef
+    hideRecipeLink?: boolean
+    hideSendToPlan?: boolean
+    inline?: boolean
+}
+
+const IngredientItem: React.FC<Props> = ({ ingRef: ref, hideRecipeLink, hideSendToPlan, inline }) => {
     const classes = useStyles();
 
     let left, right;
@@ -126,13 +152,6 @@ const IngredientItem = ({ingRef: ref, hideRecipeLink, hideSendToPlan, inline}) =
             {right}
         </Grid>
     </Grid>;
-};
-
-IngredientItem.propTypes = {
-    ingRef: IngredientRef.isRequired,
-    hideRecipeLink: PropTypes.bool,
-    hideSendToPlan: PropTypes.bool,
-    inline: PropTypes.bool,
 };
 
 export default IngredientItem;
