@@ -205,7 +205,7 @@ type Recipe implements Ingredient & Node & Owned {
     name: String!
     owner: User!
     photo: Photo
-    totalTime: Int
+    totalTime(unit: ChronoUnit = MINUTES): Int
     yield: Int
 }
 
@@ -283,6 +283,13 @@ enum AccessLevel {
     ADMINISTER
     CHANGE
     VIEW
+}
+
+enum ChronoUnit {
+    HOURS
+    MILLIS
+    MINUTES
+    SECONDS
 }
 
 enum LibrarySearchScope {
