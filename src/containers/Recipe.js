@@ -75,9 +75,12 @@ const Recipe = ({match}) => {
     );
 
     if (state.recipeLO.hasValue()) {
-        return <RecipeDetail {...state}
-                             canFavorite
-                             canShare />;
+        return <RecipeDetail
+            {...state}
+            canFavorite
+            canShare
+            canSendToPlan
+        />;
     }
 
     if (state.recipeLO.isLoading()) {

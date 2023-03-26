@@ -1,16 +1,23 @@
-import {Box, CircularProgress, Grid, Toolbar, Typography, useScrollTrigger,} from "@mui/material";
+import {
+    Box,
+    CircularProgress,
+    Grid,
+    Toolbar,
+    Typography,
+    useScrollTrigger,
+} from "@mui/material";
 import makeStyles from "@mui/styles/makeStyles";
-import {PostAdd} from "@mui/icons-material";
+import { PostAdd } from "@mui/icons-material";
 import PropTypes from "prop-types";
 import React from "react";
 import Dispatcher from "../../data/dispatcher";
 import RecipeActions from "../../data/RecipeActions";
 import RecipeApi from "../../data/RecipeApi";
-import {Recipe} from "../../data/RecipeTypes";
+import { Recipe } from "../../data/RecipeTypes";
 import useWindowSize from "../../data/useWindowSize";
 import history from "../../util/history";
-import {loadObjectOf} from "../../util/loadObjectTypes";
-import {formatDuration} from "../../util/time";
+import { loadObjectOf } from "../../util/loadObjectTypes";
+import { formatDuration } from "../../util/time";
 import CloseButton from "../common/CloseButton";
 import CopyButton from "../common/CopyButton";
 import DeleteButton from "../common/DeleteButton";
@@ -27,7 +34,7 @@ import IngredientDirectionsRow from "./IngredientDirectionsRow";
 import ShareRecipe from "./ShareRecipe";
 import SubrecipeItem from "./SubrecipeItem";
 import SendToPlan from "features/RecipeLibrary/components/SendToPlan";
-import {OptionalNumberish} from "global/types/types";
+import { OptionalNumberish } from "global/types/types";
 import FavoriteIndicator from "../../features/Favorites/components/Indicator";
 
 const useStyles = makeStyles(theme => ({
@@ -106,16 +113,25 @@ function extractRecipePhoto(recipe: any) { // todo: remove
     }
 }
 
-const RecipeDetail = ({recipeLO, subrecipes, mine, ownerLO, anonymous, canFavorite, canShare}) => {
-
+const RecipeDetail = ({
+                          recipeLO,
+                          subrecipes,
+                          mine,
+                          ownerLO,
+                          anonymous,
+                          canFavorite,
+                          canShare,
+                          canSendToPlan,
+                      }) => {
     const classes = useStyles();
 
     const windowSize = useWindowSize();
 
-    let loggedIn = true;
-    if (anonymous) {
+    const loggedIn = !anonymous;
+    if (anonymous && mine) {
+        // eslint-disable-next-line no-console
+        console.warn("Viewer is anonymous, but thinks they own the recipe?!");
         mine = false;
-        loggedIn = false;
     }
 
     const recipe = recipeLO.getValueEnforcing();
@@ -192,8 +208,7 @@ const RecipeDetail = ({recipeLO, subrecipes, mine, ownerLO, anonymous, canFavori
                             <LabelItem key={label} label={label} />)}
                     </Box>}
 
-                    {/* todo: this does a store hit for the plan, and only makes sense for a library recipe */}
-                    {loggedIn && <Box mt={1}>
+                    {loggedIn && canSendToPlan && <Box mt={1}>
                         <SendToPlan
                             onClick={planId => Dispatcher.dispatch({
                                 type: RecipeActions.SEND_TO_PLAN,
@@ -236,6 +251,7 @@ RecipeDetail.propTypes = {
     ownerLO: loadObjectOf(PropTypes.object).isRequired,
     canFavorite: PropTypes.bool,
     canShare: PropTypes.bool,
+    canSendToPlan: PropTypes.bool,
 };
 
 export default RecipeDetail;
