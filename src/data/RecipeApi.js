@@ -1,9 +1,9 @@
 import BaseAxios from "axios";
-import {API_BASE_URL} from "../constants/index";
+import queryClient from "data/queryClient";
 import promiseFlux from "util/promiseFlux";
 import promiseWellSizedFile from "util/promiseWellSizedFile";
+import { API_BASE_URL } from "../constants/index";
 import RecipeActions from "./RecipeActions";
-import queryClient from "data/queryClient";
 
 const axios = BaseAxios.create({
     baseURL: `${API_BASE_URL}/api`,
@@ -81,10 +81,10 @@ const RecipeApi = {
             })
         );
     },
-    
-    sendToPlan(recipeId, planId) {
+
+    sendToPlan(recipeId, planId, scale) {
         promiseFlux(
-            axios.post(`/recipe/${recipeId}/_send_to_plan/${planId}`),
+            axios.post(`/recipe/${recipeId}/_send_to_plan/${planId}?scale=${scale || 1}`),
             () => ({
                 type: RecipeActions.SENT_TO_PLAN,
                 recipeId,
@@ -109,6 +109,7 @@ const RecipeApi = {
             }),
         );
     },
+
     addLabel(id, label) {
         promiseFlux(
             // this endpoint wants a plain-text post body containing the label

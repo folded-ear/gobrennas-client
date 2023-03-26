@@ -12,6 +12,7 @@ import history from "util/history";
 import Quantity from "views/common/Quantity";
 import SendToPlan from "features/RecipeLibrary/components/SendToPlan";
 import { IngredientRef } from "../global/types/types";
+import { useScale } from "../util/ScalingContext";
 
 const useStyles = makeStyles(() => ({
     quantity: {
@@ -45,13 +46,19 @@ interface Props {
     inline?: boolean
 }
 
-const IngredientItem: React.FC<Props> = ({ ingRef: ref, hideRecipeLink, hideSendToPlan, inline }) => {
+const IngredientItem: React.FC<Props> = ({
+                                             ingRef: ref,
+                                             hideRecipeLink,
+                                             hideSendToPlan,
+                                             inline,
+                                         }) => {
     const classes = useStyles();
+    const scale = useScale();
 
     let left, right;
     if (ref.quantity != null) {
         left = <Quantity
-            quantity={ref.quantity}
+            quantity={ref.quantity * scale}
             units={ref.units}
         />;
     }

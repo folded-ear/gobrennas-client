@@ -38,6 +38,10 @@ import {
     UserType,
 } from "global/types/types";
 import FavoriteIndicator from "../../features/Favorites/components/Indicator";
+import {
+    ReentrantScalingProvider,
+    useScale,
+} from "../../util/ScalingContext";
 
 const useStyles = makeStyles(theme => ({
     name: {
@@ -135,6 +139,7 @@ const RecipeDetail: React.FC<Props> = ({
     const classes = useStyles();
 
     const windowSize = useWindowSize();
+    const scale = useScale();
 
     const loggedIn = !anonymous;
     if (anonymous && mine) {
@@ -223,6 +228,7 @@ const RecipeDetail: React.FC<Props> = ({
                                 type: RecipeActions.SEND_TO_PLAN,
                                 recipeId: recipe.id,
                                 planId,
+                                scale,
                             })}
                         />
                     </Box>}
@@ -235,11 +241,12 @@ const RecipeDetail: React.FC<Props> = ({
                         loggedIn={loggedIn}
                     />)}
 
-                <IngredientDirectionsRow
-                    recipe={recipe}
-                    loggedIn={loggedIn}
-                />
-
+                <ReentrantScalingProvider>
+                    <IngredientDirectionsRow
+                        recipe={recipe}
+                        loggedIn={loggedIn}
+                    />
+                </ReentrantScalingProvider>
             </Grid>
             {loggedIn && <FoodingerFab
                 onClick={() => history.push(`/add`)}
