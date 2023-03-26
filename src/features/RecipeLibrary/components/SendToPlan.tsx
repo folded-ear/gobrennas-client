@@ -1,9 +1,14 @@
-import {Button, IconButton,} from "@mui/material";
+import {
+    Button,
+    IconButton,
+} from "@mui/material";
 import makeStyles from "@mui/styles/makeStyles";
-import {AddShoppingCart, ExitToApp,} from "@mui/icons-material";
+import {
+    AddShoppingCart,
+    ExitToApp,
+} from "@mui/icons-material";
 import React from "react";
 import useActivePlannerLO from "data/useActivePlannerLO";
-import PropTypes from "prop-types";
 
 const useStyles = makeStyles({
     button: {
@@ -13,7 +18,12 @@ const useStyles = makeStyles({
     },
 });
 
-const SendToPlan = ({onClick, iconOnly}) => {
+interface Props {
+    onClick: (number) => void
+    iconOnly?: boolean
+}
+
+const SendToPlan: React.FC<Props> = ({ onClick, iconOnly }) => {
     const classes = useStyles();
     const listLO = useActivePlannerLO();
     if (!listLO.hasValue()) return null;
@@ -44,11 +54,6 @@ const SendToPlan = ({onClick, iconOnly}) => {
             </span>
         </Button>;
     }
-};
-
-SendToPlan.propTypes = {
-    onClick: PropTypes.func.isRequired,
-    iconOnly: PropTypes.bool,
 };
 
 export default SendToPlan;
