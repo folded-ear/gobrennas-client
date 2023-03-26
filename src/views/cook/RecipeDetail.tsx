@@ -8,15 +8,12 @@ import {
 } from "@mui/material";
 import makeStyles from "@mui/styles/makeStyles";
 import { PostAdd } from "@mui/icons-material";
-import PropTypes from "prop-types";
-import React from "react";
+import React, { PropsWithChildren } from "react";
 import Dispatcher from "../../data/dispatcher";
 import RecipeActions from "../../data/RecipeActions";
 import RecipeApi from "../../data/RecipeApi";
-import { Recipe } from "../../data/RecipeTypes";
 import useWindowSize from "../../data/useWindowSize";
 import history from "../../util/history";
-import { loadObjectOf } from "../../util/loadObjectTypes";
 import { formatDuration } from "../../util/time";
 import CloseButton from "../common/CloseButton";
 import CopyButton from "../common/CopyButton";
@@ -34,7 +31,12 @@ import IngredientDirectionsRow from "./IngredientDirectionsRow";
 import ShareRecipe from "./ShareRecipe";
 import SubrecipeItem from "./SubrecipeItem";
 import SendToPlan from "features/RecipeLibrary/components/SendToPlan";
-import { OptionalNumberish } from "global/types/types";
+import {
+    LoadObject,
+    OptionalNumberish,
+    Recipe,
+    UserType,
+} from "global/types/types";
 import FavoriteIndicator from "../../features/Favorites/components/Indicator";
 
 const useStyles = makeStyles(theme => ({
@@ -59,15 +61,15 @@ const useStyles = makeStyles(theme => ({
     },
 }));
 
-const SubHeader = ({children}) => {
+const SubHeader: React.FC<PropsWithChildren> = ({ children }) => {
     const windowSize = useWindowSize();
-    const [height, setHeight] = React.useState<OptionalNumberish>("auto");
-    const [width, setWidth] = React.useState<OptionalNumberish>("auto");
+    const [ height, setHeight ] = React.useState<OptionalNumberish>("auto");
+    const [ width, setWidth ] = React.useState<OptionalNumberish>("auto");
     const inner = React.useRef<HTMLDivElement>();
     React.useLayoutEffect(() => {
         setHeight(inner?.current?.clientHeight);
         setWidth((inner?.current?.parentNode as HTMLElement).clientWidth);
-    }, [windowSize.width]);
+    }, [ windowSize.width ]);
     const trigger = useScrollTrigger({
         disableHysteresis: true,
         // roughly the spacing 2
@@ -95,10 +97,6 @@ const SubHeader = ({children}) => {
     </div>;
 };
 
-SubHeader.propTypes = {
-    children: PropTypes.node.isRequired,
-};
-
 function extractRecipePhoto(recipe: any) { // todo: remove
     if (!recipe || !recipe.photo) return null;
     if (typeof recipe.photo === "string") {
@@ -113,16 +111,27 @@ function extractRecipePhoto(recipe: any) { // todo: remove
     }
 }
 
-const RecipeDetail = ({
-                          recipeLO,
-                          subrecipes,
-                          mine,
-                          ownerLO,
-                          anonymous,
-                          canFavorite,
-                          canShare,
-                          canSendToPlan,
-                      }) => {
+interface Props {
+    recipeLO: LoadObject<Recipe>
+    subrecipes?: Recipe[]
+    anonymous?: boolean,
+    mine?: boolean,
+    ownerLO: LoadObject<UserType>
+    canFavorite?: boolean,
+    canShare?: boolean,
+    canSendToPlan?: boolean,
+}
+
+const RecipeDetail: React.FC<Props> = ({
+                                           recipeLO,
+                                           subrecipes,
+                                           mine = false,
+                                           ownerLO,
+                                           anonymous = false,
+                                           canFavorite = false,
+                                           canShare = false,
+                                           canSendToPlan = false,
+                                       }) => {
     const classes = useStyles();
 
     const windowSize = useWindowSize();
@@ -239,19 +248,6 @@ const RecipeDetail = ({
             </FoodingerFab>}
         </PageBody>
     );
-};
-
-RecipeDetail.propTypes = {
-    // @ts-ignore
-    recipeLO: loadObjectOf(Recipe).isRequired,
-    subrecipes: PropTypes.arrayOf(Recipe),
-    anonymous: PropTypes.bool,
-    mine: PropTypes.bool,
-    // @ts-ignore
-    ownerLO: loadObjectOf(PropTypes.object).isRequired,
-    canFavorite: PropTypes.bool,
-    canShare: PropTypes.bool,
-    canSendToPlan: PropTypes.bool,
 };
 
 export default RecipeDetail;

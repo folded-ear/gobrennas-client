@@ -11,6 +11,7 @@ import TaskActions from "features/Planner/data/TaskActions";
 import history from "util/history";
 import Quantity from "views/common/Quantity";
 import SendToPlan from "features/RecipeLibrary/components/SendToPlan";
+import { IngredientRef } from "../global/types/types";
 
 const useStyles = makeStyles(() => ({
     quantity: {
@@ -36,26 +37,6 @@ const Augment: React.FC<AugmentProps> = ({
                                          }) => text
     ? <>{prefix}{text}{suffix}</>
     : null;
-
-export interface Ingredient {
-    type: "Recipe" | "PantryItem"
-    name: string
-    id: string | number
-}
-
-export interface IngredientRef {
-    /**
-     * You might think this is required, but when shopping, a ref might be to
-     * a napalm entry, and thus only have a name.
-     */
-    raw?: string
-    quantity?: number
-    units?: string
-    name?: string
-    preparation?: string
-    ingredient?: string | Ingredient
-    ingredientId?: string | number
-}
 
 interface Props {
     ingRef: IngredientRef

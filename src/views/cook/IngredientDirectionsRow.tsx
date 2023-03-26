@@ -6,12 +6,8 @@ import {
 } from "@mui/material";
 import React from "react";
 import Directions from "../common/Directions";
-import IngredientItem, { IngredientRef } from "../IngredientItem";
-
-interface Recipe {
-    ingredients: IngredientRef[],
-    directions?: string,
-}
+import IngredientItem from "../IngredientItem";
+import { Recipe } from "../../global/types/types";
 
 interface Props {
     recipe: Recipe,
