@@ -1,34 +1,61 @@
-import PropTypes from "prop-types";
 import React from "react";
 
-function format(quantity) {
-    if (quantity === 0.25) return "1/4";
-    else if (quantity > 0.33 && quantity < 0.34) return "1/3";
-    else if (quantity === 0.5) return "1/2";
-    else if (quantity > 0.66 && quantity < 0.67) return "2/3";
-    else if (quantity === 0.75) return "3/4";
-    return quantity;
+function toVulgarFraction(quantity) {
+    if (quantity === 0.125) return "⅛";
+    else if (quantity === 0.25) return "¼";
+    else if (quantity >= 0.33 && quantity < 0.34) return "⅓";
+    else if (quantity === 0.375) return "⅜";
+    else if (quantity === 0.5) return "½";
+    else if (quantity === 0.625) return "⅝";
+    else if (quantity >= 0.66 && quantity < 0.67) return "⅔";
+    else if (quantity === 0.75) return "¾";
+    else if (quantity === 0.875) return "⅞";
 }
 
-const Quantity = ({quantity, units, addSpace}) => {
+const numberFormat = new Intl.NumberFormat(undefined, {
+    maximumFractionDigits: 3,
+});
+
+export function toNumericString(quantity) {
+    if (quantity < 0) {
+        return "-" + toNumericString(Math.abs(quantity));
+    }
+    const whole = Math.floor(quantity);
+    if (quantity !== whole) {
+        const fraction = Math.abs(quantity - whole);
+        const vulgar = toVulgarFraction(fraction);
+        if (vulgar) {
+            return whole === 0
+                ? vulgar
+                : whole + vulgar;
+        }
+    }
+    return numberFormat.format(quantity);
+}
+
+interface Props {
+    quantity: number
+    units?: string // for the moment, at least
+    addSpace?: boolean
+}
+
+const Quantity: React.FC<Props> = ({
+                                       quantity,
+                                       units,
+                                       addSpace,
+                                   }) => {
     if (quantity == null) return null;
     return units == null
         ? <React.Fragment>
-            {format(quantity)}
+            {toNumericString(quantity)}
             {addSpace && " "}
         </React.Fragment>
         : <React.Fragment>
-            {format(quantity)}
+            {toNumericString(quantity)}
             {" "}
             {units}
             {addSpace && " "}
         </React.Fragment>;
-};
-
-Quantity.propTypes = {
-    quantity: PropTypes.number,
-    units: PropTypes.string, // for the moment, at least
-    addSpace: PropTypes.bool,
 };
 
 export default Quantity;
