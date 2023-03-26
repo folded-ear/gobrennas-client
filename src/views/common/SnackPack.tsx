@@ -1,5 +1,6 @@
 import * as React from "react";
 import {
+    Alert,
     AlertColor,
     IconButton,
     Snackbar,
@@ -10,7 +11,6 @@ import dispatcher from "../../data/dispatcher";
 import snackBarStore from "../../data/snackBarStore";
 import UiActions from "../../data/UiActions";
 import useFluxStore from "../../data/useFluxStore";
-import { Alert, } from "@mui/lab";
 
 const useStyles = makeStyles(theme => ({
     snackbar: {
