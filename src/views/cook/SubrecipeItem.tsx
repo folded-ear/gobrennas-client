@@ -10,6 +10,7 @@ import { Recipe } from "../../data/RecipeTypes";
 import { formatDuration } from "util/time";
 import CollapseIconButton from "global/components/CollapseIconButton";
 import IngredientDirectionsRow from "./IngredientDirectionsRow";
+import { ScalingProvider } from "../../util/ScalingContext";
 
 const useStyles = makeStyles({
     time: {
@@ -47,11 +48,14 @@ const SubrecipeItem = ({recipe, loggedIn}) => {
             </Typography>
         </Grid>
         {expanded && <>
-            <IngredientDirectionsRow
-                loggedIn={loggedIn}
-                recipe={recipe}
-                hideHeadings
-            />
+            {/* Subrecipes do not scale w/ the main recipe */}
+            <ScalingProvider>
+                <IngredientDirectionsRow
+                    loggedIn={loggedIn}
+                    recipe={recipe}
+                    hideHeadings
+                />
+            </ScalingProvider>
             <Grid item xs={12}>
                 <Divider
                     variant={"middle"}

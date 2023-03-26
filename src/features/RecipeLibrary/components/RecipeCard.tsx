@@ -163,7 +163,7 @@ const RecipeCard: React.FC<Props> = ({
                     </Button>
                     <SendToPlan onClick={planId => Dispatcher.dispatch({
                         type: RecipeActions.SEND_TO_PLAN,
-                        recipeId: recipe.id,
+                        recipeId: parseInt(recipe.id),
                         planId,
                     })} />
                 </Stack>

@@ -6,6 +6,7 @@ import React from "react";
 import { Redirect } from "react-router-dom";
 import LoadObject from "util/LoadObject";
 import { useProfileLO } from "../providers/Profile";
+import { ScalingProvider } from "../util/ScalingContext";
 import LoadingIndicator from "../views/common/LoadingIndicator";
 import RecipeDetail from "../views/cook/RecipeDetail";
 
@@ -75,9 +76,14 @@ const Recipe = ({match}) => {
     );
 
     if (state.recipeLO.hasValue()) {
-        return <RecipeDetail {...state}
-                             canFavorite
-                             canShare />;
+        return <ScalingProvider>
+            <RecipeDetail
+                {...state}
+                canFavorite
+                canShare
+                canSendToPlan
+            />
+        </ScalingProvider>;
     }
 
     if (state.recipeLO.isLoading()) {

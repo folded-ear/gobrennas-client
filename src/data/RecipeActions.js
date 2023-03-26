@@ -10,6 +10,7 @@ const dissectionComponentType = PropTypes.shape({
 const sendToPlanShape = {
     recipeId: PropTypes.number.isRequired,
     planId: PropTypes.number.isRequired,
+    scale: PropTypes.number,
 };
 
 const RecipeActions = {

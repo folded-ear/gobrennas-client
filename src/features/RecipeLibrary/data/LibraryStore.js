@@ -10,7 +10,7 @@ import { clientOrDatabaseIdType } from "util/ClientId";
 import history from "util/history";
 import LoadObject from "util/LoadObject";
 import LoadObjectMap from "util/LoadObjectMap";
-import { loadObjectMapOf, } from "util/loadObjectTypes";
+import { loadObjectMapOf } from "util/loadObjectTypes";
 import { fromMilliseconds } from "util/time";
 import typedStore from "util/typedStore";
 import LibraryActions from "./LibraryActions";
@@ -128,6 +128,7 @@ class LibraryStore extends ReduceStore {
                 RecipeApi.sendToPlan(
                     action.recipeId,
                     action.planId,
+                    action.scale,
                 );
                 return state;
             }

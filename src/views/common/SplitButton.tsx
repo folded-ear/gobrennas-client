@@ -9,8 +9,7 @@ import Paper from "@mui/material/Paper";
 import Popper from "@mui/material/Popper";
 import { makeStyles } from "@mui/styles";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
-import PropTypes from "prop-types";
-import React from "react";
+import React, { ReactNode } from "react";
 
 const useStyles = makeStyles({
     popper: {
@@ -18,19 +17,32 @@ const useStyles = makeStyles({
     },
 });
 
-const SplitButton = props => {
-    const {
-        primary,
-        onClick,
-        onSelect,
-        options,
-        disabled,
-        dropdownDisabled = disabled,
-    } = props;
+interface Option {
+    id: string | number
+    label: string
+}
+
+interface Props {
+    primary: ReactNode
+    onClick: (MouseEvent) => void
+    options: Option[]
+    onSelect: (event, Option) => void
+    disabled?: boolean
+    dropdownDisabled?: boolean
+}
+
+const SplitButton: React.FC<Props> = ({
+                                          primary,
+                                          onClick,
+                                          onSelect,
+                                          options,
+                                          disabled = false,
+                                          dropdownDisabled = disabled,
+                                      }) => {
     const classes = useStyles();
-    const [open, setOpen] = React.useState(false);
+    const [ open, setOpen ] = React.useState(false);
     const anchorRef = React.useRef<HTMLDivElement>(null);
-    const [selectedOption, setSelectedOption] = React.useState(null);
+    const [ selectedOption, setSelectedOption ] = React.useState(null);
 
     const handleClick = (event) => {
         onClick && onClick(event);
@@ -113,18 +125,6 @@ const SplitButton = props => {
             </Grid>
         </Grid>
     );
-};
-
-SplitButton.propTypes = {
-    primary: PropTypes.node.isRequired,
-    onClick: PropTypes.func.isRequired,
-    options: PropTypes.arrayOf(PropTypes.shape({
-        id: PropTypes.any.isRequired,
-        label: PropTypes.string.isRequired,
-    })),
-    onSelect: PropTypes.func.isRequired,
-    disabled: PropTypes.bool,
-    dropdownDisabled: PropTypes.bool,
 };
 
 export default SplitButton;

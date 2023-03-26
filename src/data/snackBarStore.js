@@ -1,16 +1,16 @@
-import {Button} from "@mui/material";
-import {ReduceStore} from "flux/utils";
+import { Button } from "@mui/material";
+import TaskActions from "features/Planner/data/TaskActions";
+import { willStatusDelete } from "features/Planner/data/TaskStatus";
+import TaskStore from "features/Planner/data/TaskStore";
+import LibraryStore from "features/RecipeLibrary/data/LibraryStore";
+import { ReduceStore } from "flux/utils";
 import PropTypes from "prop-types";
 import React from "react";
 import typedStore from "util/typedStore";
 import dispatcher from "./dispatcher";
-import LibraryStore from "features/RecipeLibrary/data/LibraryStore";
 import PantryItemActions from "./PantryItemActions";
 import RecipeActions from "./RecipeActions";
-import TaskActions from "features/Planner/data/TaskActions";
-import TaskStore from "features/Planner/data/TaskStore";
 import UiActions from "./UiActions";
-import {willStatusDelete} from "features/Planner/data/TaskStatus";
 
 const enqueue = (state, item) => {
     return {
@@ -100,11 +100,12 @@ class SnackBarStore extends ReduceStore {
             case RecipeActions.SENT_TO_PLAN: {
                 const plan = TaskStore.getTaskLO(action.planId)
                     .getValueEnforcing();
+                // if came from the library, the store might not have it...
                 const recipe = LibraryStore.getIngredientById(action.recipeId)
-                    .getValueEnforcing();
+                    .getValue();
                 return enqueue(state, {
-                    message: `Added ${recipe.name} to ${plan.name}`,
-                    severity: "success"
+                    message: `Added ${recipe ? recipe.name : "recipe"} to ${plan.name}`,
+                    severity: "success",
                 });
             }
 
