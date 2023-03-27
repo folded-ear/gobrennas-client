@@ -1,10 +1,13 @@
 import * as React from "react";
-import {match, Route} from "react-router-dom";
+import {
+    match,
+    Route,
+} from "react-router-dom";
 import Dispatcher from "../../data/dispatcher";
 import RouteActions from "../../data/RouteActions";
 import RouteStore from "../../data/RouteStore";
 import GTag from "../../GTag";
-import {RouteComponentProps} from "react-router";
+import { RouteComponentProps } from "react-router";
 
 type FluxRouteProps = {
     render?: ((props: RouteComponentProps) => React.ReactNode),
@@ -18,7 +21,6 @@ const FluxRoute: React.FC<FluxRouteProps> = ({render, component: Component, ...r
         {...rest}
         render={props => {
             const { match, location } = props;
-            // @ts-ignore
             const curr = RouteStore.getState();
             if (curr == null || match.url !== curr.url) {
                 const work = () => Dispatcher.dispatch({

@@ -48,7 +48,6 @@ const SEARCH_RECIPES = gql(`
 `);
 
 export const LibraryController = () => {
-    // @ts-ignore
     const me = useProfileLO().getValueEnforcing();
     const history = useHistory();
     const params = history.location.search
