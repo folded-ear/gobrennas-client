@@ -99,7 +99,6 @@ class LoadObjectMap<K, V> {
         this._data.forEach(fn);
     }
 
-    // @ts-ignore
     get size(): number {
         return this._data.size;
     }

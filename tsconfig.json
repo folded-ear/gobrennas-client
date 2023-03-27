@@ -18,8 +18,12 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
-    "jsx": "react-jsx"
+    "jsx": "react-jsx",
+    "target": "ES6"
   },
   "include": ["src/**/*"],
-  "exclude": ["node_modules", "**/*.spec.ts"],
+  "exclude": [
+    "node_modules",
+    "**/*.spec.ts"
+  ]
 }

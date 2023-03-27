@@ -87,7 +87,6 @@ const SubHeader: React.FC<PropsWithChildren> = ({ children }) => {
     >
         <Box
             boxShadow={trigger ? 6 : 0}
-            // @ts-ignore
             ref={inner}
             style={trigger ? {
                 position: "fixed",
