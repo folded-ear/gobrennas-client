@@ -55,13 +55,3 @@ export type SharedRecipe = {
 }
 
 export type Plan = any
-
-export interface LoadObject<T> {
-    getValue(): Optional<T>
-
-    hasValue(): boolean
-
-    isLoading(): boolean
-
-    getValueEnforcing(): T
-}

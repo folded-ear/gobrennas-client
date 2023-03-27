@@ -32,7 +32,6 @@ import ShareRecipe from "./ShareRecipe";
 import SubrecipeItem from "./SubrecipeItem";
 import SendToPlan from "features/RecipeLibrary/components/SendToPlan";
 import {
-    LoadObject,
     OptionalNumberish,
     Recipe,
     UserType,
@@ -42,6 +41,7 @@ import {
     ReentrantScalingProvider,
     useScale,
 } from "../../util/ScalingContext";
+import LoadObject from "../../util/LoadObject";
 
 const useStyles = makeStyles(theme => ({
     name: {
