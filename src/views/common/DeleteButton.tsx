@@ -7,20 +7,19 @@ import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogTitle from "@mui/material/DialogTitle";
 import { Delete } from "@mui/icons-material";
-import PropTypes from "prop-types";
 import * as React from "react";
 
-const DeleteIcon = ({onClick, ...props}) => (
+interface Props {
+    onClick(MouseEvent): void
+}
+
+const DeleteIcon: React.FC<Props> = ({ onClick, ...props }) => (
     <Tooltip title="Delete" placement="top">
         <IconButton onClick={onClick} {...props}>
-            <Delete/>
+            <Delete />
         </IconButton>
     </Tooltip>
 );
-
-DeleteIcon.propTypes = {
-    onClick: PropTypes.func
-};
 
 type DeleteButtonProps = {
     type: string,

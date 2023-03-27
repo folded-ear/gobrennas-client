@@ -7,7 +7,7 @@ import React from "react";
 
 interface Props {
     title: string
-    onClick: (MouseEvent) => void
+    onClick(MouseEvent): void
 }
 
 const CopyButton: React.FC<Props> = ({ title, onClick }) => {
