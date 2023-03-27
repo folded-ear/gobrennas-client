@@ -1,9 +1,20 @@
 import BaseAxios from "axios";
-import PropTypes from "prop-types";
-import React, { createContext, useCallback, useContext, useEffect, useState, } from "react";
+import React, {
+    createContext,
+    PropsWithChildren,
+    useCallback,
+    useContext,
+    useEffect,
+    useState,
+} from "react";
 import LoadObject from "util/LoadObject";
-import { API_BASE_URL, LOCAL_STORAGE_ACCESS_TOKEN, } from "../constants";
+import {
+    API_BASE_URL,
+    LOCAL_STORAGE_ACCESS_TOKEN,
+} from "../constants";
 import GTag from "../GTag";
+import { Maybe } from "graphql/jsutils/Maybe";
+import { UserType } from "../global/types/types";
 
 // global side effect to ensure cookies are passed
 BaseAxios.defaults.withCredentials = true;
@@ -12,12 +23,12 @@ const axios = BaseAxios.create({
     baseURL: API_BASE_URL,
 });
 
-const ProfileLOContext = createContext(undefined);
+const ProfileLOContext = createContext<Maybe<LoadObject<UserType>>>(undefined);
 
 let globalProfileLoadObject;
 
-export function ProfileProvider({ children }) {
-    const [ profileLO, setProfileLO ] = useState(undefined);
+export const ProfileProvider: React.FC<PropsWithChildren> = ({ children }) => {
+    const [ profileLO, setProfileLO ] = useState<Maybe<LoadObject<UserType>>>(undefined);
 
     const doSetProfileLO = useCallback(valueOrUpdater => {
         const next = typeof valueOrUpdater === "function"
@@ -54,10 +65,6 @@ export function ProfileProvider({ children }) {
     return <ProfileLOContext.Provider value={profileLO}>
         {children}
     </ProfileLOContext.Provider>;
-}
-
-ProfileProvider.propTypes = {
-    children: PropTypes.node,
 };
 
 export const isAuthError = error =>
@@ -86,7 +93,7 @@ export const askUserToReauth = () => {
 };
 
 export const useProfileLO = () =>
-    useContext(ProfileLOContext);
+    useContext(ProfileLOContext) || LoadObject.loading();
 
 const ProfileState = {
     AUTHENTICATED: "AUTHENTICATED",
@@ -137,7 +144,7 @@ export const useIsDeveloper = () => {
 const logoutHandler = () => {
     localStorage.removeItem(LOCAL_STORAGE_ACCESS_TOKEN);
     // we need the server to close out too
-    window.location = API_BASE_URL + "/oauth2/logout";
+    window.location.href = API_BASE_URL + "/oauth2/logout";
 };
 
 export const useLogoutHandler = () =>

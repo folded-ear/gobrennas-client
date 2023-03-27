@@ -49,7 +49,6 @@ class Login extends Component<LoginProps> {
                 SESSION_STORAGE_POST_LOGIN,
                 location.state.from,
                 sessionStorage,
-                // @ts-ignore
                 (k, v) => // omit Router's internal key value
                     k === "key" ? undefined : v
             );

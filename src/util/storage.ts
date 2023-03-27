@@ -13,10 +13,12 @@ export const getJsonItem = (
     }
 };
 
+type Replacer = (this: any, key: string, value: any) => any;
+
 export const setJsonItem = (
     key,
     value,
     storage = localStorage,
-    replacer = null,
+    replacer: Replacer | undefined,
 ) =>
     storage.setItem(key, JSON.stringify(value, replacer));

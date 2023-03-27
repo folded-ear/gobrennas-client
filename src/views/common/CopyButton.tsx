@@ -3,10 +3,14 @@ import {
     Tooltip,
 } from "@mui/material";
 import { FileCopy } from "@mui/icons-material";
-import PropTypes from "prop-types";
 import React from "react";
 
-const CopyButton = ({title, onClick}) => {
+interface Props {
+    title: string
+    onClick(MouseEvent): void
+}
+
+const CopyButton: React.FC<Props> = ({ title, onClick }) => {
     return (
         <Tooltip
             title={title}
@@ -15,14 +19,10 @@ const CopyButton = ({title, onClick}) => {
             <IconButton
                 onClick={onClick}
             >
-                <FileCopy/>
+                <FileCopy />
             </IconButton>
         </Tooltip>
     );
-};
-CopyButton.propTypes = {
-    title: PropTypes.string.isRequired,
-    onClick: PropTypes.func,
 };
 
 export default CopyButton;

@@ -8,8 +8,10 @@ import {
     CheckCircleOutline,
     ErrorOutline,
 } from "@mui/icons-material";
-import PropTypes from "prop-types";
-import React from "react";
+import React, {
+    CSSProperties,
+    PropsWithChildren,
+} from "react";
 import ItemApi from "data/ItemApi";
 import debounce from "util/debounce";
 import processRecognizedItem from "util/processRecognizedItem";
@@ -40,10 +42,10 @@ type Target = {
 type ElEditProps = {
     name: string,
     value: Value,
-    onChange: (e: Target) => void,
-    onPressEnter: () => void,
-    onDelete?: () => void,
-    onMultilinePaste?: (text: any) => void,
+    onChange(e: Target): void,
+    onPressEnter(): void,
+    onDelete?(): void,
+    onMultilinePaste?(text: string): void,
     placeholder?: string,
 }
 
@@ -312,21 +314,24 @@ class ElEdit extends React.PureComponent<ElEditProps, ElEditState> {
                             style={{ backgroundColor: nameValue ? "#def" : "#edf" }}>{ingredientName}</Hunk>}
                         {preparation && <span>{ingredientName ? ", " : null}{preparation}</span>}
                     </Hunk>
-                    }
+                }
             </Grid>
         </Grid>;
     }
 }
 
-const Hunk = ({children, style}) => <span style={{
+interface HunkProps extends PropsWithChildren {
+    style?: CSSProperties
+}
+
+const Hunk: React.FC<HunkProps> = ({
+                                       children,
+                                       style,
+                                   }) => <span style={{
     ...style,
     marginLeft: "0.4em",
     padding: "0 0.25em",
 }}>{children}</span>;
 
-Hunk.propTypes = {
-    children: PropTypes.node.isRequired,
-    style: PropTypes.object,
-};
 
 export default ElEdit;

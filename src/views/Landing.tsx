@@ -1,10 +1,13 @@
-import PropTypes from "prop-types";
 import React from "react";
 import { Redirect } from "react-router-dom";
-import { SESSION_STORAGE_POST_LOGIN } from "../constants/index";
+import { SESSION_STORAGE_POST_LOGIN } from "../constants";
 import { getJsonItem } from "util/storage";
 
-const Landing = ({authenticated}) => {
+interface Props {
+    authenticated: boolean
+}
+
+const Landing: React.FC<Props> = ({ authenticated }) => {
     let dest = getJsonItem(SESSION_STORAGE_POST_LOGIN, sessionStorage);
     if (authenticated) {
         sessionStorage.removeItem(SESSION_STORAGE_POST_LOGIN);
@@ -13,10 +16,6 @@ const Landing = ({authenticated}) => {
         pathname: "/library",
         ...dest,
     }} />;
-};
-
-Landing.propTypes = {
-    authenticated: PropTypes.bool.isRequired,
 };
 
 export default Landing;

@@ -91,8 +91,10 @@ interface RecipesListProps {
     isLoading: boolean,
     isComplete: boolean,
     recipes?: Array<RecipeType>,
-    onSearch: (filter: String, scope: LibrarySearchScope) => void,
-    onNeedMore: () => void,
+
+    onSearch(filter: String, scope: LibrarySearchScope): void,
+
+    onNeedMore(): void,
 }
 
 const RecipesList: React.FC<RecipesListProps> = ({

@@ -99,7 +99,6 @@ class LoadObjectMap<K, V> {
         this._data.forEach(fn);
     }
 
-    // @ts-ignore
     get size(): number {
         return this._data.size;
     }
@@ -126,7 +125,7 @@ class LoadObjectMap<K, V> {
         key: K,
         fn: (lo: LoadObject<V>) => LoadObject<V>,
     ): LoadObjectMap<K, V> {
-        // @ts-ignore
+        // @ts-ignore - this one looks to be a Flow/Typescript wonky?
         return this._mutate(() => this._data.update(key, fn));
     }
 

@@ -1,6 +1,8 @@
 export interface UserType {
-    email: string,
-    imageUrl?: string,
+    id: number
+    email: string
+    imageUrl?: string
+    roles: string[]
 }
 
 export type Ingredient = {
