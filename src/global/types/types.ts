@@ -1,12 +1,3 @@
-/**
- * Adding some utility types here for poorly types MUI enums
- */
-export type MUISize = "medium" | "small" | undefined
-
-export type Optional<Type> = Type | null | undefined
-
-export type OptionalNumberish = number | string | undefined
-
 export interface UserType {
     email: string,
     imageUrl?: string,
@@ -55,13 +46,3 @@ export type SharedRecipe = {
 }
 
 export type Plan = any
-
-export interface LoadObject<T> {
-    getValue(): Optional<T>
-
-    hasValue(): boolean
-
-    isLoading(): boolean
-
-    getValueEnforcing(): T
-}
