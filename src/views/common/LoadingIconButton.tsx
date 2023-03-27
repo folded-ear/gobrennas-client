@@ -1,11 +1,11 @@
 import {
     CircularProgress,
     IconButton,
+    IconButtonProps,
 } from "@mui/material";
 import { withStyles } from "@mui/styles";
 import { grey } from "@mui/material/colors";
 import React from "react";
-import { MUISize } from "global/types/types";
 
 const CircProg = withStyles({
     root: {
@@ -19,7 +19,7 @@ type ProgressProps = {
 }
 
 interface Props {
-    size?: MUISize,
+    size?: IconButtonProps["size"],
 }
 
 const LoadingIconButton: React.FC<Props> = ({
