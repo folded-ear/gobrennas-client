@@ -9,10 +9,8 @@ import LoadObject from "../../util/LoadObject";
 import LoadingIndicator from "../common/LoadingIndicator";
 import RecipeDetail from "./RecipeDetail";
 import LibraryActions from "features/RecipeLibrary/data/LibraryActions";
-import {
-    Optional,
-    UserType,
-} from "../../global/types/types";
+import { UserType } from "../../global/types/types";
+import { Maybe } from "graphql/jsutils/Maybe";
 
 const axios = BaseAxios.create({
     baseURL: `${API_BASE_URL}/shared/recipe`,
@@ -24,7 +22,7 @@ const DoTheDance = props => {
         secret,
         id,
     } = props;
-    const [ owner, setOwner ] = React.useState<Optional<UserType>>(undefined);
+    const [ owner, setOwner ] = React.useState<Maybe<UserType>>(undefined);
     React.useEffect(() => {
         axios.get(`/${slug}/${secret}/${id}.json`)
             .then(

@@ -1,5 +1,3 @@
-export type Optional<Type> = Type | null | undefined
-
 export interface UserType {
     email: string,
     imageUrl?: string,
