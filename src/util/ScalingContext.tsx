@@ -6,14 +6,6 @@ import React, {
 } from "react";
 import { Maybe } from "graphql/jsutils/Maybe";
 
-interface Option {
-    label: string
-    value: number
-    active: boolean
-
-    select(): void
-}
-
 const OPTIONS = [
     { label: "¼", value: 0.25 },
     { label: "½", value: 0.5 },
@@ -81,7 +73,8 @@ export const useScaleOptions = () => {
     if (!found) {
         opts.push({ value, label: "" + value, active: true });
     }
-    // @ts-ignore
-    opts.forEach(it => it.select = () => set(it.value));
-    return opts as Option[];
+    return opts.map(it => ({
+        ...it,
+        select: () => set(it.value),
+    }));
 };
