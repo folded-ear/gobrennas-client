@@ -8,7 +8,10 @@ import {
 } from "@mui/material";
 import makeStyles from "@mui/styles/makeStyles";
 import { PostAdd } from "@mui/icons-material";
-import React, { PropsWithChildren } from "react";
+import React, {
+    CSSProperties,
+    PropsWithChildren,
+} from "react";
 import Dispatcher from "../../data/dispatcher";
 import RecipeActions from "../../data/RecipeActions";
 import RecipeApi from "../../data/RecipeApi";
@@ -32,7 +35,6 @@ import ShareRecipe from "./ShareRecipe";
 import SubrecipeItem from "./SubrecipeItem";
 import SendToPlan from "features/RecipeLibrary/components/SendToPlan";
 import {
-    OptionalNumberish,
     Recipe,
     UserType,
 } from "global/types/types";
@@ -67,8 +69,8 @@ const useStyles = makeStyles(theme => ({
 
 const SubHeader: React.FC<PropsWithChildren> = ({ children }) => {
     const windowSize = useWindowSize();
-    const [ height, setHeight ] = React.useState<OptionalNumberish>("auto");
-    const [ width, setWidth ] = React.useState<OptionalNumberish>("auto");
+    const [ height, setHeight ] = React.useState<CSSProperties["height"]>("auto");
+    const [ width, setWidth ] = React.useState<CSSProperties["width"]>("auto");
     const inner = React.useRef<HTMLDivElement>();
     React.useLayoutEffect(() => {
         setHeight(inner?.current?.clientHeight);

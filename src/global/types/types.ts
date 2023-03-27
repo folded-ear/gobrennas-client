@@ -1,7 +1,5 @@
 export type Optional<Type> = Type | null | undefined
 
-export type OptionalNumberish = number | string | undefined
-
 export interface UserType {
     email: string,
     imageUrl?: string,
