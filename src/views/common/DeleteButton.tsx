@@ -23,10 +23,10 @@ const DeleteIcon: React.FC<Props> = ({ onClick, ...props }) => (
 
 type DeleteButtonProps = {
     type: string,
-    onConfirm: () => void,
+    onConfirm(): void,
     label?: string,
-    onClick?: () => void,
-    onCancel?: () => void,
+    onClick?(): void,
+    onCancel?(): void,
     className?: string,
 }
 

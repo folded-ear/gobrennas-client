@@ -19,7 +19,7 @@ const useStyles = makeStyles({
 });
 
 interface Props {
-    onClick: (number) => void
+    onClick(planId: number): void
     iconOnly?: boolean
 }
 

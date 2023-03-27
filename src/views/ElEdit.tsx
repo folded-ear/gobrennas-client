@@ -42,10 +42,10 @@ type Target = {
 type ElEditProps = {
     name: string,
     value: Value,
-    onChange: (e: Target) => void,
-    onPressEnter: () => void,
-    onDelete?: () => void,
-    onMultilinePaste?: (text: any) => void,
+    onChange(e: Target): void,
+    onPressEnter(): void,
+    onDelete?(): void,
+    onMultilinePaste?(text: string): void,
     placeholder?: string,
 }
 

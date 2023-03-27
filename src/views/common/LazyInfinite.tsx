@@ -3,7 +3,8 @@ import useWindowSize from "../../data/useWindowSize";
 import debounce from "../../util/debounce";
 
 interface Props extends PropsWithChildren {
-    onNeedMore: () => void,
+    onNeedMore(): void,
+
     complete?: boolean,
     loading?: boolean,
 }

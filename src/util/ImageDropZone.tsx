@@ -35,7 +35,7 @@ const useStyles = makeStyles(({
 }));
 
 type ImageDropZoneProps = {
-    onImage: (f: string) => void
+    onImage(f: string): void
     image?: any,
     maxWidth?: any,
     maxHeight?: any,

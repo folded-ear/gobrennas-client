@@ -3,10 +3,11 @@ import Autocomplete from "@mui/lab/Autocomplete";
 import { Stack } from "@mui/material";
 import TextField from "@mui/material/TextField";
 
-type LabelAutoCompleteProps = {
-    recipeLabels: string[],
-    labelList: string[],
-    onLabelChange: (e, labels, reason) => void
+interface LabelAutoCompleteProps {
+    recipeLabels: string[]
+    labelList: string[]
+
+    onLabelChange(e, labels: string[], reason): void
 }
 
 export const LabelAutoComplete: React.FC<LabelAutoCompleteProps> = ({

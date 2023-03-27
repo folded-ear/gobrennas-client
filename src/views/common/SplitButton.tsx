@@ -24,9 +24,13 @@ interface Option {
 
 interface Props {
     primary: ReactNode
-    onClick: (MouseEvent) => void
+
+    onClick(e: MouseEvent): void
+
     options: Option[]
-    onSelect: (event, Option) => void
+
+    onSelect(event: Event, opt: Option): void
+
     disabled?: boolean
     dropdownDisabled?: boolean
 }

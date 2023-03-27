@@ -27,7 +27,7 @@ type MessageInfo = {
     renderAction: any;
     key: string;
     message: string;
-    onClose: (event?: React.SyntheticEvent | Event, reason?: string) => void;
+    onClose(event?: React.SyntheticEvent | Event, reason?: string): void;
     severity: AlertColor;
     hideDelay?: number;
 } | undefined
