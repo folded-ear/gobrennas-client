@@ -29,7 +29,7 @@ interface Props {
     name?: string,
     email: string,
     imageUrl?: string,
-    size: "small" | "large",
+    size?: "small" | "large",
     iconOnly?: boolean,
     inline?: boolean,
 }
@@ -45,7 +45,7 @@ const User: React.FC<Props> = ({
     const classes = useStyles();
     const avatar = <Avatar
         src={imageUrl}
-        className={classes[classes.hasOwnProperty(size) ? size : inline ? "inline" : "small"]}
+        className={classes[size && classes.hasOwnProperty(size) ? size : inline ? "inline" : "small"]}
     >
         {(name || email || "U").charAt(0).toUpperCase()}
     </Avatar>;
