@@ -1,7 +1,7 @@
 import BaseAxios from "axios";
-import PropTypes from "prop-types";
 import React, {
     createContext,
+    PropsWithChildren,
     useCallback,
     useContext,
     useEffect,
@@ -27,7 +27,7 @@ const ProfileLOContext = createContext<Maybe<LoadObject<UserType>>>(undefined);
 
 let globalProfileLoadObject;
 
-export function ProfileProvider({ children }) {
+export const ProfileProvider: React.FC<PropsWithChildren> = ({ children }) => {
     const [ profileLO, setProfileLO ] = useState<Maybe<LoadObject<UserType>>>(undefined);
 
     const doSetProfileLO = useCallback(valueOrUpdater => {
@@ -65,10 +65,6 @@ export function ProfileProvider({ children }) {
     return <ProfileLOContext.Provider value={profileLO}>
         {children}
     </ProfileLOContext.Provider>;
-}
-
-ProfileProvider.propTypes = {
-    children: PropTypes.node,
 };
 
 export const isAuthError = error =>
