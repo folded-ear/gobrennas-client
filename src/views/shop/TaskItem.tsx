@@ -131,11 +131,11 @@ class TaskItem extends React.PureComponent<TaskItemProps> {
             deleting,
             acquiring,
         } = item;
-        let addonBefore = [
+        const addonBefore = [
             <PlaceholderIconButton
                 key="collapse"
                 size="small"
-            />
+            />,
         ];
         if (loading || deleting) {
             addonBefore.push(

@@ -8,7 +8,7 @@ interface Props {
 }
 
 const Landing: React.FC<Props> = ({ authenticated }) => {
-    let dest = getJsonItem(SESSION_STORAGE_POST_LOGIN, sessionStorage);
+    const dest = getJsonItem(SESSION_STORAGE_POST_LOGIN, sessionStorage);
     if (authenticated) {
         sessionStorage.removeItem(SESSION_STORAGE_POST_LOGIN);
     }

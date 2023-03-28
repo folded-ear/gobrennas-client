@@ -4,13 +4,12 @@ import {
     Typography,
 } from "@mui/material";
 import makeStyles from "@mui/styles/makeStyles";
-import PropTypes from "prop-types";
 import React from "react";
-import { Recipe } from "../../data/RecipeTypes";
 import { formatDuration } from "util/time";
 import CollapseIconButton from "global/components/CollapseIconButton";
 import IngredientDirectionsRow from "./IngredientDirectionsRow";
 import { ScalingProvider } from "../../util/ScalingContext";
+import { Recipe } from "../../global/types/types";
 
 const useStyles = makeStyles({
     time: {
@@ -20,9 +19,17 @@ const useStyles = makeStyles({
     },
 });
 
-const SubrecipeItem = ({recipe, loggedIn}) => {
+interface Props {
+    recipe: Recipe
+    loggedIn?: boolean
+}
+
+const SubrecipeItem: React.FC<Props> = ({
+                                            recipe,
+                                            loggedIn,
+                                        }) => {
     const classes = useStyles();
-    const [expanded, setExpanded] = React.useState(false);
+    const [ expanded, setExpanded ] = React.useState(false);
     return <>
         <Grid item xs={12}>
             <Typography variant="h5">
@@ -63,11 +70,6 @@ const SubrecipeItem = ({recipe, loggedIn}) => {
             </Grid>
         </>}
     </>;
-};
-
-SubrecipeItem.propTypes = {
-    recipe: Recipe.isRequired,
-    loggedIn: PropTypes.bool,
 };
 
 export default SubrecipeItem;

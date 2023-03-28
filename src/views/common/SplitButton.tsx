@@ -9,7 +9,10 @@ import Paper from "@mui/material/Paper";
 import Popper from "@mui/material/Popper";
 import { makeStyles } from "@mui/styles";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
-import React, { ReactNode } from "react";
+import React, {
+    MouseEventHandler,
+    ReactNode,
+} from "react";
 
 const useStyles = makeStyles({
     popper: {
@@ -25,7 +28,7 @@ interface Option {
 interface Props {
     primary: ReactNode
 
-    onClick(e: MouseEvent): void
+    onClick: MouseEventHandler
 
     options: Option[]
 

@@ -1,25 +1,34 @@
-import dotProp from "dot-prop-immutable";
-import {ReduceStore} from "flux/utils";
-import invariant from "invariant";
-import PropTypes from "prop-types";
-import {removeAtIndex} from "util/arrayAsSet";
-import ClientId, {clientOrDatabaseIdType} from "util/ClientId";
-import {bucketComparator} from "util/comparators";
-import inTheFuture from "util/inTheFuture";
-import LoadObject from "util/LoadObject";
-import LoadObjectState from "util/LoadObjectState";
-import {loadObjectOf, loadObjectStateOf,} from "util/loadObjectTypes";
-import {formatLocalDate, parseLocalDate,} from "util/time";
-import typedStore from "util/typedStore";
 import AccessLevel from "data/AccessLevel";
 import Dispatcher from "data/dispatcher";
 import PantryItemActions from "data/PantryItemActions";
 import PreferencesStore from "data/PreferencesStore";
 import ShoppingActions from "data/ShoppingActions";
+import dotProp from "dot-prop-immutable";
 import TaskActions from "features/Planner/data/TaskActions";
 import TaskApi from "features/Planner/data/TaskApi";
-import {isExpanded, isParent,} from "features/Planner/data/tasks";
-import TaskStatus, {willStatusDelete} from "features/Planner/data/TaskStatus";
+import {
+    isExpanded,
+    isParent,
+} from "features/Planner/data/tasks";
+import TaskStatus, { willStatusDelete } from "features/Planner/data/TaskStatus";
+import { ReduceStore } from "flux/utils";
+import invariant from "invariant";
+import PropTypes from "prop-types";
+import { removeAtIndex } from "util/arrayAsSet";
+import ClientId, { clientOrDatabaseIdType } from "util/ClientId";
+import { bucketComparator } from "util/comparators";
+import inTheFuture from "util/inTheFuture";
+import LoadObject from "util/LoadObject";
+import LoadObjectState from "util/LoadObjectState";
+import {
+    loadObjectOf,
+    loadObjectStateOf,
+} from "util/loadObjectTypes";
+import {
+    formatLocalDate,
+    parseLocalDate,
+} from "util/time";
+import typedStore from "util/typedStore";
 import PlanApi from "./PlanApi";
 
 /*
@@ -609,7 +618,7 @@ const getOrderedBlock = state => {
 const moveDelta = (state, delta) => {
     const upward = delta < 1;
     const block = getOrderedBlock(state);
-    // eslint-disable-next-line no-unused-vars
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [ignored, p, idx] = block[upward ? 0 : block.length - 1];
     if (upward && idx === 0) return state;
     if (!upward && idx === p.subtaskIds.length - 1) return state;
@@ -1207,9 +1216,9 @@ class TaskStore extends ReduceStore {
                     const yesterday = new Date();
                     yesterday.setDate(yesterday.getDate() - 1);
                     const maxDate = bs.reduce((max, b) =>
-                        b.date != null && b.date > max
-                            ? b.date
-                            : max,
+                            b.date != null && b.date > max
+                                ? b.date
+                                : max,
                         yesterday);
                     const newOnes = [];
                     for (let i = 1; i <= 7; i++) {

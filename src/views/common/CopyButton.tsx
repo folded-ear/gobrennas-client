@@ -3,11 +3,11 @@ import {
     Tooltip,
 } from "@mui/material";
 import { FileCopy } from "@mui/icons-material";
-import React from "react";
+import React, { MouseEventHandler } from "react";
 
 interface Props {
     title: string
-    onClick(MouseEvent): void
+    onClick: MouseEventHandler
 }
 
 const CopyButton: React.FC<Props> = ({ title, onClick }) => {

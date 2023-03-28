@@ -1,5 +1,4 @@
 import makeStyles from "@mui/styles/makeStyles";
-import PropTypes from "prop-types";
 import React from "react";
 import { findSvg } from "util/findAncestorByName";
 import getPositionWithin from "util/getPositionWithin";
@@ -22,15 +21,23 @@ const useStyles = makeStyles(theme => ({
     },
 }));
 
-const CENTER = [0.5, 0.5];
+const CENTER = [ 0.5, 0.5 ];
 
-const PositionPicker = ({image, value, onChange}) => {
+interface Props {
+    image: string // actual URL
+        | Blob // including File
+    value?: number[]
+
+    onChange(v: number[]): void
+}
+
+const PositionPicker: React.FC<Props> = ({ image, value, onChange }) => {
     const classes = useStyles();
-    const [loaded, setLoaded] = React.useState(false);
-    React.useEffect(() => setLoaded(false), [image]);
-    const [[width, height], setSize] = React.useState(() => [100, 100]);
-    const [[left, top], setOffset] = React.useState(() => CENTER);
-    React.useEffect(() => setOffset(value || CENTER), [value]);
+    const [ loaded, setLoaded ] = React.useState(false);
+    React.useEffect(() => setLoaded(false), [ image ]);
+    const [ [ width, height ], setSize ] = React.useState(() => [ 100, 100 ]);
+    const [ [ left, top ], setOffset ] = React.useState(() => CENTER);
+    React.useEffect(() => setOffset(value || CENTER), [ value ]);
     const x = left * width;
     const y = top * height;
     return <div className={classes.root}>
@@ -70,15 +77,6 @@ const PositionPicker = ({image, value, onChange}) => {
             <line x1={x + 2} y1={y} x2={x + 18} y2={y} />
         </svg>}
     </div>;
-};
-
-PositionPicker.propTypes = {
-    image: PropTypes.oneOfType([
-        PropTypes.string, // actual URL
-        PropTypes.object, // a Blob (including File)
-    ]).isRequired,
-    value: PropTypes.arrayOf(PropTypes.number),
-    onChange: PropTypes.func.isRequired,
 };
 
 export default PositionPicker;

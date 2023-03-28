@@ -1,15 +1,19 @@
 import Divider from "@mui/material/Divider";
-import PropTypes from "prop-types";
 import React from "react";
 import { useIsDeveloper } from "providers/Profile";
 import PageBody from "../common/PageBody";
 import User from "./User";
 import { CookThis } from "features/UserProfile/components/CookThis";
 import { Developer } from "features/UserProfile/components/Developer";
+import { UserType } from "../../global/types/types";
 
-const Profile = ({
-                     currentUser: user,
-                 }) => {
+interface Props {
+    currentUser: Pick<UserType, "imageUrl" | "name" | "email">
+}
+
+const Profile: React.FC<Props> = ({
+                                      currentUser: user,
+                                  }) => {
     const isDeveloper = useIsDeveloper();
 
     return <PageBody>
@@ -28,14 +32,6 @@ const Profile = ({
         <div><User {...user} /></div>
         {isDeveloper && <Developer />}
     </PageBody>;
-};
-
-Profile.propTypes = {
-    currentUser: PropTypes.shape({
-        imageUrl: PropTypes.string,
-        name: PropTypes.string.isRequired,
-        email: PropTypes.string.isRequired,
-    }).isRequired,
 };
 
 export default Profile;

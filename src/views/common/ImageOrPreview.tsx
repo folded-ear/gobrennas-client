@@ -1,5 +1,10 @@
-import PropTypes from "prop-types";
 import React from "react";
+
+interface Props {
+    src: string // actual URL
+        | Blob // including File
+    [p: string]: any
+}
 
 /**
  * I am an HTML `img` tag, with the additional feature of automatically creating
@@ -11,9 +16,9 @@ import React from "react";
  *  preview as an image
  * @param props Additional properties to set directly on the `img` itself.
  */
-const ImageOrPreview = ({src, ...props}) => {
-    const [srcUrl, setSrcUrl] = React.useState(
-        typeof src === "string" ? src : undefined
+const ImageOrPreview: React.FC<Props> = ({ src, ...props }) => {
+    const [ srcUrl, setSrcUrl ] = React.useState(
+        typeof src === "string" ? src : undefined,
     );
     React.useEffect(() => {
         if (typeof src !== "string") {
@@ -21,16 +26,9 @@ const ImageOrPreview = ({src, ...props}) => {
             setSrcUrl(url);
             return () => URL.revokeObjectURL(url);
         }
-    }, [src]);
+    }, [ src ]);
     // noinspection HtmlRequiredAltAttribute
     return <img src={srcUrl} {...props} />; // eslint-disable-line jsx-a11y/alt-text
-};
-
-ImageOrPreview.propTypes = {
-    src: PropTypes.oneOfType([
-        PropTypes.string, // actual URL
-        PropTypes.object, // a Blob (including File)
-    ]).isRequired
 };
 
 export default ImageOrPreview;

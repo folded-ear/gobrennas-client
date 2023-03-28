@@ -21,11 +21,9 @@ import {
     FileCopy,
     Save,
 } from "@mui/icons-material";
-import PropTypes from "prop-types";
-import React from "react";
+import React, { ReactNode } from "react";
 import Dispatcher from "data/dispatcher";
 import RecipeActions from "data/RecipeActions";
-import { Recipe } from "data/RecipeTypes";
 import useDraftRecipeLO from "data/useDraftRecipeLO";
 import useWindowSize from "data/useWindowSize";
 import ImageDropZone from "util/ImageDropZone";
@@ -33,6 +31,7 @@ import ElEdit from "views/ElEdit";
 import TextractFormAugment from "views/cook/TextractFormAugment";
 import PositionPicker from "views/PositionPicker";
 import { LabelAutoComplete } from "./components/LabelAutoComplete";
+import { Recipe } from "../../global/types/types";
 
 const useStyles = makeStyles((theme) => ({
     button: {
@@ -60,15 +59,29 @@ const handleNumericUpdate = (e) => {
 
 const handleLabelChange = (e, labels: string[], reason: AutocompleteChangeReason) => {
     // One of "createOption", "selectOption", "removeOption", "blur" or "clear".
-    if(reason === "selectOption" || "createOption" || "removeOption") {
+    if (reason === "selectOption" || "createOption" || "removeOption") {
         Dispatcher.dispatch({
             type: RecipeActions.DRAFT_LABEL_UPDATED,
-            data: labels.map( label => label.replace(/\/+/g, "-")),
+            data: labels.map(label => label.replace(/\/+/g, "-")),
         });
     }
 };
 
-const RecipeForm = ({title, onSave, onSaveCopy, onCancel, extraButtons, labelList}) => {
+interface Props {
+    title: string
+
+    onSave(r: Recipe): void
+
+    onSaveCopy?(r: Recipe): void
+
+    onCancel(r: Recipe): void
+
+    draft?: Recipe
+    labelList: string[]
+    extraButtons?: ReactNode
+}
+
+const RecipeForm: React.FC<Props> = ({ title, onSave, onSaveCopy, onCancel, extraButtons, labelList }) => {
     const lo = useDraftRecipeLO();
     const windowSize = useWindowSize();
     const theme = useTheme();
@@ -309,16 +322,6 @@ const RecipeForm = ({title, onSave, onSaveCopy, onCancel, extraButtons, labelLis
             </Grid>}
         </Grid>
     </>;
-};
-
-RecipeForm.propTypes = {
-    title: PropTypes.string.isRequired,
-    onSave: PropTypes.func,
-    onSaveCopy: PropTypes.func,
-    onCancel: PropTypes.func,
-    draft: Recipe,
-    labelList: PropTypes.any,
-    extraButtons: PropTypes.node,
 };
 
 export default RecipeForm;

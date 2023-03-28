@@ -1,7 +1,9 @@
 import BaseAxios from "axios";
-import PropTypes from "prop-types";
 import React from "react";
-import { Redirect } from "react-router-dom";
+import {
+    match,
+    Redirect,
+} from "react-router-dom";
 import { API_BASE_URL } from "constants/index";
 import { buildFullRecipeLO } from "containers/Recipe";
 import Dispatcher from "data/dispatcher";
@@ -16,20 +18,27 @@ const axios = BaseAxios.create({
     baseURL: `${API_BASE_URL}/shared/recipe`,
 });
 
-const DoTheDance = props => {
-    const {
-        slug,
-        secret,
-        id,
-    } = props;
+interface MatchParams {
+    slug: string
+    secret: string
+    id: string
+}
+
+const DoTheDance: React.FC<MatchParams> = ({
+                                               slug,
+                                               secret,
+                                               id,
+                                           }) => {
     const [ owner, setOwner ] = React.useState<Maybe<UserType>>(undefined);
     React.useEffect(() => {
         axios.get(`/${slug}/${secret}/${id}.json`)
             .then(
-                ({data: {
-                    ingredients, // includes the recipe itself
-                    owner,
-                }}) => {
+                ({
+                     data: {
+                         ingredients, // includes the recipe itself
+                         owner,
+                     },
+                 }) => {
                     Dispatcher.dispatch({
                         type: LibraryActions.INGREDIENTS_LOADED,
                         ids: ingredients.map(i => i.id),
@@ -44,7 +53,7 @@ const DoTheDance = props => {
     if (!owner) {
         return <LoadingIndicator />;
     }
-    const lo = buildFullRecipeLO(id);
+    const lo = buildFullRecipeLO(parseInt(id));
     return <RecipeDetail
         anonymous
         recipeLO={lo}
@@ -53,39 +62,26 @@ const DoTheDance = props => {
     />;
 };
 
-DoTheDance.propTypes = {
-    slug: PropTypes.string.isRequired,
-    secret: PropTypes.string.isRequired,
-    id: PropTypes.number.isRequired,
-};
+interface Props {
+    authenticated: boolean
+    match: match<MatchParams>
+}
 
-const SharedRecipe = props => {
+const SharedRecipe: React.FC<Props> = props => {
     const {
         authenticated,
         match: {
             params: {
-                id: rawId,
+                id,
                 ...params
             },
         },
     } = props;
-    const id = parseInt(rawId);
     if (authenticated) {
         // At the moment, being a user means you can view any recipe...
         return <Redirect to={`/library/recipe/${id}`} />;
     }
     return <DoTheDance id={id} {...params} />;
-};
-
-SharedRecipe.propTypes = {
-    authenticated: PropTypes.bool.isRequired,
-    match: PropTypes.shape({
-        params: PropTypes.shape({
-            slug: PropTypes.string.isRequired,
-            secret: PropTypes.string.isRequired,
-            id: PropTypes.string.isRequired,
-        }).isRequired,
-    }).isRequired
 };
 
 export default SharedRecipe;

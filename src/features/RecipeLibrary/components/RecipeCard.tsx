@@ -100,7 +100,7 @@ const RecipeCard: React.FC<Props> = ({
                             className={classes.photo}
                             url={recipe.photo.url}
                             focus={recipe.photo.focus}
-                            title={recipe.name!!} />
+                            title={recipe.name} />
                     </Link>
                     : <ItemImageUpload
                         recipeId={recipe.id}

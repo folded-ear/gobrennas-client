@@ -92,7 +92,7 @@ interface RecipesListProps {
     isComplete: boolean,
     recipes?: Array<RecipeType>,
 
-    onSearch(filter: String, scope: LibrarySearchScope): void,
+    onSearch(filter: string, scope: LibrarySearchScope): void,
 
     onNeedMore(): void,
 }
