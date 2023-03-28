@@ -1,5 +1,4 @@
-import PropTypes from "prop-types";
-import React from "react";
+import React, { ComponentType } from "react";
 import { Redirect } from "react-router-dom";
 import {
     useIsProfileInitializing,
@@ -8,6 +7,7 @@ import {
 } from "../../providers/Profile";
 import FluxRoute from "./FluxRoute";
 import LoadingIndicator from "./LoadingIndicator";
+import { Location } from "history";
 
 function AuthenticatedHelper({render, ...rest}) {
     return render({
@@ -16,23 +16,27 @@ function AuthenticatedHelper({render, ...rest}) {
     });
 }
 
-function AnonymousHelper({location}) {
+const AnonymousHelper: React.FC<{ location: Location }> = ({
+                                                               location,
+                                                           }) => {
     if (useIsProfileInitializing()) {
         return null;
     }
     return <Redirect
         to={{
             pathname: "/login",
-            state: {from: location},
+            state: { from: location },
         }}
     />;
-}
-
-AnonymousHelper.propTypes = {
-    location: PropTypes.object,
 };
 
-function PrivateRoute({component: Component, authenticated, ...rest}) {
+interface Props {
+    authenticated: boolean
+    component: ComponentType
+    location: Location
+}
+
+const PrivateRoute: React.FC<Props> = ({ component: Component, authenticated, ...rest }) => {
     if (useIsProfilePending()) {
         return <LoadingIndicator />;
     }
@@ -52,12 +56,6 @@ function PrivateRoute({component: Component, authenticated, ...rest}) {
             }
         }}
     />;
-}
-
-PrivateRoute.propTypes = {
-    authenticated: PropTypes.bool.isRequired,
-    component: PropTypes.elementType.isRequired,
-    location: PropTypes.object,
 };
 
 export default PrivateRoute;
