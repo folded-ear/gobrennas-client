@@ -70,11 +70,11 @@ const handleLabelChange = (e, labels: string[], reason: AutocompleteChangeReason
 interface Props {
     title: string
 
-    onSave(Recipe): void
+    onSave(r: Recipe): void
 
-    onSaveCopy?(Recipe): void
+    onSaveCopy?(r: Recipe): void
 
-    onCancel(Recipe): void
+    onCancel(r: Recipe): void
 
     draft?: Recipe
     labelList: string[]

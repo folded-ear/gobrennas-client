@@ -62,20 +62,19 @@
   "eslintConfig": {
     "extends": [
       "react-app",
-      "react-app/jest"
+      "react-app/jest",
+      "plugin:@typescript-eslint/recommended"
     ],
     "ignorePatterns": [
       "**/__generated__/**/*"
     ],
+    "parserOptions": {
+      "project": "./tsconfig.json"
+    },
     "rules": {
-      "no-prototype-builtins": 0,
-      "react/prop-types": 1,
       "no-console": 1,
-      "semi": [
-        "warn",
-        "always"
-      ],
-      "no-unused-vars": "warn",
+      "no-debugger": "warn",
+      "no-prototype-builtins": 0,
       "quotes": [
         "warn",
         "double",
@@ -84,7 +83,13 @@
           "allowTemplateLiterals": true
         }
       ],
-      "no-debugger": "warn"
+      "react/prop-types": 1,
+      "semi": [
+        "warn",
+        "always"
+      ],
+      "@typescript-eslint/no-explicit-any": 0,
+      "@typescript-eslint/no-unsafe-assignment": 0
     },
     "settings": {
       "propWrapperFunctions": [

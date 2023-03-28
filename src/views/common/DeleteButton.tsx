@@ -8,9 +8,10 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogTitle from "@mui/material/DialogTitle";
 import { Delete } from "@mui/icons-material";
 import * as React from "react";
+import { MouseEventHandler } from "react";
 
 interface Props {
-    onClick(MouseEvent): void
+    onClick: MouseEventHandler
 }
 
 const DeleteIcon: React.FC<Props> = ({ onClick, ...props }) => (

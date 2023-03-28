@@ -1,11 +1,12 @@
-import {Tooltip} from "@mui/material";
-import PropTypes from "prop-types";
-import React from "react";
+import { Tooltip } from "@mui/material";
+import React, { MouseEventHandler } from "react";
 import Dispatcher from "data/dispatcher";
 import TaskActions from "features/Planner/data/TaskActions";
-import TaskStatus, {getColorForStatus, getIconForStatus,} from "features/Planner/data/TaskStatus";
-import {clientOrDatabaseIdType} from "util/ClientId";
-import {coloredIconButton} from "views/common/colors";
+import TaskStatus, {
+    getColorForStatus,
+    getIconForStatus,
+} from "features/Planner/data/TaskStatus";
+import { coloredIconButton } from "views/common/colors";
 
 const buttonLookup = {}; // Map<next, Map<curr, Button>>
 const findButton = (next, curr) => {
@@ -20,7 +21,20 @@ const findButton = (next, curr) => {
     return buttonLookup[next][curr];
 };
 
-const StatusIconButton = props => {
+interface CoreProps {
+    current?: TaskStatus
+    next: TaskStatus
+}
+
+interface TaskProps extends CoreProps {
+    id: string | number
+}
+
+interface OpenProps extends CoreProps {
+    onClick: MouseEventHandler
+}
+
+const StatusIconButton: React.FC<TaskProps | OpenProps> = props => {
     const Btn = findButton(props.next, props.current || props.next);
     const Icn = getIconForStatus(props.next);
     return <Tooltip
@@ -33,7 +47,7 @@ const StatusIconButton = props => {
                 e.stopPropagation();
                 Dispatcher.dispatch({
                     type: TaskActions.SET_STATUS,
-                    id: props.id,
+                    id: (props as TaskProps).id,
                     status: props.next,
                 });
             }}
@@ -42,13 +56,6 @@ const StatusIconButton = props => {
             <Icn />
         </Btn>
     </Tooltip>;
-};
-
-StatusIconButton.propTypes = {
-    id: clientOrDatabaseIdType,
-    current: PropTypes.oneOf(Object.keys(TaskStatus)),
-    next: PropTypes.oneOf(Object.keys(TaskStatus)).isRequired,
-    onClick: PropTypes.func
 };
 
 export default StatusIconButton;

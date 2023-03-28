@@ -116,12 +116,12 @@ class IngredientItem extends React.PureComponent<IngredientItemProps> {
             deleting,
             acquiring,
         } = item;
-        let addonBefore = [
+        const addonBefore = [
             <CollapseIconButton
                 key="collapse"
                 expanded={expanded}
                 onClick={this.onToggleExpanded}
-            />
+            />,
         ];
         if (loading) {
             addonBefore.push(
