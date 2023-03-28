@@ -1,5 +1,6 @@
 import BaseAxios from "axios";
 import { API_BASE_URL } from "../constants/index";
+import serializeObjectOfPromiseFns from "../util/serializeObjectOfPromiseFns";
 
 const axios = BaseAxios.create({
     baseURL: `${API_BASE_URL}/api`,
@@ -17,4 +18,4 @@ const ItemApi = {
 
 };
 
-export default ItemApi;
+export default serializeObjectOfPromiseFns(ItemApi);
