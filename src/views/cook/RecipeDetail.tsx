@@ -44,6 +44,7 @@ import {
     useScale,
 } from "../../util/ScalingContext";
 import LoadObject from "../../util/LoadObject";
+import { HEADER_HEIGHT } from "../../constants/layout";
 
 const useStyles = makeStyles(theme => ({
     name: {
@@ -91,8 +92,7 @@ const SubHeader: React.FC<PropsWithChildren> = ({ children }) => {
             style={trigger ? {
                 position: "fixed",
                 width,
-                // theme.header.height
-                top: 75,
+                top: HEADER_HEIGHT,
                 // appbar zindex
                 zIndex: 1100,
             } : undefined}
