@@ -4,9 +4,16 @@ import { isExpanded } from "features/Planner/data/tasks";
 import TaskStore from "features/Planner/data/TaskStore";
 import useFluxStore from "data/useFluxStore";
 import TaskList from "features/Planner/components/TaskList";
+import LoadObject from "../../util/LoadObject";
 
-const listTheTree = (id, ancestorDeleting = false, depth = 0) => {
-    const list = TaskStore.getSubtaskLOs(id).map(lo => ({
+export interface TaskTuple {
+    lo: LoadObject<any>
+    ancestorDeleting: boolean
+    depth: number
+}
+
+function listTheTree(id, ancestorDeleting = false, depth = 0): TaskTuple[] {
+    const list = TaskStore.getSubtaskLOs(id).map((lo: LoadObject<any>) => ({
         lo,
         ancestorDeleting,
         depth,
@@ -33,7 +40,7 @@ const listTheTree = (id, ancestorDeleting = false, depth = 0) => {
             depth + 1));
     }
     return list;
-};
+}
 
 export const PlannerController = () => {
     const state = useFluxStore(
