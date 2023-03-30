@@ -62,8 +62,14 @@ const PositionPicker: React.FC<Props> = ({ image, value, onChange }) => {
             fill={"none"}
             strokeWidth={1.5}
             onClick={e => {
-                const [x, y] = getPositionWithin(findSvg(e.target).parentNode, e);
-                const val = [x / width, y / height];
+                const svg = findSvg(e.target as Element);
+                if (svg == null) {
+                    // eslint-disable-next-line no-console
+                    console.warn("Target of click w/in SVG has no SVG ancestor?!");
+                    return;
+                }
+                const [ x, y ] = getPositionWithin(svg.parentNode, e);
+                const val = [ x / width, y / height ];
                 setOffset(val);
                 onChange && onChange(val);
             }}
