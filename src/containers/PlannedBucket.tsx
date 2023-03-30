@@ -8,11 +8,12 @@ import LoadingIndicator from "views/common/LoadingIndicator";
 import RecipeDetail from "views/cook/RecipeDetail";
 import {
     buildFullRecipeLO as buildSingleTaskRecipeLO,
+    RecipeFromTask,
     useLoadedPlan,
 } from "./PlannedRecipe";
 import { RouteComponentProps } from "react-router";
 
-export const buildFullRecipeLO = (planId: number, bucketId: number): LoadObject<any> => {
+export const buildFullRecipeLO = (planId: number, bucketId: number): LoadObject<RecipeFromTask> => {
     const plan = TaskStore.getTaskLO(planId);
     if (!plan.hasValue()) return plan;
     const bucket = plan.getValueEnforcing()

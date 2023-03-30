@@ -8,8 +8,14 @@ import LoadObject from "util/LoadObject";
 import LoadingIndicator from "../views/common/LoadingIndicator";
 import RecipeDetail from "../views/cook/RecipeDetail";
 import { RouteComponentProps } from "react-router";
+import { Recipe as RecipeType } from "../global/types/types";
 
-export function buildFullRecipeLO(itemLO: LoadObject<any>): LoadObject<any> {
+export interface RecipeFromTask extends RecipeType {
+    subtaskIds: number[]
+    subrecipes: RecipeType[]
+}
+
+export function buildFullRecipeLO(itemLO: LoadObject<any>): LoadObject<RecipeFromTask> {
     let lo = itemLO;
     if (!lo.hasValue()) return lo;
 

@@ -1,21 +1,25 @@
 import FriendStore from "data/FriendStore";
 import useFluxStore from "data/useFluxStore";
 import LibraryStore from "features/RecipeLibrary/data/LibraryStore";
-import PropTypes from "prop-types";
 import React from "react";
+import { RouteComponentProps } from "react-router";
 import { Redirect } from "react-router-dom";
 import LoadObject from "util/LoadObject";
 import { useProfileLO } from "../providers/Profile";
 import { ScalingProvider } from "../util/ScalingContext";
 import LoadingIndicator from "../views/common/LoadingIndicator";
 import RecipeDetail from "../views/cook/RecipeDetail";
+import {
+    Recipe as RecipeType,
+    UserType,
+} from "global/types/types";
 
 export const buildFullRecipeLO = id => {
     let lo = LibraryStore.getIngredientById(id);
     if (!lo.hasValue()) return lo;
 
     const subIds = new Set();
-    const subs = [];
+    const subs: RecipeType[] = [];
     let loading = false;
     const prepRecipe = recipe => ({
         ...recipe,
@@ -47,13 +51,24 @@ export const buildFullRecipeLO = id => {
     return lo;
 };
 
-const Recipe = ({match}) => {
+type Props = RouteComponentProps<{
+    id: string
+}>;
+
+interface State {
+    recipeLO: LoadObject<RecipeType>,
+    subrecipes?: RecipeType[]
+    mine?: boolean
+    ownerLO?: LoadObject<UserType>
+}
+
+const Recipe: React.FC<Props> = ({ match }) => {
     const id = parseInt(match.params.id, 10);
     const profileLO = useProfileLO();
     const state = useFluxStore(
         () => {
-            let recipeLO = buildFullRecipeLO(id);
-            const state = {
+            const recipeLO = buildFullRecipeLO(id);
+            const state: State = {
                 recipeLO,
             };
             if (!recipeLO.hasValue()) return state;
@@ -91,14 +106,6 @@ const Recipe = ({match}) => {
     }
 
     return <Redirect to="/library" />;
-};
-
-Recipe.propTypes = {
-    match: PropTypes.shape({
-        params: PropTypes.shape({
-            id: PropTypes.string.isRequired,
-        }).isRequired,
-    }).isRequired
 };
 
 export default Recipe;
