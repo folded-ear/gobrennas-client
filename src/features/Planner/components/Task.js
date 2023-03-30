@@ -1,24 +1,29 @@
-import {ListItemText} from "@mui/material";
+import { ListItemText } from "@mui/material";
 import Input from "@mui/material/Input";
 import classnames from "classnames";
-import PropTypes from "prop-types";
-import React from "react";
 import Dispatcher from "data/dispatcher";
-import TaskActions from "features/Planner/data/TaskActions";
-import {isExpanded, isParent, isQuestionable, isSection,} from "features/Planner/data/tasks";
-import TaskStatus from "features/Planner/data/TaskStatus";
-import TaskStore, {bucketType} from "features/Planner/data/TaskStore";
-import LoadObject from "util/LoadObject";
-import LoadingIconButton from "views/common/LoadingIconButton";
-import PlaceholderIconButton from "views/common/PlaceholderIconButton";
-import IngredientItem from "views/IngredientItem";
-import CollapseIconButton from "global/components/CollapseIconButton";
 import CookButton from "features/Planner/components/CookButton";
 import DontChangeStatusButton from "features/Planner/components/DontChangeStatusButton";
 import Item from "features/Planner/components/Item";
 import StatusIconButton from "features/Planner/components/StatusIconButton";
 import TaskBucketChip from "features/Planner/components/TaskBucketChip";
 import withItemStyles from "features/Planner/components/withItemStyles";
+import TaskActions from "features/Planner/data/TaskActions";
+import {
+    isExpanded,
+    isParent,
+    isQuestionable,
+    isSection,
+} from "features/Planner/data/tasks";
+import TaskStatus from "features/Planner/data/TaskStatus";
+import TaskStore from "features/Planner/data/TaskStore";
+import CollapseIconButton from "global/components/CollapseIconButton";
+import PropTypes from "prop-types";
+import React from "react";
+import LoadObject from "util/LoadObject";
+import LoadingIconButton from "views/common/LoadingIconButton";
+import PlaceholderIconButton from "views/common/PlaceholderIconButton";
+import IngredientItem from "views/IngredientItem";
 
 class Task extends React.PureComponent {
 
@@ -373,7 +378,7 @@ Task.propTypes = {
     loadObject: PropTypes.instanceOf(LoadObject).isRequired,
     active: PropTypes.bool,
     selected: PropTypes.bool,
-    buckets: PropTypes.arrayOf(bucketType),
+    buckets: PropTypes.array, // todo: PropTypes.arrayOf(bucketType),
     ancestorDeleting: PropTypes.bool,
     classes: PropTypes.object.isRequired,
 };

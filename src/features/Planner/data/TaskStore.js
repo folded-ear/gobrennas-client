@@ -1,4 +1,3 @@
-import AccessLevel from "data/AccessLevel";
 import Dispatcher from "data/dispatcher";
 import PantryItemActions from "data/PantryItemActions";
 import PreferencesStore from "data/PreferencesStore";
@@ -13,22 +12,16 @@ import {
 import TaskStatus, { willStatusDelete } from "features/Planner/data/TaskStatus";
 import { ReduceStore } from "flux/utils";
 import invariant from "invariant";
-import PropTypes from "prop-types";
 import { removeAtIndex } from "util/arrayAsSet";
-import ClientId, { clientOrDatabaseIdType } from "util/ClientId";
+import ClientId from "util/ClientId";
 import { bucketComparator } from "util/comparators";
 import inTheFuture from "util/inTheFuture";
 import LoadObject from "util/LoadObject";
 import LoadObjectState from "util/LoadObjectState";
 import {
-    loadObjectOf,
-    loadObjectStateOf,
-} from "util/loadObjectTypes";
-import {
     formatLocalDate,
     parseLocalDate,
 } from "util/time";
-import typedStore from "util/typedStore";
 import PlanApi from "./PlanApi";
 
 /*
@@ -1344,12 +1337,6 @@ class TaskStore extends ReduceStore {
         return losForIds(s, t.subtaskIds);
     }
 
-    getComponentLOs(id) {
-        const s = this.getState();
-        const t = taskForId(s, id);
-        return losForIds(s, t.componentIds);
-    }
-
     getNonDescendantComponents(id) {
         const state = this.getState();
         const t = taskForId(state, id);
@@ -1450,51 +1437,4 @@ class TaskStore extends ReduceStore {
     }
 }
 
-export const bucketType = PropTypes.exact({
-    id: clientOrDatabaseIdType.isRequired,
-    name: PropTypes.string,
-    date: PropTypes.instanceOf(Date),
-});
-
-TaskStore.stateTypes = {
-    activeListId: clientOrDatabaseIdType,
-    listDetailVisible: PropTypes.bool.isRequired,
-    activeTaskId: clientOrDatabaseIdType,
-    selectedTaskIds: PropTypes.arrayOf(clientOrDatabaseIdType),
-    topLevelIds: loadObjectStateOf(
-        PropTypes.arrayOf(clientOrDatabaseIdType)
-    ),
-    byId: PropTypes.objectOf(
-        loadObjectOf(PropTypes.exact({
-            //  core
-            id: clientOrDatabaseIdType.isRequired,
-            name: PropTypes.string.isRequired,
-            notes: PropTypes.string,
-            status: PropTypes.string.isRequired,
-            parentId: PropTypes.number,
-            subtaskIds: PropTypes.arrayOf(clientOrDatabaseIdType),
-            aggregateId: PropTypes.number,
-            componentIds: PropTypes.arrayOf(PropTypes.number),
-            bucketId: PropTypes.number,
-            // lists
-            acl: PropTypes.exact({
-                ownerId: PropTypes.number.isRequired,
-                grants: PropTypes.objectOf(
-                    PropTypes.oneOf(Object.values(AccessLevel))
-                ),
-            }),
-            buckets: PropTypes.arrayOf(bucketType),
-            // item
-            quantity: PropTypes.number,
-            uomId: PropTypes.number,
-            units: PropTypes.string,
-            ingredientId: PropTypes.number,
-            preparation: PropTypes.string,
-            // client-side
-            _expanded: PropTypes.bool,
-            _next_status: PropTypes.string,
-        }))
-    ).isRequired,
-};
-
-export default typedStore(new TaskStore(Dispatcher));
+export default new TaskStore(Dispatcher);
