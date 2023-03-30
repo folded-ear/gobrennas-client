@@ -2,21 +2,25 @@ import useFluxStore from "data/useFluxStore";
 import getBucketLabel from "features/Planner/components/getBucketLabel";
 import TaskStore from "features/Planner/data/TaskStore";
 import LibraryStore from "features/RecipeLibrary/data/LibraryStore";
-import PropTypes from "prop-types";
 import React from "react";
 import LoadObject from "util/LoadObject";
 import LoadingIndicator from "views/common/LoadingIndicator";
 import RecipeDetail from "views/cook/RecipeDetail";
-import { buildFullRecipeLO as buildSingleTaskRecipeLO, useLoadedPlan, } from "./PlannedRecipe";
+import {
+    buildFullRecipeLO as buildSingleTaskRecipeLO,
+    RecipeFromTask,
+    useLoadedPlan,
+} from "./PlannedRecipe";
+import { RouteComponentProps } from "react-router";
 
-export const buildFullRecipeLO = (planId, bucketId) => {
+export const buildFullRecipeLO = (planId: number, bucketId: number): LoadObject<RecipeFromTask> => {
     const plan = TaskStore.getTaskLO(planId);
     if (!plan.hasValue()) return plan;
     const bucket = plan.getValueEnforcing()
         .buckets
         .find(b => b.id === bucketId);
     if (!bucket) return LoadObject.empty();
-    let items = TaskStore.getItemsInBucket(planId, bucketId);
+    const items = TaskStore.getItemsInBucket(planId, bucketId);
     if (items.length === 0) return LoadObject.empty();
     if (items.length === 1) {
         return buildSingleTaskRecipeLO(LoadObject.withValue(items[0]))
@@ -48,7 +52,12 @@ export const buildFullRecipeLO = (planId, bucketId) => {
     });
 };
 
-const PlannedBucket = ({match}) => {
+type Props = RouteComponentProps<{
+    pid: string
+    bid: string
+}>;
+
+const PlannedBucket: React.FC<Props> = ({ match }) => {
     const pid = parseInt(match.params.pid, 10);
     const bid = parseInt(match.params.bid, 10);
     const lo = useFluxStore(
@@ -57,7 +66,7 @@ const PlannedBucket = ({match}) => {
             TaskStore,
             LibraryStore,
         ],
-        [pid, bid],
+        [ pid, bid ],
     );
 
     useLoadedPlan(pid);
@@ -71,15 +80,6 @@ const PlannedBucket = ({match}) => {
     }
 
     return <LoadingIndicator />;
-};
-
-PlannedBucket.propTypes = {
-    match: PropTypes.shape({
-        params: PropTypes.shape({
-            pid: PropTypes.string.isRequired,
-            bid: PropTypes.string.isRequired,
-        }).isRequired,
-    }).isRequired
 };
 
 export default PlannedBucket;

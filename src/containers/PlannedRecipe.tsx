@@ -3,20 +3,26 @@ import useFluxStore from "data/useFluxStore";
 import TaskActions from "features/Planner/data/TaskActions";
 import TaskStore from "features/Planner/data/TaskStore";
 import LibraryStore from "features/RecipeLibrary/data/LibraryStore";
-import PropTypes from "prop-types";
 import React from "react";
 import LoadObject from "util/LoadObject";
 import LoadingIndicator from "../views/common/LoadingIndicator";
 import RecipeDetail from "../views/cook/RecipeDetail";
+import { RouteComponentProps } from "react-router";
+import { Recipe as RecipeType } from "../global/types/types";
 
-export const buildFullRecipeLO = itemLO => {
+export interface RecipeFromTask extends RecipeType {
+    subtaskIds: number[]
+    subrecipes: RecipeType[]
+}
+
+export function buildFullRecipeLO(itemLO: LoadObject<any>): LoadObject<RecipeFromTask> {
     let lo = itemLO;
     if (!lo.hasValue()) return lo;
 
-    const subs = [];
+    const subs: any[] = [];
     let loading = false;
     const computeKids = item => {
-        let subIds = item.subtaskIds || [];
+        const subIds = item.subtaskIds || [];
         const subIdLookup = new Set(subIds);
         return (item.componentIds || [])
             .filter(id => !subIdLookup.has(id))
@@ -31,7 +37,7 @@ export const buildFullRecipeLO = itemLO => {
             })
             .map(lo => lo.getValueEnforcing());
     };
-    const prepRecipe = (item, rLO) => {
+    const prepRecipe = (item, rLO?: LoadObject<any>) => {
         item = {
             ...item,
             ingredients: computeKids(item).map(ref => {
@@ -61,7 +67,7 @@ export const buildFullRecipeLO = itemLO => {
             item.directions = item.notes;
         }
         if (!item.ingredientId) return item;
-        rLO = rLO || LibraryStore.getIngredientById(item.ingredientId);
+        rLO = rLO || LibraryStore.getIngredientById(item.ingredientId) as LoadObject<any>;
         if (rLO.isLoading()) {
             loading = true;
         }
@@ -79,7 +85,7 @@ export const buildFullRecipeLO = itemLO => {
         lo = lo.loading();
     }
     return lo;
-};
+}
 
 export const useLoadedPlan = pid => {
     // ensure it's loaded
@@ -102,11 +108,16 @@ export const useLoadedPlan = pid => {
                 }));
             }
         },
-        [allPlansLO, pid]
+        [ allPlansLO, pid ],
     );
 };
 
-const PlannedRecipe = ({match}) => {
+type Props = RouteComponentProps<{
+    pid: string
+    rid: string
+}>;
+
+const PlannedRecipe: React.FC<Props> = ({ match }) => {
     const rid = parseInt(match.params.rid, 10);
     const lo = useFluxStore(
         () => buildFullRecipeLO(TaskStore.getTaskLO(rid)),
@@ -114,7 +125,7 @@ const PlannedRecipe = ({match}) => {
             TaskStore,
             LibraryStore,
         ],
-        [rid],
+        [ rid ],
     );
 
     const pid = parseInt(match.params.pid, 10);
@@ -129,15 +140,6 @@ const PlannedRecipe = ({match}) => {
     }
 
     return <LoadingIndicator />;
-};
-
-PlannedRecipe.propTypes = {
-    match: PropTypes.shape({
-        params: PropTypes.shape({
-            pid: PropTypes.string.isRequired,
-            rid: PropTypes.string.isRequired,
-        }).isRequired,
-    }).isRequired
 };
 
 export default PlannedRecipe;
