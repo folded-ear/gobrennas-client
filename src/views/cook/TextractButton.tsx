@@ -1,8 +1,13 @@
-import {Box, Button,} from "@mui/material";
-import {makeStyles} from "@mui/styles";
-import {CameraAlt, MenuBook,} from "@mui/icons-material";
-import PropTypes from "prop-types";
-import React from "react";
+import {
+    Box,
+    Button,
+} from "@mui/material";
+import { makeStyles } from "@mui/styles";
+import {
+    CameraAlt,
+    MenuBook,
+} from "@mui/icons-material";
+import React, { MouseEventHandler } from "react";
 
 const useStyles = makeStyles({
     trigger: {
@@ -15,7 +20,11 @@ const useStyles = makeStyles({
     },
 });
 
-const TextractButton = ({onClick}) => {
+interface Props {
+    onClick: MouseEventHandler
+}
+
+const TextractButton: React.FC<Props> = ({ onClick }) => {
     const classes = useStyles();
     return <Box
         className={classes.trigger}
@@ -30,10 +39,6 @@ const TextractButton = ({onClick}) => {
             Cookbook
         </Button>
     </Box>;
-};
-
-TextractButton.propTypes = {
-    onClick: PropTypes.func.isRequired,
 };
 
 export default TextractButton;
