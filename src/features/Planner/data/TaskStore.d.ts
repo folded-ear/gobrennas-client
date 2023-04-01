@@ -2,6 +2,7 @@ import FluxReduceStore from "flux/lib/FluxReduceStore";
 import LoadObject from "../../../util/LoadObject";
 import LoadObjectState from "../../../util/LoadObjectState";
 import AccessLevel from "../../../data/AccessLevel";
+import { FluxAction } from "../../../global/types/types";
 
 type clientOrDatabaseIdType = string | number;
 
@@ -11,7 +12,7 @@ interface Bucket {
     date?: Date
 }
 
-interface Task {
+export interface Task {
     //  core
     id: clientOrDatabaseIdType
     name: string
@@ -26,7 +27,7 @@ interface Task {
     acl: {
         ownerId: number
         grants: {
-            [k: string]: keyof AccessLevel
+            [k: string]: AccessLevel
         }
     }
     buckets: Bucket[]
@@ -52,10 +53,13 @@ interface State {
     }
 }
 
-declare class TaskStore extends FluxReduceStore<State> {
-    getListsLO(): LoadObject<Task[]>
+declare namespace TaskStore {
+}
 
-    getLists(): Task[]
+declare class TaskStore extends FluxReduceStore<State, FluxAction> {
+    getListIdsLO(): LoadObject<clientOrDatabaseIdType>
+
+    getListsLO(): LoadObject<Task[]>
 
     getSubtaskLOs(id: number): LoadObject<Task>[]
 

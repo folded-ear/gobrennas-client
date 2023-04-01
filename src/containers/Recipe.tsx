@@ -58,8 +58,8 @@ type Props = RouteComponentProps<{
 interface State {
     recipeLO: LoadObject<RecipeType>,
     subrecipes?: RecipeType[]
-    mine?: boolean
-    ownerLO?: LoadObject<UserType>
+    mine: boolean
+    ownerLO: LoadObject<UserType>
 }
 
 const Recipe: React.FC<Props> = ({ match }) => {
@@ -70,6 +70,8 @@ const Recipe: React.FC<Props> = ({ match }) => {
             const recipeLO = buildFullRecipeLO(id);
             const state: State = {
                 recipeLO,
+                mine: false,
+                ownerLO: profileLO,
             };
             if (!recipeLO.hasValue()) return state;
 

@@ -1318,15 +1318,15 @@ class TaskStore extends ReduceStore {
         }
     }
 
-    getListsLO() {
+    getListIdsLO() {
         return this.getState()
             .topLevelIds
             .getLoadObject();
     }
 
-    getLists() {
+    getListsLO() {
         const s = this.getState();
-        return this.getListsLO().map(ids => losForIds(s, ids)
+        return this.getListIdsLO().map(ids => losForIds(s, ids)
             .filter(lo => lo.isDone())
             .map(lo => lo.getValueEnforcing()));
     }
@@ -1366,7 +1366,7 @@ class TaskStore extends ReduceStore {
     }
 
     getActiveListLO() {
-        const lo = this.getListsLO();
+        const lo = this.getListIdsLO();
         if (!lo.hasValue()) return lo;
         const s = this.getState();
         return s.activeListId == null

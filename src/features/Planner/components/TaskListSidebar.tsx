@@ -1,31 +1,38 @@
-import {MenuItem, Typography,} from "@mui/material";
+import {
+    MenuItem,
+    Typography,
+} from "@mui/material";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import Select from "@mui/material/Select";
 import TextField from "@mui/material/TextField";
-import PropTypes from "prop-types";
 import React from "react";
-import AccessLevel, {includesLevel} from "data/AccessLevel";
+import AccessLevel, { includesLevel } from "data/AccessLevel";
 import Dispatcher from "data/dispatcher";
 import FriendStore from "data/FriendStore";
 import TaskActions from "features/Planner/data/TaskActions";
 import useFluxStore from "data/useFluxStore";
-import {useProfileLO} from "providers/Profile";
+import { useProfileLO } from "providers/Profile";
 import DeleteButton from "views/common/DeleteButton";
 import LoadingIndicator from "views/common/LoadingIndicator";
 import PlanBucketManager from "features/Planner/components/PlanBucketManager";
 import SidebarUnit from "features/Planner/components/SidebarUnit";
 import User from "views/user/User";
+import { Task } from "../data/TaskStore";
 
 const LEVEL_NO_ACCESS = "NO_ACCESS";
 
-const TaskListSidebar = ({list}) => {
+interface Props {
+    list: Task
+}
+
+const TaskListSidebar: React.FC<Props> = ({ list }) => {
 
     const me = useProfileLO().getValueEnforcing();
 
-    const [friendsLoading, friendList, friendsById] = useFluxStore(
+    const [ friendsLoading, friendList, friendsById ] = useFluxStore(
         () => {
             const flo = FriendStore.getFriendsLO();
             const loading = !flo.hasValue();
@@ -161,11 +168,6 @@ const TaskListSidebar = ({list}) => {
             />
         </SidebarUnit>}
     </Box>;
-};
-
-
-TaskListSidebar.propTypes = {
-    list: PropTypes.object,
 };
 
 export default TaskListSidebar;

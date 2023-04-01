@@ -14,22 +14,22 @@ import {
     ItemProps,
 } from "./types";
 import LoadObject from "../../util/LoadObject";
-import { Plan } from "global/types/types";
+import { Task } from "../../features/Planner/data/TaskStore";
 
 type ShopListProps = {
-    planLO: LoadObject<Plan>
+    planLO: LoadObject<Task>
     itemTuples: ItemProps & {
-      id: string,
-      _type: "ingredient" | "task",
-      active: boolean;
-      depth: number;
-      expanded: boolean,
-      itemIds: string[],
-      quantities: {
-          quantity: number,
-          uomId?: number,
-      }[],
-      path: BaseItemProp[]
+        id: string,
+        _type: "ingredient" | "task",
+        active: boolean;
+        depth: number;
+        expanded: boolean,
+        itemIds: string[],
+        quantities: {
+            quantity: number,
+            uomId?: number,
+        }[],
+        path: BaseItemProp[],
     }[]
 }
 

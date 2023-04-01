@@ -1,15 +1,17 @@
 import invariant from "invariant";
+import { Maybe } from "graphql/jsutils/Maybe";
 
-const AccessLevel = {
-    // VIEW: "VIEW",
-    CHANGE: "CHANGE",
-    ADMINISTER: "ADMINISTER",
-};
+enum AccessLevel {
+    // noinspection JSUnusedGlobalSymbols
+    VIEW = "VIEW",
+    CHANGE = "CHANGE",
+    ADMINISTER = "ADMINISTER",
+}
 
 // this isn't technically safe. but it practically is.
 const levels = Object.keys(AccessLevel);
 
-export const includesLevel = (levelGranted, levelToCheck) => {
+export function includesLevel(levelGranted: Maybe<AccessLevel>, levelToCheck: AccessLevel) {
     if (levelGranted == null) return false;
     invariant(levelToCheck != null, "There is no 'null' access level");
     invariant(
@@ -21,6 +23,6 @@ export const includesLevel = (levelGranted, levelToCheck) => {
         `Unknown '${levelToCheck}' access level`,
     );
     return levels.indexOf(levelToCheck) <= levels.indexOf(levelGranted);
-};
+}
 
 export default AccessLevel;

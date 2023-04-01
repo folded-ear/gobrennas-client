@@ -45,7 +45,7 @@ function listTheTree(id, ancestorDeleting = false, depth = 0): TaskTuple[] {
 export const PlannerController = () => {
     const state = useFluxStore(
         () => {
-            const allLists = TaskStore.getLists();
+            const allLists = TaskStore.getListsLO();
             const activeListLO = TaskStore.getActiveListLO();
             const activeTask = TaskStore.getActiveTask();
             const selectedTasks = TaskStore.getSelectedTasks();

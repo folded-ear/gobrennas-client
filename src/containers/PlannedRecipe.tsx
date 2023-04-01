@@ -90,7 +90,7 @@ export function buildFullRecipeLO(itemLO: LoadObject<any>): LoadObject<RecipeFro
 export const useLoadedPlan = pid => {
     // ensure it's loaded
     const allPlansLO = useFluxStore(
-        () => TaskStore.getListsLO(),
+        () => TaskStore.getListIdsLO(),
         [
             TaskStore,
         ],

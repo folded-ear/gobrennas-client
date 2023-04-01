@@ -1,6 +1,7 @@
 export interface UserType {
     id: number
     name: string
+    provider: string
     email: string
     imageUrl?: string
     roles: string[]
@@ -48,4 +49,12 @@ export type SharedRecipe = {
     slug: string,
 }
 
-export type Plan = any
+export interface FluxAction {
+    // typedAction uses String objects, to hide prop-types for
+    // ValidatingDispatcher.
+    //
+    // eslint-disable-next-line @typescript-eslint/ban-types
+    type: string | String
+
+    [k: string]: any
+}
