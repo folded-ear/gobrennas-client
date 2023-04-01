@@ -1,6 +1,5 @@
-import Paper from "@mui/material/Paper";
+import Paper, { PaperProps } from "@mui/material/Paper";
 import makeStyles from "@mui/styles/makeStyles";
-import PropTypes from "prop-types";
 import React from "react";
 
 const useStyles = makeStyles(theme => ({
@@ -12,7 +11,7 @@ const useStyles = makeStyles(theme => ({
     },
 }));
 
-const SidebarUnit = ({children, ...props}) => {
+const SidebarUnit: React.FC<PaperProps> = ({ children, ...props }) => {
     const classes = useStyles();
     return <Paper
         className={classes.root}
@@ -20,10 +19,6 @@ const SidebarUnit = ({children, ...props}) => {
     >
         {children}
     </Paper>;
-};
-
-SidebarUnit.propTypes = {
-    children: PropTypes.node,
 };
 
 export default SidebarUnit;
