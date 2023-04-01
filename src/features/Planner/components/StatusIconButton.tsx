@@ -21,24 +21,18 @@ const findButton = (next, curr) => {
     return buttonLookup[next][curr];
 };
 
-interface CoreProps {
-    current?: TaskStatus
+interface Props {
     next: TaskStatus
+    current?: TaskStatus
+    id?: string | number
+    onClick?: MouseEventHandler
 }
 
-interface TaskProps extends CoreProps {
-    id: string | number
-}
-
-interface OpenProps extends CoreProps {
-    onClick: MouseEventHandler
-}
-
-const StatusIconButton: React.FC<TaskProps | OpenProps> = props => {
+const StatusIconButton: React.FC<Props> = props => {
     const Btn = findButton(props.next, props.current || props.next);
     const Icn = getIconForStatus(props.next);
     return <Tooltip
-        title={`Mark ${props.next.substr(0, 1)}${props.next.substr(1).toLowerCase()}`}
+        title={`Mark ${props.next.substring(0, 1)}${props.next.substring(1).toLowerCase()}`}
     >
         <Btn
             aria-label={props.next.toLowerCase()}
@@ -47,7 +41,7 @@ const StatusIconButton: React.FC<TaskProps | OpenProps> = props => {
                 e.stopPropagation();
                 Dispatcher.dispatch({
                     type: TaskActions.SET_STATUS,
-                    id: (props as TaskProps).id,
+                    id: props.id,
                     status: props.next,
                 });
             }}

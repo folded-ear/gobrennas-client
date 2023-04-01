@@ -1,10 +1,8 @@
-import PropTypes from "prop-types";
-import React from "react";
+import React, { MouseEventHandler } from "react";
 import Dispatcher from "data/dispatcher";
 import TaskActions from "features/Planner/data/TaskActions";
-import TaskStatus, {getColorForStatus} from "features/Planner/data/TaskStatus";
-import {clientOrDatabaseIdType} from "util/ClientId";
-import {coloredButton} from "views/common/colors";
+import TaskStatus, { getColorForStatus } from "features/Planner/data/TaskStatus";
+import { coloredButton } from "views/common/colors";
 
 const buttonLookup = {}; // Map<next, Button>
 const findButton = next => {
@@ -14,7 +12,13 @@ const findButton = next => {
     return buttonLookup[next];
 };
 
-const DontChangeStatusButton = props => {
+interface Props {
+    next: TaskStatus
+    id?: string | number
+    onClick?: MouseEventHandler
+}
+
+const DontChangeStatusButton: React.FC<Props> = props => {
     const Btn = findButton(props.next);
     return <Btn
         variant="contained"
@@ -31,12 +35,6 @@ const DontChangeStatusButton = props => {
     >
         WAIT, NO!
     </Btn>;
-};
-
-DontChangeStatusButton.propTypes = {
-    id: clientOrDatabaseIdType,
-    next: PropTypes.oneOf(Object.keys(TaskStatus)).isRequired,
-    onClick: PropTypes.func
 };
 
 export default DontChangeStatusButton;
