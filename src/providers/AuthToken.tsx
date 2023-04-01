@@ -1,6 +1,6 @@
-import PropTypes from "prop-types";
 import React, {
     createContext,
+    PropsWithChildren,
     useContext,
     useMemo,
 } from "react";
@@ -9,7 +9,7 @@ import { getCookie } from "util/cookies";
 
 const AuthTokenContext = createContext(true);
 
-export function AuthTokenProvider({children}) {
+export const AuthTokenProvider: React.FC<PropsWithChildren> = ({ children }) => {
     const token = useMemo(
         () => getCookie(COOKIE_AUTH_TOKEN),
         [],
@@ -17,12 +17,7 @@ export function AuthTokenProvider({children}) {
     return <AuthTokenContext.Provider value={token}>
         {children}
     </AuthTokenContext.Provider>;
-}
-
-AuthTokenProvider.propTypes = {
-    children: PropTypes.node,
 };
 
 export const useAuthToken = () =>
     useContext(AuthTokenContext);
-

@@ -93,13 +93,3 @@ serviceWorkerRegistration.register({
         registration,
     }),
 });
-
-// if (process.env.NODE_ENV !== "production") {
-//     document.body.style.setProperty("background-image", "repeating-linear-gradient(\n" +
-//         "20deg,\n" +
-//         "transparent,\n" +
-//         "transparent 88px,\n" +
-//         "hsl(300, 100%, 95%) 88px,\n" +
-//         "hsl(250, 100%, 95%) 90px\n" +
-//         ")");
-// }
