@@ -1,9 +1,5 @@
 import { toNumericString } from "../common/Quantity";
-
-interface Quantity {
-    quantity: number
-    units?: string
-}
+import { Quantity } from "../../global/types/types";
 
 export function formatQuantity(q: Quantity | Quantity[]): string {
     // is it compound quantity (i.e., array)?

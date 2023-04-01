@@ -61,7 +61,7 @@ declare class TaskStore extends FluxReduceStore<State, FluxAction> {
 
     getListsLO(): LoadObject<Task[]>
 
-    getSubtaskLOs(id: number): LoadObject<Task>[]
+    getSubtaskLOs(id: clientOrDatabaseIdType): LoadObject<Task>[]
 
     getNonDescendantComponents(id: number): Task[]
 

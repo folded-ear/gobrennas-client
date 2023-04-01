@@ -15,22 +15,27 @@ import {
 } from "./types";
 import LoadObject from "../../util/LoadObject";
 import { Task } from "../../features/Planner/data/TaskStore";
+import { Quantity } from "../../global/types/types";
 
-type ShopListProps = {
+export enum ShopItemType {
+    INGREDIENT = "ingredient",
+    TASK = "task",
+}
+
+export interface ShopItemTuple extends ItemProps {
+    id: string | number
+    _type: ShopItemType
+    active?: boolean
+    depth: number
+    expanded?: boolean
+    itemIds?: (string | number)[]
+    quantities?: Quantity[]
+    path: BaseItemProp[]
+}
+
+export type ShopListProps = {
     planLO: LoadObject<Task>
-    itemTuples: ItemProps & {
-        id: string,
-        _type: "ingredient" | "task",
-        active: boolean;
-        depth: number;
-        expanded: boolean,
-        itemIds: string[],
-        quantities: {
-            quantity: number,
-            uomId?: number,
-        }[],
-        path: BaseItemProp[],
-    }[]
+    itemTuples: ShopItemTuple[]
 }
 
 class ShopList extends React.PureComponent<ShopListProps> {
