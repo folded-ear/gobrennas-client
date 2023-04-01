@@ -286,6 +286,7 @@ class ElEdit extends React.PureComponent<ElEditProps, ElEditState> {
                     options={hasSuggestions ? suggestions.map((option) => {
                         return (option.result);
                     }) : []}
+                    filterOptions={x => x}
                     renderInput={(params) => {
                         params.InputProps.startAdornment = indicator;
                         return (
