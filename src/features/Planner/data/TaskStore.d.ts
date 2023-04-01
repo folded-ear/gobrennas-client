@@ -6,7 +6,7 @@ import { FluxAction } from "../../../global/types/types";
 
 type clientOrDatabaseIdType = string | number;
 
-interface Bucket {
+export interface Bucket {
     id: clientOrDatabaseIdType
     name?: string
     date?: Date
