@@ -1,5 +1,6 @@
 import FluxContainerSubscriptions from "flux/lib/FluxContainerSubscriptions";
 import React from "react";
+import FluxReduceStore from "flux/lib/FluxReduceStore";
 
 /**
  * I replace Flux Utils' Container concept with a hook. This not only allows for
@@ -31,8 +32,10 @@ import React from "react";
  *  This is like what you'd pass to useEffect or useMemo.
  * @return The current calculated state.
  */
-const useFluxStore = (calculateState, stores, deps = []) => {
-    const [state, setState] = React.useState(calculateState);
+function useFluxStore<S>(calculateState: () => S,
+                         stores: FluxReduceStore<any, any>[],
+                         deps: any[] = []): S {
+    const [ state, setState ] = React.useState(calculateState);
     React.useEffect(
         () => {
             const subs = new FluxContainerSubscriptions();
@@ -44,6 +47,6 @@ const useFluxStore = (calculateState, stores, deps = []) => {
         stores.concat(deps), // eslint-disable-line react-hooks/exhaustive-deps
     );
     return state;
-};
+}
 
 export default useFluxStore;

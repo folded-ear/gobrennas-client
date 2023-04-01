@@ -15,7 +15,10 @@ import { RouteComponentProps } from "react-router";
 
 export const buildFullRecipeLO = (planId: number, bucketId: number): LoadObject<RecipeFromTask> => {
     const plan = TaskStore.getTaskLO(planId);
-    if (!plan.hasValue()) return plan;
+    if (!plan.hasValue()) {
+        // no value means value's type is irrelevant
+        return plan as LoadObject<any>;
+    }
     const bucket = plan.getValueEnforcing()
         .buckets
         .find(b => b.id === bucketId);

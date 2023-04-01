@@ -1,6 +1,7 @@
 import React from "react";
+import { Maybe } from "graphql/jsutils/Maybe";
 
-function toVulgarFraction(quantity) {
+function toVulgarFraction(quantity: number): Maybe<string> {
     if (quantity === 0.125) return "⅛";
     else if (quantity === 0.25) return "¼";
     else if (quantity >= 0.33 && quantity < 0.34) return "⅓";
@@ -16,7 +17,7 @@ const numberFormat = new Intl.NumberFormat(undefined, {
     maximumFractionDigits: 3,
 });
 
-export function toNumericString(quantity) {
+export function toNumericString(quantity: number): string {
     if (quantity < 0) {
         return "-" + toNumericString(Math.abs(quantity));
     }

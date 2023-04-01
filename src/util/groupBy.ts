@@ -7,9 +7,12 @@
  * @param items The items to group by key
  * @param keyExtractor Function to extract a key from a single item
  */
-function groupBy<K, T>(items: T[], keyExtractor: (t: T) => K): Map<K, T[]> {
+function groupBy<K, T>(items: T[], keyExtractor: (t: T) => K | undefined): Map<K | undefined, T[]> {
     return items.reduce((gs, it) => {
-        const key = keyExtractor(it);
+        let key = keyExtractor(it);
+        if (key === null) {
+            key = undefined;
+        }
         if (gs.has(key)) {
             gs.get(key).push(it);
         } else {

@@ -1,25 +1,30 @@
-import {Chip, Divider,} from "@mui/material";
+import {
+    HighlightOff as DeleteIcon,
+    Kitchen,
+} from "@mui/icons-material";
+import {
+    Chip,
+    Divider,
+} from "@mui/material";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
-import {HighlightOff as DeleteIcon, Kitchen,} from "@mui/icons-material";
+import dispatcher from "data/dispatcher";
+import getBucketLabel from "features/Planner/components/getBucketLabel";
+import TaskActions from "features/Planner/data/TaskActions";
 import PropTypes from "prop-types";
 import React from "react";
-import dispatcher from "data/dispatcher";
-import TaskActions from "features/Planner/data/TaskActions";
-import {bucketType} from "features/Planner/data/TaskStore";
-import {clientOrDatabaseIdType} from "util/ClientId";
+import { clientOrDatabaseIdType } from "util/ClientId";
 import history from "util/history";
-import {humanDate} from "util/time";
-import getBucketLabel from "features/Planner/components/getBucketLabel";
+import { humanDate } from "util/time";
 
 const BucketChip = ({
-    planId,
-    bucketId,
-    buckets = [],
-    onSelect,
-    onManage,
-}) => {
-    const [anchorEl, setAnchorEl] = React.useState(null);
+                        planId,
+                        bucketId,
+                        buckets = [],
+                        onSelect,
+                        onManage,
+                    }) => {
+    const [ anchorEl, setAnchorEl ] = React.useState(null);
 
     const handleClick = (event) => {
         setAnchorEl(event.currentTarget);
@@ -112,7 +117,7 @@ const BucketChip = ({
 BucketChip.propTypes = {
     planId: PropTypes.number.isRequired,
     bucketId: PropTypes.number,
-    buckets: PropTypes.arrayOf(bucketType).isRequired,
+    buckets: PropTypes.array.isRequired, // todo: PropTypes.arrayOf(bucketType).isRequired,
     onSelect: PropTypes.func.isRequired,
     onManage: PropTypes.func,
 };
@@ -138,7 +143,7 @@ TaskBucketChip.propTypes = {
     planId: PropTypes.number.isRequired,
     taskId: clientOrDatabaseIdType.isRequired,
     bucketId: PropTypes.number,
-    buckets: PropTypes.arrayOf(bucketType).isRequired,
+    buckets: PropTypes.array.isRequired, // todo: PropTypes.arrayOf(bucketType).isRequired,
 };
 
 export default TaskBucketChip;

@@ -29,7 +29,9 @@ const SendToPlan: React.FC<Props> = ({ onClick, iconOnly }) => {
     if (!listLO.hasValue()) return null;
     const list = listLO.getValueEnforcing();
     const handleClick = () =>
-        onClick && onClick(list.id);
+        // While tasks can exist in the store in an unsaved state, lists/plans
+        // cannot, so this type assertion is safe.
+        onClick && onClick(list.id as number);
     if (iconOnly) {
         return <IconButton
             size="small"

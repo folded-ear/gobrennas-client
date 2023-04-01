@@ -1,11 +1,14 @@
-import {useMediaQuery} from "@mui/material";
-import PropTypes from "prop-types";
-import React, {createContext, useContext,} from "react";
+import { useMediaQuery } from "@mui/material";
+import React, {
+    createContext,
+    PropsWithChildren,
+    useContext,
+} from "react";
 import theme from "../theme";
 
 const MobileContext = createContext(true);
 
-export function IsMobileProvider({children}) {
+export function IsMobileProvider({ children }: PropsWithChildren): JSX.Element {
     const bound = theme.breakpoints.values.sm;
     const query = `@media (max-width:${bound}px), (max-height:${bound}px)`;
     const mobile = useMediaQuery(query, {
@@ -15,10 +18,6 @@ export function IsMobileProvider({children}) {
         {children}
     </MobileContext.Provider>;
 }
-
-IsMobileProvider.propTypes = {
-    children: PropTypes.node,
-};
 
 export const useIsMobile = () =>
     useContext(MobileContext);

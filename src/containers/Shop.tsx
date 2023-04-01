@@ -1,20 +1,42 @@
 import React from "react";
 import LibraryStore from "features/RecipeLibrary/data/LibraryStore";
-import ShoppingStore from "data/ShoppingStore";
-import {isParent, isQuestionable, isSection,} from "features/Planner/data/tasks";
+import ShoppingStore, { Item } from "data/ShoppingStore";
+import {
+    isParent,
+    isQuestionable,
+    isSection,
+} from "features/Planner/data/tasks";
 import TaskStatus from "features/Planner/data/TaskStatus";
 import TaskStore from "features/Planner/data/TaskStore";
 import useFluxStore from "data/useFluxStore";
 import groupBy from "util/groupBy";
-import ShopList from "views/shop/ShopList";
+import ShopList, {
+    ShopItemTuple,
+    ShopItemType,
+} from "views/shop/ShopList";
+import { Task } from "../features/Planner/data/TaskStore";
+import {
+    BaseItemProp,
+    ItemProps,
+} from "../views/shop/types";
+import { Maybe } from "graphql/jsutils/Maybe";
+import LoadObject from "../util/LoadObject";
+import { Quantity } from "../global/types/types";
 
-const gatherLeaves = item => {
+interface TaskTuple extends Task, ItemProps {
+}
+
+interface PathedTaskTuple extends TaskTuple {
+    path: BaseItemProp[],
+}
+
+function gatherLeaves(item: Task): PathedTaskTuple[] {
     if (!isParent(item)) {
         if (isSection(item)) return [];
-        return [{
+        return [ {
             ...item,
             path: [],
-        }];
+        } as unknown as PathedTaskTuple ];
     }
     return TaskStore.getSubtaskLOs(item.id)
         .filter(lo => lo.hasValue())
@@ -35,9 +57,22 @@ const gatherLeaves = item => {
             ...it,
             path: it.path.concat(item),
         }));
-};
+}
 
-const groupItems = (plans, expandedId, activeItem) => {
+interface Ingredient {
+    name: string
+    storeOrder?: number
+}
+
+interface OrderableIngredient {
+    id: number
+    items: PathedTaskTuple[]
+    lo: LoadObject<Ingredient>
+}
+
+function groupItems(plans: Task[],
+                    expandedId: Maybe<number>,
+                    activeItem: Maybe<Item>): ShopItemTuple[] {
     const leaves = plans
         .flatMap(gatherLeaves);
     if (plans.length === 1) {
@@ -47,23 +82,23 @@ const groupItems = (plans, expandedId, activeItem) => {
         }
     }
     const byIngredient = groupBy(leaves, it => it.ingredientId);
-    const unparsed = [];
-    [null, undefined].forEach(k => {
-        if (byIngredient.has(k)) {
-            unparsed.push(...byIngredient.get(k)
-                .filter(it => it.status === TaskStatus.NEEDED));
-            byIngredient.delete(k);
-        }
-    });
-    const orderedIngredients = [];
-    for (const [ingId, items] of byIngredient) {
+    const unparsed: PathedTaskTuple[] = [];
+    if (byIngredient.has(undefined)) {
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        unparsed.push(...byIngredient.get(undefined)!
+            .filter(it => it.status === TaskStatus.NEEDED));
+        byIngredient.delete(undefined);
+    }
+    const orderedIngredients: OrderableIngredient[] = [];
+    for (const [ ingId, items ] of byIngredient) {
+        if (ingId == null) continue;
         orderedIngredients.push({
             id: ingId,
             items: items,
             lo: LibraryStore.getIngredientById(ingId),
         });
     }
-    orderedIngredients.sort(({lo: alo}, {lo: blo}) => {
+    orderedIngredients.sort(({ lo: alo }, { lo: blo }) => {
         if (!alo.hasValue()) return blo.hasValue() ? 1 : 0;
         if (!blo.hasValue()) return -1;
         const a = alo.getValueEnforcing();
@@ -75,8 +110,8 @@ const groupItems = (plans, expandedId, activeItem) => {
         if (a.name > b.name) return 1;
         return 0;
     });
-    const theTree = [];
-    for (const {id: ingId, items, lo} of orderedIngredients) {
+    const theTree: ShopItemTuple[] = [];
+    for (const { id: ingId, items, lo } of orderedIngredients) {
         const neededItems = items.filter(it => it.status === TaskStatus.NEEDED);
         if (neededItems.length === 0) continue;
         const unitLookup = new Map();
@@ -86,18 +121,19 @@ const groupItems = (plans, expandedId, activeItem) => {
             }
             return it.uomId;
         });
-        const quantities = [];
+        const quantities: Quantity[] = [];
         for (const uomId of byUnit.keys()) {
             quantities.push({
-                quantity: byUnit.get(uomId)
-                    .reduce((q, it) => q + it.quantity, 0),
+                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                quantity: byUnit.get(uomId)!
+                    .reduce((q, it) => q + (it.quantity || 0), 0),
                 uomId,
                 units: unitLookup.get(uomId),
             });
         }
         const expanded = ingId === expandedId;
         theTree.push({
-            _type: "ingredient",
+            _type: ShopItemType.INGREDIENT,
             id: ingId,
             itemIds: items.map(it => it.id),
             name: lo.hasValue() ? lo.getValueEnforcing().name : items[0].name,
@@ -106,11 +142,13 @@ const groupItems = (plans, expandedId, activeItem) => {
             loading: lo.isLoading() || items.some(it => it.loading),
             acquiring: items.every(it => it.acquiring || it.status === TaskStatus.ACQUIRED),
             deleting: items.every(it => it.deleting || it.status === TaskStatus.DELETED),
+            depth: 0,
+            path: [],
         });
         if (expanded) {
             const ingredient = lo.hasValue() ? lo.getValueEnforcing() : null;
             theTree.push(...items.map(it => ({
-                _type: "task",
+                _type: ShopItemType.TASK,
                 depth: 1,
                 ingredient,
                 ...it,
@@ -119,7 +157,7 @@ const groupItems = (plans, expandedId, activeItem) => {
     }
     // add the garbage at the bottom
     theTree.push(...unparsed.map(it => ({
-        _type: "task",
+        _type: ShopItemType.TASK,
         depth: 0,
         ...it,
     })));
@@ -134,7 +172,7 @@ const groupItems = (plans, expandedId, activeItem) => {
             return it;
         })
         : theTree;
-};
+}
 
 const Shop = () => {
     const [expandedId, activeItem] = useFluxStore(
