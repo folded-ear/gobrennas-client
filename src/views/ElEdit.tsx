@@ -12,7 +12,7 @@ import React, {
     CSSProperties,
     PropsWithChildren,
 } from "react";
-import ItemApi from "data/ItemApi";
+import ItemApi, { RecognitionResult } from "data/ItemApi";
 import debounce from "util/debounce";
 import processRecognizedItem from "util/processRecognizedItem";
 import { Ingredient } from "../global/types/types";
@@ -49,9 +49,16 @@ type ElEditProps = {
     placeholder?: string,
 }
 
+interface Suggestion {
+    prefix: string
+    value: string
+    suffix: string
+    result: string
+}
+
 type ElEditState = {
-    recog: any,
-    suggestions?: any,
+    recog?: RecognitionResult,
+    suggestions?: Suggestion[],
     quantity?: number,
     quantityValue?: number,
     unit?: string,
@@ -63,15 +70,15 @@ type ElEditState = {
 
 class ElEdit extends React.PureComponent<ElEditProps, ElEditState> {
     private _mounted: boolean;
-    private ref: React.RefObject<HTMLInputElement>;
-    private recognizeDebounced: ((...args) => void) | any;
+    private readonly ref: React.RefObject<HTMLInputElement>;
+    private readonly recognizeDebounced: ((...args) => void);
 
     constructor(args: ElEditProps) {
         super(args);
         this.ref = React.createRef<HTMLInputElement>();
         this._mounted = false;
         this.state = {
-            recog: null,
+            recog: undefined,
             suggestions: undefined,
         };
         this.recognizeDebounced = debounce(this.recognize.bind(this));
@@ -112,7 +119,7 @@ class ElEdit extends React.PureComponent<ElEditProps, ElEditState> {
         if (!doRecog(value.raw)) return;
         const cursor = this.getCursorPosition();
         ItemApi.recognizeItem(value.raw, cursor)
-            .then(recog => {
+            .then((recog: RecognitionResult) => {
                 if (!this._mounted) return;
                 if (recog.raw !== this.props.value.raw) return;
                 // if (recog.cursor !== this.getCursorPosition()) return;
@@ -143,9 +150,9 @@ class ElEdit extends React.PureComponent<ElEditProps, ElEditState> {
                         },
                     },
                 });
-                const suggestions = recog.suggestions.map(s => {
-                    const prefix = recog.raw.substr(0, s.target.start);
-                    const suffix = recog.raw.substr(s.target.end);
+                const suggestions: Suggestion[] = recog.suggestions.map(s => {
+                    const prefix = recog.raw.substring(0, s.target.start);
+                    const suffix = recog.raw.substring(s.target.end);
                     const quote = s.name.indexOf(" ") >= 0 ||
                         recog.raw.charAt(s.target.start) === '"' ||
                         recog.raw.charAt(s.target.end - 1) === '"';
@@ -189,7 +196,7 @@ class ElEdit extends React.PureComponent<ElEditProps, ElEditState> {
             },
         });
         // suggestions are always made stale by change
-        this.setState({suggestions: null});
+        this.setState({ suggestions: undefined });
     }
 
     onPaste(e) {
@@ -245,7 +252,7 @@ class ElEdit extends React.PureComponent<ElEditProps, ElEditState> {
         if (suggestions.length === 0) return false;
         if (suggestions.length > 1) return true;
         const {value: {raw}} = this.props;
-        return suggestions[0] !== raw;
+        return suggestions[0].result !== raw;
     }
 
     render() {
@@ -283,9 +290,9 @@ class ElEdit extends React.PureComponent<ElEditProps, ElEditState> {
                     freeSolo
                     handleHomeEndKeys={hasSuggestions}
                     disableClearable
-                    options={hasSuggestions ? suggestions.map((option) => {
-                        return (option.result);
-                    }) : []}
+                    options={hasSuggestions && suggestions
+                        ? suggestions.map(it => it.result)
+                        : []}
                     renderInput={(params) => {
                         params.InputProps.startAdornment = indicator;
                         return (

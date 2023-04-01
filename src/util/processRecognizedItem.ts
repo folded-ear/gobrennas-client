@@ -1,11 +1,16 @@
 // This is "duplicated" as RawIngredientDissection.fromRecognizedItem
-const processRecognizedItem = recog => {
+import {
+    RecognitionRangeType,
+    RecognitionResult,
+} from "../data/ItemApi";
+
+function processRecognizedItem(recog: RecognitionResult) {
     const qr = recog.ranges.find(r =>
-        r.type === "AMOUNT");
+        r.type === RecognitionRangeType.AMOUNT);
     const ur = recog.ranges.find(r =>
-        r.type === "UNIT" || r.type === "NEW_UNIT");
+        r.type === RecognitionRangeType.UNIT || r.type === RecognitionRangeType.NEW_UNIT);
     const nr = recog.ranges.find(r =>
-        r.type === "ITEM" || r.type === "NEW_ITEM");
+        r.type === RecognitionRangeType.ITEM || r.type === RecognitionRangeType.NEW_ITEM);
     const textFromRange = r =>
         r && recog.raw.substring(r.start, r.end);
     const stripMarkers = s => {
@@ -23,12 +28,15 @@ const processRecognizedItem = recog => {
     const uv = ur && ur.value;
     const n = textFromRange(nr);
     const nv = nr && nr.value;
-    const p = [qr, ur, nr]
+    const p = [ qr, ur, nr ]
         .filter(it => it != null)
-        .sort((a, b) => b.start - a.start)
+        .sort((a, b) =>
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            b!.start - a!.start)
         .reduce(
             (p, r) =>
-                p.substr(0, r.start) + p.substr(r.end),
+                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                p.substring(0, r!.start) + p.substring(r!.end),
             recog.raw,
         )
         .trim()
@@ -46,6 +54,6 @@ const processRecognizedItem = recog => {
         ingredient_raw: n,
         preparation: p,
     };
-};
+}
 
 export default processRecognizedItem;
