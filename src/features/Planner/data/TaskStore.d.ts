@@ -26,9 +26,7 @@ export interface Task {
     // lists
     acl: {
         ownerId: number
-        grants: {
-            [k: string]: AccessLevel
-        }
+        grants: Record<string, AccessLevel>
     }
     buckets: Bucket[]
     // item
@@ -48,9 +46,7 @@ interface State {
     activeTaskId?: clientOrDatabaseIdType
     selectedTaskIds?: clientOrDatabaseIdType[]
     topLevelIds: LoadObjectState<clientOrDatabaseIdType[]>
-    byId: {
-        [id: clientOrDatabaseIdType]: LoadObject<Task>
-    }
+    byId: Record<clientOrDatabaseIdType, LoadObject<Task>>
 }
 
 declare namespace TaskStore {
@@ -69,7 +65,7 @@ declare class TaskStore extends FluxReduceStore<State, FluxAction> {
 
     getActiveTask(): Task
 
-    getTaskLO(id: number): LoadObject<Task>
+    getTaskLO(id: clientOrDatabaseIdType): LoadObject<Task>
 
     getSelectedTasks(): Task[]
 
