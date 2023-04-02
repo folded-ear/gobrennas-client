@@ -1,13 +1,20 @@
-import {Grid, Typography,} from "@mui/material";
-import {makeStyles} from "@mui/styles";
-import {DataGrid} from "@mui/x-data-grid";
-import React, {useEffect, useMemo, useState,} from "react";
+import {
+    Grid,
+    Typography,
+} from "@mui/material";
+import { makeStyles } from "@mui/styles";
+import { DataGrid } from "@mui/x-data-grid";
+import React, {
+    useEffect,
+    useMemo,
+    useState,
+} from "react";
 import InventoryApi from "../../data/InventoryApi";
-import {useIsMobile} from "../../providers/IsMobile";
+import { useIsMobile } from "../../providers/IsMobile";
 import LoadingIndicator from "../common/LoadingIndicator";
 import PageBody from "../common/PageBody";
 import Detail from "./Detail";
-import {formatQuantity} from "./formatQuantity";
+import { formatQuantity } from "./formatQuantity";
 import OneShotEdit from "./OneShotEdit";
 
 const useStyles = makeStyles(theme => ({
@@ -80,7 +87,7 @@ export default function Pantry() {
             onCommit={reloadInventory}
         />
         <Grid container style={{height: "70vh", gap: "1em"}}>
-            <Grid item style={{flexGrow: "1"}}>
+            <Grid item>
                 <DataGrid
                     density={"compact"}
                     disableColumnMenu
@@ -90,17 +97,18 @@ export default function Pantry() {
                     paginationMode={"server"}
                     page={inventory.page}
                     pageSize={inventory.pageSize}
-                    selectionModel={selection ? [ selection.id ] : []}
-                    onSelectionModelChange={handleSelection}
+                    rowSelection
+                    rowSelectionModel={selection ? [ selection.id ] : []}
+                    onRowSelectionModelChange={handleSelection}
                 />
             </Grid>
             {!isMobile && selection != null &&
-            <Grid item style={{ flexGrow: "2" }}>
-                <Detail
-                    item={selection}
-                    onClose={() => handleSelection([])}
-                />
-            </Grid>}
+                <Grid item>
+                    <Detail
+                        item={selection}
+                        onClose={() => handleSelection([])}
+                    />
+                </Grid>}
         </Grid>
     </PageBody>;
 }
