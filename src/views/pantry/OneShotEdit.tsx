@@ -1,44 +1,51 @@
 import { Grid } from "@mui/material";
-import PropTypes from "prop-types";
 import React, {
     useEffect,
     useMemo,
     useRef,
     useState,
 } from "react";
-import InventoryApi from "../../data/InventoryApi";
+import InventoryApi, {
+    InventoryItemInfo,
+    TxType,
+} from "../../data/InventoryApi";
 import SplitButton from "../common/SplitButton";
-import ElEdit from "../ElEdit";
+import ElEdit, { Value } from "../ElEdit";
 
 const txTypes = [
-    {id: "ACQUIRE", label: "Acquire"},
-    {id: "CONSUME", label: "Consume"},
-    {id: "DISCARD", label: "Discard"},
-    {id: "ADJUST", label: "Adjust By"},
-    {id: "RESET", label: "Reset To"},
+    { id: TxType.ACQUIRE, label: "Acquire" },
+    { id: TxType.CONSUME, label: "Consume" },
+    { id: TxType.DISCARD, label: "Discard" },
+    { id: TxType.ADJUST, label: "Adjust By" },
+    { id: TxType.RESET, label: "Reset To" },
 ];
 
 const DEFAULT_TX_TYPE = txTypes[1]; /* consume */
 
-const EMPTY_REF = {raw: ""};
+const EMPTY_REF: Value = { raw: "" };
 
-function OneShotEdit({
-                         ingredient,
-                         onCommit,
-                     }) {
+interface Props {
+    ingredient?: string
+    onCommit: (item: InventoryItemInfo) => void
+}
+
+const OneShotEdit: React.FC<Props> = ({
+                                          ingredient,
+                                          onCommit,
+                                      }) => {
     const [ txType, setTxType ] = useState(DEFAULT_TX_TYPE);
     const [ ref, setRef ] = useState(EMPTY_REF);
     useEffect(() => {
         setRef({
             raw: ingredient
                 ? `"${ingredient}"`
-                : ""
+                : "",
         });
     }, [ ingredient ]);
 
     // kludge for something with the circular progress hunk drawing stupid.
     const [ maxHeight, setMaxHeight ] = useState("unset");
-    const elEditRef = useRef();
+    const elEditRef = useRef<HTMLDivElement>(null);
     useEffect(() => {
         if (!elEditRef.current) return;
         const height = elEditRef.current.clientHeight;
@@ -61,7 +68,7 @@ function OneShotEdit({
             } ],
         };
         InventoryApi.promiseAddTransaction(tx)
-            .then(onCommit);
+            .then(data => onCommit(data.data));
         setRef(EMPTY_REF);
     }
 
@@ -70,7 +77,9 @@ function OneShotEdit({
     }
 
     return <Grid container>
-        <Grid item style={{ flexGrow: 1, maxHeight, overflow: "hidden" }}
+        <Grid item
+              style={{ flexGrow: 1, maxHeight, overflow: "hidden" }}
+              component={"div"}
               ref={elEditRef}>
             <ElEdit
                 name={"adjust"}
@@ -91,11 +100,6 @@ function OneShotEdit({
             />
         </Grid>
     </Grid>;
-}
-
-OneShotEdit.propTypes = {
-    onCommit: PropTypes.func,
-    ingredient: PropTypes.string,
 };
 
 export default OneShotEdit;
