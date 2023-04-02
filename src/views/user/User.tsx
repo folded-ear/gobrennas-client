@@ -2,6 +2,7 @@ import Avatar from "@mui/material/Avatar";
 import Box from "@mui/material/Box";
 import makeStyles from "@mui/styles/makeStyles";
 import React from "react";
+import { UserType } from "../../global/types/types";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -25,10 +26,7 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-interface Props {
-    name?: string,
-    email: string,
-    imageUrl?: string,
+interface Props extends Pick<UserType, "imageUrl" | "name" | "email"> {
     size?: "small" | "large",
     iconOnly?: boolean,
     inline?: boolean,

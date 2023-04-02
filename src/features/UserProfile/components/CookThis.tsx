@@ -1,14 +1,19 @@
 import * as React from "react";
 import Button from "@mui/material/Button";
-import {API_BASE_URL, API_IS_SECURE, APP_BASE_URL,} from "constants/index";
-import {LockOpen} from "@mui/icons-material";
+import {
+    API_BASE_URL,
+    API_IS_SECURE,
+    APP_BASE_URL,
+} from "constants/index";
+import { LockOpen } from "@mui/icons-material";
 import qs from "qs";
-import {useAuthToken} from "providers/AuthToken";
+import { useAuthToken } from "providers/AuthToken";
 
 export const CookThis = () => {
-    const cookThisRef = React.useRef();
+    const cookThisRef = React.useRef<HTMLLinkElement>(null);
     const token = useAuthToken();
     React.useEffect(() => {
+        if (!cookThisRef.current) return;
         cookThisRef.current.href = `javascript:s=document.createElement('script');s.src='${API_BASE_URL}/import_bookmarklet.js?${qs.stringify(
             {
                 appRoot: APP_BASE_URL,
@@ -23,8 +28,15 @@ export const CookThis = () => {
             when viewing a recipe online.
         </p>
         <p style={{ textAlign: "center" }}>
+            {/*
+            The ref is passed in as 'any', because Typescript can't identify
+            that the Button component is going render as an <a> in the DOM. We
+            need the ref to be of that type for setting its 'href' attribute, so
+            have to introduce an assertion somewhere. I picked here.
+            */}
             <Button
-                ref={cookThisRef}
+                ref={cookThisRef as any}
+                component={"a"}
                 href="#"
                 variant={process.env.NODE_ENV === "production" ? "contained" : "outlined"}
                 color="primary"
@@ -43,4 +55,3 @@ export const CookThis = () => {
         </p>}
     </>);
 };
-

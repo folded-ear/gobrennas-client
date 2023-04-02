@@ -24,9 +24,9 @@ export function buildFullRecipeLO(itemLO: LoadObject<any>): LoadObject<RecipeFro
     const computeKids = item => {
         const subIds = item.subtaskIds || [];
         const subIdLookup = new Set(subIds);
-        return (item.componentIds || [])
-            .filter(id => !subIdLookup.has(id))
-            .concat(subIds)
+        return subIds
+            .concat((item.componentIds || [])
+                .filter(id => !subIdLookup.has(id)))
             .map(id => TaskStore.getTaskLO(id))
             .filter(lo => {
                 if (!lo.hasValue()) {
@@ -87,7 +87,7 @@ export function buildFullRecipeLO(itemLO: LoadObject<any>): LoadObject<RecipeFro
     return lo;
 }
 
-export const useLoadedPlan = pid => {
+export const useLoadedPlan = (pid: number) => {
     // ensure it's loaded
     const allPlansLO = useFluxStore(
         () => TaskStore.getListIdsLO(),

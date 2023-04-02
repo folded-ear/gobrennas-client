@@ -22,7 +22,7 @@ enum TaskStatus {
 export const willStatusDelete = status =>
     status === TaskStatus.COMPLETED || status === TaskStatus.DELETED;
 
-const colorByStatus: { [k in TaskStatus]: MuiColorFamily } = {
+const colorByStatus: Record<TaskStatus, MuiColorFamily> = {
     [TaskStatus.NEEDED]: neededColor,
     [TaskStatus.ACQUIRED]: acquiredColor,
     [TaskStatus.COMPLETED]: completeColor,
@@ -33,7 +33,7 @@ export function getColorForStatus(status: TaskStatus): MuiColorFamily {
     return colorByStatus[status] || deepPurple;
 }
 
-const iconByStatus = {
+const iconByStatus: Record<TaskStatus, typeof Check> = {
     [TaskStatus.NEEDED]: Check,
     [TaskStatus.ACQUIRED]: Check,
     [TaskStatus.COMPLETED]: Check,
