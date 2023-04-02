@@ -1,12 +1,26 @@
-import {Card, CardContent, CardHeader, IconButton,} from "@mui/material";
-import {makeStyles} from "@mui/styles";
-import {Close as CloseIcon} from "@mui/icons-material";
-import {DataGrid} from "@mui/x-data-grid";
-import PropTypes from "prop-types";
-import React, {useEffect, useMemo, useState,} from "react";
-import InventoryApi from "../../data/InventoryApi";
+import {
+    Card,
+    CardContent,
+    CardHeader,
+    IconButton,
+} from "@mui/material";
+import { makeStyles } from "@mui/styles";
+import { Close as CloseIcon } from "@mui/icons-material";
+import { DataGrid } from "@mui/x-data-grid";
+import React, {
+    MouseEventHandler,
+    useEffect,
+    useMemo,
+    useState,
+} from "react";
+import InventoryApi, {
+    InventoryItemInfo,
+    InventoryTxInfo,
+} from "../../data/InventoryApi";
 import LoadingIndicator from "../common/LoadingIndicator";
-import {formatQuantity} from "./formatQuantity";
+import { formatQuantity } from "./formatQuantity";
+import { Maybe } from "graphql/jsutils/Maybe";
+import { Page } from "../../global/types/types";
 
 const useStyles = makeStyles(theme => ({
     gridHeader: {
@@ -14,12 +28,17 @@ const useStyles = makeStyles(theme => ({
     },
 }));
 
-function Detail({
-                    item,
-                    onClose,
-                }) {
+interface Props {
+    item: InventoryItemInfo
+    onClose?: MouseEventHandler
+}
+
+const Detail: React.FC<Props> = ({
+                                     item,
+                                     onClose,
+                                 }) => {
     const classes = useStyles();
-    const [ history, setHistory ] = useState();
+    const [ history, setHistory ] = useState<Maybe<Page<InventoryTxInfo>>>();
     const reloadHistory = () => {
         InventoryApi.promiseTransactionHistory(item.id)
             .then(data => data.data)
@@ -85,28 +104,13 @@ function Detail({
                         rows={rows}
                         pagination
                         paginationMode={"server"}
-                        page={history.page}
-                        pageSize={history.pageSize}
+                        paginationModel={history}
                     />
                 </div>
                 {/*<pre>{JSON.stringify(history, null, 2)}</pre>*/}
             </CardContent>
         </Card>
     );
-}
-
-Detail.propTypes = {
-    item: PropTypes.shape({
-        id: PropTypes.number.isRequired,
-        ingredient: PropTypes.shape({
-            id: PropTypes.number.isRequired,
-            name: PropTypes.string.isRequired,
-        }),
-        quantity: PropTypes.arrayOf(PropTypes.shape({
-            quantity: PropTypes.number.isRequired,
-            units: PropTypes.string,
-        })),
-    }).isRequired,
-    onClose: PropTypes.func,
 };
+
 export default Detail;

@@ -26,7 +26,7 @@ const EMPTY_REF: Value = { raw: "" };
 
 interface Props {
     ingredient?: string
-    onCommit: (item: InventoryItemInfo) => void
+    onCommit(item: InventoryItemInfo): void
 }
 
 const OneShotEdit: React.FC<Props> = ({
