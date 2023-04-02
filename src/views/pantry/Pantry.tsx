@@ -9,13 +9,15 @@ import React, {
     useMemo,
     useState,
 } from "react";
-import InventoryApi from "../../data/InventoryApi";
+import InventoryApi, { InventoryItemInfo } from "../../data/InventoryApi";
 import { useIsMobile } from "../../providers/IsMobile";
 import LoadingIndicator from "../common/LoadingIndicator";
 import PageBody from "../common/PageBody";
 import Detail from "./Detail";
 import { formatQuantity } from "./formatQuantity";
 import OneShotEdit from "./OneShotEdit";
+import { Page } from "../../global/types/types";
+import { Maybe } from "graphql/jsutils/Maybe";
 
 const useStyles = makeStyles(theme => ({
     gridHeader: {
@@ -26,8 +28,8 @@ const useStyles = makeStyles(theme => ({
 export default function Pantry() {
     const classes = useStyles();
     const isMobile = useIsMobile();
-    const [ inventory, setInventory ] = useState();
-    const [ selection, setSelection ] = useState(undefined);
+    const [ inventory, setInventory ] = useState<Maybe<Page<InventoryItemInfo>>>();
+    const [ selection, setSelection ] = useState<Maybe<InventoryItemInfo>>();
     const reloadInventory = () => {
         InventoryApi.promiseInventory()
             .then(data => data.data)
@@ -73,7 +75,7 @@ export default function Pantry() {
     }
 
     function handleSelection(s) {
-        if (s.length === 0) {
+        if (s.length === 0 || !inventory) {
             setSelection(undefined);
         } else {
             setSelection(inventory.content.find(it => it.id === s[0]));
@@ -95,8 +97,7 @@ export default function Pantry() {
                     rows={rows}
                     pagination
                     paginationMode={"server"}
-                    page={inventory.page}
-                    pageSize={inventory.pageSize}
+                    paginationModel={inventory}
                     rowSelection
                     rowSelectionModel={selection ? [ selection.id ] : []}
                     onRowSelectionModelChange={handleSelection}
