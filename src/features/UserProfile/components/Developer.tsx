@@ -9,7 +9,7 @@ import preval from "preval.macro";
 
 const dateTimeStamp = preval`module.exports = new Date().toISOString();`;
 
-const DevMode = () => {
+const DevMode: React.FC = () => {
     const windowSize = useWindowSize();
     return <React.Fragment>
         <p>
@@ -21,7 +21,7 @@ const DevMode = () => {
     </React.Fragment>;
 };
 
-export const Developer = () => {
+export const Developer: React.FC = () => {
     const isDevMode = useIsDevMode();
 
     const handleDevModeChange = (e) => {

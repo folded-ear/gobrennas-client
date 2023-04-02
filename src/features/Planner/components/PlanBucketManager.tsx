@@ -1,14 +1,27 @@
-import {Table, TableBody, TableContainer, TableHead, TableRow,} from "@mui/material";
+import {
+    Table,
+    TableBody,
+    TableContainer,
+    TableHead,
+    TableRow,
+} from "@mui/material";
 import IconButton from "@mui/material/IconButton";
 import TableCell from "@mui/material/TableCell";
 import Tooltip from "@mui/material/Tooltip";
-import {Add as AddIcon, AddToPhotos as GenerateIcon, Delete as DeleteIcon,} from "@mui/icons-material";
+import {
+    Add as AddIcon,
+    AddToPhotos as GenerateIcon,
+    Delete as DeleteIcon,
+} from "@mui/icons-material";
 import React from "react";
 import dispatcher from "data/dispatcher";
 import TaskActions from "features/Planner/data/TaskActions";
 import TaskStore from "features/Planner/data/TaskStore";
 import useFluxStore from "data/useFluxStore";
-import {formatLocalDate, parseLocalDate,} from "util/time";
+import {
+    formatLocalDate,
+    parseLocalDate,
+} from "util/time";
 import LocalTextField from "views/common/LocalTextField";
 import getBucketLabel from "features/Planner/components/getBucketLabel";
 
@@ -68,26 +81,25 @@ const BucketManager = () => {
                             placement="bottom-end"
                         >
                             <IconButton
-                                edge={onBucketGenerate ? false : "end"}
+                                edge="end"
                                 onClick={() => onBucketCreate()}
                                 size="small"
                             >
                                 <AddIcon />
                             </IconButton>
                         </Tooltip>
-                        {onBucketGenerate &&
-                            <Tooltip
-                                title="Generate a week's buckets"
-                                placement="bottom-end"
+                        <Tooltip
+                            title="Generate a week's buckets"
+                            placement="bottom-end"
+                        >
+                            <IconButton
+                                edge="end"
+                                onClick={() => onBucketGenerate()}
+                                size="small"
                             >
-                                <IconButton
-                                    edge="end"
-                                    onClick={() => onBucketGenerate()}
-                                    size="small"
-                                >
-                                    <GenerateIcon />
-                                </IconButton>
-                            </Tooltip>}
+                                <GenerateIcon />
+                            </IconButton>
+                        </Tooltip>
                     </TableCell>
                 </TableRow>
             </TableHead>
@@ -108,7 +120,7 @@ const BucketManager = () => {
                         <TableCell>
                             <LocalTextField
                                 type="date"
-                                value={formatLocalDate(b.date)}
+                                value={formatLocalDate(b.date) || ""}
                                 onChange={e => onBucketDateChange(b.id, parseLocalDate(e.target.value))}
                                 size="small"
                             />

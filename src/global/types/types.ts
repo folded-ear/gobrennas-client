@@ -65,3 +65,11 @@ export interface FluxAction {
 
     [k: string]: any
 }
+
+export interface Page<E> {
+    page: number
+    pageSize: number
+    first: boolean
+    last: boolean
+    content: E[]
+}

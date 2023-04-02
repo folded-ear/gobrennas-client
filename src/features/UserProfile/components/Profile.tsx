@@ -1,7 +1,11 @@
 import * as React from "react";
-import PropTypes from "prop-types";
+import { UserType } from "../../../global/types/types";
 
-export const Profile = ({currentUser}) => {
+interface Props {
+    currentUser: UserType
+}
+
+export const Profile: React.FC<Props> = ({ currentUser }) => {
     return (
         <>
             {currentUser.imageUrl && <img
@@ -16,12 +20,4 @@ export const Profile = ({currentUser}) => {
             </div>
         </>
     );
-};
-
-Profile.propTypes = {
-    currentUser: PropTypes.shape({
-        imageUrl: PropTypes.string,
-        name: PropTypes.string.isRequired,
-        email: PropTypes.string.isRequired,
-    }).isRequired,
 };

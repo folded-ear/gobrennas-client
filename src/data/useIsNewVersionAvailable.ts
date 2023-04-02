@@ -1,10 +1,11 @@
 import useFluxStore from "./useFluxStore";
 import WindowStore from "./WindowStore";
 
-const useIsNewVersionAvailable = () =>
-    useFluxStore(
+function useIsNewVersionAvailable(): boolean {
+    return useFluxStore(
         () => WindowStore.isNewVersionAvailable(),
-        [WindowStore],
+        [ WindowStore ],
     );
+}
 
 export default useIsNewVersionAvailable;

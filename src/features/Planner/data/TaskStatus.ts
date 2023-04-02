@@ -8,6 +8,7 @@ import {
     acquiredColor,
     completeColor,
     deleteColor,
+    MuiColorFamily,
     neededColor,
 } from "views/common/colors";
 
@@ -21,14 +22,16 @@ enum TaskStatus {
 export const willStatusDelete = status =>
     status === TaskStatus.COMPLETED || status === TaskStatus.DELETED;
 
-const colorByStatus = {
+const colorByStatus: { [k in TaskStatus]: MuiColorFamily } = {
     [TaskStatus.NEEDED]: neededColor,
     [TaskStatus.ACQUIRED]: acquiredColor,
     [TaskStatus.COMPLETED]: completeColor,
     [TaskStatus.DELETED]: deleteColor,
 };
-export const getColorForStatus = (status: TaskStatus) =>
-    colorByStatus[status] || deepPurple;
+
+export function getColorForStatus(status: TaskStatus): MuiColorFamily {
+    return colorByStatus[status] || deepPurple;
+}
 
 const iconByStatus = {
     [TaskStatus.NEEDED]: Check,

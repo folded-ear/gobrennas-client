@@ -21,8 +21,8 @@ import Autocomplete from "@mui/lab/Autocomplete";
 const doRecog = raw =>
     raw != null && raw.trim().length >= 2;
 
-type Value = {
-    id: string | number,
+export type Value = {
+    id?: string | number,
     raw: string,
     quantity?: number,
     uomId?: number,

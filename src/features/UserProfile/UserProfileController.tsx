@@ -1,23 +1,23 @@
 import * as React from "react";
 import Divider from "@mui/material/Divider";
-import {useGetCurrentUser} from "./hooks/useGetCurrentUser";
+import { useGetCurrentUser } from "./hooks/useGetCurrentUser";
 import User from "../../views/user/User";
-import {selectCurrentUser} from "./selectors/selectCurrentUser";
-import {useIsDeveloper} from "../../providers/Profile";
-import {Developer} from "./components/Developer";
-import {CookThis} from "./components/CookThis";
+import { selectCurrentUser } from "./selectors/selectCurrentUser";
+import { useIsDeveloper } from "../../providers/Profile";
+import { Developer } from "./components/Developer";
+import { CookThis } from "./components/CookThis";
 import LoadingIndicator from "../../views/common/LoadingIndicator";
-import {Profile} from "./components/Profile";
+import { Profile } from "./components/Profile";
 
-export const UserProfileController = () => {
-    const { data, loading, error} =  useGetCurrentUser();
+export const UserProfileController: React.FC = () => {
+    const { data, loading, error } = useGetCurrentUser();
 
-    const {currentUser} = selectCurrentUser(data);
+    const { currentUser } = selectCurrentUser(data);
     const isDeveloper = useIsDeveloper();
 
     const isLoadingUserProfile = loading || !currentUser;
 
-    if(isLoadingUserProfile) {
+    if (isLoadingUserProfile) {
         return (<LoadingIndicator />);
     }
 
@@ -38,4 +38,3 @@ export const UserProfileController = () => {
         </div>
     );
 };
-

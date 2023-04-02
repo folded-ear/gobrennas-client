@@ -1,16 +1,17 @@
 import TextField from "@mui/material/TextField";
 import React, { ChangeEventHandler } from "react";
+import { TextFieldProps } from "@mui/material/TextField/TextField";
 
 interface Props {
-    value: string,
-    onChange: ChangeEventHandler,
+    value?: string,
+    onChange?: ChangeEventHandler,
 }
 
-const LocalTextField: React.FC<Props> = ({
-                                             value,
-                                             onChange,
-                                             ...props
-                                         }) => {
+const LocalTextField: React.FC<Props & TextFieldProps> = ({
+                                                              value,
+                                                              onChange,
+                                                              ...props
+                                                          }) => {
     const [
         localValue,
         setLocalValue,
