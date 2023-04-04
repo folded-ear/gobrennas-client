@@ -26,7 +26,9 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-interface Props extends Pick<UserType, "imageUrl" | "name" | "email"> {
+export type AvatarData = Pick<UserType, "imageUrl" | "name" | "email">;
+
+interface Props extends AvatarData {
     size?: "small" | "large",
     iconOnly?: boolean,
     inline?: boolean,
