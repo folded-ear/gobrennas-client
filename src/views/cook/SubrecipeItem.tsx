@@ -19,15 +19,17 @@ const useStyles = makeStyles({
     },
 });
 
-interface Props {
-    recipe: Recipe
+export type Subrecipe = Pick<Recipe, "id" | "name" | "totalTime" | "ingredients" | "directions">;
+
+interface SubrecipeItemProps {
+    recipe: Subrecipe
     loggedIn?: boolean
 }
 
-const SubrecipeItem: React.FC<Props> = ({
-                                            recipe,
-                                            loggedIn,
-                                        }) => {
+const SubrecipeItem: React.FC<SubrecipeItemProps> = ({
+                                                         recipe,
+                                                         loggedIn,
+                                                     }) => {
     const classes = useStyles();
     const [ expanded, setExpanded ] = React.useState(false);
     return <>

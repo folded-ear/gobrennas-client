@@ -13,7 +13,7 @@ import { Recipe } from "../../global/types/types";
 import { useScaleOptions } from "../../util/ScalingContext";
 
 interface Props {
-    recipe: Recipe,
+    recipe: Pick<Recipe, "ingredients" | "directions">,
     loggedIn?: boolean,
     hideHeadings?: boolean,
 }

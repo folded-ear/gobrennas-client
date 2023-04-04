@@ -29,15 +29,12 @@ import Source from "../common/Source";
 import LabelItem from "../LabelItem";
 import ItemImage from "features/RecipeLibrary/components/ItemImage";
 import ItemImageUpload from "features/RecipeLibrary/components/ItemImageUpload";
-import User from "../user/User";
+import User, { AvatarData } from "../user/User";
 import IngredientDirectionsRow from "./IngredientDirectionsRow";
 import ShareRecipe from "./ShareRecipe";
-import SubrecipeItem from "./SubrecipeItem";
+import SubrecipeItem, { Subrecipe } from "./SubrecipeItem";
 import SendToPlan from "features/RecipeLibrary/components/SendToPlan";
-import {
-    Recipe,
-    UserType,
-} from "global/types/types";
+import { Recipe } from "global/types/types";
 import FavoriteIndicator from "../../features/Favorites/components/Indicator";
 import {
     ReentrantScalingProvider,
@@ -118,10 +115,10 @@ function extractRecipePhoto(recipe: any) { // todo: remove
 
 interface Props {
     recipeLO: LoadObject<Recipe>
-    subrecipes?: Recipe[]
+    subrecipes?: Subrecipe[]
     anonymous?: boolean,
     mine?: boolean,
-    ownerLO: LoadObject<UserType>
+    ownerLO: LoadObject<AvatarData>
     canFavorite?: boolean,
     canShare?: boolean,
     canSendToPlan?: boolean,
