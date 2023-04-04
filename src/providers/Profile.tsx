@@ -95,14 +95,14 @@ export const askUserToReauth = () => {
 export const useProfileLO = () =>
     useContext(ProfileLOContext) || LoadObject.loading();
 
-const ProfileState = {
-    AUTHENTICATED: "AUTHENTICATED",
-    INITIALIZING: "INITIALIZING",
-    PENDING: "PENDING",
-    ANONYMOUS: "ANONYMOUS",
-    ERR_NO_TOKEN: "ERR_NO_TOKEN",
-    ERROR: "ERROR",
-};
+enum ProfileState {
+    AUTHENTICATED = "AUTHENTICATED",
+    INITIALIZING = "INITIALIZING",
+    PENDING = "PENDING",
+    ANONYMOUS = "ANONYMOUS",
+    ERR_NO_TOKEN = "ERR_NO_TOKEN",
+    ERROR = "ERROR",
+}
 
 export const useProfileState = () => {
     const lo = useProfileLO();
