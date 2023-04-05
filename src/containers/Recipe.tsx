@@ -1,5 +1,3 @@
-import FriendStore from "data/FriendStore";
-import useFluxStore from "data/useFluxStore";
 import LibraryStore from "features/RecipeLibrary/data/LibraryStore";
 import React from "react";
 import { RouteComponentProps } from "react-router";
@@ -10,9 +8,13 @@ import { ScalingProvider } from "../util/ScalingContext";
 import LoadingIndicator from "../views/common/LoadingIndicator";
 import RecipeDetail from "../views/cook/RecipeDetail";
 import {
+    IngredientRef,
     Recipe as RecipeType,
-    UserType,
 } from "global/types/types";
+import { gql } from "../__generated__";
+import { useQuery } from "@apollo/client";
+import { Subrecipe } from "../views/cook/SubrecipeItem";
+import { AvatarData } from "../views/user/User";
 
 export const buildFullRecipeLO = id => {
     let lo = LibraryStore.getIngredientById(id);
@@ -51,48 +53,138 @@ export const buildFullRecipeLO = id => {
     return lo;
 };
 
+const recipeWithEverythingQuery = gql(`
+query getRecipeWithEverything($id: ID!) {
+  recipe: node(id: $id) {
+    ... on Recipe {
+      ...core
+      favorite
+      yield
+      calories
+      externalUrl
+      labels
+      photo {
+        url
+        focus
+      }
+      owner {
+        id
+        name
+        email
+        imageUrl
+      }
+      subrecipes {
+        ...core
+      }
+    }
+  }
+}
+
+fragment core on Recipe {
+  id
+  name
+  directions
+  totalTime
+  ingredients {
+    raw
+    quantity {
+      quantity
+      units {
+        name
+      }
+    }
+    ingredient {
+      __typename
+      id
+      name
+    }
+    preparation
+  }
+}
+`);
+
 type Props = RouteComponentProps<{
     id: string
 }>;
 
 interface State {
     recipeLO: LoadObject<RecipeType>,
-    subrecipes?: RecipeType[]
+    subrecipes?: Subrecipe[]
     mine: boolean
-    ownerLO: LoadObject<UserType>
+    ownerLO: LoadObject<AvatarData>
 }
 
 const Recipe: React.FC<Props> = ({ match }) => {
-    const id = parseInt(match.params.id, 10);
     const profileLO = useProfileLO();
-    const state = useFluxStore(
-        () => {
-            const recipeLO = buildFullRecipeLO(id);
-            const state: State = {
-                recipeLO,
-                mine: false,
-                ownerLO: profileLO,
-            };
-            if (!recipeLO.hasValue()) return state;
-
-            const recipe = recipeLO.getValueEnforcing();
-            state.subrecipes = recipe.subrecipes;
-            if (!profileLO.hasValue()) return state;
-            const me = profileLO.getValueEnforcing();
-            state.mine = recipe.ownerId === me.id;
-            state.ownerLO = state.mine
-                ? profileLO
-                : FriendStore.getFriendLO(recipe.ownerId);
-
-            return state;
+    const { data, loading } = useQuery(recipeWithEverythingQuery, {
+        variables: {
+            id: match.params.id,
         },
-        [
-            LibraryStore,
-        ],
-        [id, profileLO],
-    );
-
-    if (state.recipeLO.hasValue()) {
+    });
+    if (data && data.recipe?.__typename === "Recipe") {
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        const gqlRef2Ref = (i: typeof data.recipe.ingredients[0]) => {
+            const ref: IngredientRef = {
+                raw: i.raw,
+            };
+            if (i.quantity) {
+                const q = i.quantity;
+                ref.quantity = q.quantity;
+                if (q.units) {
+                    ref.units = q.units.name;
+                }
+            }
+            if (i.ingredient) {
+                ref.ingredient = i.ingredient;
+            }
+            if (i.preparation) {
+                ref.preparation = i.preparation;
+            }
+            return ref;
+        };
+        const recipe = data.recipe;
+        const owner = recipe.owner;
+        const state: State = {
+            mine: profileLO.hasValue()
+                ? "" + profileLO.getValueEnforcing().id === owner.id
+                : false,
+            ownerLO: LoadObject.withValue({
+                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                name: owner.name!,
+                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                email: owner.email!,
+                imageUrl: owner.imageUrl || undefined,
+            }),
+            recipeLO: LoadObject.withValue({
+                id: recipe.id,
+                name: recipe.name,
+                ingredients: recipe.ingredients.map(gqlRef2Ref),
+                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                directions: recipe.directions!,
+                externalUrl: recipe.externalUrl || undefined,
+                yield: recipe.yield || undefined,
+                calories: recipe.calories || undefined,
+                labels: recipe.labels || undefined,
+                photo: recipe.photo?.url,
+                photoFocus: recipe.photo?.focus || undefined,
+            }),
+            subrecipes: recipe.subrecipes.map(r => {
+                const sr: Subrecipe = {
+                    id: r.id,
+                    name: r.name,
+                    ingredients: r.ingredients.map(gqlRef2Ref),
+                    directions: "",
+                };
+                if (r.directions) {
+                    sr.directions = r.directions;
+                }
+                if (r.totalTime) {
+                    sr.totalTime = r.totalTime;
+                }
+                return sr;
+            }),
+        };
         return <ScalingProvider>
             <RecipeDetail
                 {...state}
@@ -103,7 +195,7 @@ const Recipe: React.FC<Props> = ({ match }) => {
         </ScalingProvider>;
     }
 
-    if (state.recipeLO.isLoading()) {
+    if (loading) {
         return <LoadingIndicator />;
     }
 

@@ -25,10 +25,7 @@ import RecipeInfo from "views/common/RecipeInfo";
 import Source from "views/common/Source";
 import User from "views/user/User";
 import FavoriteIndicator from "../../Favorites/components/Indicator";
-import {
-    Photo,
-    User as UserType,
-} from "../../../__generated__/graphql";
+import { Recipe as RecipeType } from "../../../global/types/types";
 
 const useStyles = makeStyles({
     photo: {
@@ -39,20 +36,6 @@ const useStyles = makeStyles({
         color: "inherit",
     },
 });
-
-export interface RecipeType {
-    id: string;
-    calories?: number | null;
-    directions?: string;
-    externalUrl?: string | null;
-    favorite: boolean;
-    labels?: string[] | null;
-    name: string;
-    owner: UserType;
-    photo?: Photo | null;
-    totalTime?: number | null;
-    yield?: number | null;
-}
 
 interface Props {
     recipe: RecipeType,

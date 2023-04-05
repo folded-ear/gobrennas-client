@@ -11,12 +11,20 @@ const config: CodegenConfig = {
     generates: {
         "./src/__generated__/": {
             preset: "client",
-            plugins: [],
+            presetConfig: {
+                fragmentMasking: false,
+                gqlTagName: "gql",
+            },
+            plugins: [
+                // one (or more?) of these creates duplicate Scalars declaration
+                // "typescript",
+                // "typescript-operations",
+                // "typescript-resolvers",
+            ],
             config: {
                 avoidOptionals: true,
-            },
-            presetConfig: {
-                gqlTagName: "gql",
+                dedupeFragments: true,
+                immutableTypes: true,
             },
         },
     },

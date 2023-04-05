@@ -60,11 +60,11 @@ type FavoriteMutation {
 }
 
 type FavoriteQuery {
-    "Retrieve the current user's favorites."
+    "Retrieve the current user's favorites, if any."
     all: [Favorite!]!
     "Retrieve the current user's favorite of the specified object, if exists."
     byObject(objectId: ID!, objectType: String!): Favorite
-    "Retrieve the current user's for the specified object type."
+    "Retrieve the current user's favorites for the specified object type, if any."
     byType(objectType: String!): [Favorite!]!
 }
 
@@ -205,6 +205,12 @@ type Recipe implements Ingredient & Node & Owned {
     name: String!
     owner: User!
     photo: Photo
+    """
+
+    All subrecipes. Multiple layers of nested recipes are flattened, and the
+    contextual recipe is not included.
+    """
+    subrecipes: [Recipe!]!
     totalTime(unit: ChronoUnit = MINUTES): Int
     yield: Int
 }

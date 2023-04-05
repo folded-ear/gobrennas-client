@@ -1,5 +1,5 @@
 export interface UserType {
-    id: number
+    id: number | string
     name: string
     provider: string
     email: string
@@ -8,7 +8,7 @@ export interface UserType {
 }
 
 export interface Ingredient {
-    id: number
+    id: number | string
     name: string
     type?: "Recipe" | "PantryItem"
 }
@@ -33,15 +33,15 @@ export interface IngredientRef {
 }
 
 export interface Recipe extends Ingredient {
-    externalUrl: string
+    externalUrl?: string
     ingredients: IngredientRef[]
-    labels: string[]
+    labels?: string[]
     directions: string
-    yield: number
-    totalTime: number
-    calories: number
-    photo: string
-    photoFocus: number[]
+    yield?: number
+    totalTime?: number
+    calories?: number
+    photo?: string
+    photoFocus?: number[]
 }
 
 export interface SharedRecipe {
