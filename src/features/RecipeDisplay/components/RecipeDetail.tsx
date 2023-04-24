@@ -4,14 +4,10 @@ import {
     Grid,
     Toolbar,
     Typography,
-    useScrollTrigger,
 } from "@mui/material";
 import makeStyles from "@mui/styles/makeStyles";
 import { PostAdd } from "@mui/icons-material";
-import React, {
-    CSSProperties,
-    PropsWithChildren,
-} from "react";
+import React from "react";
 import Dispatcher from "data/dispatcher";
 import RecipeActions from "data/RecipeActions";
 import RecipeApi from "data/RecipeApi";
@@ -44,7 +40,7 @@ import {
     useScale,
 } from "util/ScalingContext";
 import LoadObject from "util/LoadObject";
-import { HEADER_HEIGHT } from "constants/layout";
+import { SubHeader } from "./Subheader";
 
 const useStyles = makeStyles(theme => ({
     name: {
@@ -67,40 +63,6 @@ const useStyles = makeStyles(theme => ({
         padding: 0,
     },
 }));
-
-const SubHeader: React.FC<PropsWithChildren> = ({ children }) => {
-    const windowSize = useWindowSize();
-    const [ height, setHeight ] = React.useState<CSSProperties["height"]>("auto");
-    const [ width, setWidth ] = React.useState<CSSProperties["width"]>("auto");
-    const inner = React.useRef<HTMLDivElement>();
-    React.useLayoutEffect(() => {
-        setHeight(inner?.current?.clientHeight);
-        setWidth((inner?.current?.parentNode as HTMLElement).clientWidth);
-    }, [ windowSize.width ]);
-    const trigger = useScrollTrigger({
-        disableHysteresis: true,
-        // roughly the spacing 2
-        threshold: 20,
-    });
-
-    return <div
-        style={{height}}
-    >
-        <Box
-            boxShadow={trigger ? 6 : 0}
-            ref={inner}
-            style={trigger ? {
-                position: "fixed",
-                width,
-                top: HEADER_HEIGHT,
-                // appbar zindex
-                zIndex: 1100,
-            } : undefined}
-        >
-            {children}
-        </Box>
-    </div>;
-};
 
 function extractRecipePhoto(recipe: any) { // todo: remove
     if (!recipe || !recipe.photo) return null;
