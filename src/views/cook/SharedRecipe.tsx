@@ -12,7 +12,7 @@ import RecipeDetail from "features/RecipeDisplay/components/RecipeDetail";
 import LibraryActions from "features/RecipeLibrary/data/LibraryActions";
 import { UserType } from "global/types/types";
 import { Maybe } from "graphql/jsutils/Maybe";
-import { useBuildFullRecipe } from "features/RecipeDisplay/hooks/useBuildFullRecipe";
+import { buildFullRecipeLO } from "features/RecipeDisplay/RecipeController";
 
 const axios = BaseAxios.create({
     baseURL: `${API_BASE_URL}/shared/recipe`,
@@ -53,7 +53,7 @@ const DoTheDance: React.FC<MatchParams> = ({
     if (!owner) {
         return <LoadingIndicator />;
     }
-    const recipeLO = useBuildFullRecipe(parseInt(id));
+    const recipeLO = buildFullRecipeLO(parseInt(id));
     return <RecipeDetail
         anonymous
         recipeLO={recipeLO}
