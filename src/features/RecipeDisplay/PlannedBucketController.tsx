@@ -9,9 +9,9 @@ import RecipeDetail from "./components/RecipeDetail";
 import {
     buildFullRecipeLO as buildSingleTaskRecipeLO,
     RecipeFromTask,
-    useLoadedPlan,
 } from "./PlannedRecipeController";
 import { RouteComponentProps } from "react-router";
+import { useLoadedPlan } from "./hooks/useLoadedPlan";
 
 export const buildFullRecipeLO = (planId: number, bucketId: number): LoadObject<RecipeFromTask> => {
     const plan = TaskStore.getTaskLO(planId);

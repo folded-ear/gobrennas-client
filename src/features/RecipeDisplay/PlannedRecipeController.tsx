@@ -1,6 +1,4 @@
-import Dispatcher from "data/dispatcher";
 import useFluxStore from "data/useFluxStore";
-import TaskActions from "features/Planner/data/TaskActions";
 import TaskStore from "features/Planner/data/TaskStore";
 import LibraryStore from "features/RecipeLibrary/data/LibraryStore";
 import React from "react";
@@ -9,6 +7,7 @@ import LoadingIndicator from "views/common/LoadingIndicator";
 import RecipeDetail from "./components/RecipeDetail";
 import { RouteComponentProps } from "react-router";
 import { Recipe as RecipeType } from "global/types/types";
+import { useLoadedPlan } from "./hooks/useLoadedPlan";
 
 export interface RecipeFromTask extends RecipeType {
     subtaskIds: number[]
@@ -86,31 +85,6 @@ export function buildFullRecipeLO(itemLO: LoadObject<any>): LoadObject<RecipeFro
     }
     return lo;
 }
-
-export const useLoadedPlan = (pid: number) => {
-    // ensure it's loaded
-    const allPlansLO = useFluxStore(
-        () => TaskStore.getListIdsLO(),
-        [
-            TaskStore,
-        ],
-    );
-    // ensure it's selected
-    React.useEffect(
-        () => {
-            if (allPlansLO.hasValue()) {
-                // The contract implies that effects trigger after the render
-                // cycle completes, but doesn't guarantee it. The setTimeout
-                // avoids a reentrant dispatch if the effect isn't deferred.
-                setTimeout(() => Dispatcher.dispatch({
-                    type: TaskActions.SELECT_LIST,
-                    id: pid,
-                }));
-            }
-        },
-        [ allPlansLO, pid ],
-    );
-};
 
 type Props = RouteComponentProps<{
     pid: string
