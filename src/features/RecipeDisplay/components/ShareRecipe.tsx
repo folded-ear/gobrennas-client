@@ -16,10 +16,10 @@ import {
     API_BASE_URL,
     APP_BASE_URL,
 } from "constants/index";
-import {
+import type {
     Recipe,
     SharedRecipe,
-} from "global/types/types";
+} from "features/RecipeDisplay/types";
 import LoadObject from "util/LoadObject";
 
 const axios = BaseAxios.create({

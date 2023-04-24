@@ -9,10 +9,9 @@ import { useProfileLO } from "providers/Profile";
 import { ScalingProvider } from "util/ScalingContext";
 import LoadingIndicator from "views/common/LoadingIndicator";
 import RecipeDetail from "./components/RecipeDetail";
-import {
-    Recipe as RecipeType,
-    UserType,
-} from "global/types/types";
+import { UserType, } from "global/types/types";
+import { Recipe as RecipeType, } from "features/RecipeDisplay/types";
+import { useGetFullRecipe } from "./hooks/useGetFullRecipe";
 
 export const buildFullRecipeLO = id => {
     let lo = LibraryStore.getIngredientById(id);
@@ -48,6 +47,7 @@ export const buildFullRecipeLO = id => {
     if (loading) {
         lo = lo.loading();
     }
+    console.log(lo)
     return lo;
 };
 
@@ -64,6 +64,10 @@ interface State {
 
 const RecipeController: React.FC<Props> = ({ match }) => {
     const id = parseInt(match.params.id, 10);
+
+    const result = useGetFullRecipe(match.params.id)
+    console.log(result)
+
     const profileLO = useProfileLO();
     const state = useFluxStore(
         () => {
@@ -93,6 +97,7 @@ const RecipeController: React.FC<Props> = ({ match }) => {
     );
 
     if (state.recipeLO.hasValue()) {
+        console.log(state)
         return <ScalingProvider>
             <RecipeDetail
                 {...state}

@@ -30,10 +30,8 @@ import IngredientDirectionsRow from "./IngredientDirectionsRow";
 import ShareRecipe from "./ShareRecipe";
 import SubrecipeItem from "./SubrecipeItem";
 import SendToPlan from "features/RecipeLibrary/components/SendToPlan";
-import {
-    Recipe,
-    UserType,
-} from "global/types/types";
+import { UserType, } from "global/types/types";
+import type { Recipe } from "features/RecipeDisplay/types";
 import FavoriteIndicator from "features/Favorites/components/Indicator";
 import {
     ReentrantScalingProvider,

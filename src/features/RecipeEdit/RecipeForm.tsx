@@ -31,7 +31,7 @@ import ElEdit from "views/ElEdit";
 import TextractFormAugment from "views/cook/TextractFormAugment";
 import PositionPicker from "views/PositionPicker";
 import { LabelAutoComplete } from "./components/LabelAutoComplete";
-import { Recipe } from "../../global/types/types";
+import { Recipe } from "features/RecipeEdit/types";
 
 const useStyles = makeStyles((theme) => ({
     button: {

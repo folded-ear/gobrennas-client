@@ -32,24 +32,6 @@ export interface IngredientRef {
     name?: string
 }
 
-export interface Recipe extends Ingredient {
-    externalUrl: string
-    ingredients: IngredientRef[]
-    labels: string[]
-    directions: string
-    yield: number
-    totalTime: number
-    calories: number
-    photo: string
-    photoFocus: number[]
-}
-
-export interface SharedRecipe {
-    id: number
-    secret: string
-    slug: string
-}
-
 export interface Quantity {
     quantity: number
     units?: string

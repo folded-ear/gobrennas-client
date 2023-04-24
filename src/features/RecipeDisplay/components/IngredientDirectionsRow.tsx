@@ -9,7 +9,7 @@ import {
 import React from "react";
 import Directions from "views/common/Directions";
 import IngredientItem from "views/IngredientItem";
-import { Recipe } from "global/types/types";
+import type { Recipe } from "features/RecipeDisplay/types";
 import { useScaleOptions } from "util/ScalingContext";
 
 interface Props {

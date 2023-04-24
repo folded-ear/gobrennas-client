@@ -6,7 +6,7 @@ import LoadObject from "util/LoadObject";
 import LoadingIndicator from "views/common/LoadingIndicator";
 import RecipeDetail from "./components/RecipeDetail";
 import { RouteComponentProps } from "react-router";
-import { Recipe as RecipeType } from "global/types/types";
+import { Recipe as RecipeType } from "features/RecipeDisplay/types";
 import { useLoadedPlan } from "./hooks/useLoadedPlan";
 
 export interface RecipeFromTask extends RecipeType {

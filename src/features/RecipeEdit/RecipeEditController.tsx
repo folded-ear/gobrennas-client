@@ -5,7 +5,7 @@ import { withRouter } from "react-router-dom";
 import useIngredientLO from "data/useIngredientLO";
 import { RouteComponentProps } from "react-router";
 import LoadObject from "../../util/LoadObject";
-import { Recipe } from "../../global/types/types";
+import { Recipe } from "features/RecipeEdit/types";
 
 type Props = RouteComponentProps<{ id?: string }>;
 

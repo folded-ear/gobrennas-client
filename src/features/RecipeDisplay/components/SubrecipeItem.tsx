@@ -9,7 +9,7 @@ import { formatDuration } from "util/time";
 import CollapseIconButton from "global/components/CollapseIconButton";
 import IngredientDirectionsRow from "./IngredientDirectionsRow";
 import { ScalingProvider } from "util/ScalingContext";
-import { Recipe } from "global/types/types";
+import { Recipe } from "features/RecipeDisplay/types";
 
 const useStyles = makeStyles({
     time: {
