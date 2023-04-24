@@ -15,6 +15,8 @@ export interface Recipe extends Ingredient {
     photoFocus: number[]
 }
 
+export type Subrecipe = Pick<Recipe, "id" | "name" | "totalTime" | "ingredients" | "directions">;
+
 export interface SharedRecipe {
     id: number
     secret: string
