@@ -1,4 +1,4 @@
-import {CodegenConfig} from "@graphql-codegen/cli";
+import { CodegenConfig } from "@graphql-codegen/cli";
 
 const config: CodegenConfig = {
     schema: "./schema.graphql",
@@ -11,9 +11,14 @@ const config: CodegenConfig = {
     generates: {
         "./src/__generated__/": {
             preset: "client",
-            plugins: [],
             presetConfig: {
+                fragmentMasking: false,
                 gqlTagName: "gql",
+            },
+            plugins: [],
+            config: {
+                dedupeFragments: true,
+                immutableTypes: true,
             }
         }
     },
