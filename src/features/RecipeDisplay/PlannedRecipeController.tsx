@@ -5,10 +5,10 @@ import TaskStore from "features/Planner/data/TaskStore";
 import LibraryStore from "features/RecipeLibrary/data/LibraryStore";
 import React from "react";
 import LoadObject from "util/LoadObject";
-import LoadingIndicator from "../views/common/LoadingIndicator";
-import RecipeDetail from "../views/cook/RecipeDetail";
+import LoadingIndicator from "views/common/LoadingIndicator";
+import RecipeDetail from "./components/RecipeDetail";
 import { RouteComponentProps } from "react-router";
-import { Recipe as RecipeType } from "../global/types/types";
+import { Recipe as RecipeType } from "global/types/types";
 
 export interface RecipeFromTask extends RecipeType {
     subtaskIds: number[]
@@ -117,7 +117,7 @@ type Props = RouteComponentProps<{
     rid: string
 }>;
 
-const PlannedRecipe: React.FC<Props> = ({ match }) => {
+const PlannedRecipeController: React.FC<Props> = ({ match }) => {
     const rid = parseInt(match.params.rid, 10);
     const lo = useFluxStore(
         () => buildFullRecipeLO(TaskStore.getTaskLO(rid)),
@@ -142,4 +142,4 @@ const PlannedRecipe: React.FC<Props> = ({ match }) => {
     return <LoadingIndicator />;
 };
 
-export default PlannedRecipe;
+export default PlannedRecipeController;

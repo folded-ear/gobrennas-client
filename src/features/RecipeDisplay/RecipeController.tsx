@@ -5,10 +5,10 @@ import React from "react";
 import { RouteComponentProps } from "react-router";
 import { Redirect } from "react-router-dom";
 import LoadObject from "util/LoadObject";
-import { useProfileLO } from "../providers/Profile";
-import { ScalingProvider } from "../util/ScalingContext";
-import LoadingIndicator from "../views/common/LoadingIndicator";
-import RecipeDetail from "../views/cook/RecipeDetail";
+import { useProfileLO } from "providers/Profile";
+import { ScalingProvider } from "util/ScalingContext";
+import LoadingIndicator from "views/common/LoadingIndicator";
+import RecipeDetail from "./components/RecipeDetail";
 import {
     Recipe as RecipeType,
     UserType,
@@ -62,7 +62,7 @@ interface State {
     ownerLO: LoadObject<UserType>
 }
 
-const Recipe: React.FC<Props> = ({ match }) => {
+const RecipeController: React.FC<Props> = ({ match }) => {
     const id = parseInt(match.params.id, 10);
     const profileLO = useProfileLO();
     const state = useFluxStore(
@@ -110,4 +110,4 @@ const Recipe: React.FC<Props> = ({ match }) => {
     return <Redirect to="/library" />;
 };
 
-export default Recipe;
+export default RecipeController;

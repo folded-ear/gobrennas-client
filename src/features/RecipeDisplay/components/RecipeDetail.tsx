@@ -12,24 +12,24 @@ import React, {
     CSSProperties,
     PropsWithChildren,
 } from "react";
-import Dispatcher from "../../data/dispatcher";
-import RecipeActions from "../../data/RecipeActions";
-import RecipeApi from "../../data/RecipeApi";
-import useWindowSize from "../../data/useWindowSize";
-import history from "../../util/history";
-import { formatDuration } from "../../util/time";
-import CloseButton from "../common/CloseButton";
-import CopyButton from "../common/CopyButton";
-import DeleteButton from "../common/DeleteButton";
-import EditButton from "../common/EditButton";
-import FoodingerFab from "../common/FoodingerFab";
-import PageBody from "../common/PageBody";
-import RecipeInfo from "../common/RecipeInfo";
-import Source from "../common/Source";
-import LabelItem from "../LabelItem";
+import Dispatcher from "data/dispatcher";
+import RecipeActions from "data/RecipeActions";
+import RecipeApi from "data/RecipeApi";
+import useWindowSize from "data/useWindowSize";
+import history from "util/history";
+import { formatDuration } from "util/time";
+import CloseButton from "views/common/CloseButton";
+import CopyButton from "views/common/CopyButton";
+import DeleteButton from "views/common/DeleteButton";
+import EditButton from "views/common/EditButton";
+import FoodingerFab from "views/common/FoodingerFab";
+import PageBody from "views/common/PageBody";
+import RecipeInfo from "views/common/RecipeInfo";
+import Source from "views/common/Source";
+import LabelItem from "global/components/LabelItem";
 import ItemImage from "features/RecipeLibrary/components/ItemImage";
 import ItemImageUpload from "features/RecipeLibrary/components/ItemImageUpload";
-import User from "../user/User";
+import User from "views/user/User";
 import IngredientDirectionsRow from "./IngredientDirectionsRow";
 import ShareRecipe from "./ShareRecipe";
 import SubrecipeItem from "./SubrecipeItem";
@@ -38,13 +38,13 @@ import {
     Recipe,
     UserType,
 } from "global/types/types";
-import FavoriteIndicator from "../../features/Favorites/components/Indicator";
+import FavoriteIndicator from "features/Favorites/components/Indicator";
 import {
     ReentrantScalingProvider,
     useScale,
-} from "../../util/ScalingContext";
-import LoadObject from "../../util/LoadObject";
-import { HEADER_HEIGHT } from "../../constants/layout";
+} from "util/ScalingContext";
+import LoadObject from "util/LoadObject";
+import { HEADER_HEIGHT } from "constants/layout";
 
 const useStyles = makeStyles(theme => ({
     name: {

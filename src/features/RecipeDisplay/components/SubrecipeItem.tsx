@@ -8,8 +8,8 @@ import React from "react";
 import { formatDuration } from "util/time";
 import CollapseIconButton from "global/components/CollapseIconButton";
 import IngredientDirectionsRow from "./IngredientDirectionsRow";
-import { ScalingProvider } from "../../util/ScalingContext";
-import { Recipe } from "../../global/types/types";
+import { ScalingProvider } from "util/ScalingContext";
+import { Recipe } from "global/types/types";
 
 const useStyles = makeStyles({
     time: {

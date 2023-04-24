@@ -5,12 +5,12 @@ import LibraryStore from "features/RecipeLibrary/data/LibraryStore";
 import React from "react";
 import LoadObject from "util/LoadObject";
 import LoadingIndicator from "views/common/LoadingIndicator";
-import RecipeDetail from "views/cook/RecipeDetail";
+import RecipeDetail from "./components/RecipeDetail";
 import {
     buildFullRecipeLO as buildSingleTaskRecipeLO,
     RecipeFromTask,
     useLoadedPlan,
-} from "./PlannedRecipe";
+} from "./PlannedRecipeController";
 import { RouteComponentProps } from "react-router";
 
 export const buildFullRecipeLO = (planId: number, bucketId: number): LoadObject<RecipeFromTask> => {
@@ -60,7 +60,7 @@ type Props = RouteComponentProps<{
     bid: string
 }>;
 
-const PlannedBucket: React.FC<Props> = ({ match }) => {
+const PlannedBucketController: React.FC<Props> = ({ match }) => {
     const pid = parseInt(match.params.pid, 10);
     const bid = parseInt(match.params.bid, 10);
     const lo = useFluxStore(
@@ -85,4 +85,4 @@ const PlannedBucket: React.FC<Props> = ({ match }) => {
     return <LoadingIndicator />;
 };
 
-export default PlannedBucket;
+export default PlannedBucketController;

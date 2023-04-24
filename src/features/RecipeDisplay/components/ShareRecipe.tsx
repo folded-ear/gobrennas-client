@@ -15,12 +15,12 @@ import React from "react";
 import {
     API_BASE_URL,
     APP_BASE_URL,
-} from "../../constants";
+} from "constants/index";
 import {
     Recipe,
     SharedRecipe,
 } from "global/types/types";
-import LoadObject from "../../util/LoadObject";
+import LoadObject from "util/LoadObject";
 
 const axios = BaseAxios.create({
     baseURL: `${API_BASE_URL}/api/recipe`,
