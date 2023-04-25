@@ -30,7 +30,7 @@ const PlannedBucketController: React.FC<Props> = ({ match }) => {
 
     if (lo.hasValue()) {
         return <RecipeDetail
-            recipeLO={lo}
+            recipe={lo.getValueEnforcing()}
             subrecipes={lo.getValueEnforcing().subrecipes}
             ownerLO={LoadObject.empty()}
         />;

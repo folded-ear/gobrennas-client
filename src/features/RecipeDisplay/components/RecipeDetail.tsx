@@ -1,6 +1,5 @@
 import {
     Box,
-    CircularProgress,
     Grid,
     Toolbar,
     Typography,
@@ -64,7 +63,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 interface Props {
-    recipeLO: LoadObject<Recipe>
+    recipe: Recipe
     subrecipes?: Recipe[]
     anonymous?: boolean,
     mine?: boolean,
@@ -75,7 +74,7 @@ interface Props {
 }
 
 const RecipeDetail: React.FC<Props> = ({
-                                           recipeLO,
+                                           recipe,
                                            subrecipes,
                                            mine = false,
                                            ownerLO,
@@ -96,7 +95,6 @@ const RecipeDetail: React.FC<Props> = ({
         mine = false;
     }
 
-    const recipe = recipeLO.getValueEnforcing();
     const photo = extractRecipePhoto(recipe);
 
     const labelsToDisplay = recipe.labels && recipe.labels
@@ -112,9 +110,9 @@ const RecipeDetail: React.FC<Props> = ({
                         variant="h2"
                     >
                         {recipe.name}
-                        {recipeLO.isLoading() && <Box display="inline" ml={2}>
-                            <CircularProgress size={20} />
-                        </Box>}
+                        {/*{recipeLO.isLoading() && <Box display="inline" ml={2}>*/}
+                        {/*    <CircularProgress size={20} />*/}
+                        {/*</Box>}*/}
                     </Typography>
                     {loggedIn && <>
                         <CopyButton

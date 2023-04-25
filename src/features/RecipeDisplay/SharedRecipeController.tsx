@@ -56,7 +56,7 @@ const DoTheDance: React.FC<MatchParams> = ({
     const recipeLO = recipeLoById(parseInt(id));
     return <RecipeDetail
         anonymous
-        recipeLO={recipeLO}
+        recipe={recipeLO.getValueEnforcing()}
         subrecipes={recipeLO.hasValue() ? recipeLO.getValueEnforcing().subrecipes : null}
         ownerLO={LoadObject.withValue(owner)}
     />;

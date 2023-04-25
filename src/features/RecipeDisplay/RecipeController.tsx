@@ -11,6 +11,7 @@ import LoadingIndicator from "views/common/LoadingIndicator";
 import RecipeDetail from "./components/RecipeDetail";
 import { UserType } from "global/types/types";
 import { Recipe as RecipeType } from "features/RecipeDisplay/types";
+import { useGetFullRecipe } from "./hooks/useGetFullRecipe";
 import { recipeLoById } from "features/RecipeDisplay/utils/recipeLoById";
 
 type Props = RouteComponentProps<{
@@ -58,7 +59,10 @@ const RecipeController: React.FC<Props> = ({ match }) => {
     if (state.recipeLO.hasValue()) {
         return <ScalingProvider>
             <RecipeDetail
-                {...state}
+                recipe={state.recipeLO.getValueEnforcing()}
+                subrecipes={state.subrecipes}
+                mine={state.mine}
+                ownerLO={state.ownerLO}
                 canFavorite
                 canShare
                 canSendToPlan
