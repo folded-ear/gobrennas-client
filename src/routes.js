@@ -7,7 +7,7 @@ import PlannedRecipeController from "./features/RecipeDisplay/PlannedRecipeContr
 import Recipe from "./features/RecipeDisplay/RecipeController";
 import RecipeEditController from "./features/RecipeEdit/RecipeEditController";
 import Shop from "./containers/Shop";
-import SharedRecipe from "./views/cook/SharedRecipe";
+import {SharedRecipeController} from "./features/RecipeDisplay/SharedRecipeController";
 import Landing from "./views/Landing";
 import Pantry from "./views/pantry/Pantry";
 import OAuth2RedirectHandler from "views/user/OAuth2RedirectHandler";
@@ -21,7 +21,7 @@ const routes = {
         { path: "/", component: Landing, exact: true },
         { path: "/foodinger", component: Foodinger },
         { path: "/post-oauth2/redirect", component: OAuth2RedirectHandler },
-        { path: "/share/recipe/:slug/:secret/:id", component: SharedRecipe },
+        { path: "/share/recipe/:slug/:secret/:id", component: SharedRecipeController },
     ],
     private: [
         {path: "/user-profile",  component: UserProfileView},

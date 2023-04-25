@@ -15,6 +15,11 @@ export interface Recipe extends Ingredient {
     photoFocus: number[]
 }
 
+export interface RecipeFromTask extends Recipe {
+    subtaskIds: number[]
+    subrecipes: Recipe[]
+}
+
 export type Subrecipe = Pick<Recipe, "id" | "name" | "totalTime" | "ingredients" | "directions">;
 
 export interface SharedRecipe {
