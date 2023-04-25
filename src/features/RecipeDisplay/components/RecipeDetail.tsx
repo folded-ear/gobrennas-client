@@ -39,6 +39,7 @@ import {
 } from "util/ScalingContext";
 import LoadObject from "util/LoadObject";
 import { SubHeader } from "./Subheader";
+import { extractRecipePhoto } from "features/RecipeDisplay/utils/extractRecipePhoto";
 
 const useStyles = makeStyles(theme => ({
     name: {
@@ -61,20 +62,6 @@ const useStyles = makeStyles(theme => ({
         padding: 0,
     },
 }));
-
-function extractRecipePhoto(recipe: any) { // todo: remove
-    if (!recipe || !recipe.photo) return null;
-    if (typeof recipe.photo === "string") {
-        // REST supplied
-        return {
-            url: recipe.photo,
-            focus: recipe.photoFocus,
-        };
-    } else {
-        // GraphQL supplied
-        return recipe.photo;
-    }
-}
 
 interface Props {
     recipeLO: LoadObject<Recipe>
