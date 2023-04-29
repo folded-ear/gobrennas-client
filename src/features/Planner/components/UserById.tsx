@@ -1,7 +1,7 @@
 import React from "react";
 import useFriendLO from "data/useFriendLO";
 import User from "views/user/User";
-import { ripLoadObject } from "../../../util/loadObjectTypes";
+import { ripLoadObject } from "../../../util/ripLoadObject";
 
 interface Props {
     id: number,

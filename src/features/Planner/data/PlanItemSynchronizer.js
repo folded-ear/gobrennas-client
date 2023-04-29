@@ -1,10 +1,9 @@
-import useActivePlannerLO from "data/useActivePlannerLO";
+import useActivePlanner from "data/useActivePlanner";
 import useSynchronizer from "util/useSynchronizer";
-import { ripLoadObject } from "../../../util/loadObjectTypes";
 import PlanApi from "./PlanApi";
 
 function PlanItemSynchronizer() {
-    const plan = ripLoadObject(useActivePlannerLO()).data;
+    const plan = useActivePlanner().data;
     const planId = plan
         ? plan.id
         : null;
