@@ -1,31 +1,32 @@
 import { gql } from "../../../__generated__";
 
 export const getFullRecipeQuery = gql(`
-  query getRecipeWithEverything($id: ID!) {
-    recipe: node(id: $id) {
-      ... on Recipe {
+query getRecipeWithEverything($id: ID!) {
+  library {
+    getRecipeById(id: $id) {
+      ...recipeCore
+      favorite
+      yield
+      calories
+      externalUrl
+      labels
+      photo {
+        url
+        focus
+      }
+      owner {
+        id
+        name
+        email
+        imageUrl
+      }
+      subrecipes {
         ...recipeCore
-        favorite
-        yield
-        calories
-        externalUrl
-        labels
-        photo {
-          url
-          focus
-        }
-        owner {
-          id
-          name
-          email
-          imageUrl
-        }
-        subrecipes {
-          ...recipeCore
-        }
       }
     }
   }
+}
+
 
   fragment recipeCore on Recipe {
     id

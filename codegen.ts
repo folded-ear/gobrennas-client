@@ -17,6 +17,7 @@ const config: CodegenConfig = {
             },
             plugins: [],
             config: {
+                avoidOptionals: true,
                 dedupeFragments: true,
                 immutableTypes: true,
             }

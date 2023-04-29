@@ -1,18 +1,16 @@
-import {
-    Ingredient,
-    IngredientRef
-} from "global/types/types";
+import { Ingredient } from "global/types/types";
 
 export interface Recipe extends Ingredient {
-    externalUrl: string
-    ingredients: IngredientRef[]
-    labels: string[]
+    calories: number | null
     directions: string
-    yield: number
-    totalTime: number
-    calories: number
-    photo: string
+    externalUrl: string | null
+    id: number
+    ingredients: any[]
+    labels: string[]
+    photo: string | null
     photoFocus: number[]
+    totalTime: number | null
+    yield: number | null
 }
 
 export interface RecipeFromTask extends Recipe {
@@ -21,6 +19,13 @@ export interface RecipeFromTask extends Recipe {
 }
 
 export type Subrecipe = Pick<Recipe, "id" | "name" | "totalTime" | "ingredients" | "directions">;
+
+export type FullRecipe = {
+    recipe: Recipe
+    subrecipes?: Recipe[]
+    mine: boolean
+    ownerId: string
+}
 
 export interface SharedRecipe {
     id: number

@@ -86,6 +86,14 @@ type LabelsQuery {
 }
 
 type LibraryQuery {
+    getRecipeById(id: ID!): Recipe
+    """
+
+    Please ignore; I exist because GraphQL defines the available types as
+    those reachable from fields. Since PantryItem is currently only used
+    polymorphically (e.g., by `Query`'s `node` field), it will not be included
+    in the available types.
+    """
     pantryItem: PantryItem
     "Search the recipe library."
     recipes(
