@@ -24,6 +24,7 @@ import {
 } from "util/time";
 import LocalTextField from "views/common/LocalTextField";
 import getBucketLabel from "features/Planner/components/getBucketLabel";
+import { ripLoadObject } from "../../../util/loadObjectTypes";
 
 const BucketManager = () => {
     const {
@@ -35,8 +36,9 @@ const BucketManager = () => {
         onBucketDelete,
     } = useFluxStore(
         () => {
-            const plan = TaskStore.getActiveListLO()
-                .getValueEnforcing();
+            const plan = ripLoadObject(TaskStore.getActiveListLO())
+                .data;
+            if (!plan) throw new TypeError("Missing required planner/taskList");
             return {
                 buckets: plan.buckets || [],
                 onBucketCreate: () => dispatcher.dispatch({
