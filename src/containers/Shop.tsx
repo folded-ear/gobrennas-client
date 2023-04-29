@@ -69,7 +69,7 @@ interface Ingredient {
 interface OrderableIngredient {
     id: number
     items: PathedTaskTuple[]
-    data: Ingredient
+    data?: Ingredient
     loading: boolean
 }
 

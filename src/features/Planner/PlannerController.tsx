@@ -5,13 +5,12 @@ import TaskStore from "features/Planner/data/TaskStore";
 import useFluxStore from "data/useFluxStore";
 import TaskList from "features/Planner/components/TaskList";
 import LoadObject from "../../util/LoadObject";
-import { ripLoadObject } from "../../util/ripLoadObject";
+import {
+    ripLoadObject,
+    RippedLO,
+} from "../../util/ripLoadObject";
 
-export interface TaskTuple {
-    data: any,
-    error: any,
-    loading: boolean,
-    deleting: boolean,
+export interface TaskTuple extends RippedLO<any> {
     ancestorDeleting: boolean
     depth: number
 }

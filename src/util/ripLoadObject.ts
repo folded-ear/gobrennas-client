@@ -5,7 +5,21 @@ import {
 import RPTSecret from "prop-types/lib/ReactPropTypesSecret";
 import LoadObject from "./LoadObject";
 
-export function ripLoadObject<T>(lo: LoadObject<T>) {
+export interface RippedLO<T> {
+    loading: boolean
+    deleting: boolean
+    data?: T | null
+    error?: any
+}
+
+export function emptyRLO<T>(): RippedLO<T> {
+    return {
+        loading: false,
+        deleting: false,
+    };
+}
+
+export function ripLoadObject<T>(lo: LoadObject<T>): RippedLO<T> {
     return {
         loading: lo.isLoading(),
         deleting: lo.isDeleting(),
