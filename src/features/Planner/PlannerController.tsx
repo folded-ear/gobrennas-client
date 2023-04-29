@@ -8,10 +8,10 @@ import LoadObject from "../../util/LoadObject";
 import { ripLoadObject } from "../../util/ripLoadObject";
 
 export interface TaskTuple {
-    data: any,
-    error: any,
-    loading: boolean,
-    deleting: boolean,
+    data?: any
+    error?: any
+    loading: boolean
+    deleting: boolean
     ancestorDeleting: boolean
     depth: number
 }
