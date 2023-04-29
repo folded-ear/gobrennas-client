@@ -21,6 +21,7 @@ import PlanBucketManager from "features/Planner/components/PlanBucketManager";
 import SidebarUnit from "features/Planner/components/SidebarUnit";
 import User from "views/user/User";
 import { Task } from "../data/TaskStore";
+import { ripLoadObject } from "../../../util/loadObjectTypes";
 
 const LEVEL_NO_ACCESS = "NO_ACCESS";
 
@@ -30,20 +31,23 @@ interface Props {
 
 const TaskListSidebar: React.FC<Props> = ({ list }) => {
 
-    const me = useProfileLO().getValueEnforcing();
+    const me = ripLoadObject(useProfileLO()).data;
+    if (!me) throw new TypeError("Missing required profile");
 
     const [ friendsLoading, friendList, friendsById ] = useFluxStore(
         () => {
-            const flo = FriendStore.getFriendsLO();
-            const loading = !flo.hasValue();
+            const {
+                data: friendList,
+                loading,
+            } = ripLoadObject(FriendStore.getFriendsLO());
             return [
                 loading,
                 loading
                     ? []
-                    : flo.getValueEnforcing(),
+                    : friendList,
                 loading
                     ? {}
-                    : flo.getValueEnforcing().reduce((idx, f) => ({
+                    : friendList.reduce((idx, f) => ({
                         ...idx,
                         [f.id]: f,
                     }), {}),
