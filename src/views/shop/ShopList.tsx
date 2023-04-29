@@ -13,7 +13,6 @@ import {
     BaseItemProp,
     ItemProps,
 } from "./types";
-import LoadObject from "../../util/LoadObject";
 import { Task } from "../../features/Planner/data/TaskStore";
 import { Quantity } from "../../global/types/types";
 
@@ -34,7 +33,7 @@ export interface ShopItemTuple extends ItemProps {
 }
 
 export type ShopListProps = {
-    planLO: LoadObject<Task>
+    plan: Task | null
     itemTuples: ShopItemTuple[]
 }
 
@@ -55,15 +54,14 @@ class ShopList extends React.PureComponent<ShopListProps> {
 
     render() {
         const {
-            planLO,
+            plan,
             itemTuples,
         } = this.props;
-        if (!planLO.hasValue()) {
+        if (!plan) {
             return <LoadingIndicator
                 primary="Loading shopping list..."
             />;
         }
-        const plan = planLO.getValueEnforcing();
         return <PageBody hasFab>
             <Typography variant="h2">{plan.name}</Typography>
             <List>

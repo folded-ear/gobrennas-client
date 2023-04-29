@@ -20,8 +20,8 @@ import {
     ItemProps,
 } from "../views/shop/types";
 import { Maybe } from "graphql/jsutils/Maybe";
-import LoadObject from "../util/LoadObject";
 import { Quantity } from "../global/types/types";
+import { ripLoadObject } from "../util/loadObjectTypes";
 
 interface TaskTuple extends Task, ItemProps {
 }
@@ -39,13 +39,15 @@ function gatherLeaves(item: Task): PathedTaskTuple[] {
         } as unknown as PathedTaskTuple ];
     }
     return TaskStore.getSubtaskLOs(item.id)
-        .filter(lo => lo.hasValue())
-        .map(lo => {
-            const item = lo.getValueEnforcing();
+        .map(lo => ripLoadObject(lo))
+        .filter(rippedLO => rippedLO.data)
+        .map(rippedLO => {
+            const item = rippedLO.data;
+            if (!item) throw new TypeError("Missing required subtask");
             return {
                 ...item,
                 question: isQuestionable(item),
-                loading: lo.isLoading(),
+                loading: rippedLO.loading,
                 deleting: item._next_status === TaskStatus.DELETED,
                 completing: item._next_status === TaskStatus.COMPLETED,
                 acquiring: item._next_status === TaskStatus.ACQUIRED,
@@ -67,7 +69,8 @@ interface Ingredient {
 interface OrderableIngredient {
     id: number
     items: PathedTaskTuple[]
-    lo: LoadObject<Ingredient>
+    data: Ingredient
+    loading: boolean
 }
 
 function groupItems(plans: Task[],
@@ -95,14 +98,12 @@ function groupItems(plans: Task[],
         orderedIngredients.push({
             id: ingId,
             items: items,
-            lo: LibraryStore.getIngredientById(ingId),
+            ...ripLoadObject(LibraryStore.getIngredientById(ingId)),
         });
     }
-    orderedIngredients.sort(({ lo: alo }, { lo: blo }) => {
-        if (!alo.hasValue()) return blo.hasValue() ? 1 : 0;
-        if (!blo.hasValue()) return -1;
-        const a = alo.getValueEnforcing();
-        const b = blo.getValueEnforcing();
+    orderedIngredients.sort(({ data: a }, { data: b }) => {
+        if (!a) return b ? 1 : 0;
+        if (!b) return -1;
         if (a.storeOrder == null) return b.storeOrder != null ? 1 : 0;
         if (b.storeOrder == null) return -1;
         if (a.storeOrder !== b.storeOrder) return a.storeOrder - b.storeOrder;
@@ -111,7 +112,7 @@ function groupItems(plans: Task[],
         return 0;
     });
     const theTree: ShopItemTuple[] = [];
-    for (const { id: ingId, items, lo } of orderedIngredients) {
+    for (const { id: ingId, items, data: ingredient, loading } of orderedIngredients) {
         const neededItems = items.filter(it => it.status === TaskStatus.NEEDED);
         if (neededItems.length === 0) continue;
         const unitLookup = new Map();
@@ -136,17 +137,16 @@ function groupItems(plans: Task[],
             _type: ShopItemType.INGREDIENT,
             id: ingId,
             itemIds: items.map(it => it.id),
-            name: lo.hasValue() ? lo.getValueEnforcing().name : items[0].name,
+            name: ingredient ? ingredient.name : items[0].name,
             quantities,
             expanded,
-            loading: lo.isLoading() || items.some(it => it.loading),
+            loading: loading || items.some(it => it.loading),
             acquiring: items.every(it => it.acquiring || it.status === TaskStatus.ACQUIRED),
             deleting: items.every(it => it.deleting || it.status === TaskStatus.DELETED),
             depth: 0,
             path: [],
         });
         if (expanded) {
-            const ingredient = lo.hasValue() ? lo.getValueEnforcing() : null;
             theTree.push(...items.map(it => ({
                 _type: ShopItemType.TASK,
                 depth: 1,
@@ -175,26 +175,26 @@ function groupItems(plans: Task[],
 }
 
 const Shop = () => {
-    const [expandedId, activeItem] = useFluxStore(
+    const [ expandedId, activeItem ] = useFluxStore(
         () => [
             ShoppingStore.getExpandedIngredientId(),
             ShoppingStore.getActiveItem(),
         ],
-        [ShoppingStore]
+        [ ShoppingStore ],
     );
-    const [planLO, itemTuples] = useFluxStore(
+    const [ plan, itemTuples ] = useFluxStore(
         () => {
-            const planLO = TaskStore.getActiveListLO();
-            return [planLO, planLO.hasValue()
-                ? groupItems([planLO.getValueEnforcing()], expandedId, activeItem)
+            const plan = ripLoadObject(TaskStore.getActiveListLO()).data;
+            return [ plan, plan
+                ? groupItems([ plan ], expandedId, activeItem)
                 : [],
             ];
         },
-        [TaskStore, LibraryStore],
-        [expandedId, activeItem]
+        [ TaskStore, LibraryStore ],
+        [ expandedId, activeItem ],
     );
     return <ShopList
-        planLO={planLO}
+        plan={plan}
         itemTuples={itemTuples}
     />;
 };
