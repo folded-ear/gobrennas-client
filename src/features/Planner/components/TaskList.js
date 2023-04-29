@@ -1,17 +1,20 @@
-import {Box, List,} from "@mui/material";
 import Add from "@mui/icons-material/Add";
+import {
+    Box,
+    List,
+} from "@mui/material";
+import Dispatcher from "data/dispatcher";
+import LoadingTask from "features/Planner/components/LoadingTask";
+import Task from "features/Planner/components/Task";
+import TaskListHeader from "features/Planner/components/TaskListHeader";
+import TaskActions from "features/Planner/data/TaskActions";
+import { isParent } from "features/Planner/data/tasks";
 import PropTypes from "prop-types";
 import React from "react";
-import Dispatcher from "data/dispatcher";
-import TaskActions from "features/Planner/data/TaskActions";
-import {isParent} from "features/Planner/data/tasks";
 import LoadObject from "util/LoadObject";
 import FoodingerFab from "views/common/FoodingerFab";
 import LoadingIndicator from "views/common/LoadingIndicator";
 import PageBody from "views/common/PageBody";
-import TaskListHeader from "features/Planner/components/TaskListHeader";
-import LoadingTask from "features/Planner/components/LoadingTask";
-import Task from "features/Planner/components/Task";
 
 function TaskList(props) {
     const {
@@ -65,7 +68,7 @@ function TaskList(props) {
                         depth={depth}
                         task={t}
                         ancestorDeleting={ancestorDeleting}
-                        loadObject={lo}
+                        loading={lo.isLoading()}
                         active={isTaskActive(t)}
                         selected={isTaskSelected(t)}
                         buckets={buckets}
