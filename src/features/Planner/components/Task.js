@@ -20,7 +20,6 @@ import TaskStore from "features/Planner/data/TaskStore";
 import CollapseIconButton from "global/components/CollapseIconButton";
 import PropTypes from "prop-types";
 import React from "react";
-import LoadObject from "util/LoadObject";
 import LoadingIconButton from "views/common/LoadingIconButton";
 import PlaceholderIconButton from "views/common/PlaceholderIconButton";
 import IngredientItem from "views/IngredientItem";
@@ -238,7 +237,7 @@ class Task extends React.PureComponent {
             plan,
             task,
             depth,
-            loadObject: lo,
+            loading,
             active,
             selected,
             buckets,
@@ -269,7 +268,7 @@ class Task extends React.PureComponent {
                     size="small"
                 />);
         }
-        if (lo.isLoading() || deleting || ancestorDeleting) {
+        if (loading || deleting || ancestorDeleting) {
             addonBefore.push(
                 <LoadingIconButton
                     key="acquire"
@@ -375,7 +374,7 @@ Task.propTypes = {
     depth: PropTypes.number.isRequired,
     plan: PropTypes.object.isRequired,
     task: PropTypes.object.isRequired,
-    loadObject: PropTypes.instanceOf(LoadObject).isRequired,
+    loading: PropTypes.bool.isRequired,
     active: PropTypes.bool,
     selected: PropTypes.bool,
     buckets: PropTypes.array, // todo: PropTypes.arrayOf(bucketType),
