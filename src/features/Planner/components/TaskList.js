@@ -11,22 +11,22 @@ import TaskActions from "features/Planner/data/TaskActions";
 import { isParent } from "features/Planner/data/tasks";
 import PropTypes from "prop-types";
 import React from "react";
-import LoadObject from "util/LoadObject";
 import FoodingerFab from "views/common/FoodingerFab";
 import LoadingIndicator from "views/common/LoadingIndicator";
 import PageBody from "views/common/PageBody";
+import { rippedLoadObjectOf } from "../../../util/loadObjectTypes";
 
 function TaskList(props) {
     const {
         allLists,
-        activeListLO,
+        activeList,
         listDetailVisible,
         taskTuples,
         isTaskActive,
         isTaskSelected,
     } = props;
 
-    if (!allLists.hasValue()) {
+    if (!allLists.data) {
         return <LoadingIndicator
             primary="Loading task lists..."
         />;
@@ -39,14 +39,14 @@ function TaskList(props) {
         });
     };
 
-    const plan = activeListLO.getValue();
+    const plan = activeList.data;
     const buckets = plan && plan.buckets;
     const canExpand = taskTuples.some(t =>
-        t.lo.hasValue() && isParent(t.lo.getValueEnforcing()));
+        t.data && isParent(t.data));
     return <PageBody hasFab>
         <Box py={2}>
             <TaskListHeader
-                allLists={allLists.getValueEnforcing()}
+                allLists={allLists.data}
                 activeList={plan}
                 listDetailVisible={listDetailVisible}
                 hasBuckets={!!buckets}
@@ -54,28 +54,28 @@ function TaskList(props) {
             />
         </Box>
         <List>
-            {taskTuples.map(item => {
+            {taskTuples.map((item, i) => {
                 const {
-                    lo,
+                    data,
+                    loading,
                     depth,
                     ancestorDeleting,
                 } = item;
-                if (lo.hasValue()) {
-                    const t = lo.getValueEnforcing();
+                if (data) {
                     return <Task
-                        key={t.id}
+                        key={data.id}
                         plan={plan}
                         depth={depth}
-                        task={t}
+                        task={data}
                         ancestorDeleting={ancestorDeleting}
-                        loading={lo.isLoading()}
-                        active={isTaskActive(t)}
-                        selected={isTaskSelected(t)}
+                        loading={loading}
+                        active={isTaskActive(data)}
+                        selected={isTaskSelected(data)}
                         buckets={buckets}
                     />;
                 } else {
                     return <LoadingTask
-                        key={lo.id}
+                        key={i}
                         depth={depth}
                     />;
                 }
@@ -90,12 +90,13 @@ function TaskList(props) {
 }
 
 TaskList.propTypes = {
-    allLists: PropTypes.instanceOf(LoadObject).isRequired,
-    activeListLO: PropTypes.instanceOf(LoadObject),
+    allLists: rippedLoadObjectOf(PropTypes.any).isRequired,
+    activeList: rippedLoadObjectOf(PropTypes.any),
     listDetailVisible: PropTypes.bool.isRequired,
     taskTuples: PropTypes.arrayOf(
         PropTypes.shape({
-            lo: PropTypes.instanceOf(LoadObject).isRequired,
+            data: PropTypes.any,
+            loading: PropTypes.bool.isRequired,
             depth: PropTypes.number.isRequired,
             ancestorDeleting: PropTypes.bool,
         })),
