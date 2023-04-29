@@ -8,7 +8,7 @@ import {
     ExitToApp,
 } from "@mui/icons-material";
 import React from "react";
-import useActivePlannerLO from "data/useActivePlannerLO";
+import useActivePlanner from "data/useActivePlanner";
 
 const useStyles = makeStyles({
     button: {
@@ -25,9 +25,8 @@ interface Props {
 
 const SendToPlan: React.FC<Props> = ({ onClick, iconOnly }) => {
     const classes = useStyles();
-    const listLO = useActivePlannerLO();
-    if (!listLO.hasValue()) return null;
-    const list = listLO.getValueEnforcing();
+    const list = useActivePlanner().data;
+    if (!list) return null;
     const handleClick = () =>
         // While tasks can exist in the store in an unsaved state, lists/plans
         // cannot, so this type assertion is safe.

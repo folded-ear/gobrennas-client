@@ -14,7 +14,7 @@ import React from "react";
 import FoodingerFab from "views/common/FoodingerFab";
 import LoadingIndicator from "views/common/LoadingIndicator";
 import PageBody from "views/common/PageBody";
-import { rippedLoadObjectOf } from "../../../util/loadObjectTypes";
+import { rippedLoadObjectOf } from "../../../util/ripLoadObject";
 
 function TaskList(props) {
     const {

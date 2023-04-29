@@ -21,7 +21,7 @@ import PlanBucketManager from "features/Planner/components/PlanBucketManager";
 import SidebarUnit from "features/Planner/components/SidebarUnit";
 import User from "views/user/User";
 import { Task } from "../data/TaskStore";
-import { ripLoadObject } from "../../../util/loadObjectTypes";
+import { ripLoadObject } from "../../../util/ripLoadObject";
 
 const LEVEL_NO_ACCESS = "NO_ACCESS";
 
@@ -38,8 +38,8 @@ const TaskListSidebar: React.FC<Props> = ({ list }) => {
         () => {
             const {
                 data: friendList,
-                loading,
             } = ripLoadObject(FriendStore.getFriendsLO());
+            const loading = friendList == null;
             return [
                 loading,
                 loading

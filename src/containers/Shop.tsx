@@ -21,7 +21,7 @@ import {
 } from "../views/shop/types";
 import { Maybe } from "graphql/jsutils/Maybe";
 import { Quantity } from "../global/types/types";
-import { ripLoadObject } from "../util/loadObjectTypes";
+import { ripLoadObject } from "../util/ripLoadObject";
 
 interface TaskTuple extends Task, ItemProps {
 }

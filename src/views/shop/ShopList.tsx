@@ -33,7 +33,7 @@ export interface ShopItemTuple extends ItemProps {
 }
 
 export type ShopListProps = {
-    plan: Task | null
+    plan: Task | null | undefined
     itemTuples: ShopItemTuple[]
 }
 

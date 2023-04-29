@@ -24,7 +24,7 @@ import {
 } from "util/time";
 import LocalTextField from "views/common/LocalTextField";
 import getBucketLabel from "features/Planner/components/getBucketLabel";
-import { ripLoadObject } from "../../../util/loadObjectTypes";
+import { ripLoadObject } from "../../../util/ripLoadObject";
 
 const BucketManager = () => {
     const {
