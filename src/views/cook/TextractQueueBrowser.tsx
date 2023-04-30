@@ -1,14 +1,19 @@
-import {IconButton, ImageList, ImageListItem, ImageListItemBar, Typography,} from "@mui/material";
+import {
+    IconButton,
+    ImageList,
+    ImageListItem,
+    ImageListItemBar,
+    Typography,
+} from "@mui/material";
 import Drawer from "@mui/material/Drawer";
-import {makeStyles} from "@mui/styles";
-import {Close} from "@mui/icons-material";
-import PropTypes from "prop-types";
-import React from "react";
+import { makeStyles } from "@mui/styles";
+import { Close } from "@mui/icons-material";
+import React, { MouseEventHandler } from "react";
 import DeleteButton from "views/common/DeleteButton";
-import {clientOrDatabaseIdType} from "../../util/ClientId";
 import ImageDropZone from "../../util/ImageDropZone";
-import {useQuery} from "react-query";
+import { useQuery } from "react-query";
 import TextractApi from "../../data/TextractApi";
+import { PendingJob } from "./TextractFormAugment";
 
 const useStyles = makeStyles({
     drawer: {
@@ -44,7 +49,28 @@ const useStyles = makeStyles({
     },
 });
 
-const Ui = ({onSelect, onClose, onUpload, onDelete, queue: persistent, deleting, uploading}) => {
+interface PassthroughProps {
+    onSelect: (id: string) => void
+    onClose: MouseEventHandler
+    onUpload: (photo: File) => void
+    onDelete: (id: string) => void
+    uploading: PendingJob[]
+    deleting: (number | string)[]
+}
+
+interface UiProps extends PassthroughProps {
+    queue: PendingJob[]
+}
+
+const Ui: React.FC<UiProps> = ({
+                                   onSelect,
+                                   onClose,
+                                   onUpload,
+                                   onDelete,
+                                   queue: persistent,
+                                   deleting,
+                                   uploading,
+                               }) => {
     const classes = useStyles();
     const queue = uploading.map(j => ({
         ...j,
@@ -80,9 +106,9 @@ const Ui = ({onSelect, onClose, onUpload, onDelete, queue: persistent, deleting,
                     </ImageListItem>
                     {queue.map(j => <ImageListItem
                         key={j.id}
-                        onClick={j.state === "ready" ? () => onSelect(j.id) : null}
+                        onClick={j.state === "ready" ? () => onSelect(j.id) : undefined}
                         className={j.state === "ready" ? classes.ready : classes.inactive}
-                        title={j.ready ? "Use this photo" : null}
+                        title={j.ready ? "Use this photo" : undefined}
                     >
                         <img src={j.url} alt={j.name} />
                         <ImageListItemBar
@@ -102,28 +128,7 @@ const Ui = ({onSelect, onClose, onUpload, onDelete, queue: persistent, deleting,
     );
 };
 
-const Job = PropTypes.shape({
-    id: clientOrDatabaseIdType.isRequired,
-    url: PropTypes.string.isRequired,
-    name: PropTypes.string.isRequired,
-    ready: PropTypes.bool.isRequired,
-});
-
-const passthroughTypes = {
-    onSelect: PropTypes.func.isRequired,
-    onUpload: PropTypes.func.isRequired,
-    onDelete: PropTypes.func.isRequired,
-    onClose: PropTypes.func.isRequired,
-    uploading: PropTypes.arrayOf(Job).isRequired,
-    deleting: PropTypes.arrayOf(PropTypes.number).isRequired,
-};
-
-Ui.propTypes = {
-    ...passthroughTypes,
-    queue: PropTypes.arrayOf(Job).isRequired,
-};
-
-const TextractQueueBrowser = props => {
+const TextractQueueBrowser: React.FC<PassthroughProps> = props => {
     const {
         data: queue = [],
     } = useQuery("textract-jobs", () =>
@@ -143,7 +148,5 @@ const TextractQueueBrowser = props => {
         {...props}
     />;
 };
-
-TextractQueueBrowser.propTypes = passthroughTypes;
 
 export default TextractQueueBrowser;

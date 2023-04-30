@@ -5,6 +5,7 @@ import {
 } from "@mui/icons-material";
 import clsx from "clsx";
 import * as React from "react";
+import { DragEvent } from "react";
 import ImageOrPreview from "../views/common/ImageOrPreview";
 import buildSequence from "./buildSequence";
 
@@ -35,7 +36,7 @@ const useStyles = makeStyles(({
 }));
 
 type ImageDropZoneProps = {
-    onImage(f: string): void
+    onImage(f: File): void
     image?: any,
     maxWidth?: any,
     maxHeight?: any,
@@ -73,7 +74,7 @@ const ImageDropZone : React.FC<ImageDropZoneProps> = ({
         </label>;
     }
 
-    const sendOffFirstFile = files => {
+    const sendOffFirstFile = (files: FileList) => {
         for (let i = 0; i < files.length; i++) {
             const f = files[i];
             if (f.type.indexOf("image/") !== 0) continue;
@@ -88,7 +89,7 @@ const ImageDropZone : React.FC<ImageDropZoneProps> = ({
         event.dataTransfer.dropEffect = "copy";
     };
 
-    const handleDrop = event => {
+    const handleDrop = (event: DragEvent) => {
         event.preventDefault();
         const dt = event.dataTransfer;
         const files = dt.files;
