@@ -1,7 +1,6 @@
 import React from "react";
 import LoadingIndicator from "../common/LoadingIndicator";
 import ClientId from "../../util/ClientId";
-import LoadObject from "../../util/LoadObject";
 import promiseWellSizedFile from "../../util/promiseWellSizedFile";
 import TextractButton from "./TextractButton";
 import TextractQueueBrowser from "./TextractQueueBrowser";
@@ -11,6 +10,10 @@ import TextractEditor, {
     Line,
     RenderActionsForLines,
 } from "./TextractEditor";
+import {
+    emptyRLO,
+    RippedLO,
+} from "../../util/ripLoadObject";
 
 export interface PendingJob {
     id: string
@@ -30,7 +33,7 @@ interface Props {
 
 const TextractFormAugment: React.FC<Props> = ({ renderActions }) => {
     const [ browserOpen, setBrowserOpen ] = React.useState(false);
-    const [ jobLO, setJobLO ] = React.useState<LoadObject<Job>>(LoadObject.empty());
+    const [ jobLO, setJobLO ] = React.useState<RippedLO<Job>>(emptyRLO());
     const [ creating, setCreating ] = React.useState<PendingJob[]>([]);
     const [ deleting, setDeleting ] = React.useState<(string | number)[]>([]);
     const queryClient = useQueryClient();
@@ -38,22 +41,28 @@ const TextractFormAugment: React.FC<Props> = ({ renderActions }) => {
         <TextractButton
             onClick={() => setBrowserOpen(true)}
         />
-        {jobLO.hasValue() && <TextractEditor
-            {...jobLO.getValueEnforcing()}
-            onClose={() => setJobLO(LoadObject.empty())}
+        {jobLO.data && <TextractEditor
+            {...jobLO.data}
+            onClose={() => setJobLO(emptyRLO())}
             renderActions={renderActions}
         />}
-        {jobLO.hasOperation() && <LoadingIndicator />}
+        {jobLO.loading && <LoadingIndicator />}
         {browserOpen && <TextractQueueBrowser
             onClose={() => setBrowserOpen(false)}
             onSelect={id => {
-                setJobLO(LoadObject.loading());
+                setJobLO({
+                    ...emptyRLO(),
+                    loading: true,
+                });
                 TextractApi.promiseJob(id)
                     .then(data =>
-                        setJobLO(LoadObject.withValue({
-                            image: data.data.photo.url,
-                            textract: data.data.lines || [],
-                        })));
+                        setJobLO({
+                            ...emptyRLO(),
+                            data: {
+                                image: data.data.photo.url,
+                                textract: data.data.lines || [],
+                            },
+                        }));
                 setBrowserOpen(false);
             }}
             uploading={creating}
