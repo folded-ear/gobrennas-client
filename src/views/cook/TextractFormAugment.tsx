@@ -12,7 +12,7 @@ import TextractEditor, {
     RenderActionsForLines,
 } from "./TextractEditor";
 
-interface PendingJob {
+export interface PendingJob {
     id: string
     url: string
     name: string
@@ -32,7 +32,7 @@ const TextractFormAugment: React.FC<Props> = ({ renderActions }) => {
     const [ browserOpen, setBrowserOpen ] = React.useState(false);
     const [ jobLO, setJobLO ] = React.useState<LoadObject<Job>>(LoadObject.empty());
     const [ creating, setCreating ] = React.useState<PendingJob[]>([]);
-    const [ deleting, setDeleting ] = React.useState<number[]>([]);
+    const [ deleting, setDeleting ] = React.useState<(string | number)[]>([]);
     const queryClient = useQueryClient();
     return <>
         <TextractButton
