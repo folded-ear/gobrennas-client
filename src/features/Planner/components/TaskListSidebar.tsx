@@ -14,7 +14,7 @@ import Dispatcher from "data/dispatcher";
 import FriendStore from "data/FriendStore";
 import TaskActions from "features/Planner/data/TaskActions";
 import useFluxStore from "data/useFluxStore";
-import { useProfileLO } from "providers/Profile";
+import { useProfile } from "providers/Profile";
 import DeleteButton from "views/common/DeleteButton";
 import LoadingIndicator from "views/common/LoadingIndicator";
 import PlanBucketManager from "features/Planner/components/PlanBucketManager";
@@ -30,10 +30,7 @@ interface Props {
 }
 
 const TaskListSidebar: React.FC<Props> = ({ list }) => {
-
-    const me = ripLoadObject(useProfileLO()).data;
-    if (!me) throw new TypeError("Missing required profile");
-
+    const me = useProfile();
     const [ friendsLoading, friendList, friendsById ] = useFluxStore(
         () => {
             const {
