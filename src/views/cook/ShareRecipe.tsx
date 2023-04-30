@@ -20,7 +20,10 @@ import {
     Recipe,
     SharedRecipe,
 } from "global/types/types";
-import LoadObject from "../../util/LoadObject";
+import {
+    emptyRLO,
+    RippedLO,
+} from "../../util/ripLoadObject";
 
 const axios = BaseAxios.create({
     baseURL: `${API_BASE_URL}/api/recipe`,
@@ -48,26 +51,38 @@ type ShareRecipeProps = {
 }
 const ShareRecipe : React.FC<ShareRecipeProps> = ({recipe}) => {
     const classes = useStyles();
-    const [open, setOpen] = React.useState(false);
-    const [lo, setLo] = React.useState(LoadObject.empty());
+    const [ open, setOpen ] = React.useState(false);
+    const [ rlo, setRlo ] = React.useState<RippedLO<SharedRecipe>>(emptyRLO());
     React.useEffect(
         () => {
             if (!open) {
                 return;
             }
-            if (lo.hasValue() && (lo.getValue() as SharedRecipe).id === recipe.id) {
+            if (rlo.data && rlo.data.id === recipe.id) {
                 return;
             }
-            setLo(LoadObject.loading().setValue({
-                id: recipe.id,
-            }));
+            setRlo({
+                ...emptyRLO(),
+                loading: true,
+                data: {
+                    id: recipe.id,
+                    slug: "",
+                    secret: "",
+                },
+            });
             axios.get(`/share/${recipe.id}`)
                 .then(
-                    data => setLo(LoadObject.withValue(data.data)),
-                    err => setLo(LoadObject.withError(err)),
+                    data => setRlo({
+                        ...emptyRLO(),
+                        data: data.data,
+                    }),
+                    error => setRlo({
+                        ...emptyRLO(),
+                        error,
+                    }),
                 );
         },
-        [open, lo, recipe.id],
+        [ open, rlo, recipe.id ],
     );
 
     const button = <Tooltip
@@ -84,23 +99,23 @@ const ShareRecipe : React.FC<ShareRecipeProps> = ({recipe}) => {
     }
 
     let body;
-    if (lo.isLoading() || !lo.hasValue()) {
-        body = <Box style={{textAlign: "center"}}>
+    if (rlo.loading || !rlo.data) {
+        body = <Box style={{ textAlign: "center" }}>
             <CircularProgress />
         </Box>;
-    } else if (lo.hasError()) {
+    } else if (rlo.error) {
         body = <div>
             Something went wrong getting a sharable link.
-            <div style={{textAlign: "right"}}>
+            <div style={{ textAlign: "right" }}>
                 <Button
-                    onClick={() => setLo(LoadObject.empty())}
+                    onClick={() => setRlo(emptyRLO())}
                 >
                     Try Again
                 </Button>
             </div>
         </div>;
     } else { // got it!
-        const info = lo.getValueEnforcing() as SharedRecipe;
+        const info = rlo.data;
         const shareUrl = `${APP_BASE_URL}/share/recipe/${info.slug}/${info.secret}/${info.id}`;
         body = <>
             <p>Share this link to allow non-users to access your recipe:
