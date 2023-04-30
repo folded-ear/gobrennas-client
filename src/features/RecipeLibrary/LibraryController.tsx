@@ -1,6 +1,6 @@
 import { useQuery } from "@apollo/client";
 import RecipesList from "features/RecipeLibrary/components/RecipesList";
-import { useProfileLO } from "providers/Profile";
+import { useProfile } from "providers/Profile";
 import qs from "qs";
 import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
@@ -48,7 +48,7 @@ const SEARCH_RECIPES = gql(`
 `);
 
 export const LibraryController = () => {
-    const me = useProfileLO().getValueEnforcing();
+    const me = useProfile();
     const history = useHistory();
     const params = history.location.search
         ? qs.parse(history.location.search.substring(1))
