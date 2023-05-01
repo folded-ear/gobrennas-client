@@ -36,7 +36,7 @@ export function toNumericString(quantity: number): string {
 
 interface Props {
     quantity: number
-    units?: string // for the moment, at least
+    units?: string | null // for the moment, at least
     addSpace?: boolean
 }
 

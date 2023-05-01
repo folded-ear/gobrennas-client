@@ -30,7 +30,10 @@ import ShareRecipe from "./ShareRecipe";
 import SubrecipeItem from "./SubrecipeItem";
 import SendToPlan from "features/RecipeLibrary/components/SendToPlan";
 import { UserType, } from "global/types/types";
-import type { Recipe } from "features/RecipeDisplay/types";
+import type {
+    Recipe,
+    Subrecipe
+} from "features/RecipeDisplay/types";
 import FavoriteIndicator from "features/Favorites/components/Indicator";
 import {
     ReentrantScalingProvider,
@@ -64,7 +67,7 @@ const useStyles = makeStyles(theme => ({
 
 interface Props {
     recipe: Recipe
-    subrecipes?: Recipe[]
+    subrecipes: Subrecipe[]
     anonymous?: boolean,
     mine?: boolean,
     ownerLO: LoadObject<UserType>

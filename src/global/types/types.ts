@@ -8,7 +8,7 @@ export interface UserType {
 }
 
 export interface Ingredient {
-    id: number
+    id: number | string
     name: string
     type?: "Recipe" | "PantryItem"
 }
@@ -19,11 +19,11 @@ export interface PantryItem extends Ingredient {
 
 export interface IngredientRef {
     raw?: string
-    quantity?: number
-    preparation?: string
-    units?: string
+    quantity?: number | null
+    preparation?: string | null
+    units?: string | null
     uomId?: string | number
-    ingredient?: string | Ingredient
+    ingredient?: string | Ingredient | null
     ingredientId?: number
 
     /**

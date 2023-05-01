@@ -5,8 +5,11 @@ import {
 import { getFullRecipeQuery } from "../data/queries";
 import {
     FullRecipe,
-    Recipe
+    Recipe,
+    Subrecipe
 } from "features/RecipeDisplay/types";
+import * as React from "react";
+import { IngredientRef } from "global/types/types";
 
 type UseQueryResult<T> = {
     loading: boolean,
@@ -21,6 +24,36 @@ export const useGetFullRecipe = (id: string) : UseQueryResult<FullRecipe> => {
     );
 
     const result = data?.library?.getRecipeById || null
+
+    const ingredients: IngredientRef[] = React.useMemo(() => {
+        if(!result || !result.ingredients) return []
+        return result.ingredients.map(item => ({
+                raw: item.raw,
+                preparation: item.preparation,
+                quantity: item.quantity?.quantity || null,
+                units: item.quantity?.units?.name || null,
+                ingredient: item.ingredient
+            }))
+    },[result]);
+
+    const subrecipes: Subrecipe[] = React.useMemo(() => {
+        if(!result || !result.subrecipes) return []
+        return result.subrecipes.map(recipe => ({
+            id: parseInt(recipe.id, 10),
+            name: recipe.name,
+            totalTime: recipe.totalTime,
+            directions: recipe.directions,
+            ingredients: recipe.ingredients.map(item => ({
+                raw: item.raw,
+                preparation: item.preparation,
+                quantity: item.quantity?.quantity || null,
+                units: item.quantity?.units?.name || null,
+                ingredient: item.ingredient || null,
+                ingredientId: 0,
+                uomId: ""
+            }))
+        }))
+    },[result])
 
     console.log(result)
 
@@ -37,7 +70,7 @@ export const useGetFullRecipe = (id: string) : UseQueryResult<FullRecipe> => {
         directions: result.directions || "",
         externalUrl: result.externalUrl,
         id: parseInt(result.id, 10),
-        ingredients: result.ingredients || [],
+        ingredients,
         labels: [],
         name: result.name || "",
         photo: result.photo?.url || null,
@@ -50,12 +83,12 @@ export const useGetFullRecipe = (id: string) : UseQueryResult<FullRecipe> => {
         mine: false,
         ownerId: result.owner.id,
         recipe,
-        subrecipes: []
+        subrecipes
     }
 
     return {
         loading,
         error,
-        data : fullRecipe,
+        data: fullRecipe,
     };
 };

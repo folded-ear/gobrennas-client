@@ -11,8 +11,8 @@ import TaskActions from "features/Planner/data/TaskActions";
 import history from "util/history";
 import Quantity from "views/common/Quantity";
 import SendToPlan from "features/RecipeLibrary/components/SendToPlan";
-import { IngredientRef } from "../global/types/types";
-import { useScale } from "../util/ScalingContext";
+import { IngredientRef } from "global/types/types";
+import { useScale } from "util/ScalingContext";
 
 const useStyles = makeStyles(() => ({
     quantity: {
@@ -26,7 +26,7 @@ const useStyles = makeStyles(() => ({
 }));
 
 interface AugmentProps {
-    text?: string | number,
+    text?: string | number | null,
     prefix?: string,
     suffix?: string,
 }
