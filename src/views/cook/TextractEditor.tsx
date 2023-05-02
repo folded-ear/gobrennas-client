@@ -1,11 +1,22 @@
-import {Box, Grid, IconButton, Typography,} from "@mui/material";
-import {makeStyles} from "@mui/styles";
-import {Close, RotateLeft, RotateRight,} from "@mui/icons-material";
-import PropTypes from "prop-types";
-import React from "react";
+import {
+    Box,
+    Grid,
+    IconButton,
+    Typography,
+} from "@mui/material";
+import { makeStyles } from "@mui/styles";
+import {
+    Close,
+    RotateLeft,
+    RotateRight,
+} from "@mui/icons-material";
+import React, {
+    MouseEventHandler,
+    ReactNode,
+} from "react";
 import useFluxStore from "../../data/useFluxStore";
 import WindowStore from "../../data/WindowStore";
-import {findSvg} from "../../util/findAncestorByName";
+import { findSvg } from "../../util/findAncestorByName";
 import getPositionWithin from "../../util/getPositionWithin";
 
 const useStyles = makeStyles({
@@ -34,29 +45,63 @@ const overlaps = (a, b) =>
     a.top + a.height >= b.top &&
     a.top <= b.top + b.height;
 
-const TextractEditor = ({image, textract, renderActions, onClose}) => {
+interface Rect {
+    x1: number
+    y1: number
+    x2?: number
+    y2?: number
+}
+
+interface Selection {
+    top: number
+    left: number
+    width?: number
+    height?: number
+}
+
+export interface Line {
+    text: string
+    box: Selection
+}
+
+export type RenderActionsForLines = (lines: string[]) => ReactNode;
+
+interface Props {
+    image: string
+    textract: Line[]
+    onClose: MouseEventHandler
+
+    renderActions: RenderActionsForLines
+}
+
+const TextractEditor: React.FC<Props> = ({
+                                             image,
+                                             textract,
+                                             renderActions,
+                                             onClose,
+                                         }) => {
     if (!textract) textract = [];
     const classes = useStyles();
     const windowSize = useFluxStore(
         () => WindowStore.getSize(),
-        [WindowStore]);
-    const [rotation, setRotation] = React.useState(0);
-    const [[width, height, maxWidth], setSize] = React.useState([100, 100, 100]);
+        [ WindowStore ]);
+    const [ rotation, setRotation ] = React.useState(0);
+    const [ [ width, height, maxWidth ], setSize ] = React.useState([ 100, 100, 100 ]);
     const scaleFactor = maxWidth / (rotation % 180 === 0 ? width : height);
     const scaledWidth = width * scaleFactor;
     const scaledHeight = height * scaleFactor;
-    const [drawnBox, setDrawnBox] = React.useState(null);
-    const [selectedRegion, setSelectedRegion] = React.useState(null);
-    const [partitionedLines, setPartitionedLines] = React.useState([textract, []]);
-    const [selectedText, setSelectedText] = React.useState([]);
+    const [ drawnBox, setDrawnBox ] = React.useState<Rect | null>(null);
+    const [ selectedRegion, setSelectedRegion ] = React.useState<Selection | null>(null);
+    const [ partitionedLines, setPartitionedLines ] = React.useState([ textract, [] ]);
+    const [ selectedText, setSelectedText ] = React.useState<string[]>([]);
     React.useEffect(
         () => {
             const partition = selectedRegion == null
-                ? [textract, []]
-                : textract.reduce((agg, t) => {
+                ? [ textract, [] ]
+                : textract.reduce((agg: Line[][], t) => {
                     agg[overlaps(selectedRegion, t.box) ? 1 : 0].push(t);
                     return agg;
-                }, [[], []]);
+                }, [ [], [] ]);
             setPartitionedLines(partition);
             const toSortBox = box => {
                 if (rotation === 90) {
@@ -115,15 +160,17 @@ const TextractEditor = ({image, textract, renderActions, onClose}) => {
         [textract, rotation, selectedRegion],
     );
     const getXY = e => {
-        const [x, y] = getPositionWithin(findSvg(e.target).parentNode, e);
+        const svgNode = findSvg(e.target);
+        if (!svgNode) throw new TypeError("No SVG parent found?!");
+        const [ x, y ] = getPositionWithin(svgNode.parentNode, e);
         if (rotation === 90) {
-            return [y, scaledHeight - x];
+            return [ y, scaledHeight - x ];
         } else if (rotation === 180) {
-            return [scaledWidth - x, scaledHeight - y];
+            return [ scaledWidth - x, scaledHeight - y ];
         } else if (rotation === 270) {
-            return [scaledWidth - y, x];
+            return [ scaledWidth - y, x ];
         } else {
-            return [x, y];
+            return [ x, y ];
         }
     };
     const startBoxDraw = e => {
@@ -135,6 +182,7 @@ const TextractEditor = ({image, textract, renderActions, onClose}) => {
         setSelectedRegion(null);
     };
     const updateBoxDraw = e => {
+        if (!drawnBox) throw new TypeError("Can't update a null box");
         const [x, y] = getXY(e);
         const b = {
             ...drawnBox,
@@ -142,7 +190,7 @@ const TextractEditor = ({image, textract, renderActions, onClose}) => {
             y2: y,
         };
         setDrawnBox(b);
-        const sel = {
+        const sel: Selection = {
             top: Math.min(b.y1, b.y2) / scaledHeight,
             left: Math.min(b.x1, b.x2) / scaledWidth,
         };
@@ -151,6 +199,7 @@ const TextractEditor = ({image, textract, renderActions, onClose}) => {
         setSelectedRegion(sel);
     };
     const endBoxDraw = e => {
+        if (!drawnBox) throw new TypeError("Can't end a null box");
         const [x, y] = getXY(e);
         if (drawnBox.x1 === x && drawnBox.y1 === y) {
             setSelectedRegion({
@@ -170,7 +219,7 @@ const TextractEditor = ({image, textract, renderActions, onClose}) => {
             width={box.width * width}
             height={box.height * height}
         />;
-    let rotationStyles = null;
+    let rotationStyles: React.CSSProperties | undefined = undefined;
     if (rotation === 90) {
         rotationStyles = {
             transformOrigin: "top left",
@@ -201,11 +250,11 @@ const TextractEditor = ({image, textract, renderActions, onClose}) => {
                             width={scaledWidth}
                             height={scaledHeight}
                             onLoad={e => {
-                                const img = e.target;
+                                const img = e.target as HTMLImageElement;
                                 setSize([
                                     img.naturalWidth,
                                     img.naturalHeight,
-                                    img.parentNode.clientWidth,
+                                    (img.parentNode as HTMLDivElement).clientWidth,
                                 ]);
                             }}
                             style={rotationStyles}
@@ -216,8 +265,8 @@ const TextractEditor = ({image, textract, renderActions, onClose}) => {
                             height={scaledHeight}
                             preserveAspectRatio="none"
                             onPointerDown={startBoxDraw}
-                            onPointerMove={drawnBox && updateBoxDraw}
-                            onPointerUp={drawnBox && endBoxDraw}
+                            onPointerMove={drawnBox ? updateBoxDraw : undefined}
+                            onPointerUp={drawnBox ? endBoxDraw : undefined}
                             strokeWidth={1}
                             className={classes.svg}
                             style={rotationStyles}
@@ -253,7 +302,7 @@ const TextractEditor = ({image, textract, renderActions, onClose}) => {
                     </Box>
                 </Grid>
                 <Grid item xs={12} sm={6}>
-                    <Box style={{position: "relative"}}>
+                    <Box style={{ position: "relative" }}>
                         <IconButton
                             onClick={onClose}
                             size={"small"}
@@ -264,7 +313,7 @@ const TextractEditor = ({image, textract, renderActions, onClose}) => {
                         >
                             <Close />
                         </IconButton>
-                        <Typography as={"p"} variant={"h6"}>
+                        <Typography component={"p"} variant={"h6"}>
                             Select some text on your photo.
                         </Typography>
                         <textarea
@@ -283,21 +332,6 @@ const TextractEditor = ({image, textract, renderActions, onClose}) => {
             </Grid>
         </Box>
     );
-};
-
-TextractEditor.propTypes = {
-    image: PropTypes.string.isRequired,
-    textract: PropTypes.arrayOf(PropTypes.shape({
-        text: PropTypes.string.isRequired,
-        box: PropTypes.shape({
-            top: PropTypes.number.isRequired,
-            left: PropTypes.number.isRequired,
-            width: PropTypes.number.isRequired,
-            height: PropTypes.number.isRequired,
-        }).isRequired,
-    })).isRequired,
-    renderActions: PropTypes.func.isRequired, // passed a Array<String>
-    onClose: PropTypes.func.isRequired,
 };
 
 export default TextractEditor;

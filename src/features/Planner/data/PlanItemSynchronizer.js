@@ -1,11 +1,11 @@
-import PlanApi from "./PlanApi";
+import useActivePlanner from "data/useActivePlanner";
 import useSynchronizer from "util/useSynchronizer";
-import useActivePlannerLO from "data/useActivePlannerLO";
+import PlanApi from "./PlanApi";
 
 function PlanItemSynchronizer() {
-    const lo = useActivePlannerLO();
-    const planId = lo.hasValue()
-        ? lo.getValueEnforcing().id
+    const plan = useActivePlanner().data;
+    const planId = plan
+        ? plan.id
         : null;
     useSynchronizer(
         [ "plan", planId, "items" ],

@@ -14,13 +14,14 @@ import Dispatcher from "data/dispatcher";
 import FriendStore from "data/FriendStore";
 import TaskActions from "features/Planner/data/TaskActions";
 import useFluxStore from "data/useFluxStore";
-import { useProfileLO } from "providers/Profile";
+import { useProfile } from "providers/Profile";
 import DeleteButton from "views/common/DeleteButton";
 import LoadingIndicator from "views/common/LoadingIndicator";
 import PlanBucketManager from "features/Planner/components/PlanBucketManager";
 import SidebarUnit from "features/Planner/components/SidebarUnit";
 import User from "views/user/User";
 import { Task } from "../data/TaskStore";
+import { ripLoadObject } from "../../../util/ripLoadObject";
 
 const LEVEL_NO_ACCESS = "NO_ACCESS";
 
@@ -29,21 +30,21 @@ interface Props {
 }
 
 const TaskListSidebar: React.FC<Props> = ({ list }) => {
-
-    const me = useProfileLO().getValueEnforcing();
-
+    const me = useProfile();
     const [ friendsLoading, friendList, friendsById ] = useFluxStore(
         () => {
-            const flo = FriendStore.getFriendsLO();
-            const loading = !flo.hasValue();
+            const {
+                data: friendList,
+            } = ripLoadObject(FriendStore.getFriendsLO());
+            const loading = friendList == null;
             return [
                 loading,
                 loading
                     ? []
-                    : flo.getValueEnforcing(),
+                    : friendList,
                 loading
                     ? {}
-                    : flo.getValueEnforcing().reduce((idx, f) => ({
+                    : friendList.reduce((idx, f) => ({
                         ...idx,
                         [f.id]: f,
                     }), {}),

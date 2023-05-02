@@ -1,6 +1,7 @@
 import React from "react";
 import useFriendLO from "data/useFriendLO";
 import User from "views/user/User";
+import { ripLoadObject } from "../../../util/ripLoadObject";
 
 interface Props {
     id: number,
@@ -8,7 +9,7 @@ interface Props {
 }
 
 const UserById: React.FC<Props> = ({ id, iconOnly }) => {
-    const user = useFriendLO(id).getValue();
+    const user = ripLoadObject(useFriendLO(id)).data;
     return user
         ? <User iconOnly={iconOnly} {...user} />
         : null;
