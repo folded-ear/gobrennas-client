@@ -1,9 +1,9 @@
 export interface UserType {
-    id: number
-    name: string
+    id: number | string
+    name: string | null
     provider: string
-    email: string
-    imageUrl?: string
+    email: string | null
+    imageUrl: string | null
     roles: string[]
 }
 

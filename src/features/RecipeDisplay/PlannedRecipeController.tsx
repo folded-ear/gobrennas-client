@@ -2,7 +2,6 @@ import useFluxStore from "data/useFluxStore";
 import TaskStore from "features/Planner/data/TaskStore";
 import LibraryStore from "features/RecipeLibrary/data/LibraryStore";
 import React from "react";
-import LoadObject from "util/LoadObject";
 import LoadingIndicator from "views/common/LoadingIndicator";
 import RecipeDetail from "./components/RecipeDetail";
 import { RouteComponentProps } from "react-router";
@@ -32,7 +31,6 @@ const PlannedRecipeController: React.FC<Props> = ({ match }) => {
         return <RecipeDetail
             recipe={lo.getValueEnforcing()}
             subrecipes={lo.getValueEnforcing().subrecipes}
-            ownerLO={LoadObject.empty()}
         />;
     }
 

@@ -6,7 +6,6 @@ import {
 } from "react-router-dom";
 import { API_BASE_URL } from "constants/index";
 import Dispatcher from "data/dispatcher";
-import LoadObject from "../../util/LoadObject";
 import LoadingIndicator from "views/common/LoadingIndicator";
 import RecipeDetail from "features/RecipeDisplay/components/RecipeDetail";
 import LibraryActions from "features/RecipeLibrary/data/LibraryActions";
@@ -58,7 +57,7 @@ const DoTheDance: React.FC<MatchParams> = ({
         anonymous
         recipe={recipeLO.getValueEnforcing()}
         subrecipes={recipeLO.hasValue() ? recipeLO.getValueEnforcing().subrecipes : null}
-        ownerLO={LoadObject.withValue(owner)}
+        owner={owner}
     />;
 };
 

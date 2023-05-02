@@ -29,17 +29,16 @@ import IngredientDirectionsRow from "./IngredientDirectionsRow";
 import ShareRecipe from "./ShareRecipe";
 import SubrecipeItem from "./SubrecipeItem";
 import SendToPlan from "features/RecipeLibrary/components/SendToPlan";
-import { UserType, } from "global/types/types";
+import { UserType } from "global/types/types";
 import type {
     Recipe,
-    Subrecipe
+    Subrecipe,
 } from "features/RecipeDisplay/types";
 import FavoriteIndicator from "features/Favorites/components/Indicator";
 import {
     ReentrantScalingProvider,
     useScale,
 } from "util/ScalingContext";
-import LoadObject from "util/LoadObject";
 import { SubHeader } from "./Subheader";
 import { extractRecipePhoto } from "features/RecipeDisplay/utils/extractRecipePhoto";
 
@@ -70,7 +69,7 @@ interface Props {
     subrecipes: Subrecipe[]
     anonymous?: boolean,
     mine?: boolean,
-    ownerLO: LoadObject<UserType>
+    owner?: Pick<UserType, "imageUrl" | "name" | "email">
     canFavorite?: boolean,
     canShare?: boolean,
     canSendToPlan?: boolean,
@@ -80,7 +79,7 @@ const RecipeDetail: React.FC<Props> = ({
                                            recipe,
                                            subrecipes,
                                            mine = false,
-                                           ownerLO,
+                                           owner,
                                            anonymous = false,
                                            canFavorite = false,
                                            canShare = false,
@@ -135,12 +134,12 @@ const RecipeDetail: React.FC<Props> = ({
                         <CloseButton
                             onClick={() => history.push("/library")} />
                     </>}
-                    {!mine && ownerLO.hasValue() && (loggedIn || windowSize.width > 600) &&
-                    <User
-                        size={loggedIn ? "small" : "large"}
-                        iconOnly
-                        {...ownerLO.getValueEnforcing()}
-                    />}
+                    {!mine && owner && (loggedIn || windowSize.width > 600) &&
+                        <User
+                            size={loggedIn ? "small" : "large"}
+                            iconOnly
+                            {...owner}
+                        />}
                 </Toolbar>
             </SubHeader>
             <Grid container spacing={1}>

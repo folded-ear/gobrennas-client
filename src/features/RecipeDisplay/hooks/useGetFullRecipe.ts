@@ -1,12 +1,12 @@
 import {
     ApolloError,
-    useQuery
+    useQuery,
 } from "@apollo/client";
 import { getFullRecipeQuery } from "../data/queries";
 import {
     FullRecipe,
     Recipe,
-    Subrecipe
+    Subrecipe,
 } from "features/RecipeDisplay/types";
 import * as React from "react";
 import { IngredientRef } from "global/types/types";
@@ -23,21 +23,21 @@ export const useGetFullRecipe = (id: string) : UseQueryResult<FullRecipe> => {
         { variables: { id: id } },
     );
 
-    const result = data?.library?.getRecipeById || null
+    const result = data?.library?.getRecipeById || null;
 
     const ingredients: IngredientRef[] = React.useMemo(() => {
-        if(!result || !result.ingredients) return []
+        if (!result || !result.ingredients) return [];
         return result.ingredients.map(item => ({
-                raw: item.raw,
-                preparation: item.preparation,
-                quantity: item.quantity?.quantity || null,
-                units: item.quantity?.units?.name || null,
-                ingredient: item.ingredient
-            }))
+            raw: item.raw,
+            preparation: item.preparation,
+            quantity: item.quantity?.quantity || null,
+            units: item.quantity?.units?.name || null,
+            ingredient: item.ingredient,
+        }));
     },[result]);
 
     const subrecipes: Subrecipe[] = React.useMemo(() => {
-        if(!result || !result.subrecipes) return []
+        if (!result || !result.subrecipes) return [];
         return result.subrecipes.map(recipe => ({
             id: parseInt(recipe.id, 10),
             name: recipe.name,
@@ -50,19 +50,17 @@ export const useGetFullRecipe = (id: string) : UseQueryResult<FullRecipe> => {
                 units: item.quantity?.units?.name || null,
                 ingredient: item.ingredient || null,
                 ingredientId: 0,
-                uomId: ""
-            }))
-        }))
-    },[result])
-
-    console.log(result)
+                uomId: "",
+            })),
+        }));
+    }, [ result ]);
 
     if(!result) {
         return {
             loading: false,
             error: true,
             data: null,
-        }
+        };
     }
 
     const recipe: Recipe = {
@@ -76,15 +74,15 @@ export const useGetFullRecipe = (id: string) : UseQueryResult<FullRecipe> => {
         photo: result.photo?.url || null,
         photoFocus: result.photo?.focus || [],
         totalTime: result.totalTime,
-        yield: result.yield
-    }
+        yield: result.yield,
+    };
 
     const fullRecipe: FullRecipe = {
         mine: false,
-        ownerId: result.owner.id,
+        owner: result.owner,
         recipe,
-        subrecipes
-    }
+        subrecipes,
+    };
 
     return {
         loading,

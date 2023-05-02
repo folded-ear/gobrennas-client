@@ -1,6 +1,7 @@
 import {
     Ingredient,
-    IngredientRef
+    IngredientRef,
+    UserType,
 } from "global/types/types";
 
 export interface Recipe extends Ingredient {
@@ -39,7 +40,7 @@ export type FullRecipe = {
     recipe: Recipe
     subrecipes: Subrecipe[]
     mine: boolean
-    ownerId: string
+    owner: Omit<UserType, "provider" | "roles">
 }
 
 export interface SharedRecipe {
