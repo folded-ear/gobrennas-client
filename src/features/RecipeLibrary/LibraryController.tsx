@@ -4,8 +4,8 @@ import { useProfileLO } from "providers/Profile";
 import qs from "qs";
 import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
-import { gql } from "../../__generated__";
-import { LibrarySearchScope } from "../../__generated__/graphql";
+import { gql } from "__generated__";
+import { LibrarySearchScope } from "__generated__/graphql";
 
 const SEARCH_RECIPES = gql(`
     query lib(

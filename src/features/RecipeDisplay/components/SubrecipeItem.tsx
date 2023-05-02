@@ -8,8 +8,8 @@ import React from "react";
 import { formatDuration } from "util/time";
 import CollapseIconButton from "global/components/CollapseIconButton";
 import IngredientDirectionsRow from "./IngredientDirectionsRow";
-import { ScalingProvider } from "../../util/ScalingContext";
-import { Recipe } from "../../global/types/types";
+import { ScalingProvider } from "util/ScalingContext";
+import { Subrecipe } from "features/RecipeDisplay/types";
 
 const useStyles = makeStyles({
     time: {
@@ -20,7 +20,7 @@ const useStyles = makeStyles({
 });
 
 interface Props {
-    recipe: Recipe
+    recipe: Subrecipe
     loggedIn?: boolean
 }
 

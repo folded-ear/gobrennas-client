@@ -42,14 +42,17 @@ const User: React.FC<Props> = ({
                                }) => {
     const classes = useStyles();
     const avatar = <Avatar
-        src={imageUrl}
+        src={imageUrl || undefined}
         className={classes[size && classes.hasOwnProperty(size) ? size : inline ? "inline" : "small"]}
     >
         {(name || email || "U").charAt(0).toUpperCase()}
     </Avatar>;
     if (inline) return avatar;
     return <Box
-        title={iconOnly ? name ? `${name} <${email}>` : email : email}
+        title={(iconOnly
+                ? name ? `${name} <${email}>` : email
+                : email
+        ) || undefined}
         className={classes.root}
     >
         {avatar}

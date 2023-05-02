@@ -5,14 +5,13 @@ import {
     Redirect,
 } from "react-router-dom";
 import { API_BASE_URL } from "constants/index";
-import { buildFullRecipeLO } from "containers/Recipe";
 import Dispatcher from "data/dispatcher";
-import LoadObject from "../../util/LoadObject";
-import LoadingIndicator from "../common/LoadingIndicator";
-import RecipeDetail from "./RecipeDetail";
+import LoadingIndicator from "views/common/LoadingIndicator";
+import RecipeDetail from "features/RecipeDisplay/components/RecipeDetail";
 import LibraryActions from "features/RecipeLibrary/data/LibraryActions";
-import { UserType } from "../../global/types/types";
+import { UserType } from "global/types/types";
 import { Maybe } from "graphql/jsutils/Maybe";
+import { recipeLoById } from "features/RecipeDisplay/utils/recipeLoById";
 
 const axios = BaseAxios.create({
     baseURL: `${API_BASE_URL}/shared/recipe`,
@@ -53,12 +52,12 @@ const DoTheDance: React.FC<MatchParams> = ({
     if (!owner) {
         return <LoadingIndicator />;
     }
-    const lo = buildFullRecipeLO(parseInt(id));
+    const recipeLO = recipeLoById(parseInt(id));
     return <RecipeDetail
         anonymous
-        recipeLO={lo}
-        subrecipes={lo.hasValue() ? lo.getValueEnforcing().subrecipes : null}
-        ownerLO={LoadObject.withValue(owner)}
+        recipe={recipeLO.getValueEnforcing()}
+        subrecipes={recipeLO.hasValue() ? recipeLO.getValueEnforcing().subrecipes : null}
+        owner={owner}
     />;
 };
 
@@ -67,7 +66,7 @@ interface Props {
     match: match<MatchParams>
 }
 
-const SharedRecipe: React.FC<Props> = props => {
+export const SharedRecipeController: React.FC<Props> = props => {
     const {
         authenticated,
         match: {
@@ -83,5 +82,3 @@ const SharedRecipe: React.FC<Props> = props => {
     }
     return <DoTheDance id={id} {...params} />;
 };
-
-export default SharedRecipe;

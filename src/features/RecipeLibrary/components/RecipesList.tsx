@@ -19,7 +19,7 @@ import {
     useScrollTrigger,
 } from "@mui/material";
 import { makeStyles } from "@mui/styles";
-import RecipeCard, { RecipeType } from "features/RecipeLibrary/components/RecipeCard";
+import RecipeCard from "features/RecipeLibrary/components/RecipeCard";
 import { useIsMobile } from "providers/IsMobile";
 import React, {
     ReactNode,
@@ -90,7 +90,7 @@ interface RecipesListProps {
     scope?: LibrarySearchScope,
     isLoading: boolean,
     isComplete: boolean,
-    recipes?: Array<RecipeType>,
+    recipes?: Array<any>,
 
     onSearch(filter: string, scope: LibrarySearchScope): void,
 

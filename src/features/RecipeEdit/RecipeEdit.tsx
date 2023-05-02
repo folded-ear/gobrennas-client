@@ -8,7 +8,7 @@ import { handleSave as handleSaveCopy } from "./RecipeAdd";
 import RecipeForm from "./RecipeForm";
 import PageBody from "views/common/PageBody";
 import DeleteButton from "views/common/DeleteButton";
-import { Recipe } from "global/types/types";
+import { Recipe } from "features/RecipeEdit/types";
 import LoadObject from "../../util/LoadObject";
 
 const handleDelete = (id) => {

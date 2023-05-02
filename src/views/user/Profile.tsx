@@ -19,7 +19,7 @@ const Profile: React.FC<Props> = ({
     return <PageBody>
         {user.imageUrl && <img
             src={user.imageUrl}
-            alt={user.name}
+            alt={user.name || user.email || undefined}
             title="Holy moley, you're attractive!"
         />}
         <div className="profile-name">

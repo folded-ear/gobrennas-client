@@ -1,21 +1,9 @@
-import Dispatcher from "data/dispatcher";
-import useFluxStore from "data/useFluxStore";
-import TaskActions from "features/Planner/data/TaskActions";
-import TaskStore from "features/Planner/data/TaskStore";
-import LibraryStore from "features/RecipeLibrary/data/LibraryStore";
-import React from "react";
-import LoadObject from "util/LoadObject";
-import LoadingIndicator from "../views/common/LoadingIndicator";
-import RecipeDetail from "../views/cook/RecipeDetail";
-import { RouteComponentProps } from "react-router";
-import { Recipe as RecipeType } from "../global/types/types";
+import LoadObject from "../../../util/LoadObject";
+import TaskStore from "../../Planner/data/TaskStore";
+import LibraryStore from "../../RecipeLibrary/data/LibraryStore";
+import { RecipeFromTask } from "features/RecipeDisplay/types";
 
-export interface RecipeFromTask extends RecipeType {
-    subtaskIds: number[]
-    subrecipes: RecipeType[]
-}
-
-export function buildFullRecipeLO(itemLO: LoadObject<any>): LoadObject<RecipeFromTask> {
+export const recipeLoByItemLo = (itemLO: LoadObject<any>): LoadObject<RecipeFromTask> => {
     let lo = itemLO;
     if (!lo.hasValue()) return lo;
 
@@ -85,61 +73,4 @@ export function buildFullRecipeLO(itemLO: LoadObject<any>): LoadObject<RecipeFro
         lo = lo.loading();
     }
     return lo;
-}
-
-export const useLoadedPlan = (pid: number) => {
-    // ensure it's loaded
-    const allPlansLO = useFluxStore(
-        () => TaskStore.getListIdsLO(),
-        [
-            TaskStore,
-        ],
-    );
-    // ensure it's selected
-    React.useEffect(
-        () => {
-            if (allPlansLO.hasValue()) {
-                // The contract implies that effects trigger after the render
-                // cycle completes, but doesn't guarantee it. The setTimeout
-                // avoids a reentrant dispatch if the effect isn't deferred.
-                setTimeout(() => Dispatcher.dispatch({
-                    type: TaskActions.SELECT_LIST,
-                    id: pid,
-                }));
-            }
-        },
-        [ allPlansLO, pid ],
-    );
 };
-
-type Props = RouteComponentProps<{
-    pid: string
-    rid: string
-}>;
-
-const PlannedRecipe: React.FC<Props> = ({ match }) => {
-    const rid = parseInt(match.params.rid, 10);
-    const lo = useFluxStore(
-        () => buildFullRecipeLO(TaskStore.getTaskLO(rid)),
-        [
-            TaskStore,
-            LibraryStore,
-        ],
-        [ rid ],
-    );
-
-    const pid = parseInt(match.params.pid, 10);
-    useLoadedPlan(pid);
-
-    if (lo.hasValue()) {
-        return <RecipeDetail
-            recipeLO={lo}
-            subrecipes={lo.getValueEnforcing().subrecipes}
-            ownerLO={LoadObject.empty()}
-        />;
-    }
-
-    return <LoadingIndicator />;
-};
-
-export default PlannedRecipe;

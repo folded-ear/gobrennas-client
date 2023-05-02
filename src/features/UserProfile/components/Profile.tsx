@@ -10,7 +10,7 @@ export const Profile: React.FC<Props> = ({ currentUser }) => {
         <>
             {currentUser.imageUrl && <img
                 src={currentUser.imageUrl}
-                alt={currentUser.name}
+                alt={currentUser.name || currentUser.email || undefined}
                 title="Holy moley, you're attractive!"
             />
             }

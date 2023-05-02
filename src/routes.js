@@ -2,12 +2,12 @@ import React from "react";
 import {Redirect} from "react-router-dom";
 import {LibraryController as Library} from "features/RecipeLibrary/LibraryController";
 import {PlannerController as Planner} from "features/Planner/PlannerController";
-import PlannedBucket from "./containers/PlannedBucket";
-import PlannedRecipe from "./containers/PlannedRecipe";
-import Recipe from "./containers/Recipe";
+import PlannedBucketController from "./features/RecipeDisplay/PlannedBucketController";
+import PlannedRecipeController from "./features/RecipeDisplay/PlannedRecipeController";
+import Recipe from "./features/RecipeDisplay/RecipeController";
 import RecipeEditController from "./features/RecipeEdit/RecipeEditController";
 import Shop from "./containers/Shop";
-import SharedRecipe from "./views/cook/SharedRecipe";
+import {SharedRecipeController} from "./features/RecipeDisplay/SharedRecipeController";
 import Landing from "./views/Landing";
 import Pantry from "./views/pantry/Pantry";
 import OAuth2RedirectHandler from "views/user/OAuth2RedirectHandler";
@@ -21,7 +21,7 @@ const routes = {
         { path: "/", component: Landing, exact: true },
         { path: "/foodinger", component: Foodinger },
         { path: "/post-oauth2/redirect", component: OAuth2RedirectHandler },
-        { path: "/share/recipe/:slug/:secret/:id", component: SharedRecipe },
+        { path: "/share/recipe/:slug/:secret/:id", component: SharedRecipeController },
     ],
     private: [
         {path: "/user-profile",  component: UserProfileView},
@@ -33,8 +33,8 @@ const routes = {
         {path: "/add", component: RecipeAddController},
         // eslint-disable-next-line react/display-name
         {path: "/tasks", component: () => <Redirect to="/plan" />},
-        {path: "/plan/:pid/recipe/:rid", component: PlannedRecipe},
-        {path: "/plan/:pid/bucket/:bid", component: PlannedBucket},
+        {path: "/plan/:pid/recipe/:rid", component: PlannedRecipeController},
+        {path: "/plan/:pid/bucket/:bid", component: PlannedBucketController},
         {path: "/plan", component: Planner},
         {path: "/shop", component: Shop},
         {path: "/pantry", component: Pantry},

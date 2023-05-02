@@ -1,14 +1,14 @@
 export interface UserType {
-    id: number
-    name: string
+    id: number | string
+    name: string | null
     provider: string
-    email: string
-    imageUrl?: string
+    email: string | null
+    imageUrl: string | null
     roles: string[]
 }
 
 export interface Ingredient {
-    id: number
+    id: number | string
     name: string
     type?: "Recipe" | "PantryItem"
 }
@@ -19,35 +19,17 @@ export interface PantryItem extends Ingredient {
 
 export interface IngredientRef {
     raw?: string
-    quantity?: number
-    preparation?: string
-    units?: string
+    quantity?: number | null
+    preparation?: string | null
+    units?: string | null
     uomId?: string | number
-    ingredient?: string | Ingredient
+    ingredient?: string | Ingredient | null
     ingredientId?: number
 
     /**
      * On the shopping list, napalm entries will only have name, not raw.
      */
     name?: string
-}
-
-export interface Recipe extends Ingredient {
-    externalUrl: string
-    ingredients: IngredientRef[]
-    labels: string[]
-    directions: string
-    yield: number
-    totalTime: number
-    calories: number
-    photo: string
-    photoFocus: number[]
-}
-
-export interface SharedRecipe {
-    id: number
-    secret: string
-    slug: string
 }
 
 export interface Quantity {

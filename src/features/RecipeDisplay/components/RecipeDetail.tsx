@@ -1,50 +1,46 @@
 import {
     Box,
-    CircularProgress,
     Grid,
     Toolbar,
     Typography,
-    useScrollTrigger,
 } from "@mui/material";
 import makeStyles from "@mui/styles/makeStyles";
 import { PostAdd } from "@mui/icons-material";
-import React, {
-    CSSProperties,
-    PropsWithChildren,
-} from "react";
-import Dispatcher from "../../data/dispatcher";
-import RecipeActions from "../../data/RecipeActions";
-import RecipeApi from "../../data/RecipeApi";
-import useWindowSize from "../../data/useWindowSize";
-import history from "../../util/history";
-import { formatDuration } from "../../util/time";
-import CloseButton from "../common/CloseButton";
-import CopyButton from "../common/CopyButton";
-import DeleteButton from "../common/DeleteButton";
-import EditButton from "../common/EditButton";
-import FoodingerFab from "../common/FoodingerFab";
-import PageBody from "../common/PageBody";
-import RecipeInfo from "../common/RecipeInfo";
-import Source from "../common/Source";
-import LabelItem from "../LabelItem";
+import React from "react";
+import Dispatcher from "data/dispatcher";
+import RecipeActions from "data/RecipeActions";
+import RecipeApi from "data/RecipeApi";
+import useWindowSize from "data/useWindowSize";
+import history from "util/history";
+import { formatDuration } from "util/time";
+import CloseButton from "views/common/CloseButton";
+import CopyButton from "views/common/CopyButton";
+import DeleteButton from "views/common/DeleteButton";
+import EditButton from "views/common/EditButton";
+import FoodingerFab from "views/common/FoodingerFab";
+import PageBody from "views/common/PageBody";
+import RecipeInfo from "views/common/RecipeInfo";
+import Source from "views/common/Source";
+import LabelItem from "global/components/LabelItem";
 import ItemImage from "features/RecipeLibrary/components/ItemImage";
 import ItemImageUpload from "features/RecipeLibrary/components/ItemImageUpload";
-import User from "../user/User";
+import User from "views/user/User";
 import IngredientDirectionsRow from "./IngredientDirectionsRow";
 import ShareRecipe from "./ShareRecipe";
 import SubrecipeItem from "./SubrecipeItem";
 import SendToPlan from "features/RecipeLibrary/components/SendToPlan";
-import {
+import { UserType } from "global/types/types";
+import type {
     Recipe,
-    UserType,
-} from "global/types/types";
-import FavoriteIndicator from "../../features/Favorites/components/Indicator";
+    Subrecipe,
+} from "features/RecipeDisplay/types";
+import FavoriteIndicator from "features/Favorites/components/Indicator";
 import {
     ReentrantScalingProvider,
     useScale,
-} from "../../util/ScalingContext";
-import LoadObject from "../../util/LoadObject";
-import { HEADER_HEIGHT } from "../../constants/layout";
+} from "util/ScalingContext";
+import { SubHeader } from "./Subheader";
+import { extractRecipePhoto } from "features/RecipeDisplay/utils/extractRecipePhoto";
 
 const useStyles = makeStyles(theme => ({
     name: {
@@ -68,70 +64,22 @@ const useStyles = makeStyles(theme => ({
     },
 }));
 
-const SubHeader: React.FC<PropsWithChildren> = ({ children }) => {
-    const windowSize = useWindowSize();
-    const [ height, setHeight ] = React.useState<CSSProperties["height"]>("auto");
-    const [ width, setWidth ] = React.useState<CSSProperties["width"]>("auto");
-    const inner = React.useRef<HTMLDivElement>();
-    React.useLayoutEffect(() => {
-        setHeight(inner?.current?.clientHeight);
-        setWidth((inner?.current?.parentNode as HTMLElement).clientWidth);
-    }, [ windowSize.width ]);
-    const trigger = useScrollTrigger({
-        disableHysteresis: true,
-        // roughly the spacing 2
-        threshold: 20,
-    });
-
-    return <div
-        style={{height}}
-    >
-        <Box
-            boxShadow={trigger ? 6 : 0}
-            ref={inner}
-            style={trigger ? {
-                position: "fixed",
-                width,
-                top: HEADER_HEIGHT,
-                // appbar zindex
-                zIndex: 1100,
-            } : undefined}
-        >
-            {children}
-        </Box>
-    </div>;
-};
-
-function extractRecipePhoto(recipe: any) { // todo: remove
-    if (!recipe || !recipe.photo) return null;
-    if (typeof recipe.photo === "string") {
-        // REST supplied
-        return {
-            url: recipe.photo,
-            focus: recipe.photoFocus,
-        };
-    } else {
-        // GraphQL supplied
-        return recipe.photo;
-    }
-}
-
 interface Props {
-    recipeLO: LoadObject<Recipe>
-    subrecipes?: Recipe[]
+    recipe: Recipe
+    subrecipes: Subrecipe[]
     anonymous?: boolean,
     mine?: boolean,
-    ownerLO: LoadObject<UserType>
+    owner?: Pick<UserType, "imageUrl" | "name" | "email">
     canFavorite?: boolean,
     canShare?: boolean,
     canSendToPlan?: boolean,
 }
 
 const RecipeDetail: React.FC<Props> = ({
-                                           recipeLO,
+                                           recipe,
                                            subrecipes,
                                            mine = false,
-                                           ownerLO,
+                                           owner,
                                            anonymous = false,
                                            canFavorite = false,
                                            canShare = false,
@@ -149,7 +97,6 @@ const RecipeDetail: React.FC<Props> = ({
         mine = false;
     }
 
-    const recipe = recipeLO.getValueEnforcing();
     const photo = extractRecipePhoto(recipe);
 
     const labelsToDisplay = recipe.labels && recipe.labels
@@ -165,9 +112,9 @@ const RecipeDetail: React.FC<Props> = ({
                         variant="h2"
                     >
                         {recipe.name}
-                        {recipeLO.isLoading() && <Box display="inline" ml={2}>
-                            <CircularProgress size={20} />
-                        </Box>}
+                        {/*{recipeLO.isLoading() && <Box display="inline" ml={2}>*/}
+                        {/*    <CircularProgress size={20} />*/}
+                        {/*</Box>}*/}
                     </Typography>
                     {loggedIn && <>
                         <CopyButton
@@ -187,12 +134,12 @@ const RecipeDetail: React.FC<Props> = ({
                         <CloseButton
                             onClick={() => history.push("/library")} />
                     </>}
-                    {!mine && ownerLO.hasValue() && (loggedIn || windowSize.width > 600) &&
-                    <User
-                        size={loggedIn ? "small" : "large"}
-                        iconOnly
-                        {...ownerLO.getValueEnforcing()}
-                    />}
+                    {!mine && owner && (loggedIn || windowSize.width > 600) &&
+                        <User
+                            size={loggedIn ? "small" : "large"}
+                            iconOnly
+                            {...owner}
+                        />}
                 </Toolbar>
             </SubHeader>
             <Grid container spacing={1}>

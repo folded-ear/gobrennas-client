@@ -7,13 +7,13 @@ import {
     Typography,
 } from "@mui/material";
 import React from "react";
-import Directions from "../common/Directions";
-import IngredientItem from "../IngredientItem";
-import { Recipe } from "../../global/types/types";
-import { useScaleOptions } from "../../util/ScalingContext";
+import Directions from "views/common/Directions";
+import type { Subrecipe } from "features/RecipeDisplay/types";
+import { useScaleOptions } from "util/ScalingContext";
+import IngredientItem from "views/IngredientItem";
 
 interface Props {
-    recipe: Recipe,
+    recipe: Subrecipe,
     loggedIn?: boolean,
     hideHeadings?: boolean,
 }

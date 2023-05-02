@@ -1,19 +1,10 @@
-import useFluxStore from "data/useFluxStore";
-import getBucketLabel from "features/Planner/components/getBucketLabel";
-import TaskStore from "features/Planner/data/TaskStore";
-import LibraryStore from "features/RecipeLibrary/data/LibraryStore";
-import React from "react";
 import LoadObject from "util/LoadObject";
-import LoadingIndicator from "views/common/LoadingIndicator";
-import RecipeDetail from "views/cook/RecipeDetail";
-import {
-    buildFullRecipeLO as buildSingleTaskRecipeLO,
-    RecipeFromTask,
-    useLoadedPlan,
-} from "./PlannedRecipe";
-import { RouteComponentProps } from "react-router";
+import { RecipeFromTask } from "features/RecipeDisplay/types";
+import TaskStore from "features/Planner/data/TaskStore";
+import { recipeLoByItemLo as buildSingleTaskRecipeLO } from "features/RecipeDisplay/utils/recipeLoByItemLo";
+import getBucketLabel from "features/Planner/components/getBucketLabel";
 
-export const buildFullRecipeLO = (planId: number, bucketId: number): LoadObject<RecipeFromTask> => {
+export const recipeLoByItemAndBucket = (planId: number, bucketId: number): LoadObject<RecipeFromTask> => {
     const plan = TaskStore.getTaskLO(planId);
     if (!plan.hasValue()) {
         // no value means value's type is irrelevant
@@ -54,35 +45,3 @@ export const buildFullRecipeLO = (planId: number, bucketId: number): LoadObject<
         } : r;
     });
 };
-
-type Props = RouteComponentProps<{
-    pid: string
-    bid: string
-}>;
-
-const PlannedBucket: React.FC<Props> = ({ match }) => {
-    const pid = parseInt(match.params.pid, 10);
-    const bid = parseInt(match.params.bid, 10);
-    const lo = useFluxStore(
-        () => buildFullRecipeLO(pid, bid),
-        [
-            TaskStore,
-            LibraryStore,
-        ],
-        [ pid, bid ],
-    );
-
-    useLoadedPlan(pid);
-
-    if (lo.hasValue()) {
-        return <RecipeDetail
-            recipeLO={lo}
-            subrecipes={lo.getValueEnforcing().subrecipes}
-            ownerLO={LoadObject.empty()}
-        />;
-    }
-
-    return <LoadingIndicator />;
-};
-
-export default PlannedBucket;
