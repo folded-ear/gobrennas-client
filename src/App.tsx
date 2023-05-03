@@ -9,11 +9,7 @@ import {
 } from "@mui/material/styles";
 import theme from "./theme";
 import CssBaseline from "@mui/material/CssBaseline";
-import NewVersionAvailable from "./views/NewVersionAvailable";
-import Header from "./Header";
-import RoutingSwitch from "./RoutingSwitch";
-import routes from "./routes";
-import SnackPack from "./views/common/SnackPack";
+import { NavigationController } from "features/Navigation/NavigationController";
 
 declare module "@mui/styles/defaultTheme" {
   // eslint-disable-next-line @typescript-eslint/no-empty-interface
@@ -28,15 +24,16 @@ function App() {
         <StyledEngineProvider injectFirst>
             <ThemeProvider theme={theme}>
                 <CssBaseline />
-                {authenticated && newVersionAvailable && <NewVersionAvailable />}
-                <Header
-                    authenticated={authenticated}
-                />
-                <RoutingSwitch
-                    routes={routes}
-                    authenticated={authenticated}
-                />
-                <SnackPack />
+                <NavigationController />
+                {/*{authenticated && newVersionAvailable && <NewVersionAvailable />}*/}
+                {/*<Header*/}
+                {/*    authenticated={authenticated}*/}
+                {/*/>*/}
+                {/*<RoutingSwitch*/}
+                {/*    routes={routes}*/}
+                {/*    authenticated={authenticated}*/}
+                {/*/>*/}
+                {/*<SnackPack />*/}
             </ThemeProvider>
         </StyledEngineProvider>
     );
