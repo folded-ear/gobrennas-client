@@ -10,6 +10,7 @@ import {
 } from "features/RecipeDisplay/types";
 import * as React from "react";
 import { IngredientRef } from "global/types/types";
+import { useProfileId } from "providers/Profile";
 
 type UseQueryResult<T> = {
     loading: boolean,
@@ -22,6 +23,7 @@ export const useGetFullRecipe = (id: string) : UseQueryResult<FullRecipe> => {
         getFullRecipeQuery,
         { variables: { id: id } },
     );
+    const myId = useProfileId();
 
     const result = data?.library?.getRecipeById || null;
 
@@ -78,7 +80,7 @@ export const useGetFullRecipe = (id: string) : UseQueryResult<FullRecipe> => {
     };
 
     const fullRecipe: FullRecipe = {
-        mine: false,
+        mine: result.owner.id === myId.toString(),
         owner: result.owner,
         recipe,
         subrecipes,
