@@ -1,6 +1,6 @@
 import Dispatcher from "data/dispatcher";
 import PantryItemActions from "data/PantryItemActions";
-import PreferencesStore from "data/PreferencesStore";
+import preferencesStore from "data/preferencesStore";
 import ShoppingActions from "data/ShoppingActions";
 import dotProp from "dot-prop-immutable";
 import PlanItemStatus, { willStatusDelete } from "features/Planner/data/PlanItemStatus";
@@ -871,12 +871,12 @@ function selectDefaultList(state) {
     const lids = state.topLevelIds.getLoadObject().getValueEnforcing();
     if (lids.length > 0) {
         // see if there's a preferred active list
-        let alid = PreferencesStore.getActiveTaskList();
-        if (lids.find(id => id === alid) == null) {
+        let activePlanId = preferencesStore.getActivePlan();
+        if (lids.find(id => id === activePlanId) == null) {
             // auto-select the first one
-            alid = lids[0];
+            activePlanId = lids[0];
         }
-        state = selectList(state, alid);
+        state = selectList(state, activePlanId);
     }
     return state;
 }
