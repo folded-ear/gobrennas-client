@@ -17,8 +17,8 @@ import { PlanItem } from "../../features/Planner/data/TaskStore";
 import { Quantity } from "global/types/types";
 
 export enum ShopItemType {
-    INGREDIENT = "ingredient",
-    TASK = "task",
+    INGREDIENT,
+    PLAN_ITEM,
 }
 
 export interface ShopItemTuple extends ItemProps {
@@ -66,9 +66,9 @@ class ShopList extends React.PureComponent<ShopListProps> {
             <Typography variant="h2">{plan.name}</Typography>
             <List>
                 {itemTuples.map(it => {
-                    if (it._type === "ingredient") {
+                    if (it._type === ShopItemType.INGREDIENT) {
                         return <Ingredient
-                            key={it.id + it._type}
+                            key={it.id + "-ing-item"}
                             item={it}
                             active={it.expanded}
                         />;

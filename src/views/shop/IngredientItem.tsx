@@ -18,6 +18,7 @@ import {
     ItemProps,
     TupleProps,
 } from "./types";
+import { ShopItemType } from "views/shop/ShopList";
 
 type IngredientItemProps = TupleProps & {
     item: ItemProps & BaseItemProp & {
@@ -91,7 +92,7 @@ class IngredientItem extends React.PureComponent<IngredientItemProps> {
         Dispatcher.dispatch({
             type: ShoppingActions.FOCUS,
             id: item.id,
-            itemType: "ingredient",
+            itemType: ShopItemType.INGREDIENT,
         });
     }
 

@@ -23,20 +23,20 @@ import { Maybe } from "graphql/jsutils/Maybe";
 import { Quantity } from "global/types/types";
 import { ripLoadObject } from "util/ripLoadObject";
 
-interface TaskTuple extends PlanItem, ItemProps {
+interface ItemTuple extends PlanItem, ItemProps {
 }
 
-interface PathedTaskTuple extends TaskTuple {
+interface PathedItemTuple extends ItemTuple {
     path: BaseItemProp[],
 }
 
-function gatherLeaves(item: PlanItem): PathedTaskTuple[] {
+function gatherLeaves(item: PlanItem): PathedItemTuple[] {
     if (!isParent(item)) {
         if (isSection(item)) return [];
         return [ {
             ...item,
             path: [],
-        } as unknown as PathedTaskTuple ];
+        } as unknown as PathedItemTuple ];
     }
     return TaskStore.getSubtaskLOs(item.id)
         .map(lo => ripLoadObject(lo))
@@ -68,7 +68,7 @@ interface Ingredient {
 
 interface OrderableIngredient {
     id: number
-    items: PathedTaskTuple[]
+    items: PathedItemTuple[]
     data?: Ingredient
     loading: boolean
 }
@@ -85,7 +85,7 @@ function groupItems(plans: PlanItem[],
         }
     }
     const byIngredient = groupBy(leaves, it => it.ingredientId);
-    const unparsed: PathedTaskTuple[] = [];
+    const unparsed: PathedItemTuple[] = [];
     if (byIngredient.has(undefined)) {
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         unparsed.push(...byIngredient.get(undefined)!
@@ -148,7 +148,7 @@ function groupItems(plans: PlanItem[],
         });
         if (expanded) {
             theTree.push(...items.map(it => ({
-                _type: ShopItemType.TASK,
+                _type: ShopItemType.PLAN_ITEM,
                 depth: 1,
                 ingredient,
                 ...it,
@@ -157,7 +157,7 @@ function groupItems(plans: PlanItem[],
     }
     // add the garbage at the bottom
     theTree.push(...unparsed.map(it => ({
-        _type: ShopItemType.TASK,
+        _type: ShopItemType.PLAN_ITEM,
         depth: 0,
         ...it,
     })));

@@ -1,10 +1,11 @@
+import TaskStore from "features/Planner/data/TaskStore";
 import { ReduceStore } from "flux/utils";
 import PropTypes from "prop-types";
 import typedStore from "util/typedStore";
+import { ShopItemType } from "../views/shop/ShopList";
 import Dispatcher from "./dispatcher";
 import PantryItemActions from "./PantryItemActions";
 import ShoppingActions from "./ShoppingActions";
-import TaskStore from "features/Planner/data/TaskStore";
 
 const placeFocus = (state, id, type) => ({
     ...state,
@@ -34,13 +35,13 @@ class ShoppingStore extends ReduceStore {
                 this.__dispatcher.waitFor([
                     TaskStore.getDispatchToken(),
                 ]);
-                state = placeFocus(state, TaskStore.getActiveTask().id, "task");
+                state = placeFocus(state, TaskStore.getActiveTask().id, ShopItemType.PLAN_ITEM);
                 return state;
             }
 
             case ShoppingActions.FOCUS: {
                 state = placeFocus(state, action.id, action.itemType);
-                if (action.itemType === "ingredient") {
+                if (action.itemType === ShopItemType.INGREDIENT) {
                     state.expandedId = state.expandedId === action.id
                         ? null
                         : action.id;
@@ -53,7 +54,7 @@ class ShoppingStore extends ReduceStore {
                     ...state,
                     activeItem: {
                         id: action.id,
-                        type: "ingredient",
+                        type: ShopItemType.INGREDIENT,
                     },
                 };
             }
@@ -94,7 +95,10 @@ class ShoppingStore extends ReduceStore {
 ShoppingStore.stateTypes = {
     activeItem: PropTypes.shape({
         id: PropTypes.number.isRequired,
-        type: PropTypes.oneOf(["ingredient", "task"]).isRequired,
+        type: PropTypes.oneOf([
+            ShopItemType.INGREDIENT,
+            ShopItemType.PLAN_ITEM,
+        ]).isRequired,
     }),
     expandedId: PropTypes.number,
 };

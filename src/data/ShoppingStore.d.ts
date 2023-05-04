@@ -1,10 +1,11 @@
 import FluxReduceStore from "flux/lib/FluxReduceStore";
-import { FluxAction } from "../global/types/types";
+import { FluxAction } from "global/types/types";
 import { Maybe } from "graphql/jsutils/Maybe";
+import { ShopItemType } from "views/shop/ShopList";
 
 export interface Item {
     id: number
-    type: "ingredient" | "task"
+    type: ShopItemType
 }
 
 interface State {

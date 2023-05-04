@@ -17,6 +17,7 @@ import {
     ItemProps,
     TupleProps,
 } from "./types";
+import { ShopItemType } from "views/shop/ShopList";
 
 type TaskItemProps = TupleProps & {
     depth: number,
@@ -64,7 +65,7 @@ class TaskItem extends React.PureComponent<TaskItemProps> {
         Dispatcher.dispatch({
             type: ShoppingActions.FOCUS,
             id: item.id,
-            itemType: "task",
+            itemType: ShopItemType.PLAN_ITEM,
         });
     }
 
