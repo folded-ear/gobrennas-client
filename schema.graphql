@@ -11,6 +11,13 @@ interface AccessControlled {
     owner: User!
 }
 
+interface CorePlanItem {
+    children: [PlanItem!]!
+    descendants: [PlanItem!]!
+    id: ID!
+    name: String!
+}
+
 interface Ingredient {
     id: ID!
     labels: [String!]
@@ -157,8 +164,10 @@ type Photo {
     url: String!
 }
 
-type Plan implements AccessControlled & Node & Owned {
-    buckets: [PlanBucket]
+type Plan implements AccessControlled & CorePlanItem & Node & Owned {
+    buckets: [PlanBucket!]!
+    children: [PlanItem!]!
+    descendants: [PlanItem!]!
     grants: [AccessControlEntry!]!
     id: ID!
     name: String!
@@ -168,21 +177,23 @@ type Plan implements AccessControlled & Node & Owned {
 type PlanBucket {
     date: Date!
     id: ID!
-    name: String!
+    name: String
 }
 
 "Represents a single item on a plan"
-type PlanItem implements Node {
+type PlanItem implements CorePlanItem & Node {
     bucket: PlanBucket
-    components: [PlanItem]
+    children: [PlanItem!]!
+    components: [PlanItem!]!
+    descendants: [PlanItem!]!
     id: ID!
     name: String!
     notes: String
-    parent: PlanItem
+    parent: PlanItem!
+    plan: Plan!
     preparation: String
     quantity: NonNegativeFloat
-    status: TaskStatus!
-    subtasks: [PlanItem]
+    status: PlanItemStatus!
     units: String
 }
 
@@ -311,7 +322,7 @@ enum LibrarySearchScope {
     MINE
 }
 
-enum TaskStatus {
+enum PlanItemStatus {
     ACQUIRED
     COMPLETED
     DELETED
