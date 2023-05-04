@@ -10,6 +10,7 @@ import {
 import { LOCAL_STORAGE_PREFERENCES } from "../constants/index";
 import Dispatcher from "./dispatcher";
 import UserActions from "./UserActions";
+import { FluxAction } from "global/types/types";
 
 const PrefNames = {
     ACTIVE_TASK_LIST: "activeTaskList",
@@ -17,9 +18,9 @@ const PrefNames = {
     DEV_MODE: "devMode",
 };
 
-type Prefs = Map<string, any>
-type IsMigrationNeeded = (p: Prefs) => boolean
-type DoMigration = (p: Prefs) => Prefs
+type State = Map<string, any>
+type IsMigrationNeeded = (p: State) => boolean
+type DoMigration = (p: State) => State
 type Migration = [ IsMigrationNeeded, DoMigration ]
 
 const migrations: Migration[] = [
@@ -32,23 +33,23 @@ const migrations: Migration[] = [
     ],
 ];
 
-const setPref = (state, key, value) => {
+const setPref = (state: State, key: string, value: any): State => {
     state = state.set(key, value);
     setJsonItem(LOCAL_STORAGE_PREFERENCES, state);
     return state;
 };
 
-class PreferencesStore extends ReduceStore<Prefs, any> {
+class PreferencesStore extends ReduceStore<State, FluxAction> {
 
-    getInitialState() {
+    getInitialState(): State {
         return migrations.reduce((prefs, [ test, mig ]) =>
                 test(prefs)
                     ? mig(prefs)
                     : prefs,
-            Map(getJsonItem(LOCAL_STORAGE_PREFERENCES) as Prefs));
+            Map(getJsonItem(LOCAL_STORAGE_PREFERENCES) as State));
     }
 
-    reduce(state, action) {
+    reduce(state: State, action: FluxAction): State {
         switch (action.type) {
             case UserActions.RESTORE_PREFERENCES: {
                 return Map(action.preferences);

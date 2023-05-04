@@ -1,6 +1,6 @@
 import React from "react";
 import LibraryStore from "features/RecipeLibrary/data/LibraryStore";
-import ShoppingStore, { Item } from "data/ShoppingStore";
+import shoppingStore, { Item } from "data/shoppingStore";
 import {
     isParent,
     isQuestionable,
@@ -177,10 +177,10 @@ function groupItems(plans: PlanItem[],
 const Shop = () => {
     const [ expandedId, activeItem ] = useFluxStore(
         () => [
-            ShoppingStore.getExpandedIngredientId(),
-            ShoppingStore.getActiveItem(),
+            shoppingStore.getExpandedIngredientId(),
+            shoppingStore.getActiveItem(),
         ],
-        [ ShoppingStore ],
+        [ shoppingStore ],
     );
     const [ plan, itemTuples ] = useFluxStore(
         () => {

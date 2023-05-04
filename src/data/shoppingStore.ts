@@ -1,11 +1,10 @@
 import TaskStore from "features/Planner/data/TaskStore";
 import { ReduceStore } from "flux/utils";
-import PropTypes from "prop-types";
-import typedStore from "util/typedStore";
-import { ShopItemType } from "../views/shop/ShopList";
+import { ShopItemType } from "views/shop/ShopList";
 import Dispatcher from "./dispatcher";
 import PantryItemActions from "./PantryItemActions";
 import ShoppingActions from "./ShoppingActions";
+import { FluxAction } from "global/types/types";
 
 const placeFocus = (state, id, type) => ({
     ...state,
@@ -15,16 +14,23 @@ const placeFocus = (state, id, type) => ({
     },
 });
 
-class ShoppingStore extends ReduceStore {
+export interface Item {
+    id: number
+    type: ShopItemType
+}
 
-    getInitialState() {
-        return {
-            activeItem: null, // {id: ID, type: String}
-            expandedId: null, // ID
-        };
+interface State {
+    activeItem?: Item
+    expandedId?: number
+}
+
+class ShoppingStore extends ReduceStore<State, FluxAction> {
+
+    getInitialState(): State {
+        return {};
     }
 
-    reduce(state, action) {
+    reduce(state: State, action: FluxAction): State {
         switch (action.type) {
 
             case ShoppingActions.CREATE_ITEM_AFTER:
@@ -43,7 +49,7 @@ class ShoppingStore extends ReduceStore {
                 state = placeFocus(state, action.id, action.itemType);
                 if (action.itemType === ShopItemType.INGREDIENT) {
                     state.expandedId = state.expandedId === action.id
-                        ? null
+                        ? undefined
                         : action.id;
                 }
                 return state;
@@ -63,7 +69,7 @@ class ShoppingStore extends ReduceStore {
                 return {
                     ...state,
                     expandedId: state.expandedId === action.id
-                        ? null
+                        ? undefined
                         : action.id,
                 };
             }
@@ -72,7 +78,7 @@ class ShoppingStore extends ReduceStore {
                 return {
                     ...state,
                     expandedId: state.expandedId === action.id
-                        ? null
+                        ? undefined
                         : state.expandedId,
                 };
             }
@@ -92,15 +98,4 @@ class ShoppingStore extends ReduceStore {
 
 }
 
-ShoppingStore.stateTypes = {
-    activeItem: PropTypes.shape({
-        id: PropTypes.number.isRequired,
-        type: PropTypes.oneOf([
-            ShopItemType.INGREDIENT,
-            ShopItemType.PLAN_ITEM,
-        ]).isRequired,
-    }),
-    expandedId: PropTypes.number,
-};
-
-export default typedStore(new ShoppingStore(Dispatcher));
+export default new ShoppingStore(Dispatcher);

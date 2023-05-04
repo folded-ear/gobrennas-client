@@ -43,7 +43,7 @@ export interface FluxAction {
     // ValidatingDispatcher.
     //
     // eslint-disable-next-line @typescript-eslint/ban-types
-    type: string | String
+    type: string | (String & { actionTypes?: object })
 
     [k: string]: any
 }
