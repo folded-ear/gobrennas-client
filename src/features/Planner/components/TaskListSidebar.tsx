@@ -20,13 +20,13 @@ import LoadingIndicator from "views/common/LoadingIndicator";
 import PlanBucketManager from "features/Planner/components/PlanBucketManager";
 import SidebarUnit from "features/Planner/components/SidebarUnit";
 import User from "views/user/User";
-import { Task } from "../data/TaskStore";
-import { ripLoadObject } from "../../../util/ripLoadObject";
+import { PlanItem } from "../data/TaskStore";
+import { ripLoadObject } from "util/ripLoadObject";
 
 const LEVEL_NO_ACCESS = "NO_ACCESS";
 
 interface Props {
-    list: Task
+    list: PlanItem
 }
 
 const TaskListSidebar: React.FC<Props> = ({ list }) => {

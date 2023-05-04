@@ -3,13 +3,13 @@ import PantryItemActions from "data/PantryItemActions";
 import PreferencesStore from "data/PreferencesStore";
 import ShoppingActions from "data/ShoppingActions";
 import dotProp from "dot-prop-immutable";
+import PlanItemStatus, { willStatusDelete } from "features/Planner/data/PlanItemStatus";
 import TaskActions from "features/Planner/data/TaskActions";
 import TaskApi from "features/Planner/data/TaskApi";
 import {
     isExpanded,
     isParent,
 } from "features/Planner/data/tasks";
-import TaskStatus, { willStatusDelete } from "features/Planner/data/TaskStatus";
 import { ReduceStore } from "flux/utils";
 import invariant from "invariant";
 import { removeAtIndex } from "util/arrayAsSet";
@@ -35,7 +35,7 @@ const AT_END = Math.random();
 const _newTask = name => ({
     id: ClientId.next(),
     name,
-    status: TaskStatus.NEEDED,
+    status: PlanItemStatus.NEEDED,
 });
 
 const createList = (state, name, optionalPlanIdToCopy) => {
@@ -469,7 +469,7 @@ const flushStatusUpdates = state => {
 
 const queueDelete = (state, id) => {
     if (!isKnown(state, id)) return state; // already gone...
-    return queueStatusUpdate(state, id, TaskStatus.DELETED);
+    return queueStatusUpdate(state, id, PlanItemStatus.DELETED);
 };
 
 function isEmpty(taskOrString) {

@@ -2,10 +2,10 @@ import { Tooltip } from "@mui/material";
 import React, { MouseEventHandler } from "react";
 import Dispatcher from "data/dispatcher";
 import TaskActions from "features/Planner/data/TaskActions";
-import TaskStatus, {
+import PlanItemStatus, {
     getColorForStatus,
     getIconForStatus,
-} from "features/Planner/data/TaskStatus";
+} from "features/Planner/data/PlanItemStatus";
 import { coloredIconButton } from "views/common/colors";
 
 const buttonLookup = {}; // Map<next, Map<curr, Button>>
@@ -22,8 +22,8 @@ const findButton = (next, curr) => {
 };
 
 interface Props {
-    next: TaskStatus
-    current?: TaskStatus
+    next: PlanItemStatus
+    current?: PlanItemStatus
     id?: string | number
     onClick?: MouseEventHandler
 }

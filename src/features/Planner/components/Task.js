@@ -8,6 +8,7 @@ import Item from "features/Planner/components/Item";
 import StatusIconButton from "features/Planner/components/StatusIconButton";
 import TaskBucketChip from "features/Planner/components/TaskBucketChip";
 import withItemStyles from "features/Planner/components/withItemStyles";
+import PlanItemStatus from "features/Planner/data/PlanItemStatus";
 import TaskActions from "features/Planner/data/TaskActions";
 import {
     isExpanded,
@@ -15,7 +16,6 @@ import {
     isQuestionable,
     isSection,
 } from "features/Planner/data/tasks";
-import TaskStatus from "features/Planner/data/TaskStatus";
 import TaskStore from "features/Planner/data/TaskStore";
 import CollapseIconButton from "global/components/CollapseIconButton";
 import PropTypes from "prop-types";
@@ -249,9 +249,9 @@ class Task extends React.PureComponent {
         const expanded = isExpanded(task);
         const recipeIsh = parent || task.fromRecipe;
         const question = isQuestionable(task);
-        const deleting = task._next_status === TaskStatus.DELETED;
-        const acquiring = task._next_status === TaskStatus.ACQUIRED;
-        const needing = task._next_status === TaskStatus.NEEDED;
+        const deleting = task._next_status === PlanItemStatus.DELETED;
+        const acquiring = task._next_status === PlanItemStatus.ACQUIRED;
+        const needing = task._next_status === PlanItemStatus.NEEDED;
 
         let addonBefore = [];
         if (parent) {
@@ -286,7 +286,7 @@ class Task extends React.PureComponent {
                     key="acquire"
                     id={task.id}
                     current={curr}
-                    next={curr === TaskStatus.ACQUIRED ? TaskStatus.NEEDED : TaskStatus.ACQUIRED}
+                    next={curr === PlanItemStatus.ACQUIRED ? PlanItemStatus.NEEDED : PlanItemStatus.ACQUIRED}
                 />);
         }
         const addonAfter = [
@@ -299,7 +299,7 @@ class Task extends React.PureComponent {
                 : <StatusIconButton
                     key="delete"
                     id={task.id}
-                    next={TaskStatus.DELETED}
+                    next={PlanItemStatus.DELETED}
                     disabled={ancestorDeleting}
                 />,
         ];

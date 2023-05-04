@@ -1,31 +1,31 @@
-import { Task } from "./TaskStore";
+import { PlanItem } from "./TaskStore";
 import { Maybe } from "graphql/jsutils/Maybe";
 
-function endsWith(taskOrName: Maybe<Task | string>, char: string) {
+function endsWith(taskOrName: Maybe<PlanItem | string>, char: string) {
     if (taskOrName == null) return false;
     let name = taskOrName === "string"
         ? taskOrName
-        : (taskOrName as Task).name;
+        : (taskOrName as PlanItem).name;
     if (name == null) return false;
     name = name.trim();
     if (name.length === 0) return false;
     return name.charAt(name.length - 1) === char;
 }
 
-export function isSection(taskOrName: Task | string): boolean {
+export function isSection(taskOrName: PlanItem | string): boolean {
     return taskOrName["fromRecipe"] || endsWith(taskOrName, ":");
 }
 
-export function isQuestionable(taskOrName: Task | string) {
+export function isQuestionable(taskOrName: PlanItem | string) {
     return endsWith(taskOrName, "?");
 }
 
-export function isParent(task: Task) {
+export function isParent(task: PlanItem) {
     return task.subtaskIds
         ? task.subtaskIds.length > 0
         : false;
 }
 
-export function isExpanded(task: Task) {
+export function isExpanded(task: PlanItem) {
     return isParent(task) && !!task._expanded;
 }

@@ -13,8 +13,8 @@ import {
     BaseItemProp,
     ItemProps,
 } from "./types";
-import { Task } from "../../features/Planner/data/TaskStore";
-import { Quantity } from "../../global/types/types";
+import { PlanItem } from "../../features/Planner/data/TaskStore";
+import { Quantity } from "global/types/types";
 
 export enum ShopItemType {
     INGREDIENT = "ingredient",
@@ -33,7 +33,7 @@ export interface ShopItemTuple extends ItemProps {
 }
 
 export type ShopListProps = {
-    plan: Task | null | undefined
+    plan: PlanItem | null | undefined
     itemTuples: ShopItemTuple[]
 }
 

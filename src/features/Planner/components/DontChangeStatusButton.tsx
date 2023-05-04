@@ -1,7 +1,7 @@
 import React, { MouseEventHandler } from "react";
 import Dispatcher from "data/dispatcher";
 import TaskActions from "features/Planner/data/TaskActions";
-import TaskStatus, { getColorForStatus } from "features/Planner/data/TaskStatus";
+import PlanItemStatus, { getColorForStatus } from "features/Planner/data/PlanItemStatus";
 import { coloredButton } from "views/common/colors";
 
 const buttonLookup = {}; // Map<next, Button>
@@ -13,7 +13,7 @@ const findButton = next => {
 };
 
 interface Props {
-    next: TaskStatus
+    next: PlanItemStatus
     id?: string | number
     onClick?: MouseEventHandler
 }

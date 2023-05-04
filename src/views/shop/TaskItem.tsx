@@ -4,7 +4,7 @@ import classnames from "classnames";
 import React from "react";
 import Dispatcher from "../../data/dispatcher";
 import ShoppingActions from "../../data/ShoppingActions";
-import TaskStatus from "features/Planner/data/TaskStatus";
+import PlanItemStatus from "features/Planner/data/PlanItemStatus";
 import LoadingIconButton from "../common/LoadingIconButton";
 import PlaceholderIconButton from "../common/PlaceholderIconButton";
 import IngredientItem from "../IngredientItem";
@@ -149,7 +149,7 @@ class TaskItem extends React.PureComponent<TaskItemProps> {
                     key="acquire"
                     id={item.id}
                     current={curr}
-                    next={curr === TaskStatus.ACQUIRED ? TaskStatus.NEEDED : TaskStatus.ACQUIRED}
+                    next={curr === PlanItemStatus.ACQUIRED ? PlanItemStatus.NEEDED : PlanItemStatus.ACQUIRED}
                 />);
         }
         const addonAfter = deleting

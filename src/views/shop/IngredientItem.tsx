@@ -4,7 +4,7 @@ import React from "react";
 import Dispatcher from "../../data/dispatcher";
 import PantryItemActions from "../../data/PantryItemActions";
 import ShoppingActions from "../../data/ShoppingActions";
-import TaskStatus from "features/Planner/data/TaskStatus";
+import PlanItemStatus from "features/Planner/data/PlanItemStatus";
 import LoadingIconButton from "../common/LoadingIconButton";
 import OxfordList from "../common/OxfordList";
 import Quantity from "../common/Quantity";
@@ -129,11 +129,11 @@ class IngredientItem extends React.PureComponent<IngredientItemProps> {
                     key="acquire"
                 />);
         } else {
-            const next = acquiring ? TaskStatus.NEEDED : TaskStatus.ACQUIRED;
+            const next = acquiring ? PlanItemStatus.NEEDED : PlanItemStatus.ACQUIRED;
             addonBefore.push(
                 <StatusIconButton
                     key="acquire"
-                    current={acquiring ? TaskStatus.ACQUIRED : TaskStatus.NEEDED}
+                    current={acquiring ? PlanItemStatus.ACQUIRED : PlanItemStatus.NEEDED}
                     next={next}
                     onClick={e => this.onSetStatus(next, e)}
                 />);
@@ -141,7 +141,7 @@ class IngredientItem extends React.PureComponent<IngredientItemProps> {
         const addonAfter = deleting
             ? <DontChangeStatusButton
                 key="delete"
-                next={TaskStatus.DELETED}
+                next={PlanItemStatus.DELETED}
                 onClick={e => this.onUndoSetStatus(e)}
             />
             : null;

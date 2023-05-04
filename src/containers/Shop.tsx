@@ -6,7 +6,7 @@ import {
     isQuestionable,
     isSection,
 } from "features/Planner/data/tasks";
-import TaskStatus from "features/Planner/data/TaskStatus";
+import PlanItemStatus from "features/Planner/data/PlanItemStatus";
 import TaskStore from "features/Planner/data/TaskStore";
 import useFluxStore from "data/useFluxStore";
 import groupBy from "util/groupBy";
@@ -14,23 +14,23 @@ import ShopList, {
     ShopItemTuple,
     ShopItemType,
 } from "views/shop/ShopList";
-import { Task } from "../features/Planner/data/TaskStore";
+import { PlanItem } from "../features/Planner/data/TaskStore";
 import {
     BaseItemProp,
     ItemProps,
-} from "../views/shop/types";
+} from "views/shop/types";
 import { Maybe } from "graphql/jsutils/Maybe";
-import { Quantity } from "../global/types/types";
-import { ripLoadObject } from "../util/ripLoadObject";
+import { Quantity } from "global/types/types";
+import { ripLoadObject } from "util/ripLoadObject";
 
-interface TaskTuple extends Task, ItemProps {
+interface TaskTuple extends PlanItem, ItemProps {
 }
 
 interface PathedTaskTuple extends TaskTuple {
     path: BaseItemProp[],
 }
 
-function gatherLeaves(item: Task): PathedTaskTuple[] {
+function gatherLeaves(item: PlanItem): PathedTaskTuple[] {
     if (!isParent(item)) {
         if (isSection(item)) return [];
         return [ {
@@ -48,10 +48,10 @@ function gatherLeaves(item: Task): PathedTaskTuple[] {
                 ...item,
                 question: isQuestionable(item),
                 loading: rippedLO.loading,
-                deleting: item._next_status === TaskStatus.DELETED,
-                completing: item._next_status === TaskStatus.COMPLETED,
-                acquiring: item._next_status === TaskStatus.ACQUIRED,
-                needing: item._next_status === TaskStatus.NEEDED,
+                deleting: item._next_status === PlanItemStatus.DELETED,
+                completing: item._next_status === PlanItemStatus.COMPLETED,
+                acquiring: item._next_status === PlanItemStatus.ACQUIRED,
+                needing: item._next_status === PlanItemStatus.NEEDED,
             };
         })
         .flatMap(gatherLeaves)
@@ -73,7 +73,7 @@ interface OrderableIngredient {
     loading: boolean
 }
 
-function groupItems(plans: Task[],
+function groupItems(plans: PlanItem[],
                     expandedId: Maybe<number>,
                     activeItem: Maybe<Item>): ShopItemTuple[] {
     const leaves = plans
@@ -89,7 +89,7 @@ function groupItems(plans: Task[],
     if (byIngredient.has(undefined)) {
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         unparsed.push(...byIngredient.get(undefined)!
-            .filter(it => it.status === TaskStatus.NEEDED));
+            .filter(it => it.status === PlanItemStatus.NEEDED));
         byIngredient.delete(undefined);
     }
     const orderedIngredients: OrderableIngredient[] = [];
@@ -113,7 +113,7 @@ function groupItems(plans: Task[],
     });
     const theTree: ShopItemTuple[] = [];
     for (const { id: ingId, items, data: ingredient, loading } of orderedIngredients) {
-        const neededItems = items.filter(it => it.status === TaskStatus.NEEDED);
+        const neededItems = items.filter(it => it.status === PlanItemStatus.NEEDED);
         if (neededItems.length === 0) continue;
         const unitLookup = new Map();
         const byUnit = groupBy(neededItems, it => {
@@ -141,8 +141,8 @@ function groupItems(plans: Task[],
             quantities,
             expanded,
             loading: loading || items.some(it => it.loading),
-            acquiring: items.every(it => it.acquiring || it.status === TaskStatus.ACQUIRED),
-            deleting: items.every(it => it.deleting || it.status === TaskStatus.DELETED),
+            acquiring: items.every(it => it.acquiring || it.status === PlanItemStatus.ACQUIRED),
+            deleting: items.every(it => it.deleting || it.status === PlanItemStatus.DELETED),
             depth: 0,
             path: [],
         });
