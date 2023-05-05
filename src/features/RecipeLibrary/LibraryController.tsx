@@ -1,5 +1,5 @@
 import { useQuery } from "@apollo/client";
-import RecipesList from "features/RecipeLibrary/components/RecipesList";
+import { RecipesList } from "features/RecipeLibrary/components/RecipesList";
 import { useProfile } from "providers/Profile";
 import qs from "qs";
 import React, { useState } from "react";
