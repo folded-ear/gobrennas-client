@@ -17,12 +17,12 @@ import PageBody from "views/common/PageBody";
 import { rippedLoadObjectOf } from "../../../util/ripLoadObject";
 
 function Plan({
-                  allLists: allPlans,
-                  activeList: activePlan,
-                  listDetailVisible: planDetailVisible,
-                  taskTuples: itemTuples,
-                  isTaskActive: isItemActive,
-                  isTaskSelected: isItemSelected,
+                  allPlans,
+                  activePlan,
+                  planDetailVisible,
+                  itemTuples,
+                  isItemActive,
+                  isItemSelected,
               }) {
 
     if (!allPlans.data) {
@@ -89,18 +89,18 @@ function Plan({
 }
 
 Plan.propTypes = {
-    allLists: rippedLoadObjectOf(PropTypes.any).isRequired,
-    activeList: rippedLoadObjectOf(PropTypes.any),
-    listDetailVisible: PropTypes.bool.isRequired,
-    taskTuples: PropTypes.arrayOf(
+    allPlans: rippedLoadObjectOf(PropTypes.any).isRequired,
+    activePlan: rippedLoadObjectOf(PropTypes.any),
+    planDetailVisible: PropTypes.bool.isRequired,
+    itemTuples: PropTypes.arrayOf(
         PropTypes.shape({
             data: PropTypes.any,
             loading: PropTypes.bool.isRequired,
             depth: PropTypes.number.isRequired,
             ancestorDeleting: PropTypes.bool,
         })),
-    isTaskActive: PropTypes.func.isRequired,
-    isTaskSelected: PropTypes.func.isRequired,
+    isItemActive: PropTypes.func.isRequired,
+    isItemSelected: PropTypes.func.isRequired,
 };
 
 export default Plan;

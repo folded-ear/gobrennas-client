@@ -51,17 +51,17 @@ export const PlannerController = () => {
             const activeItem = planStore.getActiveItem();
             const selectedItems = planStore.getSelectedItems();
             return {
-                allLists: allPlans,
-                activeList: activePlan,
-                listDetailVisible: planStore.isPlanDetailVisible(),
-                taskTuples: activePlan.data
+                allPlans,
+                activePlan,
+                planDetailVisible: planStore.isPlanDetailVisible(),
+                itemTuples: activePlan.data
                     ? listTheTree(activePlan.data.id)
                     : [],
-                isTaskActive: activeItem
-                    ? taskOrId => (taskOrId.id || taskOrId) === activeItem.id
+                isItemActive: activeItem
+                    ? itemOrId => (itemOrId.id || itemOrId) === activeItem.id
                     : () => false,
-                isTaskSelected: selectedItems
-                    ? taskOrId => selectedItems.some(t => (taskOrId.id || taskOrId) === t.id)
+                isItemSelected: selectedItems
+                    ? itemOrId => selectedItems.some(t => (itemOrId.id || itemOrId) === t.id)
                     : () => false,
             };
         },
