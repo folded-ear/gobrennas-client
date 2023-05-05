@@ -1,10 +1,10 @@
-import PreferencesStore from "./PreferencesStore";
+import preferencesStore from "data/preferencesStore";
 import useFluxStore from "./useFluxStore";
 
 function useIsDevMode(): boolean {
     return useFluxStore(
-        () => PreferencesStore.isDevMode(),
-        [ PreferencesStore ],
+        () => preferencesStore.isDevMode(),
+        [ preferencesStore ],
     );
 }
 

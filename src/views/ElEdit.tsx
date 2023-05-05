@@ -15,7 +15,7 @@ import React, {
 import ItemApi, { RecognitionResult } from "data/ItemApi";
 import debounce from "util/debounce";
 import processRecognizedItem from "util/processRecognizedItem";
-import { Ingredient } from "../global/types/types";
+import { Ingredient } from "global/types/types";
 import Autocomplete from "@mui/lab/Autocomplete";
 
 const doRecog = raw =>
@@ -233,7 +233,7 @@ class ElEdit extends React.PureComponent<ElEditProps, ElEditState> {
                 break;
             case "Backspace":
             case "Delete":
-                // if the value is empty, delete the task and focus previous
+                // if the value is empty, delete the item and focus previous
                 if (value.length === 0) {
                     e.preventDefault();
                     onDelete && onDelete();

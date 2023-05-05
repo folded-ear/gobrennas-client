@@ -8,7 +8,7 @@ interface Props {
     depth: number
 }
 
-const LoadingTask: React.FC<Props> = ({
+const LoadingItem: React.FC<Props> = ({
                                           depth,
                                       }) => {
     return <Item
@@ -27,4 +27,4 @@ const LoadingTask: React.FC<Props> = ({
     </Item>;
 };
 
-export default LoadingTask;
+export default LoadingItem;

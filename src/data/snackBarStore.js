@@ -1,7 +1,7 @@
 import { Button } from "@mui/material";
-import TaskActions from "features/Planner/data/TaskActions";
-import { willStatusDelete } from "features/Planner/data/TaskStatus";
-import TaskStore from "features/Planner/data/TaskStore";
+import PlanActions from "features/Planner/data/PlanActions";
+import { willStatusDelete } from "features/Planner/data/PlanItemStatus";
+import planStore from "features/Planner/data/planStore";
 import LibraryStore from "features/RecipeLibrary/data/LibraryStore";
 import { ReduceStore } from "flux/utils";
 import PropTypes from "prop-types";
@@ -22,16 +22,16 @@ const enqueue = (state, item) => {
     };
 };
 
-const forTaskStatusChanges = (state, ids, status) => {
+const forPlanItemStatusChanges = (state, ids, status) => {
     if (!ids || ids.length === 0) return state;
     if (!willStatusDelete(status)) return state;
     const comps = ids.reduce((arr, id) =>
-        arr.concat(TaskStore.getNonDescendantComponents(id)), []);
+        arr.concat(planStore.getNonDescendantComponents(id)), []);
     if (comps.length === 0) return state;
     const label = ids.length === 1
-        ? TaskStore.getTaskLO(ids[0])
-            .getValueEnforcing()
-            .name + " includes"
+        ? planStore.getItemLO(ids[0])
+        .getValueEnforcing()
+        .name + " includes"
         : "These items include";
     return enqueue(state, {
         message: `${label} ${comps.map(c => c.name).join(", ")}`,
@@ -42,7 +42,7 @@ const forTaskStatusChanges = (state, ids, status) => {
                 onClick={e => {
                     dismiss(e);
                     dispatcher.dispatch({
-                        type: TaskActions.BULK_SET_STATUS,
+                        type: PlanActions.BULK_SET_STATUS,
                         status: status,
                         ids: comps.map(c => c.id),
                     });
@@ -87,18 +87,18 @@ class SnackBarStore extends ReduceStore {
                 };
             }
 
-            case TaskActions.SEND_TO_PLAN:
+            case PlanActions.SEND_TO_PLAN:
             case PantryItemActions.SEND_TO_PLAN: {
-                const plan = TaskStore.getTaskLO(action.planId)
+                const plan = planStore.getItemLO(action.planId)
                     .getValueEnforcing();
                 return enqueue(state, {
                     message: `Added ${action.name} to ${plan.name}`,
-                    severity: "success"
+                    severity: "success",
                 });
             }
 
             case RecipeActions.SENT_TO_PLAN: {
-                const plan = TaskStore.getTaskLO(action.planId)
+                const plan = planStore.getItemLO(action.planId)
                     .getValueEnforcing();
                 // if came from the library, the store might not have it...
                 const recipe = LibraryStore.getIngredientById(action.recipeId)
@@ -110,7 +110,7 @@ class SnackBarStore extends ReduceStore {
             }
 
             case RecipeActions.ERROR_SENDING_TO_PLAN: {
-                const plan = TaskStore.getTaskLO(action.planId)
+                const plan = planStore.getItemLO(action.planId)
                     .getValueEnforcing();
                 const recipe = LibraryStore.getIngredientById(action.recipeId)
                     .getValueEnforcing();
@@ -120,12 +120,12 @@ class SnackBarStore extends ReduceStore {
                 });
             }
 
-            case TaskActions.SET_STATUS: {
-                return forTaskStatusChanges(state, [action.id], action.status);
+            case PlanActions.SET_STATUS: {
+                return forPlanItemStatusChanges(state, [ action.id ], action.status);
             }
 
-            case TaskActions.BULK_SET_STATUS: {
-                return forTaskStatusChanges(state, action.ids, action.status);
+            case PlanActions.BULK_SET_STATUS: {
+                return forPlanItemStatusChanges(state, action.ids, action.status);
             }
 
             default:

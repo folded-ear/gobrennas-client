@@ -1,7 +1,7 @@
 import React, { MouseEventHandler } from "react";
 import Dispatcher from "data/dispatcher";
-import TaskActions from "features/Planner/data/TaskActions";
-import TaskStatus, { getColorForStatus } from "features/Planner/data/TaskStatus";
+import PlanActions from "features/Planner/data/PlanActions";
+import PlanItemStatus, { getColorForStatus } from "features/Planner/data/PlanItemStatus";
 import { coloredButton } from "views/common/colors";
 
 const buttonLookup = {}; // Map<next, Button>
@@ -13,7 +13,7 @@ const findButton = next => {
 };
 
 interface Props {
-    next: TaskStatus
+    next: PlanItemStatus
     id?: string | number
     onClick?: MouseEventHandler
 }
@@ -27,7 +27,7 @@ const DontChangeStatusButton: React.FC<Props> = props => {
         onClick={e => {
             e.stopPropagation();
             Dispatcher.dispatch({
-                type: TaskActions.UNDO_SET_STATUS,
+                type: PlanActions.UNDO_SET_STATUS,
                 id: props.id,
             });
         }}

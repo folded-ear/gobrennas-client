@@ -4,7 +4,7 @@ import classnames from "classnames";
 import React from "react";
 import Dispatcher from "../../data/dispatcher";
 import ShoppingActions from "../../data/ShoppingActions";
-import TaskStatus from "features/Planner/data/TaskStatus";
+import PlanItemStatus from "features/Planner/data/PlanItemStatus";
 import LoadingIconButton from "../common/LoadingIconButton";
 import PlaceholderIconButton from "../common/PlaceholderIconButton";
 import IngredientItem from "../IngredientItem";
@@ -17,8 +17,9 @@ import {
     ItemProps,
     TupleProps,
 } from "./types";
+import { ShopItemType } from "views/shop/ShopList";
 
-type TaskItemProps = TupleProps & {
+type PlanItemProps = TupleProps & {
     depth: number,
     item: ItemProps & {
         question: boolean,
@@ -29,7 +30,7 @@ type TaskItemProps = TupleProps & {
     }
 }
 
-class TaskItem extends React.PureComponent<TaskItemProps> {
+class PlanItem extends React.PureComponent<PlanItemProps> {
     private inputRef: React.RefObject<HTMLInputElement>;
 
     constructor(props) {
@@ -64,7 +65,7 @@ class TaskItem extends React.PureComponent<TaskItemProps> {
         Dispatcher.dispatch({
             type: ShoppingActions.FOCUS,
             id: item.id,
-            itemType: "task",
+            itemType: ShopItemType.PLAN_ITEM,
         });
     }
 
@@ -88,7 +89,7 @@ class TaskItem extends React.PureComponent<TaskItemProps> {
                 });
                 break;
             case "Backspace":
-                // if the value is empty, delete the task and focus previous
+                // if the value is empty, delete the item and focus previous
                 if (value.length === 0) {
                     e.preventDefault();
                     Dispatcher.dispatch({
@@ -98,7 +99,7 @@ class TaskItem extends React.PureComponent<TaskItemProps> {
                 }
                 break;
             case "Delete":
-                // if the value is empty, delete the task and focus next
+                // if the value is empty, delete the item and focus next
                 if (value.length === 0) {
                     e.preventDefault();
                     Dispatcher.dispatch({
@@ -149,7 +150,7 @@ class TaskItem extends React.PureComponent<TaskItemProps> {
                     key="acquire"
                     id={item.id}
                     current={curr}
-                    next={curr === TaskStatus.ACQUIRED ? TaskStatus.NEEDED : TaskStatus.ACQUIRED}
+                    next={curr === PlanItemStatus.ACQUIRED ? PlanItemStatus.NEEDED : PlanItemStatus.ACQUIRED}
                 />);
         }
         const addonAfter = deleting
@@ -175,7 +176,7 @@ class TaskItem extends React.PureComponent<TaskItemProps> {
                 ? <Input
                     fullWidth
                     value={item.name}
-                    placeholder="Write a task name"
+                    placeholder="Enter an item name"
                     disableUnderline
                     inputRef={this.inputRef}
                     onChange={this.onChange}
@@ -199,4 +200,4 @@ class TaskItem extends React.PureComponent<TaskItemProps> {
 
 }
 
-export default withItemStyles(TaskItem);
+export default withItemStyles(PlanItem);

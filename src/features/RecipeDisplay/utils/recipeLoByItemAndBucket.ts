@@ -1,11 +1,11 @@
 import LoadObject from "util/LoadObject";
-import { RecipeFromTask } from "features/RecipeDisplay/types";
-import TaskStore from "features/Planner/data/TaskStore";
-import { recipeLoByItemLo as buildSingleTaskRecipeLO } from "features/RecipeDisplay/utils/recipeLoByItemLo";
+import { RecipeFromPlanItem } from "features/RecipeDisplay/types";
+import planStore from "features/Planner/data/planStore";
+import { recipeLoByItemLo as buildSingleItemRecipeLO } from "features/RecipeDisplay/utils/recipeLoByItemLo";
 import getBucketLabel from "features/Planner/components/getBucketLabel";
 
-export const recipeLoByItemAndBucket = (planId: number, bucketId: number): LoadObject<RecipeFromTask> => {
-    const plan = TaskStore.getTaskLO(planId);
+export const recipeLoByItemAndBucket = (planId: number, bucketId: number): LoadObject<RecipeFromPlanItem> => {
+    const plan = planStore.getItemLO(planId);
     if (!plan.hasValue()) {
         // no value means value's type is irrelevant
         return plan as LoadObject<any>;
@@ -14,16 +14,16 @@ export const recipeLoByItemAndBucket = (planId: number, bucketId: number): LoadO
         .buckets
         .find(b => b.id === bucketId);
     if (!bucket) return LoadObject.empty();
-    const items = TaskStore.getItemsInBucket(planId, bucketId);
+    const items = planStore.getItemsInBucket(planId, bucketId);
     if (items.length === 0) return LoadObject.empty();
     if (items.length === 1) {
-        return buildSingleTaskRecipeLO(LoadObject.withValue(items[0]))
+        return buildSingleItemRecipeLO(LoadObject.withValue(items[0]))
             .map(it => ({
                 ...it,
                 name: `${it.name} (${getBucketLabel(bucket)})`,
             }));
     }
-    return buildSingleTaskRecipeLO(LoadObject.withValue({
+    return buildSingleItemRecipeLO(LoadObject.withValue({
         name: getBucketLabel(bucket),
         subtaskIds: items.map(it => it.id),
     })).map(r => {

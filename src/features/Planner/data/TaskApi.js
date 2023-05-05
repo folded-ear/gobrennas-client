@@ -1,8 +1,8 @@
 import BaseAxios from "axios";
 import { API_BASE_URL } from "constants/index";
+import PlanActions from "features/Planner/data/PlanActions";
 import promiseFlux, { soakUpUnauthorized } from "util/promiseFlux";
 import serializeObjectOfPromiseFns from "util/serializeObjectOfPromiseFns";
-import TaskActions from "features/Planner/data/TaskActions";
 
 const axios = BaseAxios.create({
     baseURL: `${API_BASE_URL}/api/tasks`,
@@ -17,7 +17,7 @@ const TaskApi = {
                 fromId,
             }),
             data => ({
-                type: TaskActions.LIST_CREATED,
+                type: PlanActions.PLAN_CREATED,
                 clientId,
                 id: data.data.id,
                 data: data.data,
@@ -29,7 +29,7 @@ const TaskApi = {
         promiseFlux(
             axios.get(`/`),
             ({ data }) => ({
-                type: TaskActions.LISTS_LOADED,
+                type: PlanActions.PLANS_LOADED,
                 data,
             }),
             soakUpUnauthorized,
@@ -39,7 +39,7 @@ const TaskApi = {
         promiseFlux(
             axios.delete(`/${id}`),
             () => ({
-                type: TaskActions.LIST_DELETED,
+                type: PlanActions.PLAN_DELETED,
                 id,
             }),
         ),
@@ -52,7 +52,7 @@ const TaskApi = {
                 accessLevel: level,
             }),
             () => ({
-                type: TaskActions.LIST_GRANT_SET,
+                type: PlanActions.PLAN_GRANT_SET,
                 id,
                 userId,
             })
@@ -62,7 +62,7 @@ const TaskApi = {
         promiseFlux(
             axios.delete(`/${id}/acl/grants/${userId}`),
             () => ({
-                type: TaskActions.LIST_GRANT_CLEARED,
+                type: PlanActions.PLAN_GRANT_CLEARED,
                 id,
                 userId,
             })

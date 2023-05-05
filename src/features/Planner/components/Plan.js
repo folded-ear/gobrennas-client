@@ -4,11 +4,11 @@ import {
     List,
 } from "@mui/material";
 import Dispatcher from "data/dispatcher";
-import LoadingTask from "features/Planner/components/LoadingTask";
-import Task from "features/Planner/components/Task";
-import TaskListHeader from "features/Planner/components/TaskListHeader";
-import TaskActions from "features/Planner/data/TaskActions";
-import { isParent } from "features/Planner/data/tasks";
+import LoadingItem from "features/Planner/components/LoadingItem";
+import PlanHeader from "features/Planner/components/PlanHeader";
+import PlanItem from "features/Planner/components/PlanItem";
+import PlanActions from "features/Planner/data/PlanActions";
+import { isParent } from "features/Planner/data/plannerUtils";
 import PropTypes from "prop-types";
 import React from "react";
 import FoodingerFab from "views/common/FoodingerFab";
@@ -16,45 +16,44 @@ import LoadingIndicator from "views/common/LoadingIndicator";
 import PageBody from "views/common/PageBody";
 import { rippedLoadObjectOf } from "../../../util/ripLoadObject";
 
-function TaskList(props) {
-    const {
-        allLists,
-        activeList,
-        listDetailVisible,
-        taskTuples,
-        isTaskActive,
-        isTaskSelected,
-    } = props;
+function Plan({
+                  allPlans,
+                  activePlan,
+                  planDetailVisible,
+                  itemTuples,
+                  isItemActive,
+                  isItemSelected,
+              }) {
 
-    if (!allLists.data) {
+    if (!allPlans.data) {
         return <LoadingIndicator
-            primary="Loading task lists..."
+            primary="Loading plans..."
         />;
     }
 
     const handleAddNew = e => {
         e.preventDefault();
         Dispatcher.dispatch({
-            type: TaskActions.CREATE_TASK_AT_END,
+            type: PlanActions.CREATE_ITEM_AT_END,
         });
     };
 
-    const plan = activeList.data;
+    const plan = activePlan.data;
     const buckets = plan && plan.buckets;
-    const canExpand = taskTuples.some(t =>
+    const canExpand = itemTuples.some(t =>
         t.data && isParent(t.data));
     return <PageBody hasFab>
         <Box py={2}>
-            <TaskListHeader
-                allLists={allLists.data}
-                activeList={plan}
-                listDetailVisible={listDetailVisible}
+            <PlanHeader
+                allPlans={allPlans.data}
+                activePlan={plan}
+                planDetailVisible={planDetailVisible}
                 hasBuckets={!!buckets}
                 canExpand={canExpand}
             />
         </Box>
         <List>
-            {taskTuples.map((item, i) => {
+            {itemTuples.map((item, i) => {
                 const {
                     data,
                     loading,
@@ -62,19 +61,19 @@ function TaskList(props) {
                     ancestorDeleting,
                 } = item;
                 if (data) {
-                    return <Task
+                    return <PlanItem
                         key={data.id}
                         plan={plan}
                         depth={depth}
-                        task={data}
+                        item={data}
                         ancestorDeleting={ancestorDeleting}
                         loading={loading}
-                        active={isTaskActive(data)}
-                        selected={isTaskSelected(data)}
+                        active={isItemActive(data)}
+                        selected={isItemSelected(data)}
                         buckets={buckets}
                     />;
                 } else {
-                    return <LoadingTask
+                    return <LoadingItem
                         key={i}
                         depth={depth}
                     />;
@@ -89,19 +88,19 @@ function TaskList(props) {
     </PageBody>;
 }
 
-TaskList.propTypes = {
-    allLists: rippedLoadObjectOf(PropTypes.any).isRequired,
-    activeList: rippedLoadObjectOf(PropTypes.any),
-    listDetailVisible: PropTypes.bool.isRequired,
-    taskTuples: PropTypes.arrayOf(
+Plan.propTypes = {
+    allPlans: rippedLoadObjectOf(PropTypes.any).isRequired,
+    activePlan: rippedLoadObjectOf(PropTypes.any),
+    planDetailVisible: PropTypes.bool.isRequired,
+    itemTuples: PropTypes.arrayOf(
         PropTypes.shape({
             data: PropTypes.any,
             loading: PropTypes.bool.isRequired,
             depth: PropTypes.number.isRequired,
             ancestorDeleting: PropTypes.bool,
         })),
-    isTaskActive: PropTypes.func.isRequired,
-    isTaskSelected: PropTypes.func.isRequired,
+    isItemActive: PropTypes.func.isRequired,
+    isItemSelected: PropTypes.func.isRequired,
 };
 
-export default TaskList;
+export default Plan;

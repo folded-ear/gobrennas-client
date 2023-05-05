@@ -19,6 +19,6 @@ export const setJsonItem = (
     key,
     value,
     storage = localStorage,
-    replacer: Replacer | undefined,
+    replacer?: Replacer,
 ) =>
     storage.setItem(key, JSON.stringify(value, replacer));

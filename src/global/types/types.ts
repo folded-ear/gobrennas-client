@@ -1,3 +1,5 @@
+import { CheckableActionType } from "util/typedAction";
+
 export interface UserType {
     id: number | string
     name: string | null
@@ -39,11 +41,7 @@ export interface Quantity {
 }
 
 export interface FluxAction {
-    // typedAction uses String objects, to hide prop-types for
-    // ValidatingDispatcher.
-    //
-    // eslint-disable-next-line @typescript-eslint/ban-types
-    type: string | String
+    type: CheckableActionType
 
     [k: string]: any
 }

@@ -1,22 +1,22 @@
 import React from "react";
 import LibraryStore from "features/RecipeLibrary/data/LibraryStore";
-import { isExpanded } from "features/Planner/data/tasks";
-import TaskStore from "features/Planner/data/TaskStore";
+import { isExpanded } from "features/Planner/data/plannerUtils";
+import planStore from "features/Planner/data/planStore";
 import useFluxStore from "data/useFluxStore";
-import TaskList from "features/Planner/components/TaskList";
+import Plan from "features/Planner/components/Plan";
 import LoadObject from "../../util/LoadObject";
 import {
     ripLoadObject,
     RippedLO,
-} from "../../util/ripLoadObject";
+} from "util/ripLoadObject";
 
-export interface TaskTuple extends RippedLO<any> {
+export interface ItemTuple extends RippedLO<any> {
     ancestorDeleting: boolean
     depth: number
 }
 
-function listTheTree(id, ancestorDeleting = false, depth = 0): TaskTuple[] {
-    const list = TaskStore.getSubtaskLOs(id).map((lo: LoadObject<any>) => ({
+function listTheTree(id, ancestorDeleting = false, depth = 0): ItemTuple[] {
+    const list = planStore.getChildItemLOs(id).map((lo: LoadObject<any>) => ({
         ...ripLoadObject(lo),
         ancestorDeleting,
         depth,
@@ -46,29 +46,29 @@ function listTheTree(id, ancestorDeleting = false, depth = 0): TaskTuple[] {
 export const PlannerController = () => {
     const state = useFluxStore(
         () => {
-            const allLists = ripLoadObject(TaskStore.getListsLO());
-            const activeList = ripLoadObject(TaskStore.getActiveListLO());
-            const activeTask = TaskStore.getActiveTask();
-            const selectedTasks = TaskStore.getSelectedTasks();
+            const allPlans = ripLoadObject(planStore.getPlansLO());
+            const activePlan = ripLoadObject(planStore.getActivePlanLO());
+            const activeItem = planStore.getActiveItem();
+            const selectedItems = planStore.getSelectedItems();
             return {
-                allLists,
-                activeList,
-                listDetailVisible: TaskStore.isListDetailVisible(),
-                taskTuples: activeList.data
-                    ? listTheTree(activeList.data.id)
+                allPlans,
+                activePlan,
+                planDetailVisible: planStore.isPlanDetailVisible(),
+                itemTuples: activePlan.data
+                    ? listTheTree(activePlan.data.id)
                     : [],
-                isTaskActive: activeTask
-                    ? taskOrId => (taskOrId.id || taskOrId) === activeTask.id
+                isItemActive: activeItem
+                    ? itemOrId => (itemOrId.id || itemOrId) === activeItem.id
                     : () => false,
-                isTaskSelected: selectedTasks
-                    ? taskOrId => selectedTasks.some(t => (taskOrId.id || taskOrId) === t.id)
+                isItemSelected: selectedItems
+                    ? itemOrId => selectedItems.some(t => (itemOrId.id || itemOrId) === t.id)
                     : () => false,
             };
         },
         [
-            TaskStore,
+            planStore,
             LibraryStore,
         ],
     );
-    return <TaskList {...state} />;
+    return <Plan {...state} />;
 };

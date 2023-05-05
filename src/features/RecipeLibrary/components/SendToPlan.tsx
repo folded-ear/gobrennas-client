@@ -28,7 +28,7 @@ const SendToPlan: React.FC<Props> = ({ onClick, iconOnly }) => {
     const list = useActivePlanner().data;
     if (!list) return null;
     const handleClick = () =>
-        // While tasks can exist in the store in an unsaved state, lists/plans
+        // While items can exist in the store in an unsaved state, plans
         // cannot, so this type assertion is safe.
         onClick && onClick(list.id as number);
     if (iconOnly) {

@@ -1,15 +1,15 @@
 import Dispatcher from "data/dispatcher";
 import PantryItemActions from "data/PantryItemActions";
-import PreferencesStore from "data/PreferencesStore";
+import preferencesStore from "data/preferencesStore";
 import ShoppingActions from "data/ShoppingActions";
 import dotProp from "dot-prop-immutable";
-import TaskActions from "features/Planner/data/TaskActions";
+import PlanActions from "features/Planner/data/PlanActions";
+import PlanItemStatus, { willStatusDelete } from "features/Planner/data/PlanItemStatus";
 import TaskApi from "features/Planner/data/TaskApi";
 import {
     isExpanded,
     isParent,
-} from "features/Planner/data/tasks";
-import TaskStatus, { willStatusDelete } from "features/Planner/data/TaskStatus";
+} from "features/Planner/data/plannerUtils";
 import { ReduceStore } from "flux/utils";
 import invariant from "invariant";
 import { removeAtIndex } from "util/arrayAsSet";
@@ -35,7 +35,7 @@ const AT_END = Math.random();
 const _newTask = name => ({
     id: ClientId.next(),
     name,
-    status: TaskStatus.NEEDED,
+    status: PlanItemStatus.NEEDED,
 });
 
 const createList = (state, name, optionalPlanIdToCopy) => {
@@ -280,7 +280,7 @@ const flushTasksToRename = state => {
         });
     }
     tasksToRename = requeue;
-    if (requeue.size > 0) inTheFuture(TaskActions.FLUSH_RENAMES);
+    if (requeue.size > 0) inTheFuture(PlanActions.FLUSH_RENAMES);
     return state;
 };
 
@@ -307,7 +307,7 @@ const renameTask = (state, id, name) =>
                 : lo.updating();
         }
         tasksToRename.add(id);
-        inTheFuture(TaskActions.FLUSH_RENAMES);
+        inTheFuture(PlanActions.FLUSH_RENAMES);
         return lo.map(t => ({
             ...t,
             name,
@@ -462,14 +462,14 @@ const flushStatusUpdates = state => {
     state = setTaskStatus(state, id, status);
     statusUpdatesToFlush.delete(id);
     if (statusUpdatesToFlush.size > 0) {
-        inTheFuture(TaskActions.FLUSH_STATUS_UPDATES, 1);
+        inTheFuture(PlanActions.FLUSH_STATUS_UPDATES, 1);
     }
     return state;
 };
 
 const queueDelete = (state, id) => {
     if (!isKnown(state, id)) return state; // already gone...
-    return queueStatusUpdate(state, id, TaskStatus.DELETED);
+    return queueStatusUpdate(state, id, PlanItemStatus.DELETED);
 };
 
 function isEmpty(taskOrString) {
@@ -511,7 +511,7 @@ const queueStatusUpdate = (state, id, status) => {
         }).done();
     } else {
         statusUpdatesToFlush.set(id, status);
-        inTheFuture(TaskActions.FLUSH_STATUS_UPDATES, 4);
+        inTheFuture(PlanActions.FLUSH_STATUS_UPDATES, 4);
         nextLO = lo.map(t => ({
             ...t,
             _next_status: status,
@@ -871,12 +871,12 @@ function selectDefaultList(state) {
     const lids = state.topLevelIds.getLoadObject().getValueEnforcing();
     if (lids.length > 0) {
         // see if there's a preferred active list
-        let alid = PreferencesStore.getActiveTaskList();
-        if (lids.find(id => id === alid) == null) {
+        let activePlanId = preferencesStore.getActivePlan();
+        if (lids.find(id => id === activePlanId) == null) {
             // auto-select the first one
-            alid = lids[0];
+            activePlanId = lids[0];
         }
-        state = selectList(state, alid);
+        state = selectList(state, activePlanId);
     }
     return state;
 }
@@ -922,7 +922,7 @@ const doInteractiveStatusChange = (state, id, status) => {
     return queueStatusUpdate(state, id, status);
 };
 
-class TaskStore extends ReduceStore {
+class PlanStore extends ReduceStore {
 
     getInitialState() {
         return {
@@ -932,7 +932,7 @@ class TaskStore extends ReduceStore {
             selectedTaskIds: null, // Array<ID>
             topLevelIds: new LoadObjectState(
                 () => Dispatcher.dispatch({
-                    type: TaskActions.LOAD_LISTS,
+                    type: PlanActions.LOAD_PLANS,
                 })), // LoadObjectState<Array<ID>>
             byId: {}, // Map<ID, LoadObject<Task>>
         };
@@ -940,15 +940,15 @@ class TaskStore extends ReduceStore {
 
     reduce(state, action) {
         switch (action.type) {
-            case TaskActions.CREATE_LIST: {
+            case PlanActions.CREATE_PLAN: {
                 return createList(state, action.name);
             }
 
-            case TaskActions.DUPLICATE_LIST: {
+            case PlanActions.DUPLICATE_PLAN: {
                 return createList(state, action.name, action.fromId);
             }
 
-            case TaskActions.LIST_CREATED: {
+            case PlanActions.PLAN_CREATED: {
                 return listCreated(
                     state,
                     action.clientId,
@@ -957,7 +957,7 @@ class TaskStore extends ReduceStore {
                 );
             }
 
-            case TaskActions.LIST_DETAIL_VISIBILITY: {
+            case PlanActions.PLAN_DETAIL_VISIBILITY: {
                 if (state.listDetailVisible === action.visible) return state;
                 return {
                     ...state,
@@ -965,7 +965,7 @@ class TaskStore extends ReduceStore {
                 };
             }
 
-            case TaskActions.DELETE_LIST: {
+            case PlanActions.DELETE_PLAN: {
                 TaskApi.deleteList(action.id);
                 let next = dotProp.set(state, [
                     "byId",
@@ -985,7 +985,7 @@ class TaskStore extends ReduceStore {
                 return next;
             }
 
-            case TaskActions.LIST_DELETED: {
+            case PlanActions.PLAN_DELETED: {
                 return selectDefaultList({
                     ...dotProp.delete(state, [
                         "byId",
@@ -996,66 +996,66 @@ class TaskStore extends ReduceStore {
                 });
             }
 
-            case TaskActions.LOAD_LISTS:
+            case PlanActions.LOAD_PLANS:
                 return loadLists(state);
-            case TaskActions.LISTS_LOADED:
+            case PlanActions.PLANS_LOADED:
                 return listsLoaded(state, action.data);
-            case TaskActions.SELECT_LIST:
+            case PlanActions.SELECT_PLAN:
                 return selectList(state, action.id);
-            case TaskActions.RENAME_LIST:
+            case PlanActions.RENAME_PLAN:
                 return renameTask(state, action.id, action.name);
 
-            case TaskActions.SET_LIST_GRANT: {
+            case PlanActions.SET_PLAN_GRANT: {
                 TaskApi.setListGrant(action.id, action.userId, action.level);
                 return dotProp.set(state, [
                     "byId",
                     action.id,
-                ], lo => lo.map(l => dotProp.set(l, ["acl",
+                ], lo => lo.map(l => dotProp.set(l, [ "acl",
                     "grants",
                     action.userId,
                 ], action.level)).updating());
             }
 
-            case TaskActions.CLEAR_LIST_GRANT: {
+            case PlanActions.CLEAR_PLAN_GRANT: {
                 TaskApi.clearListGrant(action.id, action.userId);
                 return dotProp.set(state, [
                     "byId",
                     action.id,
-                ], lo => lo.map(l => dotProp.delete(l, ["acl",
+                ], lo => lo.map(l => dotProp.delete(l, [ "acl",
                     "grants",
                     action.userId,
                 ])).deleting());
             }
 
-            case TaskActions.LIST_GRANT_SET:
-            case TaskActions.LIST_GRANT_CLEARED: {
+            case PlanActions.PLAN_GRANT_SET:
+            case PlanActions.PLAN_GRANT_CLEARED: {
                 return dotProp.set(state, [
                     "byId",
                     action.id,
                 ], lo => lo.done());
             }
 
-            case TaskActions.LIST_DATA_BOOTSTRAPPED:
-            case TaskActions.LIST_DELTAS: {
+            case PlanActions.PLAN_DATA_BOOTSTRAPPED:
+            case PlanActions.PLAN_DELTAS: {
                 return tasksLoaded(state, action.data);
             }
 
-            case TaskActions.TREE_CREATE: {
+            case PlanActions.TREE_CREATE: {
                 return tasksCreated(state, action.data, action.newIds);
             }
 
-            case TaskActions.RENAME_TASK:
+            case PlanActions.RENAME_ITEM:
                 return renameTask(state, action.id, action.name);
 
-            case TaskActions.UPDATED: {
+            case PlanActions.UPDATED: {
                 return taskLoaded(state, action.data);
             }
 
-            case TaskActions.DELETED: {
+            case PlanActions.DELETED: {
                 return taskDeleted(state, action.id);
             }
 
-            case TaskActions.FOCUS: {
+            case PlanActions.FOCUS: {
                 state = focusTask(state, action.id);
                 return flushTasksToRename(state);
             }
@@ -1064,32 +1064,32 @@ class TaskStore extends ReduceStore {
                 return flushTasksToRename(state);
             }
 
-            case TaskActions.FOCUS_NEXT:
+            case PlanActions.FOCUS_NEXT:
                 state = focusDelta(state, state.activeTaskId, 1);
                 return flushTasksToRename(state);
-            case TaskActions.FOCUS_PREVIOUS:
+            case PlanActions.FOCUS_PREVIOUS:
                 state = focusDelta(state, state.activeTaskId, -1);
                 return flushTasksToRename(state);
 
-            case TaskActions.CREATE_TASK_AFTER:
+            case PlanActions.CREATE_ITEM_AFTER:
             case ShoppingActions.CREATE_ITEM_AFTER: {
                 state = createTaskAfter(state, action.id);
                 return flushTasksToRename(state);
             }
 
-            case TaskActions.CREATE_TASK_BEFORE:
+            case PlanActions.CREATE_ITEM_BEFORE:
             case ShoppingActions.CREATE_ITEM_BEFORE: {
                 state = createTaskBefore(state, action.id);
                 return flushTasksToRename(state);
             }
 
-            case TaskActions.CREATE_TASK_AT_END:
+            case PlanActions.CREATE_ITEM_AT_END:
             case ShoppingActions.CREATE_ITEM_AT_END: {
                 state = addTask(state, state.activeListId, "");
                 return state;
             }
 
-            case TaskActions.SEND_TO_PLAN: {
+            case PlanActions.SEND_TO_PLAN: {
                 return addTaskAndFlush(state, action.planId, action.name);
             }
 
@@ -1101,23 +1101,23 @@ class TaskStore extends ReduceStore {
                 return addTaskAndFlush(state, action.planId, name);
             }
 
-            case TaskActions.DELETE_TASK_FORWARD:
+            case PlanActions.DELETE_ITEM_FORWARD:
             case ShoppingActions.DELETE_ITEM_FORWARD: {
                 state = focusDelta(state, action.id, 1);
                 return queueDelete(state, action.id);
             }
 
-            case TaskActions.DELETE_TASK_BACKWARDS:
+            case PlanActions.DELETE_ITEM_BACKWARDS:
             case ShoppingActions.DELETE_ITEM_BACKWARDS: {
                 state = focusDelta(state, action.id, -1);
                 return queueDelete(state, action.id);
             }
 
-            case TaskActions.SET_STATUS: {
+            case PlanActions.SET_STATUS: {
                 return doInteractiveStatusChange(state, action.id, action.status);
             }
 
-            case TaskActions.BULK_SET_STATUS: {
+            case PlanActions.BULK_SET_STATUS: {
                 return action.ids.reduce((s, id) =>
                     doInteractiveStatusChange(s, id, action.status), state);
             }
@@ -1127,15 +1127,15 @@ class TaskStore extends ReduceStore {
                     queueStatusUpdate(s, id, action.status), state);
             }
 
-            case TaskActions.DELETE_SELECTED: {
+            case PlanActions.DELETE_SELECTED: {
                 const tasks = getOrderedBlock(state)
-                    .map(([t]) => t);
+                    .map(([ t ]) => t);
                 state = tasks
                     .reduce((s, t) => queueDelete(s, t.id), state);
                 return focusDelta(state, tasks[0].id, -1);
             }
 
-            case TaskActions.UNDO_SET_STATUS: {
+            case PlanActions.UNDO_SET_STATUS: {
                 return cancelStatusUpdate(state, action.id);
             }
 
@@ -1144,46 +1144,46 @@ class TaskStore extends ReduceStore {
                     cancelStatusUpdate(s, id), state);
             }
 
-            case TaskActions.SELECT_NEXT:
+            case PlanActions.SELECT_NEXT:
                 return selectDelta(state, state.activeTaskId, 1);
-            case TaskActions.SELECT_PREVIOUS:
+            case PlanActions.SELECT_PREVIOUS:
                 return selectDelta(state, state.activeTaskId, -1);
-            case TaskActions.SELECT_TO:
+            case PlanActions.SELECT_TO:
                 return selectTo(state, action.id);
 
-            case TaskActions.MOVE_NEXT: {
+            case PlanActions.MOVE_NEXT: {
                 return moveDelta(state, 1);
             }
 
-            case TaskActions.MOVE_PREVIOUS: {
+            case PlanActions.MOVE_PREVIOUS: {
                 return moveDelta(state, -1);
             }
 
-            case TaskActions.NEST: {
+            case PlanActions.NEST: {
                 return nestTask(state);
             }
 
-            case TaskActions.UNNEST: {
+            case PlanActions.UNNEST: {
                 return unnestTask(state);
             }
 
-            case TaskActions.MOVE_SUBTREE: {
+            case PlanActions.MOVE_SUBTREE: {
                 return moveSubtree(state, action);
             }
 
-            case TaskActions.TOGGLE_EXPANDED: {
+            case PlanActions.TOGGLE_EXPANDED: {
                 return toggleExpanded(state, action.id);
             }
 
-            case TaskActions.EXPAND_ALL: {
+            case PlanActions.EXPAND_ALL: {
                 return expandAll(state);
             }
 
-            case TaskActions.COLLAPSE_ALL: {
+            case PlanActions.COLLAPSE_ALL: {
                 return collapseAll(state);
             }
 
-            case TaskActions.MULTI_LINE_PASTE: {
+            case PlanActions.MULTI_LINE_PASTE: {
                 const lines = action.text.split("\n")
                     .map(l => l.trim())
                     .filter(l => l.length > 0);
@@ -1199,12 +1199,12 @@ class TaskStore extends ReduceStore {
                 return flushTasksToRename(state);
             }
 
-            case TaskActions.CREATE_BUCKET: {
+            case PlanActions.CREATE_BUCKET: {
                 return mapPlanBuckets(state, action.planId, bs =>
-                    [{id: ClientId.next()}].concat(bs));
+                    [ { id: ClientId.next() } ].concat(bs));
             }
 
-            case TaskActions.GENERATE_ONE_WEEKS_BUCKETS: {
+            case PlanActions.GENERATE_ONE_WEEKS_BUCKETS: {
                 return mapPlanBuckets(state, action.planId, bs => {
                     const yesterday = new Date();
                     yesterday.setDate(yesterday.getDate() - 1);
@@ -1228,14 +1228,14 @@ class TaskStore extends ReduceStore {
                 });
             }
 
-            case TaskActions.BUCKET_CREATED: {
+            case PlanActions.BUCKET_CREATED: {
                 return mapPlanBuckets(state, action.planId, bs =>
                     bs.filter(b => b.id !== action.oldId)
                         .concat(deserializeBucket(action.data))
                         .sort(bucketComparator));
             }
 
-            case TaskActions.DELETE_BUCKET: {
+            case PlanActions.DELETE_BUCKET: {
                 return mapPlanBuckets(state, action.planId, bs => {
                     const idx = bs.findIndex(b => b.id === action.id);
                     if (idx >= 0 && !ClientId.is(action.id)) {
@@ -1245,33 +1245,33 @@ class TaskStore extends ReduceStore {
                 });
             }
 
-            case TaskActions.BUCKET_DELETED: {
+            case PlanActions.BUCKET_DELETED: {
                 return mapPlanBuckets(state, action.planId, bs =>
                     bs.filter(b => b.id !== action.id));
             }
 
-            case TaskActions.RENAME_BUCKET: {
+            case PlanActions.RENAME_BUCKET: {
                 return mapPlanBuckets(state, action.planId, bs =>
                     bs.map(b => {
                         if (b.id !== action.id) return b;
-                        b = {...b, name: action.name};
+                        b = { ...b, name: action.name };
                         saveBucket(state, b);
                         return b;
                     }).sort(bucketComparator));
 
             }
 
-            case TaskActions.SET_BUCKET_DATE: {
+            case PlanActions.SET_BUCKET_DATE: {
                 return mapPlanBuckets(state, action.planId, bs =>
                     bs.map(b => {
                         if (b.id !== action.id) return b;
-                        b = {...b, date: action.date};
+                        b = { ...b, date: action.date };
                         saveBucket(state, b);
                         return b;
                     }).sort(bucketComparator));
             }
 
-            case TaskActions.BUCKET_UPDATED: {
+            case PlanActions.BUCKET_UPDATED: {
                 return mapPlanBuckets(state, action.planId, bs =>
                     bs.map(b => {
                         if (b.id !== action.data.id) return b;
@@ -1279,11 +1279,11 @@ class TaskStore extends ReduceStore {
                     }).sort(bucketComparator));
             }
 
-            case TaskActions.ASSIGN_ITEM_TO_BUCKET: {
+            case PlanActions.ASSIGN_ITEM_TO_BUCKET: {
                 return assignToBucket(state, action.id, action.bucketId);
             }
 
-            case TaskActions.SORT_BY_BUCKET: {
+            case PlanActions.SORT_BY_BUCKET: {
                 let plan = taskForId(state, state.activeListId);
                 if (!plan.buckets) return state;
                 const bucketIdOrder = plan.buckets.reduce((index, b, i) => ({
@@ -1292,7 +1292,7 @@ class TaskStore extends ReduceStore {
                 }), {});
                 const desiredIds = plan.subtaskIds
                     .map(id => taskForId(state, id))
-                    .map(t => [t.id, t.bucketId ? bucketIdOrder[t.bucketId] : -1])
+                    .map(t => [ t.id, t.bucketId ? bucketIdOrder[t.bucketId] : -1 ])
                     .sort((pa, pb) => pa[1] - pb[1])
                     .map(pair => pair[0]);
                 for (let i = 0, l = desiredIds.length; i < l; i++) {
@@ -1308,9 +1308,9 @@ class TaskStore extends ReduceStore {
                 return state; // no-op
             }
 
-            case TaskActions.FLUSH_RENAMES:
+            case PlanActions.FLUSH_RENAMES:
                 return flushTasksToRename(state);
-            case TaskActions.FLUSH_STATUS_UPDATES:
+            case PlanActions.FLUSH_STATUS_UPDATES:
                 return flushStatusUpdates(state);
 
             default:
@@ -1318,20 +1318,20 @@ class TaskStore extends ReduceStore {
         }
     }
 
-    getListIdsLO() {
+    getPlanIdsLO() {
         return this.getState()
             .topLevelIds
             .getLoadObject();
     }
 
-    getListsLO() {
+    getPlansLO() {
         const s = this.getState();
-        return this.getListIdsLO().map(ids => losForIds(s, ids)
+        return this.getPlanIdsLO().map(ids => losForIds(s, ids)
             .filter(lo => lo.isDone())
             .map(lo => lo.getValueEnforcing()));
     }
 
-    getSubtaskLOs(id) {
+    getChildItemLOs(id) {
         const s = this.getState();
         const t = taskForId(s, id);
         return losForIds(s, t.subtaskIds);
@@ -1365,8 +1365,8 @@ class TaskStore extends ReduceStore {
         return result;
     }
 
-    getActiveListLO() {
-        const lo = this.getListIdsLO();
+    getActivePlanLO() {
+        const lo = this.getPlanIdsLO();
         if (!lo.hasValue()) return lo;
         const s = this.getState();
         return s.activeListId == null
@@ -1374,20 +1374,20 @@ class TaskStore extends ReduceStore {
             : loForId(s, s.activeListId);
     }
 
-    getActiveTask() {
+    getActiveItem() {
         const s = this.getState();
         if (s.activeTaskId == null) return null;
         const lo = loForId(s, s.activeTaskId);
         return lo.hasValue() ? lo.getValueEnforcing() : null;
     }
 
-    getTaskLO(id) {
+    getItemLO(id) {
         if (id == null) throw new Error("No task has the null ID");
         const s = this.getState();
         return isKnown(s, id) ? loForId(s, id) : LoadObject.empty();
     }
 
-    getSelectedTasks() {
+    getSelectedItems() {
         const s = this.getState();
         return s.selectedTaskIds == null
             ? null
@@ -1414,11 +1414,11 @@ class TaskStore extends ReduceStore {
         return items;
     }
 
-    isListDetailVisible() {
+    isPlanDetailVisible() {
         return this.getState().listDetailVisible;
     }
 
-    isMultiTaskSelection() {
+    isMultiItemSelection() {
         const s = this.getState();
         return s.activeTaskId != null && s.selectedTaskIds != null;
     }
@@ -1437,4 +1437,4 @@ class TaskStore extends ReduceStore {
     }
 }
 
-export default new TaskStore(Dispatcher);
+export default new PlanStore(Dispatcher);

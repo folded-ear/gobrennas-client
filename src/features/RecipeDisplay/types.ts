@@ -29,7 +29,7 @@ export interface Recipe extends Ingredient {
 //
 // type RecipeRef = Pick<Recipe, "id" | "name">
 
-export interface RecipeFromTask extends Recipe {
+export interface RecipeFromPlanItem extends Recipe {
     subtaskIds: number[]
     subrecipes: Recipe[]
 }

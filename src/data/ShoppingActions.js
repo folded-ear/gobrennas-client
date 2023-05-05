@@ -1,8 +1,8 @@
-import TaskActions from "features/Planner/data/TaskActions";
+import PlanActions from "features/Planner/data/PlanActions";
 
 const ShoppingActions = {
     TOGGLE_PLAN: "shopping/toggle-plan",
-    RENAME_ITEM: TaskActions.RENAME_TASK,
+    RENAME_ITEM: PlanActions.RENAME_ITEM,
     FOCUS: "shopping/focus",
     TOGGLE_EXPANDED: "shopping/toggle-expanded",
     SET_INGREDIENT_STATUS: "shopping/set-ingredient-status",

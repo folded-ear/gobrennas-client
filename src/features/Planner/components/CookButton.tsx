@@ -8,12 +8,12 @@ import history from "util/history";
 
 interface Props {
     planId: string | number
-    taskId: string | number
+    itemId: string | number
 }
 
 const CookButton: React.FC<Props> = ({
                                          planId,
-                                         taskId,
+                                         itemId,
                                          ...props
                                      }) => {
     return (
@@ -22,7 +22,7 @@ const CookButton: React.FC<Props> = ({
             placement="top"
         >
             <IconButton
-                onClick={() => history.push(`/plan/${planId}/recipe/${taskId}`)}
+                onClick={() => history.push(`/plan/${planId}/recipe/${itemId}`)}
                 {...props}
                 size="large">
                 <KitchenIcon />

@@ -1,5 +1,5 @@
 import useFluxStore from "data/useFluxStore";
-import TaskStore from "features/Planner/data/TaskStore";
+import planStore from "features/Planner/data/planStore";
 import LibraryStore from "features/RecipeLibrary/data/LibraryStore";
 import React from "react";
 import LoadingIndicator from "views/common/LoadingIndicator";
@@ -19,7 +19,7 @@ const PlannedBucketController: React.FC<Props> = ({ match }) => {
     const lo = useFluxStore(
         () => recipeLoByItemAndBucket(pid, bid),
         [
-            TaskStore,
+            planStore,
             LibraryStore,
         ],
         [ pid, bid ],

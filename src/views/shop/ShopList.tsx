@@ -8,17 +8,17 @@ import FoodingerFab from "views/common/FoodingerFab";
 import LoadingIndicator from "views/common/LoadingIndicator";
 import PageBody from "views/common/PageBody";
 import Ingredient from "views/shop/IngredientItem";
-import TaskItem from "views/shop/TaskItem";
+import PlanItem from "views/shop/PlanItem";
 import {
     BaseItemProp,
     ItemProps,
 } from "./types";
-import { Task } from "../../features/Planner/data/TaskStore";
-import { Quantity } from "../../global/types/types";
+import { PlanItem as PlanItemType } from "features/Planner/data/planStore";
+import { Quantity } from "global/types/types";
 
 export enum ShopItemType {
-    INGREDIENT = "ingredient",
-    TASK = "task",
+    INGREDIENT,
+    PLAN_ITEM,
 }
 
 export interface ShopItemTuple extends ItemProps {
@@ -33,7 +33,7 @@ export interface ShopItemTuple extends ItemProps {
 }
 
 export type ShopListProps = {
-    plan: Task | null | undefined
+    plan: PlanItemType | null | undefined
     itemTuples: ShopItemTuple[]
 }
 
@@ -66,14 +66,14 @@ class ShopList extends React.PureComponent<ShopListProps> {
             <Typography variant="h2">{plan.name}</Typography>
             <List>
                 {itemTuples.map(it => {
-                    if (it._type === "ingredient") {
+                    if (it._type === ShopItemType.INGREDIENT) {
                         return <Ingredient
-                            key={it.id + it._type}
+                            key={it.id + "-ing-item"}
                             item={it}
                             active={it.expanded}
                         />;
                     } else {
-                        return <TaskItem
+                        return <PlanItem
                             key={it.id}
                             depth={it.depth}
                             item={it}

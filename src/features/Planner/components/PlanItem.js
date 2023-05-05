@@ -5,18 +5,18 @@ import Dispatcher from "data/dispatcher";
 import CookButton from "features/Planner/components/CookButton";
 import DontChangeStatusButton from "features/Planner/components/DontChangeStatusButton";
 import Item from "features/Planner/components/Item";
+import PlanItemBucketChip from "features/Planner/components/PlanItemBucketChip";
 import StatusIconButton from "features/Planner/components/StatusIconButton";
-import TaskBucketChip from "features/Planner/components/TaskBucketChip";
 import withItemStyles from "features/Planner/components/withItemStyles";
-import TaskActions from "features/Planner/data/TaskActions";
+import PlanActions from "features/Planner/data/PlanActions";
+import PlanItemStatus from "features/Planner/data/PlanItemStatus";
 import {
     isExpanded,
     isParent,
     isQuestionable,
     isSection,
-} from "features/Planner/data/tasks";
-import TaskStatus from "features/Planner/data/TaskStatus";
-import TaskStore from "features/Planner/data/TaskStore";
+} from "features/Planner/data/plannerUtils";
+import planStore from "features/Planner/data/planStore";
 import CollapseIconButton from "global/components/CollapseIconButton";
 import PropTypes from "prop-types";
 import React from "react";
@@ -24,7 +24,7 @@ import LoadingIconButton from "views/common/LoadingIconButton";
 import PlaceholderIconButton from "views/common/PlaceholderIconButton";
 import IngredientItem from "views/IngredientItem";
 
-class Task extends React.PureComponent {
+class PlanItem extends React.PureComponent {
 
     constructor(props) {
         super(props);
@@ -41,19 +41,19 @@ class Task extends React.PureComponent {
     onChange(e) {
         const { value } = e.target;
         const {
-            task,
+            item,
         } = this.props;
         Dispatcher.dispatch({
-            type: TaskActions.RENAME_TASK,
-            id: task.id,
+            type: PlanActions.RENAME_ITEM,
+            id: item.id,
             name: value,
         });
     }
 
     onCopy(e) {
-        if (! TaskStore.isMultiTaskSelection()) return;
+        if (!planStore.isMultiItemSelection()) return;
         e.preventDefault();
-        const text = TaskStore.getSelectionAsTextBlock();
+        const text = planStore.getSelectionAsTextBlock();
         e.clipboardData.setData("text", text);
     }
 
@@ -65,7 +65,7 @@ class Task extends React.PureComponent {
         // it's multi-line!
         e.preventDefault();
         Dispatcher.dispatch({
-            type: TaskActions.MULTI_LINE_PASTE,
+            type: PlanActions.MULTI_LINE_PASTE,
             text,
         });
     }
@@ -86,64 +86,64 @@ class Task extends React.PureComponent {
                 // add a new item, before if the cursor is at the beginning, after otherwise
                 Dispatcher.dispatch({
                     type: selectionStart === 0
-                        ? TaskActions.CREATE_TASK_BEFORE
-                        : TaskActions.CREATE_TASK_AFTER,
-                    id: this.props.task.id,
+                        ? PlanActions.CREATE_ITEM_BEFORE
+                        : PlanActions.CREATE_ITEM_AFTER,
+                    id: this.props.item.id,
                 });
                 break;
             case "Backspace":
-                // if the value is empty, delete the task and focus previous
+                // if the value is empty, delete the item and focus previous
                 if (value.length === 0) {
                     e.preventDefault();
                     Dispatcher.dispatch({
-                        type: TaskActions.DELETE_TASK_BACKWARDS,
-                        id: this.props.task.id
+                        type: PlanActions.DELETE_ITEM_BACKWARDS,
+                        id: this.props.item.id,
                     });
                 } else if (shiftKey) {
                     e.preventDefault();
                     Dispatcher.dispatch({
-                        type: TaskActions.DELETE_SELECTED,
+                        type: PlanActions.DELETE_SELECTED,
                     });
                 }
                 break;
             case "Delete":
-                // if the value is empty, delete the task and focus next
+                // if the value is empty, delete the item and focus next
                 if (value.length === 0) {
                     e.preventDefault();
                     Dispatcher.dispatch({
-                        type: TaskActions.DELETE_TASK_FORWARD,
-                        id: this.props.task.id,
+                        type: PlanActions.DELETE_ITEM_FORWARD,
+                        id: this.props.item.id,
                     });
                 } else if (shiftKey) {
                     e.preventDefault();
                     Dispatcher.dispatch({
-                        type: TaskActions.DELETE_SELECTED,
+                        type: PlanActions.DELETE_SELECTED,
                     });
                 }
                 break;
             case "Tab":
                 e.preventDefault();
                 Dispatcher.dispatch({
-                    type: shiftKey ? TaskActions.UNNEST : TaskActions.NEST,
-                    id: this.props.task.id,
+                    type: shiftKey ? PlanActions.UNNEST : PlanActions.NEST,
+                    id: this.props.item.id,
                 });
                 break;
             case "ArrowUp":
                 e.preventDefault();
                 if (shiftKey && ctrlKey) break;
                 if (shiftKey) {
-                    // select this task and the previous one
+                    // select this item and the previous one
                     Dispatcher.dispatch({
-                        type: TaskActions.SELECT_PREVIOUS,
+                        type: PlanActions.SELECT_PREVIOUS,
                     });
                 } else if (ctrlKey) {
-                    // move all selected tasks up one (if a predecessor exists)
+                    // move all selected items up one (if a predecessor exists)
                     Dispatcher.dispatch({
-                        type: TaskActions.MOVE_PREVIOUS,
+                        type: PlanActions.MOVE_PREVIOUS,
                     });
                 } else {
                     Dispatcher.dispatch({
-                        type: TaskActions.FOCUS_PREVIOUS,
+                        type: PlanActions.FOCUS_PREVIOUS,
                     });
                 }
                 break;
@@ -151,18 +151,18 @@ class Task extends React.PureComponent {
                 e.preventDefault();
                 if (shiftKey && ctrlKey) break;
                 if (shiftKey) {
-                    // select this task and the next one
+                    // select this item and the next one
                     Dispatcher.dispatch({
-                        type: TaskActions.SELECT_NEXT,
+                        type: PlanActions.SELECT_NEXT,
                     });
                 } else if (ctrlKey) {
-                    // move all selected tasks down one (if a follower exists)
+                    // move all selected items down one (if a follower exists)
                     Dispatcher.dispatch({
-                        type: TaskActions.MOVE_NEXT,
+                        type: PlanActions.MOVE_NEXT,
                     });
                 } else {
                     Dispatcher.dispatch({
-                        type: TaskActions.FOCUS_NEXT,
+                        type: PlanActions.FOCUS_NEXT,
                     });
                 }
                 break;
@@ -177,44 +177,44 @@ class Task extends React.PureComponent {
     onClick(e) {
         const {
             active,
-            task,
+            item,
         } = this.props;
         if (active) return;
         e.preventDefault();
         e.stopPropagation();
         Dispatcher.dispatch({
             type: e.shiftKey
-                ? TaskActions.SELECT_TO
-                : TaskActions.FOCUS,
-            id: task.id,
+                ? PlanActions.SELECT_TO
+                : PlanActions.FOCUS,
+            id: item.id,
         });
     }
 
     onToggleExpanded(e) {
         if (e) e.stopPropagation();
         Dispatcher.dispatch({
-            type: TaskActions.TOGGLE_EXPANDED,
-            id: this.props.task.id,
+            type: PlanActions.TOGGLE_EXPANDED,
+            id: this.props.item.id,
         });
     }
 
     onDragDrop(id, targetId, vertical, horizontal) {
         const {
-            task,
+            item,
         } = this.props;
         const action = {
-            type: TaskActions.MOVE_SUBTREE,
+            type: PlanActions.MOVE_SUBTREE,
             id,
         };
         if (horizontal === "right") {
             action.parentId = targetId;
-            if (isExpanded(task)) {
+            if (isExpanded(item)) {
                 action.after = null;
             } else {
                 action.before = null;
             }
         } else {
-            action.parentId = task.parentId;
+            action.parentId = item.parentId;
             if (vertical === "above") {
                 action.before = targetId;
             } else {
@@ -235,7 +235,7 @@ class Task extends React.PureComponent {
     render() {
         const {
             plan,
-            task,
+            item,
             depth,
             loading,
             active,
@@ -244,14 +244,14 @@ class Task extends React.PureComponent {
             ancestorDeleting,
             classes,
         } = this.props;
-        const section = isSection(task);
-        const parent = isParent(task);
-        const expanded = isExpanded(task);
-        const recipeIsh = parent || task.fromRecipe;
-        const question = isQuestionable(task);
-        const deleting = task._next_status === TaskStatus.DELETED;
-        const acquiring = task._next_status === TaskStatus.ACQUIRED;
-        const needing = task._next_status === TaskStatus.NEEDED;
+        const section = isSection(item);
+        const parent = isParent(item);
+        const expanded = isExpanded(item);
+        const recipeIsh = parent || item.fromRecipe;
+        const question = isQuestionable(item);
+        const deleting = item._next_status === PlanItemStatus.DELETED;
+        const acquiring = item._next_status === PlanItemStatus.ACQUIRED;
+        const needing = item._next_status === PlanItemStatus.NEEDED;
 
         let addonBefore = [];
         if (parent) {
@@ -280,26 +280,26 @@ class Task extends React.PureComponent {
                     size="small"
                 />);
         } else {
-            const curr = task._next_status || task.status;
+            const curr = item._next_status || item.status;
             addonBefore.push(
                 <StatusIconButton
                     key="acquire"
-                    id={task.id}
+                    id={item.id}
                     current={curr}
-                    next={curr === TaskStatus.ACQUIRED ? TaskStatus.NEEDED : TaskStatus.ACQUIRED}
+                    next={curr === PlanItemStatus.ACQUIRED ? PlanItemStatus.NEEDED : PlanItemStatus.ACQUIRED}
                 />);
         }
         const addonAfter = [
             deleting && !ancestorDeleting
                 ? <DontChangeStatusButton
                     key="delete"
-                    id={task.id}
-                    next={task._next_status}
+                    id={item.id}
+                    next={item._next_status}
                 />
                 : <StatusIconButton
                     key="delete"
-                    id={task.id}
-                    next={TaskStatus.DELETED}
+                    id={item.id}
+                    next={PlanItemStatus.DELETED}
                     disabled={ancestorDeleting}
                 />,
         ];
@@ -308,15 +308,15 @@ class Task extends React.PureComponent {
                 key="cook"
                 size="small"
                 planId={plan.id}
-                taskId={task.id}
+                itemId={item.id}
             />);
         }
         if (buckets && buckets.length > 0) {
-            addonAfter.unshift(<TaskBucketChip
+            addonAfter.unshift(<PlanItemBucketChip
                 key="bucket"
                 planId={plan.id}
-                taskId={task.id}
-                bucketId={task.bucketId}
+                itemId={item.id}
+                bucketId={item.bucketId}
                 buckets={buckets}
             />);
         }
@@ -336,14 +336,14 @@ class Task extends React.PureComponent {
                 [classes.needing]: needing,
                 [classes.ancestorDeleting]: ancestorDeleting,
             })}
-            dragId={task.id}
+            dragId={item.id}
             onDragDrop={this.onDragDrop}
         >
             {active
                 ? <Input
                     fullWidth
-                    value={task.name}
-                    placeholder="Write a task name"
+                    value={item.name}
+                    placeholder="Enter an item name"
                     disableUnderline
                     inputRef={this.inputRef}
                     onChange={this.onChange}
@@ -356,10 +356,10 @@ class Task extends React.PureComponent {
                     className={classes.text}
                     onDoubleClick={parent ? this.onToggleExpanded : null}
                 >
-                    {recipeIsh || !task.ingredient
-                        ? task.name
+                    {recipeIsh || !item.ingredient
+                        ? item.name
                         : <IngredientItem
-                            ingRef={task}
+                            ingRef={item}
                             hideRecipeLink
                             hideSendToPlan
                             inline
@@ -370,10 +370,10 @@ class Task extends React.PureComponent {
 
 }
 
-Task.propTypes = {
+PlanItem.propTypes = {
     depth: PropTypes.number.isRequired,
     plan: PropTypes.object.isRequired,
-    task: PropTypes.object.isRequired,
+    item: PropTypes.object.isRequired,
     loading: PropTypes.bool.isRequired,
     active: PropTypes.bool,
     selected: PropTypes.bool,
@@ -382,4 +382,4 @@ Task.propTypes = {
     classes: PropTypes.object.isRequired,
 };
 
-export default withItemStyles(Task);
+export default withItemStyles(PlanItem);

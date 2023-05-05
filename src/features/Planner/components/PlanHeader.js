@@ -1,71 +1,87 @@
-import {Drawer, FormControl, Grid, IconButton, MenuItem, Select, TextField, Tooltip,} from "@mui/material";
-import {Add, DynamicFeed, Edit,} from "@mui/icons-material";
+import {
+    Add,
+    DynamicFeed,
+    Edit,
+} from "@mui/icons-material";
+import {
+    Drawer,
+    FormControl,
+    Grid,
+    IconButton,
+    MenuItem,
+    Select,
+    TextField,
+    Tooltip,
+} from "@mui/material";
+import Dispatcher from "data/dispatcher";
+import PlanSidebar from "features/Planner/components/PlanSidebar";
+import UserById from "features/Planner/components/UserById";
+import PlanActions from "features/Planner/data/PlanActions";
 import PropTypes from "prop-types";
 import React from "react";
-import Dispatcher from "data/dispatcher";
-import TaskActions from "features/Planner/data/TaskActions";
-import {byNameComparator} from "util/comparators";
-import {CollapseAll, ExpandAll,} from "views/common/icons";
+import { byNameComparator } from "util/comparators";
+import {
+    CollapseAll,
+    ExpandAll,
+} from "views/common/icons";
 import SplitButton from "views/common/SplitButton";
-import TaskListSidebar from "features/Planner/components/TaskListSidebar";
-import UserById from "features/Planner/components/UserById";
 
 const isValidName = name =>
     name != null && name.trim().length > 0;
 
 const onShowDrawer = () =>
     Dispatcher.dispatch({
-        type: TaskActions.LIST_DETAIL_VISIBILITY,
+        type: PlanActions.PLAN_DETAIL_VISIBILITY,
         visible: true,
     });
 
 const onCloseDrawer = () =>
     Dispatcher.dispatch({
-        type: TaskActions.LIST_DETAIL_VISIBILITY,
+        type: PlanActions.PLAN_DETAIL_VISIBILITY,
         visible: false,
     });
 
 const onSelect = e =>
     Dispatcher.dispatch({
-        type: TaskActions.SELECT_LIST,
+        type: PlanActions.SELECT_PLAN,
         id: e.target.value,
     });
 
 const onExpandAll = () =>
     Dispatcher.dispatch({
-        type: TaskActions.EXPAND_ALL,
+        type: PlanActions.EXPAND_ALL,
     });
 
 const onCollapseAll = () =>
     Dispatcher.dispatch({
-        type: TaskActions.COLLAPSE_ALL,
+        type: PlanActions.COLLAPSE_ALL,
     });
 
 const sortByBucket = () =>
     Dispatcher.dispatch({
-        type: TaskActions.SORT_BY_BUCKET,
+        type: PlanActions.SORT_BY_BUCKET,
     });
 
-function TaskListHeader({
-                            activeList,
-                            allLists: allListsUnsorted,
-                            listDetailVisible = false,
-                            hasBuckets = false,
-                            canExpand = true,
-                        }) {
-    const allLists = allListsUnsorted
-        ? allListsUnsorted.slice().sort(byNameComparator)
+function PlanHeader({
+                        activePlan,
+                        allPlans: allPlansUnsorted,
+                        planDetailVisible = false,
+                        hasBuckets = false,
+                        canExpand = true,
+                    }) {
+    const allPlans = allPlansUnsorted
+        ? allPlansUnsorted.slice().sort(byNameComparator)
         : [];
 
-    const [name, setName] = React.useState("");
-    const [showAdd, setShowAdd] = React.useState(false);
+    const [ name, setName ] = React.useState("");
+    const [ showAdd, setShowAdd ] = React.useState(false);
 
     const onCreate = () => {
         if (!isValidName(name)) return;
         setName("");
         setShowAdd(false);
         Dispatcher.dispatch({
-            type: TaskActions.CREATE_LIST,
+            type: PlanActions.CREATE_PLAN,
             name: name.trim(),
         });
     };
@@ -74,7 +90,7 @@ function TaskListHeader({
         if (!isValidName(name)) return;
         setName("");
         Dispatcher.dispatch({
-            type: TaskActions.DUPLICATE_LIST,
+            type: PlanActions.DUPLICATE_PLAN,
             name: name.trim(),
             fromId: list.id,
         });
@@ -82,7 +98,7 @@ function TaskListHeader({
 
     return (
         <Grid container justifyContent={"space-between"}>
-            {activeList && <Grid item>
+            {activePlan && <Grid item>
                 <Tooltip
                     title="Expand all collapsed items"
                     placement="bottom-start"
@@ -120,7 +136,7 @@ function TaskListHeader({
                     </IconButton>
                 </Tooltip>
                 <Drawer
-                    open={listDetailVisible}
+                    open={planDetailVisible}
                     anchor="right"
                     onClose={onCloseDrawer}
                 >
@@ -132,15 +148,15 @@ function TaskListHeader({
                             backgroundColor: "#f7f7f7",
                         }}
                     >
-                        <TaskListSidebar list={activeList} />
+                        <PlanSidebar list={activePlan} />
                     </div>
                 </Drawer>
             </Grid>}
-            {allLists.length > 0 && <Grid item>
+            {allPlans.length > 0 && <Grid item>
                 <Grid container>
-                    {activeList && activeList.acl && <Grid item>
+                    {activePlan && activePlan.acl && <Grid item>
                         <UserById
-                            id={activeList.acl.ownerId}
+                            id={activePlan.acl.ownerId}
                             iconOnly
                         />
                     </Grid>}
@@ -154,10 +170,10 @@ function TaskListHeader({
                         >
                             <Select
                                 placeholder="Select a Plan"
-                                value={activeList && activeList.id}
+                                value={activePlan && activePlan.id}
                                 onChange={onSelect}
                             >
-                                {allLists.map(l =>
+                                {allPlans.map(l =>
                                     <MenuItem
                                         key={l.id}
                                         value={l.id}
@@ -173,7 +189,7 @@ function TaskListHeader({
                             title="Edit plan, buckets, and access"
                             placement="bottom"
                         >
-                            <IconButton onClick={onShowDrawer} disabled={!activeList} size="large">
+                            <IconButton onClick={onShowDrawer} disabled={!activePlan} size="large">
                                 <Edit />
                             </IconButton>
                         </Tooltip>
@@ -181,7 +197,7 @@ function TaskListHeader({
                 </Grid>
             </Grid>}
             <Grid item>
-                {(showAdd || allLists.length === 0)
+                {(showAdd || allPlans.length === 0)
                     ? <Grid container>
                         <Grid item>
                             <TextField
@@ -190,7 +206,7 @@ function TaskListHeader({
                                 size={"small"}
                                 variant={"outlined"}
                                 onChange={e => {
-                                    const {value} = e.target;
+                                    const { value } = e.target;
                                     setName(value == null ? "" : value);
                                 }}
                                 autoFocus
@@ -206,7 +222,7 @@ function TaskListHeader({
                             <SplitButton
                                 primary={<Add />}
                                 onClick={onCreate}
-                                options={allLists.length > 0 && allLists.map(l => ({
+                                options={allPlans.length > 0 && allPlans.map(l => ({
                                     label: `Duplicate "${l.name}"`,
                                     id: l.id,
                                 }))}
@@ -229,12 +245,12 @@ function TaskListHeader({
 
 }
 
-TaskListHeader.propTypes = {
-    allLists: PropTypes.array.isRequired,
-    activeList: PropTypes.object,
-    listDetailVisible: PropTypes.bool,
+PlanHeader.propTypes = {
+    allPlans: PropTypes.array.isRequired,
+    activePlan: PropTypes.object,
+    planDetailVisible: PropTypes.bool,
     hasBuckets: PropTypes.bool,
     canExpand: PropTypes.bool,
 };
 
-export default TaskListHeader;
+export default PlanHeader;

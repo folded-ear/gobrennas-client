@@ -1,15 +1,15 @@
 import useFluxStore from "../../../data/useFluxStore";
-import TaskStore from "../../Planner/data/TaskStore";
+import planStore from "features/Planner/data/planStore";
 import React from "react";
 import Dispatcher from "../../../data/dispatcher";
-import TaskActions from "../../Planner/data/TaskActions";
+import PlanActions from "features/Planner/data/PlanActions";
 
 export const useLoadedPlan = (pid: number) => {
     // ensure it's loaded
     const allPlansLO = useFluxStore(
-        () => TaskStore.getListIdsLO(),
+        () => planStore.getPlanIdsLO(),
         [
-            TaskStore,
+            planStore,
         ],
     );
     // ensure it's selected
@@ -20,7 +20,7 @@ export const useLoadedPlan = (pid: number) => {
                 // cycle completes, but doesn't guarantee it. The setTimeout
                 // avoids a reentrant dispatch if the effect isn't deferred.
                 setTimeout(() => Dispatcher.dispatch({
-                    type: TaskActions.SELECT_LIST,
+                    type: PlanActions.SELECT_PLAN,
                     id: pid,
                 }));
             }

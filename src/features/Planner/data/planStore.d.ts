@@ -2,17 +2,17 @@ import FluxReduceStore from "flux/lib/FluxReduceStore";
 import LoadObject from "../../../util/LoadObject";
 import LoadObjectState from "../../../util/LoadObjectState";
 import AccessLevel from "../../../data/AccessLevel";
-import { FluxAction } from "../../../global/types/types";
+import { FluxAction } from "global/types/types";
 
 type clientOrDatabaseIdType = string | number;
 
-export interface Bucket {
+export interface PlanBucket {
     id: clientOrDatabaseIdType
     name?: string
     date?: Date
 }
 
-export interface Task {
+export interface PlanItem {
     //  core
     id: clientOrDatabaseIdType
     name: string
@@ -28,7 +28,7 @@ export interface Task {
         ownerId: number
         grants: Record<string, AccessLevel>
     }
-    buckets: Bucket[]
+    buckets: PlanBucket[]
     // item
     quantity?: number
     uomId?: number
@@ -46,38 +46,38 @@ interface State {
     activeTaskId?: clientOrDatabaseIdType
     selectedTaskIds?: clientOrDatabaseIdType[]
     topLevelIds: LoadObjectState<clientOrDatabaseIdType[]>
-    byId: Record<clientOrDatabaseIdType, LoadObject<Task>>
+    byId: Record<clientOrDatabaseIdType, LoadObject<PlanItem>>
 }
 
 declare namespace TaskStore {
 }
 
-declare class TaskStore extends FluxReduceStore<State, FluxAction> {
-    getListIdsLO(): LoadObject<clientOrDatabaseIdType>
+declare class PlanStore extends FluxReduceStore<State, FluxAction> {
+    getPlanIdsLO(): LoadObject<clientOrDatabaseIdType>
 
-    getListsLO(): LoadObject<Task[]>
+    getPlansLO(): LoadObject<PlanItem[]>
 
-    getSubtaskLOs(id: clientOrDatabaseIdType): LoadObject<Task>[]
+    getChildItemLOs(id: clientOrDatabaseIdType): LoadObject<PlanItem>[]
 
-    getNonDescendantComponents(id: number): Task[]
+    getNonDescendantComponents(id: number): PlanItem[]
 
-    getActiveListLO(): LoadObject<Task>
+    getActivePlanLO(): LoadObject<PlanItem>
 
-    getActiveTask(): Task
+    getActiveItem(): PlanItem
 
-    getTaskLO(id: clientOrDatabaseIdType): LoadObject<Task>
+    getItemLO(id: clientOrDatabaseIdType): LoadObject<PlanItem>
 
-    getSelectedTasks(): Task[]
+    getSelectedItems(): PlanItem[]
 
-    getItemsInBucket(planId: number, bucketId: number): Task[]
+    getItemsInBucket(planId: number, bucketId: number): PlanItem[]
 
-    isListDetailVisible(): boolean
+    isPlanDetailVisible(): boolean
 
-    isMultiTaskSelection(): boolean
+    isMultiItemSelection(): boolean
 
     getSelectionAsTextBlock(): string
 
 }
 
-const taskStore: TaskStore;
-export = taskStore;
+const planStore: PlanStore;
+export = planStore;

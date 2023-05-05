@@ -1,44 +1,43 @@
 import React from "react";
 import LibraryStore from "features/RecipeLibrary/data/LibraryStore";
-import ShoppingStore, { Item } from "data/ShoppingStore";
+import shoppingStore, { Item } from "data/shoppingStore";
 import {
     isParent,
     isQuestionable,
     isSection,
-} from "features/Planner/data/tasks";
-import TaskStatus from "features/Planner/data/TaskStatus";
-import TaskStore from "features/Planner/data/TaskStore";
+} from "features/Planner/data/plannerUtils";
+import PlanItemStatus from "features/Planner/data/PlanItemStatus";
+import planStore, { PlanItem } from "features/Planner/data/planStore";
 import useFluxStore from "data/useFluxStore";
 import groupBy from "util/groupBy";
 import ShopList, {
     ShopItemTuple,
     ShopItemType,
 } from "views/shop/ShopList";
-import { Task } from "../features/Planner/data/TaskStore";
 import {
     BaseItemProp,
     ItemProps,
-} from "../views/shop/types";
+} from "views/shop/types";
 import { Maybe } from "graphql/jsutils/Maybe";
-import { Quantity } from "../global/types/types";
-import { ripLoadObject } from "../util/ripLoadObject";
+import { Quantity } from "global/types/types";
+import { ripLoadObject } from "util/ripLoadObject";
 
-interface TaskTuple extends Task, ItemProps {
+interface ItemTuple extends PlanItem, ItemProps {
 }
 
-interface PathedTaskTuple extends TaskTuple {
+interface PathedItemTuple extends ItemTuple {
     path: BaseItemProp[],
 }
 
-function gatherLeaves(item: Task): PathedTaskTuple[] {
+function gatherLeaves(item: PlanItem): PathedItemTuple[] {
     if (!isParent(item)) {
         if (isSection(item)) return [];
         return [ {
             ...item,
             path: [],
-        } as unknown as PathedTaskTuple ];
+        } as unknown as PathedItemTuple ];
     }
-    return TaskStore.getSubtaskLOs(item.id)
+    return planStore.getChildItemLOs(item.id)
         .map(lo => ripLoadObject(lo))
         .filter(rippedLO => rippedLO.data)
         .map(rippedLO => {
@@ -48,10 +47,10 @@ function gatherLeaves(item: Task): PathedTaskTuple[] {
                 ...item,
                 question: isQuestionable(item),
                 loading: rippedLO.loading,
-                deleting: item._next_status === TaskStatus.DELETED,
-                completing: item._next_status === TaskStatus.COMPLETED,
-                acquiring: item._next_status === TaskStatus.ACQUIRED,
-                needing: item._next_status === TaskStatus.NEEDED,
+                deleting: item._next_status === PlanItemStatus.DELETED,
+                completing: item._next_status === PlanItemStatus.COMPLETED,
+                acquiring: item._next_status === PlanItemStatus.ACQUIRED,
+                needing: item._next_status === PlanItemStatus.NEEDED,
             };
         })
         .flatMap(gatherLeaves)
@@ -68,12 +67,12 @@ interface Ingredient {
 
 interface OrderableIngredient {
     id: number
-    items: PathedTaskTuple[]
+    items: PathedItemTuple[]
     data?: Ingredient
     loading: boolean
 }
 
-function groupItems(plans: Task[],
+function groupItems(plans: PlanItem[],
                     expandedId: Maybe<number>,
                     activeItem: Maybe<Item>): ShopItemTuple[] {
     const leaves = plans
@@ -85,11 +84,11 @@ function groupItems(plans: Task[],
         }
     }
     const byIngredient = groupBy(leaves, it => it.ingredientId);
-    const unparsed: PathedTaskTuple[] = [];
+    const unparsed: PathedItemTuple[] = [];
     if (byIngredient.has(undefined)) {
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         unparsed.push(...byIngredient.get(undefined)!
-            .filter(it => it.status === TaskStatus.NEEDED));
+            .filter(it => it.status === PlanItemStatus.NEEDED));
         byIngredient.delete(undefined);
     }
     const orderedIngredients: OrderableIngredient[] = [];
@@ -113,7 +112,7 @@ function groupItems(plans: Task[],
     });
     const theTree: ShopItemTuple[] = [];
     for (const { id: ingId, items, data: ingredient, loading } of orderedIngredients) {
-        const neededItems = items.filter(it => it.status === TaskStatus.NEEDED);
+        const neededItems = items.filter(it => it.status === PlanItemStatus.NEEDED);
         if (neededItems.length === 0) continue;
         const unitLookup = new Map();
         const byUnit = groupBy(neededItems, it => {
@@ -141,14 +140,14 @@ function groupItems(plans: Task[],
             quantities,
             expanded,
             loading: loading || items.some(it => it.loading),
-            acquiring: items.every(it => it.acquiring || it.status === TaskStatus.ACQUIRED),
-            deleting: items.every(it => it.deleting || it.status === TaskStatus.DELETED),
+            acquiring: items.every(it => it.acquiring || it.status === PlanItemStatus.ACQUIRED),
+            deleting: items.every(it => it.deleting || it.status === PlanItemStatus.DELETED),
             depth: 0,
             path: [],
         });
         if (expanded) {
             theTree.push(...items.map(it => ({
-                _type: ShopItemType.TASK,
+                _type: ShopItemType.PLAN_ITEM,
                 depth: 1,
                 ingredient,
                 ...it,
@@ -157,7 +156,7 @@ function groupItems(plans: Task[],
     }
     // add the garbage at the bottom
     theTree.push(...unparsed.map(it => ({
-        _type: ShopItemType.TASK,
+        _type: ShopItemType.PLAN_ITEM,
         depth: 0,
         ...it,
     })));
@@ -177,20 +176,20 @@ function groupItems(plans: Task[],
 const Shop = () => {
     const [ expandedId, activeItem ] = useFluxStore(
         () => [
-            ShoppingStore.getExpandedIngredientId(),
-            ShoppingStore.getActiveItem(),
+            shoppingStore.getExpandedIngredientId(),
+            shoppingStore.getActiveItem(),
         ],
-        [ ShoppingStore ],
+        [ shoppingStore ],
     );
     const [ plan, itemTuples ] = useFluxStore(
         () => {
-            const plan = ripLoadObject(TaskStore.getActiveListLO()).data;
+            const plan = ripLoadObject(planStore.getActivePlanLO()).data;
             return [ plan, plan
                 ? groupItems([ plan ], expandedId, activeItem)
                 : [],
             ];
         },
-        [ TaskStore, LibraryStore ],
+        [ planStore, LibraryStore ],
         [ expandedId, activeItem ],
     );
     return <ShopList

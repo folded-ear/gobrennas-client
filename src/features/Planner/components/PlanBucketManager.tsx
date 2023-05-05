@@ -15,8 +15,8 @@ import {
 } from "@mui/icons-material";
 import React from "react";
 import dispatcher from "data/dispatcher";
-import TaskActions from "features/Planner/data/TaskActions";
-import TaskStore from "features/Planner/data/TaskStore";
+import PlanActions from "features/Planner/data/PlanActions";
+import planStore from "features/Planner/data/planStore";
 import useFluxStore from "data/useFluxStore";
 import {
     formatLocalDate,
@@ -24,7 +24,7 @@ import {
 } from "util/time";
 import LocalTextField from "views/common/LocalTextField";
 import getBucketLabel from "features/Planner/components/getBucketLabel";
-import { ripLoadObject } from "../../../util/ripLoadObject";
+import { ripLoadObject } from "util/ripLoadObject";
 
 const BucketManager = () => {
     const {
@@ -36,39 +36,39 @@ const BucketManager = () => {
         onBucketDelete,
     } = useFluxStore(
         () => {
-            const plan = ripLoadObject(TaskStore.getActiveListLO())
+            const plan = ripLoadObject(planStore.getActivePlanLO())
                 .data;
-            if (!plan) throw new TypeError("Missing required planner/taskList");
+            if (!plan) throw new TypeError("Missing required plan");
             return {
                 buckets: plan.buckets || [],
                 onBucketCreate: () => dispatcher.dispatch({
-                    type: TaskActions.CREATE_BUCKET,
+                    type: PlanActions.CREATE_BUCKET,
                     planId: plan.id,
                 }),
                 onBucketGenerate: () => dispatcher.dispatch({
-                    type: TaskActions.GENERATE_ONE_WEEKS_BUCKETS,
+                    type: PlanActions.GENERATE_ONE_WEEKS_BUCKETS,
                     planId: plan.id,
                 }),
                 onBucketNameChange: (id, value) => dispatcher.dispatch({
-                    type: TaskActions.RENAME_BUCKET,
+                    type: PlanActions.RENAME_BUCKET,
                     planId: plan.id,
                     id,
                     name: value,
                 }),
                 onBucketDateChange: (id, value) => dispatcher.dispatch({
-                    type: TaskActions.SET_BUCKET_DATE,
+                    type: PlanActions.SET_BUCKET_DATE,
                     planId: plan.id,
                     id,
                     date: value,
                 }),
                 onBucketDelete: id => dispatcher.dispatch({
-                    type: TaskActions.DELETE_BUCKET,
+                    type: PlanActions.DELETE_BUCKET,
                     planId: plan.id,
                     id,
                 }),
             };
         },
-        [TaskStore],
+        [ planStore ],
     );
 
     return <TableContainer>
