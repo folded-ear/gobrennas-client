@@ -17,6 +17,7 @@ const drawerWidthClosed = 58;
 
 const openedMixin = (theme) => ({
     width: drawerWidthOpen,
+    borderRightWidth: 0,
     overflowX: 'hidden',
     transition: theme.transitions.create('width', {
         easing: theme.transitions.easing.sharp,
@@ -26,6 +27,7 @@ const openedMixin = (theme) => ({
 
 const closedMixin = (theme) => ({
     width: drawerWidthClosed,
+    borderRightWidth: 0,
     overflowX: 'hidden',
     transition: theme.transitions.create('width', {
         easing: theme.transitions.easing.sharp,
@@ -53,7 +55,6 @@ interface ExpandedProps extends ContainerProps {
 
 export const Main = styled(Container)<ExpandedProps>(({theme, open}) => ({
     marginTop: TOP_MARGIN,
-    backgroundColor: "white",
     ...(open && {
         marginLeft: drawerWidthOpen,
         width: `calc(100% - ${drawerWidthOpen}px)`,
