@@ -176,7 +176,7 @@ class PlanItem extends React.PureComponent<PlanItemProps> {
                 ? <Input
                     fullWidth
                     value={item.name}
-                    placeholder="Write a task name"
+                    placeholder="Enter an item name"
                     disableUnderline
                     inputRef={this.inputRef}
                     onChange={this.onChange}

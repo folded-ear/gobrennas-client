@@ -38,7 +38,7 @@ const BucketManager = () => {
         () => {
             const plan = ripLoadObject(planStore.getActivePlanLO())
                 .data;
-            if (!plan) throw new TypeError("Missing required planner/taskList");
+            if (!plan) throw new TypeError("Missing required plan");
             return {
                 buckets: plan.buckets || [],
                 onBucketCreate: () => dispatcher.dispatch({
