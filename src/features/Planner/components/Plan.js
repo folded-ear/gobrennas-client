@@ -16,17 +16,16 @@ import LoadingIndicator from "views/common/LoadingIndicator";
 import PageBody from "views/common/PageBody";
 import { rippedLoadObjectOf } from "../../../util/ripLoadObject";
 
-function Plan(props) {
-    const {
-        allLists,
-        activeList,
-        listDetailVisible,
-        taskTuples,
-        isTaskActive,
-        isTaskSelected,
-    } = props;
+function Plan({
+                  allLists: allPlans,
+                  activeList: activePlan,
+                  listDetailVisible: planDetailVisible,
+                  taskTuples: itemTuples,
+                  isTaskActive: isItemActive,
+                  isTaskSelected: isItemSelected,
+              }) {
 
-    if (!allLists.data) {
+    if (!allPlans.data) {
         return <LoadingIndicator
             primary="Loading plans..."
         />;
@@ -39,22 +38,22 @@ function Plan(props) {
         });
     };
 
-    const plan = activeList.data;
+    const plan = activePlan.data;
     const buckets = plan && plan.buckets;
-    const canExpand = taskTuples.some(t =>
+    const canExpand = itemTuples.some(t =>
         t.data && isParent(t.data));
     return <PageBody hasFab>
         <Box py={2}>
             <PlanHeader
-                allLists={allLists.data}
-                activeList={plan}
-                listDetailVisible={listDetailVisible}
+                allPlans={allPlans.data}
+                activePlan={plan}
+                planDetailVisible={planDetailVisible}
                 hasBuckets={!!buckets}
                 canExpand={canExpand}
             />
         </Box>
         <List>
-            {taskTuples.map((item, i) => {
+            {itemTuples.map((item, i) => {
                 const {
                     data,
                     loading,
@@ -69,8 +68,8 @@ function Plan(props) {
                         task={data}
                         ancestorDeleting={ancestorDeleting}
                         loading={loading}
-                        active={isTaskActive(data)}
-                        selected={isTaskSelected(data)}
+                        active={isItemActive(data)}
+                        selected={isItemSelected(data)}
                         buckets={buckets}
                     />;
                 } else {

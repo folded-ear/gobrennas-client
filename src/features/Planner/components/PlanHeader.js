@@ -63,14 +63,14 @@ const sortByBucket = () =>
     });
 
 function PlanHeader({
-                        activeList,
-                        allLists: allListsUnsorted,
-                        listDetailVisible = false,
+                        activePlan,
+                        allPlans: allPlansUnsorted,
+                        planDetailVisible = false,
                         hasBuckets = false,
                         canExpand = true,
                     }) {
-    const allLists = allListsUnsorted
-        ? allListsUnsorted.slice().sort(byNameComparator)
+    const allPlans = allPlansUnsorted
+        ? allPlansUnsorted.slice().sort(byNameComparator)
         : [];
 
     const [ name, setName ] = React.useState("");
@@ -98,7 +98,7 @@ function PlanHeader({
 
     return (
         <Grid container justifyContent={"space-between"}>
-            {activeList && <Grid item>
+            {activePlan && <Grid item>
                 <Tooltip
                     title="Expand all collapsed items"
                     placement="bottom-start"
@@ -136,7 +136,7 @@ function PlanHeader({
                     </IconButton>
                 </Tooltip>
                 <Drawer
-                    open={listDetailVisible}
+                    open={planDetailVisible}
                     anchor="right"
                     onClose={onCloseDrawer}
                 >
@@ -148,15 +148,15 @@ function PlanHeader({
                             backgroundColor: "#f7f7f7",
                         }}
                     >
-                        <PlanSidebar list={activeList} />
+                        <PlanSidebar list={activePlan} />
                     </div>
                 </Drawer>
             </Grid>}
-            {allLists.length > 0 && <Grid item>
+            {allPlans.length > 0 && <Grid item>
                 <Grid container>
-                    {activeList && activeList.acl && <Grid item>
+                    {activePlan && activePlan.acl && <Grid item>
                         <UserById
-                            id={activeList.acl.ownerId}
+                            id={activePlan.acl.ownerId}
                             iconOnly
                         />
                     </Grid>}
@@ -170,10 +170,10 @@ function PlanHeader({
                         >
                             <Select
                                 placeholder="Select a Plan"
-                                value={activeList && activeList.id}
+                                value={activePlan && activePlan.id}
                                 onChange={onSelect}
                             >
-                                {allLists.map(l =>
+                                {allPlans.map(l =>
                                     <MenuItem
                                         key={l.id}
                                         value={l.id}
@@ -189,7 +189,7 @@ function PlanHeader({
                             title="Edit plan, buckets, and access"
                             placement="bottom"
                         >
-                            <IconButton onClick={onShowDrawer} disabled={!activeList} size="large">
+                            <IconButton onClick={onShowDrawer} disabled={!activePlan} size="large">
                                 <Edit />
                             </IconButton>
                         </Tooltip>
@@ -197,7 +197,7 @@ function PlanHeader({
                 </Grid>
             </Grid>}
             <Grid item>
-                {(showAdd || allLists.length === 0)
+                {(showAdd || allPlans.length === 0)
                     ? <Grid container>
                         <Grid item>
                             <TextField
@@ -206,7 +206,7 @@ function PlanHeader({
                                 size={"small"}
                                 variant={"outlined"}
                                 onChange={e => {
-                                    const {value} = e.target;
+                                    const { value } = e.target;
                                     setName(value == null ? "" : value);
                                 }}
                                 autoFocus
@@ -222,7 +222,7 @@ function PlanHeader({
                             <SplitButton
                                 primary={<Add />}
                                 onClick={onCreate}
-                                options={allLists.length > 0 && allLists.map(l => ({
+                                options={allPlans.length > 0 && allPlans.map(l => ({
                                     label: `Duplicate "${l.name}"`,
                                     id: l.id,
                                 }))}
@@ -246,9 +246,9 @@ function PlanHeader({
 }
 
 PlanHeader.propTypes = {
-    allLists: PropTypes.array.isRequired,
-    activeList: PropTypes.object,
-    listDetailVisible: PropTypes.bool,
+    allPlans: PropTypes.array.isRequired,
+    activePlan: PropTypes.object,
+    planDetailVisible: PropTypes.bool,
     hasBuckets: PropTypes.bool,
     canExpand: PropTypes.bool,
 };

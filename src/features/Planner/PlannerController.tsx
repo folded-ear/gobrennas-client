@@ -10,12 +10,12 @@ import {
     RippedLO,
 } from "util/ripLoadObject";
 
-export interface TaskTuple extends RippedLO<any> {
+export interface ItemTuple extends RippedLO<any> {
     ancestorDeleting: boolean
     depth: number
 }
 
-function listTheTree(id, ancestorDeleting = false, depth = 0): TaskTuple[] {
+function listTheTree(id, ancestorDeleting = false, depth = 0): ItemTuple[] {
     const list = planStore.getChildItemLOs(id).map((lo: LoadObject<any>) => ({
         ...ripLoadObject(lo),
         ancestorDeleting,
@@ -46,22 +46,22 @@ function listTheTree(id, ancestorDeleting = false, depth = 0): TaskTuple[] {
 export const PlannerController = () => {
     const state = useFluxStore(
         () => {
-            const allLists = ripLoadObject(planStore.getPlansLO());
-            const activeList = ripLoadObject(planStore.getActivePlanLO());
-            const activeTask = planStore.getActiveItem();
-            const selectedTasks = planStore.getSelectedItems();
+            const allPlans = ripLoadObject(planStore.getPlansLO());
+            const activePlan = ripLoadObject(planStore.getActivePlanLO());
+            const activeItem = planStore.getActiveItem();
+            const selectedItems = planStore.getSelectedItems();
             return {
-                allLists,
-                activeList,
+                allLists: allPlans,
+                activeList: activePlan,
                 listDetailVisible: planStore.isPlanDetailVisible(),
-                taskTuples: activeList.data
-                    ? listTheTree(activeList.data.id)
+                taskTuples: activePlan.data
+                    ? listTheTree(activePlan.data.id)
                     : [],
-                isTaskActive: activeTask
-                    ? taskOrId => (taskOrId.id || taskOrId) === activeTask.id
+                isTaskActive: activeItem
+                    ? taskOrId => (taskOrId.id || taskOrId) === activeItem.id
                     : () => false,
-                isTaskSelected: selectedTasks
-                    ? taskOrId => selectedTasks.some(t => (taskOrId.id || taskOrId) === t.id)
+                isTaskSelected: selectedItems
+                    ? taskOrId => selectedItems.some(t => (taskOrId.id || taskOrId) === t.id)
                     : () => false,
             };
         },
