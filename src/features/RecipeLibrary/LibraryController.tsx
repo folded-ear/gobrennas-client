@@ -4,48 +4,8 @@ import { useProfile } from "providers/Profile";
 import qs from "qs";
 import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
-import { gql } from "__generated__";
 import { LibrarySearchScope } from "__generated__/graphql";
-
-const SEARCH_RECIPES = gql(`
-    query lib(
-        $query: String! = ""
-        $scope: LibrarySearchScope! = MINE
-        $first: NonNegativeInt! = 9
-        $after: Cursor = null
-    ) {
-        library {
-            recipes(first: $first, query: $query, scope: $scope, after: $after) {
-                edges {
-                    cursor
-                    node {
-                        id
-                        owner {
-                            id
-                            imageUrl
-                            name
-                        }
-                        photo {
-                            url
-                            focus
-                        }
-                        name
-                        favorite
-                        labels
-                        externalUrl
-                        calories
-                        yield
-                        totalTime
-                    }
-                }
-                pageInfo {
-                    hasNextPage
-                    endCursor
-                }
-            }
-        }
-    }
-`);
+import { SEARCH_RECIPES } from "features/RecipeLibrary/data/queries";
 
 export const LibraryController = () => {
     const me = useProfile();
