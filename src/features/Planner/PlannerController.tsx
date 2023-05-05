@@ -1,14 +1,14 @@
 import React from "react";
 import LibraryStore from "features/RecipeLibrary/data/LibraryStore";
 import { isExpanded } from "features/Planner/data/tasks";
-import TaskStore from "features/Planner/data/TaskStore";
+import TaskStore from "features/Planner/data/planStore";
 import useFluxStore from "data/useFluxStore";
 import TaskList from "features/Planner/components/TaskList";
 import LoadObject from "../../util/LoadObject";
 import {
     ripLoadObject,
     RippedLO,
-} from "../../util/ripLoadObject";
+} from "util/ripLoadObject";
 
 export interface TaskTuple extends RippedLO<any> {
     ancestorDeleting: boolean

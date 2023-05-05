@@ -13,7 +13,7 @@ import {
     BaseItemProp,
     ItemProps,
 } from "./types";
-import { PlanItem } from "../../features/Planner/data/TaskStore";
+import { PlanItem } from "features/Planner/data/planStore";
 import { Quantity } from "global/types/types";
 
 export enum ShopItemType {

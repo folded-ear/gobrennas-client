@@ -20,7 +20,7 @@ import LoadingIndicator from "views/common/LoadingIndicator";
 import PlanBucketManager from "features/Planner/components/PlanBucketManager";
 import SidebarUnit from "features/Planner/components/SidebarUnit";
 import User from "views/user/User";
-import { PlanItem } from "../data/TaskStore";
+import { PlanItem } from "features/Planner/data/planStore";
 import { ripLoadObject } from "util/ripLoadObject";
 
 const LEVEL_NO_ACCESS = "NO_ACCESS";

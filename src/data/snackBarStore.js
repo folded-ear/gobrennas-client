@@ -1,7 +1,7 @@
 import { Button } from "@mui/material";
 import PlanActions from "features/Planner/data/PlanActions";
 import { willStatusDelete } from "features/Planner/data/PlanItemStatus";
-import TaskStore from "features/Planner/data/TaskStore";
+import TaskStore from "features/Planner/data/planStore";
 import LibraryStore from "features/RecipeLibrary/data/LibraryStore";
 import { ReduceStore } from "flux/utils";
 import PropTypes from "prop-types";

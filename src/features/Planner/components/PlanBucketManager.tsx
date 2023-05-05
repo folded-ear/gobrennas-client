@@ -16,7 +16,7 @@ import {
 import React from "react";
 import dispatcher from "data/dispatcher";
 import PlanActions from "features/Planner/data/PlanActions";
-import TaskStore from "features/Planner/data/TaskStore";
+import TaskStore from "features/Planner/data/planStore";
 import useFluxStore from "data/useFluxStore";
 import {
     formatLocalDate,

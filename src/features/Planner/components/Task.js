@@ -10,13 +10,13 @@ import TaskBucketChip from "features/Planner/components/TaskBucketChip";
 import withItemStyles from "features/Planner/components/withItemStyles";
 import PlanActions from "features/Planner/data/PlanActions";
 import PlanItemStatus from "features/Planner/data/PlanItemStatus";
+import TaskStore from "features/Planner/data/planStore";
 import {
     isExpanded,
     isParent,
     isQuestionable,
     isSection,
 } from "features/Planner/data/tasks";
-import TaskStore from "features/Planner/data/TaskStore";
 import CollapseIconButton from "global/components/CollapseIconButton";
 import PropTypes from "prop-types";
 import React from "react";

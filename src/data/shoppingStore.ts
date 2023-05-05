@@ -1,4 +1,4 @@
-import TaskStore from "features/Planner/data/TaskStore";
+import TaskStore from "features/Planner/data/planStore";
 import { ReduceStore } from "flux/utils";
 import { ShopItemType } from "views/shop/ShopList";
 import Dispatcher from "./dispatcher";

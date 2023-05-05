@@ -52,7 +52,7 @@ interface State {
 declare namespace TaskStore {
 }
 
-declare class TaskStore extends FluxReduceStore<State, FluxAction> {
+declare class PlanStore extends FluxReduceStore<State, FluxAction> {
     getListIdsLO(): LoadObject<clientOrDatabaseIdType>
 
     getListsLO(): LoadObject<PlanItem[]>
@@ -79,5 +79,5 @@ declare class TaskStore extends FluxReduceStore<State, FluxAction> {
 
 }
 
-const taskStore: TaskStore;
-export = taskStore;
+const planStore: PlanStore;
+export = planStore;

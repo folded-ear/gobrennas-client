@@ -7,14 +7,13 @@ import {
     isSection,
 } from "features/Planner/data/tasks";
 import PlanItemStatus from "features/Planner/data/PlanItemStatus";
-import TaskStore from "features/Planner/data/TaskStore";
+import TaskStore, { PlanItem } from "features/Planner/data/planStore";
 import useFluxStore from "data/useFluxStore";
 import groupBy from "util/groupBy";
 import ShopList, {
     ShopItemTuple,
     ShopItemType,
 } from "views/shop/ShopList";
-import { PlanItem } from "../features/Planner/data/TaskStore";
 import {
     BaseItemProp,
     ItemProps,

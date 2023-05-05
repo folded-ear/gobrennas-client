@@ -1,5 +1,5 @@
 import LoadObject from "../../../util/LoadObject";
-import TaskStore from "../../Planner/data/TaskStore";
+import TaskStore from "features/Planner/data/planStore";
 import LibraryStore from "../../RecipeLibrary/data/LibraryStore";
 import { RecipeFromTask } from "features/RecipeDisplay/types";
 

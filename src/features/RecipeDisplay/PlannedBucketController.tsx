@@ -1,5 +1,5 @@
 import useFluxStore from "data/useFluxStore";
-import TaskStore from "features/Planner/data/TaskStore";
+import TaskStore from "features/Planner/data/planStore";
 import LibraryStore from "features/RecipeLibrary/data/LibraryStore";
 import React from "react";
 import LoadingIndicator from "views/common/LoadingIndicator";

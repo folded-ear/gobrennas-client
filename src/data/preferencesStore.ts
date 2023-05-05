@@ -1,5 +1,5 @@
 import PlanActions from "features/Planner/data/PlanActions";
-import TaskStore from "features/Planner/data/TaskStore";
+import TaskStore from "features/Planner/data/planStore";
 import { ReduceStore } from "flux/utils";
 import { Map } from "immutable";
 import {

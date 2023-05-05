@@ -1,6 +1,6 @@
 import LoadObject from "util/LoadObject";
 import { RecipeFromTask } from "features/RecipeDisplay/types";
-import TaskStore from "features/Planner/data/TaskStore";
+import TaskStore from "features/Planner/data/planStore";
 import { recipeLoByItemLo as buildSingleTaskRecipeLO } from "features/RecipeDisplay/utils/recipeLoByItemLo";
 import getBucketLabel from "features/Planner/components/getBucketLabel";
 

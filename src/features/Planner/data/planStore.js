@@ -922,7 +922,7 @@ const doInteractiveStatusChange = (state, id, status) => {
     return queueStatusUpdate(state, id, status);
 };
 
-class TaskStore extends ReduceStore {
+class PlanStore extends ReduceStore {
 
     getInitialState() {
         return {
@@ -1437,4 +1437,4 @@ class TaskStore extends ReduceStore {
     }
 }
 
-export default new TaskStore(Dispatcher);
+export default new PlanStore(Dispatcher);

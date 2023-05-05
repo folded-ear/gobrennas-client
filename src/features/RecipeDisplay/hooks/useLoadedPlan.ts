@@ -1,5 +1,5 @@
 import useFluxStore from "../../../data/useFluxStore";
-import TaskStore from "../../Planner/data/TaskStore";
+import TaskStore from "features/Planner/data/planStore";
 import React from "react";
 import Dispatcher from "../../../data/dispatcher";
 import PlanActions from "features/Planner/data/PlanActions";

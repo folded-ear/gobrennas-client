@@ -1,4 +1,4 @@
-import { PlanItem } from "./TaskStore";
+import { PlanItem } from "features/Planner/data/planStore";
 import { Maybe } from "graphql/jsutils/Maybe";
 
 function endsWith(taskOrName: Maybe<PlanItem | string>, char: string) {
