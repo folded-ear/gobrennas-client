@@ -16,8 +16,9 @@ import NewVersionAvailable from "views/NewVersionAvailable";
 import SnackPack from "views/common/SnackPack";
 
 declare module "@mui/styles/defaultTheme" {
-  // eslint-disable-next-line @typescript-eslint/no-empty-interface
-  interface DefaultTheme extends Theme {}
+    // eslint-disable-next-line @typescript-eslint/no-empty-interface
+    interface DefaultTheme extends Theme {
+    }
 }
 
 function App() {
@@ -27,17 +28,17 @@ function App() {
     return (
         <StyledEngineProvider injectFirst>
             <ThemeProvider theme={theme}>
-                <CssBaseline />
-                {authenticated && newVersionAvailable && <NewVersionAvailable />}
+                <CssBaseline/>
+                {authenticated && newVersionAvailable && <NewVersionAvailable/>}
                 <NavigationController
                     authenticated={authenticated}
                 >
-                <RoutingSwitch
-                    routes={routes}
-                    authenticated={authenticated}
-                />
+                    <RoutingSwitch
+                        routes={routes}
+                        authenticated={authenticated}
+                    />
                 </NavigationController>
-                <SnackPack />
+                <SnackPack/>
             </ThemeProvider>
         </StyledEngineProvider>
     );
