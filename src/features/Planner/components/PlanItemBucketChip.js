@@ -123,13 +123,13 @@ BucketChip.propTypes = {
 };
 
 const PlanItemBucketChip = ({
-                                taskId,
+                                itemId,
                                 ...props
                             }) =>
     <BucketChip
         onSelect={bucketId => dispatcher.dispatch({
             type: PlanActions.ASSIGN_ITEM_TO_BUCKET,
-            id: taskId,
+            id: itemId,
             bucketId,
         })}
         onManage={() => dispatcher.dispatch({
@@ -141,7 +141,7 @@ const PlanItemBucketChip = ({
 
 PlanItemBucketChip.propTypes = {
     planId: PropTypes.number.isRequired,
-    taskId: clientOrDatabaseIdType.isRequired,
+    itemId: clientOrDatabaseIdType.isRequired,
     bucketId: PropTypes.number,
     buckets: PropTypes.array.isRequired, // todo: PropTypes.arrayOf(bucketType).isRequired,
 };

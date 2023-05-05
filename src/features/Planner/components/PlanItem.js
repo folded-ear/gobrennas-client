@@ -308,14 +308,14 @@ class PlanItem extends React.PureComponent {
                 key="cook"
                 size="small"
                 planId={plan.id}
-                taskId={item.id}
+                itemId={item.id}
             />);
         }
         if (buckets && buckets.length > 0) {
             addonAfter.unshift(<PlanItemBucketChip
                 key="bucket"
                 planId={plan.id}
-                taskId={item.id}
+                itemId={item.id}
                 bucketId={item.bucketId}
                 buckets={buckets}
             />);
