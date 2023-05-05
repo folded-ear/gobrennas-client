@@ -19,10 +19,7 @@ import {
     Sidebar,
 } from "features/Navigation/components/Navigation.elements";
 import { ListSubheader, } from "@mui/material";
-import {
-    green,
-    pink
-} from "@mui/material/colors";
+import { pink } from "@mui/material/colors";
 import { FlexBox } from "global/components/FlexBox";
 import { NavItem } from "features/Navigation/components/NavItem";
 import { NavPlanItem } from "features/Navigation/components/NavPlanItem";
@@ -34,6 +31,8 @@ type NavigationControllerProps = {
     authenticated: boolean,
     children?: ReactNode
 }
+
+// TODO randomize color map for plans
 
 export const NavigationController : React.FC<NavigationControllerProps> = ({authenticated, children}) => {
     const [expanded, setExpanded] = React.useState<boolean>(true)
@@ -51,7 +50,9 @@ export const NavigationController : React.FC<NavigationControllerProps> = ({auth
         ]
     )
 
-    const {data, loading, error } = state.allPlans;
+    const {data: navPlanItems, loading, error } = state.allPlans;
+
+    console.log(navPlanItems)
 
     const navItems = [
         {
@@ -111,8 +112,9 @@ export const NavigationController : React.FC<NavigationControllerProps> = ({auth
                         Plans
                     </ListSubheader>
                     <Navigation>
-                        <NavPlanItem name="This Week" color={pink[500]} />
-                        <NavPlanItem name="Thanksgiving" color={green[500]} />
+                        {navPlanItems && navPlanItems.map(item => (
+                            <NavPlanItem name={item.name} color={pink[500]} />
+                        ))}
                     </Navigation>
                 </Box>
             </Sidebar>
