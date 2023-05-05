@@ -16,7 +16,7 @@ type Props = RouteComponentProps<{
 const PlannedRecipeController: React.FC<Props> = ({ match }) => {
     const rid = parseInt(match.params.rid, 10);
     const lo = useFluxStore(
-        () => recipeLoByItemLo(TaskStore.getTaskLO(rid)),
+        () => recipeLoByItemLo(TaskStore.getItemLO(rid)),
         [
             TaskStore,
             LibraryStore,

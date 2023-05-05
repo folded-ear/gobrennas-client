@@ -36,7 +36,7 @@ const BucketManager = () => {
         onBucketDelete,
     } = useFluxStore(
         () => {
-            const plan = ripLoadObject(TaskStore.getActiveListLO())
+            const plan = ripLoadObject(TaskStore.getActivePlanLO())
                 .data;
             if (!plan) throw new TypeError("Missing required planner/taskList");
             return {

@@ -58,7 +58,7 @@ class PreferencesStore extends ReduceStore<State, FluxAction> {
                 this.__dispatcher.waitFor([
                     TaskStore.getDispatchToken(),
                 ]);
-                const lo = TaskStore.getActiveListLO();
+                const lo = TaskStore.getActivePlanLO();
                 return lo.hasValue()
                     ? setPref(state, PrefNames.ACTIVE_PLAN, lo.getValueEnforcing().id)
                     : state;

@@ -16,7 +16,7 @@ export interface TaskTuple extends RippedLO<any> {
 }
 
 function listTheTree(id, ancestorDeleting = false, depth = 0): TaskTuple[] {
-    const list = TaskStore.getSubtaskLOs(id).map((lo: LoadObject<any>) => ({
+    const list = TaskStore.getChildItemLOs(id).map((lo: LoadObject<any>) => ({
         ...ripLoadObject(lo),
         ancestorDeleting,
         depth,
@@ -46,14 +46,14 @@ function listTheTree(id, ancestorDeleting = false, depth = 0): TaskTuple[] {
 export const PlannerController = () => {
     const state = useFluxStore(
         () => {
-            const allLists = ripLoadObject(TaskStore.getListsLO());
-            const activeList = ripLoadObject(TaskStore.getActiveListLO());
-            const activeTask = TaskStore.getActiveTask();
-            const selectedTasks = TaskStore.getSelectedTasks();
+            const allLists = ripLoadObject(TaskStore.getPlansLO());
+            const activeList = ripLoadObject(TaskStore.getActivePlanLO());
+            const activeTask = TaskStore.getActiveItem();
+            const selectedTasks = TaskStore.getSelectedItems();
             return {
                 allLists,
                 activeList,
-                listDetailVisible: TaskStore.isListDetailVisible(),
+                listDetailVisible: TaskStore.isPlanDetailVisible(),
                 taskTuples: activeList.data
                     ? listTheTree(activeList.data.id)
                     : [],

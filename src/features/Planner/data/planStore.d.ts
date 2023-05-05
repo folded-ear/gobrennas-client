@@ -53,27 +53,27 @@ declare namespace TaskStore {
 }
 
 declare class PlanStore extends FluxReduceStore<State, FluxAction> {
-    getListIdsLO(): LoadObject<clientOrDatabaseIdType>
+    getPlanIdsLO(): LoadObject<clientOrDatabaseIdType>
 
-    getListsLO(): LoadObject<PlanItem[]>
+    getPlansLO(): LoadObject<PlanItem[]>
 
-    getSubtaskLOs(id: clientOrDatabaseIdType): LoadObject<PlanItem>[]
+    getChildItemLOs(id: clientOrDatabaseIdType): LoadObject<PlanItem>[]
 
     getNonDescendantComponents(id: number): PlanItem[]
 
-    getActiveListLO(): LoadObject<PlanItem>
+    getActivePlanLO(): LoadObject<PlanItem>
 
-    getActiveTask(): PlanItem
+    getActiveItem(): PlanItem
 
-    getTaskLO(id: clientOrDatabaseIdType): LoadObject<PlanItem>
+    getItemLO(id: clientOrDatabaseIdType): LoadObject<PlanItem>
 
-    getSelectedTasks(): PlanItem[]
+    getSelectedItems(): PlanItem[]
 
     getItemsInBucket(planId: number, bucketId: number): PlanItem[]
 
-    isListDetailVisible(): boolean
+    isPlanDetailVisible(): boolean
 
-    isMultiTaskSelection(): boolean
+    isMultiItemSelection(): boolean
 
     getSelectionAsTextBlock(): string
 

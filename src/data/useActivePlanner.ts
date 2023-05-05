@@ -4,7 +4,7 @@ import { ripLoadObject } from "util/ripLoadObject";
 
 function useActivePlanner() {
     return useFluxStore(
-        () => ripLoadObject(TaskStore.getActiveListLO()),
+        () => ripLoadObject(TaskStore.getActivePlanLO()),
         [ TaskStore ],
     );
 }

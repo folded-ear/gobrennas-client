@@ -41,7 +41,7 @@ class ShoppingStore extends ReduceStore<State, FluxAction> {
                 this.__dispatcher.waitFor([
                     TaskStore.getDispatchToken(),
                 ]);
-                state = placeFocus(state, TaskStore.getActiveTask().id, ShopItemType.PLAN_ITEM);
+                state = placeFocus(state, TaskStore.getActiveItem().id, ShopItemType.PLAN_ITEM);
                 return state;
             }
 

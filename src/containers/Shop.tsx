@@ -37,7 +37,7 @@ function gatherLeaves(item: PlanItem): PathedItemTuple[] {
             path: [],
         } as unknown as PathedItemTuple ];
     }
-    return TaskStore.getSubtaskLOs(item.id)
+    return TaskStore.getChildItemLOs(item.id)
         .map(lo => ripLoadObject(lo))
         .filter(rippedLO => rippedLO.data)
         .map(rippedLO => {
@@ -183,7 +183,7 @@ const Shop = () => {
     );
     const [ plan, itemTuples ] = useFluxStore(
         () => {
-            const plan = ripLoadObject(TaskStore.getActiveListLO()).data;
+            const plan = ripLoadObject(TaskStore.getActivePlanLO()).data;
             return [ plan, plan
                 ? groupItems([ plan ], expandedId, activeItem)
                 : [],

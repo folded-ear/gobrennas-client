@@ -7,7 +7,7 @@ import PlanActions from "features/Planner/data/PlanActions";
 export const useLoadedPlan = (pid: number) => {
     // ensure it's loaded
     const allPlansLO = useFluxStore(
-        () => TaskStore.getListIdsLO(),
+        () => TaskStore.getPlanIdsLO(),
         [
             TaskStore,
         ],

@@ -5,7 +5,7 @@ import { recipeLoByItemLo as buildSingleTaskRecipeLO } from "features/RecipeDisp
 import getBucketLabel from "features/Planner/components/getBucketLabel";
 
 export const recipeLoByItemAndBucket = (planId: number, bucketId: number): LoadObject<RecipeFromTask> => {
-    const plan = TaskStore.getTaskLO(planId);
+    const plan = TaskStore.getItemLO(planId);
     if (!plan.hasValue()) {
         // no value means value's type is irrelevant
         return plan as LoadObject<any>;

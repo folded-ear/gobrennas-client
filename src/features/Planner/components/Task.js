@@ -51,7 +51,7 @@ class Task extends React.PureComponent {
     }
 
     onCopy(e) {
-        if (! TaskStore.isMultiTaskSelection()) return;
+        if (! TaskStore.isMultiItemSelection()) return;
         e.preventDefault();
         const text = TaskStore.getSelectionAsTextBlock();
         e.clipboardData.setData("text", text);

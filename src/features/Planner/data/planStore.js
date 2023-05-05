@@ -1318,20 +1318,20 @@ class PlanStore extends ReduceStore {
         }
     }
 
-    getListIdsLO() {
+    getPlanIdsLO() {
         return this.getState()
             .topLevelIds
             .getLoadObject();
     }
 
-    getListsLO() {
+    getPlansLO() {
         const s = this.getState();
-        return this.getListIdsLO().map(ids => losForIds(s, ids)
+        return this.getPlanIdsLO().map(ids => losForIds(s, ids)
             .filter(lo => lo.isDone())
             .map(lo => lo.getValueEnforcing()));
     }
 
-    getSubtaskLOs(id) {
+    getChildItemLOs(id) {
         const s = this.getState();
         const t = taskForId(s, id);
         return losForIds(s, t.subtaskIds);
@@ -1365,8 +1365,8 @@ class PlanStore extends ReduceStore {
         return result;
     }
 
-    getActiveListLO() {
-        const lo = this.getListIdsLO();
+    getActivePlanLO() {
+        const lo = this.getPlanIdsLO();
         if (!lo.hasValue()) return lo;
         const s = this.getState();
         return s.activeListId == null
@@ -1374,20 +1374,20 @@ class PlanStore extends ReduceStore {
             : loForId(s, s.activeListId);
     }
 
-    getActiveTask() {
+    getActiveItem() {
         const s = this.getState();
         if (s.activeTaskId == null) return null;
         const lo = loForId(s, s.activeTaskId);
         return lo.hasValue() ? lo.getValueEnforcing() : null;
     }
 
-    getTaskLO(id) {
+    getItemLO(id) {
         if (id == null) throw new Error("No task has the null ID");
         const s = this.getState();
         return isKnown(s, id) ? loForId(s, id) : LoadObject.empty();
     }
 
-    getSelectedTasks() {
+    getSelectedItems() {
         const s = this.getState();
         return s.selectedTaskIds == null
             ? null
@@ -1414,11 +1414,11 @@ class PlanStore extends ReduceStore {
         return items;
     }
 
-    isListDetailVisible() {
+    isPlanDetailVisible() {
         return this.getState().listDetailVisible;
     }
 
-    isMultiTaskSelection() {
+    isMultiItemSelection() {
         const s = this.getState();
         return s.activeTaskId != null && s.selectedTaskIds != null;
     }

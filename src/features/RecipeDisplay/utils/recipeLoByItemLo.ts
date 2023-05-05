@@ -15,7 +15,7 @@ export const recipeLoByItemLo = (itemLO: LoadObject<any>): LoadObject<RecipeFrom
         return subIds
             .concat((item.componentIds || [])
                 .filter(id => !subIdLookup.has(id)))
-            .map(id => TaskStore.getTaskLO(id))
+            .map(id => TaskStore.getItemLO(id))
             .filter(lo => {
                 if (!lo.hasValue()) {
                     loading = true;

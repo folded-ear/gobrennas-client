@@ -29,7 +29,7 @@ const forTaskStatusChanges = (state, ids, status) => {
         arr.concat(TaskStore.getNonDescendantComponents(id)), []);
     if (comps.length === 0) return state;
     const label = ids.length === 1
-        ? TaskStore.getTaskLO(ids[0])
+        ? TaskStore.getItemLO(ids[0])
             .getValueEnforcing()
             .name + " includes"
         : "These items include";
@@ -89,7 +89,7 @@ class SnackBarStore extends ReduceStore {
 
             case PlanActions.SEND_TO_PLAN:
             case PantryItemActions.SEND_TO_PLAN: {
-                const plan = TaskStore.getTaskLO(action.planId)
+                const plan = TaskStore.getItemLO(action.planId)
                     .getValueEnforcing();
                 return enqueue(state, {
                     message: `Added ${action.name} to ${plan.name}`,
@@ -98,7 +98,7 @@ class SnackBarStore extends ReduceStore {
             }
 
             case RecipeActions.SENT_TO_PLAN: {
-                const plan = TaskStore.getTaskLO(action.planId)
+                const plan = TaskStore.getItemLO(action.planId)
                     .getValueEnforcing();
                 // if came from the library, the store might not have it...
                 const recipe = LibraryStore.getIngredientById(action.recipeId)
@@ -110,7 +110,7 @@ class SnackBarStore extends ReduceStore {
             }
 
             case RecipeActions.ERROR_SENDING_TO_PLAN: {
-                const plan = TaskStore.getTaskLO(action.planId)
+                const plan = TaskStore.getItemLO(action.planId)
                     .getValueEnforcing();
                 const recipe = LibraryStore.getIngredientById(action.recipeId)
                     .getValueEnforcing();
