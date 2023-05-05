@@ -2,7 +2,6 @@ import * as React from 'react';
 import { ReactNode } from 'react';
 import Box from '@mui/material/Box';
 import CssBaseline from '@mui/material/CssBaseline';
-import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import Divider from '@mui/material/Divider';
 import ListItem from '@mui/material/ListItem';
@@ -14,19 +13,14 @@ import {
     MeetingRoom as PantryIcon,
     Menu,
     MenuBook as LibraryIcon,
-    Search as SearchIcon,
     ShoppingCart as ShopIcon,
     Timer as TimerIcon,
 } from "@mui/icons-material";
 import {
-    Header,
     IconBtnLight,
     Main,
     Navigation,
-    Search,
-    SearchIconWrapper,
     Sidebar,
-    StyledInputBase
 } from "features/Navigation/components/Navigation.elements";
 import {
     ListItemButton,
@@ -36,6 +30,7 @@ import {
     green,
     pink
 } from "@mui/material/colors";
+import { FlexBox } from "global/components/FlexBox";
 
 type NavigationControllerProps = {
     authenticated: boolean,
@@ -45,10 +40,7 @@ type NavigationControllerProps = {
 export const NavigationController : React.FC<NavigationControllerProps> = ({authenticated, children}) => {
     const [expanded, setExpanded] = React.useState<boolean>(true)
 
-    const onExpanded = () => {
-        console.log(expanded)
-        setExpanded(!expanded)
-    }
+    const onExpanded = () => setExpanded(!expanded)
 
     const NavItem = (props) => {
         const {icon, title} = props;
@@ -76,34 +68,19 @@ export const NavigationController : React.FC<NavigationControllerProps> = ({auth
         </ListItem>)
     }
 
-
     return (
-        <Box sx={{display: 'flex'}}>
+        <FlexBox>
             <CssBaseline/>
-            <Header position="fixed">
-                <Toolbar>
-                    <IconBtnLight onClick={onExpanded}>
-                        <Menu/>
-                    </IconBtnLight>
-                    <Typography variant="h6" noWrap component="div">
-                        {expanded ? "Food Software" : "BFS"}
-                    </Typography>
-                    <Search>
-                        <SearchIconWrapper>
-                            <SearchIcon/>
-                        </SearchIconWrapper>
-                        <StyledInputBase
-                            placeholder="Search…"
-                            inputProps={{'aria-label': 'search'}}
-                        />
-                    </Search>
-                </Toolbar>
-            </Header>
             <Sidebar
                 open={expanded}
                 variant="permanent"
             >
-                <Toolbar/>
+                <IconBtnLight onClick={onExpanded}>
+                    <Menu/>
+                </IconBtnLight>
+                <Typography variant="h6" noWrap component="div">
+                    {expanded ? "Food Software" : "BFS"}
+                </Typography>
                 <Box sx={{overflow: 'auto'}}>
                     <Navigation dense>
                         <NavItem
@@ -148,9 +125,8 @@ export const NavigationController : React.FC<NavigationControllerProps> = ({auth
                 </Box>
             </Sidebar>
             <Main open={expanded}>
-                <Toolbar/>
                 {children}
             </Main>
-        </Box>
+        </FlexBox>
     );
 }

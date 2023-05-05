@@ -40,9 +40,6 @@ const useStyles = makeStyles((theme) => {
     };
     return ({
         search,
-        paddedContent: {
-            paddingTop: 85,
-        },
         fixedSearch: {
             ...search,
             position: "fixed",
@@ -200,9 +197,8 @@ const RecipesList: React.FC<RecipesListProps> = ({
         body = <LoadingIndicator />;
     }
     return (
-        <Content
-            className={isSearchFloating ? classes.paddedContent : undefined}
-        >
+        <Content>
+            <Typography variant="h1">Recipe Library</Typography>
             <Paper
                 elevation={isSearchFloating ? 4 : 1}
                 className={isSearchFloating ? classes.fixedSearch : classes.search}
