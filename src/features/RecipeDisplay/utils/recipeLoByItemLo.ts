@@ -1,9 +1,9 @@
 import LoadObject from "../../../util/LoadObject";
 import planStore from "features/Planner/data/planStore";
 import LibraryStore from "../../RecipeLibrary/data/LibraryStore";
-import { RecipeFromTask } from "features/RecipeDisplay/types";
+import { RecipeFromPlanItem } from "features/RecipeDisplay/types";
 
-export const recipeLoByItemLo = (itemLO: LoadObject<any>): LoadObject<RecipeFromTask> => {
+export const recipeLoByItemLo = (itemLO: LoadObject<any>): LoadObject<RecipeFromPlanItem> => {
     let lo = itemLO;
     if (!lo.hasValue()) return lo;
 

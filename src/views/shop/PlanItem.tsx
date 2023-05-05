@@ -19,7 +19,7 @@ import {
 } from "./types";
 import { ShopItemType } from "views/shop/ShopList";
 
-type TaskItemProps = TupleProps & {
+type PlanItemProps = TupleProps & {
     depth: number,
     item: ItemProps & {
         question: boolean,
@@ -30,7 +30,7 @@ type TaskItemProps = TupleProps & {
     }
 }
 
-class PlanItem extends React.PureComponent<TaskItemProps> {
+class PlanItem extends React.PureComponent<PlanItemProps> {
     private inputRef: React.RefObject<HTMLInputElement>;
 
     constructor(props) {
