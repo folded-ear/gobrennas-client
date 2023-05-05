@@ -89,7 +89,7 @@ class PlanItem extends React.PureComponent<TaskItemProps> {
                 });
                 break;
             case "Backspace":
-                // if the value is empty, delete the task and focus previous
+                // if the value is empty, delete the item and focus previous
                 if (value.length === 0) {
                     e.preventDefault();
                     Dispatcher.dispatch({
@@ -99,7 +99,7 @@ class PlanItem extends React.PureComponent<TaskItemProps> {
                 }
                 break;
             case "Delete":
-                // if the value is empty, delete the task and focus next
+                // if the value is empty, delete the item and focus next
                 if (value.length === 0) {
                     e.preventDefault();
                     Dispatcher.dispatch({

@@ -5,18 +5,18 @@ import Dispatcher from "data/dispatcher";
 import CookButton from "features/Planner/components/CookButton";
 import DontChangeStatusButton from "features/Planner/components/DontChangeStatusButton";
 import Item from "features/Planner/components/Item";
-import StatusIconButton from "features/Planner/components/StatusIconButton";
 import PlanItemBucketChip from "features/Planner/components/PlanItemBucketChip";
+import StatusIconButton from "features/Planner/components/StatusIconButton";
 import withItemStyles from "features/Planner/components/withItemStyles";
 import PlanActions from "features/Planner/data/PlanActions";
 import PlanItemStatus from "features/Planner/data/PlanItemStatus";
-import planStore from "features/Planner/data/planStore";
 import {
     isExpanded,
     isParent,
     isQuestionable,
     isSection,
 } from "features/Planner/data/plannerUtils";
+import planStore from "features/Planner/data/planStore";
 import CollapseIconButton from "global/components/CollapseIconButton";
 import PropTypes from "prop-types";
 import React from "react";
@@ -41,11 +41,11 @@ class PlanItem extends React.PureComponent {
     onChange(e) {
         const { value } = e.target;
         const {
-            task,
+            item,
         } = this.props;
         Dispatcher.dispatch({
             type: PlanActions.RENAME_ITEM,
-            id: task.id,
+            id: item.id,
             name: value,
         });
     }
@@ -88,16 +88,16 @@ class PlanItem extends React.PureComponent {
                     type: selectionStart === 0
                         ? PlanActions.CREATE_ITEM_BEFORE
                         : PlanActions.CREATE_ITEM_AFTER,
-                    id: this.props.task.id,
+                    id: this.props.item.id,
                 });
                 break;
             case "Backspace":
-                // if the value is empty, delete the task and focus previous
+                // if the value is empty, delete the item and focus previous
                 if (value.length === 0) {
                     e.preventDefault();
                     Dispatcher.dispatch({
                         type: PlanActions.DELETE_ITEM_BACKWARDS,
-                        id: this.props.task.id,
+                        id: this.props.item.id,
                     });
                 } else if (shiftKey) {
                     e.preventDefault();
@@ -107,12 +107,12 @@ class PlanItem extends React.PureComponent {
                 }
                 break;
             case "Delete":
-                // if the value is empty, delete the task and focus next
+                // if the value is empty, delete the item and focus next
                 if (value.length === 0) {
                     e.preventDefault();
                     Dispatcher.dispatch({
                         type: PlanActions.DELETE_ITEM_FORWARD,
-                        id: this.props.task.id,
+                        id: this.props.item.id,
                     });
                 } else if (shiftKey) {
                     e.preventDefault();
@@ -125,19 +125,19 @@ class PlanItem extends React.PureComponent {
                 e.preventDefault();
                 Dispatcher.dispatch({
                     type: shiftKey ? PlanActions.UNNEST : PlanActions.NEST,
-                    id: this.props.task.id,
+                    id: this.props.item.id,
                 });
                 break;
             case "ArrowUp":
                 e.preventDefault();
                 if (shiftKey && ctrlKey) break;
                 if (shiftKey) {
-                    // select this task and the previous one
+                    // select this item and the previous one
                     Dispatcher.dispatch({
                         type: PlanActions.SELECT_PREVIOUS,
                     });
                 } else if (ctrlKey) {
-                    // move all selected tasks up one (if a predecessor exists)
+                    // move all selected items up one (if a predecessor exists)
                     Dispatcher.dispatch({
                         type: PlanActions.MOVE_PREVIOUS,
                     });
@@ -151,12 +151,12 @@ class PlanItem extends React.PureComponent {
                 e.preventDefault();
                 if (shiftKey && ctrlKey) break;
                 if (shiftKey) {
-                    // select this task and the next one
+                    // select this item and the next one
                     Dispatcher.dispatch({
                         type: PlanActions.SELECT_NEXT,
                     });
                 } else if (ctrlKey) {
-                    // move all selected tasks down one (if a follower exists)
+                    // move all selected items down one (if a follower exists)
                     Dispatcher.dispatch({
                         type: PlanActions.MOVE_NEXT,
                     });
@@ -177,7 +177,7 @@ class PlanItem extends React.PureComponent {
     onClick(e) {
         const {
             active,
-            task,
+            item,
         } = this.props;
         if (active) return;
         e.preventDefault();
@@ -186,7 +186,7 @@ class PlanItem extends React.PureComponent {
             type: e.shiftKey
                 ? PlanActions.SELECT_TO
                 : PlanActions.FOCUS,
-            id: task.id,
+            id: item.id,
         });
     }
 
@@ -194,13 +194,13 @@ class PlanItem extends React.PureComponent {
         if (e) e.stopPropagation();
         Dispatcher.dispatch({
             type: PlanActions.TOGGLE_EXPANDED,
-            id: this.props.task.id,
+            id: this.props.item.id,
         });
     }
 
     onDragDrop(id, targetId, vertical, horizontal) {
         const {
-            task,
+            item,
         } = this.props;
         const action = {
             type: PlanActions.MOVE_SUBTREE,
@@ -208,13 +208,13 @@ class PlanItem extends React.PureComponent {
         };
         if (horizontal === "right") {
             action.parentId = targetId;
-            if (isExpanded(task)) {
+            if (isExpanded(item)) {
                 action.after = null;
             } else {
                 action.before = null;
             }
         } else {
-            action.parentId = task.parentId;
+            action.parentId = item.parentId;
             if (vertical === "above") {
                 action.before = targetId;
             } else {
@@ -235,7 +235,7 @@ class PlanItem extends React.PureComponent {
     render() {
         const {
             plan,
-            task,
+            item,
             depth,
             loading,
             active,
@@ -244,14 +244,14 @@ class PlanItem extends React.PureComponent {
             ancestorDeleting,
             classes,
         } = this.props;
-        const section = isSection(task);
-        const parent = isParent(task);
-        const expanded = isExpanded(task);
-        const recipeIsh = parent || task.fromRecipe;
-        const question = isQuestionable(task);
-        const deleting = task._next_status === PlanItemStatus.DELETED;
-        const acquiring = task._next_status === PlanItemStatus.ACQUIRED;
-        const needing = task._next_status === PlanItemStatus.NEEDED;
+        const section = isSection(item);
+        const parent = isParent(item);
+        const expanded = isExpanded(item);
+        const recipeIsh = parent || item.fromRecipe;
+        const question = isQuestionable(item);
+        const deleting = item._next_status === PlanItemStatus.DELETED;
+        const acquiring = item._next_status === PlanItemStatus.ACQUIRED;
+        const needing = item._next_status === PlanItemStatus.NEEDED;
 
         let addonBefore = [];
         if (parent) {
@@ -280,11 +280,11 @@ class PlanItem extends React.PureComponent {
                     size="small"
                 />);
         } else {
-            const curr = task._next_status || task.status;
+            const curr = item._next_status || item.status;
             addonBefore.push(
                 <StatusIconButton
                     key="acquire"
-                    id={task.id}
+                    id={item.id}
                     current={curr}
                     next={curr === PlanItemStatus.ACQUIRED ? PlanItemStatus.NEEDED : PlanItemStatus.ACQUIRED}
                 />);
@@ -293,12 +293,12 @@ class PlanItem extends React.PureComponent {
             deleting && !ancestorDeleting
                 ? <DontChangeStatusButton
                     key="delete"
-                    id={task.id}
-                    next={task._next_status}
+                    id={item.id}
+                    next={item._next_status}
                 />
                 : <StatusIconButton
                     key="delete"
-                    id={task.id}
+                    id={item.id}
                     next={PlanItemStatus.DELETED}
                     disabled={ancestorDeleting}
                 />,
@@ -308,15 +308,15 @@ class PlanItem extends React.PureComponent {
                 key="cook"
                 size="small"
                 planId={plan.id}
-                taskId={task.id}
+                taskId={item.id}
             />);
         }
         if (buckets && buckets.length > 0) {
             addonAfter.unshift(<PlanItemBucketChip
                 key="bucket"
                 planId={plan.id}
-                taskId={task.id}
-                bucketId={task.bucketId}
+                taskId={item.id}
+                bucketId={item.bucketId}
                 buckets={buckets}
             />);
         }
@@ -336,14 +336,14 @@ class PlanItem extends React.PureComponent {
                 [classes.needing]: needing,
                 [classes.ancestorDeleting]: ancestorDeleting,
             })}
-            dragId={task.id}
+            dragId={item.id}
             onDragDrop={this.onDragDrop}
         >
             {active
                 ? <Input
                     fullWidth
-                    value={task.name}
-                    placeholder="Write a task name"
+                    value={item.name}
+                    placeholder="Enter an item name"
                     disableUnderline
                     inputRef={this.inputRef}
                     onChange={this.onChange}
@@ -356,10 +356,10 @@ class PlanItem extends React.PureComponent {
                     className={classes.text}
                     onDoubleClick={parent ? this.onToggleExpanded : null}
                 >
-                    {recipeIsh || !task.ingredient
-                        ? task.name
+                    {recipeIsh || !item.ingredient
+                        ? item.name
                         : <IngredientItem
-                            ingRef={task}
+                            ingRef={item}
                             hideRecipeLink
                             hideSendToPlan
                             inline
@@ -373,7 +373,7 @@ class PlanItem extends React.PureComponent {
 PlanItem.propTypes = {
     depth: PropTypes.number.isRequired,
     plan: PropTypes.object.isRequired,
-    task: PropTypes.object.isRequired,
+    item: PropTypes.object.isRequired,
     loading: PropTypes.bool.isRequired,
     active: PropTypes.bool,
     selected: PropTypes.bool,

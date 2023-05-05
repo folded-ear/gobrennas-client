@@ -65,7 +65,7 @@ function Plan({
                         key={data.id}
                         plan={plan}
                         depth={depth}
-                        task={data}
+                        item={data}
                         ancestorDeleting={ancestorDeleting}
                         loading={loading}
                         active={isItemActive(data)}
