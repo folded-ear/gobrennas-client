@@ -6,7 +6,7 @@ import CookButton from "features/Planner/components/CookButton";
 import DontChangeStatusButton from "features/Planner/components/DontChangeStatusButton";
 import Item from "features/Planner/components/Item";
 import StatusIconButton from "features/Planner/components/StatusIconButton";
-import TaskBucketChip from "features/Planner/components/TaskBucketChip";
+import PlanItemBucketChip from "features/Planner/components/PlanItemBucketChip";
 import withItemStyles from "features/Planner/components/withItemStyles";
 import PlanActions from "features/Planner/data/PlanActions";
 import PlanItemStatus from "features/Planner/data/PlanItemStatus";
@@ -16,7 +16,7 @@ import {
     isParent,
     isQuestionable,
     isSection,
-} from "features/Planner/data/tasks";
+} from "features/Planner/data/plannerUtils";
 import CollapseIconButton from "global/components/CollapseIconButton";
 import PropTypes from "prop-types";
 import React from "react";
@@ -24,7 +24,7 @@ import LoadingIconButton from "views/common/LoadingIconButton";
 import PlaceholderIconButton from "views/common/PlaceholderIconButton";
 import IngredientItem from "views/IngredientItem";
 
-class Task extends React.PureComponent {
+class PlanItem extends React.PureComponent {
 
     constructor(props) {
         super(props);
@@ -312,7 +312,7 @@ class Task extends React.PureComponent {
             />);
         }
         if (buckets && buckets.length > 0) {
-            addonAfter.unshift(<TaskBucketChip
+            addonAfter.unshift(<PlanItemBucketChip
                 key="bucket"
                 planId={plan.id}
                 taskId={task.id}
@@ -370,7 +370,7 @@ class Task extends React.PureComponent {
 
 }
 
-Task.propTypes = {
+PlanItem.propTypes = {
     depth: PropTypes.number.isRequired,
     plan: PropTypes.object.isRequired,
     task: PropTypes.object.isRequired,
@@ -382,4 +382,4 @@ Task.propTypes = {
     classes: PropTypes.object.isRequired,
 };
 
-export default withItemStyles(Task);
+export default withItemStyles(PlanItem);

@@ -14,7 +14,7 @@ import {
     Tooltip,
 } from "@mui/material";
 import Dispatcher from "data/dispatcher";
-import TaskListSidebar from "features/Planner/components/TaskListSidebar";
+import PlanSidebar from "features/Planner/components/PlanSidebar";
 import UserById from "features/Planner/components/UserById";
 import PlanActions from "features/Planner/data/PlanActions";
 import PropTypes from "prop-types";
@@ -62,19 +62,19 @@ const sortByBucket = () =>
         type: PlanActions.SORT_BY_BUCKET,
     });
 
-function TaskListHeader({
-                            activeList,
-                            allLists: allListsUnsorted,
-                            listDetailVisible = false,
-                            hasBuckets = false,
-                            canExpand = true,
-                        }) {
+function PlanHeader({
+                        activeList,
+                        allLists: allListsUnsorted,
+                        listDetailVisible = false,
+                        hasBuckets = false,
+                        canExpand = true,
+                    }) {
     const allLists = allListsUnsorted
         ? allListsUnsorted.slice().sort(byNameComparator)
         : [];
 
-    const [name, setName] = React.useState("");
-    const [showAdd, setShowAdd] = React.useState(false);
+    const [ name, setName ] = React.useState("");
+    const [ showAdd, setShowAdd ] = React.useState(false);
 
     const onCreate = () => {
         if (!isValidName(name)) return;
@@ -148,7 +148,7 @@ function TaskListHeader({
                             backgroundColor: "#f7f7f7",
                         }}
                     >
-                        <TaskListSidebar list={activeList} />
+                        <PlanSidebar list={activeList} />
                     </div>
                 </Drawer>
             </Grid>}
@@ -245,7 +245,7 @@ function TaskListHeader({
 
 }
 
-TaskListHeader.propTypes = {
+PlanHeader.propTypes = {
     allLists: PropTypes.array.isRequired,
     activeList: PropTypes.object,
     listDetailVisible: PropTypes.bool,
@@ -253,4 +253,4 @@ TaskListHeader.propTypes = {
     canExpand: PropTypes.bool,
 };
 
-export default TaskListHeader;
+export default PlanHeader;

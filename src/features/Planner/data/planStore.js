@@ -9,7 +9,7 @@ import TaskApi from "features/Planner/data/TaskApi";
 import {
     isExpanded,
     isParent,
-} from "features/Planner/data/tasks";
+} from "features/Planner/data/plannerUtils";
 import { ReduceStore } from "flux/utils";
 import invariant from "invariant";
 import { removeAtIndex } from "util/arrayAsSet";

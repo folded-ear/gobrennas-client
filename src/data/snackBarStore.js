@@ -22,7 +22,7 @@ const enqueue = (state, item) => {
     };
 };
 
-const forTaskStatusChanges = (state, ids, status) => {
+const forPlanItemStatusChanges = (state, ids, status) => {
     if (!ids || ids.length === 0) return state;
     if (!willStatusDelete(status)) return state;
     const comps = ids.reduce((arr, id) =>
@@ -30,8 +30,8 @@ const forTaskStatusChanges = (state, ids, status) => {
     if (comps.length === 0) return state;
     const label = ids.length === 1
         ? planStore.getItemLO(ids[0])
-            .getValueEnforcing()
-            .name + " includes"
+        .getValueEnforcing()
+        .name + " includes"
         : "These items include";
     return enqueue(state, {
         message: `${label} ${comps.map(c => c.name).join(", ")}`,
@@ -121,11 +121,11 @@ class SnackBarStore extends ReduceStore {
             }
 
             case PlanActions.SET_STATUS: {
-                return forTaskStatusChanges(state, [ action.id ], action.status);
+                return forPlanItemStatusChanges(state, [ action.id ], action.status);
             }
 
             case PlanActions.BULK_SET_STATUS: {
-                return forTaskStatusChanges(state, action.ids, action.status);
+                return forPlanItemStatusChanges(state, action.ids, action.status);
             }
 
             default:

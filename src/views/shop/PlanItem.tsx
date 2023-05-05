@@ -30,7 +30,7 @@ type TaskItemProps = TupleProps & {
     }
 }
 
-class TaskItem extends React.PureComponent<TaskItemProps> {
+class PlanItem extends React.PureComponent<TaskItemProps> {
     private inputRef: React.RefObject<HTMLInputElement>;
 
     constructor(props) {
@@ -200,4 +200,4 @@ class TaskItem extends React.PureComponent<TaskItemProps> {
 
 }
 
-export default withItemStyles(TaskItem);
+export default withItemStyles(PlanItem);

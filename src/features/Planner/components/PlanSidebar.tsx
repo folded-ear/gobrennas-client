@@ -29,7 +29,7 @@ interface Props {
     list: PlanItem
 }
 
-const TaskListSidebar: React.FC<Props> = ({ list }) => {
+const PlanSidebar: React.FC<Props> = ({ list }) => {
     const me = useProfile();
     const [ friendsLoading, friendList, friendsById ] = useFluxStore(
         () => {
@@ -171,4 +171,4 @@ const TaskListSidebar: React.FC<Props> = ({ list }) => {
     </Box>;
 };
 
-export default TaskListSidebar;
+export default PlanSidebar;

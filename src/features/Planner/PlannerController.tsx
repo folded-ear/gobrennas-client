@@ -1,9 +1,9 @@
 import React from "react";
 import LibraryStore from "features/RecipeLibrary/data/LibraryStore";
-import { isExpanded } from "features/Planner/data/tasks";
+import { isExpanded } from "features/Planner/data/plannerUtils";
 import planStore from "features/Planner/data/planStore";
 import useFluxStore from "data/useFluxStore";
-import TaskList from "features/Planner/components/TaskList";
+import Plan from "features/Planner/components/Plan";
 import LoadObject from "../../util/LoadObject";
 import {
     ripLoadObject,
@@ -70,5 +70,5 @@ export const PlannerController = () => {
             LibraryStore,
         ],
     );
-    return <TaskList {...state} />;
+    return <Plan {...state} />;
 };

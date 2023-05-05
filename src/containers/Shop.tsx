@@ -5,7 +5,7 @@ import {
     isParent,
     isQuestionable,
     isSection,
-} from "features/Planner/data/tasks";
+} from "features/Planner/data/plannerUtils";
 import PlanItemStatus from "features/Planner/data/PlanItemStatus";
 import planStore, { PlanItem } from "features/Planner/data/planStore";
 import useFluxStore from "data/useFluxStore";

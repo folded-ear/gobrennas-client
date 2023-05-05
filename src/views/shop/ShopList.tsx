@@ -8,12 +8,12 @@ import FoodingerFab from "views/common/FoodingerFab";
 import LoadingIndicator from "views/common/LoadingIndicator";
 import PageBody from "views/common/PageBody";
 import Ingredient from "views/shop/IngredientItem";
-import TaskItem from "views/shop/TaskItem";
+import PlanItem from "views/shop/PlanItem";
 import {
     BaseItemProp,
     ItemProps,
 } from "./types";
-import { PlanItem } from "features/Planner/data/planStore";
+import { PlanItem as PlanItemType } from "features/Planner/data/planStore";
 import { Quantity } from "global/types/types";
 
 export enum ShopItemType {
@@ -33,7 +33,7 @@ export interface ShopItemTuple extends ItemProps {
 }
 
 export type ShopListProps = {
-    plan: PlanItem | null | undefined
+    plan: PlanItemType | null | undefined
     itemTuples: ShopItemTuple[]
 }
 
@@ -73,7 +73,7 @@ class ShopList extends React.PureComponent<ShopListProps> {
                             active={it.expanded}
                         />;
                     } else {
-                        return <TaskItem
+                        return <PlanItem
                             key={it.id}
                             depth={it.depth}
                             item={it}

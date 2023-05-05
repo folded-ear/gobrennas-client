@@ -4,11 +4,11 @@ import {
     List,
 } from "@mui/material";
 import Dispatcher from "data/dispatcher";
-import LoadingTask from "features/Planner/components/LoadingTask";
-import Task from "features/Planner/components/Task";
-import TaskListHeader from "features/Planner/components/TaskListHeader";
+import LoadingItem from "features/Planner/components/LoadingItem";
+import PlanHeader from "features/Planner/components/PlanHeader";
+import PlanItem from "features/Planner/components/PlanItem";
 import PlanActions from "features/Planner/data/PlanActions";
-import { isParent } from "features/Planner/data/tasks";
+import { isParent } from "features/Planner/data/plannerUtils";
 import PropTypes from "prop-types";
 import React from "react";
 import FoodingerFab from "views/common/FoodingerFab";
@@ -16,7 +16,7 @@ import LoadingIndicator from "views/common/LoadingIndicator";
 import PageBody from "views/common/PageBody";
 import { rippedLoadObjectOf } from "../../../util/ripLoadObject";
 
-function TaskList(props) {
+function Plan(props) {
     const {
         allLists,
         activeList,
@@ -28,7 +28,7 @@ function TaskList(props) {
 
     if (!allLists.data) {
         return <LoadingIndicator
-            primary="Loading task lists..."
+            primary="Loading plans..."
         />;
     }
 
@@ -45,7 +45,7 @@ function TaskList(props) {
         t.data && isParent(t.data));
     return <PageBody hasFab>
         <Box py={2}>
-            <TaskListHeader
+            <PlanHeader
                 allLists={allLists.data}
                 activeList={plan}
                 listDetailVisible={listDetailVisible}
@@ -62,7 +62,7 @@ function TaskList(props) {
                     ancestorDeleting,
                 } = item;
                 if (data) {
-                    return <Task
+                    return <PlanItem
                         key={data.id}
                         plan={plan}
                         depth={depth}
@@ -74,7 +74,7 @@ function TaskList(props) {
                         buckets={buckets}
                     />;
                 } else {
-                    return <LoadingTask
+                    return <LoadingItem
                         key={i}
                         depth={depth}
                     />;
@@ -89,7 +89,7 @@ function TaskList(props) {
     </PageBody>;
 }
 
-TaskList.propTypes = {
+Plan.propTypes = {
     allLists: rippedLoadObjectOf(PropTypes.any).isRequired,
     activeList: rippedLoadObjectOf(PropTypes.any),
     listDetailVisible: PropTypes.bool.isRequired,
@@ -104,4 +104,4 @@ TaskList.propTypes = {
     isTaskSelected: PropTypes.func.isRequired,
 };
 
-export default TaskList;
+export default Plan;
