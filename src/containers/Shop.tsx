@@ -7,7 +7,7 @@ import {
     isSection,
 } from "features/Planner/data/tasks";
 import PlanItemStatus from "features/Planner/data/PlanItemStatus";
-import TaskStore, { PlanItem } from "features/Planner/data/planStore";
+import planStore, { PlanItem } from "features/Planner/data/planStore";
 import useFluxStore from "data/useFluxStore";
 import groupBy from "util/groupBy";
 import ShopList, {
@@ -37,7 +37,7 @@ function gatherLeaves(item: PlanItem): PathedItemTuple[] {
             path: [],
         } as unknown as PathedItemTuple ];
     }
-    return TaskStore.getChildItemLOs(item.id)
+    return planStore.getChildItemLOs(item.id)
         .map(lo => ripLoadObject(lo))
         .filter(rippedLO => rippedLO.data)
         .map(rippedLO => {
@@ -183,13 +183,13 @@ const Shop = () => {
     );
     const [ plan, itemTuples ] = useFluxStore(
         () => {
-            const plan = ripLoadObject(TaskStore.getActivePlanLO()).data;
+            const plan = ripLoadObject(planStore.getActivePlanLO()).data;
             return [ plan, plan
                 ? groupItems([ plan ], expandedId, activeItem)
                 : [],
             ];
         },
-        [ TaskStore, LibraryStore ],
+        [ planStore, LibraryStore ],
         [ expandedId, activeItem ],
     );
     return <ShopList

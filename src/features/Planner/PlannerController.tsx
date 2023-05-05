@@ -1,7 +1,7 @@
 import React from "react";
 import LibraryStore from "features/RecipeLibrary/data/LibraryStore";
 import { isExpanded } from "features/Planner/data/tasks";
-import TaskStore from "features/Planner/data/planStore";
+import planStore from "features/Planner/data/planStore";
 import useFluxStore from "data/useFluxStore";
 import TaskList from "features/Planner/components/TaskList";
 import LoadObject from "../../util/LoadObject";
@@ -16,7 +16,7 @@ export interface TaskTuple extends RippedLO<any> {
 }
 
 function listTheTree(id, ancestorDeleting = false, depth = 0): TaskTuple[] {
-    const list = TaskStore.getChildItemLOs(id).map((lo: LoadObject<any>) => ({
+    const list = planStore.getChildItemLOs(id).map((lo: LoadObject<any>) => ({
         ...ripLoadObject(lo),
         ancestorDeleting,
         depth,
@@ -46,14 +46,14 @@ function listTheTree(id, ancestorDeleting = false, depth = 0): TaskTuple[] {
 export const PlannerController = () => {
     const state = useFluxStore(
         () => {
-            const allLists = ripLoadObject(TaskStore.getPlansLO());
-            const activeList = ripLoadObject(TaskStore.getActivePlanLO());
-            const activeTask = TaskStore.getActiveItem();
-            const selectedTasks = TaskStore.getSelectedItems();
+            const allLists = ripLoadObject(planStore.getPlansLO());
+            const activeList = ripLoadObject(planStore.getActivePlanLO());
+            const activeTask = planStore.getActiveItem();
+            const selectedTasks = planStore.getSelectedItems();
             return {
                 allLists,
                 activeList,
-                listDetailVisible: TaskStore.isPlanDetailVisible(),
+                listDetailVisible: planStore.isPlanDetailVisible(),
                 taskTuples: activeList.data
                     ? listTheTree(activeList.data.id)
                     : [],
@@ -66,7 +66,7 @@ export const PlannerController = () => {
             };
         },
         [
-            TaskStore,
+            planStore,
             LibraryStore,
         ],
     );

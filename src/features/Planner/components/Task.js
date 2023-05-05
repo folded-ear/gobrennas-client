@@ -10,7 +10,7 @@ import TaskBucketChip from "features/Planner/components/TaskBucketChip";
 import withItemStyles from "features/Planner/components/withItemStyles";
 import PlanActions from "features/Planner/data/PlanActions";
 import PlanItemStatus from "features/Planner/data/PlanItemStatus";
-import TaskStore from "features/Planner/data/planStore";
+import planStore from "features/Planner/data/planStore";
 import {
     isExpanded,
     isParent,
@@ -51,9 +51,9 @@ class Task extends React.PureComponent {
     }
 
     onCopy(e) {
-        if (! TaskStore.isMultiItemSelection()) return;
+        if (!planStore.isMultiItemSelection()) return;
         e.preventDefault();
-        const text = TaskStore.getSelectionAsTextBlock();
+        const text = planStore.getSelectionAsTextBlock();
         e.clipboardData.setData("text", text);
     }
 

@@ -1,4 +1,4 @@
-import TaskStore from "features/Planner/data/planStore";
+import planStore from "features/Planner/data/planStore";
 import { ReduceStore } from "flux/utils";
 import { ShopItemType } from "views/shop/ShopList";
 import Dispatcher from "./dispatcher";
@@ -39,9 +39,9 @@ class ShoppingStore extends ReduceStore<State, FluxAction> {
             case ShoppingActions.DELETE_ITEM_BACKWARDS:
             case ShoppingActions.DELETE_ITEM_FORWARD: {
                 this.__dispatcher.waitFor([
-                    TaskStore.getDispatchToken(),
+                    planStore.getDispatchToken(),
                 ]);
-                state = placeFocus(state, TaskStore.getActiveItem().id, ShopItemType.PLAN_ITEM);
+                state = placeFocus(state, planStore.getActiveItem().id, ShopItemType.PLAN_ITEM);
                 return state;
             }
 

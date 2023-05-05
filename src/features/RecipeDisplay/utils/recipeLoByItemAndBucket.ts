@@ -1,11 +1,11 @@
 import LoadObject from "util/LoadObject";
 import { RecipeFromTask } from "features/RecipeDisplay/types";
-import TaskStore from "features/Planner/data/planStore";
+import planStore from "features/Planner/data/planStore";
 import { recipeLoByItemLo as buildSingleTaskRecipeLO } from "features/RecipeDisplay/utils/recipeLoByItemLo";
 import getBucketLabel from "features/Planner/components/getBucketLabel";
 
 export const recipeLoByItemAndBucket = (planId: number, bucketId: number): LoadObject<RecipeFromTask> => {
-    const plan = TaskStore.getItemLO(planId);
+    const plan = planStore.getItemLO(planId);
     if (!plan.hasValue()) {
         // no value means value's type is irrelevant
         return plan as LoadObject<any>;
@@ -14,7 +14,7 @@ export const recipeLoByItemAndBucket = (planId: number, bucketId: number): LoadO
         .buckets
         .find(b => b.id === bucketId);
     if (!bucket) return LoadObject.empty();
-    const items = TaskStore.getItemsInBucket(planId, bucketId);
+    const items = planStore.getItemsInBucket(planId, bucketId);
     if (items.length === 0) return LoadObject.empty();
     if (items.length === 1) {
         return buildSingleTaskRecipeLO(LoadObject.withValue(items[0]))

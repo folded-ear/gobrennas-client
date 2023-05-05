@@ -1,5 +1,5 @@
 import PlanActions from "features/Planner/data/PlanActions";
-import TaskStore from "features/Planner/data/planStore";
+import planStore from "features/Planner/data/planStore";
 import { ReduceStore } from "flux/utils";
 import { Map } from "immutable";
 import {
@@ -56,9 +56,9 @@ class PreferencesStore extends ReduceStore<State, FluxAction> {
             }
             case PlanActions.PLANS_LOADED: {
                 this.__dispatcher.waitFor([
-                    TaskStore.getDispatchToken(),
+                    planStore.getDispatchToken(),
                 ]);
-                const lo = TaskStore.getActivePlanLO();
+                const lo = planStore.getActivePlanLO();
                 return lo.hasValue()
                     ? setPref(state, PrefNames.ACTIVE_PLAN, lo.getValueEnforcing().id)
                     : state;

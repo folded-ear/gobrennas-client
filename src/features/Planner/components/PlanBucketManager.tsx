@@ -16,7 +16,7 @@ import {
 import React from "react";
 import dispatcher from "data/dispatcher";
 import PlanActions from "features/Planner/data/PlanActions";
-import TaskStore from "features/Planner/data/planStore";
+import planStore from "features/Planner/data/planStore";
 import useFluxStore from "data/useFluxStore";
 import {
     formatLocalDate,
@@ -36,7 +36,7 @@ const BucketManager = () => {
         onBucketDelete,
     } = useFluxStore(
         () => {
-            const plan = ripLoadObject(TaskStore.getActivePlanLO())
+            const plan = ripLoadObject(planStore.getActivePlanLO())
                 .data;
             if (!plan) throw new TypeError("Missing required planner/taskList");
             return {
@@ -68,7 +68,7 @@ const BucketManager = () => {
                 }),
             };
         },
-        [TaskStore],
+        [ planStore ],
     );
 
     return <TableContainer>

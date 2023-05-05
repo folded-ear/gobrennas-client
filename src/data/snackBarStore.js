@@ -1,7 +1,7 @@
 import { Button } from "@mui/material";
 import PlanActions from "features/Planner/data/PlanActions";
 import { willStatusDelete } from "features/Planner/data/PlanItemStatus";
-import TaskStore from "features/Planner/data/planStore";
+import planStore from "features/Planner/data/planStore";
 import LibraryStore from "features/RecipeLibrary/data/LibraryStore";
 import { ReduceStore } from "flux/utils";
 import PropTypes from "prop-types";
@@ -26,10 +26,10 @@ const forTaskStatusChanges = (state, ids, status) => {
     if (!ids || ids.length === 0) return state;
     if (!willStatusDelete(status)) return state;
     const comps = ids.reduce((arr, id) =>
-        arr.concat(TaskStore.getNonDescendantComponents(id)), []);
+        arr.concat(planStore.getNonDescendantComponents(id)), []);
     if (comps.length === 0) return state;
     const label = ids.length === 1
-        ? TaskStore.getItemLO(ids[0])
+        ? planStore.getItemLO(ids[0])
             .getValueEnforcing()
             .name + " includes"
         : "These items include";
@@ -89,7 +89,7 @@ class SnackBarStore extends ReduceStore {
 
             case PlanActions.SEND_TO_PLAN:
             case PantryItemActions.SEND_TO_PLAN: {
-                const plan = TaskStore.getItemLO(action.planId)
+                const plan = planStore.getItemLO(action.planId)
                     .getValueEnforcing();
                 return enqueue(state, {
                     message: `Added ${action.name} to ${plan.name}`,
@@ -98,7 +98,7 @@ class SnackBarStore extends ReduceStore {
             }
 
             case RecipeActions.SENT_TO_PLAN: {
-                const plan = TaskStore.getItemLO(action.planId)
+                const plan = planStore.getItemLO(action.planId)
                     .getValueEnforcing();
                 // if came from the library, the store might not have it...
                 const recipe = LibraryStore.getIngredientById(action.recipeId)
@@ -110,7 +110,7 @@ class SnackBarStore extends ReduceStore {
             }
 
             case RecipeActions.ERROR_SENDING_TO_PLAN: {
-                const plan = TaskStore.getItemLO(action.planId)
+                const plan = planStore.getItemLO(action.planId)
                     .getValueEnforcing();
                 const recipe = LibraryStore.getIngredientById(action.recipeId)
                     .getValueEnforcing();

@@ -1,5 +1,5 @@
 import useFluxStore from "data/useFluxStore";
-import TaskStore from "features/Planner/data/planStore";
+import planStore from "features/Planner/data/planStore";
 import LibraryStore from "features/RecipeLibrary/data/LibraryStore";
 import React from "react";
 import LoadingIndicator from "views/common/LoadingIndicator";
@@ -16,9 +16,9 @@ type Props = RouteComponentProps<{
 const PlannedRecipeController: React.FC<Props> = ({ match }) => {
     const rid = parseInt(match.params.rid, 10);
     const lo = useFluxStore(
-        () => recipeLoByItemLo(TaskStore.getItemLO(rid)),
+        () => recipeLoByItemLo(planStore.getItemLO(rid)),
         [
-            TaskStore,
+            planStore,
             LibraryStore,
         ],
         [ rid ],

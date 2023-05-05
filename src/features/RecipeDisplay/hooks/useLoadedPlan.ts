@@ -1,5 +1,5 @@
 import useFluxStore from "../../../data/useFluxStore";
-import TaskStore from "features/Planner/data/planStore";
+import planStore from "features/Planner/data/planStore";
 import React from "react";
 import Dispatcher from "../../../data/dispatcher";
 import PlanActions from "features/Planner/data/PlanActions";
@@ -7,9 +7,9 @@ import PlanActions from "features/Planner/data/PlanActions";
 export const useLoadedPlan = (pid: number) => {
     // ensure it's loaded
     const allPlansLO = useFluxStore(
-        () => TaskStore.getPlanIdsLO(),
+        () => planStore.getPlanIdsLO(),
         [
-            TaskStore,
+            planStore,
         ],
     );
     // ensure it's selected
