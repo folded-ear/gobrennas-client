@@ -12,7 +12,7 @@ import React from "react";
 import AccessLevel, { includesLevel } from "data/AccessLevel";
 import Dispatcher from "data/dispatcher";
 import FriendStore from "data/FriendStore";
-import TaskActions from "features/Planner/data/TaskActions";
+import PlanActions from "features/Planner/data/PlanActions";
 import useFluxStore from "data/useFluxStore";
 import { useProfile } from "providers/Profile";
 import DeleteButton from "views/common/DeleteButton";
@@ -57,7 +57,7 @@ const TaskListSidebar: React.FC<Props> = ({ list }) => {
 
     const handleRename = () => {
         Dispatcher.dispatch({
-            type: TaskActions.RENAME_LIST,
+            type: PlanActions.RENAME_PLAN,
             id: list.id,
             name,
         });
@@ -66,13 +66,13 @@ const TaskListSidebar: React.FC<Props> = ({ list }) => {
     const handleGrantChange = (userId, level) => {
         if (level === LEVEL_NO_ACCESS) {
             Dispatcher.dispatch({
-                type: TaskActions.CLEAR_LIST_GRANT,
+                type: PlanActions.CLEAR_PLAN_GRANT,
                 id: list.id,
                 userId,
             });
         } else {
             Dispatcher.dispatch({
-                type: TaskActions.SET_LIST_GRANT,
+                type: PlanActions.SET_PLAN_GRANT,
                 id: list.id,
                 userId,
                 level,
@@ -82,7 +82,7 @@ const TaskListSidebar: React.FC<Props> = ({ list }) => {
 
     const handleDelete = () => {
         Dispatcher.dispatch({
-            type: TaskActions.DELETE_LIST,
+            type: PlanActions.DELETE_PLAN,
             id: list.id,
         });
     };

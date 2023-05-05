@@ -8,8 +8,8 @@ import Item from "features/Planner/components/Item";
 import StatusIconButton from "features/Planner/components/StatusIconButton";
 import TaskBucketChip from "features/Planner/components/TaskBucketChip";
 import withItemStyles from "features/Planner/components/withItemStyles";
+import PlanActions from "features/Planner/data/PlanActions";
 import PlanItemStatus from "features/Planner/data/PlanItemStatus";
-import TaskActions from "features/Planner/data/TaskActions";
 import {
     isExpanded,
     isParent,
@@ -44,7 +44,7 @@ class Task extends React.PureComponent {
             task,
         } = this.props;
         Dispatcher.dispatch({
-            type: TaskActions.RENAME_TASK,
+            type: PlanActions.RENAME_ITEM,
             id: task.id,
             name: value,
         });
@@ -65,7 +65,7 @@ class Task extends React.PureComponent {
         // it's multi-line!
         e.preventDefault();
         Dispatcher.dispatch({
-            type: TaskActions.MULTI_LINE_PASTE,
+            type: PlanActions.MULTI_LINE_PASTE,
             text,
         });
     }
@@ -86,8 +86,8 @@ class Task extends React.PureComponent {
                 // add a new item, before if the cursor is at the beginning, after otherwise
                 Dispatcher.dispatch({
                     type: selectionStart === 0
-                        ? TaskActions.CREATE_TASK_BEFORE
-                        : TaskActions.CREATE_TASK_AFTER,
+                        ? PlanActions.CREATE_ITEM_BEFORE
+                        : PlanActions.CREATE_ITEM_AFTER,
                     id: this.props.task.id,
                 });
                 break;
@@ -96,13 +96,13 @@ class Task extends React.PureComponent {
                 if (value.length === 0) {
                     e.preventDefault();
                     Dispatcher.dispatch({
-                        type: TaskActions.DELETE_TASK_BACKWARDS,
-                        id: this.props.task.id
+                        type: PlanActions.DELETE_ITEM_BACKWARDS,
+                        id: this.props.task.id,
                     });
                 } else if (shiftKey) {
                     e.preventDefault();
                     Dispatcher.dispatch({
-                        type: TaskActions.DELETE_SELECTED,
+                        type: PlanActions.DELETE_SELECTED,
                     });
                 }
                 break;
@@ -111,20 +111,20 @@ class Task extends React.PureComponent {
                 if (value.length === 0) {
                     e.preventDefault();
                     Dispatcher.dispatch({
-                        type: TaskActions.DELETE_TASK_FORWARD,
+                        type: PlanActions.DELETE_ITEM_FORWARD,
                         id: this.props.task.id,
                     });
                 } else if (shiftKey) {
                     e.preventDefault();
                     Dispatcher.dispatch({
-                        type: TaskActions.DELETE_SELECTED,
+                        type: PlanActions.DELETE_SELECTED,
                     });
                 }
                 break;
             case "Tab":
                 e.preventDefault();
                 Dispatcher.dispatch({
-                    type: shiftKey ? TaskActions.UNNEST : TaskActions.NEST,
+                    type: shiftKey ? PlanActions.UNNEST : PlanActions.NEST,
                     id: this.props.task.id,
                 });
                 break;
@@ -134,16 +134,16 @@ class Task extends React.PureComponent {
                 if (shiftKey) {
                     // select this task and the previous one
                     Dispatcher.dispatch({
-                        type: TaskActions.SELECT_PREVIOUS,
+                        type: PlanActions.SELECT_PREVIOUS,
                     });
                 } else if (ctrlKey) {
                     // move all selected tasks up one (if a predecessor exists)
                     Dispatcher.dispatch({
-                        type: TaskActions.MOVE_PREVIOUS,
+                        type: PlanActions.MOVE_PREVIOUS,
                     });
                 } else {
                     Dispatcher.dispatch({
-                        type: TaskActions.FOCUS_PREVIOUS,
+                        type: PlanActions.FOCUS_PREVIOUS,
                     });
                 }
                 break;
@@ -153,16 +153,16 @@ class Task extends React.PureComponent {
                 if (shiftKey) {
                     // select this task and the next one
                     Dispatcher.dispatch({
-                        type: TaskActions.SELECT_NEXT,
+                        type: PlanActions.SELECT_NEXT,
                     });
                 } else if (ctrlKey) {
                     // move all selected tasks down one (if a follower exists)
                     Dispatcher.dispatch({
-                        type: TaskActions.MOVE_NEXT,
+                        type: PlanActions.MOVE_NEXT,
                     });
                 } else {
                     Dispatcher.dispatch({
-                        type: TaskActions.FOCUS_NEXT,
+                        type: PlanActions.FOCUS_NEXT,
                     });
                 }
                 break;
@@ -184,8 +184,8 @@ class Task extends React.PureComponent {
         e.stopPropagation();
         Dispatcher.dispatch({
             type: e.shiftKey
-                ? TaskActions.SELECT_TO
-                : TaskActions.FOCUS,
+                ? PlanActions.SELECT_TO
+                : PlanActions.FOCUS,
             id: task.id,
         });
     }
@@ -193,7 +193,7 @@ class Task extends React.PureComponent {
     onToggleExpanded(e) {
         if (e) e.stopPropagation();
         Dispatcher.dispatch({
-            type: TaskActions.TOGGLE_EXPANDED,
+            type: PlanActions.TOGGLE_EXPANDED,
             id: this.props.task.id,
         });
     }
@@ -203,7 +203,7 @@ class Task extends React.PureComponent {
             task,
         } = this.props;
         const action = {
-            type: TaskActions.MOVE_SUBTREE,
+            type: PlanActions.MOVE_SUBTREE,
             id,
         };
         if (horizontal === "right") {

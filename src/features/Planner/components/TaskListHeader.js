@@ -1,49 +1,65 @@
-import {Drawer, FormControl, Grid, IconButton, MenuItem, Select, TextField, Tooltip,} from "@mui/material";
-import {Add, DynamicFeed, Edit,} from "@mui/icons-material";
-import PropTypes from "prop-types";
-import React from "react";
+import {
+    Add,
+    DynamicFeed,
+    Edit,
+} from "@mui/icons-material";
+import {
+    Drawer,
+    FormControl,
+    Grid,
+    IconButton,
+    MenuItem,
+    Select,
+    TextField,
+    Tooltip,
+} from "@mui/material";
 import Dispatcher from "data/dispatcher";
-import TaskActions from "features/Planner/data/TaskActions";
-import {byNameComparator} from "util/comparators";
-import {CollapseAll, ExpandAll,} from "views/common/icons";
-import SplitButton from "views/common/SplitButton";
 import TaskListSidebar from "features/Planner/components/TaskListSidebar";
 import UserById from "features/Planner/components/UserById";
+import PlanActions from "features/Planner/data/PlanActions";
+import PropTypes from "prop-types";
+import React from "react";
+import { byNameComparator } from "util/comparators";
+import {
+    CollapseAll,
+    ExpandAll,
+} from "views/common/icons";
+import SplitButton from "views/common/SplitButton";
 
 const isValidName = name =>
     name != null && name.trim().length > 0;
 
 const onShowDrawer = () =>
     Dispatcher.dispatch({
-        type: TaskActions.LIST_DETAIL_VISIBILITY,
+        type: PlanActions.PLAN_DETAIL_VISIBILITY,
         visible: true,
     });
 
 const onCloseDrawer = () =>
     Dispatcher.dispatch({
-        type: TaskActions.LIST_DETAIL_VISIBILITY,
+        type: PlanActions.PLAN_DETAIL_VISIBILITY,
         visible: false,
     });
 
 const onSelect = e =>
     Dispatcher.dispatch({
-        type: TaskActions.SELECT_LIST,
+        type: PlanActions.SELECT_PLAN,
         id: e.target.value,
     });
 
 const onExpandAll = () =>
     Dispatcher.dispatch({
-        type: TaskActions.EXPAND_ALL,
+        type: PlanActions.EXPAND_ALL,
     });
 
 const onCollapseAll = () =>
     Dispatcher.dispatch({
-        type: TaskActions.COLLAPSE_ALL,
+        type: PlanActions.COLLAPSE_ALL,
     });
 
 const sortByBucket = () =>
     Dispatcher.dispatch({
-        type: TaskActions.SORT_BY_BUCKET,
+        type: PlanActions.SORT_BY_BUCKET,
     });
 
 function TaskListHeader({
@@ -65,7 +81,7 @@ function TaskListHeader({
         setName("");
         setShowAdd(false);
         Dispatcher.dispatch({
-            type: TaskActions.CREATE_LIST,
+            type: PlanActions.CREATE_PLAN,
             name: name.trim(),
         });
     };
@@ -74,7 +90,7 @@ function TaskListHeader({
         if (!isValidName(name)) return;
         setName("");
         Dispatcher.dispatch({
-            type: TaskActions.DUPLICATE_LIST,
+            type: PlanActions.DUPLICATE_PLAN,
             name: name.trim(),
             fromId: list.id,
         });

@@ -7,7 +7,7 @@ import LinkIcon from "@mui/icons-material/Link";
 import React from "react";
 import Dispatcher from "data/dispatcher";
 import PantryItemActions from "data/PantryItemActions";
-import TaskActions from "features/Planner/data/TaskActions";
+import PlanActions from "features/Planner/data/PlanActions";
 import history from "util/history";
 import Quantity from "views/common/Quantity";
 import SendToPlan from "features/RecipeLibrary/components/SendToPlan";
@@ -79,7 +79,7 @@ const IngredientItem: React.FC<Props> = ({
                 {" "}
                 <SendToPlan
                     onClick={planId => Dispatcher.dispatch({
-                        type: TaskActions.SEND_TO_PLAN,
+                        type: PlanActions.SEND_TO_PLAN,
                         planId,
                         name: ref.raw,
                     })}

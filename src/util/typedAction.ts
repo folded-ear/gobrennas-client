@@ -2,6 +2,9 @@ import PropTypes from "prop-types";
 
 export const CONTAINER_KEY = "payload";
 
+// eslint-disable-next-line @typescript-eslint/ban-types
+export type CheckableActionType = string | (String & { actionTypes?: object })
+
 /*
  * This function uses a bit of JS trickery in order to "hide" a proptypes def
  * on a string, which will then be used by ValidatingDispatcher to validate that
@@ -12,12 +15,12 @@ export const CONTAINER_KEY = "payload";
  * NB: the `exact` PropTypes checker is used, so extra keys will also surface
  * complaints (you can't sometimes hide extra stuff in an action).
  */
-const typedAction = (name, shape) => {
+const typedAction = (type: string, shape: object): CheckableActionType => {
     if (process.env.NODE_ENV !== "production" && shape != null) {
         // noinspection JSPrimitiveTypeWrapperUsage
-        name = new String(name); // eslint-disable-line no-new-wrappers
+        const checkable: CheckableActionType = new String(type); // eslint-disable-line no-new-wrappers
         // noinspection JSPrimitiveTypeWrapperUsage
-        name.actionTypes = {
+        checkable.actionTypes = {
             [CONTAINER_KEY]: PropTypes.exact({
                 ...shape,
                 // PropTypes.string does primitives
@@ -25,7 +28,7 @@ const typedAction = (name, shape) => {
             }).isRequired,
         };
     }
-    return name;
+    return type;
 };
 
 export default typedAction;

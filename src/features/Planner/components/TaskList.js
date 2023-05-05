@@ -7,7 +7,7 @@ import Dispatcher from "data/dispatcher";
 import LoadingTask from "features/Planner/components/LoadingTask";
 import Task from "features/Planner/components/Task";
 import TaskListHeader from "features/Planner/components/TaskListHeader";
-import TaskActions from "features/Planner/data/TaskActions";
+import PlanActions from "features/Planner/data/PlanActions";
 import { isParent } from "features/Planner/data/tasks";
 import PropTypes from "prop-types";
 import React from "react";
@@ -35,7 +35,7 @@ function TaskList(props) {
     const handleAddNew = e => {
         e.preventDefault();
         Dispatcher.dispatch({
-            type: TaskActions.CREATE_TASK_AT_END,
+            type: PlanActions.CREATE_ITEM_AT_END,
         });
     };
 

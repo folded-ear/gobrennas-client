@@ -1,7 +1,7 @@
 import BaseAxios from "axios";
 import { API_BASE_URL } from "constants/index";
 import promiseFlux, { soakUpUnauthorized } from "util/promiseFlux";
-import TaskActions from "./TaskActions";
+import PlanActions from "./PlanActions";
 
 const axios = BaseAxios.create({
     baseURL: `${API_BASE_URL}/api/plan`,
@@ -12,7 +12,7 @@ const PlanApi = {
         promiseFlux(
             axios.post(`/${planId}`, body),
             r => ({
-                type: TaskActions.TREE_CREATE,
+                type: PlanActions.TREE_CREATE,
                 data: r.data.info,
                 newIds: r.data.newIds,
             }),
@@ -22,7 +22,7 @@ const PlanApi = {
         promiseFlux(
             axios.put(`/${planId}/rename`, body),
             r => ({
-                type: TaskActions.UPDATED,
+                type: PlanActions.UPDATED,
                 data: r.data.info,
             }),
         ),
@@ -31,7 +31,7 @@ const PlanApi = {
         promiseFlux(
             axios.delete(`/${planId}/${id}`),
             () => ({
-                type: TaskActions.DELETED,
+                type: PlanActions.DELETED,
                 id,
             }),
         ),
@@ -41,11 +41,11 @@ const PlanApi = {
             axios.put(`/${planId}/status`, body),
             r => r.data.type === "delete"
                 ? {
-                    type: TaskActions.DELETED,
+                    type: PlanActions.DELETED,
                     id: r.data.id,
                 }
                 : {
-                    type: TaskActions.UPDATED,
+                    type: PlanActions.UPDATED,
                     data: r.data.info,
                 },
         ),
@@ -75,7 +75,7 @@ const PlanApi = {
         promiseFlux(
             axios.get(`/${id}/descendants`),
             r => ({
-                type: TaskActions.LIST_DATA_BOOTSTRAPPED,
+                type: PlanActions.PLAN_DATA_BOOTSTRAPPED,
                 id,
                 data: r.data,
             }),
@@ -85,7 +85,7 @@ const PlanApi = {
         promiseFlux(
             axios.get(`/${id}/all-since?cutoff=${cutoff}`),
             r => ({
-                type: TaskActions.LIST_DELTAS,
+                type: PlanActions.PLAN_DELTAS,
                 id,
                 data: r.data,
             }),
@@ -96,7 +96,7 @@ const PlanApi = {
         promiseFlux(
             axios.post(`/${planId}/buckets`, body),
             ({ data }) => ({
-                type: TaskActions.BUCKET_CREATED,
+                type: PlanActions.BUCKET_CREATED,
                 planId,
                 data: data.info,
                 oldId: data.newIds[data.id],
@@ -107,7 +107,7 @@ const PlanApi = {
         promiseFlux(
             axios.put(`/${planId}/buckets/${id}`, body),
             ({ data }) => ({
-                type: TaskActions.BUCKET_UPDATED,
+                type: PlanActions.BUCKET_UPDATED,
                 planId,
                 data: data.info,
             }),
@@ -117,7 +117,7 @@ const PlanApi = {
         promiseFlux(
             axios.delete(`/${planId}/buckets/${id}`),
             ({ data }) => ({
-                type: TaskActions.BUCKET_DELETED,
+                type: PlanActions.BUCKET_DELETED,
                 planId,
                 id: data.id,
             }),

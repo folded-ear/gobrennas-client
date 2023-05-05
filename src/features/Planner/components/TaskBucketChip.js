@@ -10,7 +10,7 @@ import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import dispatcher from "data/dispatcher";
 import getBucketLabel from "features/Planner/components/getBucketLabel";
-import TaskActions from "features/Planner/data/TaskActions";
+import PlanActions from "features/Planner/data/PlanActions";
 import PropTypes from "prop-types";
 import React from "react";
 import { clientOrDatabaseIdType } from "util/ClientId";
@@ -128,12 +128,12 @@ const TaskBucketChip = ({
 }) =>
     <BucketChip
         onSelect={bucketId => dispatcher.dispatch({
-            type: TaskActions.ASSIGN_ITEM_TO_BUCKET,
+            type: PlanActions.ASSIGN_ITEM_TO_BUCKET,
             id: taskId,
             bucketId,
         })}
         onManage={() => dispatcher.dispatch({
-            type: TaskActions.LIST_DETAIL_VISIBILITY,
+            type: PlanActions.PLAN_DETAIL_VISIBILITY,
             visible: true,
         })}
         {...props}

@@ -1,7 +1,7 @@
 import { Tooltip } from "@mui/material";
 import React, { MouseEventHandler } from "react";
 import Dispatcher from "data/dispatcher";
-import TaskActions from "features/Planner/data/TaskActions";
+import PlanActions from "features/Planner/data/PlanActions";
 import PlanItemStatus, {
     getColorForStatus,
     getIconForStatus,
@@ -40,7 +40,7 @@ const StatusIconButton: React.FC<Props> = props => {
             onClick={e => {
                 e.stopPropagation();
                 Dispatcher.dispatch({
-                    type: TaskActions.SET_STATUS,
+                    type: PlanActions.SET_STATUS,
                     id: props.id,
                     status: props.next,
                 });

@@ -1,6 +1,6 @@
 import { Button } from "@mui/material";
+import PlanActions from "features/Planner/data/PlanActions";
 import { willStatusDelete } from "features/Planner/data/PlanItemStatus";
-import TaskActions from "features/Planner/data/TaskActions";
 import TaskStore from "features/Planner/data/TaskStore";
 import LibraryStore from "features/RecipeLibrary/data/LibraryStore";
 import { ReduceStore } from "flux/utils";
@@ -42,7 +42,7 @@ const forTaskStatusChanges = (state, ids, status) => {
                 onClick={e => {
                     dismiss(e);
                     dispatcher.dispatch({
-                        type: TaskActions.BULK_SET_STATUS,
+                        type: PlanActions.BULK_SET_STATUS,
                         status: status,
                         ids: comps.map(c => c.id),
                     });
@@ -87,13 +87,13 @@ class SnackBarStore extends ReduceStore {
                 };
             }
 
-            case TaskActions.SEND_TO_PLAN:
+            case PlanActions.SEND_TO_PLAN:
             case PantryItemActions.SEND_TO_PLAN: {
                 const plan = TaskStore.getTaskLO(action.planId)
                     .getValueEnforcing();
                 return enqueue(state, {
                     message: `Added ${action.name} to ${plan.name}`,
-                    severity: "success"
+                    severity: "success",
                 });
             }
 
@@ -120,11 +120,11 @@ class SnackBarStore extends ReduceStore {
                 });
             }
 
-            case TaskActions.SET_STATUS: {
-                return forTaskStatusChanges(state, [action.id], action.status);
+            case PlanActions.SET_STATUS: {
+                return forTaskStatusChanges(state, [ action.id ], action.status);
             }
 
-            case TaskActions.BULK_SET_STATUS: {
+            case PlanActions.BULK_SET_STATUS: {
                 return forTaskStatusChanges(state, action.ids, action.status);
             }
 
