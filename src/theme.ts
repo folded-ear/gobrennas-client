@@ -8,12 +8,16 @@ let theme : Theme = createTheme({
     palette: {
         primary: {
             light: "#f9683a",
-            main: "#bf360c",
-            dark: "#870000",
-            contrastText: "#fff",
+            main: "#FFFFFF",
+            dark: "#dddddd",
+            contrastText: "#333333",
+            // light: "#f9683a",
+            // main: "#F57F17",
+            // dark: "#870000",
+            // contrastText: "#FFFDE7",
         },
         secondary: {
-            main: "#f2f3ef",
+            main: "#FFFDE7",
             contrastText: "#000",
         },
         background: {
