@@ -90,6 +90,7 @@ export const RecipesList: React.FC<RecipesListProps> = ({
                             sm={6}
                             xs={12}
                             key={recipe.id}
+                            sx={ {display: "flex"}}
                         >
                             <RecipeCard
                                 recipe={recipe}

@@ -5,7 +5,8 @@ import {
     IconButton,
     InputAdornment,
     InputBase,
-    Switch
+    Switch,
+    Toolbar
 } from "@mui/material";
 import {
     Clear as ClearIcon,
@@ -38,54 +39,56 @@ export const SearchRecipes: React.FC<SearchRecipesProps> = (
         toggleScope,
     }) => {
     return (
-        <SearchRecipesContainer elevation={isSearchFloating ? 4 : 1}>
-            <InputBase
-                value={unsavedFilter}
-                onChange={onSearchChange}
-                placeholder="Search Recipes"
-                style={{ flexGrow: 2 }}
-                onKeyDown={e => {
-                    if (e.key === "Enter") {
-                        onSearch(e);
+        <SearchRecipesContainer elevation={isSearchFloating ? 4 : 1} position="sticky">
+            <Toolbar>
+                <InputBase
+                    value={unsavedFilter}
+                    onChange={onSearchChange}
+                    placeholder="Search Recipes"
+                    style={{flexGrow: 2}}
+                    onKeyDown={e => {
+                        if (e.key === "Enter") {
+                            onSearch(e);
+                        }
+                    }}
+                    endAdornment={
+                        unsavedFilter
+                            ? <InputAdornment position="end">
+                                <IconButton
+                                    onClick={e => onClear(e)}
+                                >
+                                    <ClearIcon/>
+                                </IconButton>
+                            </InputAdornment>
+                            : undefined
                     }
-                }}
-                endAdornment={
-                    unsavedFilter
-                        ? <InputAdornment position="end">
-                            <IconButton
-                                onClick={e => onClear(e)}
-                            >
-                                <ClearIcon />
-                            </IconButton>
-                        </InputAdornment>
-                        : undefined
-                }
-            />
-            {isMobile || isSearchFloating
-                ? <IconButton color={"primary"} onClick={onSearch} size="large">
-                    <SearchIcon />
-                </IconButton>
-                : <Button
-                    variant={"contained"}
-                    onClick={onSearch}
-                    color="primary"
-                    type="submit"
-                    aria-label="search"
-                    startIcon={<SearchIcon />}>
-                    Search
-                </Button>}
-            <Divider orientation="vertical" />
-            <FormControlLabel
-                control={
-                    <Switch checked={scope === LibrarySearchScope.Everyone}
-                            name="scope"
-                            onChange={toggleScope}
-                            color="primary"
-                    />
-                }
-                label={"Everyone"}
-                labelPlacement={"start"}
-            />
+                />
+                {isMobile || isSearchFloating
+                    ? <IconButton color={"primary"} onClick={onSearch} size="large">
+                        <SearchIcon/>
+                    </IconButton>
+                    : <Button
+                        variant={"contained"}
+                        onClick={onSearch}
+                        color="primary"
+                        type="submit"
+                        aria-label="search"
+                        startIcon={<SearchIcon/>}>
+                        Search
+                    </Button>}
+                <Divider orientation="vertical"/>
+                <FormControlLabel
+                    control={
+                        <Switch checked={scope === LibrarySearchScope.Everyone}
+                                name="scope"
+                                onChange={toggleScope}
+                                color="primary"
+                        />
+                    }
+                    label={"Everyone"}
+                    labelPlacement={"start"}
+                />
+            </Toolbar>
         </SearchRecipesContainer>
     )
 }
