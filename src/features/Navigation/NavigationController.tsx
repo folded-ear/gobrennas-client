@@ -13,6 +13,7 @@ import {
     ShoppingCart as ShopIcon,
 } from "@mui/icons-material";
 import {
+    Header,
     Main,
     Navigation,
     Sidebar,
@@ -50,18 +51,14 @@ export const NavigationController : React.FC<NavigationControllerProps> = ({auth
     // const isMobile = useIsMobile();
     const devMode = useIsDevMode();
 
-    const state = useFluxStore(
+    const getPlans = useFluxStore(
         () => {
             const allPlans = ripLoadObject(planStore.getPlansLO());
-            return {
-                allPlans
-            }
+            return { allPlans }
         },
-        [
-            planStore
-        ]
+        [planStore]
     )
-
+    const {data: navPlanItems, loading, error } = getPlans.allPlans;
     const handleProfile = e => {
         e.stopPropagation();
         history.push("/profile");
@@ -73,8 +70,6 @@ export const NavigationController : React.FC<NavigationControllerProps> = ({auth
         doLogout();
     };
 
-    const {data: navPlanItems, loading, error } = state.allPlans;
-
     if(!authenticated) {
         return (<Main>{children}</Main>)
     }
@@ -82,6 +77,7 @@ export const NavigationController : React.FC<NavigationControllerProps> = ({auth
     return (
         <FlexBox>
             <CssBaseline/>
+            <Header elevation={0} />
             <Sidebar
                 open={expanded}
                 variant="permanent"

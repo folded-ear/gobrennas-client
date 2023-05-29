@@ -14,9 +14,10 @@ export const TOP_MARGIN = 20
 const drawerWidthOpen = 240;
 const drawerWidthClosed = 58;
 
-export const Header = styled(AppBar, {shouldForwardProp: (prop) => prop !== 'open'})(({theme}) => ({
+export const Header = styled(AppBar)(({theme}) => ({
     zIndex: theme.zIndex.drawer + 10,
     backgroundColor: theme.palette.primary.main,
+    height: 5,
 }))
 
 export const Sidebar = styled(Drawer, { shouldForwardProp: (prop) => prop !== 'open' })(
