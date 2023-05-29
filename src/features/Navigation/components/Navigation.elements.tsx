@@ -40,7 +40,7 @@ interface ExpandedProps extends ContainerProps {
     open?: boolean
 }
 
-export const Main = styled(Container)<ExpandedProps>(({theme, open}) => ({
+export const MainDesktop = styled(Container)<ExpandedProps>(({theme, open}) => ({
     marginTop: TOP_MARGIN,
     ...(open && {
         marginLeft: drawerWidthOpen,
@@ -59,3 +59,7 @@ export const Main = styled(Container)<ExpandedProps>(({theme, open}) => ({
         }),
     })
 }))
+
+export const MainMobile = styled(Container)({
+
+})
