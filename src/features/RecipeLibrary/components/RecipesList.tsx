@@ -2,7 +2,6 @@ import { PostAdd as AddIcon, } from "@mui/icons-material";
 import {
     Container as Content,
     Grid,
-    Typography,
     useScrollTrigger,
 } from "@mui/material";
 import RecipeCard from "features/RecipeLibrary/components/RecipeCard";
@@ -131,7 +130,6 @@ export const RecipesList: React.FC<RecipesListProps> = ({
 
     return (
         <Content>
-            <Typography variant="h1">Recipe Library</Typography>
             <SearchRecipes
                 isSearchFloating={isSearchFloating}
                 isMobile={isMobile}
