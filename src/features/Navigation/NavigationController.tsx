@@ -122,7 +122,11 @@ export const NavigationController : React.FC<NavigationControllerProps> = ({auth
                     </ListSubheader>
                     <Navigation>
                         {navPlanItems && navPlanItems.map(item => (
-                            <NavPlanItem name={item.name} color={pink[500]} />
+                            <NavPlanItem
+                                expanded={expanded}
+                                name={item.name}
+                                color={pink[500]}
+                            />
                         ))}
                     </Navigation>
                 </Box>
@@ -132,7 +136,7 @@ export const NavigationController : React.FC<NavigationControllerProps> = ({auth
                             <ListItemIcon>
                                 <ProfileIcon/>
                             </ListItemIcon>
-                            <ListItemText id="profile" primary="My Account"/>
+                            <ListItemText id="profile" primary="My Account" sx={{whiteSpace: "nowrap"}}/>
                         </ListItemButton>
                         <ListItemButton onClick={handleLogout}>
                             <ListItemIcon>

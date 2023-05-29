@@ -5,11 +5,11 @@ import * as React from "react";
 
 export const NavItem = (props) => {
     const {icon, title} = props;
-    return (<ListItemButton
+        return (<ListItemButton
         component={NavLink}
         activeStyle={{
             fontWeight: "bold",
-            color: "red"
+            color: "black"
         }}
         {...props}
     >
