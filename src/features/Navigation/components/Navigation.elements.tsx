@@ -4,7 +4,6 @@ import {
     Container,
     ContainerProps,
     Drawer,
-    IconButton,
     List
 } from "@mui/material";
 
@@ -59,8 +58,4 @@ export const Main = styled(Container)<ExpandedProps>(({theme, open}) => ({
             duration: theme.transitions.duration.enteringScreen,
         }),
     })
-}))
-
-export const IconBtnLight = styled(IconButton)(({theme}) => ({
-    color: theme.palette.primary.contrastText
 }))

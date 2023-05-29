@@ -1,10 +1,12 @@
 import * as React from "react";
-import { IconBtnLight } from "features/Navigation/components/Navigation.elements";
 import {
     Menu as MenuClosedIcon,
     MenuOpen as MenuOpenIcon,
 } from "@mui/icons-material";
-import { Box } from "@mui/material";
+import {
+    Box,
+    IconButton
+} from "@mui/material";
 import { styled } from "@mui/material/styles";
 
 type LogoProps = {
@@ -25,9 +27,9 @@ const LogoText = styled("div")(({theme}) => ({
 }))
 
 export const Logo: React.FC<LogoProps> = ({isExpanded, onClick}) => (<LogoWrapper>
-        <IconBtnLight onClick={onClick}>
+        <IconButton onClick={onClick}>
             {isExpanded ? <MenuOpenIcon/> : <MenuClosedIcon/>}
-        </IconBtnLight>
+        </IconButton>
         <LogoText>
             {isExpanded ? "Food Software" : null}
         </LogoText>

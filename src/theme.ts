@@ -8,26 +8,26 @@ let theme : Theme = createTheme({
     palette: {
         primary: {
             light: "#f9683a",
-            main: "#FFFFFF",
-            dark: "#dddddd",
-            contrastText: "#333333",
-            // light: "#f9683a",
-            // main: "#F57F17",
-            // dark: "#870000",
-            // contrastText: "#FFFDE7",
+            main: "#F57F17",
+            dark: "#870000",
+            contrastText: "#FFFDE7",
         },
         secondary: {
-            main: "#FFFDE7",
+            main: "#EEEEEE",
             contrastText: "#000",
         },
+        // secondary: {
+        //     main: "#FFFDE7",
+        //     contrastText: "#000",
+        // },
         background: {
             default: "#f7f7f7"
-        }
+        },
     },
     typography: {
         fontFamily: [
+            '"Encode Sans Semi Condensed"',
             '"Roboto"',
-            '"Helvetica Neue"',
             '"Arial"',
             '"sans-serif"',
             '"Apple Color Emoji"',
@@ -35,11 +35,11 @@ let theme : Theme = createTheme({
             '"Segoe UI Symbol"',
         ].join(","),
         h2: {
-            fontFamily: "'News Cycle', sans-serif",
+            fontFamily: "'Encode Sans', sans-serif",
             fontSize: "2.5rem"
         },
         h3: {
-            fontFamily: "News Cycle",
+            fontFamily: "'Encode Sans', sans-serif",
             fontSize: "2rem"
         },
         h5: {
