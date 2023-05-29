@@ -73,6 +73,7 @@ export const NavigationController : React.FC<NavigationControllerProps> = ({auth
     };
 
     const onSelectPlan = id => {
+        history.push("/plan");
         Dispatcher.dispatch({
             type: PlanActions.SELECT_PLAN,
             id: id,
