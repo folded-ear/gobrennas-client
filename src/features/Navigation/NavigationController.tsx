@@ -44,7 +44,6 @@ type NavigationControllerProps = {
     children?: ReactNode
 }
 
-// TODO randomize color map for plans
 export const NavigationController : React.FC<NavigationControllerProps> = ({authenticated, children}) => {
     const [expanded, setExpanded] = React.useState<boolean>(true)
     const handleExpand = () => setExpanded(!expanded)
