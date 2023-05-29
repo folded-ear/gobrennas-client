@@ -12,7 +12,6 @@ import {
     Menu,
     MenuBook as LibraryIcon,
     ShoppingCart as ShopIcon,
-    Timer as TimerIcon,
 } from "@mui/icons-material";
 import {
     IconBtnLight,
@@ -36,6 +35,7 @@ import { ripLoadObject } from "util/ripLoadObject";
 import planStore from "features/Planner/data/planStore";
 import { useLogoutHandler } from "providers/Profile";
 import { useHistory } from "react-router-dom";
+import useIsDevMode from "data/useIsDevMode";
 
 type NavigationControllerProps = {
     authenticated: boolean,
@@ -47,6 +47,10 @@ export const NavigationController : React.FC<NavigationControllerProps> = ({auth
     const [expanded, setExpanded] = React.useState<boolean>(true)
     const onExpanded = () => setExpanded(!expanded)
     const history = useHistory();
+    // TODO: Mobile version
+    // const isMobile = useIsMobile();
+    const devMode = useIsDevMode();
+
     const state = useFluxStore(
         () => {
             const allPlans = ripLoadObject(planStore.getPlansLO());
@@ -73,29 +77,6 @@ export const NavigationController : React.FC<NavigationControllerProps> = ({auth
 
     const {data: navPlanItems, loading, error } = state.allPlans;
 
-    const navItems = [
-        {
-            id: "library",
-            icon: <LibraryIcon />,
-            title: "Library"
-        },
-        {
-            id: "plan",
-            icon: <PlanIcon />,
-            title: "Plan"
-        },
-        {
-            id: "shop",
-            icon: <ShopIcon />,
-            title: "Shop"
-        },
-        {
-            id: "pantry",
-            icon: <PantryIcon />,
-            title: "Pantry"
-        },
-    ]
-
     if(!authenticated) {
         return (<Main>{children}</Main>)
     }
@@ -115,20 +96,36 @@ export const NavigationController : React.FC<NavigationControllerProps> = ({auth
                 </Typography>
                 <Box sx={{overflow: 'auto', flex: 1}}>
                     <Navigation dense>
-                        {navItems.map(item => (
-                            <NavItem
-                                to={`/${item.id}`}
-                                value={item.id}
-                                icon={item.icon}
-                                title={item.title}
-                            />
-                        ))}
                         <NavItem
-                            to="/timers"
-                            value="timers"
-                            icon={<TimerIcon/>}
-                            title="Timers"
+                            to="/library"
+                            value="library"
+                            icon={<LibraryIcon />}
+                            title="Library"
                         />
+                        <NavItem
+                            to="/plan"
+                            value="plan"
+                            icon={<PlanIcon />}
+                            title="Plan"
+                        />
+                        <NavItem
+                            to="/shop"
+                            value="shop"
+                            icon={<ShopIcon />}
+                            title="Shop"
+                        />
+                        {devMode && <NavItem
+                            to="/pantry"
+                            value="pantry"
+                            icon={<PantryIcon />}
+                            title="Pantry"
+                        />}
+                        {/*<NavItem*/}
+                        {/*    to="/timers"*/}
+                        {/*    value="timers"*/}
+                        {/*    icon={<TimerIcon/>}*/}
+                        {/*    title="Timers"*/}
+                        {/*/>*/}
                     </Navigation>
                     <Divider/>
                     <ListSubheader component="div" id="nested-list-subheader">
