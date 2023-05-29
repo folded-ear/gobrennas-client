@@ -25,7 +25,6 @@ import {
     ListItemText,
     ListSubheader,
 } from "@mui/material";
-import { pink } from "@mui/material/colors";
 import { FlexBox } from "global/components/FlexBox";
 import { NavItem } from "features/Navigation/components/NavItem";
 import { NavPlanItem } from "features/Navigation/components/NavPlanItem";
@@ -38,6 +37,7 @@ import useIsDevMode from "data/useIsDevMode";
 import { Logo } from "features/Navigation/components/Logo";
 import Dispatcher from "data/dispatcher";
 import PlanActions from "features/Planner/data/PlanActions";
+import { colorHash } from "constants/colors";
 
 type NavigationControllerProps = {
     authenticated: boolean,
@@ -138,7 +138,7 @@ export const NavigationController : React.FC<NavigationControllerProps> = ({auth
                                 onSelect={onSelectPlan}
                                 expanded={expanded}
                                 name={item.name}
-                                color={pink[500]}
+                                color={colorHash(item.id)}
                             />
                         ))}
                     </Navigation>
