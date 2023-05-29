@@ -5,7 +5,9 @@ import CssBaseline from '@mui/material/CssBaseline';
 import Typography from '@mui/material/Typography';
 import Divider from '@mui/material/Divider';
 import {
+    AccountCircle as ProfileIcon,
     EventNote as PlanIcon,
+    ExitToApp as LogoutIcon,
     MeetingRoom as PantryIcon,
     Menu,
     MenuBook as LibraryIcon,
@@ -18,7 +20,13 @@ import {
     Navigation,
     Sidebar,
 } from "features/Navigation/components/Navigation.elements";
-import { ListSubheader, } from "@mui/material";
+import {
+    List,
+    ListItemButton,
+    ListItemIcon,
+    ListItemText,
+    ListSubheader,
+} from "@mui/material";
 import { pink } from "@mui/material/colors";
 import { FlexBox } from "global/components/FlexBox";
 import { NavItem } from "features/Navigation/components/NavItem";
@@ -26,6 +34,8 @@ import { NavPlanItem } from "features/Navigation/components/NavPlanItem";
 import useFluxStore from "data/useFluxStore";
 import { ripLoadObject } from "util/ripLoadObject";
 import planStore from "features/Planner/data/planStore";
+import { useLogoutHandler } from "providers/Profile";
+import { useHistory } from "react-router-dom";
 
 type NavigationControllerProps = {
     authenticated: boolean,
@@ -33,11 +43,10 @@ type NavigationControllerProps = {
 }
 
 // TODO randomize color map for plans
-
 export const NavigationController : React.FC<NavigationControllerProps> = ({authenticated, children}) => {
     const [expanded, setExpanded] = React.useState<boolean>(true)
     const onExpanded = () => setExpanded(!expanded)
-
+    const history = useHistory();
     const state = useFluxStore(
         () => {
             const allPlans = ripLoadObject(planStore.getPlansLO());
@@ -50,9 +59,19 @@ export const NavigationController : React.FC<NavigationControllerProps> = ({auth
         ]
     )
 
-    const {data: navPlanItems, loading, error } = state.allPlans;
+    const handleProfile = e => {
+        e.stopPropagation();
+        history.push("/profile");
+    };
+    const doLogout = useLogoutHandler();
+    const handleLogout = e => {
+        e.preventDefault();
+        e.stopPropagation();
+        doLogout();
+    };
 
-    console.log(navPlanItems)
+
+    const {data: navPlanItems, loading, error } = state.allPlans;
 
     const navItems = [
         {
@@ -77,6 +96,10 @@ export const NavigationController : React.FC<NavigationControllerProps> = ({auth
         },
     ]
 
+    if(!authenticated) {
+        return (<Main>{children}</Main>)
+    }
+
     return (
         <FlexBox>
             <CssBaseline/>
@@ -90,7 +113,7 @@ export const NavigationController : React.FC<NavigationControllerProps> = ({auth
                 <Typography variant="h6" noWrap component="div">
                     {expanded ? "Food Software" : "BFS"}
                 </Typography>
-                <Box sx={{overflow: 'auto'}}>
+                <Box sx={{overflow: 'auto', flex: 1}}>
                     <Navigation dense>
                         {navItems.map(item => (
                             <NavItem
@@ -116,6 +139,24 @@ export const NavigationController : React.FC<NavigationControllerProps> = ({auth
                             <NavPlanItem name={item.name} color={pink[500]} />
                         ))}
                     </Navigation>
+                </Box>
+                <Box sx={{alignItem: "bottom"}}>
+                    <List>
+                        <ListItemButton onClick={handleProfile}>
+                            <ListItemIcon>
+                                <ProfileIcon/>
+                            </ListItemIcon>
+                            <ListItemText id="profile" primary="My Account"/>
+                        </ListItemButton>
+                        <ListItemButton onClick={handleLogout}>
+                            <ListItemIcon>
+                                <LogoutIcon/>
+                            </ListItemIcon>
+                            <Typography noWrap>
+                                Logout
+                            </Typography>
+                        </ListItemButton>
+                    </List>
                 </Box>
             </Sidebar>
             <Main open={expanded}>
