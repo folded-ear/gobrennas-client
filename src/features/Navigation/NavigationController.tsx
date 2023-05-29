@@ -36,6 +36,8 @@ import { useLogoutHandler } from "providers/Profile";
 import { useHistory } from "react-router-dom";
 import useIsDevMode from "data/useIsDevMode";
 import { Logo } from "features/Navigation/components/Logo";
+import Dispatcher from "data/dispatcher";
+import PlanActions from "features/Planner/data/PlanActions";
 
 type NavigationControllerProps = {
     authenticated: boolean,
@@ -69,6 +71,14 @@ export const NavigationController : React.FC<NavigationControllerProps> = ({auth
         e.stopPropagation();
         doLogout();
     };
+
+    const onSelectPlan = id => {
+        Dispatcher.dispatch({
+            type: PlanActions.SELECT_PLAN,
+            id: id,
+        });
+    }
+
 
     if(!authenticated) {
         return (<Main>{children}</Main>)
@@ -123,6 +133,8 @@ export const NavigationController : React.FC<NavigationControllerProps> = ({auth
                     <Navigation>
                         {navPlanItems && navPlanItems.map(item => (
                             <NavPlanItem
+                                id={item.id}
+                                onSelect={onSelectPlan}
                                 expanded={expanded}
                                 name={item.name}
                                 color={pink[500]}

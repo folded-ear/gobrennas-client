@@ -1,38 +1,26 @@
-import { Circle as CircleIcon } from "@mui/icons-material";
+import { TripOrigin as PlanIcon } from "@mui/icons-material";
 import * as React from "react";
-import { styled } from "@mui/material/styles";
-import { FlexBox } from "global/components/FlexBox";
-
-const PlanItemWrapper = styled(FlexBox)(({theme}) =>({
-}))
-
-const PlanIcon = styled("div")(({theme}) =>({
-    paddingBottom: theme.spacing(1),
-    paddingLeft: theme.spacing(2),
-    paddingRight: theme.spacing(1)
-}))
-
-const PlanNameWrapper = styled("div")(({theme}) =>({
-    flex: 1,
-    fontSize: ".9em",
-    whiteSpace: "nowrap",
-    textOverflow: "ellipsis",
-    paddingBottom: theme.spacing(1)
-}))
+import {
+    ListItemButton,
+    ListItemIcon,
+    Typography
+} from "@mui/material";
 
 type NavPlanItemProps = {
+    id: string | number,
+    onSelect: (e) => void,
     expanded: boolean,
     name: string,
     color: string,
 }
 
-export const NavPlanItem : React.FC<NavPlanItemProps> = ({expanded, name, color}) => {
-    return (<PlanItemWrapper>
-        <PlanIcon>
-            <CircleIcon sx={{ fontSize: 15, color: color }} />
-        </PlanIcon>
-        <PlanNameWrapper>
+export const NavPlanItem: React.FC<NavPlanItemProps> = ({onSelect, expanded, name, color, id}) => {
+    return (<ListItemButton onClick={() => onSelect(id)} key={id}>
+        <ListItemIcon>
+            <PlanIcon sx={{color: color}}/>
+        </ListItemIcon>
+        <Typography noWrap>
             {expanded ? name : null}
-        </PlanNameWrapper>
-    </PlanItemWrapper>)
+        </Typography>
+    </ListItemButton>)
 }
