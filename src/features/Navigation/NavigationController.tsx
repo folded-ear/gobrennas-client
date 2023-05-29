@@ -7,14 +7,12 @@ import Divider from '@mui/material/Divider';
 import {
     AccountCircle as ProfileIcon,
     EventNote as PlanIcon,
-    ExitToApp as LogoutIcon,
+    Logout as LogoutIcon,
     MeetingRoom as PantryIcon,
-    Menu,
     MenuBook as LibraryIcon,
     ShoppingCart as ShopIcon,
 } from "@mui/icons-material";
 import {
-    IconBtnLight,
     Main,
     Navigation,
     Sidebar,
@@ -36,6 +34,7 @@ import planStore from "features/Planner/data/planStore";
 import { useLogoutHandler } from "providers/Profile";
 import { useHistory } from "react-router-dom";
 import useIsDevMode from "data/useIsDevMode";
+import { Logo } from "features/Navigation/components/Logo";
 
 type NavigationControllerProps = {
     authenticated: boolean,
@@ -45,7 +44,7 @@ type NavigationControllerProps = {
 // TODO randomize color map for plans
 export const NavigationController : React.FC<NavigationControllerProps> = ({authenticated, children}) => {
     const [expanded, setExpanded] = React.useState<boolean>(true)
-    const onExpanded = () => setExpanded(!expanded)
+    const handleExpand = () => setExpanded(!expanded)
     const history = useHistory();
     // TODO: Mobile version
     // const isMobile = useIsMobile();
@@ -74,7 +73,6 @@ export const NavigationController : React.FC<NavigationControllerProps> = ({auth
         doLogout();
     };
 
-
     const {data: navPlanItems, loading, error } = state.allPlans;
 
     if(!authenticated) {
@@ -88,12 +86,7 @@ export const NavigationController : React.FC<NavigationControllerProps> = ({auth
                 open={expanded}
                 variant="permanent"
             >
-                <IconBtnLight onClick={onExpanded}>
-                    <Menu/>
-                </IconBtnLight>
-                <Typography variant="h6" noWrap component="div">
-                    {expanded ? "Food Software" : "BFS"}
-                </Typography>
+                <Logo isExpanded={expanded} onClick={handleExpand} />
                 <Box sx={{overflow: 'auto', flex: 1}}>
                     <Navigation dense>
                         <NavItem
