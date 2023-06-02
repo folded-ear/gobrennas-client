@@ -25,31 +25,26 @@ import {
 import { NavPlanItem } from "features/Navigation/components/NavPlanItem";
 import { colorHash } from "constants/colors";
 import Typography from "@mui/material/Typography";
-import { useLogoutHandler } from "providers/Profile";
-import Dispatcher from "data/dispatcher";
-import PlanActions from "features/Planner/data/PlanActions";
-import { useHistory } from "react-router-dom";
 
-export const DesktopNav = ({expanded, handleExpand, devMode, planItems}) => {
-    const history = useHistory();
-    const handleProfile = e => {
-        e.stopPropagation();
-        history.push("/profile");
-    };
-    const doLogout = useLogoutHandler();
-    const handleLogout = e => {
-        e.preventDefault();
-        e.stopPropagation();
-        doLogout();
-    };
-    const onSelectPlan = id => {
-        history.push("/plan");
-        Dispatcher.dispatch({
-            type: PlanActions.SELECT_PLAN,
-            id: id,
-        });
-    }
+type DesktopNavProps = {
+    planItems: any,
+    handleProfile: (e: React.SyntheticEvent) => void,
+    handleLogout: (e: React.SyntheticEvent) => void,
+    handleSelectPlan: (id: string) => void,
+    handleExpand: () => void,
+    expanded?: boolean,
+    devMode?: boolean
+}
 
+export const DesktopNav: React.FC<DesktopNavProps> = ({
+    planItems,
+    handleExpand,
+    handleProfile,
+    handleLogout,
+    handleSelectPlan,
+    expanded = false,
+    devMode = false,
+}) => {
     return (<>
         <Sidebar
             open={expanded}
@@ -97,7 +92,7 @@ export const DesktopNav = ({expanded, handleExpand, devMode, planItems}) => {
                     {planItems && planItems.map(item => (
                         <NavPlanItem
                             id={item.id}
-                            onSelect={onSelectPlan}
+                            onSelect={handleSelectPlan}
                             expanded={expanded}
                             name={item.name}
                             color={colorHash(item.id)}

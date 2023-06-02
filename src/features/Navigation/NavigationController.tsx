@@ -14,6 +14,10 @@ import useIsDevMode from "data/useIsDevMode";
 import { useIsMobile } from "providers/IsMobile";
 import { MobileNav } from "features/Navigation/components/MobileNav";
 import { DesktopNav } from "features/Navigation/components/DesktopNav";
+import { useHistory } from "react-router-dom";
+import { useLogoutHandler } from "providers/Profile";
+import Dispatcher from "data/dispatcher";
+import PlanActions from "features/Planner/data/PlanActions";
 
 type NavigationControllerProps = {
     authenticated: boolean,
@@ -22,9 +26,32 @@ type NavigationControllerProps = {
 
 export const NavigationController: React.FC<NavigationControllerProps> = ({authenticated, children}) => {
     const [expanded, setExpanded] = React.useState<boolean>(true)
-    const handleExpand = () => setExpanded(!expanded)
     const isMobile = useIsMobile();
     const devMode = useIsDevMode();
+    const history = useHistory();
+
+    const handleProfile = e => {
+        e.stopPropagation();
+        history.push("/profile");
+    };
+
+    const handleExpand = () => setExpanded(!expanded)
+
+    const doLogout = useLogoutHandler();
+
+    const handleLogout = e => {
+        e.preventDefault();
+        e.stopPropagation();
+        doLogout();
+    };
+
+    const handleSelectPlan = id => {
+        history.push("/plan");
+        Dispatcher.dispatch({
+            type: PlanActions.SELECT_PLAN,
+            id: id,
+        });
+    }
 
     const getPlans = useFluxStore(
         () => {
@@ -36,12 +63,16 @@ export const NavigationController: React.FC<NavigationControllerProps> = ({authe
     const {data: navPlanItems, loading, error} = getPlans.allPlans;
 
     if (!authenticated) {
-        return (<MainDesktop>{children}</MainDesktop>)
+        return isMobile ? <MainMobile>{children}</MainMobile> : <MainDesktop>{children}</MainDesktop>
     }
 
     if (isMobile) {
         return (<MainMobile>
-            <MobileNav/>
+            <Header elevation={0}/>
+            <MobileNav
+                handleProfile={handleProfile}
+                handleLogout={handleLogout}
+            />
             {children}
         </MainMobile>)
     }
@@ -52,6 +83,9 @@ export const NavigationController: React.FC<NavigationControllerProps> = ({authe
             <Header elevation={0}/>
             <DesktopNav
                 expanded={expanded}
+                handleProfile={handleProfile}
+                handleLogout={handleLogout}
+                handleSelectPlan={handleSelectPlan}
                 handleExpand={handleExpand}
                 devMode={devMode}
                 planItems={navPlanItems}

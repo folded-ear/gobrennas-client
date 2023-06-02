@@ -60,6 +60,6 @@ export const MainDesktop = styled(Container)<ExpandedProps>(({theme, open}) => (
     })
 }))
 
-export const MainMobile = styled(Container)({
-
-})
+export const MainMobile = styled(Container)(({theme}) => ({
+    marginTop: theme.spacing(2),
+}));
