@@ -23,7 +23,7 @@ export const NavPlanItem: React.FC<NavPlanItemProps> = ({onSelect, expanded, nam
     const Icon = active
         ? ActivePlanIcon
         : PlanIcon;
-    return (<ListItemButton onClick={() => onSelect(id)} key={id}>
+    return (<ListItemButton onClick={() => onSelect(id)} title={name}>
         <ListItemIcon>
             <Icon sx={{ color: color }} />
         </ListItemIcon>

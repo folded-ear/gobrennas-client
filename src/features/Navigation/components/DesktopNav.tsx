@@ -110,13 +110,15 @@ export const DesktopNav: React.FC<DesktopNavProps> = ({
             <Box sx={{alignItem: "bottom"}}>
                 <List>
                     <ListItemButton onClick={handleProfile}
+                                    title={"My Account"}
                                     selected={selected === "profile"}>
                         <ListItemIcon>
                             <ProfileIcon/>
                         </ListItemIcon>
                         <ListItemText id="profile" primary="My Account" sx={{whiteSpace: "nowrap"}}/>
                     </ListItemButton>
-                    <ListItemButton onClick={handleLogout}>
+                    <ListItemButton onClick={handleLogout}
+                                    title={"Logout"}>
                         <ListItemIcon>
                             <LogoutIcon/>
                         </ListItemIcon>
