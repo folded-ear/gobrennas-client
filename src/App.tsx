@@ -29,10 +29,12 @@ function App() {
         <StyledEngineProvider injectFirst>
             <ThemeProvider theme={theme}>
                 <CssBaseline/>
-                {authenticated && newVersionAvailable && <NewVersionAvailable/>}
                 <NavigationController
                     authenticated={authenticated}
                 >
+                    {authenticated
+                        && newVersionAvailable
+                        && <NewVersionAvailable />}
                     <RoutingSwitch
                         routes={routes}
                         authenticated={authenticated}
