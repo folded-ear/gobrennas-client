@@ -1,10 +1,19 @@
 import { ListItemButton } from "@mui/material";
-import { NavLink } from "react-router-dom";
+import {
+    NavLink,
+    NavLinkProps
+} from "react-router-dom";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import * as React from "react";
+import { ListItemButtonProps } from "@mui/material/ListItemButton/ListItemButton";
 
-export const NavItem = (props) => {
-    const {icon, title} = props;
+interface NavItemProps extends ListItemButtonProps<any, NavLinkProps> {
+    icon: React.ReactNode
+    title: string
+}
+
+export const NavItem: React.FC<NavItemProps> = (props) => {
+    const { icon, title } = props;
     return (<ListItemButton
         component={NavLink}
         activeStyle={{
