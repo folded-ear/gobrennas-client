@@ -22,7 +22,7 @@ const Pic = styled(Box)(({theme}) => ({
 
 const Info = styled(Box)({
     flex: 1
-})
+});
 
 const ProfileDisplay = styled(Paper)(({theme}) => ({
     display: "flex",
