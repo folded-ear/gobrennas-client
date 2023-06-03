@@ -85,8 +85,6 @@ export const NavigationController: React.FC<NavigationControllerProps> = ({authe
             <Header elevation={0}/>
             <MobileNav
                 selected={selected}
-                handleProfile={handleProfile}
-                handleLogout={handleLogout}
             />
             {children}
         </MainMobile>);

@@ -1,13 +1,11 @@
 import * as React from "react";
 import {
     BottomNavigation,
-    BottomNavigationAction,
     Paper
 } from "@mui/material";
 import {
     AccountCircle as ProfileIcon,
     EventNote as PlanIcon,
-    Logout as LogoutIcon,
     MenuBook as LibraryIcon,
     ShoppingCart as ShopIcon,
 } from "@mui/icons-material";
@@ -23,15 +21,10 @@ const NavWrapper = styled(Paper)(({theme}) => ({
 }));
 
 type MobileNavProps = {
-    selected: string
-    handleProfile: (e: React.SyntheticEvent) => void,
-    handleLogout: (e: React.SyntheticEvent) => void,
+    selected?: string
 }
 
-export const MobileNav: React.FC<MobileNavProps> = ({
-                                                        selected,
-                                                        handleProfile,
-                                                    }) => {
+export const MobileNav: React.FC<MobileNavProps> = ({selected= false}) => {
     return (
         <NavWrapper elevation={3}>
             <BottomNavigation
@@ -61,9 +54,6 @@ export const MobileNav: React.FC<MobileNavProps> = ({
                     icon={<ProfileIcon/>}
                     to="/profile"
                     value="profile"
-                />
-                <BottomNavigationAction
-                    label="Logout" icon={<LogoutIcon/>}
                 />
             </BottomNavigation>
         </NavWrapper>
