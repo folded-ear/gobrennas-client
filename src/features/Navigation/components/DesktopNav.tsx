@@ -91,6 +91,7 @@ export const DesktopNav: React.FC<DesktopNavProps> = ({
                 <Navigation>
                     {planItems && planItems.map(item => (
                         <NavPlanItem
+                            key={item.id}
                             id={item.id}
                             onSelect={handleSelectPlan}
                             expanded={expanded}
