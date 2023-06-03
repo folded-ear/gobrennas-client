@@ -14,12 +14,13 @@ import {
 import { styled } from "@mui/material/styles";
 import { MobileNavItem } from "features/Navigation/components/MobileNavItem";
 
-const NavWrapper = styled(Paper)({
+const NavWrapper = styled(Paper)(({theme}) => ({
     position: 'fixed',
     left: 0,
     right: 0,
     bottom: 0,
-})
+    zIndex: theme.zIndex.appBar
+}))
 
 type MobileNavProps = {
     handleProfile: (e: React.SyntheticEvent) => void,
@@ -33,7 +34,7 @@ export const MobileNav : React.FC<MobileNavProps> = ({handleProfile}) => {
     }
 
     return (
-        <NavWrapper>
+        <NavWrapper elevation={3}>
             <BottomNavigation
                 showLabels
                 value={selected}
