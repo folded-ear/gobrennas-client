@@ -60,7 +60,7 @@ export const NavigationController: React.FC<NavigationControllerProps> = ({authe
         },
         [planStore]
     );
-    const {data: navPlanItems, loading, error} = getPlans.allPlans;
+    const { data: navPlanItems } = getPlans.allPlans;
 
     if (!authenticated) {
         return isMobile ? <MainMobile>{children}</MainMobile> : <MainDesktop>{children}</MainDesktop>;
