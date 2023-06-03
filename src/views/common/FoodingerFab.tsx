@@ -1,15 +1,18 @@
 import Fab from "@mui/material/Fab";
-import { makeStyles } from "@mui/styles";
 import React, { PropsWithChildren } from "react";
 import dispatcher from "../../data/dispatcher";
 import UiActions from "../../data/UiActions";
+import { styled } from "@mui/material/styles";
+import { useIsMobile } from "providers/IsMobile";
 
-const useStyles = makeStyles(theme => ({
-    root: {
-        position: "fixed",
-        bottom: theme.spacing(3),
-        right: theme.spacing(3),
-    },
+type AddFabProps = {
+    isMobile?: boolean
+}
+
+const AddFab = styled(Fab)<AddFabProps>(({theme, isMobile}) => ({
+    position: "fixed",
+    bottom: isMobile ? theme.spacing(8) : theme.spacing(3),
+    right: theme.spacing(4),
 }));
 
 type Props = PropsWithChildren<any>;
@@ -18,7 +21,7 @@ const FoodingerFab: React.FC<Props> = ({
                                            children,
                                            ...props
                                        }) => {
-    const classes = useStyles();
+    const isMobile = useIsMobile();
     React.useEffect(() => {
         setTimeout(() => dispatcher.dispatch({
             type: UiActions.SHOW_FAB,
@@ -29,14 +32,14 @@ const FoodingerFab: React.FC<Props> = ({
             }));
         };
     }, []);
-    return <Fab
+    return <AddFab
+        isMobile={isMobile}
         color="primary"
-        className={classes.root}
         aria-label="add"
         {...props}
     >
         {children}
-    </Fab>;
+    </AddFab>;
 };
 
 export default FoodingerFab;
