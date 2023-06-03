@@ -1,5 +1,8 @@
 import * as React from "react";
-import { ReactNode } from "react";
+import {
+    ReactNode,
+    useEffect
+} from "react";
 import CssBaseline from "@mui/material/CssBaseline";
 import {
     Header,
@@ -18,6 +21,7 @@ import { useHistory } from "react-router-dom";
 import { useLogoutHandler } from "providers/Profile";
 import Dispatcher from "data/dispatcher";
 import PlanActions from "features/Planner/data/PlanActions";
+import RouteStore from "../../data/RouteStore";
 
 type NavigationControllerProps = {
     authenticated: boolean,
@@ -29,6 +33,16 @@ export const NavigationController: React.FC<NavigationControllerProps> = ({authe
     const isMobile = useIsMobile();
     const devMode = useIsDevMode();
     const history = useHistory();
+    const [ selected, setSelected ] = React.useState("");
+
+    const path = useFluxStore(() => {
+            const state = RouteStore.getState();
+            return state ? state.path : "/library";
+        },
+        [ RouteStore ]);
+    useEffect(() => {
+        setSelected(path.split("/")[1]);
+    }, [ path ]);
 
     const handleProfile = e => {
         e.stopPropagation();
@@ -70,6 +84,7 @@ export const NavigationController: React.FC<NavigationControllerProps> = ({authe
         return (<MainMobile>
             <Header elevation={0}/>
             <MobileNav
+                selected={selected}
                 handleProfile={handleProfile}
                 handleLogout={handleLogout}
             />
@@ -82,6 +97,7 @@ export const NavigationController: React.FC<NavigationControllerProps> = ({authe
             <CssBaseline/>
             <Header elevation={0}/>
             <DesktopNav
+                selected={selected}
                 expanded={expanded}
                 handleProfile={handleProfile}
                 handleLogout={handleLogout}

@@ -23,22 +23,20 @@ const NavWrapper = styled(Paper)(({theme}) => ({
 }));
 
 type MobileNavProps = {
+    selected: string
     handleProfile: (e: React.SyntheticEvent) => void,
     handleLogout: (e: React.SyntheticEvent) => void,
 }
 
-export const MobileNav : React.FC<MobileNavProps> = ({handleProfile}) => {
-    const [ selected, setSelected ] = React.useState("library");
-    const onChange = (_, newValue) => {
-        setSelected(newValue);
-    };
-
+export const MobileNav: React.FC<MobileNavProps> = ({
+                                                        selected,
+                                                        handleProfile,
+                                                    }) => {
     return (
         <NavWrapper elevation={3}>
             <BottomNavigation
                 showLabels
                 value={selected}
-                onChange={onChange}
             >
                 <MobileNavItem
                     title="Library"
@@ -58,10 +56,11 @@ export const MobileNav : React.FC<MobileNavProps> = ({handleProfile}) => {
                     to="/shop"
                     value="shop"
                 />
-                <BottomNavigationAction
-                    label="Profile"
+                <MobileNavItem
+                    title="Profile"
                     icon={<ProfileIcon/>}
-                    onClick={handleProfile}
+                    to="/profile"
+                    value="profile"
                 />
                 <BottomNavigationAction
                     label="Logout" icon={<LogoutIcon/>}

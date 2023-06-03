@@ -27,6 +27,7 @@ import { colorHash } from "constants/colors";
 import Typography from "@mui/material/Typography";
 
 type DesktopNavProps = {
+    selected: string,
     planItems: any,
     handleProfile: (e: React.SyntheticEvent) => void,
     handleLogout: (e: React.SyntheticEvent) => void,
@@ -37,6 +38,7 @@ type DesktopNavProps = {
 }
 
 export const DesktopNav: React.FC<DesktopNavProps> = ({
+                                                          selected,
     planItems,
     handleExpand,
     handleProfile,
@@ -58,24 +60,28 @@ export const DesktopNav: React.FC<DesktopNavProps> = ({
                         value="library"
                         icon={<LibraryIcon />}
                         title="Library"
+                        selected={selected === "library"}
                     />
                     <NavItem
                         to="/plan"
                         value="plan"
                         icon={<PlanIcon />}
                         title="Plan"
+                        selected={selected === "plan"}
                     />
                     <NavItem
                         to="/shop"
                         value="shop"
                         icon={<ShopIcon />}
                         title="Shop"
+                        selected={selected === "shop"}
                     />
                     {devMode && <NavItem
                         to="/pantry"
                         value="pantry"
                         icon={<PantryIcon />}
                         title="Pantry"
+                        selected={selected === "pantry"}
                     />}
                     {/*<NavItem*/}
                     {/*    to="/timers"*/}
@@ -103,7 +109,8 @@ export const DesktopNav: React.FC<DesktopNavProps> = ({
             </Box>
             <Box sx={{alignItem: "bottom"}}>
                 <List>
-                    <ListItemButton onClick={handleProfile}>
+                    <ListItemButton onClick={handleProfile}
+                                    selected={selected === "profile"}>
                         <ListItemIcon>
                             <ProfileIcon/>
                         </ListItemIcon>

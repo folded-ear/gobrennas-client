@@ -1,4 +1,4 @@
-import { ListItemButton } from "@mui/material";
+import { ListItemButton, } from "@mui/material";
 import {
     NavLink,
     NavLinkProps
@@ -16,10 +16,6 @@ export const NavItem: React.FC<NavItemProps> = (props) => {
     const { icon, title } = props;
     return (<ListItemButton
         component={NavLink}
-        activeStyle={{
-            fontWeight: "bold",
-            color: "black"
-        }}
         {...props}
     >
         <ListItemIcon>
