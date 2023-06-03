@@ -28,7 +28,6 @@ export const SubHeader: React.FC<PropsWithChildren> = ({ children }) => {
         style={{height}}
     >
         <Box
-            boxShadow={trigger ? 6 : 0}
             ref={inner}
             style={trigger ? {
                 position: "fixed",
