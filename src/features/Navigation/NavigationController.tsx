@@ -1,6 +1,6 @@
-import * as React from 'react';
-import { ReactNode } from 'react';
-import CssBaseline from '@mui/material/CssBaseline';
+import * as React from "react";
+import { ReactNode } from "react";
+import CssBaseline from "@mui/material/CssBaseline";
 import {
     Header,
     MainDesktop,
@@ -25,7 +25,7 @@ type NavigationControllerProps = {
 }
 
 export const NavigationController: React.FC<NavigationControllerProps> = ({authenticated, children}) => {
-    const [expanded, setExpanded] = React.useState<boolean>(true)
+    const [ expanded, setExpanded ] = React.useState<boolean>(true);
     const isMobile = useIsMobile();
     const devMode = useIsDevMode();
     const history = useHistory();
@@ -35,7 +35,7 @@ export const NavigationController: React.FC<NavigationControllerProps> = ({authe
         history.push("/profile");
     };
 
-    const handleExpand = () => setExpanded(!expanded)
+    const handleExpand = () => setExpanded(!expanded);
 
     const doLogout = useLogoutHandler();
 
@@ -51,19 +51,19 @@ export const NavigationController: React.FC<NavigationControllerProps> = ({authe
             type: PlanActions.SELECT_PLAN,
             id: id,
         });
-    }
+    };
 
     const getPlans = useFluxStore(
         () => {
             const allPlans = ripLoadObject(planStore.getPlansLO());
-            return {allPlans}
+            return { allPlans };
         },
         [planStore]
-    )
+    );
     const {data: navPlanItems, loading, error} = getPlans.allPlans;
 
     if (!authenticated) {
-        return isMobile ? <MainMobile>{children}</MainMobile> : <MainDesktop>{children}</MainDesktop>
+        return isMobile ? <MainMobile>{children}</MainMobile> : <MainDesktop>{children}</MainDesktop>;
     }
 
     if (isMobile) {
@@ -74,7 +74,7 @@ export const NavigationController: React.FC<NavigationControllerProps> = ({authe
                 handleLogout={handleLogout}
             />
             {children}
-        </MainMobile>)
+        </MainMobile>);
     }
 
     return (
@@ -95,4 +95,4 @@ export const NavigationController: React.FC<NavigationControllerProps> = ({authe
             </MainDesktop>
         </FlexBox>
     );
-}
+};

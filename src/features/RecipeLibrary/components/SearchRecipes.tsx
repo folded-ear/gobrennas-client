@@ -90,5 +90,5 @@ export const SearchRecipes: React.FC<SearchRecipesProps> = (
                 />
             </Toolbar>
         </SearchRecipesContainer>
-    )
-}
+    );
+};

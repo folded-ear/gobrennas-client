@@ -26,9 +26,9 @@ export const planColors = [
 
 const ensureInt = (id: number | string) => {
     if (typeof id == "number") {
-        return id
+        return id;
     }
     return parseInt(id, 10);
-}
+};
 
-export const colorHash = (id: number | string) => planColors[ensureInt(id) % planColors.length]
+export const colorHash = (id: number | string) => planColors[ensureInt(id) % planColors.length];

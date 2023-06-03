@@ -15,12 +15,12 @@ import { styled } from "@mui/material/styles";
 import { MobileNavItem } from "features/Navigation/components/MobileNavItem";
 
 const NavWrapper = styled(Paper)(({theme}) => ({
-    position: 'fixed',
+    position: "fixed",
     left: 0,
     right: 0,
     bottom: 0,
     zIndex: theme.zIndex.appBar
-}))
+}));
 
 type MobileNavProps = {
     handleProfile: (e: React.SyntheticEvent) => void,
@@ -28,10 +28,10 @@ type MobileNavProps = {
 }
 
 export const MobileNav : React.FC<MobileNavProps> = ({handleProfile}) => {
-    const [selected, setSelected] = React.useState("library")
+    const [ selected, setSelected ] = React.useState("library");
     const onChange = (_, newValue) => {
-        setSelected(newValue)
-    }
+        setSelected(newValue);
+    };
 
     return (
         <NavWrapper elevation={3}>
@@ -68,5 +68,5 @@ export const MobileNav : React.FC<MobileNavProps> = ({handleProfile}) => {
                 />
             </BottomNavigation>
         </NavWrapper>
-    )
-}
+    );
+};

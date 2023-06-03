@@ -22,5 +22,5 @@ export const NavPlanItem: React.FC<NavPlanItemProps> = ({onSelect, expanded, nam
         <Typography noWrap>
             {expanded ? name : null}
         </Typography>
-    </ListItemButton>)
-}
+    </ListItemButton>);
+};

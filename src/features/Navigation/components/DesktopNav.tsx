@@ -4,7 +4,6 @@ import {
     Sidebar
 } from "features/Navigation/components/Navigation.elements";
 import { Logo } from "features/Navigation/components/Logo";
-import Box from "@mui/material/Box";
 import { NavItem } from "features/Navigation/components/NavItem";
 import {
     AccountCircle as ProfileIcon,
@@ -16,6 +15,7 @@ import {
 } from "@mui/icons-material";
 import Divider from "@mui/material/Divider";
 import {
+    Box,
     List,
     ListItemButton,
     ListItemIcon,
@@ -51,7 +51,7 @@ export const DesktopNav: React.FC<DesktopNavProps> = ({
             variant="permanent"
         >
             <Logo isExpanded={expanded} onClick={handleExpand} />
-            <Box sx={{overflow: 'auto', flex: 1}}>
+            <Box sx={{ overflow: "auto", flex: 1 }}>
                 <Navigation dense>
                     <NavItem
                         to="/library"
@@ -119,5 +119,5 @@ export const DesktopNav: React.FC<DesktopNavProps> = ({
                 </List>
             </Box>
         </Sidebar>
-    </>)
-}
+    </>);
+};

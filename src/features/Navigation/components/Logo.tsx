@@ -18,13 +18,13 @@ const LogoWrapper = styled(Box)(({theme}) => ({
     display: "flex",
     padding: theme.spacing(1),
     alignContent: "space-between",
-}))
+}));
 
 const LogoText = styled("div")(({theme}) => ({
     flex: 1,
     paddingTop: theme.spacing(1),
     whiteSpace: "nowrap",
-}))
+}));
 
 export const Logo: React.FC<LogoProps> = ({isExpanded, onClick}) => (<LogoWrapper>
         <IconButton onClick={onClick}>
@@ -34,4 +34,4 @@ export const Logo: React.FC<LogoProps> = ({isExpanded, onClick}) => (<LogoWrappe
             {isExpanded ? "Food Software" : null}
         </LogoText>
     </LogoWrapper>
-)
+);
