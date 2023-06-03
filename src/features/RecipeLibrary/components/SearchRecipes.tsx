@@ -39,7 +39,11 @@ export const SearchRecipes: React.FC<SearchRecipesProps> = (
         toggleScope,
     }) => {
     return (
-        <SearchRecipesContainer elevation={isSearchFloating ? 4 : 1} position="sticky">
+        <SearchRecipesContainer
+            elevation={isSearchFloating ? 4 : 1}
+            position="sticky"
+            color="secondary"
+        >
             <Toolbar>
                 <InputBase
                     value={unsavedFilter}
