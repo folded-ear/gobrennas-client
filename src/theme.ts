@@ -3,12 +3,14 @@ import {
     responsiveFontSizes,
     Theme,
 } from "@mui/material/styles";
+import { IS_BETA } from "./constants";
+import { blue } from "@mui/material/colors";
 
-let theme : Theme = createTheme({
+let theme: Theme = createTheme({
     palette: {
         primary: {
             light: "#f9683a",
-            main: "#F57F17",
+            main: IS_BETA ? blue["A700"] : "#F57F17",
             dark: "#870000",
             contrastText: "#FFFDE7",
         },

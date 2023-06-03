@@ -1,9 +1,11 @@
-export const APP_BASE_URL = process.env.NODE_ENV === "development"
-    ? "http://localhost:3001"
-    : "https://gobrennas.com";
+export const APP_BASE_URL = window.location.origin;
 export const API_BASE_URL = process.env.NODE_ENV === "development"
     ? "http://localhost:8080"
     : "https://api.gobrennas.com";
+export const IS_DEV = APP_BASE_URL.includes("localhost")
+    || API_BASE_URL.includes("localhost");
+export const IS_BETA = APP_BASE_URL.includes("beta")
+    || API_BASE_URL.includes("beta");
 export const API_IS_SECURE = API_BASE_URL.indexOf("https:") === 0;
 export const COOKIE_AUTH_TOKEN = "FTOKEN";
 export const LOCAL_STORAGE_ACCESS_TOKEN = "accessToken";

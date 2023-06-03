@@ -6,6 +6,7 @@ import {
     Typography,
 } from "@mui/material";
 import { useIsMobile } from "providers/IsMobile";
+import { APP_BASE_URL } from "../constants";
 
 function Foodinger() {
     const mobile = useIsMobile();
@@ -18,14 +19,14 @@ function Foodinger() {
                     </Typography>
                     <Typography paragraph>
                         Foodinger is now <a
-                        href="https://gobrennas.com">Brenna&apos;s Food
+                        href={APP_BASE_URL}>Brenna&apos;s Food
                         Software</a>. Your recipes and plans are here, already
                         waiting for you.
                     </Typography>
                     {mobile
                         ? <Typography paragraph>
                             Open <a
-                            href="https://gobrennas.com">gobrennas.com</a> in
+                            href={APP_BASE_URL}>gobrennas.com</a> in
                             your mobile browser, install the new app, and delete
                             this one. That&apos;s it.
                         </Typography>
