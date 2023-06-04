@@ -1,5 +1,4 @@
 import * as React from "react";
-import Button from "@mui/material/Button";
 import {
     API_BASE_URL,
     API_IS_SECURE,
@@ -8,6 +7,10 @@ import {
 import { LockOpen } from "@mui/icons-material";
 import qs from "qs";
 import { useAuthToken } from "providers/AuthToken";
+import {
+    Button,
+    Typography
+} from "@mui/material";
 
 export const CookThis = () => {
     const cookThisRef = React.useRef<HTMLLinkElement>(null);
@@ -22,7 +25,10 @@ export const CookThis = () => {
     }, [ token ]);
 
     return (<>
-        <h2 id="cook-this">Cook This!</h2>
+        <Typography variant={"h2"}
+                    id={"cook-this"}>
+            Cook This!
+        </Typography>
         <p>&quot;Cook This!&quot; helps import recipes into Brenna&apos;s
             Food Software. Drag it to your bookmarks bar, and then click it
             when viewing a recipe online.

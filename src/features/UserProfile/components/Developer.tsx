@@ -12,6 +12,7 @@ const dateTimeStamp = preval`module.exports = new Date().toISOString();`;
 const DevMode: React.FC = () => {
     const windowSize = useWindowSize();
     return <React.Fragment>
+        <Divider />
         <p>
             Window: {windowSize.width}x{windowSize.height}
         </p>
@@ -31,8 +32,7 @@ export const Developer: React.FC = () => {
         });
     };
 
-    return <React.Fragment>
-        <Divider />
+    return <>
         Dev Mode:
         {" "}
         <Switch
@@ -41,5 +41,5 @@ export const Developer: React.FC = () => {
             color="primary"
         />
         {isDevMode && <DevMode />}
-    </React.Fragment>;
+    </>;
 };
