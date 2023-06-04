@@ -1,15 +1,20 @@
-import { styled } from "@mui/material/styles";
+import {
+    CSSObject,
+    styled
+} from "@mui/material/styles";
 import {
     AppBar,
     Container,
     ContainerProps,
     Drawer,
-    List
+    List,
+    ListItemIconProps
 } from "@mui/material";
+import ListItemIcon from "@mui/material/ListItemIcon";
+import * as React from "react";
 
 export const TOP_MARGIN = 20;
-const drawerWidthOpen = 240;
-const drawerWidthClosed = 58;
+const drawerWidth = 240;
 
 export const Header = styled(AppBar)(({theme}) => ({
     zIndex: theme.zIndex.drawer + 10,
@@ -17,20 +22,44 @@ export const Header = styled(AppBar)(({theme}) => ({
     height: 5,
 }));
 
-export const Sidebar = styled(Drawer, { shouldForwardProp: (prop) => prop !== "open" })(
-        ({theme, open}) => ({
-            // open ? openedMixin(theme) : closedMixin(theme),
-            "& .MuiDrawer-paper": {
-        width: open ? drawerWidthOpen : drawerWidthClosed,
-        borderRightWidth: 0,
-                overflowX: "hidden",
-                height: "100%",
-                transition: theme.transitions.create("width", {
-            easing: theme.transitions.easing.sharp,
-            duration: open? theme.transitions.duration.leavingScreen : theme.transitions.duration.enteringScreen,
+const openedMixin = (theme): CSSObject => ({
+    width: drawerWidth,
+    transition: theme.transitions.create("width", {
+        easing: theme.transitions.easing.sharp,
+        duration: theme.transitions.duration.enteringScreen,
+    }),
+    overflowX: "hidden",
+});
+
+const closedMixin = (theme): CSSObject => ({
+    transition: theme.transitions.create("width", {
+        easing: theme.transitions.easing.sharp,
+        duration: theme.transitions.duration.leavingScreen,
+    }),
+    overflowX: "hidden",
+    width: `calc(${theme.spacing(7)} + 1px)`,
+    [theme.breakpoints.up("sm")]: {
+        width: `calc(${theme.spacing(8)} + 1px)`,
+    },
+});
+
+export const Sidebar = styled(Drawer, {
+    shouldForwardProp: (prop) => prop !== "open",
+})(
+    ({ theme, open }): CSSObject => ({
+        width: drawerWidth,
+        flexShrink: 0,
+        whiteSpace: "nowrap",
+        boxSizing: "border-box",
+        ...(open && {
+            ...openedMixin(theme),
+            "& .MuiDrawer-paper": openedMixin(theme),
         }),
-    }
-        }));
+        ...(!open && {
+            ...closedMixin(theme),
+            "& .MuiDrawer-paper": closedMixin(theme),
+        }),
+    }));
 
 export const Navigation = styled(List)({
     backgroundColor: "transparent"
@@ -42,24 +71,25 @@ interface ExpandedProps extends ContainerProps {
 
 export const MainDesktop = styled(Container)<ExpandedProps>(({theme, open}) => ({
     marginTop: TOP_MARGIN,
-    ...(open && {
-        marginLeft: drawerWidthOpen,
-        width: `calc(100% - ${drawerWidthOpen}px)`,
-        transition: theme.transitions.create([ "width", "margin" ], {
-            easing: theme.transitions.easing.sharp,
-            duration: theme.transitions.duration.enteringScreen,
-        }),
-    }),
-    ...(!open && {
-        marginLeft: drawerWidthClosed,
-        width: `calc(100% - ${drawerWidthClosed}px)`,
-        transition: theme.transitions.create([ "width", "margin" ], {
-            easing: theme.transitions.easing.sharp,
-            duration: theme.transitions.duration.enteringScreen,
-        }),
-    })
 }));
 
 export const MainMobile = styled(Container)(({theme}) => ({
     marginTop: theme.spacing(2),
 }));
+
+interface ItemIconProps extends ListItemIconProps {
+    open: ExpandedProps["open"]
+}
+
+export const ItemIcon: React.FC<ItemIconProps> = (props) => {
+    const { open, sx, children } = props;
+    return <ListItemIcon
+        sx={{
+            minWidth: 0,
+            mr: open ? 3 : "auto",
+            justifyContent: "center",
+            ...sx,
+        }}>
+        {children}
+    </ListItemIcon>;
+};
