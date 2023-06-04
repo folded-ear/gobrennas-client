@@ -1,10 +1,8 @@
-import Divider from "@mui/material/Divider";
 import React from "react";
 import {
     useIsDeveloper,
     useLogoutHandler
 } from "providers/Profile";
-import PageBody from "../common/PageBody";
 import User from "./User";
 import { CookThis } from "features/UserProfile/components/CookThis";
 import { Developer } from "features/UserProfile/components/Developer";
@@ -12,21 +10,19 @@ import { UserType } from "global/types/types";
 import {
     Box,
     Button,
-    Paper
+    Container,
+    Grid,
+    Paper,
+    Typography
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
-
-const Pic = styled(Box)(({theme}) => ({
-    padding: theme.spacing(1)
-}));
 
 const Info = styled(Box)({
     flex: 1
 });
 
 const ProfileDisplay = styled(Paper)(({theme}) => ({
-    display: "flex",
-    padding: theme.spacing(1)
+    padding: theme.spacing(2)
 }));
 
 interface Props {
@@ -45,27 +41,41 @@ const Profile: React.FC<Props> = ({
         doLogout();
     };
 
-    return <PageBody>
-        <ProfileDisplay>
-            <Pic>
-                {user.imageUrl && <img
-                    src={user.imageUrl}
-                    alt={user.name || user.email || undefined}
-                    title="Holy moley, you're attractive!"
-                />}
-            </Pic>
-            <Info>
-                <h2>{user.name}</h2>
-                <p className="profile-email">{user.email}</p>
-                <Button onClick={handleLogout} variant="outlined">Logout</Button>
-            </Info>
-        </ProfileDisplay>
-        <Divider />
-        <CookThis />
-        <Divider />
-        <div><User {...user} /></div>
-        {isDeveloper && <Developer />}
-    </PageBody>;
+    return <Container>
+        <Grid container gap={2} direction={"column"}>
+            <ProfileDisplay>
+                <Grid container gap={1}>
+                    <Box>
+                        {user.imageUrl && <img
+                            src={user.imageUrl}
+                            alt={user.name || user.email || undefined}
+                            title="Holy moley, you're attractive!"
+                        />}
+                    </Box>
+                    <Info>
+                        <Typography variant={"h2"}>
+                            {user.name}
+                        </Typography>
+                        <Typography>
+                            {user.email}
+                        </Typography>
+                    </Info>
+                    <div>
+                        <Button onClick={handleLogout} variant="outlined">Logout</Button>
+                    </div>
+                </Grid>
+            </ProfileDisplay>
+            <ProfileDisplay>
+                <CookThis />
+            </ProfileDisplay>
+            <ProfileDisplay>
+                <User {...user} />
+            </ProfileDisplay>
+            <ProfileDisplay>
+                {isDeveloper && <Developer />}
+            </ProfileDisplay>
+        </Grid>
+    </Container>;
 };
 
 export default Profile;

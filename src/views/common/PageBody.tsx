@@ -11,7 +11,7 @@ const useStyles = makeStyles(theme => ({
         paddingBottom: theme.spacing(2),
     },
     hasFab: {
-        paddingBottom: "6em",
+        paddingBottom: theme.spacing(7),
     }
 }));
 
