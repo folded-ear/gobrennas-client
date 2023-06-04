@@ -1,6 +1,5 @@
 import React from "react";
 import {Redirect} from "react-router-dom";
-import {LibraryController as Library} from "features/RecipeLibrary/LibraryController";
 import {PlannerController as Planner} from "features/Planner/PlannerController";
 import PlannedBucketController from "./features/RecipeDisplay/PlannedBucketController";
 import PlannedRecipeController from "./features/RecipeDisplay/PlannedRecipeController";
@@ -15,6 +14,7 @@ import {UserProfileView} from "views/UserProfile/UserProfileView";
 import Profile from "./views/user/Profile";
 import Foodinger from "views/Foodinger";
 import {RecipeAddController} from "./features/RecipeEdit/RecipeAddController";
+import {Library} from "views/Library";
 
 const routes = {
     public: [
