@@ -72,10 +72,13 @@ interface ExpandedProps extends ContainerProps {
 
 export const MainDesktop = styled(Container)<ExpandedProps>(({theme, open}) => ({
     marginTop: TOP_MARGIN,
+    marginBottom: theme.spacing(1),
 }));
 
 export const MainMobile = styled(Container)(({theme}) => ({
-    marginTop: theme.spacing(2),
+    marginTop: theme.spacing(1),
+    marginBottom: theme.spacing(8),
+    padding: 0,
 }));
 
 export const Subheader = styled(ListSubheader)(({ theme }) => ({

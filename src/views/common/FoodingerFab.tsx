@@ -13,8 +13,8 @@ const AddFab = styled(Fab, {
     shouldForwardProp: (prop) => prop !== "isMobile",
 })<AddFabProps>(({ theme, isMobile }) => ({
     position: "fixed",
-    bottom: isMobile ? theme.spacing(8) : theme.spacing(3),
-    right: theme.spacing(4),
+    bottom: isMobile ? theme.spacing(8) : theme.spacing(1),
+    right: isMobile ? theme.spacing(1) : theme.spacing(4),
 }));
 
 type Props = PropsWithChildren<any>;
