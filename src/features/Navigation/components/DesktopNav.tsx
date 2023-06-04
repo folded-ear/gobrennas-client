@@ -1,5 +1,6 @@
 import * as React from "react";
 import {
+    ItemIcon,
     Navigation,
     Sidebar
 } from "features/Navigation/components/Navigation.elements";
@@ -13,18 +14,15 @@ import {
     MenuBook as LibraryIcon,
     ShoppingCart as ShopIcon
 } from "@mui/icons-material";
-import Divider from "@mui/material/Divider";
 import {
     Box,
     List,
     ListItemButton,
-    ListItemIcon,
-    ListItemText,
-    ListSubheader
+    ListSubheader,
+    Typography
 } from "@mui/material";
 import { NavPlanItem } from "features/Navigation/components/NavPlanItem";
 import { colorHash } from "constants/colors";
-import Typography from "@mui/material/Typography";
 
 type DesktopNavProps = {
     selected: string,
@@ -39,27 +37,29 @@ type DesktopNavProps = {
 
 export const DesktopNav: React.FC<DesktopNavProps> = ({
                                                           selected,
-    planItems,
-    handleExpand,
-    handleProfile,
-    handleLogout,
-    handleSelectPlan,
-    expanded = false,
-    devMode = false,
-}) => {
+                                                          planItems,
+                                                          handleExpand,
+                                                          handleProfile,
+                                                          handleLogout,
+                                                          handleSelectPlan,
+                                                          expanded = false,
+                                                          devMode = false,
+                                                      }) => {
     return (<>
         <Sidebar
             open={expanded}
             variant="permanent"
         >
-            <Logo isExpanded={expanded} onClick={handleExpand} />
             <Box sx={{ overflow: "auto", flex: 1 }}>
                 <Navigation dense>
+                    <Logo expanded={expanded}
+                          onClick={handleExpand} />
                     <NavItem
                         to="/library"
                         value="library"
                         icon={<LibraryIcon />}
                         title="Library"
+                        expanded={expanded}
                         selected={selected === "library"}
                     />
                     <NavItem
@@ -67,6 +67,7 @@ export const DesktopNav: React.FC<DesktopNavProps> = ({
                         value="plan"
                         icon={<PlanIcon />}
                         title="Plan"
+                        expanded={expanded}
                         selected={selected === "plan"}
                     />
                     <NavItem
@@ -74,6 +75,7 @@ export const DesktopNav: React.FC<DesktopNavProps> = ({
                         value="shop"
                         icon={<ShopIcon />}
                         title="Shop"
+                        expanded={expanded}
                         selected={selected === "shop"}
                     />
                     {devMode && <NavItem
@@ -81,6 +83,7 @@ export const DesktopNav: React.FC<DesktopNavProps> = ({
                         value="pantry"
                         icon={<PantryIcon />}
                         title="Pantry"
+                        expanded={expanded}
                         selected={selected === "pantry"}
                     />}
                     {/*<NavItem*/}
@@ -88,13 +91,11 @@ export const DesktopNav: React.FC<DesktopNavProps> = ({
                     {/*    value="timers"*/}
                     {/*    icon={<TimerIcon/>}*/}
                     {/*    title="Timers"*/}
+                    {/*    expanded={expanded}*/}
                     {/*/>*/}
-                </Navigation>
-                <Divider/>
-                <ListSubheader component="div" id="nested-list-subheader">
-                    Plans
-                </ListSubheader>
-                <Navigation>
+                    <ListSubheader component="div" id="nested-list-subheader">
+                        Plans
+                    </ListSubheader>
                     {planItems && planItems.map(item => (
                         <NavPlanItem
                             key={item.id}
@@ -107,23 +108,25 @@ export const DesktopNav: React.FC<DesktopNavProps> = ({
                     ))}
                 </Navigation>
             </Box>
-            <Box sx={{alignItem: "bottom"}}>
+            <Box sx={{ alignItem: "bottom" }}>
                 <List>
                     <ListItemButton onClick={handleProfile}
                                     title={"My Account"}
                                     selected={selected === "profile"}>
-                        <ListItemIcon>
-                            <ProfileIcon/>
-                        </ListItemIcon>
-                        <ListItemText id="profile" primary="My Account" sx={{whiteSpace: "nowrap"}}/>
+                        <ItemIcon open={expanded}>
+                            <ProfileIcon />
+                        </ItemIcon>
+                        <Typography noWrap>
+                            {expanded ? "My Account" : null}
+                        </Typography>
                     </ListItemButton>
                     <ListItemButton onClick={handleLogout}
                                     title={"Logout"}>
-                        <ListItemIcon>
-                            <LogoutIcon/>
-                        </ListItemIcon>
+                        <ItemIcon open={expanded}>
+                            <LogoutIcon />
+                        </ItemIcon>
                         <Typography noWrap>
-                            Logout
+                            {expanded ? "Logout" : null}
                         </Typography>
                     </ListItemButton>
                 </List>

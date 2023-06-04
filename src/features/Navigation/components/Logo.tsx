@@ -3,35 +3,47 @@ import {
     Menu as MenuClosedIcon,
     MenuOpen as MenuOpenIcon,
 } from "@mui/icons-material";
-import {
-    Box,
-    IconButton
-} from "@mui/material";
+import { ListItemButton } from "@mui/material";
 import { styled } from "@mui/material/styles";
+import { ItemIcon } from "./Navigation.elements";
 
 type LogoProps = {
-    isExpanded: boolean
+    expanded: boolean
     onClick: () => void
 }
 
-const LogoWrapper = styled(Box)(({theme}) => ({
-    display: "flex",
-    padding: theme.spacing(1),
-    alignContent: "space-between",
-}));
-
 const LogoText = styled("div")(({theme}) => ({
-    flex: 1,
-    paddingTop: theme.spacing(1),
     whiteSpace: "nowrap",
+    fontSize: "120%",
+    position: "relative",
 }));
 
-export const Logo: React.FC<LogoProps> = ({isExpanded, onClick}) => (<LogoWrapper>
-        <IconButton onClick={onClick}>
-            {isExpanded ? <MenuOpenIcon/> : <MenuClosedIcon/>}
-        </IconButton>
-        <LogoText>
-            {isExpanded ? "Food Software" : null}
-        </LogoText>
-    </LogoWrapper>
+const B = styled("span")(({ theme }) => ({
+    transform: "scaleX(-1)",
+    display: "inline-block",
+    color: theme.palette.primary.main,
+    position: "absolute",
+    right: "100%",
+}));
+
+export const Logo: React.FC<LogoProps> = ({ expanded, onClick }) => (
+    <ListItemButton
+        onClick={onClick}
+    >
+        <ItemIcon
+            open={expanded}
+            sx={{
+                py: 1,
+            }}>
+            {expanded
+                ? <MenuOpenIcon />
+                : <MenuClosedIcon />}
+        </ItemIcon>
+        {expanded
+            ? <LogoText>
+                <B>B</B>
+                Food Software
+            </LogoText>
+            : null}
+    </ListItemButton>
 );

@@ -5,10 +5,10 @@ import {
 import * as React from "react";
 import {
     ListItemButton,
-    ListItemIcon,
     Typography
 } from "@mui/material";
 import useActivePlanner from "../../../data/useActivePlanner";
+import { ItemIcon } from "./Navigation.elements";
 
 type NavPlanItemProps = {
     id: string | number,
@@ -24,9 +24,9 @@ export const NavPlanItem: React.FC<NavPlanItemProps> = ({onSelect, expanded, nam
         ? ActivePlanIcon
         : PlanIcon;
     return (<ListItemButton onClick={() => onSelect(id)} title={name}>
-        <ListItemIcon>
+        <ItemIcon open={expanded}>
             <Icon sx={{ color: color }} />
-        </ListItemIcon>
+        </ItemIcon>
         <Typography noWrap>
             {expanded ? name : null}
         </Typography>

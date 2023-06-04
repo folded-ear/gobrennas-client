@@ -3,24 +3,25 @@ import {
     NavLink,
     NavLinkProps
 } from "react-router-dom";
-import ListItemIcon from "@mui/material/ListItemIcon";
 import * as React from "react";
 import { ListItemButtonProps } from "@mui/material/ListItemButton/ListItemButton";
+import { ItemIcon } from "./Navigation.elements";
 
 interface NavItemProps extends ListItemButtonProps<any, NavLinkProps> {
+    expanded: boolean
     icon: React.ReactNode
     title: string
 }
 
 export const NavItem: React.FC<NavItemProps> = (props) => {
-    const { icon, title } = props;
+    const { expanded, icon, title } = props;
     return (<ListItemButton
         component={NavLink}
         {...props}
     >
-        <ListItemIcon>
+        <ItemIcon open={expanded}>
             {icon}
-        </ListItemIcon>
-        {title}
+        </ItemIcon>
+        {expanded ? title : null}
     </ListItemButton>);
 };
