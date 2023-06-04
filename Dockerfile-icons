@@ -1,0 +1,6 @@
+# build environment
+FROM ubuntu:latest
+RUN apt-get -y update \
+    && apt-get -y install imagemagick
+WORKDIR /app
+CMD convert --help
