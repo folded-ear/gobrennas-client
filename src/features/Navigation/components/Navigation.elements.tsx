@@ -8,7 +8,8 @@ import {
     ContainerProps,
     Drawer,
     List,
-    ListItemIconProps
+    ListItemIconProps,
+    ListSubheader
 } from "@mui/material";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import * as React from "react";
@@ -75,6 +76,11 @@ export const MainDesktop = styled(Container)<ExpandedProps>(({theme, open}) => (
 
 export const MainMobile = styled(Container)(({theme}) => ({
     marginTop: theme.spacing(2),
+}));
+
+export const Subheader = styled(ListSubheader)(({ theme }) => ({
+    overflow: "hidden",
+    textOverflow: "ellipsis",
 }));
 
 interface ItemIconProps extends ListItemIconProps {

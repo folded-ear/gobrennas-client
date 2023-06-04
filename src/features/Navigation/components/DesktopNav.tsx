@@ -2,7 +2,8 @@ import * as React from "react";
 import {
     ItemIcon,
     Navigation,
-    Sidebar
+    Sidebar,
+    Subheader
 } from "features/Navigation/components/Navigation.elements";
 import { Logo } from "features/Navigation/components/Logo";
 import { NavItem } from "features/Navigation/components/NavItem";
@@ -18,11 +19,11 @@ import {
     Box,
     List,
     ListItemButton,
-    ListSubheader,
     Typography
 } from "@mui/material";
 import { NavPlanItem } from "features/Navigation/components/NavPlanItem";
 import { colorHash } from "constants/colors";
+import { NavOwnerItem } from "./NavOwnerItem";
 
 type DesktopNavProps = {
     selected: string,
@@ -93,19 +94,30 @@ export const DesktopNav: React.FC<DesktopNavProps> = ({
                     {/*    title="Timers"*/}
                     {/*    expanded={expanded}*/}
                     {/*/>*/}
-                    <ListSubheader component="div" id="nested-list-subheader">
-                        Plans
-                    </ListSubheader>
-                    {planItems && planItems.map(item => (
-                        <NavPlanItem
+                    {planItems && planItems.map((item, i) => {
+                        const elements = [ <NavPlanItem
                             key={item.id}
                             id={item.id}
                             onSelect={handleSelectPlan}
                             expanded={expanded}
                             name={item.name}
                             color={colorHash(item.id)}
-                        />
-                    ))}
+                        /> ];
+                        if (i === 0) {
+                            elements.unshift(
+                                <Subheader key={-item.id}>
+                                    Plans
+                                </Subheader>
+                            );
+                        } else if (item.acl.ownerId !== planItems[i - 1].acl.ownerId) {
+                            elements.unshift(
+                                <NavOwnerItem key={-item.id}
+                                              expanded={expanded}
+                                              id={item.acl.ownerId} />
+                            );
+                        }
+                        return elements;
+                    })}
                 </Navigation>
             </Box>
             <Box sx={{ alignItem: "bottom" }}>

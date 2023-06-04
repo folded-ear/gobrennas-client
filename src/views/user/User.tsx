@@ -26,13 +26,13 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-interface Props extends Pick<UserType, "imageUrl" | "name" | "email"> {
+export interface UserProps extends Pick<UserType, "imageUrl" | "name" | "email"> {
     size?: "small" | "large",
     iconOnly?: boolean,
     inline?: boolean,
 }
 
-const User: React.FC<Props> = ({
+const User: React.FC<UserProps> = ({
                                    name,
                                    email,
                                    imageUrl,

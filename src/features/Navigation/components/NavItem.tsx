@@ -13,11 +13,14 @@ interface NavItemProps extends ListItemButtonProps<any, NavLinkProps> {
     title: string
 }
 
-export const NavItem: React.FC<NavItemProps> = (props) => {
-    const { expanded, icon, title } = props;
+export const NavItem: React.FC<NavItemProps> = ({
+                                                    expanded,
+                                                    ...passthrough
+                                                }) => {
+    const { icon, title } = passthrough;
     return (<ListItemButton
         component={NavLink}
-        {...props}
+        {...passthrough}
     >
         <ItemIcon open={expanded}>
             {icon}

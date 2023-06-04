@@ -1,17 +1,19 @@
 import React from "react";
 import useFriendLO from "data/useFriendLO";
-import User from "views/user/User";
+import User, { UserProps } from "views/user/User";
 import { ripLoadObject } from "../../../util/ripLoadObject";
 
-interface Props {
-    id: number,
-    iconOnly?: boolean
+interface Props extends Pick<UserProps, "size" | "iconOnly"> {
+    id: number
 }
 
-const UserById: React.FC<Props> = ({ id, iconOnly }) => {
+const UserById: React.FC<Props> = ({
+                                       id,
+                                       ...passthrough
+                                   }) => {
     const user = ripLoadObject(useFriendLO(id)).data;
     return user
-        ? <User iconOnly={iconOnly} {...user} />
+        ? <User {...passthrough} {...user} />
         : null;
 };
 

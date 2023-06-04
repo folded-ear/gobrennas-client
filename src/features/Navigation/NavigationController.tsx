@@ -18,10 +18,15 @@ import { useIsMobile } from "providers/IsMobile";
 import { MobileNav } from "features/Navigation/components/MobileNav";
 import { DesktopNav } from "features/Navigation/components/DesktopNav";
 import { useHistory } from "react-router-dom";
-import { useLogoutHandler } from "providers/Profile";
+import {
+    useLogoutHandler,
+    useProfileLO
+} from "providers/Profile";
 import Dispatcher from "data/dispatcher";
 import PlanActions from "features/Planner/data/PlanActions";
 import RouteStore from "../../data/RouteStore";
+import friendStore from "../../data/FriendStore";
+import { zippedComparator } from "../../util/comparators";
 
 type NavigationControllerProps = {
     authenticated: boolean,
@@ -32,6 +37,7 @@ export const NavigationController: React.FC<NavigationControllerProps> = ({authe
     const [ expanded, setExpanded ] = React.useState<boolean>(true);
     const isMobile = useIsMobile();
     const devMode = useIsDevMode();
+    const profileRLO = ripLoadObject(useProfileLO());
     const history = useHistory();
     const [ selected, setSelected ] = React.useState("");
 
@@ -69,10 +75,33 @@ export const NavigationController: React.FC<NavigationControllerProps> = ({authe
 
     const getPlans = useFluxStore(
         () => {
-            const allPlans = ripLoadObject(planStore.getPlansLO());
+            const allPlans = ripLoadObject(planStore.getPlansLO()
+                .map(plans => {
+                    const myId = profileRLO.data && profileRLO.data.id;
+                    const orderComponentsById = plans.reduce((byId, p) => {
+                        let ownerId = (p.acl
+                            ? p.acl.ownerId
+                            : undefined) || Number.MAX_SAFE_INTEGER;
+                        let ownerName = "";
+                        if (ownerId === myId) {
+                            ownerId = -1;
+                        } else {
+                            const rlo = ripLoadObject(friendStore.getFriendLO(ownerId));
+                            if (rlo.data) {
+                                // eslint-disable-next-line @typescript-eslint/no-extra-non-null-assertion
+                                ownerName = rlo.data.name!!; // eslint-disable-line @typescript-eslint/no-non-null-assertion
+                            }
+                        }
+                        byId[p.id] = [ ownerId, ownerName, p.name.toLowerCase() ];
+                        return byId;
+                    }, {});
+                    return plans.slice().sort((a, b) =>
+                        zippedComparator(orderComponentsById[a.id], orderComponentsById[b.id]));
+                }));
             return { allPlans };
         },
-        [planStore]
+        [ planStore, friendStore ],
+        [ profileRLO.data ]
     );
     const { data: navPlanItems } = getPlans.allPlans;
 
