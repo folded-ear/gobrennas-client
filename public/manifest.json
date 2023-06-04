@@ -21,7 +21,7 @@
   "scope": "/",
   "start_url": "/shop",
   "display": "standalone",
-  "theme_color": "#bf360c",
+  "theme_color": "#F57F17",
   "background_color": "#ffffff",
   "shortcuts": [
     {
