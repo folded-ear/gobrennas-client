@@ -3,21 +3,32 @@
 cd `dirname $0`
 SRC=src/icons.svg
 OUT=public
+IMAGE_NAME=gobrennas-icons:latest
 
-convert --help > /dev/null
-if [ $? != 1 ]; then
-  echo "It looks like you don't have ImageMagick installed, so fix that first."
+if [ "$1" = "--spit" ]; then
+  shift
+  x=$1
+  fn=$2
+  sed -e 's/width="24" height="24"/width="'$x'" height="'$x'"/' $SRC \
+    | convert svg:- $OUT/$fn
   exit
 fi
 
-function spit() {
-  x=$1
-  fn=$2
-  sed -e 's/width="24" height="24"/width="'$x'" height="'$x'"/' $SRC | convert svg:- $OUT/$fn
+function dkr() {
+  docker run --rm -v "$(pwd):/app" $IMAGE_NAME "$@"
 }
 
+function spit() {
+  dkr ./icons.sh --spit "$@"
+}
+
+echo
 echo "I rebuild the icons in the public directory, w/ a little interactive"
-echo "help from you to twiddle the uncommented blocks in $SRC"
+echo "help from you to twiddle various uncommented blocks in $SRC"
+echo
+echo "Building the ImageMagick Docker image, since macOS can't do SVG?!"
+docker build --pull -f Dockerfile-icons -t $IMAGE_NAME .
+dkr convert -version
 echo
 
 echo -n "First, uncomment the 'library' block and press Enter: "
