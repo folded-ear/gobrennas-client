@@ -95,7 +95,7 @@ export const ItemIcon: React.FC<ItemIconProps> = (props) => {
     return <ListItemIcon
         sx={{
             minWidth: 0,
-            mr: open ? 3 : "auto",
+            mr: open ? 2 : "auto",
             justifyContent: "center",
             ...sx,
         }}>
