@@ -22,22 +22,28 @@ echo
 
 echo -n "First, uncomment the 'library' block and press Enter: "
 read
-spit 192 library.png
+for x in 96 192; do
+  spit $x library-${x}x$x.png
+done
 echo
 
 echo -n "Now, uncomment the 'plan' block and press Enter: "
 read
-spit 192 plan.png
+for x in 96 192; do
+  spit $x plan-${x}x$x.png
+done
 echo
 
 echo -n "Now 'shop': "
 read
-spit 192 shop.png
+for x in 96 192; do
+  spit $x shop-${x}x$x.png
+done
 echo
 
 echo -n "And finally, the logo: "
 read
-for x in 192 384 512; do
+for x in 96 192 384 512; do
   spit $x android-chrome-${x}x$x.png
 done
 
