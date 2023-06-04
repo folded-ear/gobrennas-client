@@ -1,21 +1,13 @@
-import {
-    HighlightOff as DeleteIcon,
-    Kitchen,
-} from "@mui/icons-material";
-import {
-    Chip,
-    Divider,
-} from "@mui/material";
-import Menu from "@mui/material/Menu";
-import MenuItem from "@mui/material/MenuItem";
+import {HighlightOff as DeleteIcon, Kitchen,} from "@mui/icons-material";
+import {Chip, Divider, Menu, MenuItem,} from "@mui/material";
 import dispatcher from "data/dispatcher";
 import getBucketLabel from "features/Planner/components/getBucketLabel";
 import PlanActions from "features/Planner/data/PlanActions";
 import PropTypes from "prop-types";
 import React from "react";
-import { clientOrDatabaseIdType } from "util/ClientId";
+import {clientOrDatabaseIdType} from "util/ClientId";
 import history from "util/history";
-import { humanDate } from "util/time";
+import {humanDate} from "util/time";
 
 const BucketChip = ({
                         planId,
@@ -76,6 +68,9 @@ const BucketChip = ({
             keepMounted
             open={Boolean(anchorEl)}
             onClose={handleClose}
+            MenuListProps={{
+                dense: true,
+            }}
         >
             {bucket && <MenuItem
                 onClick={() => history.push(`/plan/${planId}/bucket/${bucketId}`)}
