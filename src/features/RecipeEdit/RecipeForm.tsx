@@ -81,7 +81,14 @@ interface Props {
     extraButtons?: ReactNode
 }
 
-const RecipeForm: React.FC<Props> = ({ title, onSave, onSaveCopy, onCancel, extraButtons, labelList }) => {
+const RecipeForm: React.FC<Props> = ({
+                                         title,
+                                         onSave,
+                                         onSaveCopy,
+                                         onCancel,
+                                         extraButtons,
+                                         labelList
+                                     }) => {
     const lo = useDraftRecipeLO();
     const windowSize = useWindowSize();
     const theme = useTheme();
@@ -90,10 +97,17 @@ const RecipeForm: React.FC<Props> = ({ title, onSave, onSaveCopy, onCancel, extr
     const draft = lo.getValueEnforcing();
     const MARGIN = 2;
 
+    if (lo.hasOperation()) {
+        return <>
+            <Typography
+                variant="h2">{title}</Typography>
+            <CircularProgress />
+        </>;
+    }
+
     return <>
         <Typography
             variant="h2">{title}</Typography>
-        {lo.hasOperation() && <CircularProgress />}
         <TextractFormAugment
             renderActions={lines => {
                 const disabled = !(lines && lines.length);
