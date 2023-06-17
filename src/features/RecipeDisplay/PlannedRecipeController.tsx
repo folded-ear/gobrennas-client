@@ -7,6 +7,8 @@ import RecipeDetail from "./components/RecipeDetail";
 import { RouteComponentProps } from "react-router";
 import { useLoadedPlan } from "features/RecipeDisplay/hooks/useLoadedPlan";
 import { recipeLoByItemLo } from "features/RecipeDisplay/utils/recipeLoByItemLo";
+import CloseButton from "../../views/common/CloseButton";
+import history from "../../util/history";
 
 type Props = RouteComponentProps<{
     pid: string
@@ -24,13 +26,16 @@ const PlannedRecipeController: React.FC<Props> = ({ match }) => {
         [ rid ],
     );
 
-    const pid = parseInt(match.params.pid, 10);
-    useLoadedPlan(pid);
+    useLoadedPlan(match.params.pid);
 
     if (lo.hasValue()) {
         return <RecipeDetail
             recipe={lo.getValueEnforcing()}
             subrecipes={lo.getValueEnforcing().subrecipes}
+            nav={<>
+                <CloseButton
+                    onClick={() => history.push(`/plan/${match.params.pid}`)} />
+            </>}
         />;
     }
 

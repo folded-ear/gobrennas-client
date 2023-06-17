@@ -7,6 +7,8 @@ import RecipeDetail from "./components/RecipeDetail";
 import { RouteComponentProps } from "react-router";
 import { useLoadedPlan } from "features/RecipeDisplay/hooks/useLoadedPlan";
 import { recipeLoByItemAndBucket } from "features/RecipeDisplay/utils/recipeLoByItemAndBucket";
+import CloseButton from "../../views/common/CloseButton";
+import history from "../../util/history";
 
 type Props = RouteComponentProps<{
     pid: string
@@ -31,6 +33,10 @@ const PlannedBucketController: React.FC<Props> = ({ match }) => {
         return <RecipeDetail
             recipe={lo.getValueEnforcing()}
             subrecipes={lo.getValueEnforcing().subrecipes}
+            nav={<>
+                <CloseButton
+                    onClick={() => history.push(`/plan/${pid}`)} />
+            </>}
         />;
     }
 

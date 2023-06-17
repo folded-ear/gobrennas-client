@@ -9,6 +9,8 @@ import {
     ripLoadObject,
     RippedLO,
 } from "util/ripLoadObject";
+import { RouteComponentProps } from "react-router";
+import { useLoadedPlan } from "../RecipeDisplay/hooks/useLoadedPlan";
 
 export interface ItemTuple extends RippedLO<any> {
     ancestorDeleting: boolean
@@ -43,7 +45,12 @@ function listTheTree(id, ancestorDeleting = false, depth = 0): ItemTuple[] {
     return list;
 }
 
-export const PlannerController = () => {
+type Props = RouteComponentProps<{
+    pid?: string
+}>;
+
+export const PlannerController: React.FC<Props> = ({ match }) => {
+    useLoadedPlan(match.params.pid);
     const state = useFluxStore(
         () => {
             const allPlans = ripLoadObject(planStore.getPlansLO());
