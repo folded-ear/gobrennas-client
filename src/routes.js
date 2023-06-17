@@ -35,6 +35,7 @@ const routes = {
         {path: "/tasks", component: () => <Redirect to="/plan" />},
         {path: "/plan/:pid/recipe/:rid", component: PlannedRecipeController},
         {path: "/plan/:pid/bucket/:bid", component: PlannedBucketController},
+        {path: "/plan/:pid", component: Planner},
         {path: "/plan", component: Planner},
         {path: "/shop", component: Shop},
         {path: "/pantry", component: Pantry},

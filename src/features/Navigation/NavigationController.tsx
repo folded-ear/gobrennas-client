@@ -22,8 +22,6 @@ import {
     useLogoutHandler,
     useProfileLO
 } from "providers/Profile";
-import Dispatcher from "data/dispatcher";
-import PlanActions from "features/Planner/data/PlanActions";
 import RouteStore from "../../data/RouteStore";
 import friendStore from "../../data/FriendStore";
 import { zippedComparator } from "../../util/comparators";
@@ -65,13 +63,8 @@ export const NavigationController: React.FC<NavigationControllerProps> = ({authe
         doLogout();
     };
 
-    const handleSelectPlan = id => {
-        history.push("/plan");
-        Dispatcher.dispatch({
-            type: PlanActions.SELECT_PLAN,
-            id: id,
-        });
-    };
+    const handleSelectPlan = id =>
+        history.push(`/plan/${id}`);
 
     const getPlans = useFluxStore(
         () => {

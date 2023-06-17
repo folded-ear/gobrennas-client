@@ -4,7 +4,7 @@ import React from "react";
 import Dispatcher from "../../../data/dispatcher";
 import PlanActions from "features/Planner/data/PlanActions";
 
-export const useLoadedPlan = (pid: number) => {
+export const useLoadedPlan = (pid: number | string | undefined) => {
     // ensure it's loaded
     const allPlansLO = useFluxStore(
         () => planStore.getPlanIdsLO(),
@@ -15,13 +15,15 @@ export const useLoadedPlan = (pid: number) => {
     // ensure it's selected
     React.useEffect(
         () => {
-            if (allPlansLO.hasValue()) {
+            if (pid != null && allPlansLO.hasValue()) {
                 // The contract implies that effects trigger after the render
                 // cycle completes, but doesn't guarantee it. The setTimeout
                 // avoids a reentrant dispatch if the effect isn't deferred.
                 setTimeout(() => Dispatcher.dispatch({
                     type: PlanActions.SELECT_PLAN,
-                    id: pid,
+                    id: typeof pid === "string"
+                        ? parseInt(pid, 10)
+                        : pid,
                 }));
             }
         },

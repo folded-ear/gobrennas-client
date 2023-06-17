@@ -9,14 +9,9 @@ import { PostAdd } from "@mui/icons-material";
 import React from "react";
 import Dispatcher from "data/dispatcher";
 import RecipeActions from "data/RecipeActions";
-import RecipeApi from "data/RecipeApi";
 import useWindowSize from "data/useWindowSize";
 import history from "util/history";
 import { formatDuration } from "util/time";
-import CloseButton from "views/common/CloseButton";
-import CopyButton from "views/common/CopyButton";
-import DeleteButton from "views/common/DeleteButton";
-import EditButton from "views/common/EditButton";
 import FoodingerFab from "views/common/FoodingerFab";
 import PageBody from "views/common/PageBody";
 import RecipeInfo from "views/common/RecipeInfo";
@@ -26,7 +21,6 @@ import ItemImage from "features/RecipeLibrary/components/ItemImage";
 import ItemImageUpload from "features/RecipeLibrary/components/ItemImageUpload";
 import User from "views/user/User";
 import IngredientDirectionsRow from "./IngredientDirectionsRow";
-import ShareRecipe from "./ShareRecipe";
 import SubrecipeItem from "./SubrecipeItem";
 import SendToPlan from "features/RecipeLibrary/components/SendToPlan";
 import { UserType } from "global/types/types";
@@ -73,6 +67,7 @@ interface Props {
     canFavorite?: boolean,
     canShare?: boolean,
     canSendToPlan?: boolean,
+    nav?: React.ReactNode,
 }
 
 const RecipeDetail: React.FC<Props> = ({
@@ -82,8 +77,8 @@ const RecipeDetail: React.FC<Props> = ({
                                            owner,
                                            anonymous = false,
                                            canFavorite = false,
-                                           canShare = false,
                                            canSendToPlan = false,
+                                           nav
                                        }) => {
     const classes = useStyles();
 
@@ -116,24 +111,7 @@ const RecipeDetail: React.FC<Props> = ({
                         {/*    <CircularProgress size={20} />*/}
                         {/*</Box>}*/}
                     </Typography>
-                    {loggedIn && <>
-                        <CopyButton
-                            title={mine ? "Copy" : "Duplicate to My Library"}
-                            onClick={() => history.push(`/library/recipe/${recipe.id}/make-copy`)}
-                        />
-                        {canShare && <ShareRecipe
-                            recipe={recipe}
-                        />}
-                        {mine && <EditButton
-                            onClick={() => history.push(`/library/recipe/${recipe.id}/edit`)}
-                        />}
-                        {mine && <DeleteButton
-                            type="recipe"
-                            onConfirm={() => RecipeApi.deleteRecipe(recipe.id)}
-                        />}
-                        <CloseButton
-                            onClick={() => history.push("/library")} />
-                    </>}
+                    {nav}
                     {!mine && owner && (loggedIn || windowSize.width > 600) &&
                         <User
                             size={loggedIn ? "small" : "large"}
