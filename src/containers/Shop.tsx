@@ -87,8 +87,7 @@ function groupItems(plans: PlanItem[],
     const unparsed: PathedItemTuple[] = [];
     if (byIngredient.has(undefined)) {
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        unparsed.push(...byIngredient.get(undefined)!
-            .filter(it => it.status === PlanItemStatus.NEEDED));
+        unparsed.push(...byIngredient.get(undefined)!);
         byIngredient.delete(undefined);
     }
     const orderedIngredients: OrderableIngredient[] = [];
@@ -112,10 +111,9 @@ function groupItems(plans: PlanItem[],
     });
     const theTree: ShopItemTuple[] = [];
     for (const { id: ingId, items, data: ingredient, loading } of orderedIngredients) {
-        const neededItems = items.filter(it => it.status === PlanItemStatus.NEEDED);
-        if (neededItems.length === 0) continue;
+        if (items.length === 0) continue;
         const unitLookup = new Map();
-        const byUnit = groupBy(neededItems, it => {
+        const byUnit = groupBy(items, it => {
             if (it.uomId) {
                 unitLookup.set(it.uomId, it.units);
             }
@@ -159,6 +157,7 @@ function groupItems(plans: PlanItem[],
         _type: ShopItemType.PLAN_ITEM,
         depth: 0,
         ...it,
+        acquiring: it.acquiring || it.status === PlanItemStatus.ACQUIRED,
     })));
     return activeItem
         ? theTree.map(it => {
