@@ -163,6 +163,7 @@ function groupItems(plans: PlanItem[],
                 blockId: ingId,
                 ingredient,
                 ...it,
+                acquiring: isAcquiring(it),
             })));
         }
     }
