@@ -1,4 +1,7 @@
-import React from "react";
+import React, {
+    useEffect,
+    useState
+} from "react";
 import LibraryStore from "features/RecipeLibrary/data/LibraryStore";
 import shoppingStore, { Item } from "data/shoppingStore";
 import {
@@ -21,6 +24,8 @@ import {
 import { Maybe } from "graphql/jsutils/Maybe";
 import { Quantity } from "global/types/types";
 import { ripLoadObject } from "util/ripLoadObject";
+import windowStore from "../data/WindowStore";
+import partition from "../util/partition";
 
 interface ItemTuple extends PlanItem, ItemProps {
 }
@@ -147,6 +152,7 @@ function groupItems(plans: PlanItem[],
             theTree.push(...items.map(it => ({
                 _type: ShopItemType.PLAN_ITEM,
                 depth: 1,
+                blockId: ingId,
                 ingredient,
                 ...it,
             })));
@@ -191,9 +197,28 @@ const Shop = () => {
         [ planStore, LibraryStore ],
         [ expandedId, activeItem ],
     );
+    // recomb when the window loses focus
+    const recombAcquired = useFluxStore(
+        () => !windowStore.isFocused(),
+        [ windowStore ]
+    );
+    const [ acquiredIds, setAcquiredIds ] = useState<Set<string | number>>(new Set());
+    useEffect(() => {
+        if (!recombAcquired) return;
+        setAcquiredIds(new Set(itemTuples
+            .filter(it => it.acquiring)
+            .map(it => it.id)));
+    }, [ recombAcquired ]); // eslint-disable-line react-hooks/exhaustive-deps
+    const [ partitionedTuples, setPartitionedTuples ] = useState<ShopItemTuple[]>([]);
+    useEffect(() => {
+        const [ acquired, needed ] = partition(
+            itemTuples,
+            it => acquiredIds.has(it.blockId || it.id));
+        setPartitionedTuples(needed.concat(acquired));
+    }, [ itemTuples, acquiredIds ]);
     return <ShopList
         plan={plan}
-        itemTuples={itemTuples}
+        itemTuples={partitionedTuples}
     />;
 };
 

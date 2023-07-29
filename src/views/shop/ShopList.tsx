@@ -7,7 +7,7 @@ import ShoppingActions from "data/ShoppingActions";
 import FoodingerFab from "views/common/FoodingerFab";
 import LoadingIndicator from "views/common/LoadingIndicator";
 import PageBody from "views/common/PageBody";
-import Ingredient from "views/shop/IngredientItem";
+import IngredientItem from "views/shop/IngredientItem";
 import PlanItem from "views/shop/PlanItem";
 import {
     BaseItemProp,
@@ -22,7 +22,7 @@ export enum ShopItemType {
 }
 
 export interface ShopItemTuple extends ItemProps {
-    id: string | number
+    blockId?: string | number
     _type: ShopItemType
     active?: boolean
     depth: number
@@ -67,7 +67,7 @@ class ShopList extends React.PureComponent<ShopListProps> {
             <List>
                 {itemTuples.map(it => {
                     if (it._type === ShopItemType.INGREDIENT) {
-                        return <Ingredient
+                        return <IngredientItem
                             key={it.id + "-ing-item"}
                             item={it}
                             active={it.expanded}
