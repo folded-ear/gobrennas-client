@@ -3,15 +3,15 @@ import PantryItemActions from "data/PantryItemActions";
 import RecipeActions from "data/RecipeActions";
 import RecipeApi from "data/RecipeApi";
 import LibraryApi from "features/RecipeLibrary/data/LibraryApi";
-import { ReduceStore } from "flux/utils";
+import {ReduceStore} from "flux/utils";
 import invariant from "invariant";
 import PropTypes from "prop-types";
-import { clientOrDatabaseIdType } from "util/ClientId";
+import {clientOrDatabaseIdType} from "util/ClientId";
 import history from "util/history";
 import LoadObject from "util/LoadObject";
 import LoadObjectMap from "util/LoadObjectMap";
-import { loadObjectMapOf } from "util/loadObjectTypes";
-import { fromMilliseconds } from "util/time";
+import {loadObjectMapOf} from "util/loadObjectTypes";
+import {fromMilliseconds} from "util/time";
 import typedStore from "util/typedStore";
 import LibraryActions from "./LibraryActions";
 
@@ -81,6 +81,9 @@ class LibraryStore extends ReduceStore {
             }
 
             case LibraryActions.LOAD_INGREDIENTS: {
+                if (action.ids.length === 0) {
+                    return state;
+                }
                 LibraryApi.getIngredientInBulk(action.ids);
                 return {
                     ...state,
@@ -103,6 +106,9 @@ class LibraryStore extends ReduceStore {
             }
 
             case LibraryActions.INGREDIENTS_LOADED: {
+                if (action.data.length === 0) {
+                    return state;
+                }
                 return {
                     ...state,
                     byId: action.data.reduce((byId, it) =>
