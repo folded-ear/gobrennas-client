@@ -28,6 +28,7 @@ import windowStore from "../data/WindowStore";
 import partition from "../util/partition";
 
 interface ItemTuple extends PlanItem, ItemProps {
+    status: string
 }
 
 interface PathedItemTuple extends ItemTuple {
@@ -75,6 +76,13 @@ interface OrderableIngredient {
     items: PathedItemTuple[]
     data?: Ingredient
     loading: boolean
+}
+
+/**
+ * This is really "when all pending changes are flushed, will it be acquired."
+ */
+function isAcquiring(it: PathedItemTuple) {
+    return it.acquiring || (it.status === PlanItemStatus.ACQUIRED && !it.needing);
 }
 
 function groupItems(plans: PlanItem[],
@@ -143,7 +151,7 @@ function groupItems(plans: PlanItem[],
             quantities,
             expanded,
             loading: loading || items.some(it => it.loading),
-            acquiring: items.every(it => it.acquiring || it.status === PlanItemStatus.ACQUIRED),
+            acquiring: items.every(isAcquiring),
             deleting: items.every(it => it.deleting || it.status === PlanItemStatus.DELETED),
             depth: 0,
             path: [],
@@ -163,7 +171,7 @@ function groupItems(plans: PlanItem[],
         _type: ShopItemType.PLAN_ITEM,
         depth: 0,
         ...it,
-        acquiring: it.acquiring || it.status === PlanItemStatus.ACQUIRED,
+        acquiring: isAcquiring(it),
     })));
     return activeItem
         ? theTree.map(it => {
