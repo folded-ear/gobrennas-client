@@ -213,11 +213,11 @@ const Shop = () => {
     );
     const [ acquiredIds, setAcquiredIds ] = useState<Set<string | number>>(new Set());
     useEffect(() => {
-        if (!recombAcquired) return;
+        if (!recombAcquired && acquiredIds.size > 0) return;
         setAcquiredIds(new Set(itemTuples
             .filter(it => it.acquiring)
             .map(it => it.id)));
-    }, [ recombAcquired ]); // eslint-disable-line react-hooks/exhaustive-deps
+    }, [ recombAcquired, itemTuples.length ]); // eslint-disable-line react-hooks/exhaustive-deps
     const [ partitionedTuples, setPartitionedTuples ] = useState<ShopItemTuple[]>([]);
     useEffect(() => {
         const [ acquired, needed ] = partition(
