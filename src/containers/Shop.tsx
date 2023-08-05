@@ -1,4 +1,5 @@
 import React, {
+    useCallback,
     useEffect,
     useState
 } from "react";
@@ -206,28 +207,45 @@ const Shop = () => {
         [ planStore, LibraryStore ],
         [ expandedId, activeItem ],
     );
-    // recomb when the window loses focus
-    const recombAcquired = useFluxStore(
-        () => !windowStore.isFocused(),
+    const [ partitionReqCount, setPartitionReqCount ] = useState(0);
+    const handleRepartition = useCallback(
+        () => setPartitionReqCount(v => v + 1),
+        []);
+    // repartition when the window loses focus
+    useFluxStore(
+        () => {
+            if (!windowStore.isFocused()) {
+                handleRepartition();
+            }
+        },
         [ windowStore ]
     );
+    // repartition on initial item load
+    const [ , setEmpty ] = useState(true);
+    useEffect(() => {
+        setEmpty(curr => {
+            const next = itemTuples.length === 0;
+            if (curr && !next) handleRepartition();
+            return next;
+        });
+    }, [ handleRepartition, itemTuples.length ]);
     const [ acquiredIds, setAcquiredIds ] = useState<Set<string | number>>(new Set());
     useEffect(() => {
-        if (!recombAcquired) return;
         setAcquiredIds(new Set(itemTuples
             .filter(it => it.acquiring)
             .map(it => it.id)));
-    }, [ recombAcquired ]); // eslint-disable-line react-hooks/exhaustive-deps
-    const [ partitionedTuples, setPartitionedTuples ] = useState<ShopItemTuple[]>([]);
+    }, [ partitionReqCount ]); // eslint-disable-line react-hooks/exhaustive-deps
+    const [ partitionedTuples, setPartitionedTuples ] = useState<ShopItemTuple[][]>([ [], [] ]);
     useEffect(() => {
-        const [ acquired, needed ] = partition(
+        setPartitionedTuples(partition(
             itemTuples,
-            it => acquiredIds.has(it.blockId || it.id));
-        setPartitionedTuples(needed.concat(acquired));
+            it => !acquiredIds.has(it.blockId || it.id)));
     }, [ itemTuples, acquiredIds ]);
     return <ShopList
         plan={plan}
-        itemTuples={partitionedTuples}
+        neededTuples={partitionedTuples[0]}
+        acquiredTuples={partitionedTuples[1]}
+        onRepartition={handleRepartition}
     />;
 };
 
