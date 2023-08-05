@@ -1,4 +1,7 @@
-import { Typography } from "@mui/material";
+import {
+    Box,
+    Typography
+} from "@mui/material";
 import List from "@mui/material/List";
 import Add from "@mui/icons-material/Add";
 import React, {
@@ -105,7 +108,7 @@ const ShopList: React.FC<ShopListProps> = ({
     return <PageBody hasFab>
         <Typography variant="h2">{plan.name}</Typography>
         <TupleList tuples={neededTuples} />
-        {acquiredTuples.length > 0 && <>
+        {acquiredTuples.length > 0 && <Box mt={2}>
             <Typography variant="h5">
                 <CollapseIconButton
                     key="collapse"
@@ -113,11 +116,11 @@ const ShopList: React.FC<ShopListProps> = ({
                     onClick={handleToggleAcquired}
                 />
                 <span onClick={handleToggleAcquired}>
-                    Acquired
+                    Acquired ({acquiredTuples.length})
                 </span>
             </Typography>
             {showAcquired && <TupleList tuples={acquiredTuples} />}
-        </>}
+        </Box>}
         <FoodingerFab
             onClick={handleAddNew}
         >
