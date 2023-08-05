@@ -207,31 +207,40 @@ const Shop = () => {
         [ planStore, LibraryStore ],
         [ expandedId, activeItem ],
     );
-    const [ partitionRequests, setPartitionRequests ] = useState(0);
+    const [ partitionReqCount, setPartitionReqCount ] = useState(0);
+    const handleRepartition = useCallback(
+        () => setPartitionReqCount(v => v + 1),
+        []);
     // repartition when the window loses focus
     useFluxStore(
         () => {
             if (!windowStore.isFocused()) {
-                setPartitionRequests(v => v + 1);
+                handleRepartition();
             }
         },
         [ windowStore ]
     );
+    // repartition on initial item load
+    const [ , setEmpty ] = useState(true);
+    useEffect(() => {
+        setEmpty(curr => {
+            const next = itemTuples.length === 0;
+            if (curr && !next) handleRepartition();
+            return next;
+        });
+    }, [ handleRepartition, itemTuples.length ]);
     const [ acquiredIds, setAcquiredIds ] = useState<Set<string | number>>(new Set());
     useEffect(() => {
         setAcquiredIds(new Set(itemTuples
             .filter(it => it.acquiring)
             .map(it => it.id)));
-    }, [ partitionRequests, itemTuples.length ]); // eslint-disable-line react-hooks/exhaustive-deps
+    }, [ partitionReqCount ]); // eslint-disable-line react-hooks/exhaustive-deps
     const [ partitionedTuples, setPartitionedTuples ] = useState<ShopItemTuple[][]>([ [], [] ]);
     useEffect(() => {
         setPartitionedTuples(partition(
             itemTuples,
             it => !acquiredIds.has(it.blockId || it.id)));
     }, [ itemTuples, acquiredIds ]);
-    const handleRepartition = useCallback(
-        () => setPartitionRequests(v => v + 1),
-        []);
     return <ShopList
         plan={plan}
         neededTuples={partitionedTuples[0]}
