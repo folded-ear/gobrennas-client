@@ -1,21 +1,10 @@
-import {
-    Grid,
-    InputAdornment,
-    LinearProgress,
-    TextField,
-} from "@mui/material";
-import {
-    CheckCircleOutline,
-    ErrorOutline,
-} from "@mui/icons-material";
-import React, {
-    CSSProperties,
-    PropsWithChildren,
-} from "react";
-import ItemApi, { RecognitionResult } from "data/ItemApi";
+import {Grid, InputAdornment, LinearProgress, TextField,} from "@mui/material";
+import {CheckCircleOutline, ErrorOutline,} from "@mui/icons-material";
+import React, {CSSProperties, PropsWithChildren,} from "react";
+import ItemApi, {RecognitionResult} from "data/ItemApi";
 import debounce from "util/debounce";
 import processRecognizedItem from "util/processRecognizedItem";
-import { Ingredient } from "global/types/types";
+import {Ingredient} from "global/types/types";
 import Autocomplete from "@mui/lab/Autocomplete";
 
 const doRecog = raw =>
@@ -265,7 +254,12 @@ class ElEdit extends React.PureComponent<ElEditProps, ElEditState> {
         } = value;
         const {
             recog,
-            quantity, unit, unitValue, ingredientName, nameValue, preparation,
+            quantity,
+            unit,
+            unitValue,
+            ingredientName,
+            nameValue,
+            preparation,
             suggestions,
         } = this.state;
         const hasSuggestions = this._hasSuggestions();
@@ -315,7 +309,7 @@ class ElEdit extends React.PureComponent<ElEditProps, ElEditState> {
                     ? doRecog(raw) ? <Hunk><LinearProgress /></Hunk> : null
                     : <Hunk>
                         {quantity &&
-                        <Hunk style={{ backgroundColor: "#fde" }}>{quantity}</Hunk>}
+                            <Hunk style={{backgroundColor: "#fde"}}>{quantity}</Hunk>}
                         {unit && <Hunk
                             style={{ backgroundColor: unitValue ? "#efd" : "#dfe" }}>{unit}</Hunk>}
                         {ingredientName && <Hunk
