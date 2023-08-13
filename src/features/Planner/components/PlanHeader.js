@@ -1,7 +1,7 @@
 import {
-    Add,
-    DynamicFeed,
-    Edit,
+    Add as AddIcon,
+    DynamicFeed as SortByBucketIcon,
+    Edit as EditIcon,
 } from "@mui/icons-material";
 import {
     Drawer,
@@ -25,6 +25,7 @@ import {
     ExpandAll,
 } from "views/common/icons";
 import SplitButton from "views/common/SplitButton";
+import AddToCalendar from "./AddToCalendar";
 
 const isValidName = name =>
     name != null && name.trim().length > 0;
@@ -123,18 +124,20 @@ function PlanHeader({
                         <CollapseAll />
                     </IconButton>
                 </Tooltip>
-                <Tooltip
-                    title="Sort plan in bucket order"
-                    placement="bottom-start"
-                >
-                    <IconButton
-                        aria-label="sort-by-bucket"
-                        onClick={sortByBucket}
-                        disabled={!hasBuckets}
-                        size="large">
-                        <DynamicFeed />
-                    </IconButton>
-                </Tooltip>
+                {hasBuckets && <>
+                    <Tooltip
+                        title="Sort plan in bucket order"
+                        placement="bottom-start"
+                    >
+                        <IconButton
+                            aria-label="sort-by-bucket"
+                            onClick={sortByBucket}
+                            size="large">
+                            <SortByBucketIcon/>
+                        </IconButton>
+                    </Tooltip>
+                    <AddToCalendar plan={activePlan}/>
+                </>}
                 <Drawer
                     open={planDetailVisible}
                     anchor="right"
@@ -148,7 +151,7 @@ function PlanHeader({
                             backgroundColor: "#f7f7f7",
                         }}
                     >
-                        <PlanSidebar list={activePlan} />
+                        <PlanSidebar plan={activePlan}/>
                     </div>
                 </Drawer>
             </Grid>}
@@ -190,7 +193,7 @@ function PlanHeader({
                             placement="bottom"
                         >
                             <IconButton onClick={onShowDrawer} disabled={!activePlan} size="large">
-                                <Edit />
+                                <EditIcon/>
                             </IconButton>
                         </Tooltip>
                     </Grid>
@@ -220,7 +223,7 @@ function PlanHeader({
                         </Grid>
                         <Grid item>
                             <SplitButton
-                                primary={<Add />}
+                                primary={<AddIcon/>}
                                 onClick={onCreate}
                                 options={allPlans.length > 0 && allPlans.map(l => ({
                                     label: `Duplicate "${l.name}"`,
@@ -236,7 +239,7 @@ function PlanHeader({
                         placement="bottom-end"
                     >
                         <IconButton onClick={() => setShowAdd(true)} size="large">
-                            <Add />
+                            <AddIcon/>
                         </IconButton>
                     </Tooltip>}
             </Grid>

@@ -4,7 +4,7 @@ import {
     CircularProgress,
     TextField,
 } from "@mui/material";
-import { Share } from "@mui/icons-material";
+import { Share as ShareIcon } from "@mui/icons-material";
 import BaseAxios from "axios";
 import React from "react";
 import {
@@ -83,6 +83,7 @@ const Body: React.FC<ShareRecipeProps> = ({ recipe }) => {
             <TextField
                 value={shareUrl}
                 fullWidth
+                multiline
                 onFocus={e => e.target.select()}
                 autoFocus
             />
@@ -94,7 +95,7 @@ const ShareRecipe: React.FC<ShareRecipeProps> = ({ recipe }) => {
     return <ModalButton
         buttonTitle="Share this recipe"
         modalTitle="Share Recipe"
-        icon={<Share/>}
+        icon={<ShareIcon/>}
         render={() => <Body recipe={recipe}/>}
     />;
 };

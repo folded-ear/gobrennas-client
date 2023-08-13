@@ -1,13 +1,13 @@
 import {
+    Box,
+    Grid,
+    List,
+    ListItem,
     MenuItem,
+    Select,
+    TextField,
     Typography,
 } from "@mui/material";
-import Box from "@mui/material/Box";
-import Grid from "@mui/material/Grid";
-import List from "@mui/material/List";
-import ListItem from "@mui/material/ListItem";
-import Select from "@mui/material/Select";
-import TextField from "@mui/material/TextField";
 import React from "react";
 import AccessLevel, { includesLevel } from "data/AccessLevel";
 import Dispatcher from "data/dispatcher";
@@ -26,10 +26,10 @@ import { ripLoadObject } from "util/ripLoadObject";
 const LEVEL_NO_ACCESS = "NO_ACCESS";
 
 interface Props {
-    list: PlanItem
+    plan: PlanItem
 }
 
-const PlanSidebar: React.FC<Props> = ({ list }) => {
+const PlanSidebar: React.FC<Props> = ({ plan }) => {
     const me = useProfile();
     const [ friendsLoading, friendList, friendsById ] = useFluxStore(
         () => {
@@ -50,15 +50,15 @@ const PlanSidebar: React.FC<Props> = ({ list }) => {
                     }), {}),
             ];
         },
-        [FriendStore],
+        [ FriendStore ],
     );
 
-    const [name, setName] = React.useState(list.name);
+    const [ name, setName ] = React.useState(plan.name);
 
     const handleRename = () => {
         Dispatcher.dispatch({
             type: PlanActions.RENAME_PLAN,
-            id: list.id,
+            id: plan.id,
             name,
         });
     };
@@ -67,13 +67,13 @@ const PlanSidebar: React.FC<Props> = ({ list }) => {
         if (level === LEVEL_NO_ACCESS) {
             Dispatcher.dispatch({
                 type: PlanActions.CLEAR_PLAN_GRANT,
-                id: list.id,
+                id: plan.id,
                 userId,
             });
         } else {
             Dispatcher.dispatch({
                 type: PlanActions.SET_PLAN_GRANT,
-                id: list.id,
+                id: plan.id,
                 userId,
                 level,
             });
@@ -83,15 +83,15 @@ const PlanSidebar: React.FC<Props> = ({ list }) => {
     const handleDelete = () => {
         Dispatcher.dispatch({
             type: PlanActions.DELETE_PLAN,
-            id: list.id,
+            id: plan.id,
         });
     };
 
-    const grants = list.acl.grants || {};
-    const isMine = list.acl.ownerId === me.id;
+    const grants = plan.acl.grants || {};
+    const isMine = plan.acl.ownerId === me.id;
     const owner = isMine
         ? me
-        : friendsById[list.acl.ownerId];
+        : friendsById[plan.acl.ownerId];
     const isAdministrator = isMine || includesLevel(
         grants[me.id],
         AccessLevel.ADMINISTER,
@@ -99,7 +99,7 @@ const PlanSidebar: React.FC<Props> = ({ list }) => {
 
     return <Box m={2}>
         <SidebarUnit>
-            {owner && <div style={{float: "right"}}>
+            {owner && <div style={{ float: "right" }}>
                 <User {...owner} />
             </div>}
             {isAdministrator ? <TextField
@@ -111,16 +111,16 @@ const PlanSidebar: React.FC<Props> = ({ list }) => {
                 variant="outlined"
                 fullWidth
             /> : <Typography variant="h2"
-                             component="h3">{list.name}</Typography>}
+                             component="h3">{plan.name}</Typography>}
         </SidebarUnit>
         {isAdministrator && <SidebarUnit>
-            <PlanBucketManager />
+            <PlanBucketManager/>
         </SidebarUnit>}
         {friendsLoading ?
-            <LoadingIndicator primary="Loading friends list..." /> :
+            <LoadingIndicator primary="Loading friends list..."/> :
             <SidebarUnit>
                 <List>
-                    {(isMine ? friendList : friendList.filter(f => f.id !== list.acl.ownerId)
+                    {(isMine ? friendList : friendList.filter(f => f.id !== plan.acl.ownerId)
                         .concat(me)).map(f =>
                         <ListItem
                             key={f.id}
