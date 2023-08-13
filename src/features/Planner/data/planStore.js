@@ -4,24 +4,18 @@ import preferencesStore from "data/preferencesStore";
 import ShoppingActions from "data/ShoppingActions";
 import dotProp from "dot-prop-immutable";
 import PlanActions from "features/Planner/data/PlanActions";
-import PlanItemStatus, { willStatusDelete } from "features/Planner/data/PlanItemStatus";
+import PlanItemStatus, {willStatusDelete} from "features/Planner/data/PlanItemStatus";
 import TaskApi from "features/Planner/data/TaskApi";
-import {
-    isExpanded,
-    isParent,
-} from "features/Planner/data/plannerUtils";
-import { ReduceStore } from "flux/utils";
+import {isExpanded, isParent,} from "features/Planner/data/plannerUtils";
+import {ReduceStore} from "flux/utils";
 import invariant from "invariant";
-import { removeAtIndex } from "util/arrayAsSet";
+import {removeAtIndex} from "util/arrayAsSet";
 import ClientId from "util/ClientId";
-import { bucketComparator } from "util/comparators";
+import {bucketComparator} from "util/comparators";
 import inTheFuture from "util/inTheFuture";
 import LoadObject from "util/LoadObject";
 import LoadObjectState from "util/LoadObjectState";
-import {
-    formatLocalDate,
-    parseLocalDate,
-} from "util/time";
+import {formatLocalDate, parseLocalDate,} from "util/time";
 import PlanApi from "./PlanApi";
 
 /*
@@ -773,7 +767,7 @@ const toggleExpanded = (state, id) => {
     const t = taskForId(state, id);
     if (!isParent(t)) {
         if (t.parentId === state.activeListId) {
-            // we don't do the list
+            // we don't do the plan
             return state;
         }
         id = t.parentId;
@@ -870,7 +864,7 @@ const tasksLoaded = (state, tasks) =>
 function selectDefaultList(state) {
     const lids = state.topLevelIds.getLoadObject().getValueEnforcing();
     if (lids.length > 0) {
-        // see if there's a preferred active list
+        // see if there's a preferred active plan
         let activePlanId = preferencesStore.getActivePlan();
         if (lids.find(id => id === activePlanId) == null) {
             // auto-select the first one
