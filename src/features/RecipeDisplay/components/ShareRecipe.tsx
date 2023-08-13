@@ -2,13 +2,8 @@ import {
     Box,
     Button,
     CircularProgress,
-    IconButton,
-    Modal,
-    Paper,
     TextField,
-    Tooltip,
 } from "@mui/material";
-import makeStyles from "@mui/styles/makeStyles";
 import { Share } from "@mui/icons-material";
 import BaseAxios from "axios";
 import React from "react";
@@ -24,40 +19,20 @@ import {
     emptyRLO,
     RippedLO,
 } from "util/ripLoadObject";
+import ModalButton from "../../../views/ModalButton";
 
 const axios = BaseAxios.create({
     baseURL: `${API_BASE_URL}/api/recipe`,
 });
 
-const useStyles = makeStyles(theme => {
-    const width = 500;
-    return {
-        modal: {
-            width: `${width}px`,
-            position: "absolute",
-            top: 100,
-            left: `calc(50% - ${width / 2}px)`,
-            backgroundColor: theme.palette.background.paper,
-            padding: theme.spacing(2),
-        },
-        title: {
-            marginTop: 0,
-        }
-    };
-});
-
 type ShareRecipeProps = {
     recipe: Recipe
 }
-const ShareRecipe : React.FC<ShareRecipeProps> = ({recipe}) => {
-    const classes = useStyles();
-    const [ open, setOpen ] = React.useState(false);
+
+const Body: React.FC<ShareRecipeProps> = ({ recipe }) => {
     const [ rlo, setRlo ] = React.useState<RippedLO<SharedRecipe>>(emptyRLO());
     React.useEffect(
         () => {
-            if (!open) {
-                return;
-            }
             if (rlo.data && rlo.data.id === recipe.id) {
                 return;
             }
@@ -82,29 +57,14 @@ const ShareRecipe : React.FC<ShareRecipeProps> = ({recipe}) => {
                     }),
                 );
         },
-        [ open, rlo, recipe.id ],
+        [ rlo, recipe.id ],
     );
-
-    const button = <Tooltip
-        title="Share this recipe"
-        placement="top"
-    >
-        <IconButton onClick={() => setOpen(true)} size="large">
-            <Share />
-        </IconButton>
-    </Tooltip>;
-
-    if (!open) {
-        return button;
-    }
-
-    let body;
     if (rlo.loading || !rlo.data) {
-        body = <Box style={{ textAlign: "center" }}>
-            <CircularProgress />
+        return <Box style={{ textAlign: "center" }}>
+            <CircularProgress/>
         </Box>;
     } else if (rlo.error) {
-        body = <div>
+        return <div>
             Something went wrong getting a sharable link.
             <div style={{ textAlign: "right" }}>
                 <Button
@@ -117,7 +77,7 @@ const ShareRecipe : React.FC<ShareRecipeProps> = ({recipe}) => {
     } else { // got it!
         const info = rlo.data;
         const shareUrl = `${APP_BASE_URL}/share/recipe/${info.slug}/${info.secret}/${info.id}`;
-        body = <>
+        return <>
             <p>Share this link to allow non-users to access your recipe:
             </p>
             <TextField
@@ -128,22 +88,15 @@ const ShareRecipe : React.FC<ShareRecipeProps> = ({recipe}) => {
             />
         </>;
     }
+};
 
-    return <>
-        {button}
-        <Modal
-            open
-            onClose={() => setOpen(false)}
-        >
-            <Paper
-                className={classes.modal}
-                elevation={8}
-            >
-                <h2 className={classes.title}>Share Recipe</h2>
-                {body}
-            </Paper>
-        </Modal>
-    </>;
+const ShareRecipe: React.FC<ShareRecipeProps> = ({ recipe }) => {
+    return <ModalButton
+        buttonTitle="Share this recipe"
+        modalTitle="Share Recipe"
+        icon={<Share/>}
+        render={() => <Body recipe={recipe}/>}
+    />;
 };
 
 export default ShareRecipe;
