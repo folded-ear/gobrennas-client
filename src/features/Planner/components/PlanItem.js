@@ -268,6 +268,7 @@ class PlanItem extends React.PureComponent {
                     size="small"
                 />);
         }
+        const curr = item._next_status || item.status;
         if (loading || deleting || ancestorDeleting) {
             addonBefore.push(
                 <LoadingIconButton
@@ -280,13 +281,14 @@ class PlanItem extends React.PureComponent {
                     size="small"
                 />);
         } else {
-            const curr = item._next_status || item.status;
             addonBefore.push(
                 <StatusIconButton
                     key="acquire"
                     id={item.id}
                     current={curr}
-                    next={curr === PlanItemStatus.ACQUIRED ? PlanItemStatus.NEEDED : PlanItemStatus.ACQUIRED}
+                    next={curr === PlanItemStatus.ACQUIRED
+                        ? PlanItemStatus.NEEDED
+                        : PlanItemStatus.ACQUIRED}
                 />);
         }
         const addonAfter = [
@@ -299,7 +301,9 @@ class PlanItem extends React.PureComponent {
                 : <StatusIconButton
                     key="delete"
                     id={item.id}
-                    next={PlanItemStatus.DELETED}
+                    next={curr === PlanItemStatus.DELETED
+                        ? PlanItemStatus.NEEDED
+                        : PlanItemStatus.DELETED}
                     disabled={ancestorDeleting}
                 />,
         ];
