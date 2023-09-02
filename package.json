@@ -4,6 +4,7 @@
   "private": false,
   "dependencies": {
     "@apollo/client": "^3.6.9",
+    "@dnd-kit/core": "^6.0.8",
     "@emotion/react": "^11.10.6",
     "@emotion/styled": "^11.10.6",
     "@mui/icons-material": "^5.11.9",
