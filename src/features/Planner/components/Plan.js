@@ -42,7 +42,7 @@ function Plan({
     const buckets = plan && plan.buckets;
     const canExpand = itemTuples.some(t =>
         t.data && isParent(t.data));
-    return <PageBody hasFab>
+    return <PageBody hasFab fullWidth>
         <Box py={2}>
             <PlanHeader
                 allPlans={allPlans.data}

@@ -105,8 +105,10 @@ const ShopList: React.FC<ShopListProps> = ({
         />;
     }
 
-    return <PageBody hasFab>
-        <Typography variant="h2">{plan.name}</Typography>
+    return <PageBody hasFab fullWidth>
+        <Box mx={2} my={1}>
+            <Typography variant="h2">{plan.name}</Typography>
+        </Box>
         <TupleList tuples={neededTuples} />
         {acquiredTuples.length > 0 && <Box mt={2}>
             <Typography variant="h5">
