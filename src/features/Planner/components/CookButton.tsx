@@ -23,8 +23,8 @@ const CookButton: React.FC<Props> = ({
         >
             <IconButton
                 onClick={() => history.push(`/plan/${planId}/recipe/${itemId}`)}
-                {...props}
-                size="large">
+                size="large"
+                {...props}>
                 <KitchenIcon />
             </IconButton>
         </Tooltip>
