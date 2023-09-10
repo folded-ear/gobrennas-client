@@ -6,8 +6,8 @@ function get2dContextFromCanvas(canvas: HTMLCanvasElement) {
     return ctx;
 }
 
-const promiseWellSizedFile = (fileOrString: File | string) => new Promise((resolve: (fileOrString: File | string) => any, reject) => {
-    if (fileOrString instanceof File && fileOrString.size > MAX_UPLOAD_BYTES) {
+const promiseWellSizedFile = (fileOrString: File | string) => new Promise<File | string>((resolve, reject) => {
+    if (fileOrString instanceof File && fileOrString.size >= MAX_UPLOAD_BYTES) {
         // lifted from https://codepen.io/tuanitpro/pen/wJZJbp
         const reader = new FileReader();
         reader.onerror = reject;
@@ -43,7 +43,15 @@ const promiseWellSizedFile = (fileOrString: File | string) => new Promise((resol
                     if (!fn.endsWith(".jpg")) {
                         fn += ".jpg";
                     }
-                    resolve(new File([ blob ], fn, { type: contentType }));
+                    const file = new File([ blob ], fn, { type: contentType });
+                    // eslint-disable-next-line no-console
+                    console.log("Resized file from %s to %s bytes (cap: %s)",
+                        fileOrString.size,
+                        file.size,
+                        MAX_UPLOAD_BYTES);
+                    resolve(file.size >= MAX_UPLOAD_BYTES
+                        ? promiseWellSizedFile(file)
+                        : file);
                 }, contentType);
             };
             // readAsDataURL assures us result is a string
