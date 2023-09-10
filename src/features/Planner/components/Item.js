@@ -45,26 +45,22 @@ const Item = ({
     return <ListItem
         ref={setNodeRef}
         disableGutters
-        style={{
-            paddingLeft: depth * 2 + "em",
-            // These should be unneeded, because of <List disablePadding /> but
-            // that attribute doesn't actually _do_ anything. The "dense"
-            // attribute does do something, so it's probably my misunderstanding
-            // of what/how it's supposed to work?
-            paddingTop: 0,
-            paddingBottom: 0,
-        }}
+        disablePadding
         className={classnames(classes.root, className, {
             [classes.dragging]: draggable && isDragging
         })}
         {...props}
     >
-        {(draggable || prefix) && <ListItemIcon>
+        {(draggable || prefix || depth) && <ListItemIcon>
             {draggable && <DragHandle
                 ref={setActivatorNodeRef}
                 {...listeners}
                 {...attributes}
             />}
+            {depth !== 0 && <span style={{
+                display: "inline-block",
+                width: depth * 2 + "em",
+            }} />}
             {prefix}
         </ListItemIcon>}
         {children}

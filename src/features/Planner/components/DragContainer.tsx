@@ -77,6 +77,7 @@ const DragContainer: React.FC<Props> = ({
                 ? <Box style={{
                     backgroundColor: "#dddddd",
                     opacity: 0.9,
+                    listStyle: "none",
                 }}>
                     {overlay}
                 </Box>

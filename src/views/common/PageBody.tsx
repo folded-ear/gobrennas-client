@@ -13,13 +13,15 @@ const useStyles = makeStyles(theme => {
             const styles: CreateCSSProperties = {
                 backgroundColor: "white",
                 minHeight: `calc(100vh - ${HEADER_HEIGHT}px)`,
-                paddingBottom: theme.spacing(2),
             };
             if (props.fullWidth) {
                 styles.paddingLeft = 0;
                 styles.paddingRight = 0;
             }
             return styles;
+        },
+        noFab: {
+            paddingBottom: theme.spacing(2),
         },
         hasFab: {
             paddingBottom: theme.spacing(7),
@@ -47,6 +49,7 @@ const PageBody: React.FC<PageBodyProps> = (props) => {
     return <Container
         className={classnames(classes.root, className, {
             [classes.hasFab]: hasFab,
+            [classes.noFab]: !hasFab,
         })}
         {...passthrough}
     >
