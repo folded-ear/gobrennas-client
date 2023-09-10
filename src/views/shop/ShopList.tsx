@@ -25,13 +25,8 @@ import {
     Quantity
 } from "global/types/types";
 import CollapseIconButton from "../../global/components/CollapseIconButton";
-import {
-    DndContext,
-    DragEndEvent,
-    DragOverlay,
-    rectIntersection
-} from "@dnd-kit/core";
 import PantryItemActions from "../../data/PantryItemActions";
+import DragContainer, { DragContainerProps } from "../../features/Planner/components/DragContainer";
 
 export enum ShopItemType {
     INGREDIENT,
@@ -81,48 +76,24 @@ function renderItem(it?: ShopItemTuple) {
 const TupleList: React.FC<TupleListProps> = ({
                                                  tuples,
                                              }) => {
-    const [ activeId, setActiveId ] = useState(undefined);
-
-    function handleDragStart(event) {
-        setActiveId(event.active.id);
-    }
-
-    function handleDragEnd(event: DragEndEvent) {
-        setActiveId(undefined);
-        if (!event.over) return;
-        const id = event.active.id;
-        const targetId = event.over.id;
-        if (id === targetId) return;
-        const finalRect = event.active.rect.current.translated;
-        const overRect = event.over.rect;
+    const handleDrop: DragContainerProps["onDrop"] = (id, targetId, vertical) => {
         Dispatcher.dispatch({
             type: PantryItemActions.ORDER_FOR_STORE,
             id,
             targetId,
-            after: finalRect
-                ? finalRect.top >= overRect.top
-                : true,
+            after: vertical === "below",
         });
-    }
+    };
 
-    return <DndContext onDragEnd={handleDragEnd}
-                       onDragStart={handleDragStart}
-                       collisionDetection={rectIntersection}>
+    return <DragContainer
+        onDrop={handleDrop}
+        renderOverlay={id => renderItem(tuples.find(it =>
+            it.id === id))}
+    >
         <List>
             {tuples.map(renderItem)}
         </List>
-        <DragOverlay>
-            {activeId
-                ? <Box style={{
-                    backgroundColor: "#dddddd",
-                    opacity: 0.9,
-                }}>
-                    {renderItem(tuples.find(it =>
-                        it.id === activeId))}
-                </Box>
-                : null}
-        </DragOverlay>
-    </DndContext>;
+    </DragContainer>;
 };
 
 const ShopList: React.FC<ShopListProps> = ({
