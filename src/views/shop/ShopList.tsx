@@ -20,7 +20,10 @@ import {
     ItemProps,
 } from "./types";
 import { PlanItem as PlanItemType } from "features/Planner/data/planStore";
-import { Quantity } from "global/types/types";
+import {
+    BfsId,
+    Quantity
+} from "global/types/types";
 import CollapseIconButton from "../../global/components/CollapseIconButton";
 import {
     DndContext,
@@ -36,12 +39,12 @@ export enum ShopItemType {
 }
 
 export interface ShopItemTuple extends ItemProps {
-    blockId?: string | number
+    blockId?: BfsId
     _type: ShopItemType
     active?: boolean
     depth: number
     expanded?: boolean
-    itemIds?: (string | number)[]
+    itemIds?: BfsId[]
     quantities?: Quantity[]
     path: BaseItemProp[]
 }

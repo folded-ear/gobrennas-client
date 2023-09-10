@@ -8,11 +8,12 @@ import {
     useMarkFavorite,
     useRemoveFavorite,
 } from "../data/queries";
-import { IconButton } from "@mui/material";
+import { BfsId } from "../../../global/types/types";
+import IconButton from "@mui/material/IconButton";
 
 interface Props {
-    type: string,
-    id: string | number,
+    type: string
+    id: BfsId
 }
 
 const Indicator: React.FC<Props> = ({

@@ -13,6 +13,7 @@ import React, {
     MouseEventHandler,
     ReactNode,
 } from "react";
+import { BfsId } from "../../global/types/types";
 
 const useStyles = makeStyles({
     popper: {
@@ -21,7 +22,7 @@ const useStyles = makeStyles({
 });
 
 interface Option {
-    id: string | number
+    id: BfsId
     label: string
 }
 

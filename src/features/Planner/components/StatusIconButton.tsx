@@ -7,6 +7,7 @@ import PlanItemStatus, {
     getIconForStatus,
 } from "features/Planner/data/PlanItemStatus";
 import { coloredIconButton } from "views/common/colors";
+import { BfsId } from "../../../global/types/types";
 
 const buttonLookup = {}; // Map<next, Map<curr, Button>>
 const findButton = (next, curr) => {
@@ -24,7 +25,7 @@ const findButton = (next, curr) => {
 interface Props {
     next: PlanItemStatus
     current?: PlanItemStatus
-    id?: string | number
+    id?: BfsId
     onClick?: MouseEventHandler
 }
 

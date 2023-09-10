@@ -8,6 +8,7 @@ import {
     red,
     teal
 } from "@mui/material/colors";
+import { BfsId } from "../global/types/types";
 
 export const planColors = [
     // ¡¡ Make sure this always has a size equal to a power of 2 !!
@@ -29,14 +30,14 @@ if (process.env.NODE_ENV === "development") {
     }
 }
 
-const ensureInt = (id: number | string) => {
+const ensureInt = (id: BfsId) => {
     if (typeof id == "number") {
         return id;
     }
     return parseInt(id, 10);
 };
 
-export const colorHash = (id: number | string) => {
+export const colorHash = (id: BfsId) => {
     const l = planColors.length;
     let n = ensureInt(id);
     let h = 0;

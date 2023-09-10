@@ -23,7 +23,10 @@ import {
     ItemProps,
 } from "views/shop/types";
 import { Maybe } from "graphql/jsutils/Maybe";
-import { Quantity } from "global/types/types";
+import {
+    BfsId,
+    Quantity
+} from "global/types/types";
 import { ripLoadObject } from "util/ripLoadObject";
 import windowStore from "../data/WindowStore";
 import partition from "../util/partition";
@@ -229,7 +232,7 @@ const Shop = () => {
             return next;
         });
     }, [ handleRepartition, itemTuples.length ]);
-    const [ acquiredIds, setAcquiredIds ] = useState<Set<string | number>>(new Set());
+    const [ acquiredIds, setAcquiredIds ] = useState<Set<BfsId>>(new Set());
     useEffect(() => {
         setAcquiredIds(new Set(itemTuples
             .filter(it => it.acquiring)

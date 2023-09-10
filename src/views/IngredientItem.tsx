@@ -11,7 +11,10 @@ import PlanActions from "features/Planner/data/PlanActions";
 import history from "util/history";
 import Quantity from "views/common/Quantity";
 import SendToPlan from "features/RecipeLibrary/components/SendToPlan";
-import { IngredientRef } from "global/types/types";
+import {
+    BfsId,
+    IngredientRef
+} from "global/types/types";
 import { useScale } from "util/ScalingContext";
 
 const useStyles = makeStyles(() => ({
@@ -26,7 +29,7 @@ const useStyles = makeStyles(() => ({
 }));
 
 interface AugmentProps {
-    text?: string | number | null,
+    text?: BfsId | null,
     prefix?: string,
     suffix?: string,
 }

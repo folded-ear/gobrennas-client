@@ -3,6 +3,7 @@ import Dispatcher from "data/dispatcher";
 import PlanActions from "features/Planner/data/PlanActions";
 import PlanItemStatus, { getColorForStatus } from "features/Planner/data/PlanItemStatus";
 import { coloredButton } from "views/common/colors";
+import { BfsId } from "../../../global/types/types";
 
 const buttonLookup = {}; // Map<next, Button>
 const findButton = next => {
@@ -14,7 +15,7 @@ const findButton = next => {
 
 interface Props {
     next: PlanItemStatus
-    id?: string | number
+    id?: BfsId
     onClick?: MouseEventHandler
 }
 

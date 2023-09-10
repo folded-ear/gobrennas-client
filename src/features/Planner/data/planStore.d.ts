@@ -2,24 +2,26 @@ import FluxReduceStore from "flux/lib/FluxReduceStore";
 import LoadObject from "../../../util/LoadObject";
 import LoadObjectState from "../../../util/LoadObjectState";
 import AccessLevel from "../../../data/AccessLevel";
-import { FluxAction } from "global/types/types";
+import {
+    BfsId,
+    FluxAction
+} from "global/types/types";
 
-type clientOrDatabaseIdType = string | number;
 
 export interface PlanBucket {
-    id: clientOrDatabaseIdType
+    id: BfsId
     name?: string
     date?: Date
 }
 
 export interface PlanItem {
     //  core
-    id: clientOrDatabaseIdType
+    id: BfsId
     name: string
     notes?: string
     status: string
     parentId?: number
-    subtaskIds?: clientOrDatabaseIdType[]
+    subtaskIds?: BfsId[]
     aggregateId?: number
     componentIds?: number[]
     bucketId?: number
@@ -41,12 +43,12 @@ export interface PlanItem {
 }
 
 interface State {
-    activeListId?: clientOrDatabaseIdType
+    activeListId?: BfsId
     listDetailVisible: boolean
-    activeTaskId?: clientOrDatabaseIdType
-    selectedTaskIds?: clientOrDatabaseIdType[]
-    topLevelIds: LoadObjectState<clientOrDatabaseIdType[]>
-    byId: Record<clientOrDatabaseIdType, LoadObject<PlanItem>>
+    activeTaskId?: BfsId
+    selectedTaskIds?: BfsId[]
+    topLevelIds: LoadObjectState<BfsId[]>
+    byId: Record<BfsId, LoadObject<PlanItem>>
 }
 
 declare namespace TaskStore {

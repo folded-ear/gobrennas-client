@@ -14,6 +14,7 @@ import {
     emptyRLO,
     RippedLO,
 } from "../../util/ripLoadObject";
+import { BfsId } from "../../global/types/types";
 
 export interface PendingJob {
     id: string
@@ -35,7 +36,7 @@ const TextractFormAugment: React.FC<Props> = ({ renderActions }) => {
     const [ browserOpen, setBrowserOpen ] = React.useState(false);
     const [ jobLO, setJobLO ] = React.useState<RippedLO<Job>>(emptyRLO());
     const [ creating, setCreating ] = React.useState<PendingJob[]>([]);
-    const [ deleting, setDeleting ] = React.useState<(string | number)[]>([]);
+    const [ deleting, setDeleting ] = React.useState<BfsId[]>([]);
     const queryClient = useQueryClient();
     return <>
         <TextractButton

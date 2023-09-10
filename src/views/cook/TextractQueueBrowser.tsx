@@ -14,6 +14,7 @@ import ImageDropZone from "../../util/ImageDropZone";
 import { useQuery } from "react-query";
 import TextractApi from "../../data/TextractApi";
 import { PendingJob } from "./TextractFormAugment";
+import { BfsId } from "../../global/types/types";
 
 const useStyles = makeStyles({
     drawer: {
@@ -55,7 +56,7 @@ interface PassthroughProps {
     onUpload: (photo: File) => void
     onDelete: (id: string) => void
     uploading: PendingJob[]
-    deleting: (number | string)[]
+    deleting: BfsId[]
 }
 
 interface UiProps extends PassthroughProps {

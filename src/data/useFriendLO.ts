@@ -1,7 +1,8 @@
 import FriendStore from "./FriendStore";
 import useFluxStore from "./useFluxStore";
+import { BfsId } from "../global/types/types";
 
-function useFriendLO(id: string | number) {
+function useFriendLO(id: BfsId) {
     return useFluxStore(
         () => FriendStore.getFriendLO(id),
         [ FriendStore ],

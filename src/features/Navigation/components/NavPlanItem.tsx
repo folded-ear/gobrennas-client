@@ -9,9 +9,10 @@ import {
 } from "@mui/material";
 import useActivePlanner from "../../../data/useActivePlanner";
 import { ItemIcon } from "./Navigation.elements";
+import { BfsId } from "../../../global/types/types";
 
 type NavPlanItemProps = {
-    id: string | number,
+    id: BfsId,
     onSelect: (e) => void,
     expanded: boolean,
     name: string,

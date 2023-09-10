@@ -2,9 +2,10 @@ import * as React from "react";
 import { Subheader } from "./Navigation.elements";
 import { ripLoadObject } from "../../../util/ripLoadObject";
 import useFriendLO from "../../../data/useFriendLO";
+import { BfsId } from "../../../global/types/types";
 
 interface NavOwnerItemProps {
-    id: string | number
+    id: BfsId
     expanded: boolean
 }
 
