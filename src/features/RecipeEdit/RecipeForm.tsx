@@ -7,7 +7,6 @@ import {
     Grid,
     IconButton,
     List,
-    ListItem,
     TextField,
     Typography,
     useMediaQuery,
@@ -32,6 +31,9 @@ import TextractFormAugment from "views/cook/TextractFormAugment";
 import PositionPicker from "views/PositionPicker";
 import { LabelAutoComplete } from "./components/LabelAutoComplete";
 import { Recipe } from "features/RecipeEdit/types";
+import DragContainer from "../Planner/components/DragContainer";
+import Item from "../Planner/components/Item";
+import DragHandle from "../Planner/components/DragHandle";
 
 const useStyles = makeStyles((theme) => ({
     button: {
@@ -42,17 +44,17 @@ const useStyles = makeStyles((theme) => ({
 const updateDraft = (key, value) => {
     Dispatcher.dispatch({
         type: RecipeActions.DRAFT_RECIPE_UPDATED,
-        data: {key, value},
+        data: { key, value },
     });
 };
 
 const handleUpdate = (e) => {
-    const {name: key, value} = e.target;
+    const { name: key, value } = e.target;
     updateDraft(key, value);
 };
 
 const handleNumericUpdate = (e) => {
-    const {name: key, value} = e.target;
+    const { name: key, value } = e.target;
     const v = parseFloat(value);
     updateDraft(key, isNaN(v) ? null : v);
 };
@@ -66,6 +68,17 @@ const handleLabelChange = (e, labels: string[], reason: AutocompleteChangeReason
         });
     }
 };
+
+function handleIngredientDrop(activeId, targetId, vertical) {
+    Dispatcher.dispatch({
+        type: RecipeActions.DRAFT_RECIPE_INGREDIENT_MOVED,
+        data: {
+            activeId,
+            targetId,
+            above: vertical === "above"
+        },
+    });
+}
 
 interface Props {
     title: string
@@ -186,54 +199,61 @@ const RecipeForm: React.FC<Props> = ({
                 </Grid>
             </Grid>
         </Box>
-        <List>
-            {draft.ingredients.map((it, i) =>
-                <ListItem key={it.id} disableGutters>
-                    <ElEdit
-                        name={`ingredients.${i}`}
-                        value={it}
-                        onChange={handleUpdate}
-                        onMultilinePaste={text => Dispatcher.dispatch({
-                            type: RecipeActions.MULTI_LINE_DRAFT_INGREDIENT_PASTE_YO,
-                            index: i,
-                            text,
-                        })}
-                        onPressEnter={() => Dispatcher.dispatch({
-                            type: RecipeActions.NEW_DRAFT_INGREDIENT_YO,
-                            index: i,
-                        })}
-                        onDelete={() => Dispatcher.dispatch({
-                            type: RecipeActions.KILL_DRAFT_INGREDIENT_YO,
-                            index: i,
-                        })}
-                        placeholder={i === 0
-                            ? "E.g., 1 cup onion, diced fine"
-                            : ""}
-                    />
-                    <div style={{marginLeft: "auto", whiteSpace: "nowrap"}}>
-                        {!mobile && <IconButton
-                            size="small"
-                            tabIndex={-1}
-                            onClick={() => Dispatcher.dispatch({
+        <DragContainer onDrop={handleIngredientDrop}
+                       renderOverlay={id => <Box px={2} py={1}>
+                           <DragHandle />
+                           {draft.ingredients.find(it => it.id === id).raw}
+                       </Box>}>
+            <List>
+                {draft.ingredients.map((it, i) =>
+                    <Item key={it.id}
+                          hideDivider
+                          dragId={it.id}
+                          suffix={<>{!mobile && <IconButton
+                              size="small"
+                              tabIndex={-1}
+                              onClick={() => Dispatcher.dispatch({
+                                  type: RecipeActions.NEW_DRAFT_INGREDIENT_YO,
+                                  index: i,
+                              })}
+                          >
+                              <Add />
+                          </IconButton>}
+                              <IconButton
+                                  size="small"
+                                  tabIndex={-1}
+                                  onClick={() => Dispatcher.dispatch({
+                                      type: RecipeActions.KILL_DRAFT_INGREDIENT_YO,
+                                      index: i,
+                                  })}
+                              >
+                                  <Delete />
+                              </IconButton>
+                          </>}>
+                        <ElEdit
+                            name={`ingredients.${i}`}
+                            value={it}
+                            onChange={handleUpdate}
+                            onMultilinePaste={text => Dispatcher.dispatch({
+                                type: RecipeActions.MULTI_LINE_DRAFT_INGREDIENT_PASTE_YO,
+                                index: i,
+                                text,
+                            })}
+                            onPressEnter={() => Dispatcher.dispatch({
                                 type: RecipeActions.NEW_DRAFT_INGREDIENT_YO,
                                 index: i,
                             })}
-                        >
-                            <Add />
-                        </IconButton>}
-                        <IconButton
-                            size="small"
-                            tabIndex={-1}
-                            onClick={() => Dispatcher.dispatch({
+                            onDelete={() => Dispatcher.dispatch({
                                 type: RecipeActions.KILL_DRAFT_INGREDIENT_YO,
                                 index: i,
                             })}
-                        >
-                            <Delete />
-                        </IconButton>
-                    </div>
-                </ListItem>)}
-        </List>
+                            placeholder={i === 0
+                                ? "E.g., 1 cup onion, diced fine"
+                                : ""}
+                        />
+                    </Item>)}
+            </List>
+        </DragContainer>
         <Button
             className={classes.button}
             startIcon={<Add />}
