@@ -10,6 +10,7 @@ import {
 } from "@dnd-kit/core";
 import DragHandle from "./DragHandle";
 import classnames from "classnames";
+import { darken } from "@mui/material";
 
 const Item = ({
                   depth = 0,
@@ -33,6 +34,7 @@ const Item = ({
         disabled: !draggable
     });
     const {
+        isOver,
         setNodeRef: setDroppableRef,
     } = useDroppable({
         id: dragId,
@@ -47,7 +49,8 @@ const Item = ({
         disableGutters
         disablePadding
         className={classnames(classes.root, className, {
-            [classes.dragging]: draggable && isDragging
+            [classes.dragging]: draggable && isDragging,
+            [classes.over]: draggable && isOver && !isDragging,
         })}
         {...props}
     >
@@ -80,11 +83,14 @@ Item.propTypes = {
     dragId: PropTypes.any,
 };
 
-export default withStyles({
+export default withStyles(theme => ({
     root: {
         borderBottom: "1px solid #eee",
+    },
+    over: {
+        backgroundColor: darken(theme.palette.secondary.main, 0.2) + " !important",
     },
     dragging: {
         opacity: 0.3,
     },
-})(Item);
+}))(Item);

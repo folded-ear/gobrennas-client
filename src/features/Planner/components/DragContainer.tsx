@@ -7,7 +7,11 @@ import {
     rectIntersection,
 } from "@dnd-kit/core";
 import { BfsId } from "../../../global/types/types";
-import { Box } from "@mui/material";
+import {
+    Box,
+    lighten,
+    useTheme
+} from "@mui/material";
 
 type Vert = "above" | "below";
 type Horiz = "left" | "right" | "none";
@@ -34,6 +38,7 @@ const DragContainer: React.FC<Props> = ({
                                             children,
                                             ...passthrough
                                         }) => {
+    const theme = useTheme();
     const [ activeId, setActiveId ] = useState(undefined);
     const overlay = renderOverlay
         && activeId !== undefined
@@ -75,8 +80,8 @@ const DragContainer: React.FC<Props> = ({
         <DragOverlay>
             {overlay
                 ? <Box style={{
-                    backgroundColor: "#dddddd",
-                    opacity: 0.9,
+                    backgroundColor: lighten(theme.palette.primary.main, 0.4),
+                    opacity: 0.85,
                     listStyle: "none",
                 }}>
                     {overlay}
