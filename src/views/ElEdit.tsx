@@ -24,32 +24,36 @@ import Autocomplete from "@mui/lab/Autocomplete";
 const doRecog = raw =>
     raw != null && raw.trim().length >= 2;
 
-export type Value = {
-    id?: BfsId,
-    raw: string,
-    quantity?: number,
-    uomId?: number,
-    units?: string,
-    ingredientId?: number,
-    ingredient?: Ingredient,
-    preparation?: string,
+export interface Value {
+    id?: BfsId
+    raw: string
+    quantity?: number
+    uomId?: number
+    units?: string
+    ingredientId?: number
+    ingredient?: Ingredient
+    preparation?: string
 }
 
-type Target = {
+interface Target {
     target: {
-        name: string,
-        value: Value,
+        name: string
+        value: Value
     }
 }
 
-type ElEditProps = {
-    name: string,
-    value: Value,
-    onChange(e: Target): void,
-    onPressEnter(): void,
-    onDelete?(): void,
-    onMultilinePaste?(text: string): void,
-    placeholder?: string,
+interface ElEditProps {
+    name: string
+    value: Value
+    placeholder?: string
+
+    onChange(e: Target): void
+
+    onPressEnter(): void
+
+    onDelete?(): void
+
+    onMultilinePaste?(text: string): void
 }
 
 interface Suggestion {
@@ -59,15 +63,15 @@ interface Suggestion {
     result: string
 }
 
-type ElEditState = {
-    recog?: RecognitionResult,
-    suggestions?: Suggestion[],
-    quantity?: number,
-    quantityValue?: number,
-    unit?: string,
-    unitValue?: number,
-    ingredientName?: string,
-    nameValue?: number,
+interface ElEditState {
+    recog?: RecognitionResult
+    suggestions?: Suggestion[]
+    quantity?: number
+    quantityValue?: number
+    unit?: string
+    unitValue?: number
+    ingredientName?: string
+    nameValue?: number
     preparation?: string
 }
 
@@ -250,11 +254,11 @@ class ElEdit extends React.PureComponent<ElEditProps, ElEditState> {
     }
 
     _hasSuggestions() {
-        const {suggestions} = this.state;
+        const { suggestions } = this.state;
         if (!suggestions) return false;
         if (suggestions.length === 0) return false;
         if (suggestions.length > 1) return true;
-        const {value: {raw}} = this.props;
+        const { value: { raw } } = this.props;
         return suggestions[0].result !== raw;
     }
 
@@ -291,7 +295,6 @@ class ElEdit extends React.PureComponent<ElEditProps, ElEditState> {
             <Grid item sm={6} xs={12}>
                 <Autocomplete
                     size={"small"}
-                    id={`${ingredientName}.raw`}
                     value={raw}
                     onChange={this.handleChange}
                     onInputChange={this.handleChange}
