@@ -4,73 +4,66 @@ import ListItemSecondaryAction from "@mui/material/ListItemSecondaryAction";
 import withStyles from "@mui/styles/withStyles";
 import PropTypes from "prop-types";
 import React from "react";
+import {
+    useDraggable,
+    useDroppable
+} from "@dnd-kit/core";
+import DragHandle from "./DragHandle";
+import classnames from "classnames";
+import { darken } from "@mui/material";
 
 const Item = ({
-    depth = 0,
-    prefix,
-    suffix,
-    children,
-    classes,
-    className,
-    ...props
-}) => {
-    if (props.dragId && props.onDragDrop) {
-        const itemId = props.dragId;
-        const onDragDrop = props.onDragDrop;
-        delete props.dragId;
-        delete props.onDragDrop;
-        // for drag sources
-        props.draggable = true;
-        props.onDragStart = e => {
-            e.dataTransfer.setData("foodinger/data", itemId);
-            const dragRect = e.currentTarget.getBoundingClientRect();
-            e.dataTransfer.setData("foodinger/x-pos", (e.clientX - dragRect.x) / dragRect.width);
-            e.dataTransfer.setData("foodinger/opacity", e.target.style.opacity);
-            e.target.style.opacity = "0.3";
-            e.dataTransfer.effectAllowed = "move";
-        };
-        props.onDragEnd = e => {
-            e.target.style.opacity = e.dataTransfer.getData("foodinger/opacity");
-        };
-        // for drop targets
-        props.onDragOver = e => {
-            e.preventDefault();
-            e.dataTransfer.dropEffect = "move";
-        };
-        props.onDrop = e => {
-            e.preventDefault();
-            let droppedId = e.dataTransfer.getData("foodinger/data");
-            if (!isNaN(parseInt(droppedId, 10))) {
-                droppedId = parseInt(droppedId, 10);
-            }
-            if (droppedId === itemId) return;
-            const dropRect = e.currentTarget.getBoundingClientRect();
-            const dragPos = parseFloat(e.dataTransfer.getData("foodinger/x-pos"));
-            const dropPos = (e.clientX - dropRect.x) / dropRect.width;
-            const dx = dropPos - dragPos;
-            onDragDrop(
-                droppedId,
-                itemId,
-                e.clientY > dropRect.y + (dropRect.height / 2) ? "below" : "above",
-                // require 5% delta to count as a horizontal change
-                dx > 0.05 ? "right" : dx < -0.05 ? "left" : null);
-        };
-    }
+                  depth = 0,
+                  prefix,
+                  suffix,
+                  children,
+                  classes,
+                  className,
+                  dragId,
+                  ...props
+              }) => {
+    const draggable = !!dragId;
+    const {
+        attributes,
+        listeners,
+        setNodeRef: setDraggableRef,
+        setActivatorNodeRef,
+        isDragging,
+    } = useDraggable({
+        id: dragId,
+        disabled: !draggable
+    });
+    const {
+        isOver,
+        setNodeRef: setDroppableRef,
+    } = useDroppable({
+        id: dragId,
+        disabled: !draggable
+    });
+    const setNodeRef = (...args) => {
+        setDraggableRef(...args);
+        setDroppableRef(...args);
+    };
     return <ListItem
+        ref={setNodeRef}
         disableGutters
-        style={{
-            paddingLeft: depth * 2 + "em",
-            // These should be unneeded, because of <List disablePadding /> but
-            // that attribute doesn't actually _do_ anything. The "dense"
-            // attribute does do something, so it's probably my misunderstanding
-            // of what/how it's supposed to work?
-            paddingTop: 0,
-            paddingBottom: 0,
-        }}
-        className={classes.root + (className ? " " + className : "")}
+        disablePadding
+        className={classnames(classes.root, className, {
+            [classes.dragging]: draggable && isDragging,
+            [classes.over]: draggable && isOver && !isDragging,
+        })}
         {...props}
     >
-        {prefix && <ListItemIcon>
+        {(draggable || prefix || depth) && <ListItemIcon>
+            {draggable && <DragHandle
+                ref={setActivatorNodeRef}
+                {...listeners}
+                {...attributes}
+            />}
+            {depth !== 0 && <span style={{
+                display: "inline-block",
+                width: depth * 2 + "em",
+            }} />}
             {prefix}
         </ListItemIcon>}
         {children}
@@ -88,11 +81,16 @@ Item.propTypes = {
     classes: PropTypes.object.isRequired,
     className: PropTypes.string,
     dragId: PropTypes.any,
-    onDragDrop: PropTypes.func,
 };
 
-export default withStyles({
+export default withStyles(theme => ({
     root: {
         borderBottom: "1px solid #eee",
     },
-})(Item);
+    over: {
+        backgroundColor: darken(theme.palette.secondary.main, 0.2) + " !important",
+    },
+    dragging: {
+        opacity: 0.3,
+    },
+}))(Item);

@@ -8,6 +8,7 @@ import {
     red,
     teal
 } from "@mui/material/colors";
+import { BfsId } from "../global/types/types";
 
 export const planColors = [
     // ¡¡ Make sure this always has a size equal to a power of 2 !!
@@ -29,14 +30,30 @@ if (process.env.NODE_ENV === "development") {
     }
 }
 
-const ensureInt = (id: number | string) => {
+const ensureInt = (id: BfsId) => {
     if (typeof id == "number") {
         return id;
     }
-    return parseInt(id, 10);
+    if (id == null) {
+        id = "";
+    } else {
+        id = id.toString();
+    }
+    let n = parseInt(id, 10);
+    if (isNaN(n) || n.toString().length !== id.length) {
+        n = parseInt(id, 36);
+    }
+    if (isNaN(n) || n.toString(36).length !== id.length) {
+        n = 0;
+        for (const codePoint of id) {
+            n *= 31;
+            n += codePoint.codePointAt(0) || 0;
+        }
+    }
+    return n;
 };
 
-export const colorHash = (id: number | string) => {
+export const colorHash = (id: BfsId) => {
     const l = planColors.length;
     let n = ensureInt(id);
     let h = 0;

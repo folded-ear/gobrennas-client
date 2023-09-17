@@ -2,11 +2,10 @@ import FluxReduceStore from "flux/lib/FluxReduceStore";
 import { FluxAction } from "../global/types/types";
 import LoadObject from "../../../util/LoadObject";
 import LoadObjectMap from "../../../util/LoadObjectMap";
-
-type clientOrDatabaseIdType = string | number;
+import { BfsId } from "../../../global/types/types";
 
 interface State {
-    byId: LoadObjectMap<clientOrDatabaseIdType, PantryItem | Recipe>
+    byId: LoadObjectMap<BfsId, PantryItem | Recipe>
 }
 
 declare namespace LibraryStore {

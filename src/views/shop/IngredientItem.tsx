@@ -2,7 +2,6 @@ import { ListItemText } from "@mui/material";
 import classnames from "classnames";
 import React from "react";
 import Dispatcher from "../../data/dispatcher";
-import PantryItemActions from "../../data/PantryItemActions";
 import ShoppingActions from "../../data/ShoppingActions";
 import PlanItemStatus from "features/Planner/data/PlanItemStatus";
 import LoadingIconButton from "../common/LoadingIconButton";
@@ -29,7 +28,7 @@ type IngredientItemProps = TupleProps & {
             quantity: number,
             uomId?: number,
         }[]
-    }
+    },
 }
 
 class IngredientItem extends React.PureComponent<IngredientItemProps> {
@@ -40,7 +39,6 @@ class IngredientItem extends React.PureComponent<IngredientItemProps> {
         this.onUndoSetStatus = this.onUndoSetStatus.bind(this);
         this.onToggleExpanded = this.onToggleExpanded.bind(this);
         this.onClick = this.onClick.bind(this);
-        this.onDragDrop = this.onDragDrop.bind(this);
     }
 
     onSetStatus(status, e) {
@@ -96,15 +94,6 @@ class IngredientItem extends React.PureComponent<IngredientItemProps> {
         });
     }
 
-    onDragDrop(id, targetId, v) {
-        Dispatcher.dispatch({
-            type: PantryItemActions.ORDER_FOR_STORE,
-            id,
-            targetId,
-            after: v !== "above",
-        });
-    }
-
     render() {
         const {
             item,
@@ -156,7 +145,6 @@ class IngredientItem extends React.PureComponent<IngredientItemProps> {
                 [classes.deleting]: deleting,
             })}
             dragId={item.id}
-            onDragDrop={this.onDragDrop}
         >
             <ListItemText>
                 {item.name}

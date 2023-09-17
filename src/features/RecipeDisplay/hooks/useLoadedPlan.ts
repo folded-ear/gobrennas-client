@@ -3,8 +3,9 @@ import planStore from "features/Planner/data/planStore";
 import React from "react";
 import Dispatcher from "../../../data/dispatcher";
 import PlanActions from "features/Planner/data/PlanActions";
+import { BfsId } from "../../../global/types/types";
 
-export const useLoadedPlan = (pid: number | string | undefined) => {
+export const useLoadedPlan = (pid: BfsId | undefined) => {
     // ensure it's loaded
     const allPlansLO = useFluxStore(
         () => planStore.getPlanIdsLO(),

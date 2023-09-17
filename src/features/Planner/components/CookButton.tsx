@@ -5,10 +5,11 @@ import {
 import { Kitchen as KitchenIcon } from "@mui/icons-material";
 import React from "react";
 import history from "util/history";
+import { BfsId } from "../../../global/types/types";
 
 interface Props {
-    planId: string | number
-    itemId: string | number
+    planId: BfsId
+    itemId: BfsId
 }
 
 const CookButton: React.FC<Props> = ({
@@ -23,8 +24,8 @@ const CookButton: React.FC<Props> = ({
         >
             <IconButton
                 onClick={() => history.push(`/plan/${planId}/recipe/${itemId}`)}
-                {...props}
-                size="large">
+                size="large"
+                {...props}>
                 <KitchenIcon />
             </IconButton>
         </Tooltip>

@@ -3,6 +3,7 @@ import Dispatcher from "data/dispatcher";
 import RecipeActions from "data/RecipeActions";
 import React from "react";
 import ImageDropZone from "util/ImageDropZone";
+import { BfsId } from "../../../global/types/types";
 
 const useStyles = makeStyles({
     root: {
@@ -15,8 +16,8 @@ const useStyles = makeStyles({
 });
 
 interface Props {
-    recipeId: string | number,
-    disabled: boolean,
+    recipeId: BfsId
+    disabled: boolean
 }
 
 const ItemImageUpload: React.FC<Props> = ({

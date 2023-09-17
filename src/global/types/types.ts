@@ -1,7 +1,9 @@
 import { CheckableActionType } from "util/typedAction";
 
+export type BfsId = string | number;
+
 export interface UserType {
-    id: number | string
+    id: BfsId
     name: string | null
     provider: string
     email: string | null
@@ -10,7 +12,7 @@ export interface UserType {
 }
 
 export interface Ingredient {
-    id: number | string
+    id: BfsId
     name: string
     type?: "Recipe" | "PantryItem"
 }
@@ -24,7 +26,7 @@ export interface IngredientRef {
     quantity?: number | null
     preparation?: string | null
     units?: string | null
-    uomId?: string | number
+    uomId?: BfsId
     ingredient?: string | Ingredient | null
     ingredientId?: number
 

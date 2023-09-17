@@ -1,11 +1,13 @@
+import { BfsId } from "../../global/types/types";
+
 export type TupleProps = {
     active: boolean,
     classes: any,
 };
 
 export type BaseItemProp = {
-    id: string | number
-    name: string,
+    id: BfsId
+    name: string
     status?: string
 };
 

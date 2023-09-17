@@ -20,8 +20,13 @@ import {
     ItemProps,
 } from "./types";
 import { PlanItem as PlanItemType } from "features/Planner/data/planStore";
-import { Quantity } from "global/types/types";
+import {
+    BfsId,
+    Quantity
+} from "global/types/types";
 import CollapseIconButton from "../../global/components/CollapseIconButton";
+import PantryItemActions from "../../data/PantryItemActions";
+import DragContainer, { DragContainerProps } from "../../features/Planner/components/DragContainer";
 
 export enum ShopItemType {
     INGREDIENT,
@@ -29,12 +34,12 @@ export enum ShopItemType {
 }
 
 export interface ShopItemTuple extends ItemProps {
-    blockId?: string | number
+    blockId?: BfsId
     _type: ShopItemType
     active?: boolean
     depth: number
     expanded?: boolean
-    itemIds?: (string | number)[]
+    itemIds?: BfsId[]
     quantities?: Quantity[]
     path: BaseItemProp[]
 }
@@ -50,27 +55,45 @@ interface TupleListProps {
     tuples: ShopItemTuple[]
 }
 
+function renderItem(it?: ShopItemTuple) {
+    if (!it) return null;
+    if (it._type === ShopItemType.INGREDIENT) {
+        return <IngredientItem
+            key={it.id + "-ing-item"}
+            item={it}
+            active={it.expanded}
+        />;
+    } else {
+        return <PlanItem
+            key={it.id}
+            depth={it.depth}
+            item={it}
+            active={it.active}
+        />;
+    }
+}
+
 const TupleList: React.FC<TupleListProps> = ({
                                                  tuples,
                                              }) => {
-    return <List>
-        {tuples.map(it => {
-            if (it._type === ShopItemType.INGREDIENT) {
-                return <IngredientItem
-                    key={it.id + "-ing-item"}
-                    item={it}
-                    active={it.expanded}
-                />;
-            } else {
-                return <PlanItem
-                    key={it.id}
-                    depth={it.depth}
-                    item={it}
-                    active={it.active}
-                />;
-            }
-        })}
-    </List>;
+    const handleDrop: DragContainerProps["onDrop"] = (id, targetId, vertical) => {
+        Dispatcher.dispatch({
+            type: PantryItemActions.ORDER_FOR_STORE,
+            id,
+            targetId,
+            after: vertical === "below",
+        });
+    };
+
+    return <DragContainer
+        onDrop={handleDrop}
+        renderOverlay={id => renderItem(tuples.find(it =>
+            it.id === id))}
+    >
+        <List>
+            {tuples.map(renderItem)}
+        </List>
+    </DragContainer>;
 };
 
 const ShopList: React.FC<ShopListProps> = ({
@@ -105,8 +128,10 @@ const ShopList: React.FC<ShopListProps> = ({
         />;
     }
 
-    return <PageBody hasFab>
-        <Typography variant="h2">{plan.name}</Typography>
+    return <PageBody hasFab fullWidth>
+        <Box mx={2} my={1}>
+            <Typography variant="h2">{plan.name}</Typography>
+        </Box>
         <TupleList tuples={neededTuples} />
         {acquiredTuples.length > 0 && <Box mt={2}>
             <Typography variant="h5">

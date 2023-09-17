@@ -34,7 +34,6 @@ class PlanItem extends React.PureComponent {
         this.onKeyDown = this.onKeyDown.bind(this);
         this.onClick = this.onClick.bind(this);
         this.onToggleExpanded = this.onToggleExpanded.bind(this);
-        this.onDragDrop = this.onDragDrop.bind(this);
         this.inputRef = React.createRef();
     }
 
@@ -198,32 +197,6 @@ class PlanItem extends React.PureComponent {
         });
     }
 
-    onDragDrop(id, targetId, vertical, horizontal) {
-        const {
-            item,
-        } = this.props;
-        const action = {
-            type: PlanActions.MOVE_SUBTREE,
-            id,
-        };
-        if (horizontal === "right") {
-            action.parentId = targetId;
-            if (isExpanded(item)) {
-                action.after = null;
-            } else {
-                action.before = null;
-            }
-        } else {
-            action.parentId = item.parentId;
-            if (vertical === "above") {
-                action.before = targetId;
-            } else {
-                action.after = targetId;
-            }
-        }
-        Dispatcher.dispatch(action);
-    }
-
     componentDidMount() {
         if (this.props.active) this.inputRef.current.focus();
     }
@@ -341,7 +314,6 @@ class PlanItem extends React.PureComponent {
                 [classes.ancestorDeleting]: ancestorDeleting,
             })}
             dragId={item.id}
-            onDragDrop={this.onDragDrop}
         >
             {active
                 ? <Input

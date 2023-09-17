@@ -1,17 +1,31 @@
-import {Grid, InputAdornment, LinearProgress, TextField,} from "@mui/material";
-import {CheckCircleOutline, ErrorOutline,} from "@mui/icons-material";
-import React, {CSSProperties, PropsWithChildren,} from "react";
-import ItemApi, {RecognitionResult} from "data/ItemApi";
+import {
+    Grid,
+    InputAdornment,
+    LinearProgress,
+    TextField,
+} from "@mui/material";
+import {
+    CheckCircleOutline,
+    ErrorOutline,
+} from "@mui/icons-material";
+import React, {
+    CSSProperties,
+    PropsWithChildren,
+} from "react";
+import ItemApi, { RecognitionResult } from "data/ItemApi";
 import debounce from "util/debounce";
 import processRecognizedItem from "util/processRecognizedItem";
-import {Ingredient} from "global/types/types";
+import {
+    BfsId,
+    Ingredient
+} from "global/types/types";
 import Autocomplete from "@mui/lab/Autocomplete";
 
 const doRecog = raw =>
     raw != null && raw.trim().length >= 2;
 
 export type Value = {
-    id?: string | number,
+    id?: BfsId,
     raw: string,
     quantity?: number,
     uomId?: number,
