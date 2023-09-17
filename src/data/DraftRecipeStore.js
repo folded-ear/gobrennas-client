@@ -61,24 +61,24 @@ const loadRecipeIfPossible = draftLO => {
         ingredients: s.ingredients == null || s.ingredients.length === 0
             ? [ newIngredient() ]
             : s.ingredients.map((it, i) => ({
-                id: i,
+                id: i.toString(),
                 ...it,
             })),
     }));
 };
 
 class DraftRecipeStore extends ReduceStore {
-    
+
     constructor() {
         super(Dispatcher);
     }
-    
+
     getInitialState() {
         return LoadObject.withValue(buildTemplate());
     }
-    
+
     reduce(state, action) {
-        
+
         switch (action.type) {
 
             case RouteActions.MATCH: {
@@ -117,13 +117,44 @@ class DraftRecipeStore extends ReduceStore {
             }
 
             case RecipeActions.DRAFT_RECIPE_UPDATED: {
-                let {key, value} = action.data;
+                const { key, value } = action.data;
                 state = state.map(s => dotProp.set(s, key, value));
                 return state;
             }
 
             case RecipeActions.DRAFT_LABEL_UPDATED: {
                 state = state.map(s => dotProp.set(s, "labels", action.data));
+                return state;
+            }
+
+            case RecipeActions.DRAFT_RECIPE_INGREDIENT_MOVED: {
+                const {
+                    activeId,
+                    targetId,
+                    above = false
+                } = action.data;
+                state = state.map(s => {
+                    const ingredients = s.ingredients == null
+                        ? []
+                        : s.ingredients.slice(0);
+                    const idxActive = ingredients
+                        .findIndex(it => it.id === activeId);
+                    if (idxActive < 0) return s;
+                    const removed = ingredients.splice(idxActive, 1);
+                    const idxTarget = ingredients
+                        .findIndex(it => it.id === targetId);
+                    if (idxTarget < 0) return s;
+                    ingredients.splice(
+                        above
+                            ? idxTarget
+                            : idxTarget + 1,
+                        0,
+                        ...removed);
+                    return {
+                        ...s,
+                        ingredients,
+                    };
+                });
                 return state;
             }
 
@@ -235,7 +266,7 @@ class DraftRecipeStore extends ReduceStore {
     getDraft() {
         return this.getState().getValueEnforcing();
     }
-    
+
 }
 
 export default new DraftRecipeStore();

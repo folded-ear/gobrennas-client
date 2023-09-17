@@ -19,10 +19,11 @@ const Item = ({
                   children,
                   classes,
                   className,
+                  hideDivider,
                   dragId,
                   ...props
               }) => {
-    const draggable = !!dragId;
+    const draggable = dragId != null;
     const {
         attributes,
         listeners,
@@ -48,7 +49,8 @@ const Item = ({
         ref={setNodeRef}
         disableGutters
         disablePadding
-        className={classnames(classes.root, className, {
+        className={classnames(className, {
+            [classes.root]: !hideDivider,
             [classes.dragging]: draggable && isDragging,
             [classes.over]: draggable && isOver && !isDragging,
         })}
@@ -59,6 +61,7 @@ const Item = ({
                 ref={setActivatorNodeRef}
                 {...listeners}
                 {...attributes}
+                tabIndex={-1}
             />}
             {depth !== 0 && <span style={{
                 display: "inline-block",
@@ -80,6 +83,7 @@ Item.propTypes = {
     suffix: PropTypes.node,
     classes: PropTypes.object.isRequired,
     className: PropTypes.string,
+    hideDivider: PropTypes.bool,
     dragId: PropTypes.any,
 };
 

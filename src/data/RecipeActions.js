@@ -30,6 +30,7 @@ const RecipeActions = {
     LOAD_RECIPE_DRAFT: "recipe/load-recipe/draft",
     DRAFT_RECIPE_UPDATED: "recipe/draft-recipe-updated",
     DRAFT_LABEL_UPDATED: "recipe/draft-label-updated",
+    DRAFT_RECIPE_INGREDIENT_MOVED: "recipe/draft-recipe-ingredient-moved",
     SAVE_DRAFT_RECIPE: "recipe/save-draft-recipe",
     RAW_INGREDIENT_DISSECTED: typedAction("recipe/raw-ingredient-dissected", {
         recipeId: PropTypes.number.isRequired,
