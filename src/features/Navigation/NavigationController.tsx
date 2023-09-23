@@ -120,7 +120,10 @@ export const NavigationController: React.FC<NavigationControllerProps> = ({
         return (
             <MainMobile>
                 <Header elevation={0} />
-                <MobileNav selected={selected} />
+                <MobileNav
+                  selected={selected}
+                  planItems={navPlanItems}
+                />
                 {children}
             </MainMobile>
         );

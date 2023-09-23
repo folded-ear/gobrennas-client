@@ -11,6 +11,7 @@ import {
 } from "@mui/icons-material";
 import { styled } from "@mui/material/styles";
 import { MobileNavItem } from "features/Navigation/components/MobileNavItem";
+import { NavDrawer } from "features/Navigation/components/NavDrawer";
 
 const NavWrapper = styled(Paper)(({ theme }) => ({
     position: "fixed",
@@ -22,9 +23,10 @@ const NavWrapper = styled(Paper)(({ theme }) => ({
 
 type MobileNavProps = {
     selected?: string;
+    planItems: any
 };
 
-export const MobileNav: React.FC<MobileNavProps> = ({ selected = false }) => {
+export const MobileNav: React.FC<MobileNavProps> = ({selected= false, planItems}) => {
     return (
         <NavWrapper elevation={3}>
             <BottomNavigation showLabels value={selected}>
@@ -52,6 +54,7 @@ export const MobileNav: React.FC<MobileNavProps> = ({ selected = false }) => {
                     to="/profile"
                     value="profile"
                 />
+                <NavDrawer planItems={planItems}/>
             </BottomNavigation>
         </NavWrapper>
     );
