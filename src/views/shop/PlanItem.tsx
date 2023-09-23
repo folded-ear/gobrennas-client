@@ -13,9 +13,9 @@ import Item from "features/Planner/components/Item";
 import StatusIconButton from "features/Planner/components/StatusIconButton";
 import withItemStyles from "features/Planner/components/withItemStyles";
 import {
-  BaseItemProp,
-  ItemProps,
-  TupleProps
+    BaseItemProp,
+    ItemProps,
+    TupleProps
 } from "./types";
 import { ShopItemType } from "views/shop/ShopList";
 
@@ -100,6 +100,8 @@ class PlanItem extends React.PureComponent<PlanItemProps> {
                         id: this.props.item.id,
                     });
                 }
+                break;
+            default:
                 break;
         }
     }
