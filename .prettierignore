@@ -1,0 +1,19 @@
+# Ignore artifacts:
+.idea
+
+# testing
+/coverage
+
+# production
+/build
+
+public
+/src/__generated__/
+
+# Ignore files:
+**/*.html
+**/*.yaml
+**/*.css
+**/*.json
+**/*.graphql
+**/*.md
