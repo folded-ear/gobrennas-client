@@ -13,7 +13,7 @@ const collator = new Intl.Collator(undefined, {
 export const humanStringComparator = collator.compare;
 
 interface Named {
-    name: string
+    name: string;
 }
 
 /**
@@ -23,7 +23,7 @@ export const byNameComparator = (a: Named, b: Named) =>
     humanStringComparator(a.name, b.name);
 
 interface Dated {
-    date?: Date
+    date?: Date;
 }
 
 type Bucket = Named & Dated;
@@ -52,7 +52,10 @@ export const bucketComparator = (a: Bucket, b: Bucket) => {
  * result, otherwise the one that ran out of elements first, otherwise they are
  * considered equal.
  */
-export const zippedComparator = (a: Array<string>, b: Array<string>): number => {
+export const zippedComparator = (
+    a: Array<string>,
+    b: Array<string>,
+): number => {
     for (let i = 0, l = Math.min(a.length, b.length); i < l; i++) {
         const c = humanStringComparator(a[i], b[i]);
         if (c !== 0) return c;

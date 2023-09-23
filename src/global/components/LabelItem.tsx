@@ -9,16 +9,12 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 interface Props {
-    label: string,
+    label: string;
 }
 
 const LabelItem: React.FC<Props> = ({ label }) => {
     const classes = useStyles();
-    return <Chip
-        size="small"
-        label={label}
-        className={classes.root}
-    />;
+    return <Chip size="small" label={label} className={classes.root} />;
 };
 
 export default LabelItem;

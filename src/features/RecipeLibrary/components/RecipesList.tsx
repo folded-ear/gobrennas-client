@@ -1,12 +1,12 @@
-import { PostAdd as AddIcon, } from "@mui/icons-material";
+import { PostAdd as AddIcon } from "@mui/icons-material";
 import {
-    Container as Content,
-    Grid,
-    useScrollTrigger,
+  Container as Content,
+  Grid,
+  useScrollTrigger
 } from "@mui/material";
 import RecipeCard from "features/RecipeLibrary/components/RecipeCard";
 import { useIsMobile } from "providers/IsMobile";
-import React, { useState, } from "react";
+import React, { useState } from "react";
 import history from "util/history";
 import FoodingerFab from "views/common/FoodingerFab";
 import LazyInfinite from "views/common/LazyInfinite";
@@ -16,28 +16,28 @@ import { MessagePaper } from "features/RecipeLibrary/components/MessagePaper";
 import { SearchRecipes } from "features/RecipeLibrary/components/SearchRecipes";
 
 interface RecipesListProps {
-    me: any, // todo
-    filter?: string,
-    scope?: LibrarySearchScope,
-    isLoading: boolean,
-    isComplete: boolean,
-    recipes?: Array<any>,
+    me: any; // todo
+    filter?: string;
+    scope?: LibrarySearchScope;
+    isLoading: boolean;
+    isComplete: boolean;
+    recipes?: Array<any>;
 
-    onSearch(filter: string, scope: LibrarySearchScope): void,
+    onSearch(filter: string, scope: LibrarySearchScope): void;
 
-    onNeedMore(): void,
+    onNeedMore(): void;
 }
 
 export const RecipesList: React.FC<RecipesListProps> = ({
-                                                            me,
-                                                            scope = LibrarySearchScope.Mine,
-                                                            filter = "",
-                                                            recipes,
-                                                            isLoading,
-                                                            isComplete,
-                                                            onSearch,
-                                                            onNeedMore,
-                                                        }) => {
+    me,
+    scope = LibrarySearchScope.Mine,
+    filter = "",
+    recipes,
+    isLoading,
+    isComplete,
+    onSearch,
+    onNeedMore,
+}) => {
     const isSearchFloating = useScrollTrigger({
         disableHysteresis: true,
         threshold: 0,
@@ -72,60 +72,62 @@ export const RecipesList: React.FC<RecipesListProps> = ({
     let body;
     if (!!recipes) {
         if (recipes.length > 0) {
-            body = <LazyInfinite
-                loading={isLoading}
-                complete={isComplete}
-                onNeedMore={onNeedMore}
-            >
-                <Grid
-                    container
-                    spacing={4}
-                    alignItems="stretch"
+            body = (
+                <LazyInfinite
+                    loading={isLoading}
+                    complete={isComplete}
+                    onNeedMore={onNeedMore}
                 >
-                    {recipes.map(recipe =>
-                        <Grid
-                            item
-                            md={4}
-                            sm={6}
-                            xs={12}
-                            key={recipe.id}
-                            sx={ {display: "flex"}}
-                        >
-                            <RecipeCard
-                                recipe={recipe}
-                                me={me}
-                                indicateMine={scope === LibrarySearchScope.Everyone}
-                                mine={recipe.owner.id === ("" + me.id)}
-                            />
-                        </Grid>,
-                    )}
-                    {isComplete && recipes.length > 5 && <Grid
-                        item
-                        xs={12}
-                    >
-                        <MessagePaper primary={"That's it. Fin. The end."}/>
-                    </Grid>}
-                    {isLoading && <Grid
-                        item
-                        xs={12}
-                    >
-                        <LoadingIndicator
-                            primary={"Searching..."}
-                        />
-                    </Grid>}
-                </Grid>
-            </LazyInfinite>;
+                    <Grid container spacing={4} alignItems="stretch">
+                        {recipes.map((recipe) => (
+                            <Grid
+                                item
+                                md={4}
+                                sm={6}
+                                xs={12}
+                                key={recipe.id}
+                                sx={{ display: "flex" }}
+                            >
+                                <RecipeCard
+                                    recipe={recipe}
+                                    me={me}
+                                    indicateMine={
+                                        scope === LibrarySearchScope.Everyone
+                                    }
+                                    mine={recipe.owner.id === "" + me.id}
+                                />
+                            </Grid>
+                        ))}
+                        {isComplete && recipes.length > 5 && (
+                            <Grid item xs={12}>
+                                <MessagePaper
+                                    primary={"That's it. Fin. The end."}
+                                />
+                            </Grid>
+                        )}
+                        {isLoading && (
+                            <Grid item xs={12}>
+                                <LoadingIndicator primary={"Searching..."} />
+                            </Grid>
+                        )}
+                    </Grid>
+                </LazyInfinite>
+            );
         } else if (isLoading) {
-            body = <LoadingIndicator/>;
+            body = <LoadingIndicator />;
         } else {
-            body = <MessagePaper
-                primary={filter
-                    ? "Zero recipes matched your filter. 🙁"
-                    : "You don't have any recipes yet!"}
-            />;
+            body = (
+                <MessagePaper
+                    primary={
+                        filter
+                            ? "Zero recipes matched your filter. 🙁"
+                            : "You don't have any recipes yet!"
+                    }
+                />
+            );
         }
     } else {
-        body = <LoadingIndicator/>;
+        body = <LoadingIndicator />;
     }
 
     return (
@@ -141,10 +143,8 @@ export const RecipesList: React.FC<RecipesListProps> = ({
                 toggleScope={toggleScope}
             />
             {body}
-            <FoodingerFab
-                onClick={() => history.push(`/add`)}
-            >
-                <AddIcon/>
+            <FoodingerFab onClick={() => history.push(`/add`)}>
+                <AddIcon />
             </FoodingerFab>
         </Content>
     );

@@ -1,18 +1,18 @@
 import {
-    Box,
-    Grid,
-    IconButton,
-    Typography,
+  Box,
+  Grid,
+  IconButton,
+  Typography
 } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import {
-    Close,
-    RotateLeft,
-    RotateRight,
+  Close,
+  RotateLeft,
+  RotateRight
 } from "@mui/icons-material";
 import React, {
-    MouseEventHandler,
-    ReactNode,
+  MouseEventHandler,
+  ReactNode
 } from "react";
 import useFluxStore from "../../data/useFluxStore";
 import WindowStore from "../../data/WindowStore";
@@ -46,90 +46,98 @@ const overlaps = (a, b) =>
     a.top <= b.top + b.height;
 
 interface Rect {
-    x1: number
-    y1: number
-    x2?: number
-    y2?: number
+    x1: number;
+    y1: number;
+    x2?: number;
+    y2?: number;
 }
 
 interface Selection {
-    top: number
-    left: number
-    width?: number
-    height?: number
+    top: number;
+    left: number;
+    width?: number;
+    height?: number;
 }
 
 export interface Line {
-    text: string
-    box: Selection
+    text: string;
+    box: Selection;
 }
 
 export type RenderActionsForLines = (lines: string[]) => ReactNode;
 
 interface Props {
-    image: string
-    textract: Line[]
-    onClose: MouseEventHandler
+    image: string;
+    textract: Line[];
+    onClose: MouseEventHandler;
 
-    renderActions: RenderActionsForLines
+    renderActions: RenderActionsForLines;
 }
 
 const TextractEditor: React.FC<Props> = ({
-                                             image,
-                                             textract,
-                                             renderActions,
-                                             onClose,
-                                         }) => {
+    image,
+    textract,
+    renderActions,
+    onClose,
+}) => {
     if (!textract) textract = [];
     const classes = useStyles();
-    const windowSize = useFluxStore(
-        () => WindowStore.getSize(),
-        [ WindowStore ]);
-    const [ rotation, setRotation ] = React.useState(0);
-    const [ [ width, height, maxWidth ], setSize ] = React.useState([ 100, 100, 100 ]);
+    const windowSize = useFluxStore(() => WindowStore.getSize(), [WindowStore]);
+    const [rotation, setRotation] = React.useState(0);
+    const [[width, height, maxWidth], setSize] = React.useState([
+        100, 100, 100,
+    ]);
     const scaleFactor = maxWidth / (rotation % 180 === 0 ? width : height);
     const scaledWidth = width * scaleFactor;
     const scaledHeight = height * scaleFactor;
-    const [ drawnBox, setDrawnBox ] = React.useState<Rect | null>(null);
-    const [ selectedRegion, setSelectedRegion ] = React.useState<Selection | null>(null);
-    const [ partitionedLines, setPartitionedLines ] = React.useState([ textract, [] ]);
-    const [ selectedText, setSelectedText ] = React.useState<string[]>([]);
-    React.useEffect(
-        () => {
-            const partition = selectedRegion == null
-                ? [ textract, [] ]
-                : textract.reduce((agg: Line[][], t) => {
-                    agg[overlaps(selectedRegion, t.box) ? 1 : 0].push(t);
-                    return agg;
-                }, [ [], [] ]);
-            setPartitionedLines(partition);
-            const toSortBox = box => {
-                if (rotation === 90) {
-                    // noinspection JSSuspiciousNameCombination
-                    return {
-                        top: box.left,
-                        left: 1 - box.top - box.height,
-                        width: box.height
-                    };
-                } else if (rotation === 180) {
-                    // noinspection JSSuspiciousNameCombination
-                    return {
-                        top: 1 - box.top - box.height,
-                        left: 1 - box.left - box.width,
-                        width: box.width
-                    };
-                } else if (rotation === 270) {
-                    // noinspection JSSuspiciousNameCombination
-                    return {
-                        top: 1 - box.left,
-                        left: box.top,
-                        width: box.height
-                    };
-                } else {
-                    return box;
-                }
-            };
-            setSelectedText(partition[1]
+    const [drawnBox, setDrawnBox] = React.useState<Rect | null>(null);
+    const [selectedRegion, setSelectedRegion] =
+        React.useState<Selection | null>(null);
+    const [partitionedLines, setPartitionedLines] = React.useState([
+        textract,
+        [],
+    ]);
+    const [selectedText, setSelectedText] = React.useState<string[]>([]);
+    React.useEffect(() => {
+        const partition =
+            selectedRegion == null
+                ? [textract, []]
+                : textract.reduce(
+                      (agg: Line[][], t) => {
+                          agg[overlaps(selectedRegion, t.box) ? 1 : 0].push(t);
+                          return agg;
+                      },
+                      [[], []],
+                  );
+        setPartitionedLines(partition);
+        const toSortBox = (box) => {
+            if (rotation === 90) {
+                // noinspection JSSuspiciousNameCombination
+                return {
+                    top: box.left,
+                    left: 1 - box.top - box.height,
+                    width: box.height,
+                };
+            } else if (rotation === 180) {
+                // noinspection JSSuspiciousNameCombination
+                return {
+                    top: 1 - box.top - box.height,
+                    left: 1 - box.left - box.width,
+                    width: box.width,
+                };
+            } else if (rotation === 270) {
+                // noinspection JSSuspiciousNameCombination
+                return {
+                    top: 1 - box.left,
+                    left: box.top,
+                    width: box.height,
+                };
+            } else {
+                return box;
+            }
+        };
+        setSelectedText(
+            partition[1]
                 /*
                  You might think to put this up top and sort the whole extract
                  once at the beginning, but you can't. The total order of the
@@ -150,30 +158,27 @@ const TextractEditor: React.FC<Props> = ({
                     const b = toSortBox(tb.box);
                     const dt = a.top - b.top;
                     const dl = a.left - b.left;
-                    const twoCol = dl < 0
-                        ? a.width < -dl
-                        : b.width < dl;
+                    const twoCol = dl < 0 ? a.width < -dl : b.width < dl;
                     return twoCol ? dl : dt;
                 })
-                .map(t => t.text));
-        },
-        [textract, rotation, selectedRegion],
-    );
-    const getXY = e => {
+                .map((t) => t.text),
+        );
+    }, [textract, rotation, selectedRegion]);
+    const getXY = (e) => {
         const svgNode = findSvg(e.target);
         if (!svgNode) throw new TypeError("No SVG parent found?!");
-        const [ x, y ] = getPositionWithin(svgNode.parentNode, e);
+        const [x, y] = getPositionWithin(svgNode.parentNode, e);
         if (rotation === 90) {
-            return [ y, scaledHeight - x ];
+            return [y, scaledHeight - x];
         } else if (rotation === 180) {
-            return [ scaledWidth - x, scaledHeight - y ];
+            return [scaledWidth - x, scaledHeight - y];
         } else if (rotation === 270) {
-            return [ scaledWidth - y, x ];
+            return [scaledWidth - y, x];
         } else {
-            return [ x, y ];
+            return [x, y];
         }
     };
-    const startBoxDraw = e => {
+    const startBoxDraw = (e) => {
         const [x, y] = getXY(e);
         setDrawnBox({
             x1: x,
@@ -181,7 +186,7 @@ const TextractEditor: React.FC<Props> = ({
         });
         setSelectedRegion(null);
     };
-    const updateBoxDraw = e => {
+    const updateBoxDraw = (e) => {
         if (!drawnBox) throw new TypeError("Can't update a null box");
         const [x, y] = getXY(e);
         const b = {
@@ -198,7 +203,7 @@ const TextractEditor: React.FC<Props> = ({
         sel.width = Math.max(b.x1, b.x2) / scaledWidth - sel.left;
         setSelectedRegion(sel);
     };
-    const endBoxDraw = e => {
+    const endBoxDraw = (e) => {
         if (!drawnBox) throw new TypeError("Can't end a null box");
         const [x, y] = getXY(e);
         if (drawnBox.x1 === x && drawnBox.y1 === y) {
@@ -211,14 +216,15 @@ const TextractEditor: React.FC<Props> = ({
         }
         setDrawnBox(null);
     };
-    const rect = box =>
+    const rect = (box) => (
         <rect
             key={box.top}
             x={box.left * width}
             y={box.top * height}
             width={box.width * width}
             height={box.height * height}
-        />;
+        />
+    );
     let rotationStyles: React.CSSProperties | undefined = undefined;
     if (rotation === 90) {
         rotationStyles = {
@@ -241,20 +247,25 @@ const TextractEditor: React.FC<Props> = ({
         <Box m={2}>
             <Grid container spacing={2}>
                 <Grid item xs={12} sm={6}>
-                    <Box style={{
-                        position: "relative",
-                    }}>
+                    <Box
+                        style={{
+                            position: "relative",
+                        }}
+                    >
                         <img
-                            src={`${image}${image.indexOf("?") < 0 ? "?" : "&"}w=${windowSize.width}`}
+                            src={`${image}${
+                                image.indexOf("?") < 0 ? "?" : "&"
+                            }w=${windowSize.width}`}
                             alt="to extract"
                             width={scaledWidth}
                             height={scaledHeight}
-                            onLoad={e => {
+                            onLoad={(e) => {
                                 const img = e.target as HTMLImageElement;
                                 setSize([
                                     img.naturalWidth,
                                     img.naturalHeight,
-                                    (img.parentNode as HTMLDivElement).clientWidth,
+                                    (img.parentNode as HTMLDivElement)
+                                        .clientWidth,
                                 ]);
                             }}
                             style={rotationStyles}
@@ -273,30 +284,40 @@ const TextractEditor: React.FC<Props> = ({
                         >
                             <g stroke="#ff0000">
                                 <g fill="none">
-                                    {partitionedLines[0].map(t => rect(t.box))}
+                                    {partitionedLines[0].map((t) =>
+                                        rect(t.box),
+                                    )}
                                 </g>
                                 <g fill="#99ffff" fillOpacity={0.4}>
-                                    {partitionedLines[1].map(t => rect(t.box))}
+                                    {partitionedLines[1].map((t) =>
+                                        rect(t.box),
+                                    )}
                                 </g>
                             </g>
-                            {selectedRegion && <g
-                                fill="#ffff00"
-                                fillOpacity={0.3}
-                                stroke="#ffff00"
-                            >
-                                {rect(selectedRegion)}
-                            </g>}
+                            {selectedRegion && (
+                                <g
+                                    fill="#ffff00"
+                                    fillOpacity={0.3}
+                                    stroke="#ffff00"
+                                >
+                                    {rect(selectedRegion)}
+                                </g>
+                            )}
                         </svg>
                         <IconButton
-                            onClick={() => setRotation(r => (r + 90) % 360)}
+                            onClick={() => setRotation((r) => (r + 90) % 360)}
                             className={classes.rotateRight}
-                            size="large">
+                            size="large"
+                        >
                             <RotateRight />
                         </IconButton>
                         <IconButton
-                            onClick={() => setRotation(r => (r - 90 + 360) % 360)}
+                            onClick={() =>
+                                setRotation((r) => (r - 90 + 360) % 360)
+                            }
                             className={classes.rotateLeft}
-                            size="large">
+                            size="large"
+                        >
                             <RotateLeft />
                         </IconButton>
                     </Box>
@@ -318,11 +339,16 @@ const TextractEditor: React.FC<Props> = ({
                         </Typography>
                         <textarea
                             value={selectedText.join("\n")}
-                            onChange={e => setSelectedText(e.target.value
-                                .split("\n"))}
+                            onChange={(e) =>
+                                setSelectedText(e.target.value.split("\n"))
+                            }
                             style={{
                                 width: "100%",
-                                height: `calc(${rotation % 180 === 0 ? scaledHeight : scaledWidth}px - 100px)`,
+                                height: `calc(${
+                                    rotation % 180 === 0
+                                        ? scaledHeight
+                                        : scaledWidth
+                                }px - 100px)`,
                                 whiteSpace: "pre",
                             }}
                         />

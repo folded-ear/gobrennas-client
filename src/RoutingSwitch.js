@@ -8,36 +8,41 @@ import PrivateRoute from "./views/common/PrivateRoute";
 import Login from "./views/user/Login";
 
 function RoutingSwitch(props) {
-    const {
-        routes,
-    } = props;
+    const { routes } = props;
     const authenticated = useIsAuthenticated();
 
-    return <Switch>
-        {routes.public.map(route =>
+    return (
+        <Switch>
+            {routes.public.map((route) => (
+                <FluxRoute
+                    key={route.path}
+                    path={route.path}
+                    render={(props) => (
+                        <route.component
+                            authenticated={authenticated}
+                            {...props}
+                        />
+                    )}
+                    exact={route.exact}
+                />
+            ))}
+            {routes.private.map((route) => (
+                <PrivateRoute
+                    key={route.path}
+                    path={route.path}
+                    component={route.component}
+                    authenticated={authenticated}
+                />
+            ))}
             <FluxRoute
-                key={route.path}
-                path={route.path}
-                render={props => <route.component
-                    authenticated={authenticated} {...props} />}
-                exact={route.exact}
-            />)}
-        {routes.private.map(route =>
-            <PrivateRoute
-                key={route.path}
-                path={route.path}
-                component={route.component}
-                authenticated={authenticated}
-            />)}
-        <FluxRoute
-            path="/login"
-            render={(props) => <Login
-                authenticated={authenticated}
-                {...props}
-            />}
-        />
-        <FluxRoute component={NotFound} />
-    </Switch>;
+                path="/login"
+                render={(props) => (
+                    <Login authenticated={authenticated} {...props} />
+                )}
+            />
+            <FluxRoute component={NotFound} />
+        </Switch>
+    );
 }
 
 const routeType = PropTypes.shape({

@@ -3,11 +3,9 @@ import useFluxStore from "./useFluxStore";
 
 function useIngredientLO(id: number) {
     return useFluxStore(
-        () => id
-            ? LibraryStore.getIngredientById(id)
-            : null,
-        [ LibraryStore ],
-        [ id ],
+        () => (id ? LibraryStore.getIngredientById(id) : null),
+        [LibraryStore],
+        [id],
     );
 }
 

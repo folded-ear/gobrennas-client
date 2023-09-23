@@ -11,46 +11,53 @@ const axios = BaseAxios.create({
 
 function build(recipe) {
     let recipeData = new FormData();
-    const info = {...recipe};
+    const info = { ...recipe };
     delete info.photo;
     recipeData.append("info", JSON.stringify(info));
-    if(recipe.photo) {
+    if (recipe.photo) {
         recipeData.append("photo", recipe.photo);
     }
     return recipeData;
 }
 
 const RecipeApi = {
-    
     addRecipe(recipe) {
         const id = recipe.id;
         delete recipe.id;
         promiseFlux(
-            promiseWellSizedFile(recipe.photo).then(photo =>
-                axios.post("/recipe", build({
-                    ...recipe,
-                    photo,
-                }))),
-            data => ({
+            promiseWellSizedFile(recipe.photo).then((photo) =>
+                axios.post(
+                    "/recipe",
+                    build({
+                        ...recipe,
+                        photo,
+                    }),
+                ),
+            ),
+            (data) => ({
                 type: RecipeActions.RECIPE_CREATED,
                 id, // need this for translation
                 data: data.data,
-            })
+            }),
         );
     },
-    
+
     updateRecipe(recipe) {
         promiseFlux(
-            promiseWellSizedFile(recipe.photo).then(photo =>
-                axios.put(`/recipe/${recipe.id}`, build({
-                    ...recipe,
-                    photo,
-                }))),
-            data => ({
+            promiseWellSizedFile(recipe.photo).then((photo) =>
+                axios.put(
+                    `/recipe/${recipe.id}`,
+                    build({
+                        ...recipe,
+                        photo,
+                    }),
+                ),
+            ),
+            (data) => ({
                 type: RecipeActions.RECIPE_UPDATED,
                 id: recipe.id,
                 data: data.data,
-            })
+            }),
         );
     },
 
@@ -59,32 +66,33 @@ const RecipeApi = {
             throw new Error("Non-File photo? Huh?");
         }
         promiseFlux(
-            promiseWellSizedFile(photo).then(p => {
+            promiseWellSizedFile(photo).then((p) => {
                 let payload = new FormData();
                 payload.append("photo", p);
                 return axios.put(`/recipe/${id}/photo`, payload);
             }),
-            data => ({
+            (data) => ({
                 type: RecipeActions.RECIPE_UPDATED,
                 id,
                 data: data.data,
-            })
+            }),
         );
     },
-    
+
     deleteRecipe(id) {
-        promiseFlux(
-            axios.delete(`/recipe/${id}`),
-            () => ({
-                type: RecipeActions.RECIPE_DELETED,
-                id
-            })
-        );
+        promiseFlux(axios.delete(`/recipe/${id}`), () => ({
+            type: RecipeActions.RECIPE_DELETED,
+            id,
+        }));
     },
 
     sendToPlan(recipeId, planId, scale) {
         promiseFlux(
-            axios.post(`/recipe/${recipeId}/_send_to_plan/${planId}?scale=${scale || 1}`),
+            axios.post(
+                `/recipe/${recipeId}/_send_to_plan/${planId}?scale=${
+                    scale || 1
+                }`,
+            ),
             () => ({
                 type: RecipeActions.SENT_TO_PLAN,
                 recipeId,
@@ -96,16 +104,17 @@ const RecipeApi = {
                 planId,
             }),
         ).finally(() =>
-            queryClient.invalidateQueries([ "plan", planId, "items" ]));
+            queryClient.invalidateQueries(["plan", planId, "items"]),
+        );
     },
 
     updateLabels(recipeId, labels) {
         promiseFlux(
-            axios.post(`/recipe/${recipeId}/update_labels`,labels),
+            axios.post(`/recipe/${recipeId}/update_labels`, labels),
             () => ({
                 type: RecipeActions.LABELS_UPDATED,
                 recipeId,
-                labels
+                labels,
             }),
         );
     },
@@ -114,7 +123,7 @@ const RecipeApi = {
         promiseFlux(
             // this endpoint wants a plain-text post body containing the label
             axios.post(`/recipe/${id}/labels`, label, {
-                headers: { "Content-Type": "text/plain" }
+                headers: { "Content-Type": "text/plain" },
             }),
             () => ({
                 type: RecipeActions.LABEL_ADDED,

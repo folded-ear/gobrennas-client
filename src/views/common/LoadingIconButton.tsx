@@ -1,7 +1,7 @@
 import {
-    CircularProgress,
-    IconButton,
-    IconButtonProps,
+  CircularProgress,
+  IconButton,
+  IconButtonProps
 } from "@mui/material";
 import { withStyles } from "@mui/styles";
 import { grey } from "@mui/material/colors";
@@ -16,16 +16,13 @@ const CircProg = withStyles({
 type ProgressProps = {
     size?: number;
     style?: any;
-}
+};
 
 interface Props {
-    size?: IconButtonProps["size"],
+    size?: IconButtonProps["size"];
 }
 
-const LoadingIconButton: React.FC<Props> = ({
-                                                size = "small",
-                                                ...props
-                                            }) => {
+const LoadingIconButton: React.FC<Props> = ({ size = "small", ...props }) => {
     // this is _weak_.
     const cpProps: ProgressProps = {};
     if (size === "small") {
@@ -35,18 +32,11 @@ const LoadingIconButton: React.FC<Props> = ({
         };
     }
     // this is admittedly pretty silly. ok, really silly.
-    return <IconButton
-        aria-label="loading"
-        size={size}
-        disabled
-        {...props}
-    >
-        <CircProg
-            thickness={5}
-            disableShrink
-            {...cpProps}
-        />
-    </IconButton>;
+    return (
+        <IconButton aria-label="loading" size={size} disabled {...props}>
+            <CircProg thickness={5} disableShrink {...cpProps} />
+        </IconButton>
+    );
 };
 
 export default LoadingIconButton;

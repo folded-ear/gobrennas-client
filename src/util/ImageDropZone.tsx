@@ -1,7 +1,7 @@
 import { makeStyles } from "@mui/styles";
 import {
-    AddAPhoto,
-    PhotoCamera,
+  AddAPhoto,
+  PhotoCamera
 } from "@mui/icons-material";
 import clsx from "clsx";
 import * as React from "react";
@@ -9,69 +9,57 @@ import { DragEvent } from "react";
 import ImageOrPreview from "../views/common/ImageOrPreview";
 import buildSequence from "./buildSequence";
 
-const {next} = buildSequence();
+const { next } = buildSequence();
 
-const useStyles = makeStyles(({
-    maxWidth,
-    maxHeight
-} :{
-    maxWidth: any,
-    maxHeight: any
-}) => ({
-    label: {
-        cursor: "pointer",
-    },
-    preview: {
-        maxWidth: maxWidth || "400px",
-        maxHeight: maxHeight || "200px",
-    },
-    icon: {
-        margin: "30px 40px",
-    },
-    input: {
-        opacity: 0,
-        height: 0,
-        width: 0,
-    },
-}));
+const useStyles = makeStyles(
+    ({ maxWidth, maxHeight }: { maxWidth: any; maxHeight: any }) => ({
+        label: {
+            cursor: "pointer",
+        },
+        preview: {
+            maxWidth: maxWidth || "400px",
+            maxHeight: maxHeight || "200px",
+        },
+        icon: {
+            margin: "30px 40px",
+        },
+        input: {
+            opacity: 0,
+            height: 0,
+            width: 0,
+        },
+    }),
+);
 
 type ImageDropZoneProps = {
-    onImage(f: File): void
-    image?: any,
-    maxWidth?: any,
-    maxHeight?: any,
-    className?: string,
-    disabled?: boolean,
-    style?: any,
-}
+    onImage(f: File): void;
+    image?: any;
+    maxWidth?: any;
+    maxHeight?: any;
+    className?: string;
+    disabled?: boolean;
+    style?: any;
+};
 
-
-const ImageDropZone : React.FC<ImageDropZoneProps> = ({
-                           disabled = undefined,
-                           image = undefined,
-                           onImage,
-                           maxWidth = undefined,
-                           maxHeight = undefined,
-                           className: labelClassName = undefined,
-                           ...props
-                       }) => {
-    const classes = useStyles({maxWidth, maxHeight});
+const ImageDropZone: React.FC<ImageDropZoneProps> = ({
+    disabled = undefined,
+    image = undefined,
+    onImage,
+    maxWidth = undefined,
+    maxHeight = undefined,
+    className: labelClassName = undefined,
+    ...props
+}) => {
+    const classes = useStyles({ maxWidth, maxHeight });
     const [value, setValue] = React.useState([]);
-    const inputId = React.useMemo(
-        () => `image-drop-zone-${next()}`,
-        []
-    );
+    const inputId = React.useMemo(() => `image-drop-zone-${next()}`, []);
 
     if (disabled) {
-        return <label
-            {...props}
-            className={labelClassName}
-        >
-            <PhotoCamera
-                color="disabled"
-                className={classes.icon}
-            />
-        </label>;
+        return (
+            <label {...props} className={labelClassName}>
+                <PhotoCamera color="disabled" className={classes.icon} />
+            </label>
+        );
     }
 
     const sendOffFirstFile = (files: FileList) => {
@@ -84,7 +72,7 @@ const ImageDropZone : React.FC<ImageDropZoneProps> = ({
         }
     };
 
-    const handleDragOver = event => {
+    const handleDragOver = (event) => {
         event.preventDefault();
         event.dataTransfer.dropEffect = "copy";
     };
@@ -96,7 +84,7 @@ const ImageDropZone : React.FC<ImageDropZoneProps> = ({
         sendOffFirstFile(files);
     };
 
-    const handleFileSelect = event => {
+    const handleFileSelect = (event) => {
         sendOffFirstFile(event.target.files);
     };
 
@@ -109,16 +97,15 @@ const ImageDropZone : React.FC<ImageDropZoneProps> = ({
             onDrop={handleDrop}
             onDragOver={handleDragOver}
         >
-            {image
-                ? <ImageOrPreview
+            {image ? (
+                <ImageOrPreview
                     src={image}
                     alt={""}
                     className={classes.preview}
                 />
-                : <AddAPhoto
-                    color="disabled"
-                    className={classes.icon}
-                />}
+            ) : (
+                <AddAPhoto color="disabled" className={classes.icon} />
+            )}
             <input
                 id={inputId}
                 accept="image/*"
@@ -127,7 +114,8 @@ const ImageDropZone : React.FC<ImageDropZoneProps> = ({
                 value={value}
                 onChange={handleFileSelect}
             />
-        </label>);
+        </label>
+    );
 };
 
 export default ImageDropZone;

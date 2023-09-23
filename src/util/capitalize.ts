@@ -1,4 +1,4 @@
-const capitalize = str => {
+const capitalize = (str) => {
     if (str == null) return null;
     if (str.length === 0) return str;
     if (str.length === 1) return str.toUpperCase();

@@ -42,7 +42,8 @@ const RecipeActions = {
     }),
     NEW_DRAFT_INGREDIENT_YO: "recipe/new-draft-ingredient-yo",
     KILL_DRAFT_INGREDIENT_YO: "recipe/kill-draft-ingredient-yo",
-    MULTI_LINE_DRAFT_INGREDIENT_PASTE_YO: "recipe/multi-line-draft-ingredient-paste-yo",
+    MULTI_LINE_DRAFT_INGREDIENT_PASTE_YO:
+        "recipe/multi-line-draft-ingredient-paste-yo",
 
     LABEL_ADDED: typedAction("recipe/label-added", {
         id: PropTypes.number.isRequired,
@@ -55,7 +56,10 @@ const RecipeActions = {
     LABELS_UPDATED: "recipe/labels-updated",
     SEND_TO_PLAN: typedAction("recipe/send-to-plan", sendToPlanShape),
     SENT_TO_PLAN: typedAction("recipe/sent-to-plan", sendToPlanShape),
-    ERROR_SENDING_TO_PLAN: typedAction("recipe/error-sending-to-plan", sendToPlanShape),
+    ERROR_SENDING_TO_PLAN: typedAction(
+        "recipe/error-sending-to-plan",
+        sendToPlanShape,
+    ),
 };
 
 export default RecipeActions;

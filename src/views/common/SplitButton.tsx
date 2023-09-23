@@ -10,8 +10,8 @@ import Popper from "@mui/material/Popper";
 import { makeStyles } from "@mui/styles";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import React, {
-    MouseEventHandler,
-    ReactNode,
+  MouseEventHandler,
+  ReactNode
 } from "react";
 import { BfsId } from "../../global/types/types";
 
@@ -22,35 +22,35 @@ const useStyles = makeStyles({
 });
 
 interface Option {
-    id: BfsId
-    label: string
+    id: BfsId;
+    label: string;
 }
 
 interface Props {
-    primary: ReactNode
+    primary: ReactNode;
 
-    onClick: MouseEventHandler
+    onClick: MouseEventHandler;
 
-    options: Option[]
+    options: Option[];
 
-    onSelect(event: Event, opt: Option): void
+    onSelect(event: Event, opt: Option): void;
 
-    disabled?: boolean
-    dropdownDisabled?: boolean
+    disabled?: boolean;
+    dropdownDisabled?: boolean;
 }
 
 const SplitButton: React.FC<Props> = ({
-                                          primary,
-                                          onClick,
-                                          onSelect,
-                                          options,
-                                          disabled = false,
-                                          dropdownDisabled = disabled,
-                                      }) => {
+    primary,
+    onClick,
+    onSelect,
+    options,
+    disabled = false,
+    dropdownDisabled = disabled,
+}) => {
     const classes = useStyles();
-    const [ open, setOpen ] = React.useState(false);
+    const [open, setOpen] = React.useState(false);
     const anchorRef = React.useRef<HTMLDivElement>(null);
-    const [ selectedOption, setSelectedOption ] = React.useState(null);
+    const [selectedOption, setSelectedOption] = React.useState(null);
 
     const handleClick = (event) => {
         onClick && onClick(event);
@@ -91,7 +91,9 @@ const SplitButton: React.FC<Props> = ({
                     <Button
                         size="small"
                         onClick={handleToggle}
-                        disabled={dropdownDisabled || !options || !options.length}
+                        disabled={
+                            dropdownDisabled || !options || !options.length
+                        }
                     >
                         <ArrowDropDownIcon />
                     </Button>
@@ -109,17 +111,24 @@ const SplitButton: React.FC<Props> = ({
                         <Grow
                             {...TransitionProps}
                             style={{
-                                transformOrigin: placement === "bottom" ? "right top" : "right bottom",
+                                transformOrigin:
+                                    placement === "bottom"
+                                        ? "right top"
+                                        : "right bottom",
                             }}
                         >
                             <Paper>
                                 <ClickAwayListener onClickAway={handleClose}>
                                     <MenuList id="split-button-menu">
-                                        {options.map(option => (
+                                        {options.map((option) => (
                                             <MenuItem
                                                 key={option.id}
-                                                selected={option === selectedOption}
-                                                onClick={(event) => handleSelect(event, option)}
+                                                selected={
+                                                    option === selectedOption
+                                                }
+                                                onClick={(event) =>
+                                                    handleSelect(event, option)
+                                                }
                                             >
                                                 {option.label}
                                             </MenuItem>

@@ -1,9 +1,9 @@
 import {
-    IconButton,
-    ImageList,
-    ImageListItem,
-    ImageListItemBar,
-    Typography,
+  IconButton,
+  ImageList,
+  ImageListItem,
+  ImageListItemBar,
+  Typography
 } from "@mui/material";
 import Drawer from "@mui/material/Drawer";
 import { makeStyles } from "@mui/styles";
@@ -51,53 +51,56 @@ const useStyles = makeStyles({
 });
 
 interface PassthroughProps {
-    onSelect: (id: string) => void
-    onClose: MouseEventHandler
-    onUpload: (photo: File) => void
-    onDelete: (id: string) => void
-    uploading: PendingJob[]
-    deleting: BfsId[]
+    onSelect: (id: string) => void;
+    onClose: MouseEventHandler;
+    onUpload: (photo: File) => void;
+    onDelete: (id: string) => void;
+    uploading: PendingJob[];
+    deleting: BfsId[];
 }
 
 interface UiProps extends PassthroughProps {
-    queue: PendingJob[]
+    queue: PendingJob[];
 }
 
 const Ui: React.FC<UiProps> = ({
-                                   onSelect,
-                                   onClose,
-                                   onUpload,
-                                   onDelete,
-                                   queue: persistent,
-                                   deleting,
-                                   uploading,
-                               }) => {
+    onSelect,
+    onClose,
+    onUpload,
+    onDelete,
+    queue: persistent,
+    deleting,
+    uploading,
+}) => {
     const classes = useStyles();
-    const queue = uploading.map(j => ({
-        ...j,
-        state: "uploading",
-        ready: false,
-    })).concat(persistent.map(j => ({
-        ...j,
-        state: deleting.indexOf(j.id) >= 0
-            ? "deleting"
-            : j.ready ? "ready" : "extracting",
-    })));
+    const queue = uploading
+        .map((j) => ({
+            ...j,
+            state: "uploading",
+            ready: false,
+        }))
+        .concat(
+            persistent.map((j) => ({
+                ...j,
+                state:
+                    deleting.indexOf(j.id) >= 0
+                        ? "deleting"
+                        : j.ready
+                        ? "ready"
+                        : "extracting",
+            })),
+        );
     return (
-        <Drawer
-            open
-            anchor="right"
-            onClose={onClose}
-        >
-            <div
-                className={classes.drawer}
-            >
-                <IconButton onClick={onClose} className={classes.closeButton} size="large">
+        <Drawer open anchor="right" onClose={onClose}>
+            <div className={classes.drawer}>
+                <IconButton
+                    onClick={onClose}
+                    className={classes.closeButton}
+                    size="large"
+                >
                     <Close />
                 </IconButton>
-                <Typography variant="h3">
-                    Select Photo
-                </Typography>
+                <Typography variant="h3">Select Photo</Typography>
                 <ImageList>
                     <ImageListItem>
                         <ImageDropZone
@@ -105,49 +108,61 @@ const Ui: React.FC<UiProps> = ({
                             onImage={onUpload}
                         />
                     </ImageListItem>
-                    {queue.map(j => <ImageListItem
-                        key={j.id}
-                        onClick={j.state === "ready" ? () => onSelect(j.id) : undefined}
-                        className={j.state === "ready" ? classes.ready : classes.inactive}
-                        title={j.ready ? "Use this photo" : undefined}
-                    >
-                        <img src={j.url} alt={j.name} />
-                        <ImageListItemBar
-                            title={j.name}
-                            subtitle={j.ready ? null : (j.state + "...")}
-                            actionIcon={(j.state === "ready" || j.state === "extracting") &&
-                            <DeleteButton
-                                type="photo"
-                                onConfirm={() => onDelete(j.id)}
-                                className={classes.deleteButton}
-                            />}
-                        />
-                    </ImageListItem>)}
+                    {queue.map((j) => (
+                        <ImageListItem
+                            key={j.id}
+                            onClick={
+                                j.state === "ready"
+                                    ? () => onSelect(j.id)
+                                    : undefined
+                            }
+                            className={
+                                j.state === "ready"
+                                    ? classes.ready
+                                    : classes.inactive
+                            }
+                            title={j.ready ? "Use this photo" : undefined}
+                        >
+                            <img src={j.url} alt={j.name} />
+                            <ImageListItemBar
+                                title={j.name}
+                                subtitle={j.ready ? null : j.state + "..."}
+                                actionIcon={
+                                    (j.state === "ready" ||
+                                        j.state === "extracting") && (
+                                        <DeleteButton
+                                            type="photo"
+                                            onConfirm={() => onDelete(j.id)}
+                                            className={classes.deleteButton}
+                                        />
+                                    )
+                                }
+                            />
+                        </ImageListItem>
+                    ))}
                 </ImageList>
             </div>
         </Drawer>
     );
 };
 
-const TextractQueueBrowser: React.FC<PassthroughProps> = props => {
-    const {
-        data: queue = [],
-    } = useQuery("textract-jobs", () =>
-            TextractApi.promiseJobList()
-                .then(d => d.data.map(job => ({
+const TextractQueueBrowser: React.FC<PassthroughProps> = (props) => {
+    const { data: queue = [] } = useQuery(
+        "textract-jobs",
+        () =>
+            TextractApi.promiseJobList().then((d) =>
+                d.data.map((job) => ({
                     id: job.id,
                     url: job.photo.url,
                     name: job.photo.filename,
                     ready: job.ready,
-                }))),
+                })),
+            ),
         {
             refetchInterval: 5000,
         },
     );
-    return <Ui
-        queue={queue}
-        {...props}
-    />;
+    return <Ui queue={queue} {...props} />;
 };
 
 export default TextractQueueBrowser;

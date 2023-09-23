@@ -1,12 +1,12 @@
 import {
-    gql,
-    useMutation,
-    useQuery
+  gql,
+  useMutation,
+  useQuery
 } from "@apollo/client";
 import {
-    useCallback,
-    useEffect,
-    useState
+  useCallback,
+  useEffect,
+  useState
 } from "react";
 
 export type IdCallback = (number) => boolean;
@@ -25,9 +25,7 @@ const LIST_ALL_FAVORITES = gql(`
 
 export function useIsFavorite(): IdCallback {
     const byId = useFavoritesById();
-    return useCallback(id =>
-            byId.has("" + id),
-        [byId]);
+    return useCallback((id) => byId.has("" + id), [byId]);
 }
 
 const useFavoritesById = () => {
@@ -36,8 +34,7 @@ const useFavoritesById = () => {
     useEffect(() => {
         const map = new Map();
         if (raw.data && raw.data.favorite) {
-            raw.data.favorite.all.forEach(it =>
-                map.set(it.objectId, it));
+            raw.data.favorite.all.forEach((it) => map.set(it.objectId, it));
         }
         setResult(map);
     }, [raw, raw.data]);
@@ -58,16 +55,14 @@ const MARK_FAVORITE = gql(`
 
 export function useMarkFavorite(type: string): IdCallback {
     const [execute] = useMutation(MARK_FAVORITE, {
-        refetchQueries: [
-            {query: LIST_ALL_FAVORITES},
-        ],
+        refetchQueries: [{ query: LIST_ALL_FAVORITES }],
     });
-    return id => {
+    return (id) => {
         execute({
             variables: {
                 type,
                 id,
-            }
+            },
         });
         return true;
     };
@@ -83,16 +78,14 @@ const REMOVE_FAVORITE = gql(`
 
 export function useRemoveFavorite(type: string): IdCallback {
     const [execute] = useMutation(REMOVE_FAVORITE, {
-        refetchQueries: [
-            {query: LIST_ALL_FAVORITES},
-        ],
+        refetchQueries: [{ query: LIST_ALL_FAVORITES }],
     });
-    return id => {
+    return (id) => {
         execute({
             variables: {
                 type,
                 id,
-            }
+            },
         });
         return true;
     };

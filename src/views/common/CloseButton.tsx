@@ -1,23 +1,18 @@
 import React, { MouseEventHandler } from "react";
 import {
-    IconButton,
-    Tooltip,
+  IconButton,
+  Tooltip
 } from "@mui/material";
 import { Close } from "@mui/icons-material";
 
 interface Props {
-    onClick?: MouseEventHandler
+    onClick?: MouseEventHandler;
 }
 
 const CloseButton: React.FC<Props> = ({ onClick }) => {
     return (
-        <Tooltip
-            title="Close"
-            placement="top"
-        >
-            <IconButton
-                onClick={onClick}
-            >
+        <Tooltip title="Close" placement="top">
+            <IconButton onClick={onClick}>
                 <Close />
             </IconButton>
         </Tooltip>

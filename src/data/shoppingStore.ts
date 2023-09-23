@@ -15,42 +15,41 @@ const placeFocus = (state, id, type) => ({
 });
 
 export interface Item {
-    id: number
-    type: ShopItemType
+    id: number;
+    type: ShopItemType;
 }
 
 interface State {
-    activeItem?: Item
-    expandedId?: number
+    activeItem?: Item;
+    expandedId?: number;
 }
 
 class ShoppingStore extends ReduceStore<State, FluxAction> {
-
     getInitialState(): State {
         return {};
     }
 
     reduce(state: State, action: FluxAction): State {
         switch (action.type) {
-
             case ShoppingActions.CREATE_ITEM_AFTER:
             case ShoppingActions.CREATE_ITEM_BEFORE:
             case ShoppingActions.CREATE_ITEM_AT_END:
             case ShoppingActions.DELETE_ITEM_BACKWARDS:
             case ShoppingActions.DELETE_ITEM_FORWARD: {
-                this.__dispatcher.waitFor([
-                    planStore.getDispatchToken(),
-                ]);
-                state = placeFocus(state, planStore.getActiveItem().id, ShopItemType.PLAN_ITEM);
+                this.__dispatcher.waitFor([planStore.getDispatchToken()]);
+                state = placeFocus(
+                    state,
+                    planStore.getActiveItem().id,
+                    ShopItemType.PLAN_ITEM,
+                );
                 return state;
             }
 
             case ShoppingActions.FOCUS: {
                 state = placeFocus(state, action.id, action.itemType);
                 if (action.itemType === ShopItemType.INGREDIENT) {
-                    state.expandedId = state.expandedId === action.id
-                        ? undefined
-                        : action.id;
+                    state.expandedId =
+                        state.expandedId === action.id ? undefined : action.id;
                 }
                 return state;
             }
@@ -68,18 +67,18 @@ class ShoppingStore extends ReduceStore<State, FluxAction> {
             case ShoppingActions.TOGGLE_EXPANDED: {
                 return {
                     ...state,
-                    expandedId: state.expandedId === action.id
-                        ? undefined
-                        : action.id,
+                    expandedId:
+                        state.expandedId === action.id ? undefined : action.id,
                 };
             }
 
             case ShoppingActions.SET_INGREDIENT_STATUS: {
                 return {
                     ...state,
-                    expandedId: state.expandedId === action.id
-                        ? undefined
-                        : state.expandedId,
+                    expandedId:
+                        state.expandedId === action.id
+                            ? undefined
+                            : state.expandedId,
                 };
             }
 
@@ -95,7 +94,6 @@ class ShoppingStore extends ReduceStore<State, FluxAction> {
     getExpandedIngredientId() {
         return this.getState().expandedId;
     }
-
 }
 
 export default new ShoppingStore(Dispatcher);

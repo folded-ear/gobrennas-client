@@ -26,37 +26,31 @@ export function toNumericString(quantity: number): string {
         const fraction = Math.abs(quantity - whole);
         const vulgar = toVulgarFraction(fraction);
         if (vulgar) {
-            return whole === 0
-                ? vulgar
-                : whole + vulgar;
+            return whole === 0 ? vulgar : whole + vulgar;
         }
     }
     return numberFormat.format(quantity);
 }
 
 interface Props {
-    quantity: number
-    units?: string | null // for the moment, at least
-    addSpace?: boolean
+    quantity: number;
+    units?: string | null; // for the moment, at least
+    addSpace?: boolean;
 }
 
-const Quantity: React.FC<Props> = ({
-                                       quantity,
-                                       units,
-                                       addSpace,
-                                   }) => {
+const Quantity: React.FC<Props> = ({ quantity, units, addSpace }) => {
     if (quantity == null) return null;
-    return units == null
-        ? <React.Fragment>
+    return units == null ? (
+        <React.Fragment>
             {toNumericString(quantity)}
             {addSpace && " "}
         </React.Fragment>
-        : <React.Fragment>
-            {toNumericString(quantity)}
-            {" "}
-            {units}
+    ) : (
+        <React.Fragment>
+            {toNumericString(quantity)} {units}
             {addSpace && " "}
-        </React.Fragment>;
+        </React.Fragment>
+    );
 };
 
 export default Quantity;

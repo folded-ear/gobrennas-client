@@ -58,7 +58,8 @@
     "posttest": "eslint --max-warnings 0 ./src",
     "eject": "react-scripts eject",
     "lint": "eslint ./src",
-    "lint:fix": "eslint --fix ./src"
+    "lint:fix": "eslint --fix ./src",
+    "format:write": "prettier . --write"
   },
   "eslintConfig": {
     "extends": [

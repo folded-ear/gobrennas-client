@@ -1,11 +1,11 @@
 import withStyles from "@mui/styles/withStyles";
 import {
-    acquiredColor,
-    completeColor,
-    deleteColor,
-    neededColor,
-    questionColor,
-    selectionColor,
+  acquiredColor,
+  completeColor,
+  deleteColor,
+  neededColor,
+  questionColor,
+  selectionColor
 } from "views/common/colors";
 
 const withItemStyles = withStyles({

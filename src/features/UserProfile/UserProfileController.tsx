@@ -18,11 +18,11 @@ export const UserProfileController: React.FC = () => {
     const isLoadingUserProfile = loading || !currentUser;
 
     if (isLoadingUserProfile) {
-        return (<LoadingIndicator />);
+        return <LoadingIndicator />;
     }
 
-    if(error) {
-        return (<div>Oops, something went wrong.</div>);
+    if (error) {
+        return <div>Oops, something went wrong.</div>;
     }
 
     return (

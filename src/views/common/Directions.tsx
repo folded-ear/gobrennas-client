@@ -2,7 +2,7 @@ import React from "react";
 import Markdown from "./Markdown";
 
 interface Props {
-    text?: string
+    text?: string;
 }
 
 const Directions: React.FC<Props> = ({ text }) => {
@@ -14,11 +14,13 @@ const Directions: React.FC<Props> = ({ text }) => {
         return <Markdown text={text} />;
     }
     // ok, just split paragraphs at line breaks and call it good.
-    return <>
-        {text.split("\n")
-            .map((line, i) =>
-                <p key={i}>{line}</p>)}
-    </>;
+    return (
+        <>
+            {text.split("\n").map((line, i) => (
+                <p key={i}>{line}</p>
+            ))}
+        </>
+    );
 };
 
 export default Directions;

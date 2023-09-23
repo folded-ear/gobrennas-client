@@ -3,7 +3,6 @@ import Dispatcher from "./dispatcher";
 import WindowActions from "./WindowActions";
 
 class WindowStore extends ReduceStore {
-
     constructor() {
         super(Dispatcher);
     }
@@ -65,12 +64,12 @@ class WindowStore extends ReduceStore {
                 // https://github.com/facebook/create-react-app/issues/5316#issuecomment-496292914
                 const waitingWorker = state.newVersion.waitingWorker;
                 if (waitingWorker) {
-                    waitingWorker.addEventListener("statechange", event => {
+                    waitingWorker.addEventListener("statechange", (event) => {
                         if (event.target.state === "activated") {
                             window.location.reload();
                         }
                     });
-                    waitingWorker.postMessage({type: "SKIP_WAITING"});
+                    waitingWorker.postMessage({ type: "SKIP_WAITING" });
                 }
                 return state;
             }
@@ -101,7 +100,6 @@ class WindowStore extends ReduceStore {
         const s = this.getState().newVersion;
         return s.available && !s.ignored;
     }
-
 }
 
 export default new WindowStore();

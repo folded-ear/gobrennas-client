@@ -11,29 +11,30 @@ const useStyles = makeStyles({
         height: 140,
         textAlign: "center",
         paddingTop: "30px",
-        backgroundColor: "#eee"
+        backgroundColor: "#eee",
     },
 });
 
 interface Props {
-    recipeId: BfsId
-    disabled: boolean
+    recipeId: BfsId;
+    disabled: boolean;
 }
 
-const ItemImageUpload: React.FC<Props> = ({
-                                              recipeId,
-                                              disabled,
-                                          }) => {
+const ItemImageUpload: React.FC<Props> = ({ recipeId, disabled }) => {
     const classes = useStyles();
-    return <ImageDropZone
-        disabled={disabled}
-        className={classes.root}
-        onImage={file => Dispatcher.dispatch({
-            type: RecipeActions.SET_RECIPE_PHOTO,
-            id: recipeId,
-            photo: file,
-        })}
-    />;
+    return (
+        <ImageDropZone
+            disabled={disabled}
+            className={classes.root}
+            onImage={(file) =>
+                Dispatcher.dispatch({
+                    type: RecipeActions.SET_RECIPE_PHOTO,
+                    id: recipeId,
+                    photo: file,
+                })
+            }
+        />
+    );
 };
 
 export default ItemImageUpload;

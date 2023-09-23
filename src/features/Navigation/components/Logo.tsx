@@ -1,18 +1,18 @@
 import * as React from "react";
 import {
-    Menu as MenuClosedIcon,
-    MenuOpen as MenuOpenIcon,
+  Menu as MenuClosedIcon,
+  MenuOpen as MenuOpenIcon
 } from "@mui/icons-material";
 import { ListItemButton } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { ItemIcon } from "./Navigation.elements";
 
 type LogoProps = {
-    expanded: boolean
-    onClick: () => void
-}
+    expanded: boolean;
+    onClick: () => void;
+};
 
-const LogoText = styled("div")(({theme}) => ({
+const LogoText = styled("div")(({ theme }) => ({
     whiteSpace: "nowrap",
     fontSize: "120%",
     position: "relative",
@@ -27,23 +27,20 @@ const B = styled("span")(({ theme }) => ({
 }));
 
 export const Logo: React.FC<LogoProps> = ({ expanded, onClick }) => (
-    <ListItemButton
-        onClick={onClick}
-    >
+    <ListItemButton onClick={onClick}>
         <ItemIcon
             open={expanded}
             sx={{
                 py: 1,
-            }}>
-            {expanded
-                ? <MenuOpenIcon />
-                : <MenuClosedIcon />}
+            }}
+        >
+            {expanded ? <MenuOpenIcon /> : <MenuClosedIcon />}
         </ItemIcon>
-        {expanded
-            ? <LogoText>
+        {expanded ? (
+            <LogoText>
                 <B>B</B>
                 Food Software
             </LogoText>
-            : null}
+        ) : null}
     </ListItemButton>
 );

@@ -11,7 +11,10 @@ enum AccessLevel {
 // this isn't technically safe. but it practically is.
 const levels = Object.keys(AccessLevel);
 
-export function includesLevel(levelGranted: Maybe<AccessLevel>, levelToCheck: AccessLevel) {
+export function includesLevel(
+    levelGranted: Maybe<AccessLevel>,
+    levelToCheck: AccessLevel,
+) {
     if (levelGranted == null) return false;
     invariant(levelToCheck != null, "There is no 'null' access level");
     invariant(

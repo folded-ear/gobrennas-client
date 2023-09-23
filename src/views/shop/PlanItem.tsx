@@ -13,22 +13,22 @@ import Item from "features/Planner/components/Item";
 import StatusIconButton from "features/Planner/components/StatusIconButton";
 import withItemStyles from "features/Planner/components/withItemStyles";
 import {
-    BaseItemProp,
-    ItemProps,
-    TupleProps,
+  BaseItemProp,
+  ItemProps,
+  TupleProps
 } from "./types";
 import { ShopItemType } from "views/shop/ShopList";
 
 type PlanItemProps = TupleProps & {
-    depth: number,
+    depth: number;
     item: ItemProps & {
-        question: boolean,
-        path: BaseItemProp[]
-        ingredient: any,
-        status: any,
-        _next_status: any,
-    }
-}
+        question: boolean;
+        path: BaseItemProp[];
+        ingredient: any;
+        status: any;
+        _next_status: any;
+    };
+};
 
 class PlanItem extends React.PureComponent<PlanItemProps> {
     private inputRef: React.RefObject<HTMLInputElement>;
@@ -43,9 +43,7 @@ class PlanItem extends React.PureComponent<PlanItemProps> {
 
     onChange(e) {
         const { value } = e.target;
-        const {
-            item,
-        } = this.props;
+        const { item } = this.props;
         Dispatcher.dispatch({
             type: ShoppingActions.RENAME_ITEM,
             id: item.id,
@@ -54,10 +52,7 @@ class PlanItem extends React.PureComponent<PlanItemProps> {
     }
 
     onClick(e) {
-        const {
-            active,
-            item,
-        } = this.props;
+        const { active, item } = this.props;
         if (active) return;
         e.preventDefault();
         e.stopPropagation();
@@ -70,21 +65,19 @@ class PlanItem extends React.PureComponent<PlanItemProps> {
     }
 
     onKeyDown(e) {
-        const {
-            value,
-            selectionStart,
-        } = e.target;
-        const {
-            key,
-        } = e;
-        switch (key) { // eslint-disable-line default-case
+        const { value, selectionStart } = e.target;
+        const { key } = e;
+        switch (
+            key // eslint-disable-line default-case
+        ) {
             case "Enter":
                 if (value.length === 0) break;
                 // add a new item, before if the cursor is at the beginning, after otherwise
                 Dispatcher.dispatch({
-                    type: selectionStart === 0
-                        ? ShoppingActions.CREATE_ITEM_BEFORE
-                        : ShoppingActions.CREATE_ITEM_AFTER,
+                    type:
+                        selectionStart === 0
+                            ? ShoppingActions.CREATE_ITEM_BEFORE
+                            : ShoppingActions.CREATE_ITEM_AFTER,
                     id: this.props.item.id,
                 });
                 break;
@@ -94,7 +87,7 @@ class PlanItem extends React.PureComponent<PlanItemProps> {
                     e.preventDefault();
                     Dispatcher.dispatch({
                         type: ShoppingActions.DELETE_ITEM_BACKWARDS,
-                        id: this.props.item.id
+                        id: this.props.item.id,
                     });
                 }
                 break;
@@ -112,37 +105,23 @@ class PlanItem extends React.PureComponent<PlanItemProps> {
     }
 
     componentDidMount() {
-        if (this.props.active && this.inputRef?.current) this.inputRef.current.focus();
+        if (this.props.active && this.inputRef?.current)
+            this.inputRef.current.focus();
     }
 
     componentDidUpdate() {
-        if (this.props.active && this.inputRef?.current ) this.inputRef.current.focus();
+        if (this.props.active && this.inputRef?.current)
+            this.inputRef.current.focus();
     }
 
     render() {
-        const {
-            item,
-            depth,
-            active,
-            classes,
-        } = this.props;
-        const {
-            question,
-            loading,
-            deleting,
-            acquiring,
-        } = item;
+        const { item, depth, active, classes } = this.props;
+        const { question, loading, deleting, acquiring } = item;
         const addonBefore = [
-            <PlaceholderIconButton
-                key="collapse"
-                size="small"
-            />,
+            <PlaceholderIconButton key="collapse" size="small" />,
         ];
         if (loading || deleting) {
-            addonBefore.push(
-                <LoadingIconButton
-                    key="acquire"
-                />);
+            addonBefore.push(<LoadingIconButton key="acquire" />);
         } else {
             const curr = item._next_status || item.status;
             addonBefore.push(
@@ -150,54 +129,64 @@ class PlanItem extends React.PureComponent<PlanItemProps> {
                     key="acquire"
                     id={item.id}
                     current={curr}
-                    next={curr === PlanItemStatus.ACQUIRED ? PlanItemStatus.NEEDED : PlanItemStatus.ACQUIRED}
-                />);
+                    next={
+                        curr === PlanItemStatus.ACQUIRED
+                            ? PlanItemStatus.NEEDED
+                            : PlanItemStatus.ACQUIRED
+                    }
+                />,
+            );
         }
-        const addonAfter = deleting
-            ? <DontChangeStatusButton
+        const addonAfter = deleting ? (
+            <DontChangeStatusButton
                 key="delete"
                 id={item.id}
                 next={item._next_status}
             />
-            : null;
-        return <Item
-            depth={depth}
-            prefix={addonBefore}
-            suffix={addonAfter}
-            onClick={this.onClick}
-            className={classnames({
-                [classes.question]: question,
-                [classes.active]: active,
-                [classes.acquiring]: acquiring,
-                [classes.deleting]: deleting,
-            })}
-        >
-            {active
-                ? <Input
-                    fullWidth
-                    value={item.name}
-                    placeholder="Enter an item name"
-                    disableUnderline
-                    inputRef={this.inputRef}
-                    onChange={this.onChange}
-                    onKeyDown={this.onKeyDown}
-                />
-                : <ListItemText
-                    className={classes.text}
-                    secondary={item.path.map(p => p.name).join(" / ")}
-                >
-                    {!item.ingredient
-                        ? item.name
-                        : <IngredientItem
-                            ingRef={item}
-                            hideRecipeLink
-                            hideSendToPlan
-                            inline
-                        />}
-                </ListItemText>}
-        </Item>;
+        ) : null;
+        return (
+            <Item
+                depth={depth}
+                prefix={addonBefore}
+                suffix={addonAfter}
+                onClick={this.onClick}
+                className={classnames({
+                    [classes.question]: question,
+                    [classes.active]: active,
+                    [classes.acquiring]: acquiring,
+                    [classes.deleting]: deleting,
+                })}
+            >
+                {active ? (
+                    <Input
+                        fullWidth
+                        value={item.name}
+                        placeholder="Enter an item name"
+                        disableUnderline
+                        inputRef={this.inputRef}
+                        onChange={this.onChange}
+                        onKeyDown={this.onKeyDown}
+                    />
+                ) : (
+                    <ListItemText
+                        className={classes.text}
+                        secondary={item.path.map((p) => p.name).join(" / ")}
+                    >
+                        {!item.ingredient ? (
+                            item.name
+                        ) : (
+                            <IngredientItem
+                                ingRef={item}
+                                hideRecipeLink
+                                hideSendToPlan
+                                inline
+                            />
+                        )}
+                    </ListItemText>
+                )}
+            </Item>
+        );
     }
-
 }
 
 export default withItemStyles(PlanItem);

@@ -1,15 +1,15 @@
 import {
-    CSSObject,
-    styled
+  CSSObject,
+  styled
 } from "@mui/material/styles";
 import {
-    AppBar,
-    Container,
-    ContainerProps,
-    Drawer,
-    List,
-    ListItemIconProps,
-    ListSubheader
+  AppBar,
+  Container,
+  ContainerProps,
+  Drawer,
+  List,
+  ListItemIconProps,
+  ListSubheader
 } from "@mui/material";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import * as React from "react";
@@ -17,7 +17,7 @@ import * as React from "react";
 export const TOP_MARGIN = 20;
 const drawerWidth = 240;
 
-export const Header = styled(AppBar)(({theme}) => ({
+export const Header = styled(AppBar)(({ theme }) => ({
     zIndex: theme.zIndex.drawer + 10,
     backgroundColor: theme.palette.primary.main,
     height: 5,
@@ -60,22 +60,25 @@ export const Sidebar = styled(Drawer, {
             ...closedMixin(theme),
             "& .MuiDrawer-paper": closedMixin(theme),
         }),
-    }));
+    }),
+);
 
 export const Navigation = styled(List)({
-    backgroundColor: "transparent"
+    backgroundColor: "transparent",
 });
 
 interface ExpandedProps extends ContainerProps {
-    open?: boolean
+    open?: boolean;
 }
 
-export const MainDesktop = styled(Container)<ExpandedProps>(({theme, open}) => ({
-    marginTop: TOP_MARGIN,
-    marginBottom: theme.spacing(1),
-}));
+export const MainDesktop = styled(Container)<ExpandedProps>(
+    ({ theme, open }) => ({
+        marginTop: TOP_MARGIN,
+        marginBottom: theme.spacing(1),
+    }),
+);
 
-export const MainMobile = styled(Container)(({theme}) => ({
+export const MainMobile = styled(Container)(({ theme }) => ({
     marginTop: theme.spacing(1),
     marginBottom: theme.spacing(8),
     padding: 0,
@@ -87,18 +90,21 @@ export const Subheader = styled(ListSubheader)(({ theme }) => ({
 }));
 
 interface ItemIconProps extends ListItemIconProps {
-    open: ExpandedProps["open"]
+    open: ExpandedProps["open"];
 }
 
 export const ItemIcon: React.FC<ItemIconProps> = (props) => {
     const { open, sx, children } = props;
-    return <ListItemIcon
-        sx={{
-            minWidth: 0,
-            mr: open ? 3 : "auto",
-            justifyContent: "center",
-            ...sx,
-        }}>
-        {children}
-    </ListItemIcon>;
+    return (
+        <ListItemIcon
+            sx={{
+                minWidth: 0,
+                mr: open ? 3 : "auto",
+                justifyContent: "center",
+                ...sx,
+            }}
+        >
+            {children}
+        </ListItemIcon>
+    );
 };

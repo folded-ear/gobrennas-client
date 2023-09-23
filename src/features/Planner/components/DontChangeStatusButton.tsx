@@ -6,7 +6,7 @@ import { coloredButton } from "views/common/colors";
 import { BfsId } from "../../../global/types/types";
 
 const buttonLookup = {}; // Map<next, Button>
-const findButton = next => {
+const findButton = (next) => {
     if (!buttonLookup.hasOwnProperty(next)) {
         buttonLookup[next] = coloredButton(getColorForStatus(next));
     }
@@ -14,28 +14,30 @@ const findButton = next => {
 };
 
 interface Props {
-    next: PlanItemStatus
-    id?: BfsId
-    onClick?: MouseEventHandler
+    next: PlanItemStatus;
+    id?: BfsId;
+    onClick?: MouseEventHandler;
 }
 
-const DontChangeStatusButton: React.FC<Props> = props => {
+const DontChangeStatusButton: React.FC<Props> = (props) => {
     const Btn = findButton(props.next);
-    return <Btn
-        variant="contained"
-        aria-label="wait-no"
-        size="small"
-        onClick={e => {
-            e.stopPropagation();
-            Dispatcher.dispatch({
-                type: PlanActions.UNDO_SET_STATUS,
-                id: props.id,
-            });
-        }}
-        {...props}
-    >
-        WAIT, NO!
-    </Btn>;
+    return (
+        <Btn
+            variant="contained"
+            aria-label="wait-no"
+            size="small"
+            onClick={(e) => {
+                e.stopPropagation();
+                Dispatcher.dispatch({
+                    type: PlanActions.UNDO_SET_STATUS,
+                    id: props.id,
+                });
+            }}
+            {...props}
+        >
+            WAIT, NO!
+        </Btn>
+    );
 };
 
 export default DontChangeStatusButton;

@@ -1,6 +1,6 @@
 import {
-    Grid,
-    IconButton,
+  Grid,
+  IconButton
 } from "@mui/material";
 import makeStyles from "@mui/styles/makeStyles";
 import LinkIcon from "@mui/icons-material/Link";
@@ -12,8 +12,8 @@ import history from "util/history";
 import Quantity from "views/common/Quantity";
 import SendToPlan from "features/RecipeLibrary/components/SendToPlan";
 import {
-    BfsId,
-    IngredientRef
+  BfsId,
+  IngredientRef
 } from "global/types/types";
 import { useScale } from "util/ScalingContext";
 
@@ -29,41 +29,39 @@ const useStyles = makeStyles(() => ({
 }));
 
 interface AugmentProps {
-    text?: BfsId | null,
-    prefix?: string,
-    suffix?: string,
+    text?: BfsId | null;
+    prefix?: string;
+    suffix?: string;
 }
 
-const Augment: React.FC<AugmentProps> = ({
-                                             text,
-                                             prefix,
-                                             suffix,
-                                         }) => text
-    ? <>{prefix}{text}{suffix}</>
-    : null;
+const Augment: React.FC<AugmentProps> = ({ text, prefix, suffix }) =>
+    text ? (
+        <>
+            {prefix}
+            {text}
+            {suffix}
+        </>
+    ) : null;
 
 interface Props {
-    ingRef: IngredientRef
-    hideRecipeLink?: boolean
-    hideSendToPlan?: boolean
-    inline?: boolean
+    ingRef: IngredientRef;
+    hideRecipeLink?: boolean;
+    hideSendToPlan?: boolean;
+    inline?: boolean;
 }
 
 const IngredientItem: React.FC<Props> = ({
-                                             ingRef: ref,
-                                             hideRecipeLink,
-                                             hideSendToPlan,
-                                             inline,
-                                         }) => {
+    ingRef: ref,
+    hideRecipeLink,
+    hideSendToPlan,
+    inline,
+}) => {
     const classes = useStyles();
     const scale = useScale();
 
     let left, right;
     if (ref.quantity != null) {
-        left = <Quantity
-            quantity={ref.quantity * scale}
-            units={ref.units}
-        />;
+        left = <Quantity quantity={ref.quantity * scale} units={ref.units} />;
     }
 
     if (ref.ingredient == null || typeof ref.ingredient === "string") {
@@ -72,77 +70,86 @@ const IngredientItem: React.FC<Props> = ({
             left = null;
             right = ref.raw || ref.name;
         } else {
-            right = ref.quantity == null
-                ? (ref.raw || ref.name)
-                : ref.preparation;
+            right =
+                ref.quantity == null ? ref.raw || ref.name : ref.preparation;
         }
         if (!hideSendToPlan) {
-            right = <>
-                {right}
-                {" "}
-                <SendToPlan
-                    onClick={planId => Dispatcher.dispatch({
-                        type: PlanActions.SEND_TO_PLAN,
-                        planId,
-                        name: ref.raw,
-                    })}
-                    iconOnly
-                />
-            </>;
+            right = (
+                <>
+                    {right}{" "}
+                    <SendToPlan
+                        onClick={(planId) =>
+                            Dispatcher.dispatch({
+                                type: PlanActions.SEND_TO_PLAN,
+                                planId,
+                                name: ref.raw,
+                            })
+                        }
+                        iconOnly
+                    />
+                </>
+            );
         }
     } else {
         const ingredient = ref.ingredient;
         const isRecipe = ingredient.type === "Recipe";
 
-        right = <>
-            <span className={classes.name}>
-                {ingredient.name}
-            </span>
-            {isRecipe && !hideRecipeLink && <>
-                {" "}
-                <IconButton
-                    size={"small"}
-                    onClick={() => history.push(`/library/recipe/${ingredient.id}`)}
-                    title={`Open ${ingredient.name}`}
-                >
-                    <LinkIcon fontSize="inherit" />
-                </IconButton>
-            </>}
-            <Augment
-                text={ref.preparation}
-                prefix=", "
-            />
-            {!isRecipe && !hideSendToPlan && <>
-                {" "}
-                <SendToPlan
-                    onClick={planId => Dispatcher.dispatch({
-                        type: PantryItemActions.SEND_TO_PLAN,
-                        planId,
-                        id: ingredient.id,
-                        name: ingredient.name,
-                    })}
-                    iconOnly
-                />
-            </>}
-        </>;
+        right = (
+            <>
+                <span className={classes.name}>{ingredient.name}</span>
+                {isRecipe && !hideRecipeLink && (
+                    <>
+                        {" "}
+                        <IconButton
+                            size={"small"}
+                            onClick={() =>
+                                history.push(`/library/recipe/${ingredient.id}`)
+                            }
+                            title={`Open ${ingredient.name}`}
+                        >
+                            <LinkIcon fontSize="inherit" />
+                        </IconButton>
+                    </>
+                )}
+                <Augment text={ref.preparation} prefix=", " />
+                {!isRecipe && !hideSendToPlan && (
+                    <>
+                        {" "}
+                        <SendToPlan
+                            onClick={(planId) =>
+                                Dispatcher.dispatch({
+                                    type: PantryItemActions.SEND_TO_PLAN,
+                                    planId,
+                                    id: ingredient.id,
+                                    name: ingredient.name,
+                                })
+                            }
+                            iconOnly
+                        />
+                    </>
+                )}
+            </>
+        );
     }
 
     if (inline) {
-        return <span>
-            {left}
-            {" "}
-            {right}
-        </span>;
+        return (
+            <span>
+                {left} {right}
+            </span>
+        );
     }
 
-    return <Grid container spacing={2}>
-        <Grid item xs={3} className={classes.quantity}>
-            {left}
+    return (
+        <Grid container spacing={2}>
+            <Grid item xs={3} className={classes.quantity}>
+                {left}
+            </Grid>
+            <Grid item xs={9}>
+                {right}
+            </Grid>
         </Grid>
-        <Grid item xs={9}>
-            {right}
-        </Grid>
-    </Grid>;
+    );
 };
 
 export default IngredientItem;

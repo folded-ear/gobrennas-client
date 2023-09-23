@@ -11,7 +11,7 @@ const flushPending = () => {
     }
 };
 
-const doFutureWork = type => {
+const doFutureWork = (type) => {
     Dispatcher.dispatch({ type });
     timeoutRegistry.delete(type);
     if (timeoutRegistry.size === 0) {
@@ -36,8 +36,10 @@ const inTheFuture = (type, delay = 2) => {
     if (timeoutRegistry.has(type)) {
         clearTimeout(timeoutRegistry.get(type));
     }
-    timeoutRegistry.set(type,
-        setTimeout(doFutureWork.bind(null, type), delay * 1000));
+    timeoutRegistry.set(
+        type,
+        setTimeout(doFutureWork.bind(null, type), delay * 1000),
+    );
 };
 
 export default inTheFuture;

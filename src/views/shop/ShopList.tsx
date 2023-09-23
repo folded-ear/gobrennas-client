@@ -1,12 +1,12 @@
 import {
-    Box,
-    Typography
+  Box,
+  Typography
 } from "@mui/material";
 import List from "@mui/material/List";
 import Add from "@mui/icons-material/Add";
 import React, {
-    useCallback,
-    useState
+  useCallback,
+  useState
 } from "react";
 import Dispatcher from "data/dispatcher";
 import ShoppingActions from "data/ShoppingActions";
@@ -16,13 +16,13 @@ import PageBody from "views/common/PageBody";
 import IngredientItem from "views/shop/IngredientItem";
 import PlanItem from "views/shop/PlanItem";
 import {
-    BaseItemProp,
-    ItemProps,
+  BaseItemProp,
+  ItemProps
 } from "./types";
 import { PlanItem as PlanItemType } from "features/Planner/data/planStore";
 import {
-    BfsId,
-    Quantity
+  BfsId,
+  Quantity
 } from "global/types/types";
 import CollapseIconButton from "../../global/components/CollapseIconButton";
 import PantryItemActions from "../../data/PantryItemActions";
@@ -34,49 +34,55 @@ export enum ShopItemType {
 }
 
 export interface ShopItemTuple extends ItemProps {
-    blockId?: BfsId
-    _type: ShopItemType
-    active?: boolean
-    depth: number
-    expanded?: boolean
-    itemIds?: BfsId[]
-    quantities?: Quantity[]
-    path: BaseItemProp[]
+    blockId?: BfsId;
+    _type: ShopItemType;
+    active?: boolean;
+    depth: number;
+    expanded?: boolean;
+    itemIds?: BfsId[];
+    quantities?: Quantity[];
+    path: BaseItemProp[];
 }
 
 export type ShopListProps = {
-    plan: PlanItemType | null | undefined
-    neededTuples: ShopItemTuple[]
-    acquiredTuples: ShopItemTuple[]
-    onRepartition(): void
-}
+    plan: PlanItemType | null | undefined;
+    neededTuples: ShopItemTuple[];
+    acquiredTuples: ShopItemTuple[];
+    onRepartition(): void;
+};
 
 interface TupleListProps {
-    tuples: ShopItemTuple[]
+    tuples: ShopItemTuple[];
 }
 
 function renderItem(it?: ShopItemTuple) {
     if (!it) return null;
     if (it._type === ShopItemType.INGREDIENT) {
-        return <IngredientItem
-            key={it.id + "-ing-item"}
-            item={it}
-            active={it.expanded}
-        />;
+        return (
+            <IngredientItem
+                key={it.id + "-ing-item"}
+                item={it}
+                active={it.expanded}
+            />
+        );
     } else {
-        return <PlanItem
-            key={it.id}
-            depth={it.depth}
-            item={it}
-            active={it.active}
-        />;
+        return (
+            <PlanItem
+                key={it.id}
+                depth={it.depth}
+                item={it}
+                active={it.active}
+            />
+        );
     }
 }
 
-const TupleList: React.FC<TupleListProps> = ({
-                                                 tuples,
-                                             }) => {
-    const handleDrop: DragContainerProps["onDrop"] = (id, targetId, vertical) => {
+const TupleList: React.FC<TupleListProps> = ({ tuples }) => {
+    const handleDrop: DragContainerProps["onDrop"] = (
+        id,
+        targetId,
+        vertical,
+    ) => {
         Dispatcher.dispatch({
             type: PantryItemActions.ORDER_FOR_STORE,
             id,
@@ -85,73 +91,68 @@ const TupleList: React.FC<TupleListProps> = ({
         });
     };
 
-    return <DragContainer
-        onDrop={handleDrop}
-        renderOverlay={id => renderItem(tuples.find(it =>
-            it.id === id))}
-    >
-        <List>
-            {tuples.map(renderItem)}
-        </List>
-    </DragContainer>;
+    return (
+        <DragContainer
+            onDrop={handleDrop}
+            renderOverlay={(id) =>
+                renderItem(tuples.find((it) => it.id === id))
+            }
+        >
+            <List>{tuples.map(renderItem)}</List>
+        </DragContainer>
+    );
 };
 
 const ShopList: React.FC<ShopListProps> = ({
-                                               plan,
-                                               neededTuples,
-                                               acquiredTuples,
-                                               onRepartition,
-                                           }) => {
-    const [ showAcquired, setShowAcquired ] = useState(false);
+    plan,
+    neededTuples,
+    acquiredTuples,
+    onRepartition,
+}) => {
+    const [showAcquired, setShowAcquired] = useState(false);
 
-    const handleAddNew = useCallback(
-        (e) => {
-            e.preventDefault();
-            Dispatcher.dispatch({
-                type: ShoppingActions.CREATE_ITEM_AT_END,
-            });
-        },
-        []
-    );
+    const handleAddNew = useCallback((e) => {
+        e.preventDefault();
+        Dispatcher.dispatch({
+            type: ShoppingActions.CREATE_ITEM_AT_END,
+        });
+    }, []);
 
-    const handleToggleAcquired = useCallback(
-        () => {
-            setShowAcquired(v => !v);
-            onRepartition();
-        },
-        [ onRepartition ]
-    );
+    const handleToggleAcquired = useCallback(() => {
+        setShowAcquired((v) => !v);
+        onRepartition();
+    }, [onRepartition]);
 
     if (!plan) {
-        return <LoadingIndicator
-            primary="Loading shopping list..."
-        />;
+        return <LoadingIndicator primary="Loading shopping list..." />;
     }
 
-    return <PageBody hasFab fullWidth>
-        <Box mx={2} my={1}>
-            <Typography variant="h2">{plan.name}</Typography>
-        </Box>
-        <TupleList tuples={neededTuples} />
-        {acquiredTuples.length > 0 && <Box mt={2}>
-            <Typography variant="h5">
-                <CollapseIconButton
-                    key="collapse"
-                    expanded={showAcquired}
-                    onClick={handleToggleAcquired}
-                />
-                <span onClick={handleToggleAcquired}>
-                    Acquired ({acquiredTuples.length})
-                </span>
-            </Typography>
-            {showAcquired && <TupleList tuples={acquiredTuples} />}
-        </Box>}
-        <FoodingerFab
-            onClick={handleAddNew}
-        >
-            <Add />
-        </FoodingerFab>
-    </PageBody>;
+    return (
+        <PageBody hasFab fullWidth>
+            <Box mx={2} my={1}>
+                <Typography variant="h2">{plan.name}</Typography>
+            </Box>
+            <TupleList tuples={neededTuples} />
+            {acquiredTuples.length > 0 && (
+                <Box mt={2}>
+                    <Typography variant="h5">
+                        <CollapseIconButton
+                            key="collapse"
+                            expanded={showAcquired}
+                            onClick={handleToggleAcquired}
+                        />
+                        <span onClick={handleToggleAcquired}>
+                            Acquired ({acquiredTuples.length})
+                        </span>
+                    </Typography>
+                    {showAcquired && <TupleList tuples={acquiredTuples} />}
+                </Box>
+            )}
+            <FoodingerFab onClick={handleAddNew}>
+                <Add />
+            </FoodingerFab>
+        </PageBody>
+    );
 };
 
 export default ShopList;

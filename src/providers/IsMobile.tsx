@@ -1,8 +1,8 @@
 import { useMediaQuery } from "@mui/material";
 import React, {
-    createContext,
-    PropsWithChildren,
-    useContext,
+  createContext,
+  PropsWithChildren,
+  useContext
 } from "react";
 import theme from "../theme";
 
@@ -14,10 +14,11 @@ export function IsMobileProvider({ children }: PropsWithChildren): JSX.Element {
     const mobile = useMediaQuery(query, {
         noSsr: true, // don't double-render
     });
-    return <MobileContext.Provider value={mobile}>
-        {children}
-    </MobileContext.Provider>;
+    return (
+        <MobileContext.Provider value={mobile}>
+            {children}
+        </MobileContext.Provider>
+    );
 }
 
-export const useIsMobile = () =>
-    useContext(MobileContext);
+export const useIsMobile = () => useContext(MobileContext);

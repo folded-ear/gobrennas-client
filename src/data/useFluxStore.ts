@@ -32,10 +32,12 @@ import FluxReduceStore from "flux/lib/FluxReduceStore";
  *  This is like what you'd pass to useEffect or useMemo.
  * @return The current calculated state.
  */
-function useFluxStore<S>(calculateState: () => S,
-                         stores: FluxReduceStore<any, any>[],
-                         deps: any[] = []): S {
-    const [ state, setState ] = React.useState(calculateState);
+function useFluxStore<S>(
+    calculateState: () => S,
+    stores: FluxReduceStore<any, any>[],
+    deps: any[] = [],
+): S {
+    const [state, setState] = React.useState(calculateState);
     React.useEffect(
         () => {
             const subs = new FluxContainerSubscriptions();

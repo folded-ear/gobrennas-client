@@ -1,9 +1,9 @@
 import {
-    ApolloClient as ApolloClientInstance,
-    ApolloProvider,
-    from,
-    HttpLink,
-    InMemoryCache,
+  ApolloClient as ApolloClientInstance,
+  ApolloProvider,
+  from,
+  HttpLink,
+  InMemoryCache
 } from "@apollo/client";
 import { onError } from "@apollo/client/link/error";
 import { relayStylePagination } from "@apollo/client/utilities";
@@ -11,8 +11,8 @@ import * as React from "react";
 import { PropsWithChildren } from "react";
 import { API_BASE_URL } from "../constants";
 import {
-    askUserToReauth,
-    isAuthError,
+  askUserToReauth,
+  isAuthError
 } from "./Profile";
 
 const httpLink = new HttpLink({
@@ -45,16 +45,14 @@ const client = new ApolloClientInstance({
             },
             LibraryQuery: {
                 fields: {
-                    recipes: relayStylePagination([ "scope", "query" ]),
+                    recipes: relayStylePagination(["scope", "query"]),
                 },
             },
         },
     }),
-    link: from([ errorLink, httpLink ]),
+    link: from([errorLink, httpLink]),
 });
 
 export function ApolloClient({ children }: PropsWithChildren) {
-    return <ApolloProvider client={client}>
-        {children}
-    </ApolloProvider>;
+    return <ApolloProvider client={client}>{children}</ApolloProvider>;
 }

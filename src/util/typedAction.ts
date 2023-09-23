@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 export const CONTAINER_KEY = "payload";
 
 // eslint-disable-next-line @typescript-eslint/ban-types
-export type CheckableActionType = string | (String & { actionTypes?: object })
+export type CheckableActionType = string | (String & { actionTypes?: object });
 
 /*
  * This function uses a bit of JS trickery in order to "hide" a proptypes def

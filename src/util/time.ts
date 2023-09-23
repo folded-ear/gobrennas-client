@@ -32,25 +32,24 @@ export const formatTimer = (seconds?: number) => {
     const neg = seconds < 0;
     if (neg) seconds = -seconds;
     const hr = Math.floor(seconds / 3600);
-    const min = Math.floor(seconds % 3600 / 60);
+    const min = Math.floor((seconds % 3600) / 60);
     const sec = Math.floor(seconds % 60);
-    let result = hr === 0
-        ? "" + min
-        : hr + ":" + pad(min);
+    let result = hr === 0 ? "" + min : hr + ":" + pad(min);
     result += ":" + pad(sec);
     if (neg) result = "-" + result;
     return result;
 };
 
-const TEN_YEARS_FROM_NOW_THIS_CENTURY = new Date().getFullYear() % 100 + 10;
+const TEN_YEARS_FROM_NOW_THIS_CENTURY = (new Date().getFullYear() % 100) + 10;
 
 export function parseLocalDate(date: string): Maybe<Date> {
     if (!date) return null;
     if (!/^\d+-\d+-\d+(\D|$)/.test(date)) return null;
-    const parts = date.split(/\D/)
+    const parts = date
+        .split(/\D/)
         .slice(0, 3)
-        .map(p => parseInt(p, 10)) as [ number, number, number ];
-    if (parts.some(p => isNaN(p))) return null;
+        .map((p) => parseInt(p, 10)) as [number, number, number];
+    if (parts.some((p) => isNaN(p))) return null;
     let year = parts.shift() as number; // parts is non-empty
     if (year < 0) return null;
     if (year <= TEN_YEARS_FROM_NOW_THIS_CENTURY) {
@@ -73,9 +72,13 @@ function pad(number: number): string {
 
 export function formatLocalDate(date?: Date): Maybe<string> {
     if (!date) return null;
-    return date.getFullYear() +
-        "-" + pad(date.getMonth() + 1) +
-        "-" + pad(date.getDate());
+    return (
+        date.getFullYear() +
+        "-" +
+        pad(date.getMonth() + 1) +
+        "-" +
+        pad(date.getDate())
+    );
 }
 
 const humanDateFormatter = new Intl.DateTimeFormat("default", {

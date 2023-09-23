@@ -1,36 +1,33 @@
-@import url('https://fonts.googleapis.com/css2?family=News+Cycle:wght@700&family=Stint+Ultra+Condensed&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Cookie&family=Encode+Sans&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Cookie&family=Encode+Sans+Semi+Condensed&family=Encode+Sans+Semi+Expanded:wght@500&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=News+Cycle:wght@700&family=Stint+Ultra+Condensed&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Cookie&family=Encode+Sans&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Cookie&family=Encode+Sans+Semi+Condensed&family=Encode+Sans+Semi+Expanded:wght@500&display=swap");
 
 // avoid the layout flash before CssBaseline loads
-html, body {
-  margin: 0;
-  padding: 0;
+html,
+body {
+    margin: 0;
+    padding: 0;
 }
 
 .markdown {
-  ol {
-    padding: 0;
-    list-style: none;
-    counter-reset: cntr;
-  }
-
-  ol li {
-    margin-bottom: 15px;
-    counter-increment: cntr;
-
-    &::before {
-      content: "Step " counter(cntr);
-      color: #870000;
-      display: block;
-      font-weight: bold;
-      font-family: "News Cycle", sans-serif;
-      font-size: 1.1em;
-      text-transform: uppercase;
+    ol {
+        padding: 0;
+        list-style: none;
+        counter-reset: cntr;
     }
 
-  }
+    ol li {
+        margin-bottom: 15px;
+        counter-increment: cntr;
 
+        &::before {
+            content: "Step " counter(cntr);
+            color: #870000;
+            display: block;
+            font-weight: bold;
+            font-family: "News Cycle", sans-serif;
+            font-size: 1.1em;
+            text-transform: uppercase;
+        }
+    }
 }
-
-

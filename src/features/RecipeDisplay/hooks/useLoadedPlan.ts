@@ -9,25 +9,20 @@ export const useLoadedPlan = (pid: BfsId | undefined) => {
     // ensure it's loaded
     const allPlansLO = useFluxStore(
         () => planStore.getPlanIdsLO(),
-        [
-            planStore,
-        ],
+        [planStore],
     );
     // ensure it's selected
-    React.useEffect(
-        () => {
-            if (pid != null && allPlansLO.hasValue()) {
-                // The contract implies that effects trigger after the render
-                // cycle completes, but doesn't guarantee it. The setTimeout
-                // avoids a reentrant dispatch if the effect isn't deferred.
-                setTimeout(() => Dispatcher.dispatch({
+    React.useEffect(() => {
+        if (pid != null && allPlansLO.hasValue()) {
+            // The contract implies that effects trigger after the render
+            // cycle completes, but doesn't guarantee it. The setTimeout
+            // avoids a reentrant dispatch if the effect isn't deferred.
+            setTimeout(() =>
+                Dispatcher.dispatch({
                     type: PlanActions.SELECT_PLAN,
-                    id: typeof pid === "string"
-                        ? parseInt(pid, 10)
-                        : pid,
-                }));
-            }
-        },
-        [ allPlansLO, pid ],
-    );
+                    id: typeof pid === "string" ? parseInt(pid, 10) : pid,
+                }),
+            );
+        }
+    }, [allPlansLO, pid]);
 };

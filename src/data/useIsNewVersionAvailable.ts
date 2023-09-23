@@ -4,7 +4,7 @@ import WindowStore from "./WindowStore";
 function useIsNewVersionAvailable(): boolean {
     return useFluxStore(
         () => WindowStore.isNewVersionAvailable(),
-        [ WindowStore ],
+        [WindowStore],
     );
 }
 

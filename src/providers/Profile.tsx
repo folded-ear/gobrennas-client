@@ -1,16 +1,16 @@
 import BaseAxios from "axios";
 import React, {
-    createContext,
-    PropsWithChildren,
-    useCallback,
-    useContext,
-    useEffect,
-    useState,
+  createContext,
+  PropsWithChildren,
+  useCallback,
+  useContext,
+  useEffect,
+  useState
 } from "react";
 import LoadObject from "util/LoadObject";
 import {
-    API_BASE_URL,
-    LOCAL_STORAGE_ACCESS_TOKEN,
+  API_BASE_URL,
+  LOCAL_STORAGE_ACCESS_TOKEN
 } from "../constants";
 import GTag from "../GTag";
 import { Maybe } from "graphql/jsutils/Maybe";
@@ -28,14 +28,19 @@ const ProfileLOContext = createContext<Maybe<LoadObject<UserType>>>(undefined);
 let globalProfileLoadObject;
 
 export const ProfileProvider: React.FC<PropsWithChildren> = ({ children }) => {
-    const [ profileLO, setProfileLO ] = useState<Maybe<LoadObject<UserType>>>(undefined);
+    const [profileLO, setProfileLO] =
+        useState<Maybe<LoadObject<UserType>>>(undefined);
 
-    const doSetProfileLO = useCallback(valueOrUpdater => {
-        const next = typeof valueOrUpdater === "function"
-            ? valueOrUpdater(globalProfileLoadObject)
-            : valueOrUpdater;
-        setProfileLO(globalProfileLoadObject = next);
-    }, [ setProfileLO ]);
+    const doSetProfileLO = useCallback(
+        (valueOrUpdater) => {
+            const next =
+                typeof valueOrUpdater === "function"
+                    ? valueOrUpdater(globalProfileLoadObject)
+                    : valueOrUpdater;
+            setProfileLO((globalProfileLoadObject = next));
+        },
+        [setProfileLO],
+    );
 
     useEffect(() => {
         if (profileLO) {
@@ -43,33 +48,39 @@ export const ProfileProvider: React.FC<PropsWithChildren> = ({ children }) => {
             if (!profileLO.isDone()) return;
             if (profileLO.hasError()) return;
         }
-        axios.get("/api/user/me")
-            .then(data => {
+        axios
+            .get("/api/user/me")
+            .then((data) => {
                 GTag("set", {
                     uid: data.data.id,
                 });
-                doSetProfileLO(lo =>
-                    lo.setValue(data.data).done());
+                doSetProfileLO((lo) => lo.setValue(data.data).done());
             })
-            .catch(error => {
+            .catch((error) => {
                 if (isAuthError(error)) {
-                    doSetProfileLO(LoadObject.withError(new Error(ProfileState.ERR_NO_TOKEN)));
+                    doSetProfileLO(
+                        LoadObject.withError(
+                            new Error(ProfileState.ERR_NO_TOKEN),
+                        ),
+                    );
                 } else {
-                    doSetProfileLO(lo =>
-                        lo.setError(error).done());
+                    doSetProfileLO((lo) => lo.setError(error).done());
                 }
             });
-        doSetProfileLO(lo =>
-            lo ? lo.loading() : LoadObject.loading());
-    }, [ profileLO, doSetProfileLO ]);
-    return <ProfileLOContext.Provider value={profileLO}>
-        {children}
-    </ProfileLOContext.Provider>;
+        doSetProfileLO((lo) => (lo ? lo.loading() : LoadObject.loading()));
+    }, [profileLO, doSetProfileLO]);
+    return (
+        <ProfileLOContext.Provider value={profileLO}>
+            {children}
+        </ProfileLOContext.Provider>
+    );
 };
 
-export const isAuthError = error =>
-    error && ((error.response && error.response.status === 401)
-        || (error.extensions && error.extensions.type === "NoUserPrincipalException"));
+export const isAuthError = (error) =>
+    error &&
+    ((error.response && error.response.status === 401) ||
+        (error.extensions &&
+            error.extensions.type === "NoUserPrincipalException"));
 
 let lastReauthPrompt = 0;
 const promptForReauthFrequency = 10 * 60 * 1000;
@@ -127,11 +138,9 @@ export const useIsProfilePending = () =>
 export const useIsAuthenticated = () =>
     useProfileState() === ProfileState.AUTHENTICATED;
 
-export const useProfile = () =>
-    useProfileLO().getValueEnforcing();
+export const useProfile = () => useProfileLO().getValueEnforcing();
 
-export const useProfileId = () =>
-    useProfile().id;
+export const useProfileId = () => useProfile().id;
 
 export const useIsDeveloper = () => {
     const lo = useProfileLO();
@@ -147,5 +156,4 @@ const logoutHandler = () => {
     window.location.href = API_BASE_URL + "/oauth2/logout";
 };
 
-export const useLogoutHandler = () =>
-    logoutHandler;
+export const useLogoutHandler = () => logoutHandler;

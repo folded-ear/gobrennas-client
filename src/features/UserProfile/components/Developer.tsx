@@ -11,15 +11,15 @@ const dateTimeStamp = preval`module.exports = new Date().toISOString();`;
 
 const DevMode: React.FC = () => {
     const windowSize = useWindowSize();
-    return <React.Fragment>
-        <Divider />
-        <p>
-            Window: {windowSize.width}x{windowSize.height}
-        </p>
-        <p>
-            Build: {dateTimeStamp}
-        </p>
-    </React.Fragment>;
+    return (
+        <React.Fragment>
+            <Divider />
+            <p>
+                Window: {windowSize.width}x{windowSize.height}
+            </p>
+            <p>Build: {dateTimeStamp}</p>
+        </React.Fragment>
+    );
 };
 
 export const Developer: React.FC = () => {
@@ -32,14 +32,15 @@ export const Developer: React.FC = () => {
         });
     };
 
-    return <>
-        Dev Mode:
-        {" "}
-        <Switch
-            checked={isDevMode}
-            onChange={handleDevModeChange}
-            color="primary"
-        />
-        {isDevMode && <DevMode />}
-    </>;
+    return (
+        <>
+            Dev Mode:{" "}
+            <Switch
+                checked={isDevMode}
+                onChange={handleDevModeChange}
+                color="primary"
+            />
+            {isDevMode && <DevMode />}
+        </>
+    );
 };

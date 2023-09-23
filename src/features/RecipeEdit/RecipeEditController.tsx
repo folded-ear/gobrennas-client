@@ -13,8 +13,9 @@ const RecipeEditController: React.FC<Props> = ({ match }) => {
     const id = match.params?.id || "";
     const lo = useIngredientLO(parseInt(id, 10));
     const { data: labelList } = useGetAllLabels();
-    return (<RecipeEdit recipeLO={lo as LoadObject<Recipe>}
-                        labelList={labelList} />);
+    return (
+        <RecipeEdit recipeLO={lo as LoadObject<Recipe>} labelList={labelList} />
+    );
 };
 
 export default withRouter(RecipeEditController);

@@ -3,9 +3,9 @@ import "./App.scss";
 import useIsNewVersionAvailable from "./data/useIsNewVersionAvailable";
 import { useIsAuthenticated } from "providers/Profile";
 import {
-    StyledEngineProvider,
-    Theme,
-    ThemeProvider,
+  StyledEngineProvider,
+  Theme,
+  ThemeProvider
 } from "@mui/material/styles";
 import theme from "./theme";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -17,8 +17,7 @@ import SnackPack from "views/common/SnackPack";
 
 declare module "@mui/styles/defaultTheme" {
     // eslint-disable-next-line @typescript-eslint/no-empty-interface
-    interface DefaultTheme extends Theme {
-    }
+    interface DefaultTheme extends Theme {}
 }
 
 function App() {
@@ -28,19 +27,17 @@ function App() {
     return (
         <StyledEngineProvider injectFirst>
             <ThemeProvider theme={theme}>
-                <CssBaseline/>
-                <NavigationController
-                    authenticated={authenticated}
-                >
-                    {authenticated
-                        && newVersionAvailable
-                        && <NewVersionAvailable />}
+                <CssBaseline />
+                <NavigationController authenticated={authenticated}>
+                    {authenticated && newVersionAvailable && (
+                        <NewVersionAvailable />
+                    )}
                     <RoutingSwitch
                         routes={routes}
                         authenticated={authenticated}
                     />
                 </NavigationController>
-                <SnackPack/>
+                <SnackPack />
             </ThemeProvider>
         </StyledEngineProvider>
     );
