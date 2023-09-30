@@ -182,7 +182,6 @@ function ElEdit(props: ElEditProps) {
     }, []);
 
     useEffect(() => {
-        if (props?.value?.raw === _raw.current) return;
         recognizeDebounced(_mounted, _raw, ref, props, setState);
         // Re-recognize ONLY when the raw changes.
         //
@@ -251,7 +250,7 @@ function ElEdit(props: ElEditProps) {
                 break;
             case "ArrowLeft":
             case "ArrowRight":
-                recognizeDebounced(_mounted, _raw, ref, props, setState);
+                recognizeDebounced();
                 break;
         }
     }
