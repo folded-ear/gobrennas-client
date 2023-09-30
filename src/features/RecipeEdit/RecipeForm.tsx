@@ -209,17 +209,16 @@ const RecipeForm: React.FC<Props> = ({
                     <Item key={it.id}
                           hideDivider
                           dragId={it.id}
-                          suffix={<>
-                              {!mobile && <IconButton
-                                  size="small"
-                                  tabIndex={-1}
-                                  onClick={() => Dispatcher.dispatch({
-                                      type: RecipeActions.NEW_DRAFT_INGREDIENT_YO,
-                                      index: i,
-                                  })}
-                              >
-                                  <Add />
-                              </IconButton>}
+                          suffix={<>{!mobile && <IconButton
+                              size="small"
+                              tabIndex={-1}
+                              onClick={() => Dispatcher.dispatch({
+                                  type: RecipeActions.NEW_DRAFT_INGREDIENT_YO,
+                                  index: i,
+                              })}
+                          >
+                              <Add />
+                          </IconButton>}
                               <IconButton
                                   size="small"
                                   tabIndex={-1}
