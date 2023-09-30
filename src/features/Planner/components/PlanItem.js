@@ -79,7 +79,8 @@ class PlanItem extends React.PureComponent {
             ctrlKey,
             shiftKey,
         } = e;
-        switch (key) { // eslint-disable-line default-case
+        // eslint-disable-next-line default-case
+        switch (key) {
             case "Enter":
                 if (value.length === 0) break;
                 // add a new item, before if the cursor is at the beginning, after otherwise
