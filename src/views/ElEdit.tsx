@@ -1,28 +1,25 @@
-import React, {
-    CSSProperties,
-    PropsWithChildren,
-    useEffect,
-    useRef,
-    useState
-} from "react";
 import {
-    BfsId,
-    Ingredient
-} from "../global/types/types";
-import ItemApi, { RecognitionResult } from "../data/ItemApi";
-import debounce from "../util/debounce";
-import processRecognizedItem from "../util/processRecognizedItem";
-import {
-    Autocomplete,
     Grid,
     InputAdornment,
     LinearProgress,
-    TextField
+    TextField,
 } from "@mui/material";
 import {
     CheckCircleOutline,
-    ErrorOutline
+    ErrorOutline,
 } from "@mui/icons-material";
+import React, {
+    CSSProperties,
+    PropsWithChildren,
+} from "react";
+import ItemApi, { RecognitionResult } from "data/ItemApi";
+import debounce from "util/debounce";
+import processRecognizedItem from "util/processRecognizedItem";
+import {
+    BfsId,
+    Ingredient
+} from "global/types/types";
+import Autocomplete from "@mui/lab/Autocomplete";
 
 const doRecog = raw =>
     raw != null && raw.trim().length >= 2;
@@ -45,13 +42,6 @@ interface Target {
     }
 }
 
-interface Suggestion {
-    prefix: string
-    value: string
-    suffix: string
-    result: string
-}
-
 interface ElEditProps {
     name: string
     value: Value
@@ -66,6 +56,13 @@ interface ElEditProps {
     onMultilinePaste?(text: string): void
 }
 
+interface Suggestion {
+    prefix: string
+    value: string
+    suffix: string
+    result: string
+}
+
 interface ElEditState {
     recog?: RecognitionResult
     suggestions?: Suggestion[]
@@ -78,123 +75,123 @@ interface ElEditState {
     preparation?: string
 }
 
-function getCursorPosition(el: HTMLInputElement | null) {
-    if (el == null) return 0;
-    const c = el.selectionStart || 0;
-    const raw = el.value || "";
-    return Math.min(Math.max(c, 0), raw.length);
-}
+class ElEdit extends React.PureComponent<ElEditProps, ElEditState> {
+    private _mounted: boolean;
+    private readonly ref: React.RefObject<HTMLInputElement>;
+    private readonly recognizeDebounced: ((...args) => void);
 
-function recognize(_mounted, _raw, ref, props, setState) {
-    if (!_mounted.current) return;
-    const {
-        name,
-        value,
-        onChange,
-    } = props;
-    if (!doRecog(value.raw)) return;
-    const cursor = getCursorPosition(ref.current);
-    ItemApi.recognizeItem(value.raw, cursor)
-        .then((recog: RecognitionResult) => {
-            if (!_mounted.current) return;
-            if (recog.raw !== _raw.current) return;
-            // if (recog.cursor !== this.getCursorPosition()) return;
-            const {
-                raw,
-                quantity: qv,
-                quantity_raw: q,
-                uomId: uv,
-                units,
-                units_raw: u,
-                ingredientId: nv,
-                ingredient,
-                ingredient_raw: n,
-                preparation: p,
-            } = processRecognizedItem(recog);
-            onChange({
-                target: {
-                    name,
-                    value: {
-                        id: value.id,
-                        raw,
-                        quantity: qv,
-                        uomId: uv,
-                        units,
-                        ingredientId: nv,
-                        ingredient,
-                        preparation: p,
-                    },
-                },
-            });
-            const suggestions: Suggestion[] = recog.suggestions.map(s => {
-                const prefix = recog.raw.substring(0, s.target.start);
-                const suffix = recog.raw.substring(s.target.end);
-                const quote = s.name.indexOf(" ") >= 0 ||
-                    recog.raw.charAt(s.target.start) === '"' ||
-                    recog.raw.charAt(s.target.end - 1) === '"';
-                const value = quote
-                    ? `"${s.name}"`
-                    : s.name;
-                return {
-                    prefix,
-                    value,
-                    suffix,
-                    result: prefix + value + suffix,
-                };
-            })
-                .filter(s => s.result !== recog.raw);
-            setState({
-                recog,
-                quantity: q,
-                quantityValue: qv,
-                unit: u, unitValue: uv,
-                ingredientName: n, nameValue: nv,
-                preparation: p,
-                suggestions,
-            });
-        });
-}
-
-const recognizeDebounced = debounce(recognize);
-
-function ElEdit(props: ElEditProps) {
-    const [ state, setState ] = useState<ElEditState>({
-        recog: undefined,
-        suggestions: undefined,
-    });
-    const _mounted = useRef(false);
-    const _raw = useRef("");
-    const ref = useRef<HTMLInputElement>(null);
-
-    useEffect(() => {
-        _raw.current = props.value?.raw;
-    }, [ props.value?.raw ]);
-
-    useEffect(() => {
-        _mounted.current = true;
-        recognize(_mounted, _raw, ref, props, setState);
-        return () => {
-            _mounted.current = false;
+    constructor(args: ElEditProps) {
+        super(args);
+        this.ref = React.createRef<HTMLInputElement>();
+        this._mounted = false;
+        this.state = {
+            recog: undefined,
+            suggestions: undefined,
         };
-        // We want to run once, with whatever we started with.
-        //
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+        this.recognizeDebounced = debounce(this.recognize.bind(this));
+        this.handleChange = this.handleChange.bind(this);
+        this.onPaste = this.onPaste.bind(this);
+        this.onKeyDown = this.onKeyDown.bind(this);
+    }
 
-    useEffect(() => {
-        if (props?.value?.raw === _raw.current) return;
-        recognizeDebounced(_mounted, _raw, ref, props, setState);
-        // Re-recognize ONLY when the raw changes.
-        //
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [ props?.value?.raw ]);
+    componentDidMount() {
+        this._mounted = true;
+        this.recognize();
+    }
 
-    function handleChange(e, val) {
+    componentWillUnmount() {
+        this._mounted = false;
+    }
+
+    componentDidUpdate(prevProps) {
+        if (this.props.value.raw === prevProps.value.raw) return;
+        this.recognizeDebounced();
+    }
+
+    getCursorPosition() {
+        const el = this.ref.current;
+        if (el == null) return 0;
+        const c = el.selectionStart || 0;
+        const raw = el.value || "";
+        return Math.min(Math.max(c, 0), raw.length);
+    }
+
+    recognize() {
+        if (!this._mounted) return;
+        const {
+            name,
+            value,
+            onChange,
+        } = this.props;
+        if (!doRecog(value.raw)) return;
+        const cursor = this.getCursorPosition();
+        ItemApi.recognizeItem(value.raw, cursor)
+            .then((recog: RecognitionResult) => {
+                if (!this._mounted) return;
+                if (recog.raw !== this.props.value.raw) return;
+                // if (recog.cursor !== this.getCursorPosition()) return;
+                const {
+                    raw,
+                    quantity: qv,
+                    quantity_raw: q,
+                    uomId: uv,
+                    units,
+                    units_raw: u,
+                    ingredientId: nv,
+                    ingredient,
+                    ingredient_raw: n,
+                    preparation: p,
+                } = processRecognizedItem(recog);
+                onChange({
+                    target: {
+                        name,
+                        value: {
+                            id: value.id,
+                            raw,
+                            quantity: qv,
+                            uomId: uv,
+                            units,
+                            ingredientId: nv,
+                            ingredient,
+                            preparation: p,
+                        },
+                    },
+                });
+                const suggestions: Suggestion[] = recog.suggestions.map(s => {
+                    const prefix = recog.raw.substring(0, s.target.start);
+                    const suffix = recog.raw.substring(s.target.end);
+                    const quote = s.name.indexOf(" ") >= 0 ||
+                        recog.raw.charAt(s.target.start) === '"' ||
+                        recog.raw.charAt(s.target.end - 1) === '"';
+                    const value = quote
+                        ? `"${s.name}"`
+                        : s.name;
+                    return {
+                        prefix,
+                        value,
+                        suffix,
+                        result: prefix + value + suffix,
+                    };
+                })
+                    .filter(s => s.result !== recog.raw);
+                this.setState({
+                    recog,
+                    quantity: q,
+                    quantityValue: qv,
+                    unit: u, unitValue: uv,
+                    ingredientName: n, nameValue: nv,
+                    preparation: p,
+                    suggestions,
+                });
+            });
+    }
+
+    handleChange(e, val) {
         const {
             name,
             onChange,
             value,
-        } = props;
+        } = this.props;
         if (value.raw === val) return;
         onChange({
             target: {
@@ -206,13 +203,13 @@ function ElEdit(props: ElEditProps) {
             },
         });
         // suggestions are always made stale by change
-        setState({ suggestions: undefined });
+        this.setState({ suggestions: undefined });
     }
 
-    function onPaste(e) {
+    onPaste(e) {
         const {
             onMultilinePaste,
-        } = props;
+        } = this.props;
         if (onMultilinePaste == null) return; // don't care!
         let text = e.clipboardData.getData("text");
         if (text == null) return;
@@ -222,7 +219,7 @@ function ElEdit(props: ElEditProps) {
         onMultilinePaste(text);
     }
 
-    function onKeyDown(e) {
+    onKeyDown(e) {
         const {
             value,
         } = e.target;
@@ -232,8 +229,8 @@ function ElEdit(props: ElEditProps) {
         const {
             onDelete,
             onPressEnter,
-        } = props;
-        const hasSuggestions = _hasSuggestions();
+        } = this.props;
+        const hasSuggestions = this._hasSuggestions();
 
         switch (key) { // eslint-disable-line default-case
             case "Enter":
@@ -251,93 +248,95 @@ function ElEdit(props: ElEditProps) {
                 break;
             case "ArrowLeft":
             case "ArrowRight":
-                recognizeDebounced(_mounted, _raw, ref, props, setState);
+                this.recognizeDebounced();
                 break;
         }
     }
 
-    function _hasSuggestions() {
-        const { suggestions } = state;
+    _hasSuggestions() {
+        const { suggestions } = this.state;
         if (!suggestions) return false;
         if (suggestions.length === 0) return false;
         if (suggestions.length > 1) return true;
-        const { value: { raw } } = props;
+        const { value: { raw } } = this.props;
         return suggestions[0].result !== raw;
     }
 
-    const {
-        value,
-        placeholder,
-    } = props;
-    const {
-        raw,
-    } = value;
-    const {
-        recog,
-        quantity,
-        unit,
-        unitValue,
-        ingredientName,
-        nameValue,
-        preparation,
-        suggestions,
-    } = state;
-    const hasSuggestions = _hasSuggestions();
+    render() {
+        const {
+            value,
+            placeholder,
+        } = this.props;
+        const {
+            raw,
+        } = value;
+        const {
+            recog,
+            quantity,
+            unit,
+            unitValue,
+            ingredientName,
+            nameValue,
+            preparation,
+            suggestions,
+        } = this.state;
+        const hasSuggestions = this._hasSuggestions();
 
-    const indicator = <InputAdornment
-        position={"start"}
-    >
-        {ingredientName == null
-            ? <ErrorOutline color="error" />
-            : <CheckCircleOutline color="disabled" />
-        }
-    </InputAdornment>;
-
-    return <Grid container alignItems={"center"}>
-        <Grid item sm={6} xs={12}>
-            <Autocomplete
-                size={"small"}
-                value={raw}
-                onChange={handleChange}
-                onInputChange={handleChange}
-                freeSolo
-                handleHomeEndKeys={hasSuggestions}
-                disableClearable
-                options={hasSuggestions && suggestions
-                    ? suggestions.map(it => it.result)
-                    : []}
-                filterOptions={x => x}
-                renderInput={(params) => {
-                    params.InputProps.startAdornment = indicator;
-                    return (
-                        <TextField
-                            inputRef={ref}
-                            {...params}
-                            onPaste={onPaste}
-                            onKeyDown={onKeyDown}
-                            variant="outlined"
-                            placeholder={placeholder}
-                        />
-                    );
-                }}
-            />
-        </Grid>
-
-        <Grid item sm={6} xs={12}>
-            {(!recog || !raw)
-                ? doRecog(raw) ? <Hunk><LinearProgress /></Hunk> : null
-                : <Hunk>
-                    {quantity &&
-                        <Hunk style={{ backgroundColor: "#fde" }}>{quantity}</Hunk>}
-                    {unit && <Hunk
-                        style={{ backgroundColor: unitValue ? "#efd" : "#dfe" }}>{unit}</Hunk>}
-                    {ingredientName && <Hunk
-                        style={{ backgroundColor: nameValue ? "#def" : "#edf" }}>{ingredientName}</Hunk>}
-                    {preparation && <span>{ingredientName ? ", " : null}{preparation}</span>}
-                </Hunk>
+        const indicator = <InputAdornment
+            position={"start"}
+        >
+            {ingredientName == null
+                ? <ErrorOutline color="error" />
+                : <CheckCircleOutline color="disabled" />
             }
-        </Grid>
-    </Grid>;
+        </InputAdornment>;
+
+        return <Grid container alignItems={"center"}>
+            <Grid item sm={6} xs={12}>
+                <Autocomplete
+                    size={"small"}
+                    value={raw}
+                    onChange={this.handleChange}
+                    onInputChange={this.handleChange}
+                    freeSolo
+                    handleHomeEndKeys={hasSuggestions}
+                    disableClearable
+                    options={hasSuggestions && suggestions
+                        ? suggestions.map(it => it.result)
+                        : []}
+                    filterOptions={x => x}
+                    renderInput={(params) => {
+                        params.InputProps.startAdornment = indicator;
+                        return (
+                            <TextField
+                                inputRef={this.ref}
+                                {...params}
+                                onPaste={this.onPaste}
+                                onKeyDown={this.onKeyDown}
+                                variant="outlined"
+                                placeholder={placeholder}
+                            />
+                        );
+                    }}
+                />
+            </Grid>
+
+            <Grid item sm={6} xs={12}>
+                {(!recog || !raw)
+                    ? doRecog(raw) ? <Hunk><LinearProgress /></Hunk> : null
+                    : <Hunk>
+                        {quantity &&
+                            <Hunk style={{backgroundColor: "#fde"}}>{quantity}</Hunk>}
+                        {unit && <Hunk
+                            style={{ backgroundColor: unitValue ? "#efd" : "#dfe" }}>{unit}</Hunk>}
+                        {ingredientName && <Hunk
+                            style={{ backgroundColor: nameValue ? "#def" : "#edf" }}>{ingredientName}</Hunk>}
+                        {preparation && <span>{ingredientName ? ", " : null}{preparation}</span>}
+                    </Hunk>
+                }
+            </Grid>
+        </Grid>;
+    }
 }
 
 interface HunkProps extends PropsWithChildren {
@@ -352,5 +351,6 @@ const Hunk: React.FC<HunkProps> = ({
     marginLeft: "0.4em",
     padding: "0 0.25em",
 }}>{children}</span>;
+
 
 export default ElEdit;
