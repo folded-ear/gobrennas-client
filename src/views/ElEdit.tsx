@@ -1,27 +1,27 @@
 import React, {
-  CSSProperties,
-  PropsWithChildren,
-  useEffect,
-  useRef,
-  useState
+    CSSProperties,
+    PropsWithChildren,
+    useEffect,
+    useRef,
+    useState
 } from "react";
 import {
-  BfsId,
-  Ingredient
+    BfsId,
+    Ingredient
 } from "../global/types/types";
 import ItemApi, { RecognitionResult } from "../data/ItemApi";
 import debounce from "../util/debounce";
 import processRecognizedItem from "../util/processRecognizedItem";
 import {
-  Autocomplete,
-  Grid,
-  InputAdornment,
-  LinearProgress,
-  TextField
+    Autocomplete,
+    Grid,
+    InputAdornment,
+    LinearProgress,
+    TextField
 } from "@mui/material";
 import {
-  CheckCircleOutline,
-  ErrorOutline
+    CheckCircleOutline,
+    ErrorOutline
 } from "@mui/icons-material";
 
 const doRecog = (raw) => raw != null && raw.trim().length >= 2;
@@ -220,9 +220,8 @@ function ElEdit(props: ElEditProps) {
         const { onDelete, onPressEnter } = props;
         const hasSuggestions = _hasSuggestions();
 
-        switch (
-            key // eslint-disable-line default-case
-        ) {
+        // eslint-disable-next-line default-case
+        switch (key) {
             case "Enter":
                 if (!hasSuggestions) {
                     onPressEnter();

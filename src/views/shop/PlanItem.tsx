@@ -67,9 +67,8 @@ class PlanItem extends React.PureComponent<PlanItemProps> {
     onKeyDown(e) {
         const { value, selectionStart } = e.target;
         const { key } = e;
-        switch (
-            key // eslint-disable-line default-case
-        ) {
+        // eslint-disable-next-line default-case
+        switch (key) {
             case "Enter":
                 if (value.length === 0) break;
                 // add a new item, before if the cursor is at the beginning, after otherwise
@@ -100,8 +99,6 @@ class PlanItem extends React.PureComponent<PlanItemProps> {
                         id: this.props.item.id,
                     });
                 }
-                break;
-            default:
                 break;
         }
     }

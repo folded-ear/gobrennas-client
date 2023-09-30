@@ -10,7 +10,12 @@ import StatusIconButton from "features/Planner/components/StatusIconButton";
 import withItemStyles from "features/Planner/components/withItemStyles";
 import PlanActions from "features/Planner/data/PlanActions";
 import PlanItemStatus from "features/Planner/data/PlanItemStatus";
-import { isExpanded, isParent, isQuestionable, isSection } from "features/Planner/data/plannerUtils";
+import {
+    isExpanded,
+    isParent,
+    isQuestionable,
+    isSection
+} from "features/Planner/data/plannerUtils";
 import planStore from "features/Planner/data/planStore";
 import CollapseIconButton from "global/components/CollapseIconButton";
 import PropTypes from "prop-types";
@@ -64,9 +69,8 @@ class PlanItem extends React.PureComponent {
     onKeyDown(e) {
         const { value, selectionStart } = e.target;
         const { key, ctrlKey, shiftKey } = e;
-        switch (
-            key // eslint-disable-line default-case
-        ) {
+        // eslint-disable-next-line default-case
+        switch (key) {
             case "Enter":
                 if (value.length === 0) break;
                 // add a new item, before if the cursor is at the beginning, after otherwise
