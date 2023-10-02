@@ -8,7 +8,6 @@ import {
 import { Logo } from "features/Navigation/components/Logo";
 import { NavItem } from "features/Navigation/components/NavItem";
 import {
-    AccountCircle as ProfileIcon,
     EventNote as PlanIcon,
     Logout as LogoutIcon,
     MeetingRoom as PantryIcon,
@@ -24,6 +23,8 @@ import {
 import { NavPlanItem } from "features/Navigation/components/NavPlanItem";
 import { colorHash } from "constants/colors";
 import { NavOwnerItem } from "./NavOwnerItem";
+import User from "../../../views/user/User";
+import { useProfile } from "../../../providers/Profile";
 
 type DesktopNavProps = {
     selected: string,
@@ -46,6 +47,7 @@ export const DesktopNav: React.FC<DesktopNavProps> = ({
                                                           expanded = false,
                                                           devMode = false,
                                                       }) => {
+    const me = useProfile();
     return (<>
         <Sidebar
             open={expanded}
@@ -126,7 +128,8 @@ export const DesktopNav: React.FC<DesktopNavProps> = ({
                                     title={"My Account"}
                                     selected={selected === "profile"}>
                         <ItemIcon open={expanded}>
-                            <ProfileIcon />
+                            <User inline
+                                  {...me} />
                         </ItemIcon>
                         <Typography noWrap>
                             {expanded ? "My Account" : null}

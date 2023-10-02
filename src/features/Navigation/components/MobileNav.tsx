@@ -4,13 +4,14 @@ import {
     Paper
 } from "@mui/material";
 import {
-    AccountCircle as ProfileIcon,
     EventNote as PlanIcon,
     MenuBook as LibraryIcon,
     ShoppingCart as ShopIcon,
 } from "@mui/icons-material";
 import { styled } from "@mui/material/styles";
 import { MobileNavItem } from "features/Navigation/components/MobileNavItem";
+import { useProfile } from "../../../providers/Profile";
+import User from "../../../views/user/User";
 
 const NavWrapper = styled(Paper)(({theme}) => ({
     position: "fixed",
@@ -25,6 +26,7 @@ type MobileNavProps = {
 }
 
 export const MobileNav: React.FC<MobileNavProps> = ({selected= false}) => {
+    const me = useProfile();
     return (
         <NavWrapper elevation={3}>
             <BottomNavigation
@@ -51,7 +53,7 @@ export const MobileNav: React.FC<MobileNavProps> = ({selected= false}) => {
                 />
                 <MobileNavItem
                     title="Profile"
-                    icon={<ProfileIcon/>}
+                    icon={<User inline {...me} />}
                     to="/profile"
                     value="profile"
                 />
