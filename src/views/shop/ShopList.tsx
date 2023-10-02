@@ -1,5 +1,7 @@
 import {
     Box,
+    Grid,
+    IconButton,
     Typography
 } from "@mui/material";
 import List from "@mui/material/List";
@@ -27,6 +29,7 @@ import {
 import CollapseIconButton from "../../global/components/CollapseIconButton";
 import PantryItemActions from "../../data/PantryItemActions";
 import DragContainer, { DragContainerProps } from "../../features/Planner/components/DragContainer";
+import { CleaningServices as SweepIcon } from "@mui/icons-material";
 
 export enum ShopItemType {
     INGREDIENT,
@@ -130,7 +133,22 @@ const ShopList: React.FC<ShopListProps> = ({
 
     return <PageBody hasFab fullWidth>
         <Box mx={2} my={1}>
-            <Typography variant="h2">{plan.name}</Typography>
+            <Grid container
+                  gap={1}
+                  justifyContent={"space-between"}
+                  flexWrap={"nowrap"}
+                  alignItems={"flex-end"}
+            >
+                <Typography variant="h2"
+                            style={{ flexGrow: 2 }}>
+                    {plan.name}
+                </Typography>
+                <IconButton title={"Sweep Acquired"}
+                            onClick={() => onRepartition()}
+                >
+                    <SweepIcon />
+                </IconButton>
+            </Grid>
         </Box>
         <TupleList tuples={neededTuples} />
         {acquiredTuples.length > 0 && <Box mt={2}>
