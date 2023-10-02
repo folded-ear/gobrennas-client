@@ -25,6 +25,8 @@ import {
 import RouteStore from "../../data/RouteStore";
 import friendStore from "../../data/FriendStore";
 import { zippedComparator } from "../../util/comparators";
+import Dispatcher from "../../data/dispatcher";
+import PlanActions from "../Planner/data/PlanActions";
 
 type NavigationControllerProps = {
     authenticated: boolean,
@@ -63,8 +65,16 @@ export const NavigationController: React.FC<NavigationControllerProps> = ({authe
         doLogout();
     };
 
-    const handleSelectPlan = id =>
+    const handleSelectPlan = id => {
+        if (selected === "shop") {
+            Dispatcher.dispatch({
+                type: PlanActions.SELECT_PLAN,
+                id,
+            });
+        } else {
         history.push(`/plan/${id}`);
+        }
+    };
 
     const getPlans = useFluxStore(
         () => {

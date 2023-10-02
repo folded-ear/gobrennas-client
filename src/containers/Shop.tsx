@@ -232,6 +232,10 @@ const Shop = () => {
             return next;
         });
     }, [ handleRepartition, itemTuples.length ]);
+    // repartition on active plan change
+    useEffect(() => {
+        handleRepartition();
+    }, [ handleRepartition, plan?.id ]);
     const [ acquiredIds, setAcquiredIds ] = useState<Set<BfsId>>(new Set());
     useEffect(() => {
         setAcquiredIds(new Set(itemTuples
