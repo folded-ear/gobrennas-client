@@ -16,6 +16,7 @@ const PrefNames = {
     ACTIVE_PLAN: "activePlan",
     ACTIVE_SHOPPING_PLANS: "activeShoppingPlans",
     DEV_MODE: "devMode",
+    LAYOUT: "layout",
 };
 
 type State = Map<string, any>
@@ -35,6 +36,12 @@ const migrations: Migration[] = [
 
 const setPref = (state: State, key: string, value: any): State => {
     state = state.set(key, value);
+    setJsonItem(LOCAL_STORAGE_PREFERENCES, state);
+    return state;
+};
+
+const clearPref = (state: State, key: string): State => {
+    state = state.delete(key);
     setJsonItem(LOCAL_STORAGE_PREFERENCES, state);
     return state;
 };
@@ -78,7 +85,13 @@ class PreferencesStore extends ReduceStore<State, FluxAction> {
             }
 
             case UserActions.SET_DEV_MODE: {
+                if (!action.enabled) {
+                    state = clearPref(state, PrefNames.LAYOUT);
+                }
                 return setPref(state, PrefNames.DEV_MODE, action.enabled);
+            }
+            case UserActions.SET_LAYOUT: {
+                return setPref(state, PrefNames.LAYOUT, action.layout);
             }
             default:
                 return state;
@@ -99,6 +112,10 @@ class PreferencesStore extends ReduceStore<State, FluxAction> {
 
     isDevMode() {
         return this.getState().get(PrefNames.DEV_MODE) || false;
+    }
+
+    getLayout() {
+        return this.getState().get(PrefNames.LAYOUT) || "auto";
     }
 }
 
