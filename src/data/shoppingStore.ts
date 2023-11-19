@@ -7,6 +7,8 @@ import ShoppingActions from "./ShoppingActions";
 import {FluxAction} from "global/types/types";
 import PlanActions from "../features/Planner/data/PlanActions";
 import {removeDistinct, toggleDistinct} from "../util/arrayAsSet";
+import preferencesStore from "./preferencesStore";
+import PlanApi from "../features/Planner/data/PlanApi";
 
 const placeFocus = (state, id, type) => ({
     ...state,
@@ -44,6 +46,29 @@ class ShoppingStore extends ReduceStore<State, FluxAction> {
                         action.id),
                 };
 
+            case PlanActions.PLANS_LOADED: {
+                this.getDispatcher().waitFor([
+                    planStore.getDispatchToken(),
+                ]);
+                const validPlanIds = planStore.getPlanIdsLO()
+                    .getValueEnforcing();
+                const activePlanId = planStore.getActivePlanLO()
+                    .getValueEnforcing()
+                    .id;
+                const shopIds: number[] = [];
+                for (const id of preferencesStore.getActiveShoppingPlans()) {
+                    if (!validPlanIds.includes(id)) continue;
+                    shopIds.push(id);
+                    if (id === activePlanId) continue;
+                    // load up its items, so we can shop for them
+                    PlanApi.getDescendantsAsList(id);
+                }
+                return {
+                    ...state,
+                    activePlanIds: shopIds,
+                };
+            }
+
             case ShoppingActions.TOGGLE_PLAN: {
                 const activePlanIds = toggleDistinct(
                     state.activePlanIds?.slice(),
@@ -52,6 +77,10 @@ class ShoppingStore extends ReduceStore<State, FluxAction> {
                     activePlanIds.push(planStore.getActivePlanLO()
                         .getValueEnforcing()
                         .id);
+                }
+                if (activePlanIds.includes(action.id)) {
+                    // it was toggled on
+                    PlanApi.getDescendantsAsList(action.id);
                 }
                 return {
                     ...state,

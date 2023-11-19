@@ -126,6 +126,8 @@ const listCreated = (state, clientId, id, list) => {
 
 const selectList = (state, id) => {
     if (state.activeListId === id) return state;
+    // // flush any yet-unsaved changes
+    state = flushTasksToRename(state);
     // only valid ids, please
     const list = taskForId(state, id);
     invariant(
@@ -159,8 +161,7 @@ const taskForId = (state, id) =>
 
 const loForId = (state, id) => {
     invariant(id != null, "No task has a null id.");
-    const lo = state.byId[id];
-    invariant(lo != null, `No task '${id}' is known. You have a load race!`);
+    const lo = state.byId[id] || LoadObject.empty();
     lo.id = id; // kludge for pre-load react keys
     return lo;
 };
@@ -327,7 +328,7 @@ const focusTask = (state, id) => {
     };
 };
 
-const getNeighborId = (state, id, delta = 1, crossGenerations=false, _searching=false) => {
+const getNeighborId = (state, id, delta = 1, crossGenerations = false, _searching = false) => {
     invariant(
         delta === 1 || delta === -1,
         "Deltas must be either 1 or -1",
@@ -742,7 +743,7 @@ const nestTask = state => {
 };
 
 // if expanded is null, it means "toggle it"
-const setExpansion = (state, id, expanded=null) =>
+const setExpansion = (state, id, expanded = null) =>
     dotProp.set(state, ["byId", id], lo => lo.map(t => ({
         ...t,
         _expanded: expanded == null ? !t._expanded : expanded,
@@ -812,7 +813,7 @@ const taskLoaded = (state, task) => {
             t.subtaskIds && t.subtaskIds.forEach((id, idx) => {
                 if (!ClientId.is(id)) return;
                 if (idx < subtaskIds.length) {
-                    subtaskIds.splice(idx,0, id);
+                    subtaskIds.splice(idx, 0, id);
                 } else {
                     subtaskIds.push(id);
                 }
@@ -862,13 +863,13 @@ const tasksLoaded = (state, tasks) =>
         taskLoaded(s, t), state);
 
 function selectDefaultList(state) {
-    const lids = state.topLevelIds.getLoadObject().getValueEnforcing();
-    if (lids.length > 0) {
+    const listIds = state.topLevelIds.getLoadObject().getValueEnforcing();
+    if (listIds.length > 0) {
         // see if there's a preferred active plan
         let activePlanId = preferencesStore.getActivePlan();
-        if (lids.find(id => id === activePlanId) == null) {
+        if (listIds.find(id => id === activePlanId) == null) {
             // auto-select the first one
-            activePlanId = lids[0];
+            activePlanId = listIds[0];
         }
         state = selectList(state, activePlanId);
     }

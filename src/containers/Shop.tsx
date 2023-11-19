@@ -1,35 +1,21 @@
-import React, {
-    useCallback,
-    useEffect,
-    useState
-} from "react";
+import React, {useCallback, useEffect, useState} from "react";
 import LibraryStore from "features/RecipeLibrary/data/LibraryStore";
-import shoppingStore, { Item } from "data/shoppingStore";
-import {
-    isParent,
-    isQuestionable,
-    isSection,
-} from "features/Planner/data/plannerUtils";
+import shoppingStore, {Item} from "data/shoppingStore";
+import {isParent, isQuestionable, isSection,} from "features/Planner/data/plannerUtils";
 import PlanItemStatus from "features/Planner/data/PlanItemStatus";
-import planStore, { PlanItem } from "features/Planner/data/planStore";
+import planStore, {PlanItem} from "features/Planner/data/planStore";
 import useFluxStore from "data/useFluxStore";
 import groupBy from "util/groupBy";
-import ShopList, {
-    ShopItemTuple,
-    ShopItemType,
-} from "views/shop/ShopList";
-import {
-    BaseItemProp,
-    ItemProps,
-} from "views/shop/types";
-import { Maybe } from "graphql/jsutils/Maybe";
-import {
-    BfsId,
-    Quantity
-} from "global/types/types";
-import { ripLoadObject } from "util/ripLoadObject";
+import ShopList, {ShopItemTuple, ShopItemType,} from "views/shop/ShopList";
+import {BaseItemProp, ItemProps,} from "views/shop/types";
+import {Maybe} from "graphql/jsutils/Maybe";
+import {BfsId, Quantity} from "global/types/types";
+import {ripLoadObject} from "util/ripLoadObject";
 import windowStore from "../data/WindowStore";
 import partition from "../util/partition";
+import {intersection} from "../util/arrayAsSet";
+import LoadObject from "../util/LoadObject";
+import useActiveShoppingPlanIds from "../data/useActiveShoppingPlanIds";
 
 interface ItemTuple extends PlanItem, ItemProps {
     status: string
@@ -92,6 +78,7 @@ function isAcquiring(it: PathedItemTuple) {
 function groupItems(plans: PlanItem[],
                     expandedId: Maybe<number>,
                     activeItem: Maybe<Item>): ShopItemTuple[] {
+    if (plans.length === 0) return [];
     const leaves = plans
         .flatMap(gatherLeaves);
     if (plans.length === 1) {
@@ -197,23 +184,39 @@ function groupItems(plans: PlanItem[],
 }
 
 const Shop = () => {
-    const [ expandedId, activeItem ] = useFluxStore(
+    const [expandedId, activeItem] = useFluxStore(
         () => [
             shoppingStore.getExpandedIngredientId(),
             shoppingStore.getActiveItem(),
         ],
         [ shoppingStore ],
     );
-    const [ plan, itemTuples ] = useFluxStore(
+    const activePlanIds = useActiveShoppingPlanIds();
+    const [plans, itemTuples] = useFluxStore(
         () => {
-            const plan = ripLoadObject(planStore.getActivePlanLO()).data;
-            return [ plan, plan
-                ? groupItems([ plan ], expandedId, activeItem)
-                : [],
+            const los: LoadObject<PlanItem>[] = [];
+            if (activePlanIds != null && activePlanIds.length > 0) {
+                const allPlanIds = planStore.getPlanIdsLO()
+                    .getValue();
+                for (const id of intersection(allPlanIds, activePlanIds)) {
+                    los.push(planStore.getItemLO(id));
+                }
+            }
+            if (los.length === 0) {
+                los.push(planStore.getActivePlanLO());
+            }
+            const plans: PlanItem[] = [];
+            for (const lo of los) {
+                const p = ripLoadObject(lo).data;
+                if (p != null) plans.push(p);
+            }
+            return [
+                plans,
+                groupItems(plans, expandedId, activeItem),
             ];
         },
         [ planStore, LibraryStore ],
-        [ expandedId, activeItem ],
+        [expandedId, activeItem, activePlanIds],
     );
     const [ partitionReqCount, setPartitionReqCount ] = useState(0);
     const handleRepartition = useCallback(
@@ -240,7 +243,7 @@ const Shop = () => {
     // repartition on active plan change
     useEffect(() => {
         handleRepartition();
-    }, [ handleRepartition, plan?.id ]);
+    }, [handleRepartition, activePlanIds]);
     const [ acquiredIds, setAcquiredIds ] = useState<Set<BfsId>>(new Set());
     useEffect(
       () => {
@@ -258,7 +261,7 @@ const Shop = () => {
             it => !acquiredIds.has(it.blockId || it.id)));
     }, [ itemTuples, acquiredIds ]);
     return <ShopList
-        plan={plan}
+        plans={plans}
         neededTuples={partitionedTuples[0]}
         acquiredTuples={partitionedTuples[1]}
         onRepartition={handleRepartition}

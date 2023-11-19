@@ -24,3 +24,18 @@ export function toggleDistinct<T>(items: T[] | undefined, theItem: T) {
         ? removeAtIndex(items, idx)
         : items.concat(theItem);
 }
+
+export function intersection<T>(left: T[] | undefined, right: T[] | undefined) {
+    const result: T[] = [];
+    if (left == null || right == null) return result;
+    if (left.length === 0 || right.length === 0) return result;
+    const [outer, inner] = left.length < right.length
+        ? [left, right]
+        : [right, left];
+    for (const it of outer) {
+        if (inner.includes(it)) {
+            result.push(it);
+        }
+    }
+    return result;
+}
