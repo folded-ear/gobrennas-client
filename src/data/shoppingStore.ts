@@ -1,10 +1,12 @@
 import planStore from "features/Planner/data/planStore";
-import { ReduceStore } from "flux/utils";
-import { ShopItemType } from "views/shop/ShopList";
+import {ReduceStore} from "flux/utils";
+import {ShopItemType} from "views/shop/ShopList";
 import Dispatcher from "./dispatcher";
 import PantryItemActions from "./PantryItemActions";
 import ShoppingActions from "./ShoppingActions";
-import { FluxAction } from "global/types/types";
+import {FluxAction} from "global/types/types";
+import PlanActions from "../features/Planner/data/PlanActions";
+import {removeDistinct, toggleDistinct} from "../util/arrayAsSet";
 
 const placeFocus = (state, id, type) => ({
     ...state,
@@ -20,6 +22,7 @@ export interface Item {
 }
 
 interface State {
+    activePlanIds?: number[]
     activeItem?: Item
     expandedId?: number
 }
@@ -32,6 +35,29 @@ class ShoppingStore extends ReduceStore<State, FluxAction> {
 
     reduce(state: State, action: FluxAction): State {
         switch (action.type) {
+
+            case PlanActions.PLAN_DELETED:
+                return {
+                    ...state,
+                    activePlanIds: removeDistinct(
+                        state.activePlanIds,
+                        action.id),
+                };
+
+            case ShoppingActions.TOGGLE_PLAN: {
+                const activePlanIds = toggleDistinct(
+                    state.activePlanIds?.slice(),
+                    action.id);
+                if (activePlanIds.length === 0) {
+                    activePlanIds.push(planStore.getActivePlanLO()
+                        .getValueEnforcing()
+                        .id);
+                }
+                return {
+                    ...state,
+                    activePlanIds,
+                };
+            }
 
             case ShoppingActions.CREATE_ITEM_AFTER:
             case ShoppingActions.CREATE_ITEM_BEFORE:
@@ -96,6 +122,9 @@ class ShoppingStore extends ReduceStore<State, FluxAction> {
         return this.getState().expandedId;
     }
 
+    getActivePlanIds() {
+        return this.getState().activePlanIds;
+    }
 }
 
 export default new ShoppingStore(Dispatcher);

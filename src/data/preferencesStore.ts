@@ -1,20 +1,20 @@
 import PlanActions from "features/Planner/data/PlanActions";
 import planStore from "features/Planner/data/planStore";
-import { ReduceStore } from "flux/utils";
-import { Map } from "immutable";
-import {
-    getJsonItem,
-    setJsonItem,
-} from "util/storage";
+import {ReduceStore} from "flux/utils";
+import {Map} from "immutable";
+import {getJsonItem, setJsonItem,} from "util/storage";
 // noinspection ES6PreferShortImport
-import { LOCAL_STORAGE_PREFERENCES } from "../constants/index";
+import {LOCAL_STORAGE_PREFERENCES} from "../constants/index";
 import Dispatcher from "./dispatcher";
 import UserActions from "./UserActions";
-import { FluxAction } from "global/types/types";
+import {FluxAction} from "global/types/types";
+import ShoppingActions from "./ShoppingActions";
+import shoppingStore from "./shoppingStore";
 
 const PrefNames = {
     ACTIVE_TASK_LIST: "activeTaskList",
     ACTIVE_PLAN: "activePlan",
+    ACTIVE_SHOPPING_PLANS: "activeShoppingPlans",
     DEV_MODE: "devMode",
 };
 
@@ -67,6 +67,16 @@ class PreferencesStore extends ReduceStore<State, FluxAction> {
             case PlanActions.PLAN_CREATED: {
                 return setPref(state, PrefNames.ACTIVE_PLAN, action.id);
             }
+
+            case ShoppingActions.TOGGLE_PLAN: {
+                this.__dispatcher.waitFor([
+                    shoppingStore.getDispatchToken(),
+                ]);
+                return setPref(state,
+                    PrefNames.ACTIVE_SHOPPING_PLANS,
+                    shoppingStore.getActivePlanIds());
+            }
+
             case UserActions.SET_DEV_MODE: {
                 return setPref(state, PrefNames.DEV_MODE, action.enabled);
             }
@@ -77,6 +87,14 @@ class PreferencesStore extends ReduceStore<State, FluxAction> {
 
     getActivePlan() {
         return this.getState().get(PrefNames.ACTIVE_PLAN);
+    }
+
+    getActiveShoppingPlans() {
+        let plans = this.getState().get(PrefNames.ACTIVE_SHOPPING_PLANS);
+        if (plans == null || plans.length === 0) {
+            plans = [this.getActivePlan()];
+        }
+        return plans;
     }
 
     isDevMode() {

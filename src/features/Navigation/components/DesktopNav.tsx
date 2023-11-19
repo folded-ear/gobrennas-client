@@ -1,12 +1,7 @@
 import * as React from "react";
-import {
-    ItemIcon,
-    Navigation,
-    Sidebar,
-    Subheader
-} from "features/Navigation/components/Navigation.elements";
-import { Logo } from "features/Navigation/components/Logo";
-import { NavItem } from "features/Navigation/components/NavItem";
+import {ItemIcon, Navigation, Sidebar, Subheader} from "features/Navigation/components/Navigation.elements";
+import {Logo} from "features/Navigation/components/Logo";
+import {NavItem} from "features/Navigation/components/NavItem";
 import {
     EventNote as PlanIcon,
     Logout as LogoutIcon,
@@ -14,40 +9,41 @@ import {
     MenuBook as LibraryIcon,
     ShoppingCart as ShopIcon
 } from "@mui/icons-material";
-import {
-    Box,
-    List,
-    ListItemButton,
-    Typography
-} from "@mui/material";
-import { NavPlanItem } from "features/Navigation/components/NavPlanItem";
-import { colorHash } from "constants/colors";
-import { NavOwnerItem } from "./NavOwnerItem";
+import {Box, List, ListItemButton, Typography} from "@mui/material";
+import {NavPlanItem} from "features/Navigation/components/NavPlanItem";
+import {colorHash} from "constants/colors";
+import {NavOwnerItem} from "./NavOwnerItem";
 import User from "../../../views/user/User";
-import { useProfile } from "../../../providers/Profile";
+import {useProfile} from "../../../providers/Profile";
+import {NavShopItem} from "./NavShopItem";
 
 type DesktopNavProps = {
-    selected: string,
-    planItems: any,
-    handleProfile: (e: React.SyntheticEvent) => void,
-    handleLogout: (e: React.SyntheticEvent) => void,
-    handleSelectPlan: (id: string) => void,
-    handleExpand: () => void,
-    expanded?: boolean,
+    selected: string
+    planItems: any
+    onProfile: (e: React.SyntheticEvent) => void
+    onLogout: (e: React.SyntheticEvent) => void
+    onSelectPlan: (id: string) => void
+    shopView?: boolean
+    onExpand: () => void
+    expanded?: boolean
     devMode?: boolean
 }
 
 export const DesktopNav: React.FC<DesktopNavProps> = ({
                                                           selected,
                                                           planItems,
-                                                          handleExpand,
-                                                          handleProfile,
-                                                          handleLogout,
-                                                          handleSelectPlan,
+                                                          onExpand,
+                                                          onProfile,
+                                                          onLogout,
+                                                          onSelectPlan,
+                                                          shopView,
                                                           expanded = false,
                                                           devMode = false,
                                                       }) => {
     const me = useProfile();
+    const PlanItem = shopView
+        ? NavShopItem
+        : NavPlanItem;
     return (<>
         <Sidebar
             open={expanded}
@@ -56,7 +52,7 @@ export const DesktopNav: React.FC<DesktopNavProps> = ({
             <Box sx={{ overflow: "auto", flex: 1 }}>
                 <Navigation dense>
                     <Logo expanded={expanded}
-                          onClick={handleExpand} />
+                          onClick={onExpand}/>
                     <NavItem
                         to="/library"
                         value="library"
@@ -97,14 +93,14 @@ export const DesktopNav: React.FC<DesktopNavProps> = ({
                     {/*    expanded={expanded}*/}
                     {/*/>*/}
                     {planItems && planItems.map((item, i) => {
-                        const elements = [ <NavPlanItem
+                        const elements = [<PlanItem
                             key={item.id}
                             id={item.id}
-                            onSelect={handleSelectPlan}
+                            onSelect={onSelectPlan}
                             expanded={expanded}
                             name={item.name}
                             color={colorHash(item.id)}
-                        /> ];
+                        />];
                         if (i === 0) {
                             elements.unshift(
                                 <Subheader key={-item.id}>
@@ -124,7 +120,7 @@ export const DesktopNav: React.FC<DesktopNavProps> = ({
             </Box>
             <Box sx={{ alignItem: "bottom" }}>
                 <List>
-                    <ListItemButton onClick={handleProfile}
+                    <ListItemButton onClick={onProfile}
                                     title={"My Account"}
                                     selected={selected === "profile"}>
                         <ItemIcon open={expanded}>
@@ -135,7 +131,7 @@ export const DesktopNav: React.FC<DesktopNavProps> = ({
                             {expanded ? "My Account" : null}
                         </Typography>
                     </ListItemButton>
-                    <ListItemButton onClick={handleLogout}
+                    <ListItemButton onClick={onLogout}
                                     title={"Logout"}>
                         <ItemIcon open={expanded}>
                             <LogoutIcon />

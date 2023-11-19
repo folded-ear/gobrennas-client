@@ -12,12 +12,12 @@ export function removeAtIndex(items: any[], idx) {
     return items;
 }
 
-export function removeDistinct<T>(items: T[], oldItem: T) {
-    if (items == null) return null;
+export function removeDistinct<T>(items: T[] | undefined, oldItem: T) {
+    if (items == null) return items;
     return removeAtIndex(items, items.indexOf(oldItem));
 }
 
-export function toggleDistinct<T>(items: T[], theItem: T) {
+export function toggleDistinct<T>(items: T[] | undefined, theItem: T) {
     if (items == null) return [ theItem ];
     const idx = items.indexOf(theItem);
     return idx >= 0
