@@ -19,4 +19,7 @@ jobs:
           cache: 'npm'
       - run: npm ci
       - run: npm test
+      - run: git diff --exit-code # ci and test shouldn't change anything
+      - run: npm run format:write
+      - run: git diff --exit-code # fail if Prettier wants any changes
       - run: npm run build
