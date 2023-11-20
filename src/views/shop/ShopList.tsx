@@ -1,4 +1,4 @@
-import {Box, Grid, IconButton, Typography} from "@mui/material";
+import {Box, Grid, IconButton, Stack, Typography} from "@mui/material";
 import List from "@mui/material/List";
 import AddIcon from "@mui/icons-material/Add";
 import React, {useCallback, useState} from "react";
@@ -17,7 +17,7 @@ import PantryItemActions from "../../data/PantryItemActions";
 import DragContainer, {DragContainerProps} from "../../features/Planner/components/DragContainer";
 import SweepIcon from "@mui/icons-material/CleaningServices";
 import {colorHash} from "../../constants/colors";
-import CircleIcon from "@mui/icons-material/Circle";
+import Avatar from "@mui/material/Avatar";
 
 export enum ShopItemType {
     INGREDIENT,
@@ -127,22 +127,28 @@ const ShopList: React.FC<ShopListProps> = ({
                   flexWrap={"nowrap"}
                   alignItems={"flex-end"}
             >
-                <Typography variant="h2"
-                            style={{ flexGrow: 2 }}>
-                    {plans[0].name}
-                    {plans.length > 1
-                        && plans.map(p => <CircleIcon
-                            key={p.id}
-                            fontSize={"small"}
-                            style={{
-                                color: colorHash(p.id),
-                                marginLeft: "0.3em"
-                            }}/>)}
+                <Typography variant="h2">
+                    {plans.length === 1
+                        ? plans[0].name
+                        : <Stack direction="row"
+                                 alignItems={"flex-end"}
+                                 spacing={1}>
+                            <span>Shop</span>
+                            {plans.map(p => <Avatar
+                                key={p.id}
+                                alt={p.name}
+                                title={p.name}
+                                sx={{
+                                    // width: 24,
+                                    // height: 24,
+                                    bgcolor: colorHash(p.id),
+                                }}>{p.name.substring(0, 2)}</Avatar>)}
+                        </Stack>}
                 </Typography>
                 <IconButton title={"Sweep Acquired"}
                             onClick={() => onRepartition()}
                 >
-                    <SweepIcon />
+                    <SweepIcon/>
                 </IconButton>
             </Grid>
         </Box>
