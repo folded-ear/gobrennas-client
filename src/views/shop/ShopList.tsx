@@ -1,6 +1,6 @@
 import {Box, Grid, IconButton, Typography} from "@mui/material";
 import List from "@mui/material/List";
-import Add from "@mui/icons-material/Add";
+import AddIcon from "@mui/icons-material/Add";
 import React, {useCallback, useState} from "react";
 import Dispatcher from "data/dispatcher";
 import ShoppingActions from "data/ShoppingActions";
@@ -15,8 +15,9 @@ import {BfsId, Quantity} from "global/types/types";
 import CollapseIconButton from "../../global/components/CollapseIconButton";
 import PantryItemActions from "../../data/PantryItemActions";
 import DragContainer, {DragContainerProps} from "../../features/Planner/components/DragContainer";
-import {CleaningServices as SweepIcon} from "@mui/icons-material";
+import SweepIcon from "@mui/icons-material/CleaningServices";
 import {colorHash} from "../../constants/colors";
+import CircleIcon from "@mui/icons-material/Circle";
 
 export enum ShopItemType {
     INGREDIENT,
@@ -130,11 +131,13 @@ const ShopList: React.FC<ShopListProps> = ({
                             style={{ flexGrow: 2 }}>
                     {plans[0].name}
                     {plans.length > 1
-                        && plans.map(p => <b
+                        && plans.map(p => <CircleIcon
                             key={p.id}
+                            fontSize={"small"}
                             style={{
                                 color: colorHash(p.id),
-                            }}> ⏺</b>)}
+                                marginLeft: "0.3em"
+                            }}/>)}
                 </Typography>
                 <IconButton title={"Sweep Acquired"}
                             onClick={() => onRepartition()}
@@ -160,7 +163,7 @@ const ShopList: React.FC<ShopListProps> = ({
         <FoodingerFab
             onClick={handleAddNew}
         >
-            <Add />
+            <AddIcon/>
         </FoodingerFab>
     </PageBody>;
 };
