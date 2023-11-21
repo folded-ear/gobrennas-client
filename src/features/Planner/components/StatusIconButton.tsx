@@ -34,6 +34,8 @@ const StatusIconButton: React.FC<Props> = props => {
     const Icn = getIconForStatus(props.next);
     return <Tooltip
         title={`Mark ${props.next.substring(0, 1)}${props.next.substring(1).toLowerCase()}`}
+        disableInteractive
+        enterDelay={750}
     >
         <Btn
             aria-label={props.next.toLowerCase()}

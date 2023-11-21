@@ -129,8 +129,13 @@ function groupItems(plans: PlanItem[],
     const theTree: ShopItemTuple[] = [];
     for (const { id: ingId, items, data: ingredient, loading } of orderedIngredients) {
         if (items.length === 0) continue;
+        const allAcquiring = items.every(isAcquiring);
+        const someAcquiring = items.some(isAcquiring);
+        const toAgg = someAcquiring && !allAcquiring
+            ? items.filter(it => !isAcquiring(it))
+            : items;
         const unitLookup = new Map();
-        const byUnit = groupBy(items, it => {
+        const byUnit = groupBy(toAgg, it => {
             if (it.uomId) {
                 unitLookup.set(it.uomId, it.units);
             }
@@ -155,7 +160,7 @@ function groupItems(plans: PlanItem[],
             quantities,
             expanded,
             loading: loading || items.some(it => it.loading),
-            acquiring: items.every(isAcquiring),
+            acquiring: allAcquiring,
             deleting: items.every(it => it.deleting || it.status === PlanItemStatus.DELETED),
             depth: 0,
             path: [],
@@ -237,11 +242,15 @@ const Shop = () => {
         handleRepartition();
     }, [ handleRepartition, plan?.id ]);
     const [ acquiredIds, setAcquiredIds ] = useState<Set<BfsId>>(new Set());
-    useEffect(() => {
-        setAcquiredIds(new Set(itemTuples
-            .filter(it => it.acquiring)
-            .map(it => it.id)));
-    }, [ partitionReqCount ]); // eslint-disable-line react-hooks/exhaustive-deps
+    useEffect(
+      () => {
+        setAcquiredIds(
+          new Set(itemTuples.filter((it) => it.acquiring).map((it) => it.id)),
+        );
+      },
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+      [partitionReqCount],
+    );
     const [ partitionedTuples, setPartitionedTuples ] = useState<ShopItemTuple[][]>([ [], [] ]);
     useEffect(() => {
         setPartitionedTuples(partition(
