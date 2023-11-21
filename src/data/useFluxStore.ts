@@ -44,7 +44,8 @@ function useFluxStore<S>(calculateState: () => S,
             setState(calculateState);
             return () => subs.reset();
         },
-        stores.concat(deps), // eslint-disable-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        stores.concat(deps),
     );
     return state;
 }
