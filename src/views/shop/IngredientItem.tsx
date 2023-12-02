@@ -12,27 +12,23 @@ import DontChangeStatusButton from "features/Planner/components/DontChangeStatus
 import Item from "features/Planner/components/Item";
 import StatusIconButton from "features/Planner/components/StatusIconButton";
 import withItemStyles from "features/Planner/components/withItemStyles";
-import {
-    BaseItemProp,
-    ItemProps,
-    TupleProps,
-} from "./types";
+import { BaseItemProp, ItemProps, TupleProps } from "./types";
 import { ShopItemType } from "views/shop/ShopList";
 
 type IngredientItemProps = TupleProps & {
-    item: ItemProps & BaseItemProp & {
-        expanded: boolean,
-        itemIds: string[],
-        quantities: {
-            units: any;
-            quantity: number,
-            uomId?: number,
-        }[]
-    },
-}
+    item: ItemProps &
+        BaseItemProp & {
+            expanded: boolean;
+            itemIds: string[];
+            quantities: {
+                units: any;
+                quantity: number;
+                uomId?: number;
+            }[];
+        };
+};
 
 class IngredientItem extends React.PureComponent<IngredientItemProps> {
-
     constructor(props) {
         super(props);
         this.onSetStatus = this.onSetStatus.bind(this);
@@ -44,10 +40,7 @@ class IngredientItem extends React.PureComponent<IngredientItemProps> {
     onSetStatus(status, e) {
         if (e) e.stopPropagation();
         const {
-            item: {
-                id,
-                itemIds,
-            },
+            item: { id, itemIds },
         } = this.props;
         Dispatcher.dispatch({
             type: ShoppingActions.SET_INGREDIENT_STATUS,
@@ -60,10 +53,7 @@ class IngredientItem extends React.PureComponent<IngredientItemProps> {
     onUndoSetStatus(e) {
         if (e) e.stopPropagation();
         const {
-            item: {
-                id,
-                itemIds,
-            },
+            item: { id, itemIds },
         } = this.props;
         Dispatcher.dispatch({
             type: ShoppingActions.UNDO_SET_INGREDIENT_STATUS,
@@ -81,9 +71,7 @@ class IngredientItem extends React.PureComponent<IngredientItemProps> {
     }
 
     onClick(e) {
-        const {
-            item,
-        } = this.props;
+        const { item } = this.props;
         e.preventDefault();
         e.stopPropagation();
         if (e.shiftKey) return;
@@ -95,17 +83,8 @@ class IngredientItem extends React.PureComponent<IngredientItemProps> {
     }
 
     render() {
-        const {
-            item,
-            active,
-            classes,
-        } = this.props;
-        const {
-            expanded,
-            loading,
-            deleting,
-            acquiring,
-        } = item;
+        const { item, active, classes } = this.props;
+        const { expanded, loading, deleting, acquiring } = item;
         const addonBefore = [
             <CollapseIconButton
                 key="collapse"
@@ -114,56 +93,58 @@ class IngredientItem extends React.PureComponent<IngredientItemProps> {
             />,
         ];
         if (loading) {
-            addonBefore.push(
-                <LoadingIconButton
-                    key="acquire"
-                />);
+            addonBefore.push(<LoadingIconButton key="acquire" />);
         } else {
-            const next = acquiring ? PlanItemStatus.NEEDED : PlanItemStatus.ACQUIRED;
+            const next = acquiring
+                ? PlanItemStatus.NEEDED
+                : PlanItemStatus.ACQUIRED;
             addonBefore.push(
                 <StatusIconButton
                     key="acquire"
-                    current={acquiring ? PlanItemStatus.ACQUIRED : PlanItemStatus.NEEDED}
+                    current={
+                        acquiring
+                            ? PlanItemStatus.ACQUIRED
+                            : PlanItemStatus.NEEDED
+                    }
                     next={next}
-                    onClick={e => this.onSetStatus(next, e)}
-                />);
+                    onClick={(e) => this.onSetStatus(next, e)}
+                />,
+            );
         }
-        const addonAfter = deleting
-            ? <DontChangeStatusButton
+        const addonAfter = deleting ? (
+            <DontChangeStatusButton
                 key="delete"
                 next={PlanItemStatus.DELETED}
-                onClick={e => this.onUndoSetStatus(e)}
+                onClick={(e) => this.onUndoSetStatus(e)}
             />
-            : null;
-        return <Item
-            prefix={addonBefore}
-            suffix={addonAfter}
-            selected={active}
-            onClick={this.onClick}
-            className={classnames({
-                [classes.acquiring]: acquiring,
-                [classes.deleting]: deleting,
-            })}
-            dragId={item.id}
-        >
-            <ListItemText>
-                {item.name}
-                <OxfordList
-                    prefix=" ("
-                    suffix=")"
-                >
-                    {item.quantities.map(q =>
-                        <Quantity
-                            key={q.uomId || "count"}
-                            quantity={q.quantity}
-                            units={q.units}
-                        />)
-                    }
-                </OxfordList>
-            </ListItemText>
-        </Item>;
+        ) : null;
+        return (
+            <Item
+                prefix={addonBefore}
+                suffix={addonAfter}
+                selected={active}
+                onClick={this.onClick}
+                className={classnames({
+                    [classes.acquiring]: acquiring,
+                    [classes.deleting]: deleting,
+                })}
+                dragId={item.id}
+            >
+                <ListItemText>
+                    {item.name}
+                    <OxfordList prefix=" (" suffix=")">
+                        {item.quantities.map((q) => (
+                            <Quantity
+                                key={q.uomId || "count"}
+                                quantity={q.quantity}
+                                units={q.units}
+                            />
+                        ))}
+                    </OxfordList>
+                </ListItemText>
+            </Item>
+        );
     }
-
 }
 
 export default withItemStyles(IngredientItem);

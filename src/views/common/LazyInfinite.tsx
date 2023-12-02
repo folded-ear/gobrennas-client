@@ -3,42 +3,39 @@ import useWindowSize from "../../data/useWindowSize";
 import debounce from "../../util/debounce";
 
 interface Props extends PropsWithChildren {
-    onNeedMore(): void,
+    onNeedMore(): void;
 
-    complete?: boolean,
-    loading?: boolean,
+    complete?: boolean;
+    loading?: boolean;
 }
 
 const LazyInfinite: React.FC<Props> = ({
-                                           children,
-                                           complete,
-                                           onNeedMore,
-                                           loading,
-                                       }) => {
+    children,
+    complete,
+    onNeedMore,
+    loading,
+}) => {
     const windowSize = useWindowSize();
     const ref = React.createRef<HTMLDivElement>();
-    React.useEffect(
-        () => {
-            if (loading || complete || !ref.current) return;
-            if (ref.current.scrollHeight < 2 * windowSize.height) {
+    React.useEffect(() => {
+        if (loading || complete || !ref.current) return;
+        if (ref.current.scrollHeight < 2 * windowSize.height) {
+            onNeedMore();
+            return;
+        }
+        const handler = debounce(() => {
+            if (!ref.current) return;
+            if (
+                ref.current.scrollHeight - window.scrollY <
+                2 * windowSize.height
+            ) {
                 onNeedMore();
-                return;
             }
-            const handler = debounce(() => {
-                if (!ref.current) return;
-                if (ref.current.scrollHeight - window.scrollY < 2 * windowSize.height) {
-                    onNeedMore();
-                }
-            });
-            window.addEventListener("scroll", handler);
-            return () =>
-                window.removeEventListener("scroll", handler);
-        },
-        [ ref, onNeedMore, windowSize, complete, loading ],
-    );
-    return <div ref={ref}>
-        {children}
-    </div>;
+        });
+        window.addEventListener("scroll", handler);
+        return () => window.removeEventListener("scroll", handler);
+    }, [ref, onNeedMore, windowSize, complete, loading]);
+    return <div ref={ref}>{children}</div>;
 };
 
 export default LazyInfinite;

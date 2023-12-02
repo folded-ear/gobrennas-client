@@ -3,15 +3,15 @@ import PantryItemActions from "data/PantryItemActions";
 import RecipeActions from "data/RecipeActions";
 import RecipeApi from "data/RecipeApi";
 import LibraryApi from "features/RecipeLibrary/data/LibraryApi";
-import {ReduceStore} from "flux/utils";
+import { ReduceStore } from "flux/utils";
 import invariant from "invariant";
 import PropTypes from "prop-types";
-import {clientOrDatabaseIdType} from "util/ClientId";
+import { clientOrDatabaseIdType } from "util/ClientId";
 import history from "util/history";
 import LoadObject from "util/LoadObject";
 import LoadObjectMap from "util/LoadObjectMap";
-import {loadObjectMapOf} from "util/loadObjectTypes";
-import {fromMilliseconds} from "util/time";
+import { loadObjectMapOf } from "util/loadObjectTypes";
+import { fromMilliseconds } from "util/time";
 import typedStore from "util/typedStore";
 import LibraryActions from "./LibraryActions";
 
@@ -24,21 +24,20 @@ export const adaptTime = (recipe) => {
 };
 
 class LibraryStore extends ReduceStore {
-
     getInitialState() {
         return {
             // the real goodies
-            byId: new LoadObjectMap(ids =>
+            byId: new LoadObjectMap((ids) =>
                 Dispatcher.dispatch({
                     type: LibraryActions.LOAD_INGREDIENTS,
                     ids: [...ids],
-                })), // LoadObjectMap<ID, Ingredient>
+                }),
+            ), // LoadObjectMap<ID, Ingredient>
         };
     }
 
     reduce(state, action) {
         switch (action.type) {
-
             case RecipeActions.RECIPE_DELETED: {
                 history.push("/library");
                 return {
@@ -50,8 +49,10 @@ class LibraryStore extends ReduceStore {
             case RecipeActions.CREATE_RECIPE: {
                 return {
                     ...state,
-                    byId: state.byId.set(action.data.id,
-                        LoadObject.withValue(action.data).creating()),
+                    byId: state.byId.set(
+                        action.data.id,
+                        LoadObject.withValue(action.data).creating(),
+                    ),
                 };
             }
 
@@ -59,8 +60,10 @@ class LibraryStore extends ReduceStore {
                 return {
                     ...state,
                     byId: state.byId
-                        .set(action.data.id,
-                            LoadObject.withValue(adaptTime(action.data)))
+                        .set(
+                            action.data.id,
+                            LoadObject.withValue(adaptTime(action.data)),
+                        )
                         .delete(action.id),
                 };
             }
@@ -68,15 +71,19 @@ class LibraryStore extends ReduceStore {
             case RecipeActions.UPDATE_RECIPE: {
                 return {
                     ...state,
-                    byId: state.byId.update(action.data.id, lo => lo.updating()),
+                    byId: state.byId.update(action.data.id, (lo) =>
+                        lo.updating(),
+                    ),
                 };
             }
 
             case RecipeActions.RECIPE_UPDATED: {
                 return {
                     ...state,
-                    byId: state.byId.set(action.id,
-                        LoadObject.withValue(adaptTime(action.data)).done()),
+                    byId: state.byId.set(
+                        action.id,
+                        LoadObject.withValue(adaptTime(action.data)).done(),
+                    ),
                 };
             }
 
@@ -87,8 +94,10 @@ class LibraryStore extends ReduceStore {
                 LibraryApi.getIngredientInBulk(action.ids);
                 return {
                     ...state,
-                    byId: action.ids.reduce((byId, id) =>
-                        byId.set(id, LoadObject.loading()), state.byId),
+                    byId: action.ids.reduce(
+                        (byId, id) => byId.set(id, LoadObject.loading()),
+                        state.byId,
+                    ),
                 };
             }
 
@@ -100,8 +109,10 @@ class LibraryStore extends ReduceStore {
                 }
                 return {
                     ...state,
-                    byId: state.byId.set(action.id,
-                        LoadObject.withValue(adaptTime(action.data))),
+                    byId: state.byId.set(
+                        action.id,
+                        LoadObject.withValue(adaptTime(action.data)),
+                    ),
                 };
             }
 
@@ -111,13 +122,22 @@ class LibraryStore extends ReduceStore {
                 }
                 return {
                     ...state,
-                    byId: action.data.reduce((byId, it) =>
-                        byId.set(it.id, LoadObject.withValue(adaptTime(it))), state.byId),
+                    byId: action.data.reduce(
+                        (byId, it) =>
+                            byId.set(
+                                it.id,
+                                LoadObject.withValue(adaptTime(it)),
+                            ),
+                        state.byId,
+                    ),
                 };
             }
 
             case LibraryActions.SEARCH_LOADED: {
-                if (action.filter !== state.filter || action.scope !== state.scope) {
+                if (
+                    action.filter !== state.filter ||
+                    action.scope !== state.scope
+                ) {
                     // out of order
                     // eslint-disable-next-line no-console
                     console.log("OUT OF ORDER - IGNORE", action.filter);
@@ -125,8 +145,11 @@ class LibraryStore extends ReduceStore {
                 }
                 return {
                     ...state,
-                    byId: action.data.content.reduce((byId, r) =>
-                        byId.set(r.id, LoadObject.withValue(adaptTime(r))), state.byId),
+                    byId: action.data.content.reduce(
+                        (byId, r) =>
+                            byId.set(r.id, LoadObject.withValue(adaptTime(r))),
+                        state.byId,
+                    ),
                 };
             }
 
@@ -143,14 +166,21 @@ class LibraryStore extends ReduceStore {
                 if (!state.byId.has(action.id)) return state;
                 const target = state.byId.get(action.targetId);
                 if (!target || !target.hasValue()) return state;
-                LibraryApi.orderForStore(action.id, action.targetId, action.after);
+                LibraryApi.orderForStore(
+                    action.id,
+                    action.targetId,
+                    action.after,
+                );
                 return {
                     ...state,
-                    byId: state.byId.update(action.id, lo => lo.map(v => ({
-                        ...v,
-                        storeOrder: target.getValueEnforcing().storeOrder +
-                            (action.after ? 0.5 : -0.5)
-                    })))
+                    byId: state.byId.update(action.id, (lo) =>
+                        lo.map((v) => ({
+                            ...v,
+                            storeOrder:
+                                target.getValueEnforcing().storeOrder +
+                                (action.after ? 0.5 : -0.5),
+                        })),
+                    ),
                 };
             }
 
@@ -183,39 +213,39 @@ class LibraryStore extends ReduceStore {
         );
         return this.getIngredientById(selectedRecipe);
     }
-
 }
 
 LibraryStore.stateTypes = {
-    byId: loadObjectMapOf(clientOrDatabaseIdType, PropTypes.shape({
-        // all
-        id: clientOrDatabaseIdType.isRequired,
-        type: PropTypes.string.isRequired,
-        name: PropTypes.string.isRequired,
-        // recipe
-        ownerId: clientOrDatabaseIdType,
-        externalUrl: PropTypes.string,
-        ingredients: PropTypes.arrayOf(
-            PropTypes.shape({
-                raw: PropTypes.string.isRequired,
-                quantity: PropTypes.number,
-                units: PropTypes.string,
-                uomId: PropTypes.number,
-                ingredient: PropTypes.string,
-                ingredientId: PropTypes.number,
-                preparation: PropTypes.string,
-            })
-        ),
-        directions: PropTypes.string,
-        calories: PropTypes.number,
-        yield: PropTypes.number,
-        totalTime: PropTypes.number,
-        labels: PropTypes.arrayOf(
-            PropTypes.string
-        ),
-        // pantry item
-        storeOrder: PropTypes.number,
-    })),
+    byId: loadObjectMapOf(
+        clientOrDatabaseIdType,
+        PropTypes.shape({
+            // all
+            id: clientOrDatabaseIdType.isRequired,
+            type: PropTypes.string.isRequired,
+            name: PropTypes.string.isRequired,
+            // recipe
+            ownerId: clientOrDatabaseIdType,
+            externalUrl: PropTypes.string,
+            ingredients: PropTypes.arrayOf(
+                PropTypes.shape({
+                    raw: PropTypes.string.isRequired,
+                    quantity: PropTypes.number,
+                    units: PropTypes.string,
+                    uomId: PropTypes.number,
+                    ingredient: PropTypes.string,
+                    ingredientId: PropTypes.number,
+                    preparation: PropTypes.string,
+                }),
+            ),
+            directions: PropTypes.string,
+            calories: PropTypes.number,
+            yield: PropTypes.number,
+            totalTime: PropTypes.number,
+            labels: PropTypes.arrayOf(PropTypes.string),
+            // pantry item
+            storeOrder: PropTypes.number,
+        }),
+    ),
 };
 
 export default typedStore(new LibraryStore(Dispatcher));

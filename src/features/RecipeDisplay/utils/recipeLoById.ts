@@ -2,16 +2,16 @@ import LibraryStore from "features/RecipeLibrary/data/LibraryStore";
 import { Recipe as RecipeType } from "features/RecipeDisplay/types";
 import LoadObject from "util/LoadObject";
 
-export const recipeLoById = id => {
+export const recipeLoById = (id) => {
     let lo = LibraryStore.getIngredientById(id);
     if (!lo.hasValue()) return lo;
 
     const subIds = new Set();
     const subs: RecipeType[] = [];
     let loading = false;
-    const prepRecipe = recipe => ({
+    const prepRecipe = (recipe) => ({
         ...recipe,
-        ingredients: (recipe.ingredients || []).map(ref => {
+        ingredients: (recipe.ingredients || []).map((ref) => {
             if (!ref.ingredientId) return ref;
             const iLO = LibraryStore.getIngredientById(ref.ingredientId);
             if (iLO.isLoading()) {

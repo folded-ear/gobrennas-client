@@ -55,7 +55,7 @@ class LoadObject<V> {
         if (secret !== SECRET) {
             throw new Error(
                 "Construct LoadObjects using static methods such as " +
-                "LoadObject.loading(), LoadObject.empty()",
+                    "LoadObject.loading(), LoadObject.empty()",
             );
         }
 
@@ -259,19 +259,43 @@ class LoadObject<V> {
     }
 
     static creating<V>(): LoadObject<V> {
-        return new LoadObject(SECRET, "CREATING", undefined as V, undefined, false);
+        return new LoadObject(
+            SECRET,
+            "CREATING",
+            undefined as V,
+            undefined,
+            false,
+        );
     }
 
     static loading<V>(): LoadObject<V> {
-        return new LoadObject(SECRET, "LOADING", undefined as V, undefined, false);
+        return new LoadObject(
+            SECRET,
+            "LOADING",
+            undefined as V,
+            undefined,
+            false,
+        );
     }
 
     static updating<V>(): LoadObject<V> {
-        return new LoadObject(SECRET, "UPDATING", undefined as V, undefined, false);
+        return new LoadObject(
+            SECRET,
+            "UPDATING",
+            undefined as V,
+            undefined,
+            false,
+        );
     }
 
     static deleting<V>(): LoadObject<V> {
-        return new LoadObject(SECRET, "DELETING", undefined as V, undefined, false);
+        return new LoadObject(
+            SECRET,
+            "DELETING",
+            undefined as V,
+            undefined,
+            false,
+        );
     }
 
     static withError<V>(error: Error): LoadObject<V> {

@@ -3,32 +3,35 @@ import planStore from "features/Planner/data/planStore";
 import LibraryStore from "../../RecipeLibrary/data/LibraryStore";
 import { RecipeFromPlanItem } from "features/RecipeDisplay/types";
 
-export const recipeLoByItemLo = (itemLO: LoadObject<any>): LoadObject<RecipeFromPlanItem> => {
+export const recipeLoByItemLo = (
+    itemLO: LoadObject<any>,
+): LoadObject<RecipeFromPlanItem> => {
     let lo = itemLO;
     if (!lo.hasValue()) return lo;
 
     const subs: any[] = [];
     let loading = false;
-    const computeKids = item => {
+    const computeKids = (item) => {
         const subIds = item.subtaskIds || [];
         const subIdLookup = new Set(subIds);
         return subIds
-            .concat((item.componentIds || [])
-                .filter(id => !subIdLookup.has(id)))
-            .map(id => planStore.getItemLO(id))
-            .filter(lo => {
+            .concat(
+                (item.componentIds || []).filter((id) => !subIdLookup.has(id)),
+            )
+            .map((id) => planStore.getItemLO(id))
+            .filter((lo) => {
                 if (!lo.hasValue()) {
                     loading = true;
                     return false;
                 }
                 return true;
             })
-            .map(lo => lo.getValueEnforcing());
+            .map((lo) => lo.getValueEnforcing());
     };
     const prepRecipe = (item, rLO?: LoadObject<any>) => {
         item = {
             ...item,
-            ingredients: computeKids(item).map(ref => {
+            ingredients: computeKids(item).map((ref) => {
                 ref = {
                     ...ref,
                     raw: ref.name,
@@ -55,15 +58,19 @@ export const recipeLoByItemLo = (itemLO: LoadObject<any>): LoadObject<RecipeFrom
             item.directions = item.notes;
         }
         if (!item.ingredientId) return item;
-        rLO = rLO || LibraryStore.getIngredientById(item.ingredientId) as LoadObject<any>;
+        rLO =
+            rLO ||
+            (LibraryStore.getIngredientById(
+                item.ingredientId,
+            ) as LoadObject<any>);
         if (rLO.isLoading()) {
             loading = true;
         }
         if (!rLO.hasValue()) return item;
         const r = rLO.getValueEnforcing();
         Object.keys(r)
-            .filter(k => !item.hasOwnProperty(k))
-            .forEach(k => item[k] = r[k]);
+            .filter((k) => !item.hasOwnProperty(k))
+            .forEach((k) => (item[k] = r[k]));
         return item;
     };
     const recipe = prepRecipe(lo.getValueEnforcing());

@@ -1,20 +1,16 @@
-import {
-    Ingredient,
-    IngredientRef,
-    UserType,
-} from "global/types/types";
+import { Ingredient, IngredientRef, UserType } from "global/types/types";
 
 export interface Recipe extends Ingredient {
-    calories: number | null
-    directions: string | null
-    externalUrl: string | null
-    id: number
-    ingredients: IngredientRef[]
-    labels: string[]
-    photo: string | null
-    photoFocus: number[]
-    totalTime: number | null
-    yield: number | null
+    calories: number | null;
+    directions: string | null;
+    externalUrl: string | null;
+    id: number;
+    ingredients: IngredientRef[];
+    labels: string[];
+    photo: string | null;
+    photoFocus: number[];
+    totalTime: number | null;
+    yield: number | null;
 }
 
 // export interface IngredientRef {
@@ -30,21 +26,24 @@ export interface Recipe extends Ingredient {
 // type RecipeRef = Pick<Recipe, "id" | "name">
 
 export interface RecipeFromPlanItem extends Recipe {
-    subtaskIds: number[]
-    subrecipes: Recipe[]
+    subtaskIds: number[];
+    subrecipes: Recipe[];
 }
 
-export type Subrecipe = Pick<Recipe, "id" | "name" | "totalTime" | "ingredients" | "directions">;
+export type Subrecipe = Pick<
+    Recipe,
+    "id" | "name" | "totalTime" | "ingredients" | "directions"
+>;
 
 export type FullRecipe = {
-    recipe: Recipe
-    subrecipes: Subrecipe[]
-    mine: boolean
-    owner: Omit<UserType, "provider" | "roles">
-}
+    recipe: Recipe;
+    subrecipes: Subrecipe[];
+    mine: boolean;
+    owner: Omit<UserType, "provider" | "roles">;
+};
 
 export interface SharedRecipe {
-    id: number
-    secret: string
-    slug: string
+    id: number;
+    secret: string;
+    slug: string;
 }

@@ -9,14 +9,13 @@ const axios = BaseAxios.create({
 });
 
 const TaskApi = {
-
     createList: (name, clientId, fromId) =>
         promiseFlux(
             axios.post(`/`, {
                 name,
                 fromId,
             }),
-            data => ({
+            (data) => ({
                 type: PlanActions.PLAN_CREATED,
                 clientId,
                 id: data.data.id,
@@ -36,13 +35,10 @@ const TaskApi = {
         ),
 
     deleteList: (id) =>
-        promiseFlux(
-            axios.delete(`/${id}`),
-            () => ({
-                type: PlanActions.PLAN_DELETED,
-                id,
-            }),
-        ),
+        promiseFlux(axios.delete(`/${id}`), () => ({
+            type: PlanActions.PLAN_DELETED,
+            id,
+        })),
 
     setListGrant: (id, userId, level) =>
         // i was not thinking when i designed this endpoint. :)
@@ -55,19 +51,15 @@ const TaskApi = {
                 type: PlanActions.PLAN_GRANT_SET,
                 id,
                 userId,
-            })
+            }),
         ),
 
     clearListGrant: (id, userId) =>
-        promiseFlux(
-            axios.delete(`/${id}/acl/grants/${userId}`),
-            () => ({
-                type: PlanActions.PLAN_GRANT_CLEARED,
-                id,
-                userId,
-            })
-        ),
-
+        promiseFlux(axios.delete(`/${id}/acl/grants/${userId}`), () => ({
+            type: PlanActions.PLAN_GRANT_CLEARED,
+            id,
+            userId,
+        })),
 };
 
 export default serializeObjectOfPromiseFns(TaskApi);

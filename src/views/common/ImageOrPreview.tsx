@@ -1,9 +1,10 @@
 import React from "react";
 
 interface Props {
-    src: string // actual URL
-        | Blob // including File
-    [p: string]: any
+    src:
+        | string // actual URL
+        | Blob; // including File
+    [p: string]: any;
 }
 
 /**
@@ -17,7 +18,7 @@ interface Props {
  * @param props Additional properties to set directly on the `img` itself.
  */
 const ImageOrPreview: React.FC<Props> = ({ src, ...props }) => {
-    const [ srcUrl, setSrcUrl ] = React.useState(
+    const [srcUrl, setSrcUrl] = React.useState(
         typeof src === "string" ? src : undefined,
     );
     React.useEffect(() => {
@@ -26,7 +27,7 @@ const ImageOrPreview: React.FC<Props> = ({ src, ...props }) => {
             setSrcUrl(url);
             return () => URL.revokeObjectURL(url);
         }
-    }, [ src ]);
+    }, [src]);
     // noinspection HtmlRequiredAltAttribute
     return <img src={srcUrl} {...props} />; // eslint-disable-line jsx-a11y/alt-text
 };

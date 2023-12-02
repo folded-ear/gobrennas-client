@@ -1,84 +1,69 @@
-import {
-    Grid,
-    InputAdornment,
-    LinearProgress,
-    TextField,
-} from "@mui/material";
-import {
-    CheckCircleOutline,
-    ErrorOutline,
-} from "@mui/icons-material";
-import React, {
-    CSSProperties,
-    PropsWithChildren,
-} from "react";
+import { Grid, InputAdornment, LinearProgress, TextField } from "@mui/material";
+import { CheckCircleOutline, ErrorOutline } from "@mui/icons-material";
+import React, { CSSProperties, PropsWithChildren } from "react";
 import ItemApi, { RecognitionResult } from "data/ItemApi";
 import debounce from "util/debounce";
 import processRecognizedItem from "util/processRecognizedItem";
-import {
-    BfsId,
-    Ingredient
-} from "global/types/types";
+import { BfsId, Ingredient } from "global/types/types";
 import Autocomplete from "@mui/lab/Autocomplete";
 
-const doRecog = raw =>
-    raw != null && raw.trim().length >= 2;
+const doRecog = (raw) => raw != null && raw.trim().length >= 2;
 
 export interface Value {
-    id?: BfsId
-    raw: string
-    quantity?: number
-    uomId?: number
-    units?: string
-    ingredientId?: number
-    ingredient?: Ingredient
-    preparation?: string
+    id?: BfsId;
+    raw: string;
+    quantity?: number;
+    uomId?: number;
+    units?: string;
+    ingredientId?: number;
+    ingredient?: Ingredient;
+    preparation?: string;
 }
 
 interface Target {
     target: {
-        name: string
-        value: Value
-    }
+        name: string;
+        value: Value;
+    };
 }
 
 interface ElEditProps {
-    name: string
-    value: Value
-    placeholder?: string
+    name: string;
+    value: Value;
+    placeholder?: string;
 
-    onChange(e: Target): void
+    onChange(e: Target): void;
 
-    onPressEnter(): void
+    onPressEnter(): void;
 
-    onDelete?(): void
+    onDelete?(): void;
 
-    onMultilinePaste?(text: string): void
+    onMultilinePaste?(text: string): void;
 }
 
 interface Suggestion {
-    prefix: string
-    value: string
-    suffix: string
-    result: string
+    prefix: string;
+    value: string;
+    suffix: string;
+    result: string;
 }
 
 interface ElEditState {
-    recog?: RecognitionResult
-    suggestions?: Suggestion[]
-    quantity?: number
-    quantityValue?: number
-    unit?: string
-    unitValue?: number
-    ingredientName?: string
-    nameValue?: number
-    preparation?: string
+    recog?: RecognitionResult;
+    suggestions?: Suggestion[];
+    quantity?: number;
+    quantityValue?: number;
+    unit?: string;
+    unitValue?: number;
+    ingredientName?: string;
+    nameValue?: number;
+    preparation?: string;
 }
 
 class ElEdit extends React.PureComponent<ElEditProps, ElEditState> {
     private _mounted: boolean;
     private readonly ref: React.RefObject<HTMLInputElement>;
-    private readonly recognizeDebounced: ((...args) => void);
+    private readonly recognizeDebounced: (...args) => void;
 
     constructor(args: ElEditProps) {
         super(args);
@@ -118,15 +103,11 @@ class ElEdit extends React.PureComponent<ElEditProps, ElEditState> {
 
     recognize() {
         if (!this._mounted) return;
-        const {
-            name,
-            value,
-            onChange,
-        } = this.props;
+        const { name, value, onChange } = this.props;
         if (!doRecog(value.raw)) return;
         const cursor = this.getCursorPosition();
-        ItemApi.recognizeItem(value.raw, cursor)
-            .then((recog: RecognitionResult) => {
+        ItemApi.recognizeItem(value.raw, cursor).then(
+            (recog: RecognitionResult) => {
                 if (!this._mounted) return;
                 if (recog.raw !== this.props.value.raw) return;
                 // if (recog.cursor !== this.getCursorPosition()) return;
@@ -157,41 +138,40 @@ class ElEdit extends React.PureComponent<ElEditProps, ElEditState> {
                         },
                     },
                 });
-                const suggestions: Suggestion[] = recog.suggestions.map(s => {
-                    const prefix = recog.raw.substring(0, s.target.start);
-                    const suffix = recog.raw.substring(s.target.end);
-                    const quote = s.name.indexOf(" ") >= 0 ||
-                        recog.raw.charAt(s.target.start) === '"' ||
-                        recog.raw.charAt(s.target.end - 1) === '"';
-                    const value = quote
-                        ? `"${s.name}"`
-                        : s.name;
-                    return {
-                        prefix,
-                        value,
-                        suffix,
-                        result: prefix + value + suffix,
-                    };
-                })
-                    .filter(s => s.result !== recog.raw);
+                const suggestions: Suggestion[] = recog.suggestions
+                    .map((s) => {
+                        const prefix = recog.raw.substring(0, s.target.start);
+                        const suffix = recog.raw.substring(s.target.end);
+                        const quote =
+                            s.name.indexOf(" ") >= 0 ||
+                            recog.raw.charAt(s.target.start) === '"' ||
+                            recog.raw.charAt(s.target.end - 1) === '"';
+                        const value = quote ? `"${s.name}"` : s.name;
+                        return {
+                            prefix,
+                            value,
+                            suffix,
+                            result: prefix + value + suffix,
+                        };
+                    })
+                    .filter((s) => s.result !== recog.raw);
                 this.setState({
                     recog,
                     quantity: q,
                     quantityValue: qv,
-                    unit: u, unitValue: uv,
-                    ingredientName: n, nameValue: nv,
+                    unit: u,
+                    unitValue: uv,
+                    ingredientName: n,
+                    nameValue: nv,
                     preparation: p,
                     suggestions,
                 });
-            });
+            },
+        );
     }
 
     handleChange(e, val) {
-        const {
-            name,
-            onChange,
-            value,
-        } = this.props;
+        const { name, onChange, value } = this.props;
         if (value.raw === val) return;
         onChange({
             target: {
@@ -207,9 +187,7 @@ class ElEdit extends React.PureComponent<ElEditProps, ElEditState> {
     }
 
     onPaste(e) {
-        const {
-            onMultilinePaste,
-        } = this.props;
+        const { onMultilinePaste } = this.props;
         if (onMultilinePaste == null) return; // don't care!
         let text = e.clipboardData.getData("text");
         if (text == null) return;
@@ -220,19 +198,13 @@ class ElEdit extends React.PureComponent<ElEditProps, ElEditState> {
     }
 
     onKeyDown(e) {
-        const {
-            value,
-        } = e.target;
-        const {
-            key,
-        } = e;
-        const {
-            onDelete,
-            onPressEnter,
-        } = this.props;
+        const { value } = e.target;
+        const { key } = e;
+        const { onDelete, onPressEnter } = this.props;
         const hasSuggestions = this._hasSuggestions();
 
-        switch (key) { // eslint-disable-line default-case
+        // eslint-disable-next-line default-case
+        switch (key) {
             case "Enter":
                 if (!hasSuggestions) {
                     onPressEnter();
@@ -258,18 +230,15 @@ class ElEdit extends React.PureComponent<ElEditProps, ElEditState> {
         if (!suggestions) return false;
         if (suggestions.length === 0) return false;
         if (suggestions.length > 1) return true;
-        const { value: { raw } } = this.props;
+        const {
+            value: { raw },
+        } = this.props;
         return suggestions[0].result !== raw;
     }
 
     render() {
-        const {
-            value,
-            placeholder,
-        } = this.props;
-        const {
-            raw,
-        } = value;
+        const { value, placeholder } = this.props;
+        const { raw } = value;
         const {
             recog,
             quantity,
@@ -282,75 +251,113 @@ class ElEdit extends React.PureComponent<ElEditProps, ElEditState> {
         } = this.state;
         const hasSuggestions = this._hasSuggestions();
 
-        const indicator = <InputAdornment
-            position={"start"}
-        >
-            {ingredientName == null
-                ? <ErrorOutline color="error" />
-                : <CheckCircleOutline color="disabled" />
-            }
-        </InputAdornment>;
+        const indicator = (
+            <InputAdornment position={"start"}>
+                {ingredientName == null ? (
+                    <ErrorOutline color="error" />
+                ) : (
+                    <CheckCircleOutline color="disabled" />
+                )}
+            </InputAdornment>
+        );
 
-        return <Grid container alignItems={"center"}>
-            <Grid item sm={6} xs={12}>
-                <Autocomplete
-                    size={"small"}
-                    value={raw}
-                    onChange={this.handleChange}
-                    onInputChange={this.handleChange}
-                    freeSolo
-                    handleHomeEndKeys={hasSuggestions}
-                    disableClearable
-                    options={hasSuggestions && suggestions
-                        ? suggestions.map(it => it.result)
-                        : []}
-                    filterOptions={x => x}
-                    renderInput={(params) => {
-                        params.InputProps.startAdornment = indicator;
-                        return (
-                            <TextField
-                                inputRef={this.ref}
-                                {...params}
-                                onPaste={this.onPaste}
-                                onKeyDown={this.onKeyDown}
-                                variant="outlined"
-                                placeholder={placeholder}
-                            />
-                        );
-                    }}
-                />
-            </Grid>
+        return (
+            <Grid container alignItems={"center"}>
+                <Grid item sm={6} xs={12}>
+                    <Autocomplete
+                        size={"small"}
+                        value={raw}
+                        onChange={this.handleChange}
+                        onInputChange={this.handleChange}
+                        freeSolo
+                        handleHomeEndKeys={hasSuggestions}
+                        disableClearable
+                        options={
+                            hasSuggestions && suggestions
+                                ? suggestions.map((it) => it.result)
+                                : []
+                        }
+                        filterOptions={(x) => x}
+                        renderInput={(params) => {
+                            params.InputProps.startAdornment = indicator;
+                            return (
+                                <TextField
+                                    inputRef={this.ref}
+                                    {...params}
+                                    onPaste={this.onPaste}
+                                    onKeyDown={this.onKeyDown}
+                                    variant="outlined"
+                                    placeholder={placeholder}
+                                />
+                            );
+                        }}
+                    />
+                </Grid>
 
-            <Grid item sm={6} xs={12}>
-                {(!recog || !raw)
-                    ? doRecog(raw) ? <Hunk><LinearProgress /></Hunk> : null
-                    : <Hunk>
-                        {quantity &&
-                            <Hunk style={{backgroundColor: "#fde"}}>{quantity}</Hunk>}
-                        {unit && <Hunk
-                            style={{ backgroundColor: unitValue ? "#efd" : "#dfe" }}>{unit}</Hunk>}
-                        {ingredientName && <Hunk
-                            style={{ backgroundColor: nameValue ? "#def" : "#edf" }}>{ingredientName}</Hunk>}
-                        {preparation && <span>{ingredientName ? ", " : null}{preparation}</span>}
-                    </Hunk>
-                }
+                <Grid item sm={6} xs={12}>
+                    {!recog || !raw ? (
+                        doRecog(raw) ? (
+                            <Hunk>
+                                <LinearProgress />
+                            </Hunk>
+                        ) : null
+                    ) : (
+                        <Hunk>
+                            {quantity && (
+                                <Hunk style={{ backgroundColor: "#fde" }}>
+                                    {quantity}
+                                </Hunk>
+                            )}
+                            {unit && (
+                                <Hunk
+                                    style={{
+                                        backgroundColor: unitValue
+                                            ? "#efd"
+                                            : "#dfe",
+                                    }}
+                                >
+                                    {unit}
+                                </Hunk>
+                            )}
+                            {ingredientName && (
+                                <Hunk
+                                    style={{
+                                        backgroundColor: nameValue
+                                            ? "#def"
+                                            : "#edf",
+                                    }}
+                                >
+                                    {ingredientName}
+                                </Hunk>
+                            )}
+                            {preparation && (
+                                <span>
+                                    {ingredientName ? ", " : null}
+                                    {preparation}
+                                </span>
+                            )}
+                        </Hunk>
+                    )}
+                </Grid>
             </Grid>
-        </Grid>;
+        );
     }
 }
 
 interface HunkProps extends PropsWithChildren {
-    style?: CSSProperties
+    style?: CSSProperties;
 }
 
-const Hunk: React.FC<HunkProps> = ({
-                                       children,
-                                       style,
-                                   }) => <span style={{
-    ...style,
-    marginLeft: "0.4em",
-    padding: "0 0.25em",
-}}>{children}</span>;
-
+const Hunk: React.FC<HunkProps> = ({ children, style }) => (
+    <span
+        style={{
+            ...style,
+            marginLeft: "0.4em",
+            padding: "0 0.25em",
+        }}
+    >
+        {children}
+    </span>
+);
 
 export default ElEdit;

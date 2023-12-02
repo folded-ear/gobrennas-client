@@ -13,21 +13,20 @@
  *  arguments as the corresponding function in the passed object, and will queue
  *  up invocations to the wrapped object's functions.
  */
-const serializeObjectOfPromiseFns = obj => {
+const serializeObjectOfPromiseFns = (obj) => {
     let queue = Promise.resolve();
     const result = {};
     const enqueue = (fn, args) => {
         queue = queue
-            .catch(error =>
+            .catch((error) =>
                 // eslint-disable-next-line no-console
-                console.error("Error in Promise", error))
-            .then(() =>
-                fn(...args));
+                console.error("Error in Promise", error),
+            )
+            .then(() => fn(...args));
         return queue;
     };
     for (const k of Object.keys(obj)) {
-        result[k] = (...args) =>
-            enqueue(obj[k], args);
+        result[k] = (...args) => enqueue(obj[k], args);
     }
     return result;
 };

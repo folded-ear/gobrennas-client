@@ -13,12 +13,12 @@ export const LibraryController = () => {
     const params = history.location.search
         ? qs.parse(history.location.search.substring(1))
         : {};
-    const [ query, setQuery ] = useState(params.q
-        ? "" + params.q
-        : "");
-    const [ scope, setScope ] = useState(params.s === LibrarySearchScope.Everyone
-        ? LibrarySearchScope.Everyone
-        : LibrarySearchScope.Mine);
+    const [query, setQuery] = useState(params.q ? "" + params.q : "");
+    const [scope, setScope] = useState(
+        params.s === LibrarySearchScope.Everyone
+            ? LibrarySearchScope.Everyone
+            : LibrarySearchScope.Mine,
+    );
     const { data, loading, refetch, fetchMore } = useQuery(SEARCH_RECIPES, {
         variables: {
             query,
@@ -32,7 +32,11 @@ export const LibraryController = () => {
         } else {
             setQuery(newQuery);
             setScope(newScope);
-            history.push(`?q=${encodeURIComponent(newQuery)}&s=${encodeURIComponent(newScope)}`);
+            history.push(
+                `?q=${encodeURIComponent(newQuery)}&s=${encodeURIComponent(
+                    newScope,
+                )}`,
+            );
         }
     }
 
@@ -44,14 +48,16 @@ export const LibraryController = () => {
         });
     }
 
-    return <RecipesList
-        me={me}
-        onSearch={handleSearch}
-        scope={scope}
-        filter={query}
-        recipes={data?.library?.recipes.edges.map(e => e.node)}
-        isLoading={loading}
-        isComplete={!data?.library?.recipes.pageInfo.hasNextPage}
-        onNeedMore={handleNeedMore}
-    />;
+    return (
+        <RecipesList
+            me={me}
+            onSearch={handleSearch}
+            scope={scope}
+            filter={query}
+            recipes={data?.library?.recipes.edges.map((e) => e.node)}
+            isLoading={loading}
+            isComplete={!data?.library?.recipes.pageInfo.hasNextPage}
+            onNeedMore={handleNeedMore}
+        />
+    );
 };

@@ -1,11 +1,12 @@
 export const APP_BASE_URL = window.location.origin;
-export const API_BASE_URL = process.env.NODE_ENV === "development"
-    ? "http://localhost:8080"
-    : "https://api.gobrennas.com";
-export const IS_DEV = APP_BASE_URL.includes("localhost")
-    || API_BASE_URL.includes("localhost");
-export const IS_BETA = APP_BASE_URL.includes("beta")
-    || API_BASE_URL.includes("beta");
+export const API_BASE_URL =
+    process.env.NODE_ENV === "development"
+        ? "http://localhost:8080"
+        : "https://api.gobrennas.com";
+export const IS_DEV =
+    APP_BASE_URL.includes("localhost") || API_BASE_URL.includes("localhost");
+export const IS_BETA =
+    APP_BASE_URL.includes("beta") || API_BASE_URL.includes("beta");
 export const API_IS_SECURE = API_BASE_URL.indexOf("https:") === 0;
 export const COOKIE_AUTH_TOKEN = "FTOKEN";
 export const LOCAL_STORAGE_ACCESS_TOKEN = "accessToken";
@@ -15,4 +16,7 @@ export const SESSION_STORAGE_POST_LOGIN = "postLogin";
 export const MAX_UPLOAD_BYTES = 1024 * 1024;
 
 export const OAUTH2_REDIRECT_URI = APP_BASE_URL + "/post-oauth2/redirect";
-export const GOOGLE_AUTH_URL = API_BASE_URL + "/oauth2/authorize/google?redirect_uri=" + OAUTH2_REDIRECT_URI;
+export const GOOGLE_AUTH_URL =
+    API_BASE_URL +
+    "/oauth2/authorize/google?redirect_uri=" +
+    OAUTH2_REDIRECT_URI;

@@ -5,7 +5,7 @@ import { ripLoadObject } from "util/ripLoadObject";
 function useActivePlanner() {
     return useFluxStore(
         () => ripLoadObject(planStore.getActivePlanLO()),
-        [ planStore ],
+        [planStore],
     );
 }
 

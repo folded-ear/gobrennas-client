@@ -3,14 +3,12 @@ import Dispatcher from "./dispatcher";
 import RouteActions from "./RouteActions";
 
 class RouteStore extends ReduceStore {
-
     getInitialState() {
         return null;
     }
 
     reduce(state, action) {
         switch (action.type) {
-
             case RouteActions.MATCH:
                 return action.match;
 
@@ -18,7 +16,6 @@ class RouteStore extends ReduceStore {
                 return state;
         }
     }
-
 }
 
 export default new RouteStore(Dispatcher);

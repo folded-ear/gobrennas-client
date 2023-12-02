@@ -1,10 +1,6 @@
-import {
-    formatDuration,
-    formatTimer,
-} from "./time";
+import { formatDuration, formatTimer } from "./time";
 
 describe("time utilities", () => {
-
     describe("formatDuration", () => {
         it("should do format things", () => {
             expect(formatDuration(10)).toBe("10 minutes");
@@ -53,5 +49,4 @@ describe("time utilities", () => {
             expect(formatTimer(NaN)).toBe("");
         });
     });
-
 });

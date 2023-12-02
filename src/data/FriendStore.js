@@ -16,32 +16,34 @@ class FriendStore extends ReduceStore {
     }
 
     getInitialState() {
-        return new LoadObjectState(
-            () => Dispatcher.dispatch({
+        return new LoadObjectState(() =>
+            Dispatcher.dispatch({
                 type: FriendActions.LOAD_FRIEND_LIST,
-            }));
+            }),
+        );
     }
 
     reduce(state, action) {
         switch (action.type) {
-
             case FriendActions.LOAD_FRIEND_LIST: {
-                promiseFlux(
-                    axios.get(``),
-                    data => ({
-                        type: FriendActions.FRIEND_LIST_LOADED,
-                        data: data.data,
-                    }),
-                );
-                return state.mapLO(lo => lo.loading());
+                promiseFlux(axios.get(``), (data) => ({
+                    type: FriendActions.FRIEND_LIST_LOADED,
+                    data: data.data,
+                }));
+                return state.mapLO((lo) => lo.loading());
             }
 
             case FriendActions.FRIEND_LIST_LOADED: {
-                return state.mapLO(lo => lo.setValue(action.data
-                    .map(f => ({
-                        ...f,
-                        id_s: "" + f.id,
-                    }))).done());
+                return state.mapLO((lo) =>
+                    lo
+                        .setValue(
+                            action.data.map((f) => ({
+                                ...f,
+                                id_s: "" + f.id,
+                            })),
+                        )
+                        .done(),
+                );
             }
 
             default:
@@ -55,10 +57,8 @@ class FriendStore extends ReduceStore {
 
     getFriendLO(id) {
         const id_s = "" + id;
-        return this.getFriendsLO()
-            .map(fs => fs.find(f => f.id_s === id_s));
+        return this.getFriendsLO().map((fs) => fs.find((f) => f.id_s === id_s));
     }
-
 }
 
 export default new FriendStore();

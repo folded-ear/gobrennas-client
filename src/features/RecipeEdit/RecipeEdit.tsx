@@ -15,24 +15,27 @@ const handleDelete = (id) => {
     RecipeApi.deleteRecipe(id);
 };
 
-const handleSave = recipe =>
+const handleSave = (recipe) =>
     Dispatcher.dispatch({
         type: RecipeActions.UPDATE_RECIPE,
         data: recipe,
     });
 
-const handleCancel = recipe =>
+const handleCancel = (recipe) =>
     Dispatcher.dispatch({
         type: RecipeActions.CANCEL_EDIT,
         id: recipe.id,
     });
 
 type RecipeEditProps = {
-    recipeLO: LoadObject<Recipe>,
-    labelList: string[]
-}
+    recipeLO: LoadObject<Recipe>;
+    labelList: string[];
+};
 
-export const RecipeEdit : React.FC<RecipeEditProps> = ({recipeLO, labelList}) => {
+export const RecipeEdit: React.FC<RecipeEditProps> = ({
+    recipeLO,
+    labelList,
+}) => {
     if (!recipeLO.hasValue()) {
         if (recipeLO.isLoading()) {
             return <CircularProgress />;
@@ -41,19 +44,22 @@ export const RecipeEdit : React.FC<RecipeEditProps> = ({recipeLO, labelList}) =>
     }
 
     const recipe = recipeLO.getValueEnforcing();
-    return <PageBody>
-        <RecipeForm
-            title={`Editing ${recipe.name}`}
-            onSave={handleSave}
-            onSaveCopy={handleSaveCopy}
-            onCancel={handleCancel}
-            labelList={labelList}
-            extraButtons={
-                <DeleteButton
-                    type="recipe"
-                    label="Delete Recipe"
-                    onConfirm={() => handleDelete(recipe.id)}
-                />}
-        />
-    </PageBody>;
+    return (
+        <PageBody>
+            <RecipeForm
+                title={`Editing ${recipe.name}`}
+                onSave={handleSave}
+                onSaveCopy={handleSaveCopy}
+                onCancel={handleCancel}
+                labelList={labelList}
+                extraButtons={
+                    <DeleteButton
+                        type="recipe"
+                        label="Delete Recipe"
+                        onConfirm={() => handleDelete(recipe.id)}
+                    />
+                }
+            />
+        </PageBody>
+    );
 };

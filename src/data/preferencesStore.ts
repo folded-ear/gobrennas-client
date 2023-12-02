@@ -1,13 +1,13 @@
 import PlanActions from "features/Planner/data/PlanActions";
 import planStore from "features/Planner/data/planStore";
-import {ReduceStore} from "flux/utils";
-import {Map} from "immutable";
-import {getJsonItem, setJsonItem,} from "util/storage";
+import { ReduceStore } from "flux/utils";
+import { Map } from "immutable";
+import { getJsonItem, setJsonItem } from "util/storage";
 // noinspection ES6PreferShortImport
-import {LOCAL_STORAGE_PREFERENCES} from "../constants/index";
+import { LOCAL_STORAGE_PREFERENCES } from "../constants/index";
 import Dispatcher from "./dispatcher";
 import UserActions from "./UserActions";
-import {FluxAction} from "global/types/types";
+import { FluxAction } from "global/types/types";
 import ShoppingActions from "./ShoppingActions";
 import shoppingStore from "./shoppingStore";
 
@@ -19,16 +19,21 @@ const PrefNames = {
     LAYOUT: "layout",
 };
 
-type State = Map<string, any>
-type IsMigrationNeeded = (p: State) => boolean
-type DoMigration = (p: State) => State
-type Migration = [ IsMigrationNeeded, DoMigration ]
+type State = Map<string, any>;
+type IsMigrationNeeded = (p: State) => boolean;
+type DoMigration = (p: State) => State;
+type Migration = [IsMigrationNeeded, DoMigration];
 
 const migrations: Migration[] = [
     [
-        prefs => prefs.has(PrefNames.ACTIVE_TASK_LIST) && !prefs.has(PrefNames.ACTIVE_PLAN),
-        prefs => {
-            prefs = prefs.set(PrefNames.ACTIVE_PLAN, prefs.get(PrefNames.ACTIVE_TASK_LIST));
+        (prefs) =>
+            prefs.has(PrefNames.ACTIVE_TASK_LIST) &&
+            !prefs.has(PrefNames.ACTIVE_PLAN),
+        (prefs) => {
+            prefs = prefs.set(
+                PrefNames.ACTIVE_PLAN,
+                prefs.get(PrefNames.ACTIVE_TASK_LIST),
+            );
             return prefs.delete(PrefNames.ACTIVE_TASK_LIST);
         },
     ],
@@ -47,13 +52,11 @@ const clearPref = (state: State, key: string): State => {
 };
 
 class PreferencesStore extends ReduceStore<State, FluxAction> {
-
     getInitialState(): State {
-        return migrations.reduce((prefs, [ test, mig ]) =>
-                test(prefs)
-                    ? mig(prefs)
-                    : prefs,
-            Map(getJsonItem(LOCAL_STORAGE_PREFERENCES) as State));
+        return migrations.reduce(
+            (prefs, [test, mig]) => (test(prefs) ? mig(prefs) : prefs),
+            Map(getJsonItem(LOCAL_STORAGE_PREFERENCES) as State),
+        );
     }
 
     reduce(state: State, action: FluxAction): State {
@@ -62,12 +65,14 @@ class PreferencesStore extends ReduceStore<State, FluxAction> {
                 return Map(action.preferences);
             }
             case PlanActions.PLANS_LOADED: {
-                this.__dispatcher.waitFor([
-                    planStore.getDispatchToken(),
-                ]);
+                this.__dispatcher.waitFor([planStore.getDispatchToken()]);
                 const lo = planStore.getActivePlanLO();
                 return lo.hasValue()
-                    ? setPref(state, PrefNames.ACTIVE_PLAN, lo.getValueEnforcing().id)
+                    ? setPref(
+                          state,
+                          PrefNames.ACTIVE_PLAN,
+                          lo.getValueEnforcing().id,
+                      )
                     : state;
             }
             case PlanActions.SELECT_PLAN:
@@ -76,12 +81,12 @@ class PreferencesStore extends ReduceStore<State, FluxAction> {
             }
 
             case ShoppingActions.TOGGLE_PLAN: {
-                this.__dispatcher.waitFor([
-                    shoppingStore.getDispatchToken(),
-                ]);
-                return setPref(state,
+                this.__dispatcher.waitFor([shoppingStore.getDispatchToken()]);
+                return setPref(
+                    state,
                     PrefNames.ACTIVE_SHOPPING_PLANS,
-                    shoppingStore.getActivePlanIds());
+                    shoppingStore.getActivePlanIds(),
+                );
             }
 
             case UserActions.SET_DEV_MODE: {

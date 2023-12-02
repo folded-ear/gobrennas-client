@@ -6,8 +6,8 @@ import { styled } from "@mui/material/styles";
 import { useIsMobile } from "providers/IsMobile";
 
 type AddFabProps = {
-    isMobile?: boolean
-}
+    isMobile?: boolean;
+};
 
 const AddFab = styled(Fab, {
     shouldForwardProp: (prop) => prop !== "isMobile",
@@ -19,29 +19,27 @@ const AddFab = styled(Fab, {
 
 type Props = PropsWithChildren<any>;
 
-const FoodingerFab: React.FC<Props> = ({
-                                           children,
-                                           ...props
-                                       }) => {
+const FoodingerFab: React.FC<Props> = ({ children, ...props }) => {
     const isMobile = useIsMobile();
     React.useEffect(() => {
-        setTimeout(() => dispatcher.dispatch({
-            type: UiActions.SHOW_FAB,
-        }));
+        setTimeout(() =>
+            dispatcher.dispatch({
+                type: UiActions.SHOW_FAB,
+            }),
+        );
         return () => {
-            setTimeout(() => dispatcher.dispatch({
-                type: UiActions.HIDE_FAB,
-            }));
+            setTimeout(() =>
+                dispatcher.dispatch({
+                    type: UiActions.HIDE_FAB,
+                }),
+            );
         };
     }, []);
-    return <AddFab
-        isMobile={isMobile}
-        color="primary"
-        aria-label="add"
-        {...props}
-    >
-        {children}
-    </AddFab>;
+    return (
+        <AddFab isMobile={isMobile} color="primary" aria-label="add" {...props}>
+            {children}
+        </AddFab>
+    );
 };
 
 export default FoodingerFab;

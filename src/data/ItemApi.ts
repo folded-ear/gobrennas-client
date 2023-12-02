@@ -17,34 +17,36 @@ export enum RecognitionRangeType {
 }
 
 interface RecognitionRange {
-    start: number
-    end: number
-    type: RecognitionRangeType
-    value: number
+    start: number;
+    end: number;
+    type: RecognitionRangeType;
+    value: number;
 }
 
 interface RecognitionSuggestion {
-    name: string
-    target: RecognitionRange
+    name: string;
+    target: RecognitionRange;
 }
 
 export interface RecognitionResult {
-    raw: string
-    cursor: number
-    ranges: RecognitionRange[]
-    suggestions: RecognitionSuggestion[]
+    raw: string;
+    cursor: number;
+    ranges: RecognitionRange[];
+    suggestions: RecognitionSuggestion[];
 }
 
 const ItemApi = {
-
-    recognizeItem(raw: string, cursor = raw.length): Promise<RecognitionResult> {
-        return axios.post(`/item/recognize`, {
-            raw,
-            cursor,
-        })
-            .then(r => r.data);
+    recognizeItem(
+        raw: string,
+        cursor = raw.length,
+    ): Promise<RecognitionResult> {
+        return axios
+            .post(`/item/recognize`, {
+                raw,
+                cursor,
+            })
+            .then((r) => r.data);
     },
-
 };
 
 export default serializeObjectOfPromiseFns(ItemApi);

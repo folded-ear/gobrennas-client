@@ -1,12 +1,12 @@
 import planStore from "features/Planner/data/planStore";
-import {ReduceStore} from "flux/utils";
-import {ShopItemType} from "views/shop/ShopList";
+import { ReduceStore } from "flux/utils";
+import { ShopItemType } from "views/shop/ShopList";
 import Dispatcher from "./dispatcher";
 import PantryItemActions from "./PantryItemActions";
 import ShoppingActions from "./ShoppingActions";
-import {FluxAction} from "global/types/types";
+import { FluxAction } from "global/types/types";
 import PlanActions from "../features/Planner/data/PlanActions";
-import {removeDistinct, toggleDistinct} from "../util/arrayAsSet";
+import { removeDistinct, toggleDistinct } from "../util/arrayAsSet";
 import preferencesStore from "./preferencesStore";
 import PlanApi from "../features/Planner/data/PlanApi";
 
@@ -19,42 +19,40 @@ const placeFocus = (state, id, type) => ({
 });
 
 export interface Item {
-    id: number
-    type: ShopItemType
+    id: number;
+    type: ShopItemType;
 }
 
 interface State {
-    activePlanIds?: number[]
-    activeItem?: Item
-    expandedId?: number
+    activePlanIds?: number[];
+    activeItem?: Item;
+    expandedId?: number;
 }
 
 class ShoppingStore extends ReduceStore<State, FluxAction> {
-
     getInitialState(): State {
         return {};
     }
 
     reduce(state: State, action: FluxAction): State {
         switch (action.type) {
-
             case PlanActions.PLAN_DELETED:
                 return {
                     ...state,
                     activePlanIds: removeDistinct(
                         state.activePlanIds,
-                        action.id),
+                        action.id,
+                    ),
                 };
 
             case PlanActions.PLANS_LOADED: {
-                this.getDispatcher().waitFor([
-                    planStore.getDispatchToken(),
-                ]);
-                const validPlanIds = planStore.getPlanIdsLO()
+                this.getDispatcher().waitFor([planStore.getDispatchToken()]);
+                const validPlanIds = planStore
+                    .getPlanIdsLO()
                     .getValueEnforcing();
-                const activePlanId = planStore.getActivePlanLO()
-                    .getValueEnforcing()
-                    .id;
+                const activePlanId = planStore
+                    .getActivePlanLO()
+                    .getValueEnforcing().id;
                 const shopIds: number[] = [];
                 for (const id of preferencesStore.getActiveShoppingPlans()) {
                     if (!validPlanIds.includes(id)) continue;
@@ -72,11 +70,12 @@ class ShoppingStore extends ReduceStore<State, FluxAction> {
             case ShoppingActions.TOGGLE_PLAN: {
                 const activePlanIds = toggleDistinct(
                     state.activePlanIds?.slice(),
-                    action.id);
+                    action.id,
+                );
                 if (activePlanIds.length === 0) {
-                    activePlanIds.push(planStore.getActivePlanLO()
-                        .getValueEnforcing()
-                        .id);
+                    activePlanIds.push(
+                        planStore.getActivePlanLO().getValueEnforcing().id,
+                    );
                 }
                 if (activePlanIds.includes(action.id)) {
                     // it was toggled on
@@ -93,19 +92,20 @@ class ShoppingStore extends ReduceStore<State, FluxAction> {
             case ShoppingActions.CREATE_ITEM_AT_END:
             case ShoppingActions.DELETE_ITEM_BACKWARDS:
             case ShoppingActions.DELETE_ITEM_FORWARD: {
-                this.__dispatcher.waitFor([
-                    planStore.getDispatchToken(),
-                ]);
-                state = placeFocus(state, planStore.getActiveItem().id, ShopItemType.PLAN_ITEM);
+                this.__dispatcher.waitFor([planStore.getDispatchToken()]);
+                state = placeFocus(
+                    state,
+                    planStore.getActiveItem().id,
+                    ShopItemType.PLAN_ITEM,
+                );
                 return state;
             }
 
             case ShoppingActions.FOCUS: {
                 state = placeFocus(state, action.id, action.itemType);
                 if (action.itemType === ShopItemType.INGREDIENT) {
-                    state.expandedId = state.expandedId === action.id
-                        ? undefined
-                        : action.id;
+                    state.expandedId =
+                        state.expandedId === action.id ? undefined : action.id;
                 }
                 return state;
             }
@@ -123,18 +123,18 @@ class ShoppingStore extends ReduceStore<State, FluxAction> {
             case ShoppingActions.TOGGLE_EXPANDED: {
                 return {
                     ...state,
-                    expandedId: state.expandedId === action.id
-                        ? undefined
-                        : action.id,
+                    expandedId:
+                        state.expandedId === action.id ? undefined : action.id,
                 };
             }
 
             case ShoppingActions.SET_INGREDIENT_STATUS: {
                 return {
                     ...state,
-                    expandedId: state.expandedId === action.id
-                        ? undefined
-                        : state.expandedId,
+                    expandedId:
+                        state.expandedId === action.id
+                            ? undefined
+                            : state.expandedId,
                 };
             }
 

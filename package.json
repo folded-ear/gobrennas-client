@@ -58,7 +58,8 @@
     "posttest": "eslint --max-warnings 0 ./src",
     "eject": "react-scripts eject",
     "lint": "eslint ./src",
-    "lint:fix": "eslint --fix ./src"
+    "lint:fix": "eslint --fix ./src",
+    "format:write": "prettier . --write"
   },
   "eslintConfig": {
     "extends": [
@@ -131,6 +132,7 @@
     "@testing-library/react": "^11.2.7",
     "@testing-library/user-event": "^12.8.3",
     "@types/react-router-dom": "^5.3.3",
+    "prettier": "3.0.3",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-error-overlay": "6.0.9",

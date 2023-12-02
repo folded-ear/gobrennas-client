@@ -5,26 +5,15 @@ import Item from "./Item";
 import { grey } from "@mui/material/colors";
 
 interface Props {
-    depth: number
+    depth: number;
 }
 
-const LoadingItem: React.FC<Props> = ({
-                                          depth,
-                                      }) => {
-    return <Item
-        depth={depth}
-        prefix={
-            <LoadingIconButton
-                key="loading"
-            />
-        }
-    >
-        <ListItemText
-            style={{ color: grey[500] }}
-        >
-            Loading...
-        </ListItemText>
-    </Item>;
+const LoadingItem: React.FC<Props> = ({ depth }) => {
+    return (
+        <Item depth={depth} prefix={<LoadingIconButton key="loading" />}>
+            <ListItemText style={{ color: grey[500] }}>Loading...</ListItemText>
+        </Item>
+    );
 };
 
 export default LoadingItem;

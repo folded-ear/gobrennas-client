@@ -4,13 +4,13 @@ import { askUserToReauth, isAuthError } from "../providers/Profile";
 // this will be given jitter of up to 50% in either direction
 const ARTIFICIAL_SETTLEMENT_DELAY = 150;
 
-let helper = (settleKey, typeTemplateOrCallback) => data => {
+let helper = (settleKey, typeTemplateOrCallback) => (data) => {
     Dispatcher.dispatch(
         typeof typeTemplateOrCallback === "function"
             ? typeTemplateOrCallback(data)
             : typeof typeTemplateOrCallback === "string"
-            ? {[settleKey]: data, type: typeTemplateOrCallback}
-            : {[settleKey]: data, ...typeTemplateOrCallback},
+            ? { [settleKey]: data, type: typeTemplateOrCallback }
+            : { [settleKey]: data, ...typeTemplateOrCallback },
     );
 };
 
@@ -18,19 +18,19 @@ if (process.env.NODE_ENV !== "production" && ARTIFICIAL_SETTLEMENT_DELAY > 0) {
     const oldHelper = helper;
     helper = (k, ttc) => {
         const fast = oldHelper(k, ttc);
-        return data => {
+        return (data) => {
             const delay = ARTIFICIAL_SETTLEMENT_DELAY * (0.5 + Math.random());
             return setTimeout(() => fast(data), delay);
         };
     };
 }
 
-const fallthrough = error => ({
+const fallthrough = (error) => ({
     type: "promise-flux/error-fallthrough",
     error,
 });
 
-export const soakUpUnauthorized = error => {
+export const soakUpUnauthorized = (error) => {
     if (isAuthError(error)) {
         // eslint-disable-next-line no-console
         console.warn("Unauthorized", error);
@@ -75,7 +75,7 @@ const informUserOfPromiseError = () => {
 const promiseFlux = (
     promise,
     resolver,
-    rejector = error => {
+    rejector = (error) => {
         // eslint-disable-next-line no-console
         console.error("Error in Promise", error);
         if (!isAuthError(error) || !askUserToReauth()) {
@@ -83,9 +83,6 @@ const promiseFlux = (
         }
         return fallthrough(error);
     },
-) => promise.then(
-    helper("data", resolver),
-    helper("error", rejector),
-);
+) => promise.then(helper("data", resolver), helper("error", rejector));
 
 export default promiseFlux;

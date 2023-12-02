@@ -1,51 +1,43 @@
-import {
-    ApolloError,
-    useQuery,
-} from "@apollo/client";
+import { ApolloError, useQuery } from "@apollo/client";
 import { getFullRecipeQuery } from "../data/queries";
-import {
-    FullRecipe,
-    Recipe,
-    Subrecipe,
-} from "features/RecipeDisplay/types";
+import { FullRecipe, Recipe, Subrecipe } from "features/RecipeDisplay/types";
 import * as React from "react";
 import { IngredientRef } from "global/types/types";
 import { useProfileId } from "providers/Profile";
 
 type UseQueryResult<T> = {
-    loading: boolean,
-    error?: ApolloError | boolean,
-    data: T | null
-}
+    loading: boolean;
+    error?: ApolloError | boolean;
+    data: T | null;
+};
 
-export const useGetFullRecipe = (id: string) : UseQueryResult<FullRecipe> => {
-    const { loading, error, data } = useQuery(
-        getFullRecipeQuery,
-        { variables: { id: id } },
-    );
+export const useGetFullRecipe = (id: string): UseQueryResult<FullRecipe> => {
+    const { loading, error, data } = useQuery(getFullRecipeQuery, {
+        variables: { id: id },
+    });
     const myId = useProfileId();
 
     const result = data?.library?.getRecipeById || null;
 
     const ingredients: IngredientRef[] = React.useMemo(() => {
         if (!result || !result.ingredients) return [];
-        return result.ingredients.map(item => ({
+        return result.ingredients.map((item) => ({
             raw: item.raw,
             preparation: item.preparation,
             quantity: item.quantity?.quantity || null,
             units: item.quantity?.units?.name || null,
             ingredient: item.ingredient,
         }));
-    },[result]);
+    }, [result]);
 
     const subrecipes: Subrecipe[] = React.useMemo(() => {
         if (!result || !result.subrecipes) return [];
-        return result.subrecipes.map(recipe => ({
+        return result.subrecipes.map((recipe) => ({
             id: parseInt(recipe.id, 10),
             name: recipe.name,
             totalTime: recipe.totalTime,
             directions: recipe.directions,
-            ingredients: recipe.ingredients.map(item => ({
+            ingredients: recipe.ingredients.map((item) => ({
                 raw: item.raw,
                 preparation: item.preparation,
                 quantity: item.quantity?.quantity || null,
@@ -55,9 +47,9 @@ export const useGetFullRecipe = (id: string) : UseQueryResult<FullRecipe> => {
                 uomId: "",
             })),
         }));
-    }, [ result ]);
+    }, [result]);
 
-    if(!result) {
+    if (!result) {
         return {
             loading: false,
             error: true,

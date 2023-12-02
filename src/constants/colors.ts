@@ -6,7 +6,7 @@ import {
     lime,
     purple,
     red,
-    teal
+    teal,
 } from "@mui/material/colors";
 import { BfsId } from "../global/types/types";
 
@@ -19,14 +19,19 @@ export const planColors = [
     teal[300],
     lightGreen[900],
     lime[500],
-    blueGrey[500]
+    blueGrey[500],
 ];
 
 if (process.env.NODE_ENV === "development") {
-    if (planColors.length !== Math.pow(2, Math.floor(Math.log2(planColors.length)))) {
+    if (
+        planColors.length !==
+        Math.pow(2, Math.floor(Math.log2(planColors.length)))
+    ) {
         // eslint-disable-next-line no-console
-        console.error("PlanColors has %s entries, which isn't a power of two!!",
-            planColors.length);
+        console.error(
+            "PlanColors has %s entries, which isn't a power of two!!",
+            planColors.length,
+        );
     }
 }
 

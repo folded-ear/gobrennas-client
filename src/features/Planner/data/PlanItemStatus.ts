@@ -19,7 +19,7 @@ enum PlanItemStatus {
     DELETED = "DELETED",
 }
 
-export const willStatusDelete = status =>
+export const willStatusDelete = (status) =>
     status === PlanItemStatus.COMPLETED || status === PlanItemStatus.DELETED;
 
 const colorByStatus: Record<PlanItemStatus, MuiColorFamily> = {

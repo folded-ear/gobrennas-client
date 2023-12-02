@@ -7,13 +7,13 @@ const axios = BaseAxios.create({
 
 const TextractApi = {
     promiseJobList: () => axios.get(`/`),
-    promiseJob: id => axios.get(`/${id}`),
-    promiseNewJob: photo => {
+    promiseJob: (id) => axios.get(`/${id}`),
+    promiseNewJob: (photo) => {
         let payload = new FormData();
         payload.append("photo", photo);
         return axios.post(`/`, payload);
     },
-    promiseJobDelete: id => axios.delete(`/${id}`),
+    promiseJobDelete: (id) => axios.delete(`/${id}`),
 };
 
 export default TextractApi;

@@ -37,9 +37,13 @@ export function createChainableTypeChecker(validate) {
         if (props[propName] == null) {
             if (isRequired) {
                 if (props[propName] === null) {
-                    return new PropTypeError(`The ${location} \`${propFullName}\` is marked as required in \`${componentName}\`, but its value is \`null\`.`);
+                    return new PropTypeError(
+                        `The ${location} \`${propFullName}\` is marked as required in \`${componentName}\`, but its value is \`null\`.`,
+                    );
                 }
-                return new PropTypeError(`The ${location} \`${propFullName}\` is marked as required in \`${componentName}\`, but its value is \`undefined\`.`);
+                return new PropTypeError(
+                    `The ${location} \`${propFullName}\` is marked as required in \`${componentName}\`, but its value is \`undefined\`.`,
+                );
             }
             return null;
         } else {
@@ -60,7 +64,7 @@ export function createChainableTypeChecker(validate) {
 }
 
 // Returns class name of the object, if any.
-export  function getClassName(propValue) {
+export function getClassName(propValue) {
     if (!propValue.constructor || !propValue.constructor.name) {
         return ANONYMOUS;
     }

@@ -20,15 +20,15 @@ const SetScaleContext = createContext<Maybe<(Option) => void>>(null);
 /**
  * Creates a new scaling context, initially scaled to 1 (no scaling).
  */
-export const ScalingProvider: React.FC<PropsWithChildren> = ({
-                                                                 children,
-                                                             }) => {
-    const [ scale, setScale ] = useState(1);
-    return <ScaleContext.Provider value={scale}>
-        <SetScaleContext.Provider value={setScale}>
-            {children}
-        </SetScaleContext.Provider>
-    </ScaleContext.Provider>;
+export const ScalingProvider: React.FC<PropsWithChildren> = ({ children }) => {
+    const [scale, setScale] = useState(1);
+    return (
+        <ScaleContext.Provider value={scale}>
+            <SetScaleContext.Provider value={setScale}>
+                {children}
+            </SetScaleContext.Provider>
+        </ScaleContext.Provider>
+    );
 };
 
 /**
@@ -36,33 +36,32 @@ export const ScalingProvider: React.FC<PropsWithChildren> = ({
  * as if ScalingProvider had been called.
  */
 export const ReentrantScalingProvider: React.FC<PropsWithChildren> = ({
-                                                                          children,
-                                                                      }) => {
+    children,
+}) => {
     const ctx = useContext(SetScaleContext);
-    return ctx == null
-        ? <ScalingProvider>
-            {children}
-        </ScalingProvider>
-        : <>
-            {children}
-        </>;
+    return ctx == null ? (
+        <ScalingProvider>{children}</ScalingProvider>
+    ) : (
+        <>{children}</>
+    );
 };
 
 /**
  * Returns the current context's scaling factor, or 1 (no scaling) if outside a
  * scaling context.
  */
-export const useScale = () =>
-    useContext(ScaleContext);
+export const useScale = () => useContext(ScaleContext);
 
 export const useScaleOptions = () => {
     let found = false;
     const value = useScale();
     const set = useContext(SetScaleContext);
     if (set == null) {
-        throw new TypeError("useScaleOptions must be used w/in a scaling context.");
+        throw new TypeError(
+            "useScaleOptions must be used w/in a scaling context.",
+        );
     }
-    const opts = OPTIONS.map(it => {
+    const opts = OPTIONS.map((it) => {
         if (it.value === value) {
             found = true;
             return { ...it, active: true };
@@ -73,7 +72,7 @@ export const useScaleOptions = () => {
     if (!found) {
         opts.push({ value, label: "" + value, active: true });
     }
-    return opts.map(it => ({
+    return opts.map((it) => ({
         ...it,
         select: () => set(it.value),
     }));

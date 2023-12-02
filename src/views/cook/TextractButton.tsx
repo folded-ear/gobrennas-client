@@ -1,12 +1,6 @@
-import {
-    Box,
-    Button,
-} from "@mui/material";
+import { Box, Button } from "@mui/material";
 import { makeStyles } from "@mui/styles";
-import {
-    CameraAlt,
-    MenuBook,
-} from "@mui/icons-material";
+import { CameraAlt, MenuBook } from "@mui/icons-material";
 import React, { MouseEventHandler } from "react";
 
 const useStyles = makeStyles({
@@ -21,24 +15,24 @@ const useStyles = makeStyles({
 });
 
 interface Props {
-    onClick: MouseEventHandler
+    onClick: MouseEventHandler;
 }
 
 const TextractButton: React.FC<Props> = ({ onClick }) => {
     const classes = useStyles();
-    return <Box
-        className={classes.trigger}
-    >
-        <Button
-            variant={"text"}
-            startIcon={<MenuBook />}
-            endIcon={<CameraAlt />}
-            size={"small"}
-            onClick={onClick}
-        >
-            Cookbook
-        </Button>
-    </Box>;
+    return (
+        <Box className={classes.trigger}>
+            <Button
+                variant={"text"}
+                startIcon={<MenuBook />}
+                endIcon={<CameraAlt />}
+                size={"small"}
+                onClick={onClick}
+            >
+                Cookbook
+            </Button>
+        </Box>
+    );
 };
 
 export default TextractButton;

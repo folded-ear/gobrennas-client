@@ -37,7 +37,7 @@ class LoadObjectMap<K, V> {
         this._data = Immutable.Map();
         this._loadAll = loadAll;
 
-        this._shouldLoad = shouldLoad || (lo => lo.isEmpty());
+        this._shouldLoad = shouldLoad || ((lo) => lo.isEmpty());
 
         this._preventLoadsForThisFrame = new Set();
         this._clearPreventLoadsForThisFrame = null;
@@ -46,7 +46,7 @@ class LoadObjectMap<K, V> {
     // Some trickery so that we always return a load object, and call the provided
     // load function when appropriate.
     get(key: K): LoadObject<V> {
-        const lo : LoadObject<V> | undefined = this._data.has(key)
+        const lo: LoadObject<V> | undefined = this._data.has(key)
             ? this._data.get(key)
             : LoadObject.empty();
 

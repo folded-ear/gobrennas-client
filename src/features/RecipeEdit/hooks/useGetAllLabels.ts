@@ -8,6 +8,6 @@ export const useGetAllLabels = () => {
     return {
         loading,
         error,
-        data: labels.map(label => label.name)
+        data: labels.map((label) => label.name),
     };
 };
