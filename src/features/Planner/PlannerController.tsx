@@ -5,16 +5,13 @@ import planStore from "features/Planner/data/planStore";
 import useFluxStore from "data/useFluxStore";
 import Plan from "features/Planner/components/Plan";
 import LoadObject from "../../util/LoadObject";
-import {
-    ripLoadObject,
-    RippedLO,
-} from "util/ripLoadObject";
+import { ripLoadObject, RippedLO } from "util/ripLoadObject";
 import { RouteComponentProps } from "react-router";
 import { useLoadedPlan } from "../RecipeDisplay/hooks/useLoadedPlan";
 
 export interface ItemTuple extends RippedLO<any> {
-    ancestorDeleting: boolean
-    depth: number
+    ancestorDeleting: boolean;
+    depth: number;
 }
 
 function listTheTree(id, ancestorDeleting = false, depth = 0): ItemTuple[] {
@@ -27,7 +24,9 @@ function listTheTree(id, ancestorDeleting = false, depth = 0): ItemTuple[] {
         if (!list[i].data) continue;
         const t = list[i].data;
         if (t.ingredientId) {
-            const ing = ripLoadObject(LibraryStore.getIngredientById(t.ingredientId)).data;
+            const ing = ripLoadObject(
+                LibraryStore.getIngredientById(t.ingredientId),
+            ).data;
             if (ing) {
                 list[i].data = {
                     ...list[i].data,
@@ -37,45 +36,45 @@ function listTheTree(id, ancestorDeleting = false, depth = 0): ItemTuple[] {
             }
         }
         if (!isExpanded(t)) continue;
-        list.splice(i + 1, 0, ...listTheTree(
-            t.id,
-            ancestorDeleting || list[i].deleting,
-            depth + 1));
+        list.splice(
+            i + 1,
+            0,
+            ...listTheTree(
+                t.id,
+                ancestorDeleting || list[i].deleting,
+                depth + 1,
+            ),
+        );
     }
     return list;
 }
 
 type Props = RouteComponentProps<{
-    pid?: string
+    pid?: string;
 }>;
 
 export const PlannerController: React.FC<Props> = ({ match }) => {
     useLoadedPlan(match.params.pid);
-    const state = useFluxStore(
-        () => {
-            const allPlans = ripLoadObject(planStore.getPlansLO());
-            const activePlan = ripLoadObject(planStore.getActivePlanLO());
-            const activeItem = planStore.getActiveItem();
-            const selectedItems = planStore.getSelectedItems();
-            return {
-                allPlans,
-                activePlan,
-                planDetailVisible: planStore.isPlanDetailVisible(),
-                itemTuples: activePlan.data
-                    ? listTheTree(activePlan.data.id)
-                    : [],
-                isItemActive: activeItem
-                    ? itemOrId => (itemOrId.id || itemOrId) === activeItem.id
-                    : () => false,
-                isItemSelected: selectedItems
-                    ? itemOrId => selectedItems.some(t => (itemOrId.id || itemOrId) === t.id)
-                    : () => false,
-            };
-        },
-        [
-            planStore,
-            LibraryStore,
-        ],
-    );
+    const state = useFluxStore(() => {
+        const allPlans = ripLoadObject(planStore.getPlansLO());
+        const activePlan = ripLoadObject(planStore.getActivePlanLO());
+        const activeItem = planStore.getActiveItem();
+        const selectedItems = planStore.getSelectedItems();
+        return {
+            allPlans,
+            activePlan,
+            planDetailVisible: planStore.isPlanDetailVisible(),
+            itemTuples: activePlan.data ? listTheTree(activePlan.data.id) : [],
+            isItemActive: activeItem
+                ? (itemOrId) => (itemOrId.id || itemOrId) === activeItem.id
+                : () => false,
+            isItemSelected: selectedItems
+                ? (itemOrId) =>
+                      selectedItems.some(
+                          (t) => (itemOrId.id || itemOrId) === t.id,
+                      )
+                : () => false,
+        };
+    }, [planStore, LibraryStore]);
     return <Plan {...state} />;
 };

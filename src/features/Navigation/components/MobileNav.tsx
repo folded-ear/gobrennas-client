@@ -1,8 +1,5 @@
 import * as React from "react";
-import {
-    BottomNavigation,
-    Paper
-} from "@mui/material";
+import { BottomNavigation, Paper } from "@mui/material";
 import {
     EventNote as PlanIcon,
     MenuBook as LibraryIcon,
@@ -13,26 +10,23 @@ import { MobileNavItem } from "features/Navigation/components/MobileNavItem";
 import { useProfile } from "../../../providers/Profile";
 import User from "../../../views/user/User";
 
-const NavWrapper = styled(Paper)(({theme}) => ({
+const NavWrapper = styled(Paper)(({ theme }) => ({
     position: "fixed",
     left: 0,
     right: 0,
     bottom: 0,
-    zIndex: theme.zIndex.appBar
+    zIndex: theme.zIndex.appBar,
 }));
 
 type MobileNavProps = {
-    selected?: string
-}
+    selected?: string;
+};
 
-export const MobileNav: React.FC<MobileNavProps> = ({selected= false}) => {
+export const MobileNav: React.FC<MobileNavProps> = ({ selected = false }) => {
     const me = useProfile();
     return (
         <NavWrapper elevation={3}>
-            <BottomNavigation
-                showLabels
-                value={selected}
-            >
+            <BottomNavigation showLabels value={selected}>
                 <MobileNavItem
                     title="Library"
                     icon={<LibraryIcon />}

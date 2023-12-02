@@ -1,5 +1,5 @@
-import {useMediaQuery} from "@mui/material";
-import React, {createContext, PropsWithChildren, useContext,} from "react";
+import { useMediaQuery } from "@mui/material";
+import React, { createContext, PropsWithChildren, useContext } from "react";
 import theme from "../theme";
 import useFluxStore from "../data/useFluxStore";
 import preferencesStore from "../data/preferencesStore";
@@ -14,17 +14,15 @@ export function IsMobileProvider({ children }: PropsWithChildren): JSX.Element {
     });
     const layout = useFluxStore(
         () => preferencesStore.getLayout(),
-        [preferencesStore]
+        [preferencesStore],
     );
-    const value = layout === "desktop"
-        ? false
-        : layout === "mobile"
-            ? true
-            : mobile;
-    return <MobileContext.Provider value={value}>
-        {children}
-    </MobileContext.Provider>;
+    const value =
+        layout === "desktop" ? false : layout === "mobile" ? true : mobile;
+    return (
+        <MobileContext.Provider value={value}>
+            {children}
+        </MobileContext.Provider>
+    );
 }
 
-export const useIsMobile = () =>
-    useContext(MobileContext);
+export const useIsMobile = () => useContext(MobileContext);

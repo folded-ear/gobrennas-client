@@ -1,8 +1,4 @@
-import {
-    createTheme,
-    responsiveFontSizes,
-    Theme,
-} from "@mui/material/styles";
+import { createTheme, responsiveFontSizes, Theme } from "@mui/material/styles";
 import { IS_BETA } from "./constants";
 import { blue } from "@mui/material/colors";
 
@@ -23,7 +19,7 @@ let theme: Theme = createTheme({
         //     contrastText: "#000",
         // },
         background: {
-            default: "#f7f7f7"
+            default: "#f7f7f7",
         },
     },
     typography: {
@@ -38,29 +34,29 @@ let theme: Theme = createTheme({
         ].join(","),
         h2: {
             fontFamily: "'Encode Sans', sans-serif",
-            fontSize: "2.5rem"
+            fontSize: "2.5rem",
         },
         h3: {
             fontFamily: "'Encode Sans', sans-serif",
-            fontSize: "2rem"
+            fontSize: "2rem",
         },
         h5: {
             fontFamily: "News Cycle",
             fontWeight: 600,
             fontSize: "1.1rem",
             textTransform: "uppercase",
-            marginBottom: ".5em"
-        }
+            marginBottom: ".5em",
+        },
     },
     components: {
         MuiTextField: {
             styleOverrides: {
                 root: {
-                    backgroundColor: "white"
-                }
-            }
-        }
-    }
+                    backgroundColor: "white",
+                },
+            },
+        },
+    },
 });
 theme = responsiveFontSizes(theme);
 

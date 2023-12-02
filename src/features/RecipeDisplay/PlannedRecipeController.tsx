@@ -11,32 +11,36 @@ import CloseButton from "../../views/common/CloseButton";
 import history from "../../util/history";
 
 type Props = RouteComponentProps<{
-    pid: string
-    rid: string
+    pid: string;
+    rid: string;
 }>;
 
 const PlannedRecipeController: React.FC<Props> = ({ match }) => {
     const rid = parseInt(match.params.rid, 10);
     const lo = useFluxStore(
         () => recipeLoByItemLo(planStore.getItemLO(rid)),
-        [
-            planStore,
-            LibraryStore,
-        ],
-        [ rid ],
+        [planStore, LibraryStore],
+        [rid],
     );
 
     useLoadedPlan(match.params.pid);
 
     if (lo.hasValue()) {
-        return <RecipeDetail
-            recipe={lo.getValueEnforcing()}
-            subrecipes={lo.getValueEnforcing().subrecipes}
-            nav={<>
-                <CloseButton
-                    onClick={() => history.push(`/plan/${match.params.pid}`)} />
-            </>}
-        />;
+        return (
+            <RecipeDetail
+                recipe={lo.getValueEnforcing()}
+                subrecipes={lo.getValueEnforcing().subrecipes}
+                nav={
+                    <>
+                        <CloseButton
+                            onClick={() =>
+                                history.push(`/plan/${match.params.pid}`)
+                            }
+                        />
+                    </>
+                }
+            />
+        );
     }
 
     return <LoadingIndicator />;

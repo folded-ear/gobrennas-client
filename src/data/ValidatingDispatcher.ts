@@ -12,17 +12,16 @@ const checkPayload = (payload: FluxAction) => {
             payload.type.actionTypes,
             { [CONTAINER_KEY]: payload },
             "actionTypes",
-            payload.type.toString());
+            payload.type.toString(),
+        );
     }
 };
 
 class ValidatingDispatcher extends Dispatcher<FluxAction> {
-
     dispatch(payload: FluxAction) {
         checkPayload(payload);
         super.dispatch(payload);
     }
-
 }
 
 export default ValidatingDispatcher;

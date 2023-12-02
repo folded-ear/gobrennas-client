@@ -7,12 +7,12 @@ import groupBy from "./groupBy";
  * @param items The items to group by their test result
  * @param test Predicate for testing the items.
  */
-function partition<T>(items: T[], test: (t: T) => boolean | undefined): [ T[], T[] ] {
+function partition<T>(
+    items: T[],
+    test: (t: T) => boolean | undefined,
+): [T[], T[]] {
     const map = groupBy(items, test);
-    return [
-        map.get(true) || [],
-        map.get(false) || [],
-    ];
+    return [map.get(true) || [], map.get(false) || []];
 }
 
 export default partition;

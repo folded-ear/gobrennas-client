@@ -7,11 +7,13 @@ function getUrlParameter(name, location) {
     const regex = new RegExp("[\\?&]" + name + "=([^&#]*)");
 
     const results = regex.exec(location.search);
-    return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+    return results === null
+        ? ""
+        : decodeURIComponent(results[1].replace(/\+/g, " "));
 }
 
 interface Props {
-    location: Location
+    location: Location;
 }
 
 const OAuth2RedirectHandler: React.FC<Props> = ({ location }) => {
@@ -19,18 +21,26 @@ const OAuth2RedirectHandler: React.FC<Props> = ({ location }) => {
     const error = getUrlParameter("error", location);
 
     if (token) {
-        return <Redirect to={{
-            pathname: "/",
-            state: { from: location },
-        }} />;
+        return (
+            <Redirect
+                to={{
+                    pathname: "/",
+                    state: { from: location },
+                }}
+            />
+        );
     } else {
-        return <Redirect to={{
-            pathname: "/login",
-            state: {
-                from: location,
-                error: error,
-            },
-        }} />;
+        return (
+            <Redirect
+                to={{
+                    pathname: "/login",
+                    state: {
+                        from: location,
+                        error: error,
+                    },
+                }}
+            />
+        );
     }
 };
 

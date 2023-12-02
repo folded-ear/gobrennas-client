@@ -4,5 +4,9 @@ import { UserProfileController } from "../../features/UserProfile/UserProfileCon
 
 // Not yet in use
 export const UserProfileView = () => {
-    return (<PageBody><UserProfileController/></PageBody>);
+    return (
+        <PageBody>
+            <UserProfileController />
+        </PageBody>
+    );
 };

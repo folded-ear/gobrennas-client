@@ -7,7 +7,7 @@ const builder = (self, method, typesKey, initial) => {
     let typeSpecs = self.constructor[typesKey];
     invariant(
         typeSpecs != null,
-        `No ${typesKey} defined for ${name}; can't activate type checking.`
+        `No ${typesKey} defined for ${name}; can't activate type checking.`,
     );
     // PropTypes doesn't allow you to declare type information where the
     // top-level properties are anonymous, which is exactly what is needed for
@@ -18,12 +18,13 @@ const builder = (self, method, typesKey, initial) => {
     // implicitly before validating. And, in fact, `objectOf` is in no way
     // special; this mechanism will allow any checker to be used for a store.
     typeSpecs = {
-        state: typeof typeSpecs === "function"
-            ? typeSpecs
-            : PropTypes.exact(typeSpecs),
+        state:
+            typeof typeSpecs === "function"
+                ? typeSpecs
+                : PropTypes.exact(typeSpecs),
     };
-    const check = next =>
-        PropTypes.checkPropTypes(typeSpecs, {state: next}, typesKey, name);
+    const check = (next) =>
+        PropTypes.checkPropTypes(typeSpecs, { state: next }, typesKey, name);
     if (initial != null) check(initial);
     return (curr, action) => {
         const next = method(curr, action);
@@ -32,7 +33,7 @@ const builder = (self, method, typesKey, initial) => {
     };
 };
 
-const typedStore = self => {
+const typedStore = (self) => {
     if (process.env.NODE_ENV !== "production") {
         invariant(self.reduce, "No 'reduce' method found on store.");
         self.reduce = builder(

@@ -1,27 +1,24 @@
-import {
-    Button,
-    IconButton,
-} from "@mui/material";
+import { Button, IconButton } from "@mui/material";
 import withStyles from "@mui/styles/withStyles";
 import { deepPurple } from "@mui/material/colors";
 
 export type StringColor = string;
 
 export interface MuiColorFamily {
-    50: StringColor
-    100: StringColor
-    200: StringColor
-    300: StringColor
-    400: StringColor
-    500: StringColor
-    600: StringColor
-    700: StringColor
-    800: StringColor
-    900: StringColor
-    A100: StringColor
-    A200: StringColor
-    A400: StringColor
-    A700: StringColor
+    50: StringColor;
+    100: StringColor;
+    200: StringColor;
+    300: StringColor;
+    400: StringColor;
+    500: StringColor;
+    600: StringColor;
+    700: StringColor;
+    800: StringColor;
+    900: StringColor;
+    A100: StringColor;
+    A200: StringColor;
+    A400: StringColor;
+    A700: StringColor;
 }
 
 export {
@@ -33,7 +30,7 @@ export {
     red as deleteColor,
 } from "@mui/material/colors";
 
-export const coloredIconNoOp = palette =>
+export const coloredIconNoOp = (palette) =>
     withStyles({
         root: {
             color: palette[600],
@@ -42,11 +39,14 @@ export const coloredIconNoOp = palette =>
                 color: palette[600],
                 backgroundColor: "transparent",
             },
-        }
+        },
     })(IconButton);
 
-export const coloredIconButton = (palette: MuiColorFamily, restingPalette = palette) =>
-    withStyles(theme => ({
+export const coloredIconButton = (
+    palette: MuiColorFamily,
+    restingPalette = palette,
+) =>
+    withStyles((theme) => ({
         root: {
             color: restingPalette[500],
             "&:hover": {
@@ -58,7 +58,7 @@ export const coloredIconButton = (palette: MuiColorFamily, restingPalette = pale
 
 export const coloredButton = (palette: MuiColorFamily = deepPurple) =>
     // this blindly copied from https://v4-5-2.material-ui.com/components/buttons/#customized-buttons
-    withStyles(theme => ({
+    withStyles((theme) => ({
         root: {
             color: theme.palette.getContrastText(palette[500]),
             backgroundColor: palette[500],

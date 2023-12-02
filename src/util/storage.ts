@@ -1,7 +1,4 @@
-export const getJsonItem = (
-    key,
-    storage = localStorage,
-) => {
+export const getJsonItem = (key, storage = localStorage) => {
     const value = storage.getItem(key);
     if (value == null) return null;
     try {
@@ -20,5 +17,4 @@ export const setJsonItem = (
     value,
     storage = localStorage,
     replacer?: Replacer,
-) =>
-    storage.setItem(key, JSON.stringify(value, replacer));
+) => storage.setItem(key, JSON.stringify(value, replacer));

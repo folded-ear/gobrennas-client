@@ -17,7 +17,7 @@ class LoadObjectState<V> {
         this._data = LoadObject.empty();
         this._load = load;
 
-        this._shouldLoad = shouldLoad || (lo => lo.isEmpty());
+        this._shouldLoad = shouldLoad || ((lo) => lo.isEmpty());
 
         this._preventLoadsForThisFrame = false;
         this._clearPreventLoadsForThisFrame = null;
@@ -48,7 +48,7 @@ class LoadObjectState<V> {
     }
 
     map(fn: (value: V) => V): LoadObjectState<V> {
-        return this.mapLO(lo => lo.map(fn));
+        return this.mapLO((lo) => lo.map(fn));
     }
 
     mapLO(fn: (lo: LoadObject<V>) => LoadObject<V>) {

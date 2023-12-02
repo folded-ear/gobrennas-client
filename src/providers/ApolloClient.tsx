@@ -10,10 +10,7 @@ import { relayStylePagination } from "@apollo/client/utilities";
 import * as React from "react";
 import { PropsWithChildren } from "react";
 import { API_BASE_URL } from "../constants";
-import {
-    askUserToReauth,
-    isAuthError,
-} from "./Profile";
+import { askUserToReauth, isAuthError } from "./Profile";
 
 const httpLink = new HttpLink({
     uri: `${API_BASE_URL}/graphql`,
@@ -45,16 +42,14 @@ const client = new ApolloClientInstance({
             },
             LibraryQuery: {
                 fields: {
-                    recipes: relayStylePagination([ "scope", "query" ]),
+                    recipes: relayStylePagination(["scope", "query"]),
                 },
             },
         },
     }),
-    link: from([ errorLink, httpLink ]),
+    link: from([errorLink, httpLink]),
 });
 
 export function ApolloClient({ children }: PropsWithChildren) {
-    return <ApolloProvider client={client}>
-        {children}
-    </ApolloProvider>;
+    return <ApolloProvider client={client}>{children}</ApolloProvider>;
 }

@@ -1,18 +1,8 @@
-import {
-    Card,
-    CardContent,
-    CardHeader,
-    IconButton,
-} from "@mui/material";
+import { Card, CardContent, CardHeader, IconButton } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import { Close as CloseIcon } from "@mui/icons-material";
 import { DataGrid } from "@mui/x-data-grid";
-import React, {
-    MouseEventHandler,
-    useEffect,
-    useMemo,
-    useState,
-} from "react";
+import React, { MouseEventHandler, useEffect, useMemo, useState } from "react";
 import InventoryApi, {
     InventoryItemInfo,
     InventoryTxInfo,
@@ -22,61 +12,61 @@ import { formatQuantity } from "./formatQuantity";
 import { Maybe } from "graphql/jsutils/Maybe";
 import { Page } from "../../global/types/types";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
     gridHeader: {
         backgroundColor: theme.palette.grey[200],
     },
 }));
 
 interface Props {
-    item: InventoryItemInfo
-    onClose?: MouseEventHandler
+    item: InventoryItemInfo;
+    onClose?: MouseEventHandler;
 }
 
-const Detail: React.FC<Props> = ({
-                                     item,
-                                     onClose,
-                                 }) => {
+const Detail: React.FC<Props> = ({ item, onClose }) => {
     const classes = useStyles();
-    const [ history, setHistory ] = useState<Maybe<Page<InventoryTxInfo>>>();
+    const [history, setHistory] = useState<Maybe<Page<InventoryTxInfo>>>();
     const reloadHistory = () => {
         InventoryApi.promiseTransactionHistory(item.id)
-            .then(data => data.data)
+            .then((data) => data.data)
             .then(setHistory);
     };
-    useEffect(reloadHistory, [ item ]);
+    useEffect(reloadHistory, [item]);
 
-    const cols = useMemo(() => [
-        {
-            field: "type",
-            headerName: "Action",
-            flex: 1,
-        },
-        {
-            field: "quantity",
-            headerName: "Quantity",
-            flex: 2,
-        },
-        {
-            field: "createdAt",
-            headerName: "Date",
-            flex: 2,
-        },
-    ].map(c => ({
-        headerClassName: classes.gridHeader,
-        sortable: false,
-        width: 100,
-        ...c,
-    })), [ classes ]);
+    const cols = useMemo(
+        () =>
+            [
+                {
+                    field: "type",
+                    headerName: "Action",
+                    flex: 1,
+                },
+                {
+                    field: "quantity",
+                    headerName: "Quantity",
+                    flex: 2,
+                },
+                {
+                    field: "createdAt",
+                    headerName: "Date",
+                    flex: 2,
+                },
+            ].map((c) => ({
+                headerClassName: classes.gridHeader,
+                sortable: false,
+                width: 100,
+                ...c,
+            })),
+        [classes],
+    );
 
     const rows = useMemo(() => {
         if (!history) return [];
-        return history.content.map(it => ({
+        return history.content.map((it) => ({
             id: it.id,
             type: it.type,
             quantity: formatQuantity(it.quantity),
-            createdAt: new Date(it.createdAt)
-                .toLocaleString(),
+            createdAt: new Date(it.createdAt).toLocaleString(),
         }));
     }, [history]);
 
@@ -89,8 +79,12 @@ const Detail: React.FC<Props> = ({
             <CardHeader
                 style={{ paddingBottom: 0 }}
                 action={
-                    <IconButton aria-label="close" onClick={onClose} size="large">
-                        <CloseIcon/>
+                    <IconButton
+                        aria-label="close"
+                        onClick={onClose}
+                        size="large"
+                    >
+                        <CloseIcon />
                     </IconButton>
                 }
                 title={item.ingredient.name}

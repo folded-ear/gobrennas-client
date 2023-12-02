@@ -52,7 +52,7 @@ import Dispatcher from "data/dispatcher";
  * data flow and into an extra orthogonal loop.
  */
 const onNextActionThat = (test, work) => {
-    const token = Dispatcher.register(actPay => {
+    const token = Dispatcher.register((actPay) => {
         if (test(actPay)) {
             Dispatcher.unregister(token);
             work(actPay);

@@ -1,12 +1,6 @@
-import {
-    Button,
-    IconButton,
-} from "@mui/material";
+import { Button, IconButton } from "@mui/material";
 import makeStyles from "@mui/styles/makeStyles";
-import {
-    AddShoppingCart,
-    ExitToApp,
-} from "@mui/icons-material";
+import { AddShoppingCart, ExitToApp } from "@mui/icons-material";
 import React from "react";
 import useActivePlanner from "data/useActivePlanner";
 
@@ -19,8 +13,8 @@ const useStyles = makeStyles({
 });
 
 interface Props {
-    onClick(planId: number): void
-    iconOnly?: boolean
+    onClick(planId: number): void;
+    iconOnly?: boolean;
 }
 
 const SendToPlan: React.FC<Props> = ({ onClick, iconOnly }) => {
@@ -32,28 +26,29 @@ const SendToPlan: React.FC<Props> = ({ onClick, iconOnly }) => {
         // cannot, so this type assertion is safe.
         onClick && onClick(list.id as number);
     if (iconOnly) {
-        return <IconButton
-            size="small"
-            onClick={handleClick}
-            title={`Send to "${list.name}"`}
-        >
-            <AddShoppingCart fontSize="inherit" />
-        </IconButton>;
-    } else {
-        return <Button
-            disableElevation
-            variant="contained"
-            color="secondary"
-            onClick={handleClick}
-            startIcon={<ExitToApp />}
-        >
-            <span
-                className={classes.button}
-                title={`Send to ${list.name}`}
+        return (
+            <IconButton
+                size="small"
+                onClick={handleClick}
+                title={`Send to "${list.name}"`}
             >
-                To {list.name}
-            </span>
-        </Button>;
+                <AddShoppingCart fontSize="inherit" />
+            </IconButton>
+        );
+    } else {
+        return (
+            <Button
+                disableElevation
+                variant="contained"
+                color="secondary"
+                onClick={handleClick}
+                startIcon={<ExitToApp />}
+            >
+                <span className={classes.button} title={`Send to ${list.name}`}>
+                    To {list.name}
+                </span>
+            </Button>
+        );
     }
 };
 

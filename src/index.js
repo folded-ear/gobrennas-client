@@ -47,14 +47,20 @@ ReactDOM.render(
  * From here on down, we're wiring up the environment as an actor on the system.
  */
 
-window.addEventListener("resize", debounce(() =>
-    Dispatcher.dispatch({
-        type: WindowActions.RESIZE,
-        size: {
-            width: window.innerWidth,
-            height: window.innerHeight,
-        },
-    }), 250));
+window.addEventListener(
+    "resize",
+    debounce(
+        () =>
+            Dispatcher.dispatch({
+                type: WindowActions.RESIZE,
+                size: {
+                    width: window.innerWidth,
+                    height: window.innerHeight,
+                },
+            }),
+        250,
+    ),
+);
 
 window.addEventListener("focus", () => {
     if (Dispatcher.isDispatching()) {
@@ -72,24 +78,28 @@ window.addEventListener("blur", () =>
     Dispatcher.dispatch({
         type: WindowActions.FOCUS_CHANGE,
         focused: false,
-    }));
+    }),
+);
 
 document.addEventListener("visibilitychange", () =>
     Dispatcher.dispatch({
         type: WindowActions.VISIBILITY_CHANGE,
         visible: !document.hidden,
-    }));
+    }),
+);
 
 // Learn more about service workers: https://bit.ly/CRA-PWA
 serviceWorkerRegistration.register({
     // called when the cache is populated (i.e., offline will work)
-    onSuccess: registration => Dispatcher.dispatch({
-        type: WindowActions.PWA_CACHE_HOT,
-        registration,
-    }),
+    onSuccess: (registration) =>
+        Dispatcher.dispatch({
+            type: WindowActions.PWA_CACHE_HOT,
+            registration,
+        }),
     // called when there is a new version of the app available
-    onUpdate: registration => Dispatcher.dispatch({
-        type: WindowActions.NEW_VERSION_AVAILABLE,
-        registration,
-    }),
+    onUpdate: (registration) =>
+        Dispatcher.dispatch({
+            type: WindowActions.NEW_VERSION_AVAILABLE,
+            registration,
+        }),
 });

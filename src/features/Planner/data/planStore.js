@@ -4,18 +4,20 @@ import preferencesStore from "data/preferencesStore";
 import ShoppingActions from "data/ShoppingActions";
 import dotProp from "dot-prop-immutable";
 import PlanActions from "features/Planner/data/PlanActions";
-import PlanItemStatus, {willStatusDelete} from "features/Planner/data/PlanItemStatus";
+import PlanItemStatus, {
+    willStatusDelete,
+} from "features/Planner/data/PlanItemStatus";
 import TaskApi from "features/Planner/data/TaskApi";
-import {isExpanded, isParent,} from "features/Planner/data/plannerUtils";
-import {ReduceStore} from "flux/utils";
+import { isExpanded, isParent } from "features/Planner/data/plannerUtils";
+import { ReduceStore } from "flux/utils";
 import invariant from "invariant";
-import {removeAtIndex} from "util/arrayAsSet";
+import { removeAtIndex } from "util/arrayAsSet";
 import ClientId from "util/ClientId";
-import {bucketComparator} from "util/comparators";
+import { bucketComparator } from "util/comparators";
 import inTheFuture from "util/inTheFuture";
 import LoadObject from "util/LoadObject";
 import LoadObjectState from "util/LoadObjectState";
-import {formatLocalDate, parseLocalDate,} from "util/time";
+import { formatLocalDate, parseLocalDate } from "util/time";
 import PlanApi from "./PlanApi";
 
 /*
@@ -26,7 +28,7 @@ import PlanApi from "./PlanApi";
 
 const AT_END = Math.random();
 
-const _newTask = name => ({
+const _newTask = (name) => ({
     id: ClientId.next(),
     name,
     status: PlanItemStatus.NEEDED,
@@ -37,20 +39,20 @@ const createList = (state, name, optionalPlanIdToCopy) => {
     TaskApi.createList(name, task.id, optionalPlanIdToCopy);
     return {
         ...mapTaskLO(state, task.id, () =>
-            LoadObject.withValue(task).creating()),
+            LoadObject.withValue(task).creating(),
+        ),
         activeListId: task.id,
         activeTaskId: null,
-        topLevelIds: state.topLevelIds.map(ids => ids.concat(task.id)),
+        topLevelIds: state.topLevelIds.map((ids) => ids.concat(task.id)),
     };
 };
 
 const idFixerFactory = (cid, id) => {
-    const idFixer = ids => {
+    const idFixer = (ids) => {
         if (ids == null) return null;
         if (ids === cid) return id;
         if (ids instanceof Array) {
-            return ids.map(v =>
-                v === cid ? id : v);
+            return ids.map((v) => (v === cid ? id : v));
         }
         if (ids instanceof LoadObject) return ids.map(idFixer);
         if (ids instanceof LoadObjectState) return ids.map(idFixer);
@@ -65,7 +67,7 @@ const fixIds = (state, task, id, clientId) => {
     const idFixer = idFixerFactory(clientId, id);
     const byId = {
         ...state.byId,
-        [id]: state.byId[clientId].map(t => ({
+        [id]: state.byId[clientId].map((t) => ({
             ...t,
             id,
         })),
@@ -77,14 +79,14 @@ const fixIds = (state, task, id, clientId) => {
     }
     if (task.parentId != null) {
         const plo = loForId(state, task.parentId);
-        byId[task.parentId] = plo.map(p => ({
+        byId[task.parentId] = plo.map((p) => ({
             ...p,
             subtaskIds: idFixer(p.subtaskIds),
         }));
     }
     if (isParent(task)) {
-        task.subtaskIds.forEach(sid => {
-            byId[sid] = byId[sid].map(s => ({
+        task.subtaskIds.forEach((sid) => {
+            byId[sid] = byId[sid].map((s) => ({
                 ...s,
                 parentId: id,
             }));
@@ -115,11 +117,15 @@ const listCreated = (state, clientId, id, list) => {
         [id]: LoadObject.withValue(list),
     };
     delete byId[clientId];
-    state = addTask({
-        ...state,
-        topLevelIds: idFixer(state.topLevelIds),
-        byId,
-    }, id, "");
+    state = addTask(
+        {
+            ...state,
+            topLevelIds: idFixer(state.topLevelIds),
+            byId,
+        },
+        id,
+        "",
+    );
     state = selectList(state, idFixer(state.activeListId));
     return state;
 };
@@ -131,9 +137,10 @@ const selectList = (state, id) => {
     // only valid ids, please
     const list = taskForId(state, id);
     invariant(
-        state.topLevelIds.getLoadObject()
+        state.topLevelIds
+            .getLoadObject()
             .getValueEnforcing()
-            .some(it => it === id),
+            .some((it) => it === id),
         `Task '${id}' is not a list.`,
     );
     state = {
@@ -153,11 +160,9 @@ const selectList = (state, id) => {
     return state;
 };
 
-const isKnown = (state, id) =>
-    state.byId.hasOwnProperty(id);
+const isKnown = (state, id) => state.byId.hasOwnProperty(id);
 
-const taskForId = (state, id) =>
-    loForId(state, id).getValueEnforcing();
+const taskForId = (state, id) => loForId(state, id).getValueEnforcing();
 
 const loForId = (state, id) => {
     invariant(id != null, "No task has a null id.");
@@ -167,12 +172,10 @@ const loForId = (state, id) => {
 };
 
 const tasksForIds = (state, ids) =>
-    losForIds(state, ids).map(lo =>
-        lo.getValueEnforcing());
+    losForIds(state, ids).map((lo) => lo.getValueEnforcing());
 
 const losForIds = (state, ids) =>
-    ids == null ? [] : ids.map(id =>
-        loForId(state, id));
+    ids == null ? [] : ids.map((id) => loForId(state, id));
 
 // after can be `null`, an id, or the magic `AT_END` value
 const spliceIds = (ids, id, after = AT_END) => {
@@ -191,7 +194,7 @@ const spliceIds = (ids, id, after = AT_END) => {
 
 const addTask = (state, parentId, name, after = AT_END) => {
     const task = _newTask(name);
-    state = mapTask(state, parentId, p => ({
+    state = mapTask(state, parentId, (p) => ({
         ...p,
         subtaskIds: spliceIds(p.subtaskIds, task.id, after),
     }));
@@ -199,7 +202,8 @@ const addTask = (state, parentId, name, after = AT_END) => {
         LoadObject.withValue({
             ...task,
             parentId,
-        }));
+        }),
+    );
     return {
         ...state,
         activeTaskId: task.id,
@@ -242,7 +246,7 @@ const createTaskBefore = (state, id) => {
 
 let tasksToRename = new Set();
 
-const flushTasksToRename = state => {
+const flushTasksToRename = (state) => {
     if (tasksToRename.size === 0) return state;
     const requeue = new Set();
     for (const id of tasksToRename) {
@@ -260,9 +264,7 @@ const flushTasksToRename = state => {
         }
         const parent = taskForId(state, task.parentId);
         const idx = parent.subtaskIds.indexOf(id);
-        const afterId = idx === 0
-            ? null
-            : parent.subtaskIds[idx - 1];
+        const afterId = idx === 0 ? null : parent.subtaskIds[idx - 1];
         if (ClientId.is(afterId)) {
             requeue.add(id);
             continue;
@@ -280,10 +282,7 @@ const flushTasksToRename = state => {
 };
 
 const mapTaskLO = (state, id, work) =>
-    dotProp.set(state, [
-        "byId",
-        id,
-    ], lo => {
+    dotProp.set(state, ["byId", id], (lo) => {
         // dotProp will give us an anonymous object literal on a missing key...
         if (!(lo instanceof LoadObject)) {
             lo = LoadObject.empty();
@@ -291,19 +290,16 @@ const mapTaskLO = (state, id, work) =>
         return work(lo);
     });
 
-const mapTask = (state, id, work) =>
-    mapTaskLO(state, id, lo => lo.map(work));
+const mapTask = (state, id, work) => mapTaskLO(state, id, (lo) => lo.map(work));
 
 const renameTask = (state, id, name) =>
-    mapTaskLO(state, id, lo => {
+    mapTaskLO(state, id, (lo) => {
         if (lo.isDone()) {
-            lo = ClientId.is(id)
-                ? lo.creating()
-                : lo.updating();
+            lo = ClientId.is(id) ? lo.creating() : lo.updating();
         }
         tasksToRename.add(id);
         inTheFuture(PlanActions.FLUSH_RENAMES);
-        return lo.map(t => ({
+        return lo.map((t) => ({
             ...t,
             name,
         }));
@@ -312,7 +308,7 @@ const renameTask = (state, id, name) =>
 const assignToBucket = (state, id, bucketId) => {
     if (ClientId.is(id)) return state;
     PlanApi.assignBucket(state.activeListId, id, bucketId);
-    return mapTask(state, id, t => ({
+    return mapTask(state, id, (t) => ({
         ...t,
         bucketId,
     }));
@@ -328,11 +324,14 @@ const focusTask = (state, id) => {
     };
 };
 
-const getNeighborId = (state, id, delta = 1, crossGenerations = false, _searching = false) => {
-    invariant(
-        delta === 1 || delta === -1,
-        "Deltas must be either 1 or -1",
-    );
+const getNeighborId = (
+    state,
+    id,
+    delta = 1,
+    crossGenerations = false,
+    _searching = false,
+) => {
+    invariant(delta === 1 || delta === -1, "Deltas must be either 1 or -1");
     const t = taskForId(state, id);
     if (t.parentId == null) return null;
     const siblingIds = taskForId(state, t.parentId).subtaskIds;
@@ -348,16 +347,19 @@ const getNeighborId = (state, id, delta = 1, crossGenerations = false, _searchin
         // to next sibling
         if (idx < siblingIds.length - 1) return siblingIds[idx + 1];
         // to parent's next sibling (recurse)
-        if (crossGenerations || _searching) return getNeighborId(state, t.parentId, delta, false, true);
+        if (crossGenerations || _searching)
+            return getNeighborId(state, t.parentId, delta, false, true);
         // can't move
         return null;
     } else {
         // to prev sibling's last self-or-descendant
-        if (idx > 0) return crossGenerations
-            ? lastDescendantIdOf(state, siblingIds[idx - 1])
-            : siblingIds[idx - 1];
+        if (idx > 0)
+            return crossGenerations
+                ? lastDescendantIdOf(state, siblingIds[idx - 1])
+                : siblingIds[idx - 1];
         // to parent (null or not)
-        if (crossGenerations && t.parentId !== state.activeListId) return t.parentId;
+        if (crossGenerations && t.parentId !== state.activeListId)
+            return t.parentId;
         return null;
     }
 };
@@ -406,7 +408,7 @@ const selectDelta = (state, id, delta) => {
         // starting to select
         return {
             ...focusTask(state, next),
-            selectedTaskIds: [id]
+            selectedTaskIds: [id],
         };
     }
     const idx = state.selectedTaskIds.indexOf(next);
@@ -414,22 +416,23 @@ const selectDelta = (state, id, delta) => {
         // contract selection
         return {
             ...focusTask(state, next),
-            selectedTaskIds: state.selectedTaskIds.length === 0
-                ? null
-                : state.selectedTaskIds.slice(0, idx)
+            selectedTaskIds:
+                state.selectedTaskIds.length === 0
+                    ? null
+                    : state.selectedTaskIds.slice(0, idx),
         };
     } else {
         // expand selection
         return {
             ...focusTask(state, next),
-            selectedTaskIds: state.selectedTaskIds.concat(id)
+            selectedTaskIds: state.selectedTaskIds.concat(id),
         };
     }
 };
 
 let statusUpdatesToFlush = new Map();
 
-const unqueueTaskId = id => {
+const unqueueTaskId = (id) => {
     tasksToRename.delete(id);
     statusUpdatesToFlush.delete(id);
 };
@@ -451,9 +454,9 @@ const setTaskStatus = (state, id, status) => {
     return state;
 };
 
-const flushStatusUpdates = state => {
+const flushStatusUpdates = (state) => {
     if (statusUpdatesToFlush.size === 0) return state;
-    const [ id, status ] = statusUpdatesToFlush.entries().next().value; // the next value of the iterator, not the value of the entry!
+    const [id, status] = statusUpdatesToFlush.entries().next().value; // the next value of the iterator, not the value of the entry!
     state = setTaskStatus(state, id, status);
     statusUpdatesToFlush.delete(id);
     if (statusUpdatesToFlush.size > 0) {
@@ -469,9 +472,8 @@ const queueDelete = (state, id) => {
 
 function isEmpty(taskOrString) {
     if (taskOrString == null) return true;
-    const str = typeof taskOrString === "string"
-        ? taskOrString
-        : taskOrString.name;
+    const str =
+        typeof taskOrString === "string" ? taskOrString : taskOrString.name;
     return str == null || str.trim() === "";
 }
 
@@ -497,17 +499,19 @@ const queueStatusUpdate = (state, id, status) => {
     let nextLO;
     if (t.status === status) {
         statusUpdatesToFlush.delete(t.id);
-        nextLO = lo.map(t => {
-            t = {
-                ...t,
-            };
-            delete t._next_status;
-            return t;
-        }).done();
+        nextLO = lo
+            .map((t) => {
+                t = {
+                    ...t,
+                };
+                delete t._next_status;
+                return t;
+            })
+            .done();
     } else {
         statusUpdatesToFlush.set(id, status);
         inTheFuture(PlanActions.FLUSH_STATUS_UPDATES, 4);
-        nextLO = lo.map(t => ({
+        nextLO = lo.map((t) => ({
             ...t,
             _next_status: status,
             _expanded: t._expanded && !isDelete,
@@ -529,8 +533,7 @@ const queueStatusUpdate = (state, id, status) => {
         state.activeTaskId = null;
     }
     if (state.selectedTaskIds) {
-        state.selectedTaskIds = state.selectedTaskIds
-            .filter(it => it !== id);
+        state.selectedTaskIds = state.selectedTaskIds.filter((it) => it !== id);
     }
     return state;
 };
@@ -538,11 +541,15 @@ const queueStatusUpdate = (state, id, status) => {
 const cancelStatusUpdate = (state, id) => {
     if (!statusUpdatesToFlush.has(id)) return state;
     statusUpdatesToFlush.delete(id);
-    return mapTaskLO(state, id, lo => lo.map(t => {
-        t = {...t};
-        delete t._next_status;
-        return t;
-    }).done());
+    return mapTaskLO(state, id, (lo) =>
+        lo
+            .map((t) => {
+                t = { ...t };
+                delete t._next_status;
+                return t;
+            })
+            .done(),
+    );
 };
 
 const taskDeleted = (state, id) => {
@@ -553,12 +560,13 @@ const taskDeleted = (state, id) => {
     const idx = p.subtaskIds.indexOf(id);
     p = {
         ...p,
-        subtaskIds: p.subtaskIds.slice(0, idx)
+        subtaskIds: p.subtaskIds
+            .slice(0, idx)
             .concat(p.subtaskIds.slice(idx + 1)),
     };
-    const byId = {...state.byId};
+    const byId = { ...state.byId };
     byId[p.id] = byId[p.id].setValue(p);
-    const kill = id => {
+    const kill = (id) => {
         const lo = byId[id];
         if (lo == null) return;
         if (lo.hasValue()) {
@@ -588,18 +596,15 @@ const taskDeleted = (state, id) => {
 /**
  * I return an array of [task, parent, index] tuples for the active task(s).
  */
-const getOrderedBlock = state => {
+const getOrderedBlock = (state) => {
     const block = [state.activeTaskId];
     if (state.selectedTaskIds != null) {
         block.push(...state.selectedTaskIds);
     }
     return block
-        .map(id =>
-            taskForId(state, id))
-        .map(t =>
-            [t, taskForId(state, t.parentId)])
-        .map(([t, p]) =>
-            [t, p, p.subtaskIds.indexOf(t.id)])
+        .map((id) => taskForId(state, id))
+        .map((t) => [t, taskForId(state, t.parentId)])
+        .map(([t, p]) => [t, p, p.subtaskIds.indexOf(t.id)])
         .sort((a, b) => a[2] - b[2]);
 };
 
@@ -628,11 +633,12 @@ const subtaskIdBefore = (state, parentId, before) => {
 };
 
 const moveSubtree = (state, action) => {
-    let blockIds = getOrderedBlock(state)
-        .map(([t]) => t.id);
+    let blockIds = getOrderedBlock(state).map(([t]) => t.id);
     const afterId = action.hasOwnProperty("before")
         ? subtaskIdBefore(state, action.parentId, action.before)
-        : action.after == null ? null : action.after;
+        : action.after == null
+        ? null
+        : action.after;
     if (blockIds.includes(action.parentId) || blockIds.includes(afterId)) {
         // dragging into the selection, so unselect
         state = {
@@ -656,7 +662,7 @@ const mutateTree = (state, spec) => {
     Spec is {ids, parentId, afterId}
      */
     // ensure no client IDs
-    if (spec.ids.some(id => ClientId.is(id))) return state;
+    if (spec.ids.some((id) => ClientId.is(id))) return state;
     if (ClientId.is(spec.parentId)) return state;
     if (ClientId.is(spec.afterId)) return state;
     // ensure we're not going to create a cycle
@@ -664,7 +670,7 @@ const mutateTree = (state, spec) => {
         if (spec.ids.includes(id)) return state;
     }
     // ensure we're not positioning something based on itself
-    if (spec.ids.some(id => id === spec.afterId)) return state;
+    if (spec.ids.some((id) => id === spec.afterId)) return state;
     PlanApi.mutateTree(state.activeListId, spec);
     // do it now so the UI updates; the future delta will be a race-y no-op
     return treeMutated(state, spec);
@@ -672,12 +678,12 @@ const mutateTree = (state, spec) => {
 
 const treeMutated = (state, spec) => {
     // Woo! GO GO GO!
-    const byId = {...state.byId};
+    const byId = { ...state.byId };
     spec.ids.reduce((afterId, id) => {
         const lo = byId[id];
         // remove the task from its old parent
         const oldPid = byId[id].getValueEnforcing().parentId;
-        byId[oldPid] = byId[oldPid].map(t => {
+        byId[oldPid] = byId[oldPid].map((t) => {
             const idx = t.subtaskIds.indexOf(id);
             if (idx < 0) return t;
             const subtaskIds = t.subtaskIds.slice();
@@ -688,17 +694,16 @@ const treeMutated = (state, spec) => {
             };
         });
         // update the tasks' parents
-        byId[id] = lo.map(t => ({
+        byId[id] = lo.map((t) => ({
             ...t,
             parentId: spec.parentId,
         }));
         // add the task to its new parent
-        byId[spec.parentId] = byId[spec.parentId].map(t => {
+        byId[spec.parentId] = byId[spec.parentId].map((t) => {
             let subtaskIds = t.subtaskIds;
             if (subtaskIds) {
-                const afterIdx = afterId == null
-                    ? 0
-                    : subtaskIds.indexOf(afterId) + 1;
+                const afterIdx =
+                    afterId == null ? 0 : subtaskIds.indexOf(afterId) + 1;
                 const currIdx = subtaskIds.indexOf(id);
                 if (currIdx < 0 || currIdx !== afterIdx + 1) {
                     subtaskIds = subtaskIds.slice();
@@ -723,7 +728,7 @@ const treeMutated = (state, spec) => {
     };
 };
 
-const nestTask = state => {
+const nestTask = (state) => {
     const block = getOrderedBlock(state);
     if (block.some(([t, p]) => p.subtaskIds.indexOf(t.id) === 0)) {
         // nothing to nest under
@@ -735,21 +740,24 @@ const nestTask = state => {
     state = mutateTree(state, {
         ids: block.map(([t]) => t.id),
         parentId: np.id,
-        afterId: np.subtaskIds && np.subtaskIds.length
-            ? np.subtaskIds[np.subtaskIds.length - 1]
-            : null,
+        afterId:
+            np.subtaskIds && np.subtaskIds.length
+                ? np.subtaskIds[np.subtaskIds.length - 1]
+                : null,
     });
     return setExpansion(state, np.id, true);
 };
 
 // if expanded is null, it means "toggle it"
 const setExpansion = (state, id, expanded = null) =>
-    dotProp.set(state, ["byId", id], lo => lo.map(t => ({
-        ...t,
-        _expanded: expanded == null ? !t._expanded : expanded,
-    })));
+    dotProp.set(state, ["byId", id], (lo) =>
+        lo.map((t) => ({
+            ...t,
+            _expanded: expanded == null ? !t._expanded : expanded,
+        })),
+    );
 
-const unnestTask = state => {
+const unnestTask = (state) => {
     const block = getOrderedBlock(state);
     if (block.some(([t]) => t.parentId === state.activeListId)) {
         // nothing to unnest from
@@ -777,7 +785,7 @@ const toggleExpanded = (state, id) => {
     return setExpansion(state, id);
 };
 
-const forceExpansionBuilder = expanded => {
+const forceExpansionBuilder = (expanded) => {
     const work = (state, id) => {
         const lo = loForId(state, id);
         if (!lo.hasValue()) return state;
@@ -786,7 +794,7 @@ const forceExpansionBuilder = expanded => {
         state = setExpansion(state, t.id, expanded);
         return t.subtaskIds.reduce(work, state);
     };
-    return state => {
+    return (state) => {
         if (state.activeListId == null) return state;
         return work(state, state.activeListId);
     };
@@ -799,34 +807,27 @@ const taskLoaded = (state, task) => {
     if (task.buckets) {
         task = {
             ...task,
-            buckets: task.buckets
-                .map(deserializeBucket)
-                .sort(bucketComparator),
+            buckets: task.buckets.map(deserializeBucket).sort(bucketComparator),
         };
     }
     let lo = state.byId[task.id] || LoadObject.empty();
     if (lo.hasValue()) {
-        lo = lo.map(t => {
-            const subtaskIds = task.subtaskIds
-                ? task.subtaskIds.slice()
-                : [];
-            t.subtaskIds && t.subtaskIds.forEach((id, idx) => {
-                if (!ClientId.is(id)) return;
-                if (idx < subtaskIds.length) {
-                    subtaskIds.splice(idx, 0, id);
-                } else {
-                    subtaskIds.push(id);
-                }
-            });
+        lo = lo.map((t) => {
+            const subtaskIds = task.subtaskIds ? task.subtaskIds.slice() : [];
+            t.subtaskIds &&
+                t.subtaskIds.forEach((id, idx) => {
+                    if (!ClientId.is(id)) return;
+                    if (idx < subtaskIds.length) {
+                        subtaskIds.splice(idx, 0, id);
+                    } else {
+                        subtaskIds.push(id);
+                    }
+                });
             t = {
                 ...t,
                 ...task,
-                name: task.id === state.activeTaskId
-                    ? t.name
-                    : task.name,
-                subtaskIds: subtaskIds.length
-                    ? subtaskIds
-                    : null,
+                name: task.id === state.activeTaskId ? t.name : task.name,
+                subtaskIds: subtaskIds.length ? subtaskIds : null,
             };
             if (t.status === t._next_status) {
                 // it worked!
@@ -841,33 +842,28 @@ const taskLoaded = (state, task) => {
 };
 
 const taskLoading = (state, id) => {
-    return dotProp.set(
-        state,
-        ["byId", id],
-        lo => lo instanceof LoadObject
-            ? lo.loading()
-            : LoadObject.loading(),
+    return dotProp.set(state, ["byId", id], (lo) =>
+        lo instanceof LoadObject ? lo.loading() : LoadObject.loading(),
     );
 };
 
-const loadLists = state => {
+const loadLists = (state) => {
     TaskApi.loadLists();
     return {
         ...state,
-        topLevelIds: state.topLevelIds.mapLO(lo => lo.loading()),
+        topLevelIds: state.topLevelIds.mapLO((lo) => lo.loading()),
     };
 };
 
 const tasksLoaded = (state, tasks) =>
-    tasks.reduce((s, t) =>
-        taskLoaded(s, t), state);
+    tasks.reduce((s, t) => taskLoaded(s, t), state);
 
 function selectDefaultList(state) {
     const listIds = state.topLevelIds.getLoadObject().getValueEnforcing();
     if (listIds.length > 0) {
         // see if there's a preferred active plan
         let activePlanId = preferencesStore.getActivePlan();
-        if (listIds.find(id => id === activePlanId) == null) {
+        if (listIds.find((id) => id === activePlanId) == null) {
             // auto-select the first one
             activePlanId = listIds[0];
         }
@@ -880,28 +876,26 @@ const listsLoaded = (state, lists) => {
     state = {
         ...tasksLoaded(state, lists),
         topLevelIds: state.topLevelIds.setLoadObject(
-            LoadObject.withValue(lists.map(t => t.id))),
+            LoadObject.withValue(lists.map((t) => t.id)),
+        ),
     };
     state = selectDefaultList(state);
     return state;
 };
 
 const mapPlanBuckets = (state, planId, work) =>
-    dotProp.set(state, [
-        "byId",
-        planId,
-    ], lo => lo.map(t => ({
-        ...t,
-        buckets: work(t.buckets || []),
-    })));
+    dotProp.set(state, ["byId", planId], (lo) =>
+        lo.map((t) => ({
+            ...t,
+            buckets: work(t.buckets || []),
+        })),
+    );
 
-const deserializeBucket = b => b.date
-    ? { ...b, date: parseLocalDate(b.date) }
-    : b;
+const deserializeBucket = (b) =>
+    b.date ? { ...b, date: parseLocalDate(b.date) } : b;
 
-const serializeBucket = b => b.date
-    ? { ...b, date: formatLocalDate(b.date) }
-    : b;
+const serializeBucket = (b) =>
+    b.date ? { ...b, date: formatLocalDate(b.date) } : b;
 
 const saveBucket = (state, bucket) => {
     const body = serializeBucket(bucket);
@@ -918,17 +912,17 @@ const doInteractiveStatusChange = (state, id, status) => {
 };
 
 class PlanStore extends ReduceStore {
-
     getInitialState() {
         return {
             activeListId: null, // ID
             listDetailVisible: false, // boolean
             activeTaskId: null, // ID
             selectedTaskIds: null, // Array<ID>
-            topLevelIds: new LoadObjectState(
-                () => Dispatcher.dispatch({
+            topLevelIds: new LoadObjectState(() =>
+                Dispatcher.dispatch({
                     type: PlanActions.LOAD_PLANS,
-                })), // LoadObjectState<Array<ID>>
+                }),
+            ), // LoadObjectState<Array<ID>>
             byId: {}, // Map<ID, LoadObject<Task>>
         };
     }
@@ -962,15 +956,13 @@ class PlanStore extends ReduceStore {
 
             case PlanActions.DELETE_PLAN: {
                 TaskApi.deleteList(action.id);
-                let next = dotProp.set(state, [
-                    "byId",
-                    action.id,
-                ], lo => lo.deleting());
+                let next = dotProp.set(state, ["byId", action.id], (lo) =>
+                    lo.deleting(),
+                );
                 if (next.activeListId === action.id) {
                     const lo = next.topLevelIds.getLoadObject();
                     next.activeListId = lo.hasValue()
-                        ? lo.getValueEnforcing().find(id =>
-                            id !== action.id)
+                        ? lo.getValueEnforcing().find((id) => id !== action.id)
                         : null;
                     next.listDetailVisible = false;
                     next.activeTaskId = null;
@@ -982,12 +974,10 @@ class PlanStore extends ReduceStore {
 
             case PlanActions.PLAN_DELETED: {
                 return selectDefaultList({
-                    ...dotProp.delete(state, [
-                        "byId",
-                        action.id,
-                    ]),
-                    topLevelIds: state.topLevelIds.map(ids =>
-                        ids.filter(id => id !== action.id)),
+                    ...dotProp.delete(state, ["byId", action.id]),
+                    topLevelIds: state.topLevelIds.map((ids) =>
+                        ids.filter((id) => id !== action.id),
+                    ),
                 });
             }
 
@@ -1002,32 +992,35 @@ class PlanStore extends ReduceStore {
 
             case PlanActions.SET_PLAN_GRANT: {
                 TaskApi.setListGrant(action.id, action.userId, action.level);
-                return dotProp.set(state, [
-                    "byId",
-                    action.id,
-                ], lo => lo.map(l => dotProp.set(l, [ "acl",
-                    "grants",
-                    action.userId,
-                ], action.level)).updating());
+                return dotProp.set(state, ["byId", action.id], (lo) =>
+                    lo
+                        .map((l) =>
+                            dotProp.set(
+                                l,
+                                ["acl", "grants", action.userId],
+                                action.level,
+                            ),
+                        )
+                        .updating(),
+                );
             }
 
             case PlanActions.CLEAR_PLAN_GRANT: {
                 TaskApi.clearListGrant(action.id, action.userId);
-                return dotProp.set(state, [
-                    "byId",
-                    action.id,
-                ], lo => lo.map(l => dotProp.delete(l, [ "acl",
-                    "grants",
-                    action.userId,
-                ])).deleting());
+                return dotProp.set(state, ["byId", action.id], (lo) =>
+                    lo
+                        .map((l) =>
+                            dotProp.delete(l, ["acl", "grants", action.userId]),
+                        )
+                        .deleting(),
+                );
             }
 
             case PlanActions.PLAN_GRANT_SET:
             case PlanActions.PLAN_GRANT_CLEARED: {
-                return dotProp.set(state, [
-                    "byId",
-                    action.id,
-                ], lo => lo.done());
+                return dotProp.set(state, ["byId", action.id], (lo) =>
+                    lo.done(),
+                );
             }
 
             case PlanActions.PLAN_DATA_BOOTSTRAPPED:
@@ -1109,24 +1102,30 @@ class PlanStore extends ReduceStore {
             }
 
             case PlanActions.SET_STATUS: {
-                return doInteractiveStatusChange(state, action.id, action.status);
+                return doInteractiveStatusChange(
+                    state,
+                    action.id,
+                    action.status,
+                );
             }
 
             case PlanActions.BULK_SET_STATUS: {
-                return action.ids.reduce((s, id) =>
-                    doInteractiveStatusChange(s, id, action.status), state);
+                return action.ids.reduce(
+                    (s, id) => doInteractiveStatusChange(s, id, action.status),
+                    state,
+                );
             }
 
             case ShoppingActions.SET_INGREDIENT_STATUS: {
-                return action.itemIds.reduce((s, id) =>
-                    queueStatusUpdate(s, id, action.status), state);
+                return action.itemIds.reduce(
+                    (s, id) => queueStatusUpdate(s, id, action.status),
+                    state,
+                );
             }
 
             case PlanActions.DELETE_SELECTED: {
-                const tasks = getOrderedBlock(state)
-                    .map(([ t ]) => t);
-                state = tasks
-                    .reduce((s, t) => queueDelete(s, t.id), state);
+                const tasks = getOrderedBlock(state).map(([t]) => t);
+                state = tasks.reduce((s, t) => queueDelete(s, t.id), state);
                 return focusDelta(state, tasks[0].id, -1);
             }
 
@@ -1135,8 +1134,10 @@ class PlanStore extends ReduceStore {
             }
 
             case ShoppingActions.UNDO_SET_INGREDIENT_STATUS: {
-                return action.itemIds.reduce((s, id) =>
-                    cancelStatusUpdate(s, id), state);
+                return action.itemIds.reduce(
+                    (s, id) => cancelStatusUpdate(s, id),
+                    state,
+                );
             }
 
             case PlanActions.SELECT_NEXT:
@@ -1179,9 +1180,10 @@ class PlanStore extends ReduceStore {
             }
 
             case PlanActions.MULTI_LINE_PASTE: {
-                const lines = action.text.split("\n")
-                    .map(l => l.trim())
-                    .filter(l => l.length > 0);
+                const lines = action.text
+                    .split("\n")
+                    .map((l) => l.trim())
+                    .filter((l) => l.length > 0);
                 const active = taskForId(state, state.activeTaskId);
                 if (active.name == null || active.name.trim().length === 0) {
                     state = renameTask(state, active.id, lines.shift());
@@ -1195,19 +1197,20 @@ class PlanStore extends ReduceStore {
             }
 
             case PlanActions.CREATE_BUCKET: {
-                return mapPlanBuckets(state, action.planId, bs =>
-                    [ { id: ClientId.next() } ].concat(bs));
+                return mapPlanBuckets(state, action.planId, (bs) =>
+                    [{ id: ClientId.next() }].concat(bs),
+                );
             }
 
             case PlanActions.GENERATE_ONE_WEEKS_BUCKETS: {
-                return mapPlanBuckets(state, action.planId, bs => {
+                return mapPlanBuckets(state, action.planId, (bs) => {
                     const yesterday = new Date();
                     yesterday.setDate(yesterday.getDate() - 1);
-                    const maxDate = bs.reduce((max, b) =>
-                            b.date != null && b.date > max
-                                ? b.date
-                                : max,
-                        yesterday);
+                    const maxDate = bs.reduce(
+                        (max, b) =>
+                            b.date != null && b.date > max ? b.date : max,
+                        yesterday,
+                    );
                     const newOnes = [];
                     for (let i = 1; i <= 7; i++) {
                         const date = new Date(maxDate.valueOf());
@@ -1224,15 +1227,17 @@ class PlanStore extends ReduceStore {
             }
 
             case PlanActions.BUCKET_CREATED: {
-                return mapPlanBuckets(state, action.planId, bs =>
-                    bs.filter(b => b.id !== action.oldId)
+                return mapPlanBuckets(state, action.planId, (bs) =>
+                    bs
+                        .filter((b) => b.id !== action.oldId)
                         .concat(deserializeBucket(action.data))
-                        .sort(bucketComparator));
+                        .sort(bucketComparator),
+                );
             }
 
             case PlanActions.DELETE_BUCKET: {
-                return mapPlanBuckets(state, action.planId, bs => {
-                    const idx = bs.findIndex(b => b.id === action.id);
+                return mapPlanBuckets(state, action.planId, (bs) => {
+                    const idx = bs.findIndex((b) => b.id === action.id);
                     if (idx >= 0 && !ClientId.is(action.id)) {
                         PlanApi.deleteBucket(state.activeListId, action.id);
                     }
@@ -1241,37 +1246,46 @@ class PlanStore extends ReduceStore {
             }
 
             case PlanActions.BUCKET_DELETED: {
-                return mapPlanBuckets(state, action.planId, bs =>
-                    bs.filter(b => b.id !== action.id));
+                return mapPlanBuckets(state, action.planId, (bs) =>
+                    bs.filter((b) => b.id !== action.id),
+                );
             }
 
             case PlanActions.RENAME_BUCKET: {
-                return mapPlanBuckets(state, action.planId, bs =>
-                    bs.map(b => {
-                        if (b.id !== action.id) return b;
-                        b = { ...b, name: action.name };
-                        saveBucket(state, b);
-                        return b;
-                    }).sort(bucketComparator));
-
+                return mapPlanBuckets(state, action.planId, (bs) =>
+                    bs
+                        .map((b) => {
+                            if (b.id !== action.id) return b;
+                            b = { ...b, name: action.name };
+                            saveBucket(state, b);
+                            return b;
+                        })
+                        .sort(bucketComparator),
+                );
             }
 
             case PlanActions.SET_BUCKET_DATE: {
-                return mapPlanBuckets(state, action.planId, bs =>
-                    bs.map(b => {
-                        if (b.id !== action.id) return b;
-                        b = { ...b, date: action.date };
-                        saveBucket(state, b);
-                        return b;
-                    }).sort(bucketComparator));
+                return mapPlanBuckets(state, action.planId, (bs) =>
+                    bs
+                        .map((b) => {
+                            if (b.id !== action.id) return b;
+                            b = { ...b, date: action.date };
+                            saveBucket(state, b);
+                            return b;
+                        })
+                        .sort(bucketComparator),
+                );
             }
 
             case PlanActions.BUCKET_UPDATED: {
-                return mapPlanBuckets(state, action.planId, bs =>
-                    bs.map(b => {
-                        if (b.id !== action.data.id) return b;
-                        return deserializeBucket(action.data);
-                    }).sort(bucketComparator));
+                return mapPlanBuckets(state, action.planId, (bs) =>
+                    bs
+                        .map((b) => {
+                            if (b.id !== action.data.id) return b;
+                            return deserializeBucket(action.data);
+                        })
+                        .sort(bucketComparator),
+                );
             }
 
             case PlanActions.ASSIGN_ITEM_TO_BUCKET: {
@@ -1281,20 +1295,26 @@ class PlanStore extends ReduceStore {
             case PlanActions.SORT_BY_BUCKET: {
                 let plan = taskForId(state, state.activeListId);
                 if (!plan.buckets) return state;
-                const bucketIdOrder = plan.buckets.reduce((index, b, i) => ({
-                    ...index,
-                    [b.id]: i,
-                }), {});
+                const bucketIdOrder = plan.buckets.reduce(
+                    (index, b, i) => ({
+                        ...index,
+                        [b.id]: i,
+                    }),
+                    {},
+                );
                 const desiredIds = plan.subtaskIds
-                    .map(id => taskForId(state, id))
-                    .map(t => [ t.id, t.bucketId ? bucketIdOrder[t.bucketId] : -1 ])
+                    .map((id) => taskForId(state, id))
+                    .map((t) => [
+                        t.id,
+                        t.bucketId ? bucketIdOrder[t.bucketId] : -1,
+                    ])
                     .sort((pa, pb) => pa[1] - pb[1])
-                    .map(pair => pair[0]);
+                    .map((pair) => pair[0]);
                 for (let i = 0, l = desiredIds.length; i < l; i++) {
                     if (plan.subtaskIds[i] !== desiredIds[i]) {
                         PlanApi.reorderSubitems(plan.id, desiredIds);
                         // update immediately; the coming delta will be a no-op
-                        return mapTask(state, plan.id, v => ({
+                        return mapTask(state, plan.id, (v) => ({
                             ...v,
                             subtaskIds: desiredIds,
                         }));
@@ -1314,16 +1334,16 @@ class PlanStore extends ReduceStore {
     }
 
     getPlanIdsLO() {
-        return this.getState()
-            .topLevelIds
-            .getLoadObject();
+        return this.getState().topLevelIds.getLoadObject();
     }
 
     getPlansLO() {
         const s = this.getState();
-        return this.getPlanIdsLO().map(ids => losForIds(s, ids)
-            .filter(lo => lo.isDone())
-            .map(lo => lo.getValueEnforcing()));
+        return this.getPlanIdsLO().map((ids) =>
+            losForIds(s, ids)
+                .filter((lo) => lo.isDone())
+                .map((lo) => lo.getValueEnforcing()),
+        );
     }
 
     getChildItemLOs(id) {
@@ -1422,12 +1442,15 @@ class PlanStore extends ReduceStore {
         const s = this.getState();
         return tasksForIds(
             s,
-            taskForId(s, taskForId(s, s.activeTaskId).parentId)
-                .subtaskIds
-                .filter(id =>
-                    id === s.activeTaskId || s.selectedTaskIds.indexOf(id) >= 0),
+            taskForId(
+                s,
+                taskForId(s, s.activeTaskId).parentId,
+            ).subtaskIds.filter(
+                (id) =>
+                    id === s.activeTaskId || s.selectedTaskIds.indexOf(id) >= 0,
+            ),
         )
-            .map(t => t.name)
+            .map((t) => t.name)
             .join("\n");
     }
 }

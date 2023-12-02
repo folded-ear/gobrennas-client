@@ -1,19 +1,20 @@
 // This is "duplicated" as RawIngredientDissection.fromRecognizedItem
-import {
-    RecognitionRangeType,
-    RecognitionResult,
-} from "../data/ItemApi";
+import { RecognitionRangeType, RecognitionResult } from "../data/ItemApi";
 
 function processRecognizedItem(recog: RecognitionResult) {
-    const qr = recog.ranges.find(r =>
-        r.type === RecognitionRangeType.AMOUNT);
-    const ur = recog.ranges.find(r =>
-        r.type === RecognitionRangeType.UNIT || r.type === RecognitionRangeType.NEW_UNIT);
-    const nr = recog.ranges.find(r =>
-        r.type === RecognitionRangeType.ITEM || r.type === RecognitionRangeType.NEW_ITEM);
-    const textFromRange = r =>
-        r && recog.raw.substring(r.start, r.end);
-    const stripMarkers = s => {
+    const qr = recog.ranges.find((r) => r.type === RecognitionRangeType.AMOUNT);
+    const ur = recog.ranges.find(
+        (r) =>
+            r.type === RecognitionRangeType.UNIT ||
+            r.type === RecognitionRangeType.NEW_UNIT,
+    );
+    const nr = recog.ranges.find(
+        (r) =>
+            r.type === RecognitionRangeType.ITEM ||
+            r.type === RecognitionRangeType.NEW_ITEM,
+    );
+    const textFromRange = (r) => r && recog.raw.substring(r.start, r.end);
+    const stripMarkers = (s) => {
         if (s == null) return s;
         if (s.length < 3) return s;
         const c = s.charAt(0).toLowerCase();
@@ -28,11 +29,13 @@ function processRecognizedItem(recog: RecognitionResult) {
     const uv = ur && ur.value;
     const n = textFromRange(nr);
     const nv = nr && nr.value;
-    const p = [ qr, ur, nr ]
-        .filter(it => it != null)
-        .sort((a, b) =>
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            b!.start - a!.start)
+    const p = [qr, ur, nr]
+        .filter((it) => it != null)
+        .sort(
+            (a, b) =>
+                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                b!.start - a!.start,
+        )
         .reduce(
             (p, r) =>
                 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion

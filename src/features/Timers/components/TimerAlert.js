@@ -1,34 +1,41 @@
-import React, {useEffect, useState,} from "react";
-import {Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, IconButton,} from "@mui/material";
+import React, { useEffect, useState } from "react";
+import {
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogContentText,
+    DialogTitle,
+    IconButton,
+} from "@mui/material";
 import AddTimeButton from "./AddTimeButton";
-import {Replay as ResetIcon, Stop as StopIcon,} from "@mui/icons-material";
-import {formatTimer} from "../../../util/time";
+import { Replay as ResetIcon, Stop as StopIcon } from "@mui/icons-material";
+import { formatTimer } from "../../../util/time";
 import TimeLeft from "./TimeLeft";
 import alarm from "../media/alarm.mp3";
-import {useTimerList} from "../data/TimerContext";
-import {useDeleteTimer, useResetTimer,} from "../data/queries";
+import { useTimerList } from "../data/TimerContext";
+import { useDeleteTimer, useResetTimer } from "../data/queries";
 
 function TimerAlert() {
     const { data: timers } = useTimerList();
-    const [ completed, setCompleted ] = useState(undefined);
-    const [ doReset ] = useResetTimer();
-    const [ doDelete ] = useDeleteTimer();
+    const [completed, setCompleted] = useState(undefined);
+    const [doReset] = useResetTimer();
+    const [doDelete] = useDeleteTimer();
 
     useEffect(() => {
-        setCompleted(timers.filter(it => it.remaining <= 0)
-            .sort((a, b) => a.remaining - b.remaining)[0]);
-    }, [ timers ]);
+        setCompleted(
+            timers
+                .filter((it) => it.remaining <= 0)
+                .sort((a, b) => a.remaining - b.remaining)[0],
+        );
+    }, [timers]);
 
     if (!completed) {
         return null;
     }
 
-    const handleAddTime = duration =>
-        doReset(completed.id, duration);
-    const handleReset = () =>
-        doReset(completed.id, completed.initialDuration);
-    const handleStop = () =>
-        doDelete(completed.id);
+    const handleAddTime = (duration) => doReset(completed.id, duration);
+    const handleReset = () => doReset(completed.id, completed.initialDuration);
+    const handleStop = () => doDelete(completed.id);
 
     return (
         <Dialog
@@ -46,10 +53,7 @@ function TimerAlert() {
                 <audio src={alarm} autoPlay loop />
             </DialogContent>
             <DialogActions>
-                <AddTimeButton
-                    seconds={60}
-                    onClick={handleAddTime}
-                />
+                <AddTimeButton seconds={60} onClick={handleAddTime} />
                 <IconButton onClick={handleReset} size="large">
                     <ResetIcon />
                 </IconButton>

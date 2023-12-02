@@ -4,7 +4,7 @@ import { SESSION_STORAGE_POST_LOGIN } from "../constants";
 import { getJsonItem } from "util/storage";
 
 interface Props {
-    authenticated: boolean
+    authenticated: boolean;
 }
 
 const Landing: React.FC<Props> = ({ authenticated }) => {
@@ -12,10 +12,14 @@ const Landing: React.FC<Props> = ({ authenticated }) => {
     if (authenticated) {
         sessionStorage.removeItem(SESSION_STORAGE_POST_LOGIN);
     }
-    return <Redirect to={{
-        pathname: "/library",
-        ...dest,
-    }} />;
+    return (
+        <Redirect
+            to={{
+                pathname: "/library",
+                ...dest,
+            }}
+        />
+    );
 };
 
 export default Landing;

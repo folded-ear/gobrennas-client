@@ -25,10 +25,7 @@ import RecipeInfo from "views/common/RecipeInfo";
 import Source from "views/common/Source";
 import User from "views/user/User";
 import FavoriteIndicator from "../../Favorites/components/Indicator";
-import {
-    Photo,
-    User as UserType,
-} from "../../../__generated__/graphql";
+import { Photo, User as UserType } from "../../../__generated__/graphql";
 
 const useStyles = makeStyles({
     photo: {
@@ -55,32 +52,28 @@ export interface RecipeType {
 }
 
 interface Props {
-    recipe: RecipeType,
-    mine: boolean,
-    indicateMine: boolean,
-    me: any, // todo
+    recipe: RecipeType;
+    mine: boolean;
+    indicateMine: boolean;
+    me: any; // todo
 }
 
-const RecipeCard: React.FC<Props> = ({
-                                         recipe,
-                                         mine,
-                                         indicateMine,
-                                         me,
-                                     }) => {
+const RecipeCard: React.FC<Props> = ({ recipe, mine, indicateMine, me }) => {
     const owner = useFluxStore(
         () => {
             if (mine) return indicateMine ? me : null;
             const lo = FriendStore.getFriendLO(recipe.owner.id);
             return lo.hasValue() ? lo.getValueEnforcing() : null;
         },
-        [ FriendStore ],
-        [ mine, indicateMine, me, recipe.owner.id ],
+        [FriendStore],
+        [mine, indicateMine, me, recipe.owner.id],
     );
     const classes = useStyles();
     const [raised, setRaised] = React.useState(false);
 
-    const labelsToDisplay = recipe.labels && recipe.labels
-        .filter(label => label.indexOf("--") !== 0);
+    const labelsToDisplay =
+        recipe.labels &&
+        recipe.labels.filter((label) => label.indexOf("--") !== 0);
     return (
         <Card
             raised={raised}
@@ -90,28 +83,26 @@ const RecipeCard: React.FC<Props> = ({
                 width: "100%",
                 display: "flex",
                 justifyContent: "space-between",
-                flexDirection: "column"
+                flexDirection: "column",
             }}
         >
             <>
-                {recipe.photo
-                    ? <Link to={`/library/recipe/${recipe.id}`}>
+                {recipe.photo ? (
+                    <Link to={`/library/recipe/${recipe.id}`}>
                         <ItemImage
                             className={classes.photo}
                             url={recipe.photo.url}
                             focus={recipe.photo.focus}
-                            title={recipe.name} />
+                            title={recipe.name}
+                        />
                     </Link>
-                    : <ItemImageUpload
-                        recipeId={recipe.id}
-                        disabled={!mine}
-                    />
-                }
+                ) : (
+                    <ItemImageUpload recipeId={recipe.id} disabled={!mine} />
+                )}
                 <CardContent style={{ flexGrow: 2 }}>
                     <Grid container alignItems={"center"} wrap={"nowrap"}>
                         <Grid item>
-                            <FavoriteIndicator type={"Recipe"}
-                                               id={recipe.id} />
+                            <FavoriteIndicator type={"Recipe"} id={recipe.id} />
                         </Grid>
                         <Grid item style={{ flexGrow: 1 }}>
                             <Typography
@@ -125,28 +116,46 @@ const RecipeCard: React.FC<Props> = ({
                             </Typography>
                         </Grid>
                         <Grid item>
-                            {owner && <div
-                                style={{
-                                    float: "right",
-                                }}
-                            >
-                                <User
-                                    {...owner}
-                                    iconOnly
-                                    inline
-                                />
-                            </div>}
+                            {owner && (
+                                <div
+                                    style={{
+                                        float: "right",
+                                    }}
+                                >
+                                    <User {...owner} iconOnly inline />
+                                </div>
+                            )}
                         </Grid>
                     </Grid>
-                    {recipe.externalUrl && <RecipeInfo label="Source" text={<Source url={recipe.externalUrl} />} />}
-                    {recipe.yield && <RecipeInfo label="Yield" text={`${recipe.yield} servings`} />}
-                    {recipe.totalTime && <RecipeInfo label="Time" text={formatDuration(recipe.totalTime)} />}
-                    {recipe.calories && <RecipeInfo label="Calories" text={recipe.calories} />}
+                    {recipe.externalUrl && (
+                        <RecipeInfo
+                            label="Source"
+                            text={<Source url={recipe.externalUrl} />}
+                        />
+                    )}
+                    {recipe.yield && (
+                        <RecipeInfo
+                            label="Yield"
+                            text={`${recipe.yield} servings`}
+                        />
+                    )}
+                    {recipe.totalTime && (
+                        <RecipeInfo
+                            label="Time"
+                            text={formatDuration(recipe.totalTime)}
+                        />
+                    )}
+                    {recipe.calories && (
+                        <RecipeInfo label="Calories" text={recipe.calories} />
+                    )}
 
-                    {labelsToDisplay && <Box my={0.5}>
-                        {labelsToDisplay.map(label =>
-                            <LabelItem key={label} label={label} />)}
-                    </Box>}
+                    {labelsToDisplay && (
+                        <Box my={0.5}>
+                            {labelsToDisplay.map((label) => (
+                                <LabelItem key={label} label={label} />
+                            ))}
+                        </Box>
+                    )}
                 </CardContent>
             </>
             <CardActions>
@@ -161,11 +170,15 @@ const RecipeCard: React.FC<Props> = ({
                     >
                         View
                     </Button>
-                    <SendToPlan onClick={planId => Dispatcher.dispatch({
-                        type: RecipeActions.SEND_TO_PLAN,
-                        recipeId: parseInt(recipe.id),
-                        planId,
-                    })} />
+                    <SendToPlan
+                        onClick={(planId) =>
+                            Dispatcher.dispatch({
+                                type: RecipeActions.SEND_TO_PLAN,
+                                recipeId: parseInt(recipe.id),
+                                planId,
+                            })
+                        }
+                    />
                 </Stack>
             </CardActions>
         </Card>

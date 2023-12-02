@@ -1,9 +1,4 @@
-import {
-    Box,
-    Grid,
-    Toolbar,
-    Typography,
-} from "@mui/material";
+import { Box, Grid, Toolbar, Typography } from "@mui/material";
 import makeStyles from "@mui/styles/makeStyles";
 import { PostAdd } from "@mui/icons-material";
 import React from "react";
@@ -24,19 +19,13 @@ import IngredientDirectionsRow from "./IngredientDirectionsRow";
 import SubrecipeItem from "./SubrecipeItem";
 import SendToPlan from "features/RecipeLibrary/components/SendToPlan";
 import { UserType } from "global/types/types";
-import type {
-    Recipe,
-    Subrecipe,
-} from "features/RecipeDisplay/types";
+import type { Recipe, Subrecipe } from "features/RecipeDisplay/types";
 import FavoriteIndicator from "features/Favorites/components/Indicator";
-import {
-    ReentrantScalingProvider,
-    useScale,
-} from "util/ScalingContext";
+import { ReentrantScalingProvider, useScale } from "util/ScalingContext";
 import { SubHeader } from "./Subheader";
 import { extractRecipePhoto } from "features/RecipeDisplay/utils/extractRecipePhoto";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
     name: {
         flexGrow: 1,
         [theme.breakpoints.down("sm")]: {
@@ -59,27 +48,27 @@ const useStyles = makeStyles(theme => ({
 }));
 
 interface Props {
-    recipe: Recipe
-    subrecipes: Subrecipe[]
-    anonymous?: boolean,
-    mine?: boolean,
-    owner?: Pick<UserType, "imageUrl" | "name" | "email">
-    canFavorite?: boolean,
-    canShare?: boolean,
-    canSendToPlan?: boolean,
-    nav?: React.ReactNode,
+    recipe: Recipe;
+    subrecipes: Subrecipe[];
+    anonymous?: boolean;
+    mine?: boolean;
+    owner?: Pick<UserType, "imageUrl" | "name" | "email">;
+    canFavorite?: boolean;
+    canShare?: boolean;
+    canSendToPlan?: boolean;
+    nav?: React.ReactNode;
 }
 
 const RecipeDetail: React.FC<Props> = ({
-                                           recipe,
-                                           subrecipes,
-                                           mine = false,
-                                           owner,
-                                           anonymous = false,
-                                           canFavorite = false,
-                                           canSendToPlan = false,
-                                           nav
-                                       }) => {
+    recipe,
+    subrecipes,
+    mine = false,
+    owner,
+    anonymous = false,
+    canFavorite = false,
+    canSendToPlan = false,
+    nav,
+}) => {
     const classes = useStyles();
 
     const windowSize = useWindowSize();
@@ -94,78 +83,105 @@ const RecipeDetail: React.FC<Props> = ({
 
     const photo = extractRecipePhoto(recipe);
 
-    const labelsToDisplay = recipe.labels && recipe.labels
-        .filter(label => label.indexOf("--") !== 0);
+    const labelsToDisplay =
+        recipe.labels &&
+        recipe.labels.filter((label) => label.indexOf("--") !== 0);
     return (
         <PageBody hasFab id="toolbar">
             <SubHeader>
                 <Toolbar className={classes.toolbar}>
-                    {canFavorite && <FavoriteIndicator type={"Recipe"}
-                                                       id={recipe.id} />}
-                    <Typography
-                        className={classes.name}
-                        variant="h2"
-                    >
+                    {canFavorite && (
+                        <FavoriteIndicator type={"Recipe"} id={recipe.id} />
+                    )}
+                    <Typography className={classes.name} variant="h2">
                         {recipe.name}
                         {/*{recipeLO.isLoading() && <Box display="inline" ml={2}>*/}
                         {/*    <CircularProgress size={20} />*/}
                         {/*</Box>}*/}
                     </Typography>
                     {nav}
-                    {!mine && owner && (loggedIn || windowSize.width > 600) &&
+                    {!mine && owner && (loggedIn || windowSize.width > 600) && (
                         <User
                             size={loggedIn ? "small" : "large"}
                             iconOnly
                             {...owner}
-                        />}
+                        />
+                    )}
                 </Toolbar>
             </SubHeader>
             <Grid container spacing={1}>
                 <Grid item xs={5}>
-                    {photo
-                        ? <ItemImage className={classes.imageContainer}
-                                     url={photo.url}
-                                     focus={photo.focus}
-                                     title={recipe.name} />
-                        : <ItemImageUpload recipeId={recipe.id}
-                                           disabled={!mine} />}
+                    {photo ? (
+                        <ItemImage
+                            className={classes.imageContainer}
+                            url={photo.url}
+                            focus={photo.focus}
+                            title={recipe.name}
+                        />
+                    ) : (
+                        <ItemImageUpload
+                            recipeId={recipe.id}
+                            disabled={!mine}
+                        />
+                    )}
                 </Grid>
                 <Grid item xs={5}>
-                    {recipe.externalUrl && <RecipeInfo
-                        label="Source"
-                        text={<Source url={recipe.externalUrl} />} />}
-                    {recipe.yield && <RecipeInfo
-                        label="Yield"
-                        text={`${recipe.yield} servings`} />}
-                    {recipe.totalTime && <RecipeInfo
-                        label="Time"
-                        text={formatDuration(recipe.totalTime)} />}
-                    {recipe.calories && <RecipeInfo
-                        label="Calories"
-                        text={`${recipe.calories} per serving`} />}
-                    {labelsToDisplay && <Box my={1}>
-                        {labelsToDisplay.map(label =>
-                            <LabelItem key={label} label={label} />)}
-                    </Box>}
-
-                    {loggedIn && canSendToPlan && <Box mt={1}>
-                        <SendToPlan
-                            onClick={planId => Dispatcher.dispatch({
-                                type: RecipeActions.SEND_TO_PLAN,
-                                recipeId: recipe.id,
-                                planId,
-                                scale,
-                            })}
+                    {recipe.externalUrl && (
+                        <RecipeInfo
+                            label="Source"
+                            text={<Source url={recipe.externalUrl} />}
                         />
-                    </Box>}
+                    )}
+                    {recipe.yield && (
+                        <RecipeInfo
+                            label="Yield"
+                            text={`${recipe.yield} servings`}
+                        />
+                    )}
+                    {recipe.totalTime && (
+                        <RecipeInfo
+                            label="Time"
+                            text={formatDuration(recipe.totalTime)}
+                        />
+                    )}
+                    {recipe.calories && (
+                        <RecipeInfo
+                            label="Calories"
+                            text={`${recipe.calories} per serving`}
+                        />
+                    )}
+                    {labelsToDisplay && (
+                        <Box my={1}>
+                            {labelsToDisplay.map((label) => (
+                                <LabelItem key={label} label={label} />
+                            ))}
+                        </Box>
+                    )}
+
+                    {loggedIn && canSendToPlan && (
+                        <Box mt={1}>
+                            <SendToPlan
+                                onClick={(planId) =>
+                                    Dispatcher.dispatch({
+                                        type: RecipeActions.SEND_TO_PLAN,
+                                        recipeId: recipe.id,
+                                        planId,
+                                        scale,
+                                    })
+                                }
+                            />
+                        </Box>
+                    )}
                 </Grid>
 
-                {subrecipes != null && subrecipes.map(it =>
-                    <SubrecipeItem
-                        key={it.id}
-                        recipe={it}
-                        loggedIn={loggedIn}
-                    />)}
+                {subrecipes != null &&
+                    subrecipes.map((it) => (
+                        <SubrecipeItem
+                            key={it.id}
+                            recipe={it}
+                            loggedIn={loggedIn}
+                        />
+                    ))}
 
                 <ReentrantScalingProvider>
                     <IngredientDirectionsRow
@@ -174,11 +190,11 @@ const RecipeDetail: React.FC<Props> = ({
                     />
                 </ReentrantScalingProvider>
             </Grid>
-            {loggedIn && <FoodingerFab
-                onClick={() => history.push(`/add`)}
-            >
-                <PostAdd />
-            </FoodingerFab>}
+            {loggedIn && (
+                <FoodingerFab onClick={() => history.push(`/add`)}>
+                    <PostAdd />
+                </FoodingerFab>
+            )}
         </PageBody>
     );
 };

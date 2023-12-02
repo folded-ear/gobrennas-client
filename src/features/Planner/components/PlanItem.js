@@ -25,7 +25,6 @@ import PlaceholderIconButton from "views/common/PlaceholderIconButton";
 import IngredientItem from "views/IngredientItem";
 
 class PlanItem extends React.PureComponent {
-
     constructor(props) {
         super(props);
         this.onChange = this.onChange.bind(this);
@@ -39,9 +38,7 @@ class PlanItem extends React.PureComponent {
 
     onChange(e) {
         const { value } = e.target;
-        const {
-            item,
-        } = this.props;
+        const { item } = this.props;
         Dispatcher.dispatch({
             type: PlanActions.RENAME_ITEM,
             id: item.id,
@@ -70,24 +67,18 @@ class PlanItem extends React.PureComponent {
     }
 
     onKeyDown(e) {
-        const {
-            value,
-            selectionStart,
-        } = e.target;
-        const {
-            key,
-            ctrlKey,
-            shiftKey,
-        } = e;
+        const { value, selectionStart } = e.target;
+        const { key, ctrlKey, shiftKey } = e;
         // eslint-disable-next-line default-case
         switch (key) {
             case "Enter":
                 if (value.length === 0) break;
                 // add a new item, before if the cursor is at the beginning, after otherwise
                 Dispatcher.dispatch({
-                    type: selectionStart === 0
-                        ? PlanActions.CREATE_ITEM_BEFORE
-                        : PlanActions.CREATE_ITEM_AFTER,
+                    type:
+                        selectionStart === 0
+                            ? PlanActions.CREATE_ITEM_BEFORE
+                            : PlanActions.CREATE_ITEM_AFTER,
                     id: this.props.item.id,
                 });
                 break;
@@ -175,17 +166,12 @@ class PlanItem extends React.PureComponent {
     }
 
     onClick(e) {
-        const {
-            active,
-            item,
-        } = this.props;
+        const { active, item } = this.props;
         if (active) return;
         e.preventDefault();
         e.stopPropagation();
         Dispatcher.dispatch({
-            type: e.shiftKey
-                ? PlanActions.SELECT_TO
-                : PlanActions.FOCUS,
+            type: e.shiftKey ? PlanActions.SELECT_TO : PlanActions.FOCUS,
             id: item.id,
         });
     }
@@ -234,117 +220,127 @@ class PlanItem extends React.PureComponent {
                     key="collapse"
                     expanded={expanded}
                     onClick={this.onToggleExpanded}
-                />);
+                />,
+            );
         } else {
             addonBefore.push(
-                <PlaceholderIconButton
-                    key="collapse"
-                    size="small"
-                />);
+                <PlaceholderIconButton key="collapse" size="small" />,
+            );
         }
         const curr = item._next_status || item.status;
         if (loading || deleting || ancestorDeleting) {
-            addonBefore.push(
-                <LoadingIconButton
-                    key="acquire"
-                />);
+            addonBefore.push(<LoadingIconButton key="acquire" />);
         } else if (section) {
             addonBefore.push(
-                <PlaceholderIconButton
-                    key="acquire"
-                    size="small"
-                />);
+                <PlaceholderIconButton key="acquire" size="small" />,
+            );
         } else {
             addonBefore.push(
                 <StatusIconButton
                     key="acquire"
                     id={item.id}
                     current={curr}
-                    next={curr === PlanItemStatus.ACQUIRED
-                        ? PlanItemStatus.NEEDED
-                        : PlanItemStatus.ACQUIRED}
-                />);
+                    next={
+                        curr === PlanItemStatus.ACQUIRED
+                            ? PlanItemStatus.NEEDED
+                            : PlanItemStatus.ACQUIRED
+                    }
+                />,
+            );
         }
         const addonAfter = [
-            deleting && !ancestorDeleting
-                ? <DontChangeStatusButton
+            deleting && !ancestorDeleting ? (
+                <DontChangeStatusButton
                     key="delete"
                     id={item.id}
                     next={item._next_status}
                 />
-                : <StatusIconButton
+            ) : (
+                <StatusIconButton
                     key="delete"
                     id={item.id}
-                    next={curr === PlanItemStatus.DELETED
-                        ? PlanItemStatus.NEEDED
-                        : PlanItemStatus.DELETED}
+                    next={
+                        curr === PlanItemStatus.DELETED
+                            ? PlanItemStatus.NEEDED
+                            : PlanItemStatus.DELETED
+                    }
                     disabled={ancestorDeleting}
-                />,
+                />
+            ),
         ];
         if (recipeIsh) {
-            addonAfter.unshift(<CookButton
-                key="cook"
-                size="small"
-                planId={plan.id}
-                itemId={item.id}
-            />);
+            addonAfter.unshift(
+                <CookButton
+                    key="cook"
+                    size="small"
+                    planId={plan.id}
+                    itemId={item.id}
+                />,
+            );
         }
         if (buckets && buckets.length > 0) {
-            addonAfter.unshift(<PlanItemBucketChip
-                key="bucket"
-                planId={plan.id}
-                itemId={item.id}
-                bucketId={item.bucketId}
-                buckets={buckets}
-            />);
+            addonAfter.unshift(
+                <PlanItemBucketChip
+                    key="bucket"
+                    planId={plan.id}
+                    itemId={item.id}
+                    bucketId={item.bucketId}
+                    buckets={buckets}
+                />,
+            );
         }
 
-        return <Item
-            depth={depth}
-            prefix={addonBefore}
-            suffix={addonAfter}
-            onClick={this.onClick}
-            className={classnames({
-                [classes.section]: section,
-                [classes.active]: active,
-                [classes.selected]: selected,
-                [classes.question]: question,
-                [classes.deleting]: deleting,
-                [classes.acquiring]: acquiring,
-                [classes.needing]: needing,
-                [classes.ancestorDeleting]: ancestorDeleting,
-            })}
-            dragId={item.id}
-        >
-            {active
-                ? <Input
-                    fullWidth
-                    value={item.name}
-                    placeholder="Enter an item name"
-                    disableUnderline
-                    inputRef={this.inputRef}
-                    onChange={this.onChange}
-                    onPaste={this.onPaste}
-                    onCopy={this.onCopy}
-                    onKeyDown={this.onKeyDown}
-                    onDoubleClick={parent ? this.onToggleExpanded : null}
-                />
-                : <ListItemText
-                    className={classes.text}
-                    onDoubleClick={parent ? this.onToggleExpanded : null}
-                >
-                    {recipeIsh || !item.ingredient
-                        ? item.name
-                        : <IngredientItem
-                            ingRef={item}
-                            hideRecipeLink
-                            hideSendToPlan
-                            inline
-                        />}
-                </ListItemText>}
-        </Item>;
+        return (
+            <Item
+                depth={depth}
+                prefix={addonBefore}
+                suffix={addonAfter}
+                onClick={this.onClick}
+                className={classnames({
+                    [classes.section]: section,
+                    [classes.active]: active,
+                    [classes.selected]: selected,
+                    [classes.question]: question,
+                    [classes.deleting]: deleting,
+                    [classes.acquiring]: acquiring,
+                    [classes.needing]: needing,
+                    [classes.ancestorDeleting]: ancestorDeleting,
+                })}
+                dragId={item.id}
+            >
+                {active ? (
+                    <Input
+                        fullWidth
+                        value={item.name}
+                        placeholder="Enter an item name"
+                        disableUnderline
+                        inputRef={this.inputRef}
+                        onChange={this.onChange}
+                        onPaste={this.onPaste}
+                        onCopy={this.onCopy}
+                        onKeyDown={this.onKeyDown}
+                        onDoubleClick={parent ? this.onToggleExpanded : null}
+                    />
+                ) : (
+                    <ListItemText
+                        className={classes.text}
+                        onDoubleClick={parent ? this.onToggleExpanded : null}
+                    >
+                        {recipeIsh || !item.ingredient ? (
+                            item.name
+                        ) : (
+                            <IngredientItem
+                                ingRef={item}
+                                hideRecipeLink
+                                hideSendToPlan
+                                inline
+                            />
+                        )}
+                    </ListItemText>
+                )}
+            </Item>
+        );
     }
-
 }
 
 PlanItem.propTypes = {
