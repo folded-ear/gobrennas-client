@@ -1,10 +1,14 @@
 import planStore from "features/Planner/data/planStore";
-import { ReduceStore } from "flux/utils";
-import { ShopItemType } from "views/shop/ShopList";
+import {ReduceStore} from "flux/utils";
+import {ShopItemType} from "views/shop/ShopList";
 import Dispatcher from "./dispatcher";
 import PantryItemActions from "./PantryItemActions";
 import ShoppingActions from "./ShoppingActions";
-import { FluxAction } from "global/types/types";
+import {FluxAction} from "global/types/types";
+import PlanActions from "../features/Planner/data/PlanActions";
+import {removeDistinct, toggleDistinct} from "../util/arrayAsSet";
+import preferencesStore from "./preferencesStore";
+import PlanApi from "../features/Planner/data/PlanApi";
 
 const placeFocus = (state, id, type) => ({
     ...state,
@@ -20,6 +24,7 @@ export interface Item {
 }
 
 interface State {
+    activePlanIds?: number[]
     activeItem?: Item
     expandedId?: number
 }
@@ -32,6 +37,56 @@ class ShoppingStore extends ReduceStore<State, FluxAction> {
 
     reduce(state: State, action: FluxAction): State {
         switch (action.type) {
+
+            case PlanActions.PLAN_DELETED:
+                return {
+                    ...state,
+                    activePlanIds: removeDistinct(
+                        state.activePlanIds,
+                        action.id),
+                };
+
+            case PlanActions.PLANS_LOADED: {
+                this.getDispatcher().waitFor([
+                    planStore.getDispatchToken(),
+                ]);
+                const validPlanIds = planStore.getPlanIdsLO()
+                    .getValueEnforcing();
+                const activePlanId = planStore.getActivePlanLO()
+                    .getValueEnforcing()
+                    .id;
+                const shopIds: number[] = [];
+                for (const id of preferencesStore.getActiveShoppingPlans()) {
+                    if (!validPlanIds.includes(id)) continue;
+                    shopIds.push(id);
+                    if (id === activePlanId) continue;
+                    // load up its items, so we can shop for them
+                    PlanApi.getDescendantsAsList(id);
+                }
+                return {
+                    ...state,
+                    activePlanIds: shopIds,
+                };
+            }
+
+            case ShoppingActions.TOGGLE_PLAN: {
+                const activePlanIds = toggleDistinct(
+                    state.activePlanIds?.slice(),
+                    action.id);
+                if (activePlanIds.length === 0) {
+                    activePlanIds.push(planStore.getActivePlanLO()
+                        .getValueEnforcing()
+                        .id);
+                }
+                if (activePlanIds.includes(action.id)) {
+                    // it was toggled on
+                    PlanApi.getDescendantsAsList(action.id);
+                }
+                return {
+                    ...state,
+                    activePlanIds,
+                };
+            }
 
             case ShoppingActions.CREATE_ITEM_AFTER:
             case ShoppingActions.CREATE_ITEM_BEFORE:
@@ -96,6 +151,9 @@ class ShoppingStore extends ReduceStore<State, FluxAction> {
         return this.getState().expandedId;
     }
 
+    getActivePlanIds() {
+        return this.getState().activePlanIds;
+    }
 }
 
 export default new ShoppingStore(Dispatcher);

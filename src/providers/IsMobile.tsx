@@ -1,10 +1,8 @@
-import { useMediaQuery } from "@mui/material";
-import React, {
-    createContext,
-    PropsWithChildren,
-    useContext,
-} from "react";
+import {useMediaQuery} from "@mui/material";
+import React, {createContext, PropsWithChildren, useContext,} from "react";
 import theme from "../theme";
+import useFluxStore from "../data/useFluxStore";
+import preferencesStore from "../data/preferencesStore";
 
 const MobileContext = createContext(true);
 
@@ -14,7 +12,16 @@ export function IsMobileProvider({ children }: PropsWithChildren): JSX.Element {
     const mobile = useMediaQuery(query, {
         noSsr: true, // don't double-render
     });
-    return <MobileContext.Provider value={mobile}>
+    const layout = useFluxStore(
+        () => preferencesStore.getLayout(),
+        [preferencesStore]
+    );
+    const value = layout === "desktop"
+        ? false
+        : layout === "mobile"
+            ? true
+            : mobile;
+    return <MobileContext.Provider value={value}>
         {children}
     </MobileContext.Provider>;
 }

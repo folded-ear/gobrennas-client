@@ -1,21 +1,22 @@
 import PlanActions from "features/Planner/data/PlanActions";
 import planStore from "features/Planner/data/planStore";
-import { ReduceStore } from "flux/utils";
-import { Map } from "immutable";
-import {
-    getJsonItem,
-    setJsonItem,
-} from "util/storage";
+import {ReduceStore} from "flux/utils";
+import {Map} from "immutable";
+import {getJsonItem, setJsonItem,} from "util/storage";
 // noinspection ES6PreferShortImport
-import { LOCAL_STORAGE_PREFERENCES } from "../constants/index";
+import {LOCAL_STORAGE_PREFERENCES} from "../constants/index";
 import Dispatcher from "./dispatcher";
 import UserActions from "./UserActions";
-import { FluxAction } from "global/types/types";
+import {FluxAction} from "global/types/types";
+import ShoppingActions from "./ShoppingActions";
+import shoppingStore from "./shoppingStore";
 
 const PrefNames = {
     ACTIVE_TASK_LIST: "activeTaskList",
     ACTIVE_PLAN: "activePlan",
+    ACTIVE_SHOPPING_PLANS: "activeShoppingPlans",
     DEV_MODE: "devMode",
+    LAYOUT: "layout",
 };
 
 type State = Map<string, any>
@@ -35,6 +36,12 @@ const migrations: Migration[] = [
 
 const setPref = (state: State, key: string, value: any): State => {
     state = state.set(key, value);
+    setJsonItem(LOCAL_STORAGE_PREFERENCES, state);
+    return state;
+};
+
+const clearPref = (state: State, key: string): State => {
+    state = state.delete(key);
     setJsonItem(LOCAL_STORAGE_PREFERENCES, state);
     return state;
 };
@@ -67,8 +74,24 @@ class PreferencesStore extends ReduceStore<State, FluxAction> {
             case PlanActions.PLAN_CREATED: {
                 return setPref(state, PrefNames.ACTIVE_PLAN, action.id);
             }
+
+            case ShoppingActions.TOGGLE_PLAN: {
+                this.__dispatcher.waitFor([
+                    shoppingStore.getDispatchToken(),
+                ]);
+                return setPref(state,
+                    PrefNames.ACTIVE_SHOPPING_PLANS,
+                    shoppingStore.getActivePlanIds());
+            }
+
             case UserActions.SET_DEV_MODE: {
+                if (!action.enabled) {
+                    state = clearPref(state, PrefNames.LAYOUT);
+                }
                 return setPref(state, PrefNames.DEV_MODE, action.enabled);
+            }
+            case UserActions.SET_LAYOUT: {
+                return setPref(state, PrefNames.LAYOUT, action.layout);
             }
             default:
                 return state;
@@ -79,8 +102,20 @@ class PreferencesStore extends ReduceStore<State, FluxAction> {
         return this.getState().get(PrefNames.ACTIVE_PLAN);
     }
 
+    getActiveShoppingPlans() {
+        let plans = this.getState().get(PrefNames.ACTIVE_SHOPPING_PLANS);
+        if (plans == null || plans.length === 0) {
+            plans = [this.getActivePlan()];
+        }
+        return plans;
+    }
+
     isDevMode() {
         return this.getState().get(PrefNames.DEV_MODE) || false;
+    }
+
+    getLayout() {
+        return this.getState().get(PrefNames.LAYOUT) || "auto";
     }
 }
 

@@ -1,15 +1,7 @@
-import {
-    Box,
-    Grid,
-    IconButton,
-    Typography
-} from "@mui/material";
+import {Box, Grid, IconButton, Stack, Typography} from "@mui/material";
 import List from "@mui/material/List";
-import Add from "@mui/icons-material/Add";
-import React, {
-    useCallback,
-    useState
-} from "react";
+import AddIcon from "@mui/icons-material/Add";
+import React, {useCallback, useState} from "react";
 import Dispatcher from "data/dispatcher";
 import ShoppingActions from "data/ShoppingActions";
 import FoodingerFab from "views/common/FoodingerFab";
@@ -17,19 +9,15 @@ import LoadingIndicator from "views/common/LoadingIndicator";
 import PageBody from "views/common/PageBody";
 import IngredientItem from "views/shop/IngredientItem";
 import PlanItem from "views/shop/PlanItem";
-import {
-    BaseItemProp,
-    ItemProps,
-} from "./types";
-import { PlanItem as PlanItemType } from "features/Planner/data/planStore";
-import {
-    BfsId,
-    Quantity
-} from "global/types/types";
+import {BaseItemProp, ItemProps,} from "./types";
+import {PlanItem as PlanItemType} from "features/Planner/data/planStore";
+import {BfsId, Quantity} from "global/types/types";
 import CollapseIconButton from "../../global/components/CollapseIconButton";
 import PantryItemActions from "../../data/PantryItemActions";
-import DragContainer, { DragContainerProps } from "../../features/Planner/components/DragContainer";
-import { CleaningServices as SweepIcon } from "@mui/icons-material";
+import DragContainer, {DragContainerProps} from "../../features/Planner/components/DragContainer";
+import SweepIcon from "@mui/icons-material/CleaningServices";
+import {colorHash} from "../../constants/colors";
+import Avatar from "@mui/material/Avatar";
 
 export enum ShopItemType {
     INGREDIENT,
@@ -48,7 +36,7 @@ export interface ShopItemTuple extends ItemProps {
 }
 
 export type ShopListProps = {
-    plan: PlanItemType | null | undefined
+    plans: PlanItemType[]
     neededTuples: ShopItemTuple[]
     acquiredTuples: ShopItemTuple[]
     onRepartition(): void
@@ -100,7 +88,7 @@ const TupleList: React.FC<TupleListProps> = ({
 };
 
 const ShopList: React.FC<ShopListProps> = ({
-                                               plan,
+                                               plans,
                                                neededTuples,
                                                acquiredTuples,
                                                onRepartition,
@@ -125,7 +113,7 @@ const ShopList: React.FC<ShopListProps> = ({
         [ onRepartition ]
     );
 
-    if (!plan) {
+    if (plans == null || plans.length === 0) {
         return <LoadingIndicator
             primary="Loading shopping list..."
         />;
@@ -139,14 +127,28 @@ const ShopList: React.FC<ShopListProps> = ({
                   flexWrap={"nowrap"}
                   alignItems={"flex-end"}
             >
-                <Typography variant="h2"
-                            style={{ flexGrow: 2 }}>
-                    {plan.name}
+                <Typography variant="h2">
+                    {plans.length === 1
+                        ? plans[0].name
+                        : <Stack direction="row"
+                                 alignItems={"flex-end"}
+                                 spacing={1}>
+                            <span>Shop</span>
+                            {plans.map(p => <Avatar
+                                key={p.id}
+                                alt={p.name}
+                                title={p.name}
+                                sx={{
+                                    // width: 24,
+                                    // height: 24,
+                                    bgcolor: colorHash(p.id),
+                                }}>{p.name.substring(0, 2)}</Avatar>)}
+                        </Stack>}
                 </Typography>
                 <IconButton title={"Sweep Acquired"}
                             onClick={() => onRepartition()}
                 >
-                    <SweepIcon />
+                    <SweepIcon/>
                 </IconButton>
             </Grid>
         </Box>
@@ -167,7 +169,7 @@ const ShopList: React.FC<ShopListProps> = ({
         <FoodingerFab
             onClick={handleAddNew}
         >
-            <Add />
+            <AddIcon/>
         </FoodingerFab>
     </PageBody>;
 };

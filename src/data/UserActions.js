@@ -6,6 +6,7 @@ const UserActions = {
     SET_DEV_MODE: typedAction("user/set-dev-mode", {
         enabled: PropTypes.bool.isRequired,
     }),
+    SET_LAYOUT: "user/set-layout",
 };
 
 export default UserActions;

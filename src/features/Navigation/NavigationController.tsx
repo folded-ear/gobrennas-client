@@ -1,32 +1,22 @@
 import * as React from "react";
-import {
-    ReactNode,
-    useEffect
-} from "react";
+import {ReactNode, useEffect} from "react";
 import CssBaseline from "@mui/material/CssBaseline";
-import {
-    Header,
-    MainDesktop,
-    MainMobile,
-} from "features/Navigation/components/Navigation.elements";
-import { FlexBox } from "global/components/FlexBox";
+import {Header, MainDesktop, MainMobile,} from "features/Navigation/components/Navigation.elements";
+import {FlexBox} from "global/components/FlexBox";
 import useFluxStore from "data/useFluxStore";
-import { ripLoadObject } from "util/ripLoadObject";
+import {ripLoadObject} from "util/ripLoadObject";
 import planStore from "features/Planner/data/planStore";
 import useIsDevMode from "data/useIsDevMode";
-import { useIsMobile } from "providers/IsMobile";
-import { MobileNav } from "features/Navigation/components/MobileNav";
-import { DesktopNav } from "features/Navigation/components/DesktopNav";
-import { useHistory } from "react-router-dom";
-import {
-    useLogoutHandler,
-    useProfileLO
-} from "providers/Profile";
+import {useIsMobile} from "providers/IsMobile";
+import {MobileNav} from "features/Navigation/components/MobileNav";
+import {DesktopNav} from "features/Navigation/components/DesktopNav";
+import {useHistory} from "react-router-dom";
+import {useLogoutHandler, useProfileLO} from "providers/Profile";
 import RouteStore from "../../data/RouteStore";
 import friendStore from "../../data/FriendStore";
-import { zippedComparator } from "../../util/comparators";
+import {zippedComparator} from "../../util/comparators";
 import Dispatcher from "../../data/dispatcher";
-import PlanActions from "../Planner/data/PlanActions";
+import ShoppingActions from "../../data/ShoppingActions";
 
 type NavigationControllerProps = {
     authenticated: boolean,
@@ -65,16 +55,13 @@ export const NavigationController: React.FC<NavigationControllerProps> = ({authe
         doLogout();
     };
 
-    const handleSelectPlan = id => {
-        if (selected === "shop") {
-            Dispatcher.dispatch({
-                type: PlanActions.SELECT_PLAN,
+    const shopView = selected === "shop";
+    const handleSelectPlan = shopView
+        ? id => Dispatcher.dispatch({
+            type: ShoppingActions.TOGGLE_PLAN,
                 id,
-            });
-        } else {
-        history.push(`/plan/${id}`);
-        }
-    };
+        })
+        : id => history.push(`/plan/${id}`);
 
     const getPlans = useFluxStore(
         () => {
@@ -129,10 +116,11 @@ export const NavigationController: React.FC<NavigationControllerProps> = ({authe
             <DesktopNav
                 selected={selected}
                 expanded={expanded}
-                handleProfile={handleProfile}
-                handleLogout={handleLogout}
-                handleSelectPlan={handleSelectPlan}
-                handleExpand={handleExpand}
+                onProfile={handleProfile}
+                onLogout={handleLogout}
+                shopView={shopView}
+                onSelectPlan={handleSelectPlan}
+                onExpand={handleExpand}
                 devMode={devMode}
                 planItems={navPlanItems}
             />
