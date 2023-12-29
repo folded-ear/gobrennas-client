@@ -12,10 +12,13 @@ interface AccessControlled {
 }
 
 interface CorePlanItem {
+    childCount: NonNegativeInt!
     children: [PlanItem!]!
+    descendantCount: NonNegativeInt!
     descendants: [PlanItem!]!
     id: ID!
     name: String!
+    plan: Plan!
 }
 
 interface Ingredient {
@@ -129,6 +132,7 @@ type LibraryQuery {
 
 type Mutation {
     favorite: FavoriteMutation
+    planner: PlannerMutation
     timer: TimerMutation
 }
 
@@ -165,36 +169,113 @@ type Photo {
 }
 
 type Plan implements AccessControlled & CorePlanItem & Node & Owned {
+    bucketCount: NonNegativeInt!
     buckets: [PlanBucket!]!
+    childCount: NonNegativeInt!
     children: [PlanItem!]!
+    descendantCount: NonNegativeInt!
     descendants: [PlanItem!]!
     grants: [AccessControlEntry!]!
     id: ID!
     name: String!
     owner: User!
+    "A plan's plan is always itself."
+    plan: Plan!
+    share: ShareInfo
 }
 
 type PlanBucket {
-    date: Date!
+    date: Date
     id: ID!
     name: String
+    plan: Plan!
 }
 
 "Represents a single item on a plan"
 type PlanItem implements CorePlanItem & Node {
+    aggregate: PlanItem
     bucket: PlanBucket
+    childCount: NonNegativeInt!
     children: [PlanItem!]!
+    componentCount: NonNegativeInt!
     components: [PlanItem!]!
+    descendantCount: NonNegativeInt!
     descendants: [PlanItem!]!
     id: ID!
     name: String!
     notes: String
-    parent: PlanItem!
+    parent: PlanItem
     plan: Plan!
     preparation: String
-    quantity: NonNegativeFloat
+    quantity: Quantity
     status: PlanItemStatus!
-    units: String
+}
+
+type PlannerMutation {
+    "Assign a plan item to a bucket (in the same plan)."
+    assignBucket(bucketId: ID!, id: ID!): PlanItem!
+    "Create a new bucket w/in a plan, with an optional name and date."
+    createBucket(date: Date, name: String, planId: ID!): PlanBucket!
+    """
+
+    Create a new item under the specified parent (which may be a plan, for
+    top-level items), after the specified peer item (null means 'at end'), and with
+    the specified name.
+    """
+    createItem(afterId: ID, name: String!, parentId: ID!): PlanItem!
+    "Create a new empty plan."
+    createPlan(name: String!): Plan!
+    "Delete a bucket from a plan."
+    deleteBucket(bucketId: ID!, planId: ID!): Plan!
+    "Deletes the grant for a user w/in a plan, if one exists."
+    deleteGrant(planId: ID!, userId: ID!): Plan!
+    """
+
+    Deletes an item from a plan, and return its former parent (plan or item).
+    This operation cascades.
+    """
+    deleteItem(id: ID!): PlanItem
+    "Deletes the given plan, and all its related data."
+    deletePlan(id: ID!): Boolean
+    "Create a new plan by duplicating the specified source plan."
+    duplicatePlan(name: String!, sourcePlanId: ID!): Plan!
+    """
+
+    Move the given items under the given parent, in order, optionally after a
+    specific item already under that parent. The parent's info is returned.
+    """
+    mutateTree(afterId: ID, itemIds: [ID!]!, parentId: ID!): PlanItem!
+    "Update the name of the given plan or plan item (but not bucket)."
+    rename(id: ID!, name: String!): PlanItem!
+    """
+
+    Reorder the item/plan subitems in the same order as the passed list. If
+    there are subitems not included in the list, they will not be reordered. If
+    an item under a different parent is included in the list, it will be moved
+    under this item.
+    """
+    reorderSubitems(itemIds: [ID!]!, parentId: ID!): PlanItem
+    "Set the access level granted to a user w/in a plan."
+    setGrant(accessLevel: AccessLevel, planId: ID!, userId: ID!): Plan!
+    """
+
+    Sets the status of the given item. This will always return the updated
+    item, though it may immediately moved to the trash (in the background).
+    """
+    setStatus(id: ID!, status: PlanItemStatus!): PlanItem!
+    "Update a bucket w/in a plan, by setting or clearing its name and date."
+    updateBucket(bucketId: ID!, date: Date, name: String, planId: ID!): PlanBucket!
+}
+
+type PlannerQuery {
+    planItem(id: ID!): PlanItem!
+    plans: [Plan]!
+    """
+
+    Retrieve all items on the given plan which have been updated since the
+    passed cutoff (expressed in milliseconds since the UNIX epoch).
+    """
+    updatedSince(cutoff: Long, planId: ID!): [PlanItem!]!
 }
 
 type Quantity {
@@ -205,11 +286,10 @@ type Quantity {
 type Query {
     favorite: FavoriteQuery
     getCurrentUser: User
-    getPlanItem(id: ID!): PlanItem
-    getPlans: [Plan]
     labels: LabelsQuery
     library: LibraryQuery
     node(id: ID!): Node
+    planner: PlannerQuery
     timer: TimerQuery
 }
 
@@ -242,6 +322,12 @@ type RecipeConnection {
 type RecipeConnectionEdge {
     cursor: Cursor!
     node: Recipe!
+}
+
+type ShareInfo {
+    id: ID!
+    secret: String!
+    slug: String!
 }
 
 "Represents a pause-able timer of user-specified length."
@@ -338,8 +424,8 @@ scalar Date
 "An RFC-3339 compliant DateTime Scalar"
 scalar DateTime
 
-"An Float scalar that must be greater than or equal to zero"
-scalar NonNegativeFloat
+"A 64-bit signed integer"
+scalar Long
 
 "An Int scalar that must be greater than or equal to zero"
 scalar NonNegativeInt
