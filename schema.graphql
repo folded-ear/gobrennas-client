@@ -95,6 +95,12 @@ type LabelsQuery {
     all: [Label!]!
 }
 
+type LibraryMutation {
+    createRecipe(cookThis: Boolean, info: IngredientInfo!, photo: Upload): Recipe!
+    deleteRecipe(id: ID!): Boolean!
+    updateRecipe(id: ID!, info: IngredientInfo!, photo: Upload): Recipe!
+}
+
 type LibraryQuery {
     getRecipeById(id: ID!): Recipe
     """
@@ -132,6 +138,7 @@ type LibraryQuery {
 
 type Mutation {
     favorite: FavoriteMutation
+    library: LibraryMutation
     planner: PlannerMutation
     timer: TimerMutation
 }
@@ -236,7 +243,7 @@ type PlannerMutation {
     """
     deleteItem(id: ID!): PlanItem
     "Deletes the given plan, and all its related data."
-    deletePlan(id: ID!): Boolean
+    deletePlan(id: ID!): Boolean!
     "Create a new plan by duplicating the specified source plan."
     duplicatePlan(name: String!, sourcePlanId: ID!): Plan!
     """
@@ -432,3 +439,30 @@ scalar NonNegativeInt
 
 "An Int scalar that must be a positive value"
 scalar PositiveInt
+
+"A file part in a multipart request"
+scalar Upload
+
+input IngredientInfo {
+    calories: Int
+    directions: String
+    externalUrl: String
+    ingredients: [IngredientRefInfo!]
+    labels: [String!]
+    name: String!
+    photoFocus: [Float!]
+    storeOrder: Int
+    totalTime: Int
+    type: String!
+    yield: Int
+}
+
+input IngredientRefInfo {
+    ingredient: String
+    ingredientId: Long
+    preparation: String
+    quantity: Float
+    raw: String!
+    units: String
+    uomId: Long
+}
