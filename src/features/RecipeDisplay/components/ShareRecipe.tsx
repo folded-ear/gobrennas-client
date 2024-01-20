@@ -30,7 +30,7 @@ const Body: React.FC<ShareRecipeProps> = ({ recipe }) => {
                 secret: "",
             },
         });
-        axios.get(`/share/${recipe.id}`).then(
+        axios.get(`/${recipe.id}/share`).then(
             (data) =>
                 setRlo({
                     ...emptyRLO(),
