@@ -11,16 +11,25 @@ import CloseButton from "../../views/common/CloseButton";
 import EditButton from "../../views/common/EditButton";
 import DeleteButton from "../../views/common/DeleteButton";
 import RecipeApi from "../../data/RecipeApi";
+import NotFound from "../../views/common/NotFound";
 
 type Props = RouteComponentProps<{
     id: string;
 }>;
 
 const RecipeController: React.FC<Props> = ({ match }) => {
-    const { loading, data: fullRecipe } = useGetFullRecipe(match.params.id);
+    const {
+        loading,
+        error,
+        data: fullRecipe,
+    } = useGetFullRecipe(match.params.id);
 
-    if (loading || !fullRecipe) {
+    if (loading) {
         return <LoadingIndicator />;
+    }
+
+    if (error || !fullRecipe) {
+        return <NotFound />;
     }
 
     return (
