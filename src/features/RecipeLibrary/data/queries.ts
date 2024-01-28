@@ -17,8 +17,6 @@ export const SEARCH_RECIPES = gql(`
                             id
                             imageUrl
                             name
-                            email
-                            provider
                         }
                         photo {
                             url
