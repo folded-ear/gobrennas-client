@@ -55,6 +55,7 @@
     "build": "react-scripts build",
     "compile": "graphql-codegen",
     "test": "react-scripts test",
+    "pretest": "npm run compile",
     "posttest": "eslint --max-warnings 0 ./src",
     "eject": "react-scripts eject",
     "lint": "eslint ./src",
