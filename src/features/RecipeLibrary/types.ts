@@ -4,7 +4,7 @@ import { BfsId } from "global/types/types";
 export interface RecipeCard {
     id: BfsId;
     name: string;
-    owner: UserType;
+    owner: Partial<UserType>;
     calories?: number | null;
     externalUrl?: string | null;
     favorite: boolean;
