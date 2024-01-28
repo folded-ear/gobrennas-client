@@ -1,7 +1,8 @@
 import { Photo, User as UserType } from "__generated__/graphql";
+import { BfsId } from "global/types/types";
 
 export interface RecipeCard {
-    id: string;
+    id: BfsId;
     name: string;
     owner: UserType;
     calories?: number | null;
