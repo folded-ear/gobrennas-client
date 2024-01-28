@@ -29,8 +29,6 @@ export const useSearchLibrary = ({
         },
     });
 
-    const isComplete = !data?.library?.recipes.pageInfo.hasNextPage;
-
     // e.node
     const recipes: RecipeCard[] =
         data?.library?.recipes.edges.map((it) => ({
@@ -51,7 +49,7 @@ export const useSearchLibrary = ({
         error,
         refetch,
         fetchMore,
-        isComplete,
+        isComplete: !data?.library?.recipes.pageInfo.hasNextPage,
         endCursor: data?.library?.recipes.pageInfo.endCursor,
         data: recipes,
     };
