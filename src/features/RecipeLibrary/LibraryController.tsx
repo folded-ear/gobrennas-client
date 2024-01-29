@@ -1,11 +1,10 @@
-import { useQuery } from "@apollo/client";
 import { RecipesList } from "features/RecipeLibrary/components/RecipesList";
 import { useProfile } from "providers/Profile";
 import qs from "qs";
 import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
 import { LibrarySearchScope } from "__generated__/graphql";
-import { SEARCH_RECIPES } from "features/RecipeLibrary/data/queries";
+import { useSearchLibrary } from "features/RecipeLibrary/hooks/useSearchLibrary";
 
 export const LibraryController = () => {
     const me = useProfile();
@@ -19,11 +18,16 @@ export const LibraryController = () => {
             ? LibrarySearchScope.Everyone
             : LibrarySearchScope.Mine,
     );
-    const { data, loading, refetch, fetchMore } = useQuery(SEARCH_RECIPES, {
-        variables: {
-            query,
-            scope,
-        },
+    const {
+        data: recipes,
+        loading,
+        refetch,
+        fetchMore,
+        isComplete,
+        endCursor,
+    } = useSearchLibrary({
+        scope,
+        query,
     });
 
     function handleSearch(newQuery, newScope) {
@@ -43,7 +47,7 @@ export const LibraryController = () => {
     function handleNeedMore() {
         return fetchMore({
             variables: {
-                after: data?.library?.recipes.pageInfo.endCursor,
+                after: endCursor,
             },
         });
     }
@@ -54,9 +58,9 @@ export const LibraryController = () => {
             onSearch={handleSearch}
             scope={scope}
             filter={query}
-            recipes={data?.library?.recipes.edges.map((e) => e.node)}
+            recipes={recipes}
             isLoading={loading}
-            isComplete={!data?.library?.recipes.pageInfo.hasNextPage}
+            isComplete={isComplete}
             onNeedMore={handleNeedMore}
         />
     );

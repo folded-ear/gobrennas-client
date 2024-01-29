@@ -1,7 +1,7 @@
 import { gql } from "__generated__";
 
 export const SEARCH_RECIPES = gql(`
-    query lib(
+    query getSearchLibrary(
         $query: String! = ""
         $scope: LibrarySearchScope! = MINE
         $first: NonNegativeInt! = 9
