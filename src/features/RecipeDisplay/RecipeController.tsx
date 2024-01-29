@@ -28,11 +28,12 @@ const RecipeController: React.FC<Props> = ({ match }) => {
         return <LoadingIndicator />;
     }
 
-    if (error || !fullRecipe) {
+    if (error) {
         return <NotFound />;
     }
 
     return (
+        fullRecipe &&
         fullRecipe.recipe && (
             <ScalingProvider>
                 <RecipeDetail

@@ -49,38 +49,38 @@ export const useGetFullRecipe = (id: string): UseQueryResult<FullRecipe> => {
         }));
     }, [result]);
 
-    if (!result) {
+    if (result && !loading) {
+        const recipe: Recipe = {
+            calories: result.calories,
+            directions: result.directions || "",
+            externalUrl: result.externalUrl,
+            id: parseInt(result.id, 10),
+            ingredients,
+            labels: [],
+            name: result.name || "",
+            photo: result.photo?.url || null,
+            photoFocus: result.photo?.focus || [],
+            totalTime: result.totalTime,
+            yield: result.yield,
+        };
+
+        const fullRecipe: FullRecipe = {
+            mine: result.owner.id === myId.toString(),
+            owner: result.owner,
+            recipe,
+            subrecipes,
+        };
+
         return {
-            loading: false,
-            error: true,
-            data: null,
+            loading,
+            error,
+            data: fullRecipe,
         };
     }
-
-    const recipe: Recipe = {
-        calories: result.calories,
-        directions: result.directions || "",
-        externalUrl: result.externalUrl,
-        id: parseInt(result.id, 10),
-        ingredients,
-        labels: [],
-        name: result.name || "",
-        photo: result.photo?.url || null,
-        photoFocus: result.photo?.focus || [],
-        totalTime: result.totalTime,
-        yield: result.yield,
-    };
-
-    const fullRecipe: FullRecipe = {
-        mine: result.owner.id === myId.toString(),
-        owner: result.owner,
-        recipe,
-        subrecipes,
-    };
 
     return {
         loading,
         error,
-        data: fullRecipe,
+        data: null,
     };
 };
