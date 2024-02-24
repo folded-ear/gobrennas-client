@@ -108,7 +108,7 @@ type LibraryQuery {
     Please ignore; I exist because GraphQL defines the available types as
     those reachable from fields. Since PantryItem is currently only used
     polymorphically (e.g., by `Query`'s `node` field), it will not be included
-    in the available types.
+    in the available types without this dummy field.
     """
     pantryItem: PantryItem
     "Search the recipe library."
@@ -134,6 +134,22 @@ type LibraryQuery {
         "The scope to search for recipes within."
         scope: LibrarySearchScope! = MINE
     ): RecipeConnection!
+    """
+
+    Recognize quantity, unit, and/or ingredient in a raw ingredient ref (aka
+    item) string, and describe that structure. By default, also provide
+    suggestions based on partial matches.
+    """
+    recognizeItem(
+        """
+
+        The position of the cursor in the raw string, used to make contextual
+        suggestions. If not specified, the end of the raw string is assumed.
+        """
+        cursor: NonNegativeInt,
+        "The raw string to recognize."
+        raw: String!
+    ): RecognizedItem
 }
 
 type Mutation {
@@ -331,6 +347,46 @@ type RecipeConnectionEdge {
     node: Recipe!
 }
 
+"""
+
+A suggestion for what might come next at the cursor position, along with the
+target range of the raw string it would replace.
+"""
+type RecognitionSuggestion {
+    name: String!
+    target: RecognizedRange!
+}
+
+"The result of recognizing a raw ingredient ref item."
+type RecognizedItem {
+    "The position of the cursor in the raw string."
+    cursor: NonNegativeInt!
+    "Recognized ranges within the raw string."
+    ranges: [RecognizedRange!]!
+    "The raw string which was recognized."
+    raw: String!
+    """
+
+    Suggestions of what the user might wish to insert at the current cursor
+    position. If more than 'count' suggestions are available, the returned
+    subset is unspecified, other than pantry items are preferred to recipes.
+    """
+    suggestions(count: PositiveInt! = 10): [RecognitionSuggestion!]!
+}
+
+"""
+
+A recognized quantity in the raw string. The type indicates which of the id
+or quantity fields will be non-null, if either.
+"""
+type RecognizedRange {
+    end: NonNegativeInt!
+    id: ID
+    quantity: NonNegativeFloat
+    start: NonNegativeInt!
+    type: RecognizedRangeType!
+}
+
 type ShareInfo {
     id: ID!
     secret: String!
@@ -422,6 +478,15 @@ enum PlanItemStatus {
     NEEDED
 }
 
+enum RecognizedRangeType {
+    ITEM
+    NEW_ITEM
+    NEW_UNIT
+    QUANTITY
+    UNIT
+    UNKNOWN
+}
+
 "The type of a cursor, an opaque string used for walking connections."
 scalar Cursor
 
@@ -433,6 +498,9 @@ scalar DateTime
 
 "A 64-bit signed integer"
 scalar Long
+
+"An Float scalar that must be greater than or equal to zero"
+scalar NonNegativeFloat
 
 "An Int scalar that must be greater than or equal to zero"
 scalar NonNegativeInt
