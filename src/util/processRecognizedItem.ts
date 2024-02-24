@@ -2,7 +2,11 @@
 import { RecognitionRangeType, RecognitionResult } from "../data/ItemApi";
 
 function processRecognizedItem(recog: RecognitionResult) {
-    const qr = recog.ranges.find((r) => r.type === RecognitionRangeType.AMOUNT);
+    const qr = recog.ranges.find(
+        (r) =>
+            r.type === RecognitionRangeType.QUANTITY ||
+            r.type === RecognitionRangeType.AMOUNT, // AMOUNT is deprecated
+    );
     const ur = recog.ranges.find(
         (r) =>
             r.type === RecognitionRangeType.UNIT ||
@@ -24,11 +28,11 @@ function processRecognizedItem(recog: RecognitionResult) {
         return s.substring(1, s.length - 1);
     };
     const q = textFromRange(qr);
-    const qv = qr && qr.value;
+    const qv = qr && (qr.quantity || qr.value); // value is deprecated
     const u = textFromRange(ur);
-    const uv = ur && ur.value;
+    const uv = ur && (ur.id || ur.value); // value is deprecated
     const n = textFromRange(nr);
-    const nv = nr && nr.value;
+    const nv = nr && (nr.id || nr.value); // value is deprecated
     const p = [qr, ur, nr]
         .filter((it) => it != null)
         .sort(
