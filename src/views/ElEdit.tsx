@@ -13,9 +13,9 @@ export interface Value {
     id?: BfsId;
     raw: string;
     quantity?: number;
-    uomId?: number;
+    uomId?: BfsId;
     units?: string;
-    ingredientId?: number;
+    ingredientId?: BfsId;
     ingredient?: Ingredient;
     preparation?: string;
 }
@@ -54,9 +54,9 @@ interface ElEditState {
     quantity?: number;
     quantityValue?: number;
     unit?: string;
-    unitValue?: number;
+    unitValue?: BfsId;
     ingredientName?: string;
-    nameValue?: number;
+    nameValue?: BfsId;
     preparation?: string;
 }
 

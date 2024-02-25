@@ -1,6 +1,7 @@
 import BaseAxios from "axios";
 import { API_BASE_URL } from "../constants";
 import serializeObjectOfPromiseFns from "../util/serializeObjectOfPromiseFns";
+import { BfsId } from "../global/types/types";
 
 const axios = BaseAxios.create({
     baseURL: `${API_BASE_URL}/api`,
@@ -9,6 +10,8 @@ const axios = BaseAxios.create({
 export enum RecognitionRangeType {
     // noinspection JSUnusedGlobalSymbols
     UNKNOWN = "UNKNOWN",
+    QUANTITY = "QUANTITY",
+    // @deprecated - prefer QUANTITY
     AMOUNT = "AMOUNT",
     UNIT = "UNIT",
     NEW_UNIT = "NEW_UNIT",
@@ -20,6 +23,11 @@ interface RecognitionRange {
     start: number;
     end: number;
     type: RecognitionRangeType;
+    // for QUANTITY ranges, the numeric quantity
+    quantity: number;
+    // for UNIT and ITEM ranges, the object's ID
+    id: BfsId;
+    // @deprecated - prefer quantity or id, based on type
     value: number;
 }
 
