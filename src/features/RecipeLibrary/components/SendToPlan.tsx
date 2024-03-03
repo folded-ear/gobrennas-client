@@ -1,16 +1,8 @@
-import { Button, IconButton } from "@mui/material";
-import makeStyles from "@mui/styles/makeStyles";
-import { AddShoppingCart, ExitToApp } from "@mui/icons-material";
+import { IconButton } from "@mui/material";
+import { AddShoppingCart, ExitToApp as SendIcon } from "@mui/icons-material";
 import React from "react";
 import useActivePlanner from "data/useActivePlanner";
-
-const useStyles = makeStyles({
-    button: {
-        whiteSpace: "nowrap",
-        overflow: "hidden",
-        textOverflow: "ellipsis",
-    },
-});
+import TextButton from "../../../views/common/TextButton";
 
 interface Props {
     onClick(planId: number): void;
@@ -18,7 +10,6 @@ interface Props {
 }
 
 const SendToPlan: React.FC<Props> = ({ onClick, iconOnly }) => {
-    const classes = useStyles();
     const list = useActivePlanner().data;
     if (!list) return null;
     const handleClick = () =>
@@ -37,17 +28,16 @@ const SendToPlan: React.FC<Props> = ({ onClick, iconOnly }) => {
         );
     } else {
         return (
-            <Button
+            <TextButton
                 disableElevation
                 variant="contained"
                 color="secondary"
                 onClick={handleClick}
-                startIcon={<ExitToApp />}
+                title={`Send to ${list.name}`}
+                startIcon={<SendIcon />}
             >
-                <span className={classes.button} title={`Send to ${list.name}`}>
-                    To {list.name}
-                </span>
-            </Button>
+                To {list.name}
+            </TextButton>
         );
     }
 };
