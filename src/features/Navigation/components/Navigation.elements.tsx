@@ -91,9 +91,10 @@ interface ItemIconProps extends ListItemIconProps {
 }
 
 export const ItemIcon: React.FC<ItemIconProps> = (props) => {
-    const { open, sx, children } = props;
+    const { open, sx, children, ...passthrough } = props;
     return (
         <ListItemIcon
+            {...passthrough}
             sx={{
                 minWidth: 0,
                 mr: open ? 3 : "auto",

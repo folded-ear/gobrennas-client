@@ -1,36 +1,23 @@
 import {
-    CheckBoxOutlineBlankOutlined as ShopIcon,
-    CheckBoxOutlined as ActiveShopIcon,
+    CheckBoxOutlineBlankOutlined as InactiveIcon,
+    CheckBoxOutlined as ActiveIcon,
 } from "@mui/icons-material";
 import * as React from "react";
-import { ListItemButton, Typography } from "@mui/material";
-import { ItemIcon } from "./Navigation.elements";
-import { BfsId } from "../../../global/types/types";
 import useActiveShoppingPlanIds from "../../../data/useActiveShoppingPlanIds";
+import BasePlanNavItem, { BasePlanNavItemProps } from "./BasePlanNavItem";
 
-type NavShopItemProps = {
-    id: BfsId;
-    onSelect: (e) => void;
-    expanded: boolean;
-    name: string;
-    color: string;
-};
-
-export const NavShopItem: React.FC<NavShopItemProps> = ({
-    onSelect,
-    expanded,
-    name,
-    color,
+export const NavShopItem: React.FC<BasePlanNavItemProps> = ({
     id,
+    ...passthrough
 }) => {
     const active = useActiveShoppingPlanIds().includes(id);
-    const Icon = active ? ActiveShopIcon : ShopIcon;
     return (
-        <ListItemButton onClick={() => onSelect(id)} title={name}>
-            <ItemIcon open={expanded}>
-                <Icon sx={{ color: color }} />
-            </ItemIcon>
-            <Typography noWrap>{expanded ? name : null}</Typography>
-        </ListItemButton>
+        <BasePlanNavItem
+            id={id}
+            active={active}
+            activeIcon={ActiveIcon}
+            inactiveIcon={InactiveIcon}
+            {...passthrough}
+        />
     );
 };

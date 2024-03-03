@@ -21,13 +21,15 @@ import { NavOwnerItem } from "./NavOwnerItem";
 import User from "../../../views/user/User";
 import { useProfile } from "../../../providers/Profile";
 import { NavShopItem } from "./NavShopItem";
+import { BfsId } from "../../../global/types/types";
 
 type DesktopNavProps = {
     selected: string;
     planItems: any;
     onProfile: (e: React.SyntheticEvent) => void;
     onLogout: (e: React.SyntheticEvent) => void;
-    onSelectPlan: (id: string) => void;
+    onOpenPlan: (id: BfsId) => void;
+    onSelectPlan: (id: BfsId) => void;
     shopView?: boolean;
     onExpand: () => void;
     expanded?: boolean;
@@ -41,6 +43,7 @@ export const DesktopNav: React.FC<DesktopNavProps> = ({
     onProfile,
     onLogout,
     onSelectPlan,
+    onOpenPlan,
     shopView,
     expanded = false,
     devMode = false,
@@ -100,7 +103,8 @@ export const DesktopNav: React.FC<DesktopNavProps> = ({
                                     <PlanItem
                                         key={item.id}
                                         id={item.id}
-                                        onSelect={onSelectPlan}
+                                        onIconClick={onSelectPlan}
+                                        onClick={onOpenPlan}
                                         expanded={expanded}
                                         name={item.name}
                                         color={colorHash(item.id)}
