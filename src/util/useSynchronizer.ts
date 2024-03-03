@@ -1,32 +1,44 @@
 import { useIsAuthenticated } from "providers/Profile";
 import React from "react";
-import { useQuery } from "react-query";
+import { useQueries } from "react-query";
+import { UseQueryOptions } from "react-query/types/react/types";
+
+interface ToSync
+    extends Omit<
+        UseQueryOptions<any, any, any, unknown[]>,
+        "queryKey" | "queryFn"
+    > {
+    queryKey: unknown[];
+    queryFn: (ts: number) => Promise<unknown>;
+}
 
 function useSynchronizer(
-    queryKey: unknown[],
-    queryFn: (ts: number) => Promise<unknown>,
-    options = {},
+    queryKey: ToSync["queryKey"],
+    queryFn: ToSync["queryFn"],
+    options: Omit<ToSync, "queryKey" | "queryFn"> = {},
 ) {
-    const [ts, setTs] = React.useState(Date.now());
-    const refetchInterval = React.useMemo(
-        () => (15 + (Math.random() - 0.5) * 5) * 1000,
-        [],
-    );
-    const authenticated = useIsAuthenticated();
-    useQuery(
-        [...queryKey, authenticated],
-        () => {
-            const nextTs = Date.now();
+    useSynchronizers([{ queryKey, queryFn, ...options }]);
+}
 
-            return (authenticated ? queryFn(ts) : Promise.reject()).finally(
-                () => setTs(nextTs),
-            );
-        },
-        {
-            refetchInterval,
-            refetchIntervalInBackground: false,
-            ...options,
-        },
+export function useSynchronizers(queries: ToSync[]) {
+    const [ts, setTs] = React.useState(Date.now());
+    const authenticated = useIsAuthenticated();
+    useQueries(
+        queries.map(({ queryKey, queryFn, ...options }) => {
+            return {
+                queryKey: [...queryKey, authenticated],
+                queryFn: () => {
+                    const nextTs = Date.now();
+
+                    return (
+                        authenticated ? queryFn(ts) : Promise.reject()
+                    ).finally(() => setTs(nextTs));
+                },
+                refetchInterval: (15 + (Math.random() - 0.5) * 5) * 1000,
+                refetchIntervalInBackground: false,
+                ...options,
+            };
+        }),
     );
 }
 
