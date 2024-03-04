@@ -1,5 +1,5 @@
 import * as React from "react";
-import useIsDevMode from "data/useIsDevMode";
+import useIsDevMode, { setDevMode } from "data/useIsDevMode";
 import Dispatcher from "data/dispatcher";
 import UserActions from "data/UserActions";
 import Divider from "@mui/material/Divider";
@@ -61,12 +61,7 @@ const DevMode: React.FC = () => {
 export const Developer: React.FC = () => {
     const isDevMode = useIsDevMode();
 
-    const handleDevModeChange = (e) => {
-        Dispatcher.dispatch({
-            type: UserActions.SET_DEV_MODE,
-            enabled: e.target.checked,
-        });
-    };
+    const handleDevModeChange = (e) => setDevMode(e.target.checked);
 
     return (
         <>

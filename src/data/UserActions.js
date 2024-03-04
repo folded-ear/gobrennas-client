@@ -7,6 +7,7 @@ const UserActions = {
         enabled: PropTypes.bool.isRequired,
     }),
     SET_LAYOUT: "user/set-layout",
+    SET_NAV_COLLAPSED: "user/set-nav-collapsed",
 };
 
 export default UserActions;
