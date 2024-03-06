@@ -1,7 +1,7 @@
 import useActivePlanner from "data/useActivePlanner";
-import PlanApi from "./PlanApi";
 import useActiveShoppingPlanIds from "../../../data/useActiveShoppingPlanIds";
 import { useSynchronizers } from "../../../util/useSynchronizer";
+import TaskApi from "./TaskApi";
 
 function PlanItemSynchronizer() {
     let planIds = useActiveShoppingPlanIds();
@@ -14,7 +14,7 @@ function PlanItemSynchronizer() {
             queryKey: ["plan", planId, "items"],
             queryFn: (ts) =>
                 planId
-                    ? PlanApi.getItemsUpdatedSince(planId, ts)
+                    ? TaskApi.getItemsUpdatedSince(planId, ts)
                     : Promise.resolve(),
         })),
     );

@@ -32,7 +32,10 @@ export function useSynchronizers(queries: ToSync[]) {
 
                     return (
                         authenticated ? queryFn(ts) : Promise.reject()
-                    ).finally(() => setTs(nextTs));
+                    ).finally(() =>
+                        // this may double-retrieve changes, but won't MISS any.
+                        setTs((ts) => (ts < Date.now() ? nextTs : ts)),
+                    );
                 },
                 refetchInterval: (15 + (Math.random() - 0.5) * 5) * 1000,
                 refetchIntervalInBackground: false,
