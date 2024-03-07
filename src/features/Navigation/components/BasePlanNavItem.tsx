@@ -2,7 +2,7 @@ import {
     RadioButtonChecked as ActiveIcon,
     RadioButtonUnchecked as InactiveIcon,
 } from "@mui/icons-material";
-import { ListItemButton, Typography } from "@mui/material";
+import { ListItemButton, Tooltip, Typography } from "@mui/material";
 import { ItemIcon } from "./Navigation.elements";
 import * as React from "react";
 import { BfsId } from "../../../global/types/types";
@@ -36,7 +36,7 @@ export default function BasePlanNavItem({
 }: Props) {
     const Icon = active ? activeIcon : inactiveIcon;
     return (
-        <ListItemButton onClick={() => onClick(id)} title={name}>
+        <ListItemButton onClick={() => onClick(id)}>
             <ItemIcon
                 onClick={(e) => {
                     e.stopPropagation();
@@ -44,9 +44,13 @@ export default function BasePlanNavItem({
                 }}
                 open={expanded}
             >
-                <Icon sx={{ color: color }} />
+                <Tooltip title={name} placement={"right"} arrow>
+                    <Icon sx={{ color: color }} />
+                </Tooltip>
             </ItemIcon>
-            <Typography noWrap>{expanded ? name : null}</Typography>
+            <Typography noWrap title={name}>
+                {expanded ? name : null}
+            </Typography>
         </ListItemButton>
     );
 }
