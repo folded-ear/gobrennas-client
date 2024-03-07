@@ -21,6 +21,7 @@ import friendStore from "../../data/FriendStore";
 import { zippedComparator } from "../../util/comparators";
 import Dispatcher from "../../data/dispatcher";
 import ShoppingActions from "../../data/ShoppingActions";
+import PlanActions from "../Planner/data/PlanActions";
 import useIsNavCollapsed, {
     setNavCollapsed,
 } from "../../data/useIsNavCollapsed";
@@ -29,6 +30,19 @@ type NavigationControllerProps = {
     authenticated: boolean;
     children?: ReactNode;
 };
+
+function toggleShoppingPlan(id) {
+    return Dispatcher.dispatch({
+        type: ShoppingActions.TOGGLE_PLAN,
+        id,
+    });
+}
+function selectPlan(id) {
+    return Dispatcher.dispatch({
+        type: PlanActions.SELECT_PLAN,
+        id,
+    });
+}
 
 export const NavigationController: React.FC<NavigationControllerProps> = ({
     authenticated,
@@ -64,14 +78,22 @@ export const NavigationController: React.FC<NavigationControllerProps> = ({
         doLogout();
     };
 
+    // This logic is somewhat convoluted. However, the goals are simple:
+    // - When viewing the planner, plan items and their icons navigate (switch
+    //   between plans).
+    // - When viewing the shopping list, plan items and their icons toggle
+    //   inclusion of the plan on the list.
+    // - Otherwise, plan items open the plan, BUT their icons merely set the
+    //   active plan without navigating to it.
     const shopView = selected === "shop";
+    const planView = selected === "plan";
+    const openPlan = (id) => history.push(`/plan/${id}`);
     const handleSelectPlan = shopView
-        ? (id) =>
-              Dispatcher.dispatch({
-                  type: ShoppingActions.TOGGLE_PLAN,
-                  id,
-              })
-        : (id) => history.push(`/plan/${id}`);
+        ? toggleShoppingPlan
+        : planView
+        ? openPlan
+        : selectPlan;
+    const handleOpenPlan = shopView ? toggleShoppingPlan : openPlan;
 
     const getPlans = useFluxStore(
         () => {
@@ -143,6 +165,7 @@ export const NavigationController: React.FC<NavigationControllerProps> = ({
                 onLogout={handleLogout}
                 shopView={shopView}
                 onSelectPlan={handleSelectPlan}
+                onOpenPlan={handleOpenPlan}
                 onExpand={handleExpand}
                 devMode={devMode}
                 planItems={navPlanItems}
