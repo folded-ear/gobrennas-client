@@ -1,15 +1,17 @@
 import React, { ReactNode } from "react";
 import { Box, Paper, Typography } from "@mui/material";
 
-interface MessagePaperProps {
+interface P {
     primary: string;
-    children?: ReactNode;
+    children?: never;
 }
+interface C {
+    primary?: never;
+    children: ReactNode;
+}
+type Props = P | C;
 
-export const MessagePaper: React.FC<MessagePaperProps> = ({
-    primary,
-    children,
-}) => {
+export const MessagePaper: React.FC<Props> = ({ primary, children }) => {
     return (
         <Paper
             style={{

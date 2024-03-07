@@ -22,6 +22,9 @@ import { zippedComparator } from "../../util/comparators";
 import Dispatcher from "../../data/dispatcher";
 import ShoppingActions from "../../data/ShoppingActions";
 import PlanActions from "../Planner/data/PlanActions";
+import useIsNavCollapsed, {
+    setNavCollapsed,
+} from "../../data/useIsNavCollapsed";
 
 type NavigationControllerProps = {
     authenticated: boolean;
@@ -45,7 +48,7 @@ export const NavigationController: React.FC<NavigationControllerProps> = ({
     authenticated,
     children,
 }) => {
-    const [expanded, setExpanded] = React.useState<boolean>(true);
+    const expanded = !useIsNavCollapsed();
     const isMobile = useIsMobile();
     const devMode = useIsDevMode();
     const profileRLO = ripLoadObject(useProfileLO());
@@ -65,7 +68,7 @@ export const NavigationController: React.FC<NavigationControllerProps> = ({
         history.push("/profile");
     };
 
-    const handleExpand = () => setExpanded(!expanded);
+    const handleExpand = () => setNavCollapsed(expanded);
 
     const doLogout = useLogoutHandler();
 

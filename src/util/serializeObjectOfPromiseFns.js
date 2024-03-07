@@ -9,9 +9,9 @@
  *
  * @param obj An object whose own properties are all Promise-returning functions
  * @returns a new object, with the same property keys, each of which is a new
- *  function. These functions do NOT return a Promise, but accept the same
- *  arguments as the corresponding function in the passed object, and will queue
- *  up invocations to the wrapped object's functions.
+ *  function accepting the same arguments as the corresponding function in the
+ *  passed object, which will queue up invocations to the wrapped object's
+ *  functions.
  */
 const serializeObjectOfPromiseFns = (obj) => {
     let queue = Promise.resolve();

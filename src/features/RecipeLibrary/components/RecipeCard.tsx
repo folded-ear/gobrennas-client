@@ -1,7 +1,6 @@
 import { MenuBook } from "@mui/icons-material";
 import {
     Box,
-    Button,
     Card,
     CardActions,
     CardContent,
@@ -26,6 +25,7 @@ import Source from "views/common/Source";
 import User from "views/user/User";
 import FavoriteIndicator from "../../Favorites/components/Indicator";
 import { Photo, User as UserType } from "../../../__generated__/graphql";
+import TextButton from "../../../views/common/TextButton";
 
 const useStyles = makeStyles({
     photo: {
@@ -159,8 +159,8 @@ const RecipeCard: React.FC<Props> = ({ recipe, mine, indicateMine, me }) => {
                 </CardContent>
             </>
             <CardActions>
-                <Stack direction="row" spacing={2}>
-                    <Button
+                <Stack direction="row" spacing={2} sx={{ maxWidth: "100%" }}>
+                    <TextButton
                         variant="contained"
                         color="secondary"
                         disableElevation
@@ -169,7 +169,7 @@ const RecipeCard: React.FC<Props> = ({ recipe, mine, indicateMine, me }) => {
                         to={`/library/recipe/${recipe.id}`}
                     >
                         View
-                    </Button>
+                    </TextButton>
                     <SendToPlan
                         onClick={(planId) =>
                             Dispatcher.dispatch({

@@ -17,6 +17,7 @@ const PrefNames = {
     ACTIVE_SHOPPING_PLANS: "activeShoppingPlans",
     DEV_MODE: "devMode",
     LAYOUT: "layout",
+    NAV_COLLAPSED: "navCollapsed",
 };
 
 type State = Map<string, any>;
@@ -93,11 +94,21 @@ class PreferencesStore extends ReduceStore<State, FluxAction> {
                 if (!action.enabled) {
                     state = clearPref(state, PrefNames.LAYOUT);
                 }
-                return setPref(state, PrefNames.DEV_MODE, action.enabled);
+                return setPref(state, PrefNames.DEV_MODE, !!action.enabled);
             }
+
             case UserActions.SET_LAYOUT: {
                 return setPref(state, PrefNames.LAYOUT, action.layout);
             }
+
+            case UserActions.SET_NAV_COLLAPSED: {
+                return setPref(
+                    state,
+                    PrefNames.NAV_COLLAPSED,
+                    !!action.collapsed,
+                );
+            }
+
             default:
                 return state;
         }
@@ -116,11 +127,15 @@ class PreferencesStore extends ReduceStore<State, FluxAction> {
     }
 
     isDevMode() {
-        return this.getState().get(PrefNames.DEV_MODE) || false;
+        return !!this.getState().get(PrefNames.DEV_MODE);
     }
 
     getLayout() {
         return this.getState().get(PrefNames.LAYOUT) || "auto";
+    }
+
+    isNavCollapsed() {
+        return !!this.getState().get(PrefNames.NAV_COLLAPSED);
     }
 }
 
