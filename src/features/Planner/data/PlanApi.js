@@ -1,6 +1,6 @@
 import BaseAxios from "axios";
 import { API_BASE_URL } from "constants/index";
-import promiseFlux, { soakUpUnauthorized } from "util/promiseFlux";
+import promiseFlux from "util/promiseFlux";
 import PlanActions from "./PlanActions";
 
 const axios = BaseAxios.create({
@@ -64,17 +64,6 @@ const PlanApi = {
             id,
             data: r.data,
         })),
-
-    getItemsUpdatedSince: (id, cutoff) =>
-        promiseFlux(
-            axios.get(`/${id}/all-since?cutoff=${cutoff}`),
-            (r) => ({
-                type: PlanActions.PLAN_DELTAS,
-                id,
-                data: r.data,
-            }),
-            soakUpUnauthorized,
-        ),
 
     createBucket: (planId, body) =>
         promiseFlux(axios.post(`/${planId}/buckets`, body), ({ data }) => ({

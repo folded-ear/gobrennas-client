@@ -12,7 +12,6 @@ import Dispatcher from "./data/dispatcher";
 import PantryItemSynchronizer from "./data/PantryItemSynchronizer";
 import queryClient from "./data/queryClient";
 import WindowActions from "./data/WindowActions";
-import { TimerProvider } from "./features/Timers/data/TimerContext";
 import * as serviceWorkerRegistration from "./serviceWorkerRegistration";
 import debounce from "./util/debounce";
 import history from "./util/history";
@@ -29,7 +28,7 @@ ReactDOM.render(
         AuthTokenProvider,
         ProfileProvider,
         IsMobileProvider,
-        TimerProvider,
+        // TimerProvider,
     ].reduceRight(
         (kids, Decorator) => <Decorator>{kids}</Decorator>,
         <QueryClientProvider client={queryClient}>
