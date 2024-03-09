@@ -14,6 +14,11 @@ if [ "$1" = "--spit" ]; then
   exit
 fi
 
+if [ "$1" = "--beta" ]; then
+  echo "Using beta's icon color"
+  sed -e 's/#F57F17/#2962FF/' -i '.prod' $SRC/*.svg
+fi
+
 function spit() {
   echo -n "> "
   echo "$@"
@@ -59,6 +64,7 @@ spit 150 mstile-150x150.png $SRC/logo.svg
 
 spit 180 apple-touch-icon.png $SRC/logo.svg
 sed -e 's/fill="#F57F17"/fill="none"/' $SRC/logo.svg > $OUT/safari-pinned-tab.svg
+sed -e 's/fill="#2962FF"/fill="none"/' -i '' $OUT/safari-pinned-tab.svg
 
 for x in 16 32 48; do
   spit $x favicon-${x}x$x.png $SRC/logo.svg
@@ -66,3 +72,9 @@ for x in 16 32 48; do
 done
 dkr convert favicon-48x48.ico favicon-32x32.ico favicon-16x16.ico $OUT/favicon.ico
 rm favicon-*.ico
+
+for f in $SRC/*.svg.prod; do
+  if [ -f "$f" ]; then
+    mv "$f" "${f%.*}"
+  fi
+done
