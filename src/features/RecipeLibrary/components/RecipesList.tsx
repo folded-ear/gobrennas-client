@@ -36,7 +36,7 @@ export const RecipesList: React.FC<RecipesListProps> = ({
 }) => {
     const isSearchFloating = useScrollTrigger({
         disableHysteresis: true,
-        threshold: 0,
+        threshold: 15,
     });
     const isMobile = useIsMobile();
     const [unsavedFilter, setUnsavedFilter] = useState(filter);
