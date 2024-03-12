@@ -22,10 +22,10 @@ import User from "../../../views/user/User";
 import { useProfile } from "../../../providers/Profile";
 import { NavShopItem } from "./NavShopItem";
 import { BfsId } from "../../../global/types/types";
+import useAllPlansRLO from "../../../data/useAllPlansRLO";
 
 type DesktopNavProps = {
     selected: string;
-    planItems: any;
     onProfile: (e: React.SyntheticEvent) => void;
     onLogout: (e: React.SyntheticEvent) => void;
     onOpenPlan: (id: BfsId) => void;
@@ -38,7 +38,6 @@ type DesktopNavProps = {
 
 export const DesktopNav: React.FC<DesktopNavProps> = ({
     selected,
-    planItems,
     onExpand,
     onProfile,
     onLogout,
@@ -49,6 +48,7 @@ export const DesktopNav: React.FC<DesktopNavProps> = ({
     devMode = false,
 }) => {
     const me = useProfile();
+    const planItems = useAllPlansRLO().data;
     const PlanItem = shopView ? NavShopItem : NavPlanItem;
     return (
         <>
