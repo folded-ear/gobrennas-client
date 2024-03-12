@@ -2,6 +2,7 @@ import * as React from "react";
 import { BottomNavigation, Paper } from "@mui/material";
 import {
     EventNote as PlanIcon,
+    MeetingRoom as PantryIcon,
     MenuBook as LibraryIcon,
     ShoppingCart as ShopIcon,
 } from "@mui/icons-material";
@@ -20,9 +21,13 @@ const NavWrapper = styled(Paper)(({ theme }) => ({
 
 type MobileNavProps = {
     selected?: string;
+    devMode?: boolean;
 };
 
-export const MobileNav: React.FC<MobileNavProps> = ({ selected = false }) => {
+export const MobileNav: React.FC<MobileNavProps> = ({
+    selected = false,
+    devMode = false,
+}) => {
     const me = useProfile();
     return (
         <NavWrapper elevation={3}>
@@ -45,6 +50,14 @@ export const MobileNav: React.FC<MobileNavProps> = ({ selected = false }) => {
                     to="/shop"
                     value="shop"
                 />
+                {devMode && (
+                    <MobileNavItem
+                        to="/pantry"
+                        value="pantry"
+                        icon={<PantryIcon />}
+                        title="Pantry"
+                    />
+                )}
                 <MobileNavItem
                     title="Profile"
                     icon={<User inline {...me} />}
