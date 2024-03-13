@@ -1,7 +1,7 @@
 import LoadObject from "../../../util/LoadObject";
 import planStore from "features/Planner/data/planStore";
 import LibraryStore from "../../RecipeLibrary/data/LibraryStore";
-import { RecipeFromPlanItem } from "features/RecipeDisplay/types";
+import type { RecipeFromPlanItem } from "global/types/types";
 
 export const recipeLoByItemLo = (
     itemLO: LoadObject<any>,

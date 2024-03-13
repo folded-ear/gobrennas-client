@@ -2,7 +2,7 @@ import { IconButton, Tooltip } from "@mui/material";
 import { Kitchen as KitchenIcon } from "@mui/icons-material";
 import React from "react";
 import history from "util/history";
-import { BfsId } from "../../../global/types/types";
+import { BfsId } from "global/types/identity";
 
 interface Props {
     planId: BfsId;

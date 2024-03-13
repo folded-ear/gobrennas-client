@@ -10,7 +10,7 @@ import Popper from "@mui/material/Popper";
 import { makeStyles } from "@mui/styles";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import React, { MouseEventHandler, ReactNode } from "react";
-import { BfsId } from "../../global/types/types";
+import { BfsId } from "global/types/identity";
 
 const useStyles = makeStyles({
     popper: {

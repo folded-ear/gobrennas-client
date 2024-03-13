@@ -3,7 +3,7 @@ import { Share as ShareIcon } from "@mui/icons-material";
 import BaseAxios from "axios";
 import React from "react";
 import { API_BASE_URL, APP_BASE_URL } from "constants/index";
-import type { Recipe, SharedRecipe } from "features/RecipeDisplay/types";
+import type { Recipe, SharedRecipe } from "global/types/types";
 import { emptyRLO, RippedLO } from "util/ripLoadObject";
 import ModalButton from "../../../views/ModalButton";
 
