@@ -3,7 +3,9 @@ import useWindowSize from "../../../data/useWindowSize";
 import { Box, useScrollTrigger } from "@mui/material";
 import { HEADER_HEIGHT } from "../../../constants/layout";
 
-export const SubHeader: React.FC<PropsWithChildren> = ({ children }) => {
+type Props = PropsWithChildren<unknown>;
+
+export const SubHeader: React.FC<Props> = ({ children }) => {
     const windowSize = useWindowSize();
     const [height, setHeight] = React.useState<CSSProperties["height"]>("auto");
     const [width, setWidth] = React.useState<CSSProperties["width"]>("auto");

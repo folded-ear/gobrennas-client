@@ -6,7 +6,9 @@ import preferencesStore from "../data/preferencesStore";
 
 const MobileContext = createContext(true);
 
-export function IsMobileProvider({ children }: PropsWithChildren): JSX.Element {
+type Props = PropsWithChildren<unknown>;
+
+export function IsMobileProvider({ children }: Props): React.ReactElement {
     const bound = theme.breakpoints.values.sm;
     const query = `@media (max-width:${bound}px), (max-height:${bound}px)`;
     const mobile = useMediaQuery(query, {

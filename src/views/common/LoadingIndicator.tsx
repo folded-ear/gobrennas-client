@@ -3,7 +3,7 @@ import CircularProgress from "@mui/material/CircularProgress";
 import Paper from "@mui/material/Paper";
 import React, { PropsWithChildren } from "react";
 
-interface Props extends PropsWithChildren {
+interface Props extends PropsWithChildren<unknown> {
     primary?: string;
 }
 

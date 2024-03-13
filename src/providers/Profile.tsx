@@ -24,7 +24,9 @@ const ProfileLOContext = createContext<Maybe<LoadObject<UserType>>>(undefined);
 
 let globalProfileLoadObject;
 
-export const ProfileProvider: React.FC<PropsWithChildren> = ({ children }) => {
+type Props = PropsWithChildren<unknown>;
+
+export const ProfileProvider: React.FC<Props> = ({ children }) => {
     const [profileLO, setProfileLO] =
         useState<Maybe<LoadObject<UserType>>>(undefined);
 

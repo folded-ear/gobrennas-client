@@ -1,11 +1,11 @@
-import Box from "@mui/material/Box";
 import grey from "@mui/material/colors/grey";
 import { HelpOutline, InfoOutlined } from "@mui/icons-material";
 import React, { MouseEventHandler, PropsWithChildren } from "react";
 import CloseButton from "views/common/CloseButton";
 import { lightBlue } from "@mui/material/colors";
+import { Box } from "@mui/material";
 
-interface Props extends PropsWithChildren {
+interface Props extends PropsWithChildren<unknown> {
     severity?: "info";
     onClose?: MouseEventHandler;
 }

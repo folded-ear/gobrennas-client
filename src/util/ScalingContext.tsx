@@ -17,10 +17,12 @@ const ScaleContext = createContext<number>(1);
 
 const SetScaleContext = createContext<Maybe<(Option) => void>>(null);
 
+type Props = PropsWithChildren<unknown>;
+
 /**
  * Creates a new scaling context, initially scaled to 1 (no scaling).
  */
-export const ScalingProvider: React.FC<PropsWithChildren> = ({ children }) => {
+export const ScalingProvider: React.FC<Props> = ({ children }) => {
     const [scale, setScale] = useState(1);
     return (
         <ScaleContext.Provider value={scale}>
@@ -35,9 +37,7 @@ export const ScalingProvider: React.FC<PropsWithChildren> = ({ children }) => {
  * If a scaling context is already open, do nothing. Otherwise, create a new one
  * as if ScalingProvider had been called.
  */
-export const ReentrantScalingProvider: React.FC<PropsWithChildren> = ({
-    children,
-}) => {
+export const ReentrantScalingProvider: React.FC<Props> = ({ children }) => {
     const ctx = useContext(SetScaleContext);
     return ctx == null ? (
         <ScalingProvider>{children}</ScalingProvider>
