@@ -16,10 +16,10 @@ import * as serviceWorkerRegistration from "./serviceWorkerRegistration";
 import debounce from "./util/debounce";
 import history from "./util/history";
 
-if (process.env.NODE_ENV === "development") {
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
-    Dispatcher.register(require("./util/logAction").default);
-}
+// if (process.env.NODE_ENV === "development") {
+//     // eslint-disable-next-line @typescript-eslint/no-var-requires
+//     Dispatcher.register(require("./util/logAction").default);
+// }
 
 ReactDOM.render(
     [
