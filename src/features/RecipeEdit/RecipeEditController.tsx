@@ -21,11 +21,7 @@ const RecipeEditController: React.FC<Props> = ({ match }) => {
     const { loading, error, data: recipe } = useGetRecipe(id);
     const { data: labelList } = useGetAllLabels();
     const { updateRecipe } = useUpdateRecipe();
-    const {
-        createRecipe,
-        loading: createLoading,
-        error: createError,
-    } = useCreateRecipe();
+    const { createRecipe } = useCreateRecipe();
     let draft;
 
     if (!id) {
@@ -37,7 +33,7 @@ const RecipeEditController: React.FC<Props> = ({ match }) => {
     }
 
     if (error) {
-        console.log(error);
+        // TODO -- error message
     }
 
     const shouldCreateCopy = match.path.split("/").includes("make-copy");

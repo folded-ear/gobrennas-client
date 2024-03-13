@@ -53,6 +53,7 @@ export const useCreateRecipe = () => {
 
     return {
         createRecipe,
+        data,
         error,
         loading,
     };
