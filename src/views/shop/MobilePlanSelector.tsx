@@ -1,30 +1,49 @@
 import useAllPlansRLO from "../../data/useAllPlansRLO";
-import { Box, Collapse, List } from "@mui/material";
+import { Box, Collapse, List, ListSubheader } from "@mui/material";
 import * as React from "react";
-import { NavOwnerItem } from "../../features/Planner/components/PlanHeader";
 import { NavShopItem } from "../../features/Navigation/components/NavShopItem";
 import { colorHash } from "../../constants/colors";
 import Divider from "@mui/material/Divider";
-import { toggleShoppingPlan } from "../../features/Navigation/NavigationController";
+import useFriendLO from "../../data/useFriendLO";
+import { BfsId } from "../../global/types/types";
+import { ripLoadObject } from "../../util/ripLoadObject";
+
+function OwnerSubheader({ id }: { id: BfsId }) {
+    const { data: user } = ripLoadObject(useFriendLO(id));
+    return (
+        <ListSubheader title={`${user?.name} (${id})`}>
+            {user?.name || "…"}
+        </ListSubheader>
+    );
+}
 
 interface Props {
     open?: boolean;
+    PlanItem: typeof NavShopItem;
+    onSelectPlan: (id: BfsId) => void;
 }
 
-export default function MobileShoppingPlanSelector({ open = false }: Props) {
+export default function MobilePlanSelector({
+    open = false,
+    PlanItem,
+    onSelectPlan,
+}: Props) {
     const allPlans = useAllPlansRLO().data;
     if (!allPlans || allPlans.length < 2) return null;
     return (
         <Collapse in={open}>
             <Box mt={1}>
                 <Divider />
-                <List>
+                <List
+                    disablePadding
+                    sx={{ maxHeight: "30vh", overflow: "auto" }}
+                >
                     {allPlans.map((item, i) => {
                         const elements = [
-                            <NavShopItem
+                            <PlanItem
                                 key={item.id}
-                                onIconClick={toggleShoppingPlan}
-                                onClick={toggleShoppingPlan}
+                                onIconClick={onSelectPlan}
+                                onClick={onSelectPlan}
                                 id={item.id}
                                 expanded
                                 name={item.name}
@@ -36,7 +55,7 @@ export default function MobileShoppingPlanSelector({ open = false }: Props) {
                             item.acl.ownerId !== allPlans[i - 1].acl.ownerId
                         ) {
                             elements.unshift(
-                                <NavOwnerItem
+                                <OwnerSubheader
                                     key={-item.id}
                                     id={item.acl.ownerId}
                                 />,

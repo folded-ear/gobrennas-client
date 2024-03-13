@@ -1,4 +1,4 @@
-import { Box, Grid, IconButton, Stack, Typography } from "@mui/material";
+import { Box, IconButton, Stack, Typography } from "@mui/material";
 import List from "@mui/material/List";
 import AddIcon from "@mui/icons-material/Add";
 import React, { useCallback, useState } from "react";
@@ -21,8 +21,10 @@ import SweepIcon from "@mui/icons-material/CleaningServices";
 import { colorHash } from "../../constants/colors";
 import Avatar from "@mui/material/Avatar";
 import { useIsMobile } from "../../providers/IsMobile";
-import MobileShoppingPlanSelector from "./MobileShoppingPlanSelector";
+import MobilePlanSelector from "./MobilePlanSelector";
 import useAllPlansRLO from "../../data/useAllPlansRLO";
+import { NavShopItem } from "../../features/Navigation/components/NavShopItem";
+import { toggleShoppingPlan } from "../../features/Navigation/NavigationController";
 
 export enum ShopItemType {
     INGREDIENT,
@@ -128,32 +130,29 @@ const ShopList: React.FC<ShopListProps> = ({
 
     return (
         <PageBody hasFab fullWidth>
-            <Box mx={showPlanSelector ? 0 : 1} my={1}>
-                <Grid
-                    container
-                    gap={1}
+            <Box mx={showPlanSelector ? 0 : 1}>
+                <Stack
+                    direction="row"
                     justifyContent={"space-between"}
                     flexWrap={"nowrap"}
-                    alignItems={"flex-end"}
+                    alignItems={"flex-start"}
                 >
-                    <Typography variant="h2">
-                        <Stack
-                            direction="row"
-                            alignItems={"flex-end"}
-                            spacing={1}
-                        >
-                            {showPlanSelector && (
-                                <CollapseIconButton
-                                    expanded={planSelectorOpen}
-                                    onClick={() =>
-                                        setPlanSelectorOpen((o) => !o)
-                                    }
-                                />
-                            )}
+                    <Stack
+                        direction="row"
+                        alignItems={"flex-start"}
+                        spacing={1}
+                    >
+                        {showPlanSelector && (
+                            <CollapseIconButton
+                                expanded={planSelectorOpen}
+                                onClick={() => setPlanSelectorOpen((o) => !o)}
+                            />
+                        )}
+                        <Typography variant="h2">
                             {plans.length === 1 ? (
                                 plans[0].name
                             ) : (
-                                <>
+                                <Stack direction={"row"} gap={1}>
                                     <span>Shop</span>
                                     {plans.map((p) => (
                                         <Avatar
@@ -169,19 +168,23 @@ const ShopList: React.FC<ShopListProps> = ({
                                             {p.name.substring(0, 2)}
                                         </Avatar>
                                     ))}
-                                </>
+                                </Stack>
                             )}
-                        </Stack>
-                    </Typography>
+                        </Typography>
+                    </Stack>
                     <IconButton
                         title={"Sweep Acquired"}
                         onClick={() => onRepartition()}
                     >
                         <SweepIcon />
                     </IconButton>
-                </Grid>
+                </Stack>
                 {showPlanSelector && (
-                    <MobileShoppingPlanSelector open={planSelectorOpen} />
+                    <MobilePlanSelector
+                        open={planSelectorOpen}
+                        PlanItem={NavShopItem}
+                        onSelectPlan={toggleShoppingPlan}
+                    />
                 )}
             </Box>
             <TupleList tuples={neededTuples} />

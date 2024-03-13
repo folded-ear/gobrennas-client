@@ -34,7 +34,7 @@ export function toggleShoppingPlan(id) {
     });
 }
 
-function selectPlan(id) {
+export function selectPlan(id) {
     return Dispatcher.dispatch({
         type: PlanActions.SELECT_PLAN,
         id,
