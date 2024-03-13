@@ -5,7 +5,7 @@ import {
 import { ListItemButton, Tooltip, Typography } from "@mui/material";
 import { ItemIcon } from "./Navigation.elements";
 import * as React from "react";
-import { BfsId } from "../../../global/types/types";
+import { BfsId } from "global/types/identity";
 
 export interface BasePlanNavItemProps {
     id: BfsId;
