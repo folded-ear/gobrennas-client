@@ -50,6 +50,7 @@ export const useUpdateRecipe = () => {
 
     return {
         updateRecipe,
+        data,
         error,
         loading,
     };

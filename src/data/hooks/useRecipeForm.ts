@@ -97,7 +97,7 @@ export function useRecipeForm(recipe: Recipe): UseRecipeFormReturn {
         const ings =
             draft.ingredients == null ? [] : draft.ingredients.slice(0);
         const newIndx = idx < 0 ? 0 : idx < ings.length ? idx : ings.length - 1;
-        if (ings[newIndx].raw!.length === 0) {
+        if (ings[newIndx].raw?.length === 0) {
             // if pasting into an empty on, delete it
             ings.splice(idx--, 1);
         }

@@ -1,10 +1,19 @@
 import * as React from "react";
 import { Button, ButtonGroup } from "@mui/material";
-import Dispatcher from "data/dispatcher";
-import RecipeActions from "data/RecipeActions";
 import TextractFormAugment from "features/RecipeEdit/components/TextractFormAugment";
+import { DraftRecipe } from "global/types/types";
 
-export const TextractForm = ({ updateDraft, draft }) => {
+type TextractFormProps = {
+    updateDraft: (key: string, value: any) => void;
+    onMultilinePaste: (idx: number, text: string) => void;
+    draft: DraftRecipe;
+};
+
+export const TextractForm: React.FC<TextractFormProps> = ({
+    updateDraft,
+    draft,
+    onMultilinePaste,
+}) => {
     return (
         <TextractFormAugment
             renderActions={(lines) => {
@@ -19,14 +28,13 @@ export const TextractForm = ({ updateDraft, draft }) => {
                         </Button>
                         <Button
                             onClick={() =>
-                                Dispatcher.dispatch({
-                                    type: RecipeActions.MULTI_LINE_DRAFT_INGREDIENT_PASTE_YO,
-                                    index: 999999,
-                                    text: lines
+                                onMultilinePaste(
+                                    999999,
+                                    lines
                                         .map((s) => s.trim())
                                         .filter((s) => s.length)
                                         .join("\n"),
-                                })
+                                )
                             }
                             disabled={disabled}
                         >

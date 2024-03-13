@@ -66,16 +66,22 @@ const RecipeForm: React.FC<Props> = ({
         onMultilinePasteIngredientRefs,
     } = useRecipeForm(recipe);
 
-    const handleUpdate = React.useCallback((e) => {
-        const { name: key, value } = e.target;
-        onUpdate(key, value ? value : "");
-    }, []);
+    const handleUpdate = React.useCallback(
+        (e) => {
+            const { name: key, value } = e.target;
+            onUpdate(key, value ? value : "");
+        },
+        [onUpdate],
+    );
 
-    const handleNumericUpdate = React.useCallback((e) => {
-        const { name: key, value } = e.target;
-        const v = parseFloat(value);
-        onUpdate(key, isNaN(v) ? null : v);
-    }, []);
+    const handleNumericUpdate = React.useCallback(
+        (e) => {
+            const { name: key, value } = e.target;
+            const v = parseFloat(value);
+            onUpdate(key, isNaN(v) ? null : v);
+        },
+        [onUpdate],
+    );
 
     const handleLabelChange = (
         e,
@@ -104,7 +110,11 @@ const RecipeForm: React.FC<Props> = ({
     return (
         <>
             <Typography variant="h2">{title}</Typography>
-            <TextractForm updateDraft={updateTextract} draft={draft} />
+            <TextractForm
+                updateDraft={updateTextract}
+                draft={draft}
+                onMultilinePaste={onMultilinePasteIngredientRefs}
+            />
             <Box my={MARGIN}>
                 <TextField
                     name="name"
