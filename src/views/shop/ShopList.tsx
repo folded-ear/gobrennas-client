@@ -20,6 +20,9 @@ import DragContainer, {
 import SweepIcon from "@mui/icons-material/CleaningServices";
 import { colorHash } from "../../constants/colors";
 import Avatar from "@mui/material/Avatar";
+import { useIsMobile } from "../../providers/IsMobile";
+import MobileShoppingPlanSelector from "./MobileShoppingPlanSelector";
+import useAllPlansRLO from "../../data/useAllPlansRLO";
 
 export enum ShopItemType {
     INGREDIENT,
@@ -103,6 +106,9 @@ const ShopList: React.FC<ShopListProps> = ({
     onRepartition,
 }) => {
     const [showAcquired, setShowAcquired] = useState(false);
+    const allPlans = useAllPlansRLO().data;
+    const showPlanSelector = useIsMobile() && allPlans && allPlans.length >= 2;
+    const [planSelectorOpen, setPlanSelectorOpen] = useState(false);
 
     const handleAddNew = useCallback((e) => {
         e.preventDefault();
@@ -122,7 +128,7 @@ const ShopList: React.FC<ShopListProps> = ({
 
     return (
         <PageBody hasFab fullWidth>
-            <Box mx={2} my={1}>
+            <Box mx={showPlanSelector ? 0 : 1} my={1}>
                 <Grid
                     container
                     gap={1}
@@ -131,31 +137,41 @@ const ShopList: React.FC<ShopListProps> = ({
                     alignItems={"flex-end"}
                 >
                     <Typography variant="h2">
-                        {plans.length === 1 ? (
-                            plans[0].name
-                        ) : (
-                            <Stack
-                                direction="row"
-                                alignItems={"flex-end"}
-                                spacing={1}
-                            >
-                                <span>Shop</span>
-                                {plans.map((p) => (
-                                    <Avatar
-                                        key={p.id}
-                                        alt={p.name}
-                                        title={p.name}
-                                        sx={{
-                                            // width: 24,
-                                            // height: 24,
-                                            bgcolor: colorHash(p.id),
-                                        }}
-                                    >
-                                        {p.name.substring(0, 2)}
-                                    </Avatar>
-                                ))}
-                            </Stack>
-                        )}
+                        <Stack
+                            direction="row"
+                            alignItems={"flex-end"}
+                            spacing={1}
+                        >
+                            {showPlanSelector && (
+                                <CollapseIconButton
+                                    expanded={planSelectorOpen}
+                                    onClick={() =>
+                                        setPlanSelectorOpen((o) => !o)
+                                    }
+                                />
+                            )}
+                            {plans.length === 1 ? (
+                                plans[0].name
+                            ) : (
+                                <>
+                                    <span>Shop</span>
+                                    {plans.map((p) => (
+                                        <Avatar
+                                            key={p.id}
+                                            alt={p.name}
+                                            title={p.name}
+                                            sx={{
+                                                // width: 24,
+                                                // height: 24,
+                                                bgcolor: colorHash(p.id),
+                                            }}
+                                        >
+                                            {p.name.substring(0, 2)}
+                                        </Avatar>
+                                    ))}
+                                </>
+                            )}
+                        </Stack>
                     </Typography>
                     <IconButton
                         title={"Sweep Acquired"}
@@ -164,6 +180,9 @@ const ShopList: React.FC<ShopListProps> = ({
                         <SweepIcon />
                     </IconButton>
                 </Grid>
+                {showPlanSelector && (
+                    <MobileShoppingPlanSelector open={planSelectorOpen} />
+                )}
             </Box>
             <TupleList tuples={neededTuples} />
             {acquiredTuples.length > 0 && (

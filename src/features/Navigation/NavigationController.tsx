@@ -27,12 +27,13 @@ type NavigationControllerProps = {
     children?: ReactNode;
 };
 
-function toggleShoppingPlan(id) {
+export function toggleShoppingPlan(id) {
     return Dispatcher.dispatch({
         type: ShoppingActions.TOGGLE_PLAN,
         id,
     });
 }
+
 function selectPlan(id) {
     return Dispatcher.dispatch({
         type: PlanActions.SELECT_PLAN,
