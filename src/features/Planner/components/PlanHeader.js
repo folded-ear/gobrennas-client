@@ -105,6 +105,18 @@ function PlanHeader({
                 <Typography variant="h2">
                     {activePlan && activePlan.name}
                 </Typography>
+                <Tooltip
+                    title="Edit plan, buckets, and access"
+                    placement="bottom-start"
+                >
+                    <IconButton
+                        onClick={onShowDrawer}
+                        disabled={!activePlan}
+                        size="large"
+                    >
+                        <EditIcon />
+                    </IconButton>
+                </Tooltip>
             </Stack>
             {showPlanSelector && (
                 <MobilePlanSelector
@@ -159,18 +171,6 @@ function PlanHeader({
                                 <AddToCalendar plan={activePlan} />
                             </>
                         )}
-                        <Tooltip
-                            title="Edit plan, buckets, and access"
-                            placement="bottom-start"
-                        >
-                            <IconButton
-                                onClick={onShowDrawer}
-                                disabled={!activePlan}
-                                size="large"
-                            >
-                                <EditIcon />
-                            </IconButton>
-                        </Tooltip>
                         <Drawer
                             open={planDetailVisible}
                             anchor="right"
