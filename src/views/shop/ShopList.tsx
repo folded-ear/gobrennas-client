@@ -11,7 +11,8 @@ import IngredientItem from "views/shop/IngredientItem";
 import PlanItem from "views/shop/PlanItem";
 import { BaseItemProp, ItemProps } from "./types";
 import { PlanItem as PlanItemType } from "features/Planner/data/planStore";
-import { BfsId, Quantity } from "global/types/types";
+import type { Quantity } from "global/types/types";
+import type { BfsId } from "global/types/identity";
 import CollapseIconButton from "../../global/components/CollapseIconButton";
 import PantryItemActions from "../../data/PantryItemActions";
 import DragContainer, {

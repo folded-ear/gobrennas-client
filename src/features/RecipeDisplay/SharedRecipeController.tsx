@@ -6,7 +6,7 @@ import Dispatcher from "data/dispatcher";
 import LoadingIndicator from "views/common/LoadingIndicator";
 import RecipeDetail from "features/RecipeDisplay/components/RecipeDetail";
 import LibraryActions from "features/RecipeLibrary/data/LibraryActions";
-import { UserType } from "global/types/types";
+import { UserType } from "global/types/identity";
 import { Maybe } from "graphql/jsutils/Maybe";
 import { recipeLoById } from "features/RecipeDisplay/utils/recipeLoById";
 

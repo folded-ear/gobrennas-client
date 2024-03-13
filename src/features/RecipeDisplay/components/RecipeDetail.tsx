@@ -18,8 +18,8 @@ import User from "views/user/User";
 import IngredientDirectionsRow from "./IngredientDirectionsRow";
 import SubrecipeItem from "./SubrecipeItem";
 import SendToPlan from "features/RecipeLibrary/components/SendToPlan";
-import { UserType } from "global/types/types";
-import type { Recipe, Subrecipe } from "features/RecipeDisplay/types";
+import { UserType } from "global/types/identity";
+import type { Recipe, Subrecipe } from "global/types/types";
 import FavoriteIndicator from "features/Favorites/components/Indicator";
 import { ReentrantScalingProvider, useScale } from "util/ScalingContext";
 import { SubHeader } from "./Subheader";
@@ -132,10 +132,10 @@ const RecipeDetail: React.FC<Props> = ({
                             text={<Source url={recipe.externalUrl} />}
                         />
                     )}
-                    {recipe.yield && (
+                    {recipe.recipeYield && (
                         <RecipeInfo
                             label="Yield"
-                            text={`${recipe.yield} servings`}
+                            text={`${recipe.recipeYield} servings`}
                         />
                     )}
                     {recipe.totalTime && (

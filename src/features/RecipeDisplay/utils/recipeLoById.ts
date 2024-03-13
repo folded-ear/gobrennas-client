@@ -1,5 +1,5 @@
 import LibraryStore from "features/RecipeLibrary/data/LibraryStore";
-import { Recipe as RecipeType } from "features/RecipeDisplay/types";
+import type { Recipe as RecipeType } from "global/types/types";
 import LoadObject from "util/LoadObject";
 
 export const recipeLoById = (id) => {
