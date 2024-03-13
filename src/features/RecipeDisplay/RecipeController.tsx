@@ -3,7 +3,7 @@ import { RouteComponentProps } from "react-router";
 import { ScalingProvider } from "util/ScalingContext";
 import LoadingIndicator from "views/common/LoadingIndicator";
 import RecipeDetail from "./components/RecipeDetail";
-import { useGetFullRecipe } from "./hooks/useGetFullRecipe";
+import { useGetFullRecipe } from "data/hooks/useGetFullRecipe";
 import CopyButton from "../../views/common/CopyButton";
 import history from "../../util/history";
 import ShareRecipe from "./components/ShareRecipe";

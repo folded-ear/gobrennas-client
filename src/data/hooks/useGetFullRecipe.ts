@@ -1,10 +1,42 @@
 import { useQuery } from "@apollo/client";
-import { GET_FULL_RECIPE_QUERY } from "data/graphql/queries";
 import * as React from "react";
-import { IngredientRef } from "global/types/types";
+import {
+    FullRecipe,
+    IngredientRef,
+    Recipe,
+    Subrecipe,
+} from "global/types/types";
 import { useProfileId } from "providers/Profile";
 import { UseQueryResult } from "data/types";
-import { FullRecipe, Recipe, Subrecipe } from "features/RecipeDisplay/types";
+import { gql } from "__generated__";
+
+const GET_FULL_RECIPE_QUERY = gql(`
+query getRecipeWithEverything($id: ID!) {
+  library {
+    getRecipeById(id: $id) {
+      ...recipeCore
+      favorite
+      yield
+      calories
+      externalUrl
+      labels
+      photo {
+        url
+        focus
+      }
+      owner {
+        id
+        name
+        email
+        imageUrl
+      }
+      subrecipes {
+        ...recipeCore
+      }
+    }
+  }
+}
+`);
 
 export const useGetFullRecipe = (id: string): UseQueryResult<FullRecipe> => {
     const { loading, error, data } = useQuery(GET_FULL_RECIPE_QUERY, {
@@ -56,7 +88,7 @@ export const useGetFullRecipe = (id: string): UseQueryResult<FullRecipe> => {
             photo: result.photo?.url || null,
             photoFocus: result.photo?.focus || [],
             totalTime: result.totalTime,
-            yield: result.yield,
+            recipeYield: result.yield,
         };
 
         const fullRecipe: FullRecipe = {
