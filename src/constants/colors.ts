@@ -8,7 +8,7 @@ import {
     red,
     teal,
 } from "@mui/material/colors";
-import { BfsId } from "../global/types/types";
+import { BfsId } from "global/types/identity";
 
 export const planColors = [
     // ¡¡ Make sure this always has a size equal to a power of 2 !!

@@ -3,7 +3,7 @@ import Dispatcher from "data/dispatcher";
 import RecipeActions from "data/RecipeActions";
 import React from "react";
 import ImageDropZone from "util/ImageDropZone";
-import { BfsId } from "../../../global/types/types";
+import { BfsId } from "global/types/identity";
 
 const useStyles = makeStyles({
     root: {

@@ -27,7 +27,7 @@ interface Props {
     image:
         | string // actual URL
         | Blob; // including File
-    value?: number[];
+    value: number[] | null;
 
     onChange(v: number[]): void;
 }
@@ -38,7 +38,10 @@ const PositionPicker: React.FC<Props> = ({ image, value, onChange }) => {
     React.useEffect(() => setLoaded(false), [image]);
     const [[width, height], setSize] = React.useState(() => [100, 100]);
     const [[left, top], setOffset] = React.useState(() => CENTER);
-    React.useEffect(() => setOffset(value || CENTER), [value]);
+    React.useEffect(
+        () => (value?.length ? setOffset(value) : setOffset(CENTER)),
+        [value],
+    );
     const x = left * width;
     const y = top * height;
     return (

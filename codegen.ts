@@ -13,6 +13,10 @@ const config: CodegenConfig = {
             },
             plugins: [],
             config: {
+                scalars: {
+                    Date: "Date",
+                    Upload: "File",
+                },
                 avoidOptionals: true,
                 dedupeFragments: true,
                 immutableTypes: true,

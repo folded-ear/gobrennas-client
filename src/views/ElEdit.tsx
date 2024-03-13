@@ -4,32 +4,22 @@ import React, { CSSProperties, PropsWithChildren } from "react";
 import ItemApi, { RecognitionResult } from "data/ItemApi";
 import debounce from "util/debounce";
 import processRecognizedItem from "util/processRecognizedItem";
-import { BfsId, Ingredient } from "global/types/types";
+import type { IngredientRef } from "global/types/types";
+import { BfsId } from "global/types/identity";
 import Autocomplete from "@mui/lab/Autocomplete";
 
 const doRecog = (raw) => raw != null && raw.trim().length >= 2;
 
-export interface Value {
-    id?: BfsId;
-    raw: string;
-    quantity?: number;
-    uomId?: BfsId;
-    units?: string;
-    ingredientId?: BfsId;
-    ingredient?: Ingredient;
-    preparation?: string;
-}
-
 interface Target {
     target: {
         name: string;
-        value: Value;
+        value: IngredientRef;
     };
 }
 
 interface ElEditProps {
     name: string;
-    value: Value;
+    value: IngredientRef;
     placeholder?: string;
 
     onChange(e: Target): void;

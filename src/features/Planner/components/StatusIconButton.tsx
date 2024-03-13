@@ -7,7 +7,7 @@ import PlanItemStatus, {
     getIconForStatus,
 } from "features/Planner/data/PlanItemStatus";
 import { coloredIconButton } from "views/common/colors";
-import { BfsId } from "../../../global/types/types";
+import { BfsId } from "global/types/identity";
 
 const buttonLookup = {}; // Map<next, Map<curr, Button>>
 const findButton = (next, curr) => {

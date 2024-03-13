@@ -2,8 +2,6 @@ import {
     AutocompleteChangeReason,
     Box,
     Button,
-    ButtonGroup,
-    CircularProgress,
     Grid,
     IconButton,
     List,
@@ -13,21 +11,19 @@ import {
     useTheme,
 } from "@mui/material";
 import makeStyles from "@mui/styles/makeStyles";
+import type { DraftRecipe, Recipe } from "global/types/types";
 import { Add, Cancel, Delete, FileCopy, Save } from "@mui/icons-material";
 import React, { ReactNode } from "react";
-import Dispatcher from "data/dispatcher";
-import RecipeActions from "data/RecipeActions";
-import useDraftRecipeLO from "data/useDraftRecipeLO";
 import useWindowSize from "data/useWindowSize";
 import ImageDropZone from "util/ImageDropZone";
 import ElEdit from "views/ElEdit";
-import TextractFormAugment from "views/cook/TextractFormAugment";
-import PositionPicker from "views/PositionPicker";
-import { LabelAutoComplete } from "./components/LabelAutoComplete";
-import { Recipe } from "features/RecipeEdit/types";
-import DragContainer from "../Planner/components/DragContainer";
-import Item from "../Planner/components/Item";
-import DragHandle from "../Planner/components/DragHandle";
+import PositionPicker from "features/RecipeEdit/components/PositionPicker";
+import { LabelAutoComplete } from "./LabelAutoComplete";
+import DragContainer from "features/Planner/components/DragContainer";
+import Item from "features/Planner/components/Item";
+import DragHandle from "features/Planner/components/DragHandle";
+import { TextractForm } from "features/RecipeEdit/components/TextractForm";
+import { useRecipeForm } from "data/hooks/useRecipeForm";
 
 const useStyles = makeStyles((theme) => ({
     button: {
@@ -35,64 +31,18 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-const updateDraft = (key, value) => {
-    Dispatcher.dispatch({
-        type: RecipeActions.DRAFT_RECIPE_UPDATED,
-        data: { key, value },
-    });
-};
-
-const handleUpdate = (e) => {
-    const { name: key, value } = e.target;
-    updateDraft(key, value);
-};
-
-const handleNumericUpdate = (e) => {
-    const { name: key, value } = e.target;
-    const v = parseFloat(value);
-    updateDraft(key, isNaN(v) ? null : v);
-};
-
-const handleLabelChange = (
-    e,
-    labels: string[],
-    reason: AutocompleteChangeReason,
-) => {
-    // One of "createOption", "selectOption", "removeOption", "blur" or "clear".
-    if (reason === "selectOption" || "createOption" || "removeOption") {
-        Dispatcher.dispatch({
-            type: RecipeActions.DRAFT_LABEL_UPDATED,
-            data: labels.map((label) => label.replace(/\/+/g, "-")),
-        });
-    }
-};
-
-function handleIngredientDrop(activeId, targetId, vertical) {
-    Dispatcher.dispatch({
-        type: RecipeActions.DRAFT_RECIPE_INGREDIENT_MOVED,
-        data: {
-            activeId,
-            targetId,
-            above: vertical === "above",
-        },
-    });
-}
-
 interface Props {
+    recipe: Recipe;
     title: string;
-
-    onSave(r: Recipe): void;
-
-    onSaveCopy?(r: Recipe): void;
-
-    onCancel(r: Recipe): void;
-
-    draft?: Recipe;
-    labelList: string[];
+    onSave: (r: DraftRecipe) => void;
+    onSaveCopy?: (r: DraftRecipe) => void;
+    onCancel: (r?: DraftRecipe) => void;
+    labelList?: string[];
     extraButtons?: ReactNode;
 }
 
 const RecipeForm: React.FC<Props> = ({
+    recipe,
     title,
     onSave,
     onSaveCopy,
@@ -100,70 +50,70 @@ const RecipeForm: React.FC<Props> = ({
     extraButtons,
     labelList,
 }) => {
-    const lo = useDraftRecipeLO();
     const windowSize = useWindowSize();
     const theme = useTheme();
     const mobile = useMediaQuery(theme.breakpoints.down("sm"));
     const classes = useStyles();
-    const draft = lo.getValueEnforcing();
     const MARGIN = 2;
 
-    if (lo.hasOperation()) {
-        return (
-            <>
-                <Typography variant="h2">{title}</Typography>
-                <CircularProgress />
-            </>
-        );
+    const {
+        draft,
+        onUpdate,
+        onAddIngredientRef,
+        onEditIngredientRef,
+        onDeleteIngredientRef,
+        onMoveIngredientRef,
+        onMultilinePasteIngredientRefs,
+    } = useRecipeForm(recipe);
+
+    const handleUpdate = React.useCallback(
+        (e) => {
+            const { name: key, value } = e.target;
+            onUpdate(key, value ? value : "");
+        },
+        [onUpdate],
+    );
+
+    const handleNumericUpdate = React.useCallback(
+        (e) => {
+            const { name: key, value } = e.target;
+            const v = parseFloat(value);
+            onUpdate(key, isNaN(v) ? null : v);
+        },
+        [onUpdate],
+    );
+
+    const handleLabelChange = (
+        e,
+        labels: string[],
+        reason: AutocompleteChangeReason,
+    ) => {
+        // One of "createOption", "selectOption", "removeOption", "blur" or "clear".
+        if (reason === "selectOption" || "createOption" || "removeOption") {
+            const val = labels.map((label) => label.replace(/\/+/g, "-"));
+            onUpdate("labels", val);
+        }
+    };
+
+    const updateTextract = (key, value) => {
+        onUpdate(key, value);
+    };
+
+    function handleIngredientDrop(
+        activeId: number,
+        targetId: number,
+        vertical: string,
+    ) {
+        onMoveIngredientRef(activeId, targetId, vertical === "above");
     }
 
     return (
         <>
             <Typography variant="h2">{title}</Typography>
-            <TextractFormAugment
-                renderActions={(lines) => {
-                    const disabled = !(lines && lines.length);
-                    return (
-                        <ButtonGroup>
-                            <Button
-                                onClick={() => updateDraft("name", lines[0])}
-                                disabled={disabled || lines.length > 1}
-                            >
-                                Set Title
-                            </Button>
-                            <Button
-                                onClick={() =>
-                                    Dispatcher.dispatch({
-                                        type: RecipeActions.MULTI_LINE_DRAFT_INGREDIENT_PASTE_YO,
-                                        index: 999999,
-                                        text: lines
-                                            .map((s) => s.trim())
-                                            .filter((s) => s.length)
-                                            .join("\n"),
-                                    })
-                                }
-                                disabled={disabled}
-                            >
-                                Add Ingredients
-                            </Button>
-                            <Button
-                                onClick={() =>
-                                    updateDraft(
-                                        "directions",
-                                        (
-                                            draft.directions +
-                                            "\n\n" +
-                                            lines.join("\n")
-                                        ).trim(),
-                                    )
-                                }
-                                disabled={disabled}
-                            >
-                                Add Description
-                            </Button>
-                        </ButtonGroup>
-                    );
-                }}
+            <TextractForm
+                updateDraft={updateTextract}
+                draft={draft}
+                onMultilinePaste={onMultilinePasteIngredientRefs}
             />
             <Box my={MARGIN}>
                 <TextField
@@ -189,20 +139,18 @@ const RecipeForm: React.FC<Props> = ({
             </Box>
             <Box my={MARGIN}>
                 <Grid container>
-                    {draft.photo && (
+                    {draft.photoUrl && (
                         <Grid item>
                             <PositionPicker
-                                image={draft.photo}
+                                image={draft.photoUrl}
                                 value={draft.photoFocus}
-                                onChange={(pos) =>
-                                    updateDraft("photoFocus", pos)
-                                }
+                                onChange={(pos) => onUpdate("photoFocus", pos)}
                             />
                         </Grid>
                     )}
                     <Grid item>
                         <ImageDropZone
-                            onImage={(file) => updateDraft("photo", file)}
+                            onImage={(file) => onUpdate("photoUpload", file)}
                             style={{
                                 display: "inline-block",
                                 backgroundColor: "#eee",
@@ -218,7 +166,8 @@ const RecipeForm: React.FC<Props> = ({
                 renderOverlay={(id) => (
                     <Box px={2} py={1}>
                         <DragHandle />
-                        {draft.ingredients.find((it) => it.id === id).raw}
+                        {draft.ingredients.find((it) => it.id === id)?.raw ||
+                            ""}
                     </Box>
                 )}
             >
@@ -235,10 +184,7 @@ const RecipeForm: React.FC<Props> = ({
                                             size="small"
                                             tabIndex={-1}
                                             onClick={() =>
-                                                Dispatcher.dispatch({
-                                                    type: RecipeActions.NEW_DRAFT_INGREDIENT_YO,
-                                                    index: i,
-                                                })
+                                                onEditIngredientRef(i)
                                             }
                                         >
                                             <Add />
@@ -247,12 +193,7 @@ const RecipeForm: React.FC<Props> = ({
                                     <IconButton
                                         size="small"
                                         tabIndex={-1}
-                                        onClick={() =>
-                                            Dispatcher.dispatch({
-                                                type: RecipeActions.KILL_DRAFT_INGREDIENT_YO,
-                                                index: i,
-                                            })
-                                        }
+                                        onClick={() => onDeleteIngredientRef(i)}
                                     >
                                         <Delete />
                                     </IconButton>
@@ -264,24 +205,10 @@ const RecipeForm: React.FC<Props> = ({
                                 value={it}
                                 onChange={handleUpdate}
                                 onMultilinePaste={(text) =>
-                                    Dispatcher.dispatch({
-                                        type: RecipeActions.MULTI_LINE_DRAFT_INGREDIENT_PASTE_YO,
-                                        index: i,
-                                        text,
-                                    })
+                                    onMultilinePasteIngredientRefs(i, text)
                                 }
-                                onPressEnter={() =>
-                                    Dispatcher.dispatch({
-                                        type: RecipeActions.NEW_DRAFT_INGREDIENT_YO,
-                                        index: i,
-                                    })
-                                }
-                                onDelete={() =>
-                                    Dispatcher.dispatch({
-                                        type: RecipeActions.KILL_DRAFT_INGREDIENT_YO,
-                                        index: i,
-                                    })
-                                }
+                                onPressEnter={() => onAddIngredientRef(i)}
+                                onDelete={() => onDeleteIngredientRef(i)}
                                 placeholder={
                                     i === 0
                                         ? "E.g., 1 cup onion, diced fine"
@@ -297,11 +224,7 @@ const RecipeForm: React.FC<Props> = ({
                 startIcon={<Add />}
                 color="secondary"
                 variant="contained"
-                onClick={() =>
-                    Dispatcher.dispatch({
-                        type: RecipeActions.NEW_DRAFT_INGREDIENT_YO,
-                    })
-                }
+                onClick={() => onAddIngredientRef()}
             >
                 Add Ingredient
             </Button>
@@ -316,7 +239,7 @@ const RecipeForm: React.FC<Props> = ({
                         2 /
                         18 /* aiming for something around 50vh */
                     }
-                    value={draft.directions}
+                    value={draft.directions || ""}
                     onChange={handleUpdate}
                     placeholder="Recipe Directions"
                     fullWidth
@@ -327,11 +250,11 @@ const RecipeForm: React.FC<Props> = ({
                 <Grid container spacing={2}>
                     <Grid item sm={4}>
                         <TextField
-                            name="yield"
+                            name="recipeYield"
                             label="Yield"
                             fullWidth
                             placeholder="Yield (in servings)"
-                            value={draft.yield == null ? "" : draft.yield}
+                            value={draft.recipeYield || null}
                             onChange={handleNumericUpdate}
                             variant="outlined"
                         />
@@ -342,9 +265,7 @@ const RecipeForm: React.FC<Props> = ({
                             label="Total Cook Time"
                             fullWidth
                             placeholder="Total Time In Minutes"
-                            value={
-                                draft.totalTime == null ? "" : draft.totalTime
-                            }
+                            value={draft.totalTime || null}
                             onChange={handleNumericUpdate}
                             variant="outlined"
                         />
@@ -355,7 +276,7 @@ const RecipeForm: React.FC<Props> = ({
                             label="Calories"
                             fullWidth
                             placeholder="Calories Per Serving"
-                            value={draft.calories == null ? "" : draft.calories}
+                            value={draft.calories || ""}
                             onChange={handleNumericUpdate}
                             variant="outlined"
                         />
@@ -364,7 +285,7 @@ const RecipeForm: React.FC<Props> = ({
             </Box>
             <Box my={MARGIN}>
                 <LabelAutoComplete
-                    labelList={labelList}
+                    labelList={labelList || []}
                     recipeLabels={draft.labels}
                     onLabelChange={handleLabelChange}
                 />

@@ -11,7 +11,7 @@ import LoadObject from "util/LoadObject";
 import { API_BASE_URL, LOCAL_STORAGE_ACCESS_TOKEN } from "../constants";
 import GTag from "../GTag";
 import { Maybe } from "graphql/jsutils/Maybe";
-import { UserType } from "../global/types/types";
+import type { UserType } from "global/types/identity";
 
 // global side effect to ensure cookies are passed
 BaseAxios.defaults.withCredentials = true;

@@ -32,7 +32,7 @@ const routes = {
         { path: "/library/recipe/:id/edit", component: RecipeEditController },
         {
             path: "/library/recipe/:id/make-copy",
-            component: RecipeAddController,
+            component: RecipeEditController,
         },
         { path: "/library/recipe/:id", component: Recipe },
         { path: "/library", component: Library },

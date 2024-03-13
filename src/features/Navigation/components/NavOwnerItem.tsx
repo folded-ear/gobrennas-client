@@ -2,7 +2,7 @@ import * as React from "react";
 import { Subheader } from "./Navigation.elements";
 import { ripLoadObject } from "../../../util/ripLoadObject";
 import useFriendLO from "../../../data/useFriendLO";
-import { BfsId } from "../../../global/types/types";
+import { BfsId } from "global/types/identity";
 
 interface NavOwnerItemProps {
     id: BfsId;
