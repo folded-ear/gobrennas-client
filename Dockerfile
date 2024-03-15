@@ -1,8 +1,12 @@
 # build environment
-FROM node:14-alpine as build
+FROM node:14 as build
 WORKDIR /app
 COPY . ./
 ENV CI=true
+ARG SERVICE_NAME
+RUN if echo "$SERVICE_NAME" | grep beta; then \
+      ./icons.sh --beta; \
+    fi
 RUN npm ci
 RUN npx browserslist@latest --update-db
 RUN npm run test
