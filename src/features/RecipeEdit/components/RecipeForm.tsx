@@ -99,6 +99,9 @@ const RecipeForm: React.FC<Props> = ({
         onUpdate(key, value);
     };
 
+    const hasPhoto: boolean =
+        draft.photoUpload !== null || draft.photoUrl !== null;
+
     function handleIngredientDrop(
         activeId: number,
         targetId: number,
@@ -139,10 +142,14 @@ const RecipeForm: React.FC<Props> = ({
             </Box>
             <Box my={MARGIN}>
                 <Grid container>
-                    {draft.photoUrl && (
+                    {hasPhoto && (
                         <Grid item>
                             <PositionPicker
-                                image={draft.photoUrl}
+                                image={
+                                    draft.photoUpload
+                                        ? draft.photoUpload
+                                        : draft.photoUrl
+                                }
                                 value={draft.photoFocus}
                                 onChange={(pos) => onUpdate("photoFocus", pos)}
                             />
