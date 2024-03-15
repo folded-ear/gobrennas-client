@@ -3,6 +3,7 @@ import { gql } from "__generated__";
 import { IngredientRefInfo } from "__generated__/graphql";
 import { toMilliseconds } from "util/time";
 import { DraftRecipe } from "global/types/types";
+import promiseWellSizedFile from "util/promiseWellSizedFile";
 
 const UPDATE_RECIPE_MUTATION = gql(`
 mutation updateRecipe($id: ID!, $info: IngredientInfo!, $photo: Upload) {
@@ -28,7 +29,13 @@ export const useUpdateRecipe = () => {
         UPDATE_RECIPE_MUTATION,
     );
 
-    const updateRecipe = (recipe: DraftRecipe) => {
+    const updateRecipe = async (recipe: DraftRecipe) => {
+        let sizedUpload: File | string | null = null;
+
+        if (recipe.photoUpload) {
+            sizedUpload = await promiseWellSizedFile(recipe.photoUpload);
+        }
+
         return mutateFunction({
             variables: {
                 id: recipe.id.toString(),
@@ -51,7 +58,7 @@ export const useUpdateRecipe = () => {
                         : null,
                     photoFocus: recipe.photoFocus,
                 },
-                photo: recipe.photoUpload,
+                photo: typeof sizedUpload !== "string" ? sizedUpload : null,
             },
         });
     };
