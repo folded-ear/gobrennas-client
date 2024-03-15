@@ -1,13 +1,12 @@
 import { createTheme, responsiveFontSizes, Theme } from "@mui/material/styles";
 import { IS_BETA } from "./constants";
-import { blue } from "@mui/material/colors";
 
 let theme: Theme = createTheme({
     palette: {
         primary: {
-            light: "#F99339",
-            main: IS_BETA ? blue["A700"] : "#F57F17",
-            dark: "#B85600",
+            light: IS_BETA ? "#90caf9" : "#F99339",
+            main: IS_BETA ? "#1976d2" : "#F57F17",
+            dark: IS_BETA ? "#0d47a1" : "#B85600",
             contrastText: "#FFFDE7",
         },
         secondary: {
