@@ -5,9 +5,9 @@ import { blue } from "@mui/material/colors";
 let theme: Theme = createTheme({
     palette: {
         primary: {
-            light: "#F99339",
+            light: IS_BETA ? blue["A200"] : "#F99339",
             main: IS_BETA ? blue["A700"] : "#F57F17",
-            dark: "#B85600",
+            dark: IS_BETA ? blue["900"] : "#B85600",
             contrastText: "#FFFDE7",
         },
         secondary: {
