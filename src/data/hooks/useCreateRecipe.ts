@@ -6,6 +6,7 @@ import {
     GetSearchLibraryDocument,
     IngredientRefInfo,
 } from "__generated__/graphql";
+import promiseWellSizedFile from "util/promiseWellSizedFile";
 
 const CREATE_RECIPE_MUTATION = gql(`
 mutation createRecipe($info: IngredientInfo!, $photo: Upload, $cookThis: Boolean) {
@@ -23,7 +24,13 @@ export const useCreateRecipe = () => {
         { refetchQueries: [GetSearchLibraryDocument] },
     );
 
-    const createRecipe = (recipe: DraftRecipe) => {
+    const createRecipe = async (recipe: DraftRecipe) => {
+        let sizedUpload: File | string | null = null;
+
+        if (recipe.photoUpload) {
+            sizedUpload = await promiseWellSizedFile(recipe.photoUpload);
+        }
+
         return mutateFunction({
             variables: {
                 info: {
@@ -45,7 +52,7 @@ export const useCreateRecipe = () => {
                         : null,
                     photoFocus: recipe.photoFocus,
                 },
-                photo: recipe.photoUpload,
+                photo: typeof sizedUpload !== "string" ? sizedUpload : null,
                 cookThis: false,
             },
         });
