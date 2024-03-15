@@ -91,33 +91,33 @@ function PlanHeader({
 
     return (
         <Box mx={showPlanSelector ? 0 : 1}>
-            <Stack direction="row" alignItems={"flex-start"} spacing={1}>
-                {showPlanSelector && (
-                    <CollapseIconButton
-                        size={"medium"}
-                        expanded={planSelectorOpen}
-                        onClick={() => setPlanSelectorOpen((o) => !o)}
-                    />
-                )}
-                {activePlan && activePlan.acl && (
-                    <UserById id={activePlan.acl.ownerId} iconOnly />
-                )}
-                <Typography variant="h2">
+            <Typography variant="h2">
+                <Stack direction="row" alignItems={"center"} spacing={1}>
+                    {showPlanSelector && (
+                        <CollapseIconButton
+                            size={"medium"}
+                            expanded={planSelectorOpen}
+                            onClick={() => setPlanSelectorOpen((o) => !o)}
+                        />
+                    )}
+                    {activePlan && activePlan.acl && (
+                        <UserById id={activePlan.acl.ownerId} iconOnly />
+                    )}
                     {activePlan && activePlan.name}
-                </Typography>
-                <Tooltip
-                    title="Edit plan, buckets, and access"
-                    placement="bottom-start"
-                >
-                    <IconButton
-                        onClick={onShowDrawer}
-                        disabled={!activePlan}
-                        size="large"
+                    <Tooltip
+                        title="Edit plan, buckets, and access"
+                        placement="bottom-start"
                     >
-                        <EditIcon />
-                    </IconButton>
-                </Tooltip>
-            </Stack>
+                        <IconButton
+                            onClick={onShowDrawer}
+                            disabled={!activePlan}
+                            size="medium"
+                        >
+                            <EditIcon />
+                        </IconButton>
+                    </Tooltip>
+                </Stack>
+            </Typography>
             {showPlanSelector && (
                 <MobilePlanSelector
                     open={planSelectorOpen}

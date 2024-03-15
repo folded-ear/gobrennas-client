@@ -131,54 +131,44 @@ const ShopList: React.FC<ShopListProps> = ({
     return (
         <PageBody hasFab fullWidth>
             <Box mx={showPlanSelector ? 0 : 1}>
-                <Stack
-                    direction="row"
-                    justifyContent={"space-between"}
-                    flexWrap={"nowrap"}
-                    alignItems={"flex-start"}
-                >
-                    <Stack
-                        direction="row"
-                        alignItems={"flex-start"}
-                        spacing={1}
-                    >
+                <Typography variant="h2">
+                    <Stack direction="row" alignItems={"center"} spacing={1}>
                         {showPlanSelector && (
                             <CollapseIconButton
+                                size={"medium"}
                                 expanded={planSelectorOpen}
                                 onClick={() => setPlanSelectorOpen((o) => !o)}
                             />
                         )}
-                        <Typography variant="h2">
-                            {plans.length === 1 ? (
-                                plans[0].name
-                            ) : (
-                                <Stack direction={"row"} gap={1}>
-                                    <span>Shop</span>
-                                    {plans.map((p) => (
-                                        <Avatar
-                                            key={p.id}
-                                            alt={p.name}
-                                            title={p.name}
-                                            sx={{
-                                                // width: 24,
-                                                // height: 24,
-                                                bgcolor: colorHash(p.id),
-                                            }}
-                                        >
-                                            {p.name.substring(0, 2)}
-                                        </Avatar>
-                                    ))}
-                                </Stack>
-                            )}
-                        </Typography>
+                        {plans.length === 1 ? (
+                            plans[0].name
+                        ) : (
+                            <Stack direction={"row"} gap={1}>
+                                <span>Shop</span>
+                                {plans.map((p) => (
+                                    <Avatar
+                                        key={p.id}
+                                        alt={p.name}
+                                        title={p.name}
+                                        sx={{
+                                            // width: 24,
+                                            // height: 24,
+                                            bgcolor: colorHash(p.id),
+                                        }}
+                                    >
+                                        {p.name.substring(0, 2)}
+                                    </Avatar>
+                                ))}
+                            </Stack>
+                        )}
+                        <IconButton
+                            title={"Sweep Acquired"}
+                            onClick={() => onRepartition()}
+                        >
+                            <SweepIcon />
+                        </IconButton>
                     </Stack>
-                    <IconButton
-                        title={"Sweep Acquired"}
-                        onClick={() => onRepartition()}
-                    >
-                        <SweepIcon />
-                    </IconButton>
-                </Stack>
+                </Typography>
                 {showPlanSelector && (
                     <MobilePlanSelector
                         open={planSelectorOpen}
