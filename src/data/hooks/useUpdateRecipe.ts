@@ -8,8 +8,16 @@ const UPDATE_RECIPE_MUTATION = gql(`
 mutation updateRecipe($id: ID!, $info: IngredientInfo!, $photo: Upload) {
   library {
     updateRecipe(id: $id, info: $info, photo: $photo) {
-      id
-      name
+      ...recipeCore
+      favorite
+      yield
+      calories
+      externalUrl
+      labels
+      photo {
+        url
+        focus
+      }
     }
   }
 }
