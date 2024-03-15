@@ -26,7 +26,8 @@ const CENTER = [0.5, 0.5];
 interface Props {
     image:
         | string // actual URL
-        | Blob; // including File
+        | Blob // including File
+        | null;
     value: number[] | null;
 
     onChange(v: number[]): void;
@@ -46,15 +47,17 @@ const PositionPicker: React.FC<Props> = ({ image, value, onChange }) => {
     const y = top * height;
     return (
         <div className={classes.root}>
-            <ImageOrPreview
-                src={image}
-                className={classes.image}
-                onLoad={(e) => {
-                    const img = e.target;
-                    setLoaded(true);
-                    setSize([img.width, img.height]);
-                }}
-            />
+            {image && (
+                <ImageOrPreview
+                    src={image}
+                    className={classes.image}
+                    onLoad={(e) => {
+                        const img = e.target;
+                        setLoaded(true);
+                        setSize([img.width, img.height]);
+                    }}
+                />
+            )}
             {loaded && (
                 <svg
                     viewBox={`0 0 ${width} ${height}`}
