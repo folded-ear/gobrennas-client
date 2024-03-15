@@ -11,7 +11,7 @@ import { CircularProgress } from "@mui/material";
 import { useUpdateRecipe } from "data/hooks/useUpdateRecipe";
 import { useCreateRecipe } from "data/hooks/useCreateRecipe";
 import type { BfsId } from "global/types/identity";
-import type { DraftRecipe } from "global/types/types";
+import type { DraftRecipe, Recipe } from "global/types/types";
 
 type Props = RouteComponentProps<{ id?: string }>;
 
@@ -22,7 +22,7 @@ const RecipeEditController: React.FC<Props> = ({ match }) => {
     const { data: labelList } = useGetAllLabels();
     const { updateRecipe } = useUpdateRecipe();
     const { createRecipe } = useCreateRecipe();
-    let draft;
+    let draft: Recipe;
 
     if (!id) {
         return <Redirect to="/library" />;
