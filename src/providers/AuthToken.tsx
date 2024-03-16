@@ -9,9 +9,9 @@ import { getCookie } from "util/cookies";
 
 const AuthTokenContext = createContext(true);
 
-export const AuthTokenProvider: React.FC<PropsWithChildren> = ({
-    children,
-}) => {
+type Props = PropsWithChildren<unknown>;
+
+export const AuthTokenProvider: React.FC<Props> = ({ children }) => {
     const token = useMemo(() => getCookie(COOKIE_AUTH_TOKEN), []);
     return (
         <AuthTokenContext.Provider value={token}>

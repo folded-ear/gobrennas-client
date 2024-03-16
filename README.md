@@ -6,7 +6,7 @@ Do you use food? Do you use software? Brenna's Food Software is for you!
 
 ## Build
 
-You'll need Node 14 to build. A more specific version may be stipulated at some
+You'll need Node 20 to build. A more specific version may be stipulated at some
 point.
 
 The easiest way is to install `nvm` (see https://github.com/nvm-sh/nvm ):
@@ -22,7 +22,7 @@ it's useless without an API to connect to.
 
 ## Run (For Development)
 
-You'll need Node 14 to run, just like above. Assuming you've got an API running
+You'll need Node 20 to run, just like above. Assuming you've got an API running
 at http://localhost:5000 (see https://github.com/folded-ear/gobrennas-api):
 
 ```bash

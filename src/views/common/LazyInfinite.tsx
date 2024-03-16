@@ -2,7 +2,7 @@ import React, { PropsWithChildren } from "react";
 import useWindowSize from "../../data/useWindowSize";
 import debounce from "../../util/debounce";
 
-interface Props extends PropsWithChildren {
+interface Props extends PropsWithChildren<unknown> {
     onNeedMore(): void;
 
     complete?: boolean;
