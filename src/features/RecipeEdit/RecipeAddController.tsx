@@ -38,10 +38,9 @@ export const RecipeAddController = () => {
 
     const handleSave = (recipe: DraftRecipe) => {
         createRecipe(recipe).then((result) => {
-            const id = result.data?.library?.createRecipe.id;
-            id
-                ? history.push(`/library/recipe/${id}`)
-                : history.push(`/library`);
+            history.push(
+                `/library/recipe/${result.data?.library?.createRecipe.id}`,
+            );
         });
     };
 
