@@ -1,5 +1,5 @@
 import Add from "@mui/icons-material/Add";
-import { Box, List } from "@mui/material";
+import { List } from "@mui/material";
 import Dispatcher from "data/dispatcher";
 import LoadingItem from "features/Planner/components/LoadingItem";
 import PlanHeader from "features/Planner/components/PlanHeader";
@@ -81,15 +81,13 @@ function Plan({
 
     return (
         <PageBody hasFab fullWidth>
-            <Box py={2}>
-                <PlanHeader
-                    allPlans={allPlans.data}
-                    activePlan={plan}
-                    planDetailVisible={planDetailVisible}
-                    hasBuckets={!!buckets}
-                    canExpand={canExpand}
-                />
-            </Box>
+            <PlanHeader
+                allPlans={allPlans.data}
+                activePlan={plan}
+                planDetailVisible={planDetailVisible}
+                hasBuckets={!!buckets}
+                canExpand={canExpand}
+            />
             <DragContainer
                 onDrop={handleDrop}
                 renderOverlay={(activeId) =>

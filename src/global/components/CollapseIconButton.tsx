@@ -1,19 +1,34 @@
-import { ArrowDropDown, ArrowRight } from "@mui/icons-material";
-import IconButton from "@mui/material/IconButton";
+import { ArrowRight } from "@mui/icons-material";
 import PropTypes from "prop-types";
 import React from "react";
-import { IconButtonProps } from "@mui/material";
+import { IconButton, IconButtonProps } from "@mui/material";
+import { styled } from "@mui/material/styles";
 
 interface Props extends IconButtonProps {
     expanded: boolean;
+    Icon?: typeof ArrowRight;
 }
 
-const CollapseIconButton: React.FC<Props> = ({ expanded, ...props }) => {
-    const Icn = expanded ? ArrowDropDown : ArrowRight;
+const TwistyIconButton = styled(IconButton)<IconButtonProps>(({ theme }) => ({
+    transition: theme.transitions.duration.standard + "ms",
+    "&.expanded": {
+        transform: "rotate(90deg)",
+    },
+}));
+
+const CollapseIconButton: React.FC<Props> = ({
+    expanded,
+    Icon = ArrowRight,
+    ...props
+}) => {
     return (
-        <IconButton size="small" {...props}>
-            <Icn />
-        </IconButton>
+        <TwistyIconButton
+            size="small"
+            className={expanded ? "expanded" : ""}
+            {...props}
+        >
+            <Icon />
+        </TwistyIconButton>
     );
 };
 

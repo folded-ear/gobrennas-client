@@ -1,29 +1,14 @@
 import React from "react";
 import {
+    Button,
+    DialogContent,
     IconButton,
     IconButtonProps,
-    Modal,
-    Paper,
     Tooltip,
 } from "@mui/material";
-import makeStyles from "@mui/styles/makeStyles";
-
-const useStyles = makeStyles((theme) => {
-    const width = 500;
-    return {
-        modal: {
-            width: `${width}px`,
-            position: "absolute",
-            top: 100,
-            left: `calc(50% - ${width / 2}px)`,
-            backgroundColor: theme.palette.background.paper,
-            padding: theme.spacing(2),
-        },
-        title: {
-            marginTop: 0,
-        },
-    };
-});
+import Dialog from "@mui/material/Dialog";
+import DialogTitle from "@mui/material/DialogTitle";
+import DialogActions from "@mui/material/DialogActions";
 
 interface Props {
     size?: IconButtonProps["size"];
@@ -40,29 +25,26 @@ const ModalButton: React.FC<Props> = ({
     modalTitle = buttonTitle,
     render,
 }) => {
-    const classes = useStyles();
     const [open, setOpen] = React.useState(false);
     const button = (
-        <Tooltip title={buttonTitle} placement="top">
+        <Tooltip title={buttonTitle} placement="bottom">
             <IconButton onClick={() => setOpen(true)} size={size}>
                 {icon}
             </IconButton>
         </Tooltip>
     );
 
-    if (!open) {
-        return button;
-    }
-
+    const handleClose = () => setOpen(false);
     return (
         <>
             {button}
-            <Modal open onClose={() => setOpen(false)}>
-                <Paper className={classes.modal} elevation={8}>
-                    <h2 className={classes.title}>{modalTitle}</h2>
-                    {render()}
-                </Paper>
-            </Modal>
+            <Dialog open={open} onClose={handleClose} maxWidth={"sm"} fullWidth>
+                <DialogTitle>{modalTitle}</DialogTitle>
+                <DialogContent>{render()}</DialogContent>
+                <DialogActions>
+                    <Button onClick={handleClose}>Close</Button>
+                </DialogActions>
+            </Dialog>
         </>
     );
 };

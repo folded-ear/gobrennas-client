@@ -1,4 +1,4 @@
-import { Box, Grid, IconButton, Stack, Typography } from "@mui/material";
+import { Box, IconButton, Stack, Typography } from "@mui/material";
 import List from "@mui/material/List";
 import AddIcon from "@mui/icons-material/Add";
 import React, { useCallback, useState } from "react";
@@ -21,6 +21,11 @@ import DragContainer, {
 import SweepIcon from "@mui/icons-material/CleaningServices";
 import { colorHash } from "../../constants/colors";
 import Avatar from "@mui/material/Avatar";
+import { useIsMobile } from "../../providers/IsMobile";
+import MobilePlanSelector from "./MobilePlanSelector";
+import useAllPlansRLO from "../../data/useAllPlansRLO";
+import { NavShopItem } from "../../features/Navigation/components/NavShopItem";
+import { toggleShoppingPlan } from "../../features/Navigation/NavigationController";
 
 export enum ShopItemType {
     INGREDIENT,
@@ -104,6 +109,9 @@ const ShopList: React.FC<ShopListProps> = ({
     onRepartition,
 }) => {
     const [showAcquired, setShowAcquired] = useState(false);
+    const allPlans = useAllPlansRLO().data;
+    const showPlanSelector = useIsMobile() && allPlans && allPlans.length >= 2;
+    const [planSelectorOpen, setPlanSelectorOpen] = useState(false);
 
     const handleAddNew = useCallback((e) => {
         e.preventDefault();
@@ -123,23 +131,20 @@ const ShopList: React.FC<ShopListProps> = ({
 
     return (
         <PageBody hasFab fullWidth>
-            <Box mx={2} my={1}>
-                <Grid
-                    container
-                    gap={1}
-                    justifyContent={"space-between"}
-                    flexWrap={"nowrap"}
-                    alignItems={"flex-end"}
-                >
-                    <Typography variant="h2">
+            <Box mx={showPlanSelector ? 0 : 1}>
+                <Typography variant="h2">
+                    <Stack direction="row" alignItems={"center"} spacing={1}>
+                        {showPlanSelector && (
+                            <CollapseIconButton
+                                size={"medium"}
+                                expanded={planSelectorOpen}
+                                onClick={() => setPlanSelectorOpen((o) => !o)}
+                            />
+                        )}
                         {plans.length === 1 ? (
                             plans[0].name
                         ) : (
-                            <Stack
-                                direction="row"
-                                alignItems={"flex-end"}
-                                spacing={1}
-                            >
+                            <Stack direction={"row"} gap={1}>
                                 <span>Shop</span>
                                 {plans.map((p) => (
                                     <Avatar
@@ -157,14 +162,21 @@ const ShopList: React.FC<ShopListProps> = ({
                                 ))}
                             </Stack>
                         )}
-                    </Typography>
-                    <IconButton
-                        title={"Sweep Acquired"}
-                        onClick={() => onRepartition()}
-                    >
-                        <SweepIcon />
-                    </IconButton>
-                </Grid>
+                        <IconButton
+                            title={"Sweep Acquired"}
+                            onClick={() => onRepartition()}
+                        >
+                            <SweepIcon />
+                        </IconButton>
+                    </Stack>
+                </Typography>
+                {showPlanSelector && (
+                    <MobilePlanSelector
+                        open={planSelectorOpen}
+                        PlanItem={NavShopItem}
+                        onSelectPlan={toggleShoppingPlan}
+                    />
+                )}
             </Box>
             <TupleList tuples={neededTuples} />
             {acquiredTuples.length > 0 && (
