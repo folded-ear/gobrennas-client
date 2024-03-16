@@ -125,7 +125,7 @@ const RecipeForm: React.FC<Props> = ({
                     variant="outlined"
                     placeholder="Recipe Title"
                     label="Title"
-                    value={draft.name}
+                    value={draft.name || ""}
                     onChange={handleUpdate}
                 />
             </Box>
@@ -135,7 +135,7 @@ const RecipeForm: React.FC<Props> = ({
                     fullWidth
                     variant="outlined"
                     placeholder="External URL"
-                    value={draft.externalUrl}
+                    value={draft.externalUrl || ""}
                     label="External URL"
                     onChange={handleUpdate}
                 />
@@ -261,7 +261,7 @@ const RecipeForm: React.FC<Props> = ({
                             label="Yield"
                             fullWidth
                             placeholder="Yield (in servings)"
-                            value={draft.recipeYield || null}
+                            value={draft.recipeYield || ""}
                             onChange={handleNumericUpdate}
                             variant="outlined"
                         />
@@ -272,7 +272,7 @@ const RecipeForm: React.FC<Props> = ({
                             label="Total Cook Time"
                             fullWidth
                             placeholder="Total Time In Minutes"
-                            value={draft.totalTime || null}
+                            value={draft.totalTime || ""}
                             onChange={handleNumericUpdate}
                             variant="outlined"
                         />

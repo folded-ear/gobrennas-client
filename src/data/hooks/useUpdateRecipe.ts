@@ -51,8 +51,8 @@ export const useUpdateRecipe = () => {
                         return it as IngredientRefInfo;
                     }),
                     labels: recipe.labels,
-                    yield: recipe.recipeYield,
-                    calories: recipe.calories,
+                    yield: recipe.recipeYield ? recipe.recipeYield : null,
+                    calories: recipe.calories ? recipe.calories : null,
                     totalTime: recipe.totalTime
                         ? toMilliseconds(recipe.totalTime)
                         : null,
