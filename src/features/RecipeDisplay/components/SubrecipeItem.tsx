@@ -5,7 +5,7 @@ import { formatDuration } from "util/time";
 import CollapseIconButton from "global/components/CollapseIconButton";
 import IngredientDirectionsRow from "./IngredientDirectionsRow";
 import { ScalingProvider } from "util/ScalingContext";
-import { Subrecipe } from "features/RecipeDisplay/types";
+import type { Subrecipe } from "global/types/types";
 
 const useStyles = makeStyles({
     time: {

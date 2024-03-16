@@ -2,7 +2,7 @@ import Avatar from "@mui/material/Avatar";
 import Box from "@mui/material/Box";
 import makeStyles from "@mui/styles/makeStyles";
 import React from "react";
-import { UserType } from "../../global/types/types";
+import type { UserType } from "global/types/identity";
 
 const useStyles = makeStyles((theme) => ({
     root: {

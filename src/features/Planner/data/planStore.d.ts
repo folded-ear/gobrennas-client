@@ -2,7 +2,8 @@ import FluxReduceStore from "flux/lib/FluxReduceStore";
 import LoadObject from "../../../util/LoadObject";
 import LoadObjectState from "../../../util/LoadObjectState";
 import AccessLevel from "../../../data/AccessLevel";
-import { BfsId, FluxAction } from "global/types/types";
+import { FluxAction } from "global/types/types";
+import { BfsId } from "global/types/identity";
 
 export interface PlanBucket {
     id: BfsId;

@@ -2,10 +2,10 @@ import { Box, Grid, IconButton, Typography } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import { Close, RotateLeft, RotateRight } from "@mui/icons-material";
 import React, { MouseEventHandler, ReactNode } from "react";
-import useFluxStore from "../../data/useFluxStore";
-import WindowStore from "../../data/WindowStore";
-import { findSvg } from "../../util/findAncestorByName";
-import getPositionWithin from "../../util/getPositionWithin";
+import useFluxStore from "data/useFluxStore";
+import WindowStore from "data/WindowStore";
+import { findSvg } from "util/findAncestorByName";
+import getPositionWithin from "util/getPositionWithin";
 
 const useStyles = makeStyles({
     rotateRight: {

@@ -8,7 +8,8 @@ import PlanActions from "features/Planner/data/PlanActions";
 import history from "util/history";
 import Quantity from "views/common/Quantity";
 import SendToPlan from "features/RecipeLibrary/components/SendToPlan";
-import { BfsId, IngredientRef } from "global/types/types";
+import type { IngredientRef } from "global/types/types";
+import type { BfsId } from "global/types/identity";
 import { useScale } from "util/ScalingContext";
 
 const useStyles = makeStyles(() => ({

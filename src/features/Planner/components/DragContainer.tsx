@@ -6,7 +6,7 @@ import {
     DragOverlay,
     rectIntersection,
 } from "@dnd-kit/core";
-import { BfsId } from "../../../global/types/types";
+import { BfsId } from "global/types/identity";
 import { Box, lighten, useTheme } from "@mui/material";
 
 type Vert = "above" | "below";

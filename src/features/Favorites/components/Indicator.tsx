@@ -5,7 +5,7 @@ import {
     useMarkFavorite,
     useRemoveFavorite,
 } from "../data/queries";
-import { BfsId } from "../../../global/types/types";
+import { BfsId } from "global/types/identity";
 import IconButton from "@mui/material/IconButton";
 
 interface Props {

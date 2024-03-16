@@ -10,11 +10,11 @@ import { makeStyles } from "@mui/styles";
 import { Close } from "@mui/icons-material";
 import React, { MouseEventHandler } from "react";
 import DeleteButton from "views/common/DeleteButton";
-import ImageDropZone from "../../util/ImageDropZone";
+import ImageDropZone from "util/ImageDropZone";
 import { useQuery } from "react-query";
-import TextractApi from "../../data/TextractApi";
-import { PendingJob } from "./TextractFormAugment";
-import { BfsId } from "../../global/types/types";
+import TextractApi from "data/TextractApi";
+import { PendingJob } from "features/RecipeEdit/components/TextractFormAugment";
+import { BfsId } from "global/types/identity";
 
 const useStyles = makeStyles({
     drawer: {

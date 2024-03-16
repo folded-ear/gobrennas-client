@@ -26,8 +26,9 @@ const CENTER = [0.5, 0.5];
 interface Props {
     image:
         | string // actual URL
-        | Blob; // including File
-    value?: number[];
+        | Blob // including File
+        | null;
+    value: number[] | null;
 
     onChange(v: number[]): void;
 }
@@ -38,20 +39,25 @@ const PositionPicker: React.FC<Props> = ({ image, value, onChange }) => {
     React.useEffect(() => setLoaded(false), [image]);
     const [[width, height], setSize] = React.useState(() => [100, 100]);
     const [[left, top], setOffset] = React.useState(() => CENTER);
-    React.useEffect(() => setOffset(value || CENTER), [value]);
+    React.useEffect(
+        () => (value?.length ? setOffset(value) : setOffset(CENTER)),
+        [value],
+    );
     const x = left * width;
     const y = top * height;
     return (
         <div className={classes.root}>
-            <ImageOrPreview
-                src={image}
-                className={classes.image}
-                onLoad={(e) => {
-                    const img = e.target;
-                    setLoaded(true);
-                    setSize([img.width, img.height]);
-                }}
-            />
+            {image && (
+                <ImageOrPreview
+                    src={image}
+                    className={classes.image}
+                    onLoad={(e) => {
+                        const img = e.target;
+                        setLoaded(true);
+                        setSize([img.width, img.height]);
+                    }}
+                />
+            )}
             {loaded && (
                 <svg
                     viewBox={`0 0 ${width} ${height}`}

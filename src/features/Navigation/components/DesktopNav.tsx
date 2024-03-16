@@ -18,10 +18,10 @@ import { Box, List, ListItemButton, Typography } from "@mui/material";
 import { NavPlanItem } from "features/Navigation/components/NavPlanItem";
 import { colorHash } from "constants/colors";
 import { NavOwnerItem } from "./NavOwnerItem";
-import User from "../../../views/user/User";
-import { useProfile } from "../../../providers/Profile";
+import User from "views/user/User";
+import { useProfile } from "providers/Profile";
 import { NavShopItem } from "./NavShopItem";
-import { BfsId } from "../../../global/types/types";
+import { BfsId } from "global/types/identity";
 import useAllPlansRLO from "../../../data/useAllPlansRLO";
 
 type DesktopNavProps = {

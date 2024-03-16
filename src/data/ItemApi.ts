@@ -1,7 +1,7 @@
 import BaseAxios from "axios";
 import { API_BASE_URL } from "../constants";
 import serializeObjectOfPromiseFns from "../util/serializeObjectOfPromiseFns";
-import { BfsId } from "../global/types/types";
+import { BfsId } from "global/types/identity";
 
 const axios = BaseAxios.create({
     baseURL: `${API_BASE_URL}/api`,

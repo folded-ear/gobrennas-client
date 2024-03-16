@@ -5,7 +5,8 @@ import InventoryApi, {
     TxType,
 } from "../../data/InventoryApi";
 import SplitButton from "../common/SplitButton";
-import ElEdit, { Value } from "../ElEdit";
+import ElEdit from "../ElEdit";
+import { IngredientRef } from "global/types/types";
 
 const txTypes = [
     { id: TxType.ACQUIRE, label: "Acquire" },
@@ -17,7 +18,7 @@ const txTypes = [
 
 const DEFAULT_TX_TYPE = txTypes[1]; /* consume */
 
-const EMPTY_REF: Value = { raw: "" };
+const EMPTY_REF: IngredientRef = { raw: "" };
 
 interface Props {
     ingredient?: string;

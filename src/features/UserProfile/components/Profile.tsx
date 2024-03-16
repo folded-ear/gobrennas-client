@@ -1,5 +1,5 @@
 import * as React from "react";
-import { UserType } from "../../../global/types/types";
+import type { UserType } from "global/types/identity";
 
 interface Props {
     currentUser: UserType;

@@ -2,7 +2,7 @@ import FluxReduceStore from "flux/lib/FluxReduceStore";
 import { FluxAction } from "../global/types/types";
 import LoadObject from "../../../util/LoadObject";
 import LoadObjectMap from "../../../util/LoadObjectMap";
-import { BfsId } from "../../../global/types/types";
+import { BfsId } from "global/types/identity";
 
 interface State {
     byId: LoadObjectMap<BfsId, PantryItem | Recipe>;
