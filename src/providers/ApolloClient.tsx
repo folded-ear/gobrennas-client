@@ -1,8 +1,7 @@
 import {
     ApolloClient as ApolloClientInstance,
+    ApolloLink,
     ApolloProvider,
-    from,
-    HttpLink,
     InMemoryCache,
 } from "@apollo/client";
 import { onError } from "@apollo/client/link/error";
@@ -11,11 +10,7 @@ import * as React from "react";
 import { PropsWithChildren } from "react";
 import { API_BASE_URL } from "../constants";
 import { askUserToReauth, isAuthError } from "./Profile";
-
-const httpLink = new HttpLink({
-    uri: `${API_BASE_URL}/graphql`,
-    credentials: "include",
-});
+import createUploadLink from "apollo-upload-client/createUploadLink.mjs";
 
 const errorLink = onError(({ graphQLErrors }) => {
     if (!graphQLErrors) return;
@@ -47,7 +42,16 @@ const client = new ApolloClientInstance({
             },
         },
     }),
-    link: from([errorLink, httpLink]),
+    link: ApolloLink.from([
+        errorLink,
+        createUploadLink({
+            uri: `${API_BASE_URL}/graphql`,
+            credentials: "include",
+            headers: {
+                "Apollo-Require-Preflight": "true",
+            },
+        }),
+    ]),
 });
 
 export function ApolloClient({ children }: PropsWithChildren) {

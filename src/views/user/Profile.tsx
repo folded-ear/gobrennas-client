@@ -3,7 +3,7 @@ import { useIsDeveloper, useLogoutHandler } from "providers/Profile";
 import User from "./User";
 import { CookThis } from "features/UserProfile/components/CookThis";
 import { Developer } from "features/UserProfile/components/Developer";
-import { UserType } from "global/types/types";
+import type { UserType } from "global/types/identity";
 import { Box, Button, Container, Grid, Paper, Typography } from "@mui/material";
 import { styled } from "@mui/material/styles";
 

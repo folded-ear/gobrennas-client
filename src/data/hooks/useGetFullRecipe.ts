@@ -1,18 +1,45 @@
-import { ApolloError, useQuery } from "@apollo/client";
-import { getFullRecipeQuery } from "../data/queries";
-import { FullRecipe, Recipe, Subrecipe } from "features/RecipeDisplay/types";
+import { useQuery } from "@apollo/client";
 import * as React from "react";
-import { IngredientRef } from "global/types/types";
+import {
+    FullRecipe,
+    IngredientRef,
+    Recipe,
+    Subrecipe,
+} from "global/types/types";
 import { useProfileId } from "providers/Profile";
+import { UseQueryResult } from "data/types";
+import { gql } from "__generated__";
 
-type UseQueryResult<T> = {
-    loading: boolean;
-    error?: ApolloError | boolean;
-    data: T | null;
-};
+const GET_FULL_RECIPE_QUERY = gql(`
+query getRecipeWithEverything($id: ID!) {
+  library {
+    getRecipeById(id: $id) {
+      ...recipeCore
+      favorite
+      yield
+      calories
+      externalUrl
+      labels
+      photo {
+        url
+        focus
+      }
+      owner {
+        id
+        name
+        email
+        imageUrl
+      }
+      subrecipes {
+        ...recipeCore
+      }
+    }
+  }
+}
+`);
 
 export const useGetFullRecipe = (id: string): UseQueryResult<FullRecipe> => {
-    const { loading, error, data } = useQuery(getFullRecipeQuery, {
+    const { loading, error, data } = useQuery(GET_FULL_RECIPE_QUERY, {
         variables: { id: id },
     });
     const myId = useProfileId();
@@ -61,7 +88,7 @@ export const useGetFullRecipe = (id: string): UseQueryResult<FullRecipe> => {
             photo: result.photo?.url || null,
             photoFocus: result.photo?.focus || [],
             totalTime: result.totalTime,
-            yield: result.yield,
+            recipeYield: result.yield,
         };
 
         const fullRecipe: FullRecipe = {

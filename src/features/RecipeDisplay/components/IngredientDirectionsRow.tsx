@@ -8,7 +8,7 @@ import {
 } from "@mui/material";
 import React from "react";
 import Directions from "views/common/Directions";
-import type { Subrecipe } from "features/RecipeDisplay/types";
+import type { Subrecipe } from "global/types/types";
 import { useScaleOptions } from "util/ScalingContext";
 import IngredientItem from "views/IngredientItem";
 

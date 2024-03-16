@@ -1,5 +1,5 @@
 import LoadObject from "util/LoadObject";
-import { RecipeFromPlanItem } from "features/RecipeDisplay/types";
+import type { RecipeFromPlanItem } from "global/types/types";
 import planStore from "features/Planner/data/planStore";
 import { recipeLoByItemLo as buildSingleItemRecipeLO } from "features/RecipeDisplay/utils/recipeLoByItemLo";
 import getBucketLabel from "features/Planner/components/getBucketLabel";
