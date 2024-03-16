@@ -30,7 +30,7 @@ const FluxRoute: React.FC<FluxRouteProps> = ({
                         match,
                         location,
                     });
-                Dispatcher.isDispatching() ? setTimeout(work) : work();
+                setTimeout(work);
                 GTag("set", "page_path", match.url);
                 GTag("set", "page_title", match.path);
                 GTag("event", "page_view");
