@@ -12,7 +12,6 @@ import { useUpdateRecipe } from "data/hooks/useUpdateRecipe";
 import { useCreateRecipe } from "data/hooks/useCreateRecipe";
 import type { BfsId } from "global/types/identity";
 import type { DraftRecipe, Recipe } from "global/types/types";
-import { ApolloError } from "@apollo/client";
 
 type Props = RouteComponentProps<{ id?: string }>;
 
@@ -20,10 +19,9 @@ const RecipeEditController: React.FC<Props> = ({ match }) => {
     const id = match.params?.id || "";
     const history = useHistory();
     const { loading, data: recipe } = useGetRecipe(id);
-    const [error, setError] = React.useState<ApolloError | null>(null);
     const { data: labelList } = useGetAllLabels();
-    const { updateRecipe } = useUpdateRecipe();
-    const { createRecipe } = useCreateRecipe();
+    const { error: updateError, updateRecipe } = useUpdateRecipe();
+    const { error: createError, createRecipe } = useCreateRecipe();
     let draft: Recipe;
 
     if (!id) {
@@ -42,26 +40,18 @@ const RecipeEditController: React.FC<Props> = ({ match }) => {
     }
 
     const handleUpdate = (recipe: DraftRecipe) => {
-        updateRecipe(recipe)
-            .then((_) => {
-                history.push(`/library/recipe/${recipe.id}`);
-            })
-            .catch((error) => {
-                setError(error);
-            });
+        updateRecipe(recipe).then((_) => {
+            history.push(`/library/recipe/${recipe.id}`);
+        });
     };
 
     const handleSaveCopy = (recipe: DraftRecipe) => {
-        createRecipe(recipe)
-            .then((result) => {
-                const id = result.data?.library?.createRecipe.id;
-                id
-                    ? history.push(`/library/recipe/${id}`)
-                    : history.push(`/library`);
-            })
-            .catch((error) => {
-                setError(error);
-            });
+        createRecipe(recipe).then((result) => {
+            const id = result.data?.library?.createRecipe.id;
+            id
+                ? history.push(`/library/recipe/${id}`)
+                : history.push(`/library`);
+        });
     };
 
     const handleDelete = (id: BfsId) => {
@@ -74,8 +64,15 @@ const RecipeEditController: React.FC<Props> = ({ match }) => {
 
     return (
         <PageBody>
-            {error && (
-                <Alert severity="error">Unable to save: {error?.message}</Alert>
+            {createError && (
+                <Alert severity="error">
+                    Unable to save: {createError?.message}
+                </Alert>
+            )}
+            {updateError && (
+                <Alert severity="error">
+                    Unable to save: {updateError?.message}
+                </Alert>
             )}
             <RecipeForm
                 title={`Editing ${draft.name}`}

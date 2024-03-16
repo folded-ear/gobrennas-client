@@ -6,13 +6,11 @@ import { useCreateRecipe } from "data/hooks/useCreateRecipe";
 import { useGetAllLabels } from "data/hooks/useGetAllLabels";
 import ClientId from "util/ClientId";
 import { useHistory } from "react-router-dom";
-import { ApolloError } from "@apollo/client";
 import { Alert } from "@mui/material";
 
 export const RecipeAddController = () => {
     const { data: labelList } = useGetAllLabels();
-    const { createRecipe } = useCreateRecipe();
-    const [error, setError] = React.useState<ApolloError | null>(null);
+    const { error, createRecipe } = useCreateRecipe();
     const history = useHistory();
 
     const draft = {
@@ -39,16 +37,12 @@ export const RecipeAddController = () => {
     };
 
     const handleSave = (recipe: DraftRecipe) => {
-        createRecipe(recipe)
-            .then((result) => {
-                const id = result.data?.library?.createRecipe.id;
-                id
-                    ? history.push(`/library/recipe/${id}`)
-                    : history.push(`/library`);
-            })
-            .catch((error) => {
-                setError(error);
-            });
+        createRecipe(recipe).then((result) => {
+            const id = result.data?.library?.createRecipe.id;
+            id
+                ? history.push(`/library/recipe/${id}`)
+                : history.push(`/library`);
+        });
     };
 
     const handleCancel = (recipe?: DraftRecipe) => {
