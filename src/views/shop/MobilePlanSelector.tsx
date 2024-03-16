@@ -5,7 +5,7 @@ import { NavShopItem } from "../../features/Navigation/components/NavShopItem";
 import { colorHash } from "../../constants/colors";
 import Divider from "@mui/material/Divider";
 import useFriendLO from "../../data/useFriendLO";
-import { BfsId } from "../../global/types/types";
+import { BfsId } from "../../global/types/identity";
 import { ripLoadObject } from "../../util/ripLoadObject";
 
 function OwnerSubheader({ id }: { id: BfsId }) {
