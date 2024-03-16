@@ -1,12 +1,9 @@
 import { useMutation } from "@apollo/client";
 import { DraftRecipe } from "global/types/types";
 import { gql } from "__generated__";
-import { toMilliseconds } from "util/time";
-import {
-    GetSearchLibraryDocument,
-    IngredientRefInfo,
-} from "__generated__/graphql";
+import { GetSearchLibraryDocument } from "__generated__/graphql";
 import promiseWellSizedFile from "util/promiseWellSizedFile";
+import { recipeToIngredientInfo } from "data/utils/graphql";
 
 const CREATE_RECIPE_MUTATION = gql(`
 mutation createRecipe($info: IngredientInfo!, $photo: Upload, $cookThis: Boolean) {
@@ -33,25 +30,7 @@ export const useCreateRecipe = () => {
 
         return mutateFunction({
             variables: {
-                info: {
-                    type: "Recipe",
-                    name: recipe.name,
-                    storeOrder: 1,
-                    externalUrl: recipe.externalUrl,
-                    directions: recipe.directions,
-                    ingredients: recipe.ingredients.map((it) => {
-                        it = { ...it };
-                        delete it.id;
-                        return it as IngredientRefInfo;
-                    }),
-                    labels: recipe.labels,
-                    yield: recipe.recipeYield,
-                    calories: recipe.calories,
-                    totalTime: recipe.totalTime
-                        ? toMilliseconds(recipe.totalTime)
-                        : null,
-                    photoFocus: recipe.photoFocus,
-                },
+                info: recipeToIngredientInfo(recipe),
                 photo: typeof sizedUpload !== "string" ? sizedUpload : null,
                 cookThis: false,
             },
