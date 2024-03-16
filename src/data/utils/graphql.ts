@@ -1,8 +1,5 @@
 import { DraftRecipe } from "global/types/types";
-import {
-    IngredientInfo,
-    IngredientRefInfo
-} from "__generated__/graphql";
+import { IngredientInfo, IngredientRefInfo } from "__generated__/graphql";
 import { toMilliseconds } from "util/time";
 
 /**
