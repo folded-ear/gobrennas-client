@@ -75,9 +75,7 @@ const RecipeController: React.FC<Props> = ({ match }) => {
                                     }
                                 />
                             )}
-                            <CloseButton
-                                onClick={() => history.push("/library")}
-                            />
+                            <CloseButton onClick={() => history.goBack()} />
                         </>
                     }
                     canFavorite
