@@ -129,8 +129,8 @@
   },
   "devDependencies": {
     "@babel/plugin-proposal-private-property-in-object": "^7.21.0",
-    "@graphql-codegen/cli": "^3.2.1",
-    "@graphql-codegen/client-preset": "^2.1.0",
+    "@graphql-codegen/cli": "5.0.2",
+    "@graphql-codegen/client-preset": "4.2.4",
     "@testing-library/jest-dom": "^5.12.0",
     "@testing-library/react": "^11.2.7",
     "@testing-library/user-event": "^12.8.3",
