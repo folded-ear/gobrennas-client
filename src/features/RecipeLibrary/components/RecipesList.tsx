@@ -49,7 +49,7 @@ export const RecipesList: React.FC<RecipesListProps> = ({
         e.preventDefault();
         e.stopPropagation();
         setUnsavedFilter("");
-        onSearch(unsavedFilter, scope);
+        onSearch("", scope);
     }
 
     function handleSearch(e) {
