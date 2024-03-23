@@ -1,5 +1,4 @@
 import {
-    AutocompleteChangeReason,
     Box,
     Button,
     Grid,
@@ -11,7 +10,7 @@ import {
     useTheme,
 } from "@mui/material";
 import makeStyles from "@mui/styles/makeStyles";
-import type { DraftRecipe, Recipe } from "global/types/types";
+import type { DraftRecipe } from "global/types/types";
 import { Add, Cancel, Delete, FileCopy, Save } from "@mui/icons-material";
 import React, { ReactNode } from "react";
 import useWindowSize from "data/useWindowSize";
@@ -22,8 +21,6 @@ import { LabelAutoComplete } from "./LabelAutoComplete";
 import DragContainer from "features/Planner/components/DragContainer";
 import Item from "features/Planner/components/Item";
 import DragHandle from "features/Planner/components/DragHandle";
-import { TextractForm } from "features/RecipeEdit/components/TextractForm";
-import { useRecipeForm } from "data/hooks/useRecipeForm";
 
 const useStyles = makeStyles((theme) => ({
     button: {
@@ -32,9 +29,20 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 interface Props {
-    recipe: Recipe;
+    draft: DraftRecipe;
     title: string;
+    onAddIngredientRef: (idx?: number, text?: string) => void;
+    onEditIngredientRef: (idx: number) => void;
+    onDeleteIngredientRef: (idx: number) => void;
+    onMoveIngredientRef: (
+        activeId: number,
+        targetId: number,
+        above: boolean,
+    ) => void;
+    onMultilinePasteIngredientRefs: (idx: number, text: string) => void;
     onSave: (r: DraftRecipe) => void;
+    onUpdate: any; //todo
+    onUpdateLabels: any; //todo
     onSaveCopy?: (r: DraftRecipe) => void;
     onCancel: (r?: DraftRecipe) => void;
     labelList?: string[];
@@ -42,11 +50,18 @@ interface Props {
 }
 
 const RecipeForm: React.FC<Props> = ({
-    recipe,
+    draft,
     title,
     onSave,
+    onUpdate,
+    onUpdateLabels,
     onSaveCopy,
     onCancel,
+    onAddIngredientRef,
+    onEditIngredientRef,
+    onDeleteIngredientRef,
+    onMoveIngredientRef,
+    onMultilinePasteIngredientRefs,
     extraButtons,
     labelList,
 }) => {
@@ -55,49 +70,6 @@ const RecipeForm: React.FC<Props> = ({
     const mobile = useMediaQuery(theme.breakpoints.down("sm"));
     const classes = useStyles();
     const MARGIN = 2;
-
-    const {
-        draft,
-        onUpdate,
-        onAddIngredientRef,
-        onEditIngredientRef,
-        onDeleteIngredientRef,
-        onMoveIngredientRef,
-        onMultilinePasteIngredientRefs,
-    } = useRecipeForm(recipe);
-
-    const handleUpdate = React.useCallback(
-        (e) => {
-            const { name: key, value } = e.target;
-            onUpdate(key, value ? value : "");
-        },
-        [onUpdate],
-    );
-
-    const handleNumericUpdate = React.useCallback(
-        (e) => {
-            const { name: key, value } = e.target;
-            const v = parseFloat(value);
-            onUpdate(key, isNaN(v) ? null : v);
-        },
-        [onUpdate],
-    );
-
-    const handleLabelChange = (
-        e,
-        labels: string[],
-        reason: AutocompleteChangeReason,
-    ) => {
-        // One of "createOption", "selectOption", "removeOption", "blur" or "clear".
-        if (reason === "selectOption" || "createOption" || "removeOption") {
-            const val = labels.map((label) => label.replace(/\/+/g, "-"));
-            onUpdate("labels", val);
-        }
-    };
-
-    const updateTextract = (key, value) => {
-        onUpdate(key, value);
-    };
 
     const hasPhoto: boolean =
         draft.photoUpload !== null || draft.photoUrl !== null;
@@ -113,11 +85,6 @@ const RecipeForm: React.FC<Props> = ({
     return (
         <>
             <Typography variant="h2">{title}</Typography>
-            <TextractForm
-                updateDraft={updateTextract}
-                draft={draft}
-                onMultilinePaste={onMultilinePasteIngredientRefs}
-            />
             <Box my={MARGIN}>
                 <TextField
                     name="name"
@@ -126,7 +93,7 @@ const RecipeForm: React.FC<Props> = ({
                     placeholder="Recipe Title"
                     label="Title"
                     value={draft.name || ""}
-                    onChange={handleUpdate}
+                    onChange={onUpdate}
                 />
             </Box>
             <Box my={MARGIN}>
@@ -137,7 +104,7 @@ const RecipeForm: React.FC<Props> = ({
                     placeholder="External URL"
                     value={draft.externalUrl || ""}
                     label="External URL"
-                    onChange={handleUpdate}
+                    onChange={onUpdate}
                 />
             </Box>
             <Box my={MARGIN}>
@@ -210,7 +177,7 @@ const RecipeForm: React.FC<Props> = ({
                             <ElEdit
                                 name={`ingredients.${i}`}
                                 value={it}
-                                onChange={handleUpdate}
+                                onChange={onUpdate}
                                 onMultilinePaste={(text) =>
                                     onMultilinePasteIngredientRefs(i, text)
                                 }
@@ -247,7 +214,7 @@ const RecipeForm: React.FC<Props> = ({
                         18 /* aiming for something around 50vh */
                     }
                     value={draft.directions || ""}
-                    onChange={handleUpdate}
+                    onChange={onUpdate}
                     placeholder="Recipe Directions"
                     fullWidth
                     variant="outlined"
@@ -262,7 +229,7 @@ const RecipeForm: React.FC<Props> = ({
                             fullWidth
                             placeholder="Yield (in servings)"
                             value={draft.recipeYield || ""}
-                            onChange={handleNumericUpdate}
+                            onChange={onUpdate}
                             variant="outlined"
                         />
                     </Grid>
@@ -273,7 +240,7 @@ const RecipeForm: React.FC<Props> = ({
                             fullWidth
                             placeholder="Total Time In Minutes"
                             value={draft.totalTime || ""}
-                            onChange={handleNumericUpdate}
+                            onChange={onUpdate}
                             variant="outlined"
                         />
                     </Grid>
@@ -284,7 +251,7 @@ const RecipeForm: React.FC<Props> = ({
                             fullWidth
                             placeholder="Calories Per Serving"
                             value={draft.calories || ""}
-                            onChange={handleNumericUpdate}
+                            onChange={onUpdate}
                             variant="outlined"
                         />
                     </Grid>
@@ -294,7 +261,7 @@ const RecipeForm: React.FC<Props> = ({
                 <LabelAutoComplete
                     labelList={labelList || []}
                     recipeLabels={draft.labels}
-                    onLabelChange={handleLabelChange}
+                    onLabelChange={onUpdateLabels}
                 />
             </Box>
             <Grid container justifyContent={"space-between"}>

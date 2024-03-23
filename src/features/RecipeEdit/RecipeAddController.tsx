@@ -1,19 +1,17 @@
 import * as React from "react";
-import { DraftRecipe } from "global/types/types";
-import RecipeForm from "features/RecipeEdit/components/RecipeForm";
+import { DraftRecipe, Recipe } from "global/types/types";
 import PageBody from "views/common/PageBody";
 import { useCreateRecipe } from "data/hooks/useCreateRecipe";
-import { useGetAllLabels } from "data/hooks/useGetAllLabels";
 import ClientId from "util/ClientId";
 import { useHistory } from "react-router-dom";
 import { Alert } from "@mui/material";
+import { DraftRecipeController } from "features/RecipeEdit/DraftRecipeController";
 
 export const RecipeAddController = () => {
-    const { data: labelList } = useGetAllLabels();
-    const { error, createRecipe } = useCreateRecipe();
+    const { error: createError, createRecipe } = useCreateRecipe();
     const history = useHistory();
 
-    const draft = {
+    const recipe: Recipe = {
         id: ClientId.next(),
         name: "",
         externalUrl: "",
@@ -33,7 +31,6 @@ export const RecipeAddController = () => {
         labels: [],
         photo: null,
         photoFocus: null,
-        sourceId: "",
     };
 
     const handleSave = (recipe: DraftRecipe) => {
@@ -53,13 +50,14 @@ export const RecipeAddController = () => {
 
     return (
         <PageBody>
-            {error && (
-                <Alert severity="error">Unable to save: {error?.message}</Alert>
+            {createError && (
+                <Alert severity="error">
+                    Unable to save: {createError?.message}
+                </Alert>
             )}
-            <RecipeForm
-                recipe={draft}
-                title={"Add A New Recipe"}
-                labelList={labelList}
+            <DraftRecipeController
+                recipe={recipe}
+                title="Add a New Recipe"
                 onSave={handleSave}
                 onCancel={handleCancel}
             />

@@ -4,7 +4,9 @@ import { PlannerController as Planner } from "features/Planner/PlannerController
 import PlannedBucketController from "./features/RecipeDisplay/PlannedBucketController";
 import PlannedRecipeController from "./features/RecipeDisplay/PlannedRecipeController";
 import Recipe from "./features/RecipeDisplay/RecipeController";
-import RecipeEditController from "./features/RecipeEdit/RecipeEditController";
+import { RecipeEditController } from "./features/RecipeEdit/RecipeEditController";
+import { RecipeAddController } from "./features/RecipeEdit/RecipeAddController";
+import { RecipeCopyController } from "./features/RecipeEdit/RecipeCopyController";
 import Shop from "./containers/Shop";
 import { SharedRecipeController } from "./features/RecipeDisplay/SharedRecipeController";
 import Landing from "./views/Landing";
@@ -13,7 +15,6 @@ import OAuth2RedirectHandler from "views/user/OAuth2RedirectHandler";
 import { UserProfileView } from "views/UserProfile/UserProfileView";
 import Profile from "./views/user/Profile";
 import Foodinger from "views/Foodinger";
-import { RecipeAddController } from "./features/RecipeEdit/RecipeAddController";
 import { Library } from "views/Library";
 
 const routes = {
@@ -32,7 +33,7 @@ const routes = {
         { path: "/library/recipe/:id/edit", component: RecipeEditController },
         {
             path: "/library/recipe/:id/make-copy",
-            component: RecipeEditController,
+            component: RecipeCopyController,
         },
         { path: "/library/recipe/:id", component: Recipe },
         { path: "/library", component: Library },

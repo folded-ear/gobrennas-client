@@ -1,18 +1,18 @@
-import * as React from "react";
-import { Redirect, useHistory, useRouteMatch } from "react-router-dom";
-import { useGetRecipe } from "data/hooks/useGetRecipe";
-import PageBody from "views/common/PageBody";
-import { Alert, CircularProgress } from "@mui/material";
-import { useUpdateRecipe } from "data/hooks/useUpdateRecipe";
-import type { DraftRecipe } from "global/types/types";
 import { DraftRecipeController } from "features/RecipeEdit/DraftRecipeController";
+import { useGetRecipe } from "data/hooks/useGetRecipe";
+import { Redirect, useHistory, useRouteMatch } from "react-router-dom";
+import { Alert, CircularProgress } from "@mui/material";
+import * as React from "react";
+import { useCreateRecipe } from "data/hooks/useCreateRecipe";
+import { DraftRecipe } from "global/types/types";
+import PageBody from "views/common/PageBody";
 
-export const RecipeEditController: React.FC = () => {
+export const RecipeCopyController: React.FC = () => {
     const { params } = useRouteMatch<{ id: string }>();
     const id = params?.id || "";
     const history = useHistory();
     const { loading, data: recipe } = useGetRecipe(id);
-    const { error: updateError, updateRecipe } = useUpdateRecipe();
+    const { error: createError, createRecipe } = useCreateRecipe();
 
     if (!id) {
         return <Redirect to="/library" />;
@@ -23,8 +23,11 @@ export const RecipeEditController: React.FC = () => {
     }
 
     const handleSave = (recipe: DraftRecipe) => {
-        updateRecipe(recipe).then((_) => {
-            history.push(`/library/recipe/${recipe.id}`);
+        createRecipe(recipe).then((result) => {
+            const id = result.data?.library?.createRecipe.id;
+            id
+                ? history.push(`/library/recipe/${id}`)
+                : history.push(`/library`);
         });
     };
 
@@ -34,14 +37,14 @@ export const RecipeEditController: React.FC = () => {
 
     return (
         <PageBody>
-            {updateError && (
+            {createError && (
                 <Alert severity="error">
-                    Unable to save: {updateError?.message}
+                    Unable to save: {createError?.message}
                 </Alert>
             )}
             <DraftRecipeController
                 recipe={recipe}
-                title={`Editing ${recipe.name}`}
+                title={`Copy of ${recipe.name}`}
                 onSave={handleSave}
                 onCancel={handleCancel}
             />
