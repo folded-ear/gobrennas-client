@@ -7,6 +7,7 @@ const useStyles = makeStyles({
     trigger: {
         position: "absolute",
         right: 0,
+        top: "50px",
         zIndex: 1000,
         backgroundColor: "white",
         transformOrigin: "bottom right",
