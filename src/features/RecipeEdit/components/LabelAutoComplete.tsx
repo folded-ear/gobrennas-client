@@ -1,6 +1,5 @@
 import * as React from "react";
-import Autocomplete from "@mui/lab/Autocomplete";
-import { Stack } from "@mui/material";
+import { Autocomplete, Stack } from "@mui/material";
 import TextField from "@mui/material/TextField";
 
 interface LabelAutoCompleteProps {

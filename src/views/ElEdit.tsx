@@ -1,4 +1,10 @@
-import { Grid, InputAdornment, LinearProgress, TextField } from "@mui/material";
+import {
+    Autocomplete,
+    Grid,
+    InputAdornment,
+    LinearProgress,
+    TextField,
+} from "@mui/material";
 import { CheckCircleOutline, ErrorOutline } from "@mui/icons-material";
 import React, { CSSProperties, PropsWithChildren } from "react";
 import ItemApi, { RecognitionResult } from "data/ItemApi";
@@ -6,7 +12,6 @@ import debounce from "util/debounce";
 import processRecognizedItem from "util/processRecognizedItem";
 import type { IngredientRef } from "global/types/types";
 import { BfsId } from "global/types/identity";
-import Autocomplete from "@mui/lab/Autocomplete";
 
 const doRecog = (raw) => raw != null && raw.trim().length >= 2;
 
