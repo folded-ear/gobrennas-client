@@ -5,7 +5,7 @@ import { IngredientRef, Recipe } from "global/types/types";
 import { BfsId } from "global/types/identity";
 import * as React from "react";
 
-const GET_RECIPE_QUERY = gql(`
+export const GET_RECIPE_QUERY = gql(`
 query getRecipe($id: ID!) {
   library {
     getRecipeById(id: $id) {
