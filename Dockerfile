@@ -2,15 +2,16 @@
 FROM node:20 as build
 WORKDIR /app
 COPY . ./
-ENV CI=true
+ENV NO_COLOR=true \
+    CI=true
 ARG SERVICE_NAME
 RUN if echo "$SERVICE_NAME" | grep beta; then \
       ./icons.sh --beta; \
-    fi
-RUN npm ci
-RUN npx browserslist@latest --update-db
-RUN npm run test
-RUN npm run build
+    fi \
+    && npm ci \
+    && npx browserslist@latest --update-db \
+    && npm run test \
+    && npm run build
 
 # server environment
 FROM nginx:alpine
