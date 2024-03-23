@@ -63,8 +63,9 @@ done
 spit 150 mstile-150x150.png $SRC/logo.svg
 
 spit 180 apple-touch-icon.png $SRC/logo.svg
-sed -e 's/fill="#F57F17"/fill="none"/' $SRC/logo.svg > $OUT/safari-pinned-tab.svg
-sed -e 's/fill="#1976d2"/fill="none"/' -i '' $OUT/safari-pinned-tab.svg
+sed -e 's/fill="#F57F17"/fill="none"/' \
+    -e 's/fill="#1976d2"/fill="none"/' \
+  $SRC/logo.svg > $OUT/safari-pinned-tab.svg
 
 for x in 16 32 48; do
   spit $x favicon-${x}x$x.png $SRC/logo.svg

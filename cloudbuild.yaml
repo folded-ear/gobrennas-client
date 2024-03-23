@@ -39,6 +39,7 @@ images:
     $_AR_HOSTNAME/$PROJECT_ID/cloud-run-source-deploy/$REPO_NAME/$_SERVICE_NAME:$COMMIT_SHA
 options:
   substitutionOption: ALLOW_LOOSE
+  logging: CLOUD_LOGGING_ONLY
 substitutions:
   _TRIGGER_ID: ece871f4-679f-44ef-b92b-b238de683743
   _SERVICE_NAME: beta-gobrennas-com
