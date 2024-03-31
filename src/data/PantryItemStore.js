@@ -27,7 +27,6 @@ class PantryItemStore extends ReduceStore {
                         return new PantryItem({
                             id: item.id,
                             name: item.name,
-                            aisle: item.aisle,
                         });
                     }),
                 );
