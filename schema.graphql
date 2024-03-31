@@ -98,6 +98,7 @@ type LabelsQuery {
 type LibraryMutation {
     createRecipe(cookThis: Boolean, info: IngredientInfo!, photo: Upload): Recipe!
     deleteRecipe(id: ID!): Boolean!
+    setRecipePhoto(id: ID!, photo: Upload!): Recipe!
     updateRecipe(id: ID!, info: IngredientInfo!, photo: Upload): Recipe!
 }
 
@@ -179,7 +180,6 @@ type PageInfo {
 }
 
 type PantryItem implements Ingredient & Node {
-    aisle: String
     id: ID!
     labels: [String!]
     name: String!
