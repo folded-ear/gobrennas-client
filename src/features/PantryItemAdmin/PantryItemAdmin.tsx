@@ -196,6 +196,7 @@ export default function PantryItemAdmin() {
         [],
     );
     const [query, setQuery] = useState<Query>({});
+    const [saving, setSaving] = useState(false);
     useEffect(() => {
         setQuery({ loading: true });
         const timeout = setTimeout(() => {
@@ -258,6 +259,24 @@ You sure?`,
         );
     }
 
+    function handleRowUpdate(newRow: Row, oldRow: Row) {
+        setSaving(true);
+        return new Promise<Row>((resolve, reject) => {
+            setTimeout(() => {
+                if (newRow.id === 15) {
+                    reject("Not 15, yo!");
+                } else {
+                    resolve(newRow);
+                }
+                setSaving(false);
+            }, 500);
+        });
+    }
+
+    function handleRowUpdateError(error) {
+        alert("Failed to save: " + error);
+    }
+
     return (
         <Box
             component={Paper}
@@ -299,8 +318,10 @@ You sure?`,
                         onCombine: handleCombine,
                     } as any,
                 }}
+                loading={query.loading || saving}
                 rows={query.data || []}
-                loading={query.loading}
+                processRowUpdate={handleRowUpdate}
+                onProcessRowUpdateError={handleRowUpdateError}
             ></DataGrid>
         </Box>
     );
