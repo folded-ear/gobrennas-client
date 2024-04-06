@@ -48,6 +48,7 @@ export interface Quantity {
 export interface RecipeFromPlanItem extends Recipe {
     subtaskIds: number[];
     subrecipes: Recipe[];
+    libraryRecipeId?: BfsId;
 }
 
 export type Subrecipe = Pick<

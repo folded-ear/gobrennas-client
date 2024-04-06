@@ -9,6 +9,8 @@ import { useLoadedPlan } from "features/RecipeDisplay/hooks/useLoadedPlan";
 import { recipeLoByItemLo } from "features/RecipeDisplay/utils/recipeLoByItemLo";
 import CloseButton from "../../views/common/CloseButton";
 import history from "../../util/history";
+import LoadObject from "util/LoadObject";
+import { RecipeFromPlanItem } from "global/types/types";
 
 type Props = RouteComponentProps<{
     pid: string;
@@ -17,7 +19,7 @@ type Props = RouteComponentProps<{
 
 const PlannedRecipeController: React.FC<Props> = ({ match }) => {
     const rid = parseInt(match.params.rid, 10);
-    const lo = useFluxStore(
+    const lo: LoadObject<RecipeFromPlanItem> = useFluxStore(
         () => recipeLoByItemLo(planStore.getItemLO(rid)),
         [planStore, LibraryStore],
         [rid],
@@ -30,6 +32,7 @@ const PlannedRecipeController: React.FC<Props> = ({ match }) => {
             <RecipeDetail
                 recipe={lo.getValueEnforcing()}
                 subrecipes={lo.getValueEnforcing().subrecipes}
+                libraryRecipeId={lo.getValueEnforcing().libraryRecipeId}
                 nav={
                     <>
                         <CloseButton
