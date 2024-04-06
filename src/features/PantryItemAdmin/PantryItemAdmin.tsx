@@ -11,6 +11,7 @@ import {
     DataGrid,
     GridColDef,
     GridFilterModel,
+    GridFooterContainer,
     GridPaginationModel,
     gridPaginationModelSelector,
     gridRowCountSelector,
@@ -87,15 +88,62 @@ for (let i = 0; i < 5; i++) {
     );
 }
 
-interface PagerProps {
+interface FooterProps {
     selectedCount: number;
     onCombine: () => void;
 }
 
-function CustomPagination({
+function CustomFooter({
     selectedCount,
     onCombine,
-}: GridSlotProps["footer"] & PagerProps) {
+}: GridSlotProps["footer"] & FooterProps) {
+    return (
+        <GridFooterContainer sx={{ px: 2 }}>
+            <Grid
+                container
+                alignItems={"center"}
+                justifyContent={"space-between"}
+                sx={{ flex: 1 }}
+            >
+                <Box>
+                    <SelectionStatus
+                        selectedCount={selectedCount}
+                        onCombine={onCombine}
+                    />
+                </Box>
+                <Box>
+                    <Paging />
+                </Box>
+            </Grid>
+        </GridFooterContainer>
+    );
+}
+
+function SelectionStatus({ selectedCount: count, onCombine }: FooterProps) {
+    return (
+        <Grid container gap={1} alignItems={"center"}>
+            {count > 0 && (
+                <>
+                    {count} {count === 1 ? "row" : "rows"} selected
+                </>
+            )}
+            {onCombine && count > 0 && (
+                <Button
+                    disabled={count < 2}
+                    onClick={onCombine}
+                    variant={"text"}
+                    size={"small"}
+                    startIcon={<CombineIcon />}
+                    title={"Combine items, and update references"}
+                >
+                    Combine
+                </Button>
+            )}
+        </Grid>
+    );
+}
+
+function Paging() {
     const apiRef = useGridApiContext();
     const model = useGridSelector(apiRef, gridPaginationModelSelector);
     const loading = useGridSelector(apiRef, gridRowsLoadingSelector);
@@ -107,50 +155,28 @@ function CustomPagination({
     );
     const fullPage = rowCount === model.pageSize;
     const showPaging = !loading && (model.page > 0 || rowCount > 0);
+
     return (
-        <Grid
-            container
-            alignItems={"center"}
-            justifyContent={"space-between"}
-            sx={{ flex: 1 }}
-        >
-            <Box>
-                {onCombine && selectedCount > 0 && (
-                    <Button
-                        disabled={selectedCount < 2}
-                        onClick={onCombine}
-                        variant={"text"}
-                        size={"small"}
-                        startIcon={<CombineIcon />}
-                        title={"Combine items, and update references"}
-                    >
-                        Combine
-                    </Button>
-                )}
-            </Box>
-            <Box>
-                <Grid container gap={1} alignItems={"center"}>
-                    {showPaging && (
-                        <>
-                            {start}-{end} of {fullPage ? `${end + 1}+` : end}
-                        </>
-                    )}
-                    <IconButton
-                        disabled={!showPaging || model.page === 0}
-                        title={"Go to previous page"}
-                        onClick={() => apiRef.current.setPage(model.page - 1)}
-                    >
-                        <PrevPageIcon />
-                    </IconButton>
-                    <IconButton
-                        disabled={!showPaging || !fullPage}
-                        title={"Go to next page"}
-                        onClick={() => apiRef.current.setPage(model.page + 1)}
-                    >
-                        <NextPageIcon />
-                    </IconButton>
-                </Grid>
-            </Box>
+        <Grid container gap={1} alignItems={"center"}>
+            {showPaging && (
+                <>
+                    {start}-{end} of {fullPage ? `${end + 1}+` : end}
+                </>
+            )}
+            <IconButton
+                disabled={!showPaging || model.page === 0}
+                title={"Go to previous page"}
+                onClick={() => apiRef.current.setPage(model.page - 1)}
+            >
+                <PrevPageIcon />
+            </IconButton>
+            <IconButton
+                disabled={!showPaging || !fullPage}
+                title={"Go to next page"}
+                onClick={() => apiRef.current.setPage(model.page + 1)}
+            >
+                <NextPageIcon />
+            </IconButton>
         </Grid>
     );
 }
@@ -309,11 +335,11 @@ You sure?`,
                 paginationModel={pageModel}
                 onPaginationModelChange={setPageModel}
                 slots={{
-                    pagination: CustomPagination as any, // should be 'DataGridProps["slots"]["pagination"]'
+                    footer: CustomFooter as any, // should be DataGridProps["slots"]["footer"]
                     toolbar: QuickSearchToolbar,
                 }}
                 slotProps={{
-                    pagination: {
+                    footer: {
                         selectedCount: selectionModel.length,
                         onCombine: handleCombine,
                     } as any,
