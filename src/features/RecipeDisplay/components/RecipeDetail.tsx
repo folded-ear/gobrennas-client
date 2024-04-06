@@ -24,7 +24,7 @@ import FavoriteIndicator from "features/Favorites/components/Indicator";
 import { ReentrantScalingProvider, useScale } from "util/ScalingContext";
 import { SubHeader } from "./Subheader";
 import { extractRecipePhoto } from "features/RecipeDisplay/utils/extractRecipePhoto";
-import { BreadcrumbLink } from "global/components/BreadcrumbItem";
+import { BreadcrumbLink } from "global/components/BreadcrumbLink";
 
 const useStyles = makeStyles((theme) => ({
     name: {
