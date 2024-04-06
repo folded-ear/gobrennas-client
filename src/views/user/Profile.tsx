@@ -62,7 +62,11 @@ const Profile: React.FC<Props> = ({ currentUser: user }) => {
                 <ProfileDisplay>
                     <User {...user} />
                 </ProfileDisplay>
-                <ProfileDisplay>{isDeveloper && <Developer />}</ProfileDisplay>
+                {isDeveloper && (
+                    <ProfileDisplay>
+                        <Developer />
+                    </ProfileDisplay>
+                )}
             </Grid>
         </Container>
     );
