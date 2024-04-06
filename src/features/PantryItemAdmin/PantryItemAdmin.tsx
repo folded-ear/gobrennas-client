@@ -1,18 +1,35 @@
-import { Box, Button, Grid, Paper, Tooltip, Typography } from "@mui/material";
+import {
+    Box,
+    Button,
+    Grid,
+    IconButton,
+    Paper,
+    Typography,
+} from "@mui/material";
 import React, { useEffect, useState } from "react";
 import {
     DataGrid,
     GridColDef,
     GridFilterModel,
-    GridPagination,
     GridPaginationModel,
+    gridPaginationModelSelector,
+    gridRowCountSelector,
     GridRowSelectionModel,
+    gridRowsLoadingSelector,
     GridSlotProps,
     GridSortModel,
     GridToolbarColumnsButton,
     GridToolbarQuickFilter,
+    useGridApiContext,
+    useGridSelector,
 } from "@mui/x-data-grid";
-import { MergeType as CombineIcon } from "@mui/icons-material";
+import {
+    MergeType as CombineIcon,
+    NavigateBefore as PrevPageIcon,
+    NavigateNext as NextPageIcon,
+} from "@mui/icons-material";
+import { humanStringComparator } from "../../util/comparators";
+import { PageInfo } from "../../__generated__/graphql";
 
 interface Row {
     id: number;
@@ -70,7 +87,7 @@ for (let i = 0; i < 5; i++) {
     );
 }
 
-interface PageProps {
+interface PagerProps {
     selectedCount: number;
     onCombine: () => void;
 }
@@ -78,8 +95,18 @@ interface PageProps {
 function CustomPagination({
     selectedCount,
     onCombine,
-    ...passthrough
-}: GridSlotProps["pagination"] & PageProps) {
+}: GridSlotProps["footer"] & PagerProps) {
+    const apiRef = useGridApiContext();
+    const model = useGridSelector(apiRef, gridPaginationModelSelector);
+    const loading = useGridSelector(apiRef, gridRowsLoadingSelector);
+    const rowCount = useGridSelector(apiRef, gridRowCountSelector);
+    const start = model.page * model.pageSize + 1;
+    const end = Math.min(
+        start + rowCount - 1,
+        (model.page + 1) * model.pageSize,
+    );
+    const fullPage = rowCount === model.pageSize;
+    const showPaging = !loading && (model.page > 0 || rowCount > 0);
     return (
         <Grid
             container
@@ -89,23 +116,41 @@ function CustomPagination({
         >
             <Box>
                 {onCombine && selectedCount > 0 && (
-                    <Tooltip title={"Combine items, and update references"}>
-                        <Button
-                            disabled={selectedCount < 2}
-                            onClick={onCombine}
-                            variant={"text"}
-                            size={"small"}
-                            startIcon={<CombineIcon />}
-                        >
-                            Combine
-                        </Button>
-                    </Tooltip>
+                    <Button
+                        disabled={selectedCount < 2}
+                        onClick={onCombine}
+                        variant={"text"}
+                        size={"small"}
+                        startIcon={<CombineIcon />}
+                        title={"Combine items, and update references"}
+                    >
+                        Combine
+                    </Button>
                 )}
             </Box>
-            <GridPagination
-                {...passthrough}
-                labelDisplayedRows={() => undefined}
-            />
+            <Box>
+                <Grid container gap={1} alignItems={"center"}>
+                    {showPaging && (
+                        <>
+                            {start}-{end} of {fullPage ? `${end + 1}+` : end}
+                        </>
+                    )}
+                    <IconButton
+                        disabled={!showPaging || model.page === 0}
+                        title={"Go to previous page"}
+                        onClick={() => apiRef.current.setPage(model.page - 1)}
+                    >
+                        <PrevPageIcon />
+                    </IconButton>
+                    <IconButton
+                        disabled={!showPaging || !fullPage}
+                        title={"Go to next page"}
+                        onClick={() => apiRef.current.setPage(model.page + 1)}
+                    >
+                        <NextPageIcon />
+                    </IconButton>
+                </Grid>
+            </Box>
         </Grid>
     );
 }
@@ -129,47 +174,88 @@ function QuickSearchToolbar() {
     );
 }
 
+interface Query {
+    loading?: boolean;
+    data?: Row[];
+    pageInfo?: PageInfo;
+}
+
+const PAGE_SIZE = 25;
+
 export default function PantryItemAdmin() {
     const [filterModel, setFilterModel] = useState<GridFilterModel>({
-        items: [],
+        items: [], // unused, but required
+        quickFilterValues: [], // what we care about
     });
     const [sortModel, setSortModel] = useState<GridSortModel>([]);
     const [pageModel, setPageModel] = useState<GridPaginationModel>({
         page: 0,
-        pageSize: 25,
+        pageSize: PAGE_SIZE,
     });
     const [selectionModel, setSelectionModel] = useState<GridRowSelectionModel>(
         [],
     );
-    const [rows, setRows] = useState<Row[]>([]);
+    const [query, setQuery] = useState<Query>({});
     useEffect(() => {
+        setQuery({ loading: true });
         const timeout = setTimeout(() => {
+            const query = (filterModel.quickFilterValues || [])
+                .join(" ")
+                .toLowerCase();
+            const matches = ALL_ROWS.filter((r) =>
+                JSON.stringify(r).toLowerCase().includes(query),
+            );
+            if (sortModel.length > 0) {
+                const f = sortModel[0].field;
+                const comp =
+                    sortModel[0].sort === "desc"
+                        ? (a, b) => humanStringComparator(b, a)
+                        : humanStringComparator;
+                if (f) {
+                    matches.sort((a, b) => comp(a[f], b[f]));
+                }
+            }
             const { page: p, pageSize: ps } = pageModel;
             const offset = p * ps;
-            // the 'after' cursor atob("offset-" + offset)
-            setRows(ALL_ROWS.slice(offset, ps));
+            setQuery({
+                loading: false,
+                data: matches.slice(offset, offset + ps),
+            });
         }, 250);
         return () => clearTimeout(timeout);
-    }, [pageModel]);
+    }, [filterModel, sortModel, pageModel]);
 
-    function handlePaginationChange(model: GridPaginationModel) {
-        setPageModel(model);
+    function toFirstPage() {
+        setPageModel((m) => (m.page === 0 ? m : { ...m, page: 0 }));
     }
 
-    function handleFilterChange(model: GridFilterModel) {
+    function handleFilterChange(model) {
         setFilterModel(model);
+        toFirstPage();
     }
 
-    function handleSortChange(model: GridSortModel) {
-        setSortModel(model);
-    }
-
-    function handleSelectionChange(model: GridRowSelectionModel) {
+    function handleSelectionChange(model) {
         setSelectionModel(model);
     }
 
+    function handleSortChange(model) {
+        setSortModel(model);
+        toFirstPage();
+    }
+
     function handleCombine() {
-        alert("You sure?");
+        if (selectionModel.length < 2) {
+            // eslint-disable-next-line no-console
+            console.warn("Cannot combine fewer than two items", selectionModel);
+            return;
+        }
+        window.confirm(
+            `Combine ${selectionModel.length} items?
+
+${selectionModel.join(", ")}
+
+You sure?`,
+        );
     }
 
     return (
@@ -189,7 +275,6 @@ export default function PantryItemAdmin() {
                 density={"compact"}
                 disableRowSelectionOnClick
                 checkboxSelection
-                keepNonExistentRowsSelected
                 rowSelectionModel={selectionModel}
                 onRowSelectionModelChange={handleSelectionChange}
                 filterMode={"server"}
@@ -200,8 +285,10 @@ export default function PantryItemAdmin() {
                 sortModel={sortModel}
                 onSortModelChange={handleSortChange}
                 paginationMode={"server"}
+                rowCount={-1}
+                autoPageSize
                 paginationModel={pageModel}
-                onPaginationModelChange={handlePaginationChange}
+                onPaginationModelChange={setPageModel}
                 slots={{
                     pagination: CustomPagination as any, // should be 'DataGridProps["slots"]["pagination"]'
                     toolbar: QuickSearchToolbar,
@@ -212,8 +299,8 @@ export default function PantryItemAdmin() {
                         onCombine: handleCombine,
                     } as any,
                 }}
-                rows={rows}
-                loading={rows.length === 0}
+                rows={query.data || []}
+                loading={query.loading}
             ></DataGrid>
         </Box>
     );
