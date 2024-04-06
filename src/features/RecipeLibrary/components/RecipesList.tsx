@@ -1,5 +1,5 @@
 import { PostAdd as AddIcon } from "@mui/icons-material";
-import { Container as Content, Grid, useScrollTrigger } from "@mui/material";
+import { Grid, useScrollTrigger } from "@mui/material";
 import RecipeCard from "features/RecipeLibrary/components/RecipeCard";
 import { useIsMobile } from "providers/IsMobile";
 import React, { useState } from "react";
@@ -127,7 +127,7 @@ export const RecipesList: React.FC<RecipesListProps> = ({
     }
 
     return (
-        <Content>
+        <>
             <SearchRecipes
                 isSearchFloating={isSearchFloating}
                 isMobile={isMobile}
@@ -142,6 +142,6 @@ export const RecipesList: React.FC<RecipesListProps> = ({
             <FoodingerFab onClick={() => history.push(`/add`)}>
                 <AddIcon />
             </FoodingerFab>
-        </Content>
+        </>
     );
 };
