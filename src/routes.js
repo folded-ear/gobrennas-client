@@ -15,6 +15,7 @@ import Profile from "./views/user/Profile";
 import Foodinger from "views/Foodinger";
 import { RecipeAddController } from "./features/RecipeEdit/RecipeAddController";
 import { Library } from "views/Library";
+import PantryItemAdmin from "./features/PantryItemAdmin/PantryItemAdmin";
 
 const routes = {
     public: [
@@ -45,6 +46,7 @@ const routes = {
         { path: "/plan", component: Planner },
         { path: "/shop", component: Shop },
         { path: "/pantry", component: Pantry },
+        { path: "/pantry-item-admin", component: PantryItemAdmin },
     ],
 };
 

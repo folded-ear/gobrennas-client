@@ -12,6 +12,7 @@ import {
     Logout as LogoutIcon,
     MeetingRoom as PantryIcon,
     MenuBook as LibraryIcon,
+    RamenDining as PantryItemAdminIcon,
     ShoppingCart as ShopIcon,
 } from "@mui/icons-material";
 import { Box, List, ListItemButton, Typography } from "@mui/material";
@@ -134,6 +135,16 @@ export const DesktopNav: React.FC<DesktopNavProps> = ({
                 </Box>
                 <Box sx={{ alignItem: "bottom" }}>
                     <List>
+                        {devMode && (
+                            <NavItem
+                                to="/pantry-item-admin"
+                                value="pantry-item-admin"
+                                icon={<PantryItemAdminIcon />}
+                                title="Pantry Item Admin"
+                                expanded={expanded}
+                                selected={selected === "pantry-item-admin"}
+                            />
+                        )}
                         <ListItemButton
                             onClick={onProfile}
                             title={"My Account"}
