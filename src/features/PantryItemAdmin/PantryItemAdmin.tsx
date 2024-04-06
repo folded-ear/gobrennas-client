@@ -1,36 +1,17 @@
-import {
-    Box,
-    Button,
-    Grid,
-    IconButton,
-    Paper,
-    Typography,
-} from "@mui/material";
+import { Box, Paper } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import {
     DataGrid,
     GridColDef,
     GridFilterModel,
-    GridFooterContainer,
     GridPaginationModel,
-    gridPaginationModelSelector,
-    gridRowCountSelector,
     GridRowSelectionModel,
-    gridRowsLoadingSelector,
-    GridSlotProps,
     GridSortModel,
-    GridToolbarColumnsButton,
-    GridToolbarQuickFilter,
-    useGridApiContext,
-    useGridSelector,
 } from "@mui/x-data-grid";
-import {
-    MergeType as CombineIcon,
-    NavigateBefore as PrevPageIcon,
-    NavigateNext as NextPageIcon,
-} from "@mui/icons-material";
 import { humanStringComparator } from "../../util/comparators";
 import { PageInfo } from "../../__generated__/graphql";
+import Header from "./components/Header";
+import Footer from "./components/Footer";
 
 interface Row {
     id: number;
@@ -85,118 +66,6 @@ const ALL_ROWS: Row[] = [
 for (let i = 0; i < 5; i++) {
     ALL_ROWS.push(
         ...ALL_ROWS.map((r) => ({ ...r, id: r.id + ALL_ROWS.length })),
-    );
-}
-
-interface FooterProps {
-    selectedCount: number;
-    onCombine: () => void;
-}
-
-function CustomFooter({
-    selectedCount,
-    onCombine,
-}: GridSlotProps["footer"] & FooterProps) {
-    return (
-        <GridFooterContainer sx={{ px: 2 }}>
-            <Grid
-                container
-                alignItems={"center"}
-                justifyContent={"space-between"}
-                sx={{ flex: 1 }}
-            >
-                <Box>
-                    <SelectionStatus
-                        selectedCount={selectedCount}
-                        onCombine={onCombine}
-                    />
-                </Box>
-                <Box>
-                    <Paging />
-                </Box>
-            </Grid>
-        </GridFooterContainer>
-    );
-}
-
-function SelectionStatus({ selectedCount: count, onCombine }: FooterProps) {
-    return (
-        <Grid container gap={1} alignItems={"center"}>
-            {count > 0 && (
-                <>
-                    {count} {count === 1 ? "row" : "rows"} selected
-                </>
-            )}
-            {onCombine && count > 0 && (
-                <Button
-                    disabled={count < 2}
-                    onClick={onCombine}
-                    variant={"text"}
-                    size={"small"}
-                    startIcon={<CombineIcon />}
-                    title={"Combine items, and update references"}
-                >
-                    Combine
-                </Button>
-            )}
-        </Grid>
-    );
-}
-
-function Paging() {
-    const apiRef = useGridApiContext();
-    const model = useGridSelector(apiRef, gridPaginationModelSelector);
-    const loading = useGridSelector(apiRef, gridRowsLoadingSelector);
-    const rowCount = useGridSelector(apiRef, gridRowCountSelector);
-    const start = model.page * model.pageSize + 1;
-    const end = Math.min(
-        start + rowCount - 1,
-        (model.page + 1) * model.pageSize,
-    );
-    const fullPage = rowCount === model.pageSize;
-    const showPaging = !loading && (model.page > 0 || rowCount > 0);
-
-    return (
-        <Grid container gap={1} alignItems={"center"}>
-            {showPaging && (
-                <>
-                    {start}-{end} of {fullPage ? `${end + 1}+` : end}
-                </>
-            )}
-            <IconButton
-                disabled={!showPaging || model.page === 0}
-                title={"Go to previous page"}
-                onClick={() => apiRef.current.setPage(model.page - 1)}
-            >
-                <PrevPageIcon />
-            </IconButton>
-            <IconButton
-                disabled={!showPaging || !fullPage}
-                title={"Go to next page"}
-                onClick={() => apiRef.current.setPage(model.page + 1)}
-            >
-                <NextPageIcon />
-            </IconButton>
-        </Grid>
-    );
-}
-
-function QuickSearchToolbar() {
-    return (
-        <Grid
-            sx={{
-                p: 0.5,
-            }}
-            container
-            justifyContent={"space-between"}
-            alignItems={"flex-end"}
-        >
-            <Typography variant={"h3"} component={"h1"}>
-                Pantry Item Admin
-            </Typography>
-            <GridToolbarColumnsButton />
-            <GridToolbarQuickFilter />
-        </Grid>
     );
 }
 
@@ -335,8 +204,8 @@ You sure?`,
                 paginationModel={pageModel}
                 onPaginationModelChange={setPageModel}
                 slots={{
-                    footer: CustomFooter as any, // should be DataGridProps["slots"]["footer"]
-                    toolbar: QuickSearchToolbar,
+                    footer: Footer as any, // should be DataGridProps["slots"]["footer"]
+                    toolbar: Header,
                 }}
                 slotProps={{
                     footer: {
