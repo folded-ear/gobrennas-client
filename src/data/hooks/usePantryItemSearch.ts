@@ -1,7 +1,6 @@
 import { gql } from "__generated__";
 import { useQuery } from "@apollo/client";
 import { UseQueryResult } from "data/types";
-import { BfsId } from "global/types/identity";
 import { useMemo } from "react";
 import {
     PageInfo,
@@ -37,9 +36,8 @@ query pantryItems($query: String!, $first: NonNegativeInt, $after: Cursor, $sort
 
 export type Result = Pick<
     PantryItemConnectionEdge["node"],
-    "name" | "storeOrder" | "synonyms" | "labels"
+    "id" | "name" | "storeOrder" | "synonyms" | "labels"
 > & {
-    id: BfsId;
     firstUse: Date;
     myUseCount: PantryItemConnectionEdge["node"]["useCount"];
     allUseCount: PantryItemConnectionEdge["node"]["useCount"];

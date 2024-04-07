@@ -13,6 +13,12 @@ import {
 } from "../../data/hooks/usePantryItemSearch";
 import { SortDir } from "../../__generated__/graphql";
 import AdminGrid from "./components/AdminGrid";
+import { useRenamePantryItem } from "../../data/hooks/useRenamePantryItem";
+
+const useErrorAlert = (error) =>
+    useEffect(() => {
+        if (error) alert("Error!\n\n" + error);
+    }, [error]);
 
 export default function PantryItemAdmin() {
     const [queryOptions, setQueryOptions] = useState<QueryOptions>({});
@@ -59,14 +65,7 @@ export default function PantryItemAdmin() {
         });
 
     const { loading, error, data } = usePantryItemSearch(queryOptions);
-    useEffect(() => {
-        if (error) alert("Error!\n\n" + error);
-    }, [error]);
-
-    const [selectionModel, setSelectionModel] = useState<GridRowSelectionModel>(
-        [],
-    );
-    const [saving, setSaving] = useState(false);
+    useErrorAlert(error);
 
     function toFirstPage() {
         setPageModel((m) => (m.page === 0 ? m : { ...m, page: 0 }));
@@ -81,6 +80,30 @@ export default function PantryItemAdmin() {
         setSortModel(model);
         toFirstPage();
     }
+
+    const [renameItem, { loading: renaming, error: renameError }] =
+        useRenamePantryItem();
+    useErrorAlert(renameError);
+
+    async function handleRowUpdate(newRow: Result, oldRow: Result) {
+        if (oldRow.name !== newRow.name) {
+            const saved = await renameItem(newRow.id, newRow.name);
+            return {
+                ...newRow,
+                name: saved.name,
+                synonyms: saved.synonyms,
+            };
+        }
+        return newRow;
+    }
+
+    function handleRowUpdateError(error) {
+        alert("Failed to save: " + error);
+    }
+
+    const [selectionModel, setSelectionModel] = useState<GridRowSelectionModel>(
+        [],
+    );
 
     function handleSelectionChange(model) {
         setSelectionModel(model);
@@ -101,24 +124,6 @@ You sure?`,
         );
     }
 
-    function handleRowUpdate(newRow: Result, oldRow: Result) {
-        setSaving(true);
-        return new Promise<Result>((resolve, reject) => {
-            setTimeout(() => {
-                if (newRow.id === 15) {
-                    reject("Not 15, yo!");
-                } else {
-                    resolve(newRow);
-                }
-                setSaving(false);
-            }, 500);
-        });
-    }
-
-    function handleRowUpdateError(error) {
-        alert("Failed to save: " + error);
-    }
-
     return (
         <AdminGrid
             columnVisibilityModel={columnVizModel}
@@ -131,7 +136,7 @@ You sure?`,
             onSortModelChange={handleSortChange}
             paginationModel={pageModel}
             onPaginationModelChange={setPageModel}
-            loading={loading || saving}
+            loading={loading || renaming}
             rows={data?.results || []}
             hasNextPage={data?.pageInfo.hasNextPage}
             processRowUpdate={handleRowUpdate}
