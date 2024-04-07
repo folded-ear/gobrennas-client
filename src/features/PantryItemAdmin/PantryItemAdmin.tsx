@@ -62,10 +62,12 @@ const COLUMNS: GridColDef<Result[][number]>[] = [
     {
         field: "useCounts",
         headerName: "Uses",
+        headerAlign: "right",
         description: "Use count for this item: total (yours)",
         flex: 0.75,
         editable: false,
         sortable: true,
+        align: "right",
         valueGetter: (_value, row) => {
             const all = `${row.allUseCount || 0}`;
             return row.myUseCount ? all + ` (${row.myUseCount})` : all;
@@ -111,11 +113,12 @@ export default function PantryItemAdmin() {
         }));
     }, [sortModel]);
     useEffect(() => {
-        setQueryOptions((opts) => ({
-            ...opts,
-            first: pageModel.pageSize,
-            after: null, // todo: pageInfo.endcursor or what have you
-        }));
+        setQueryOptions((opts) => {
+            return {
+                ...opts,
+                ...pageModel,
+            };
+        });
     }, [pageModel]);
     const { loading, error, data } = usePantryItemSearch(queryOptions);
     useEffect(() => {

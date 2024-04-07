@@ -4,7 +4,6 @@ import { UseQueryResult } from "data/types";
 import { BfsId } from "global/types/identity";
 import { useMemo } from "react";
 import {
-    InputMaybe,
     PageInfo,
     PantryItemConnectionEdge,
     SortDir,
@@ -56,26 +55,31 @@ interface Results {
 
 export interface QueryOptions {
     query?: string;
-    first?: number;
-    after?: InputMaybe<string>;
+    page?: number;
+    pageSize?: number;
     sortBy?: string;
     sortDir?: SortDir;
 }
 
 export const usePantryItemSearch = ({
     query = "",
-    first = 25,
-    after = null,
+    page = 0,
+    pageSize = 25,
     sortBy = "name",
     sortDir = SortDir.Asc,
 }: QueryOptions): UseQueryResult<Results> => {
+    // DataGrid uses a numeric page model, while the GraphQL API uses cursors,
+    // in the style of Relay. However! For the moment those cursors are merely
+    // encoded numeric offsets, so do an end-run around tracking cursors in the
+    // grid, and manually encode an offset-cursor as needed.
+    const after = page === 0 ? null : btoa("offset-" + page * pageSize);
     const {
         loading,
         error,
         data: rawData,
     } = useQuery(SEARCH_PANTRY_ITEMS_QUERY, {
-        variables: { query, first, after, sortBy, sortDir },
-        skip: first <= 0,
+        variables: { query, first: pageSize, after, sortBy, sortDir },
+        skip: pageSize <= 0,
     });
     const data = useMemo(() => {
         if (!rawData?.pantry?.search) {
