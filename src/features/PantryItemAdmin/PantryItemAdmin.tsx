@@ -133,6 +133,7 @@ You sure?`,
             onPaginationModelChange={setPageModel}
             loading={loading || saving}
             rows={data?.results || []}
+            hasNextPage={data?.pageInfo.hasNextPage}
             processRowUpdate={handleRowUpdate}
             onProcessRowUpdateError={handleRowUpdateError}
             onCombine={handleCombine}

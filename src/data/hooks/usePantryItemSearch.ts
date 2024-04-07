@@ -28,10 +28,7 @@ query pantryItems($query: String!, $first: NonNegativeInt, $after: Cursor, $sort
         }
       }
       pageInfo {
-        hasPreviousPage
         hasNextPage
-        startCursor
-        endCursor
       }
     }
   }
@@ -50,7 +47,7 @@ export type Result = Pick<
 
 interface Results {
     results: Result[];
-    pageInfo: PageInfo;
+    pageInfo: Pick<PageInfo, "hasNextPage">;
 }
 
 export interface QueryOptions {

@@ -2,12 +2,13 @@ import { GridFooterContainer, GridSlotProps } from "@mui/x-data-grid";
 import { Box, Grid } from "@mui/material";
 import React from "react";
 import SelectionStatus, { SelectionStatusProps } from "./SelectionStatus";
-import Paging from "./Paging";
+import Paging, { PagingProps } from "./Paging";
 
 export default function Footer({
     selectedCount,
     onCombine,
-}: GridSlotProps["footer"] & SelectionStatusProps) {
+    hasNextPage,
+}: GridSlotProps["footer"] & SelectionStatusProps & PagingProps) {
     return (
         <GridFooterContainer sx={{ px: 2 }}>
             <Grid
@@ -23,7 +24,7 @@ export default function Footer({
                     />
                 </Box>
                 <Box>
-                    <Paging />
+                    <Paging hasNextPage={hasNextPage} />
                 </Box>
             </Grid>
         </GridFooterContainer>

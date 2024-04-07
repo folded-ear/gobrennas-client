@@ -12,7 +12,11 @@ import {
 } from "@mui/icons-material";
 import React from "react";
 
-export default function Paging() {
+export interface PagingProps {
+    hasNextPage?: boolean;
+}
+
+export default function Paging({ hasNextPage }: PagingProps) {
     const apiRef = useGridApiContext();
     const model = useGridSelector(apiRef, gridPaginationModelSelector);
     const loading = useGridSelector(apiRef, gridRowsLoadingSelector);
@@ -22,14 +26,13 @@ export default function Paging() {
         start + rowCount - 1,
         (model.page + 1) * model.pageSize,
     );
-    const fullPage = rowCount === model.pageSize;
     const showPaging = !loading && (model.page > 0 || rowCount > 0);
 
     return (
         <Grid container gap={1} alignItems={"center"}>
             {showPaging && (
                 <>
-                    {start}-{end} of {fullPage ? `${end + 1}+` : end}
+                    {start}-{end} of {hasNextPage ? `${end + 1}+` : end}
                 </>
             )}
             <IconButton
@@ -40,7 +43,7 @@ export default function Paging() {
                 <PrevPageIcon />
             </IconButton>
             <IconButton
-                disabled={!showPaging || !fullPage}
+                disabled={!showPaging || !hasNextPage}
                 title={"Go to next page"}
                 onClick={() => apiRef.current.setPage(model.page + 1)}
             >

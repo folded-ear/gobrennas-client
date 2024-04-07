@@ -92,13 +92,15 @@ type Props = Pick<
 > & {
     // want slightly tighter control over this type
     rowSelectionModel: GridRowSelectionModel;
-    // custom prop
+    // custom props
     onCombine: () => void;
+    hasNextPage?: boolean;
 };
 
 export default function AdminGrid({
     rowSelectionModel,
     onCombine,
+    hasNextPage,
     ...passthrough
 }: Props) {
     return (
@@ -133,6 +135,7 @@ export default function AdminGrid({
                     footer: {
                         selectedCount: rowSelectionModel.length,
                         onCombine,
+                        hasNextPage,
                     } as any,
                 }}
                 {...passthrough}
