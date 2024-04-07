@@ -238,7 +238,7 @@ type PantryQuery {
         """
         after: Cursor,
         "How many items to return in the connection."
-        first: NonNegativeInt! = 25,
+        first: NonNegativeInt = 25,
         """
 
         Textual query to filter items by. The exact query operation performed
