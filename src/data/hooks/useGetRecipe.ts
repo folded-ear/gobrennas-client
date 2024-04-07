@@ -1,9 +1,9 @@
 import { gql } from "__generated__";
-import { useQuery } from "@apollo/client";
 import { UseQueryResult } from "data/types";
 import { IngredientRef, Recipe } from "global/types/types";
 import { BfsId } from "global/types/identity";
-import * as React from "react";
+import { GetRecipeQuery } from "../../__generated__/graphql";
+import useAdaptingQuery from "./useAdaptingQuery";
 
 const GET_RECIPE_QUERY = gql(`
 query getRecipe($id: ID!) {
@@ -23,23 +23,19 @@ query getRecipe($id: ID!) {
 }
 `);
 
-export const useGetRecipe = (id: string): UseQueryResult<Recipe> => {
-    const { loading, error, data } = useQuery(GET_RECIPE_QUERY, {
-        variables: { id: id },
-    });
-
+function adapter(data: GetRecipeQuery | undefined) {
     const result = data?.library?.getRecipeById || null;
 
-    const ingredients: IngredientRef[] = React.useMemo(() => {
-        if (!result || !result.ingredients) return [];
-        return result.ingredients.map((item) => ({
-            raw: item.raw,
-            preparation: item.preparation,
-            quantity: item.quantity?.quantity || null,
-            units: item.quantity?.units?.name || null,
-            ingredient: item.ingredient,
-        }));
-    }, [result]);
+    const ingredients: IngredientRef[] =
+        !result || !result.ingredients
+            ? []
+            : result.ingredients.map((item) => ({
+                  raw: item.raw,
+                  preparation: item.preparation,
+                  quantity: item.quantity?.quantity || null,
+                  units: item.quantity?.units?.name || null,
+                  ingredient: item.ingredient,
+              }));
 
     const recipe: Recipe = {
         id: result?.id as BfsId,
@@ -54,10 +50,13 @@ export const useGetRecipe = (id: string): UseQueryResult<Recipe> => {
         totalTime: result?.totalTime || null,
         recipeYield: result?.yield || null,
     };
+    return recipe;
+}
 
-    return {
-        loading,
-        error,
-        data: recipe,
-    };
+export const useGetRecipe = (
+    id: string,
+): UseQueryResult<Recipe, { id: string }> => {
+    return useAdaptingQuery(GET_RECIPE_QUERY, adapter, {
+        variables: { id: id },
+    });
 };

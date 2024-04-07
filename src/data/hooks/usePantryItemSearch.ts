@@ -1,12 +1,12 @@
 import { gql } from "__generated__";
-import { useQuery } from "@apollo/client";
 import { UseQueryResult } from "data/types";
-import { useMemo } from "react";
 import {
     PageInfo,
     PantryItemConnectionEdge,
+    PantryItemsQuery,
     SortDir,
 } from "../../__generated__/graphql";
+import useAdaptingQuery from "./useAdaptingQuery";
 
 // This is stupid, but its either increase the duplication even further or lose
 // type safety. I'd rather abuse the server/database. I mentioned it's stupid?
@@ -43,10 +43,10 @@ export type Result = Pick<
     allUseCount: PantryItemConnectionEdge["node"]["useCount"];
 };
 
-interface Results {
+type Results = {
     results: Result[];
     pageInfo: Pick<PageInfo, "hasNextPage">;
-}
+} | null;
 
 export interface QueryOptions {
     query?: string;
@@ -56,44 +56,35 @@ export interface QueryOptions {
     sortDir?: SortDir;
 }
 
+function adapter(rawData: PantryItemsQuery | undefined): Results {
+    if (!rawData?.pantry?.search) {
+        return null;
+    }
+    const { edges, pageInfo } = rawData.pantry.search;
+    return {
+        results: edges.map((e) => ({
+            ...e.node,
+            // why a DateTime scalar has to be manually parsed is unclear...
+            firstUse: new Date(e.node.firstUse),
+        })),
+        pageInfo,
+    };
+}
+
 export const usePantryItemSearch = ({
     query = "",
     page = 0,
     pageSize = 25,
     sortBy = "name",
     sortDir = SortDir.Asc,
-}: QueryOptions): UseQueryResult<Results> => {
+}: QueryOptions): UseQueryResult<Results, QueryOptions> => {
     // DataGrid uses a numeric page model, while the GraphQL API uses cursors,
     // in the style of Relay. However! For the moment those cursors are merely
     // encoded numeric offsets, so do an end-run around tracking cursors in the
     // grid, and manually encode an offset-cursor as needed.
     const after = page === 0 ? null : btoa("offset-" + page * pageSize);
-    const {
-        loading,
-        error,
-        data: rawData,
-    } = useQuery(SEARCH_PANTRY_ITEMS_QUERY, {
+    return useAdaptingQuery(SEARCH_PANTRY_ITEMS_QUERY, adapter, {
         variables: { query, first: pageSize, after, sortBy, sortDir },
         skip: pageSize <= 0,
     });
-    const data = useMemo(() => {
-        if (!rawData?.pantry?.search) {
-            return null;
-        }
-        const { edges, pageInfo } = rawData.pantry.search;
-        return {
-            results: edges.map((e) => ({
-                ...e.node,
-                // why a DateTime scalar has to be manually parsed is unclear...
-                firstUse: new Date(e.node.firstUse),
-            })),
-            pageInfo,
-        };
-    }, [rawData]);
-
-    return {
-        loading,
-        error,
-        data,
-    };
 };
