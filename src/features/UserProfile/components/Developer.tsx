@@ -6,12 +6,24 @@ import Divider from "@mui/material/Divider";
 import Switch from "@mui/material/Switch";
 import useWindowSize from "data/useWindowSize";
 import preval from "preval.macro";
-import { ToggleButton, ToggleButtonGroup } from "@mui/material";
+import { Grid, ToggleButton, ToggleButtonGroup } from "@mui/material";
 import { AutoAwesome, Laptop, Smartphone } from "@mui/icons-material";
 import useFluxStore from "../../../data/useFluxStore";
 import preferencesStore from "../../../data/preferencesStore";
 
 const dateTimeStamp = preval`module.exports = new Date().toISOString();`;
+
+interface RowProps {
+    label: string;
+}
+const Row: React.FC<RowProps> = ({ label, children }) => (
+    <Grid item>
+        <Grid container alignItems={"center"} gap={1}>
+            <span>{label}:</span>
+            {children}
+        </Grid>
+    </Grid>
+);
 
 const DevMode: React.FC = () => {
     const windowSize = useWindowSize();
@@ -29,14 +41,13 @@ const DevMode: React.FC = () => {
     }
 
     return (
-        <React.Fragment>
+        <Grid container direction={"column"} gap={2}>
             <Divider />
-            <p>
-                Window: {windowSize.width}x{windowSize.height}
-            </p>
-            <p>Build: {dateTimeStamp}</p>
-            <p>
-                Layout:{" "}
+            <Row label={"Window"}>
+                {windowSize.width}x{windowSize.height}
+            </Row>
+            <Row label={"Build"}>{dateTimeStamp}</Row>
+            <Row label={"Layout"}>
                 <ToggleButtonGroup
                     size={"small"}
                     exclusive
@@ -53,8 +64,8 @@ const DevMode: React.FC = () => {
                         <Smartphone />
                     </ToggleButton>
                 </ToggleButtonGroup>
-            </p>
-        </React.Fragment>
+            </Row>
+        </Grid>
     );
 };
 

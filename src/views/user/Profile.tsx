@@ -6,6 +6,7 @@ import { Developer } from "features/UserProfile/components/Developer";
 import type { UserType } from "global/types/identity";
 import { Box, Button, Container, Grid, Paper, Typography } from "@mui/material";
 import { styled } from "@mui/material/styles";
+import Avatar from "@mui/material/Avatar";
 
 const Info = styled(Box)({
     flex: 1,
@@ -33,11 +34,12 @@ const Profile: React.FC<Props> = ({ currentUser: user }) => {
         <Container>
             <Grid container gap={2} direction={"column"}>
                 <ProfileDisplay>
-                    <Grid container gap={1}>
+                    <Grid container gap={2}>
                         <Box>
                             {user.imageUrl && (
-                                <img
+                                <Avatar
                                     src={user.imageUrl}
+                                    sx={{ height: 96, width: 96 }}
                                     alt={user.name || user.email || undefined}
                                     title="Holy moley, you're attractive!"
                                 />
@@ -60,7 +62,11 @@ const Profile: React.FC<Props> = ({ currentUser: user }) => {
                 <ProfileDisplay>
                     <User {...user} />
                 </ProfileDisplay>
-                <ProfileDisplay>{isDeveloper && <Developer />}</ProfileDisplay>
+                {isDeveloper && (
+                    <ProfileDisplay>
+                        <Developer />
+                    </ProfileDisplay>
+                )}
             </Grid>
         </Container>
     );
