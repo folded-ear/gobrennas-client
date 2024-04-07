@@ -14,6 +14,7 @@ import {
 import { SortDir } from "../../__generated__/graphql";
 import AdminGrid from "./components/AdminGrid";
 import { useRenamePantryItem } from "../../data/hooks/useRenamePantryItem";
+import { useCombinePantryItems } from "../../data/hooks/useCombinePantryItems";
 
 const useErrorAlert = (error) =>
     useEffect(() => {
@@ -64,7 +65,7 @@ export default function PantryItemAdmin() {
             storeOrder: false,
         });
 
-    const { loading, error, data } = usePantryItemSearch(queryOptions);
+    const { loading, error, data, refetch } = usePantryItemSearch(queryOptions);
     useErrorAlert(error);
 
     function toFirstPage() {
@@ -109,19 +110,24 @@ export default function PantryItemAdmin() {
         setSelectionModel(model);
     }
 
+    const [combineItems, { loading: combining, error: combineError }] =
+        useCombinePantryItems();
+    useErrorAlert(combineError);
+
     function handleCombine() {
         if (selectionModel.length < 2) {
             // eslint-disable-next-line no-console
             console.warn("Cannot combine fewer than two items", selectionModel);
             return;
         }
-        window.confirm(
-            `Combine ${selectionModel.length} items?
-
-${selectionModel.join(", ")}
-
-You sure?`,
-        );
+        const confirmMsg = `Irrevocably combine these ${selectionModel.length} selected items?`;
+        if (!window.confirm(confirmMsg)) return;
+        combineItems(selectionModel.map((id) => id.toString()))
+            .then(() => {
+                refetch();
+                setSelectionModel([]);
+            })
+            .catch((error) => alert(error));
     }
 
     return (
@@ -136,7 +142,7 @@ You sure?`,
             onSortModelChange={handleSortChange}
             paginationModel={pageModel}
             onPaginationModelChange={setPageModel}
-            loading={loading || renaming}
+            loading={loading || renaming || combining}
             rows={data?.results || []}
             hasNextPage={data?.pageInfo.hasNextPage}
             processRowUpdate={handleRowUpdate}

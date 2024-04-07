@@ -25,7 +25,7 @@ export default function SelectionStatus({
                     variant={"text"}
                     size={"small"}
                     startIcon={<CombineIcon />}
-                    title={"Combine items, and update references"}
+                    title={`Combine these ${count} items, and update references`}
                 >
                     Combine
                 </Button>
