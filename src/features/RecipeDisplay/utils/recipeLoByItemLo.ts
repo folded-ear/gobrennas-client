@@ -75,6 +75,7 @@ export const recipeLoByItemLo = (
     };
     const recipe = prepRecipe(lo.getValueEnforcing());
     recipe.subrecipes = subs;
+    recipe.libraryRecipeId = lo.getValueEnforcing().ingredientId || undefined;
     lo = LoadObject.withValue(recipe);
     if (loading) {
         lo = lo.loading();
