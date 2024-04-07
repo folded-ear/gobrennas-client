@@ -54,19 +54,28 @@ interface Results {
     pageInfo: PageInfo;
 }
 
-export const usePantryItemSearch = (
-    query: string,
+export interface QueryOptions {
+    query?: string;
+    first?: number;
+    after?: InputMaybe<string>;
+    sortBy?: string;
+    sortDir?: SortDir;
+}
+
+export const usePantryItemSearch = ({
+    query = "",
     first = 25,
-    after: InputMaybe<string> = null,
+    after = null,
     sortBy = "name",
     sortDir = SortDir.Asc,
-): UseQueryResult<Results> => {
+}: QueryOptions): UseQueryResult<Results> => {
     const {
         loading,
         error,
         data: rawData,
     } = useQuery(SEARCH_PANTRY_ITEMS_QUERY, {
         variables: { query, first, after, sortBy, sortDir },
+        skip: first <= 0,
     });
     const data = useMemo(() => {
         if (!rawData?.pantry?.search) {

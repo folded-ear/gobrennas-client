@@ -1,5 +1,5 @@
 import { Box, Paper } from "@mui/material";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
     DataGrid,
     GridColDef,
@@ -12,9 +12,11 @@ import {
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import {
+    QueryOptions,
     Result,
     usePantryItemSearch,
 } from "../../data/hooks/usePantryItemSearch";
+import { SortDir } from "../../__generated__/graphql";
 
 const formatStringSet = (value: string[]) => value.join(", ");
 const parseStringSet = (value: string) =>
@@ -54,18 +56,20 @@ const COLUMNS: GridColDef<Result[][number]>[] = [
         field: "storeOrder",
         headerName: "Shop",
         description: "Shopping and/or store order",
-        flex: 0.5,
+        flex: 0.75,
         editable: false,
     },
     {
         field: "useCounts",
         headerName: "Uses",
-        description: "Use count for this item: your / everyone's",
-        flex: 0.5,
+        description: "Use count for this item: total (yours)",
+        flex: 0.75,
         editable: false,
-        sortable: false,
-        valueGetter: (_value, row) =>
-            `${row.myUseCount || 0} / ${row.allUseCount || 0}`,
+        sortable: true,
+        valueGetter: (_value, row) => {
+            const all = `${row.allUseCount || 0}`;
+            return row.myUseCount ? all + ` (${row.myUseCount})` : all;
+        },
     },
     {
         field: "firstUse",
@@ -76,10 +80,6 @@ const COLUMNS: GridColDef<Result[][number]>[] = [
 ];
 
 export default function PantryItemAdmin() {
-    const { loading, error, data } = usePantryItemSearch("");
-    const { results, pageInfo } = data || {};
-    const query = { loading, data: results, pageInfo };
-
     // todo: put colViz in a preference
     const [columnVizModel, setColumnVizModel] =
         useState<GridColumnVisibilityModel>({
@@ -94,41 +94,39 @@ export default function PantryItemAdmin() {
     const [sortModel, setSortModel] = useState<GridSortModel>([]);
     const [pageModel, setPageModel] = useState<GridPaginationModel>({
         page: 0,
-        pageSize: 25,
+        pageSize: 0,
     });
+    const [queryOptions, setQueryOptions] = useState<QueryOptions>({});
+    useEffect(() => {
+        setQueryOptions((opts) => ({
+            ...opts,
+            query: filterModel.quickFilterValues?.join(" ") || "",
+        }));
+    }, [filterModel]);
+    useEffect(() => {
+        setQueryOptions((opts) => ({
+            ...opts,
+            sortBy: sortModel[0]?.field,
+            sortDir: sortModel[0]?.sort === "desc" ? SortDir.Desc : SortDir.Asc,
+        }));
+    }, [sortModel]);
+    useEffect(() => {
+        setQueryOptions((opts) => ({
+            ...opts,
+            first: pageModel.pageSize,
+            after: null, // todo: pageInfo.endcursor or what have you
+        }));
+    }, [pageModel]);
+    const { loading, error, data } = usePantryItemSearch(queryOptions);
+    useEffect(() => {
+        if (error) alert("Error!\n\n" + error);
+    }, [error]);
+    const { results, pageInfo } = data || {};
+    const query = { loading, data: results, pageInfo };
     const [selectionModel, setSelectionModel] = useState<GridRowSelectionModel>(
         [],
     );
     const [saving, setSaving] = useState(false);
-    // const [query, setQuery] = useState<Query>({});
-    // useEffect(() => {
-    //     setQuery({ loading: true });
-    //     const timeout = setTimeout(() => {
-    //         const query = (filterModel.quickFilterValues || [])
-    //             .join(" ")
-    //             .toLowerCase();
-    //         const matches = ALL_ROWS.filter((r) =>
-    //             JSON.stringify(r).toLowerCase().includes(query),
-    //         );
-    //         if (sortModel.length > 0) {
-    //             const f = sortModel[0].field;
-    //             const comp =
-    //                 sortModel[0].sort === "desc"
-    //                     ? (a, b) => humanStringComparator(b, a)
-    //                     : humanStringComparator;
-    //             if (f) {
-    //                 matches.sort((a, b) => comp(a[f], b[f]));
-    //             }
-    //         }
-    //         const { page: p, pageSize: ps } = pageModel;
-    //         const offset = p * ps;
-    //         setQuery({
-    //             loading: false,
-    //             data: matches.slice(offset, offset + ps),
-    //         });
-    //     }, 250);
-    //     return () => clearTimeout(timeout);
-    // }, [filterModel, sortModel, pageModel]);
 
     function toFirstPage() {
         setPageModel((m) => (m.page === 0 ? m : { ...m, page: 0 }));
