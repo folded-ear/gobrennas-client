@@ -46,9 +46,11 @@ const COLUMNS: GridColDef<Result[][number]>[] = [
     {
         field: "storeOrder",
         headerName: "Shop",
+        headerAlign: "right",
         description: "Shopping and/or store order",
         flex: 0.75,
         editable: false,
+        align: "right",
     },
     {
         field: "useCounts",

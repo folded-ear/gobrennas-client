@@ -61,8 +61,9 @@ export default function PantryItemAdmin() {
     const [columnVizModel, setColumnVizModel] =
         useState<GridColumnVisibilityModel>({
             id: false,
-            firstUse: false,
+            labels: false,
             storeOrder: false,
+            firstUse: false,
         });
 
     const { loading, error, data, refetch } = usePantryItemSearch(queryOptions);
