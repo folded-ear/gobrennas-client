@@ -1,34 +1,32 @@
-import React, { ReactNode, useEffect } from "react";
+import React, { ReactNode } from "react";
 import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
 import { Button, DialogContent, DialogContentText } from "@mui/material";
 import DialogActions from "@mui/material/DialogActions";
 
 export interface DialogProps {
+    open?: boolean;
     title?: string;
     content?: ReactNode;
     confirmLabel?: string;
-    onConfirm?: () => void;
-    onCancel?: () => void;
+    onClose?: (confirmed: boolean) => void;
 }
 
 export default function ConfirmDialog({
+    open = false,
     title,
     content,
     confirmLabel,
-    onConfirm,
-    onCancel,
+    onClose,
 }: DialogProps) {
-    const [open, setOpen] = React.useState(false);
-    const handleCancel = () => {
-        setOpen(false);
-        onCancel && onCancel();
-    };
-    useEffect(() => {
-        setOpen(!!title);
-    }, [title]); // todo: this is the wrong thing - can't reopen the "same" dialog
+    const handleCancel = () => onClose && onClose(false);
     return (
-        <Dialog open={open} onClose={handleCancel} scroll={"paper"}>
+        <Dialog
+            open={open}
+            onClose={handleCancel}
+            scroll={"paper"}
+            transitionDuration={{ exit: 0 }}
+        >
             <DialogTitle>{title}</DialogTitle>
             <DialogContent dividers>
                 {typeof content === "string" ? (
@@ -38,17 +36,18 @@ export default function ConfirmDialog({
                 )}
             </DialogContent>
             <DialogActions>
-                {onCancel && <Button onClick={handleCancel}>Cancel</Button>}
-                <Button
-                    onClick={() => {
-                        setOpen(false);
-                        onConfirm && onConfirm();
-                    }}
-                    color="primary"
-                    autoFocus
-                >
-                    {confirmLabel}
+                <Button onClick={handleCancel}>
+                    {!!confirmLabel ? "Cancel" : "Ok"}
                 </Button>
+                {!!confirmLabel && (
+                    <Button
+                        onClick={() => onClose && onClose(true)}
+                        color="primary"
+                        autoFocus
+                    >
+                        {confirmLabel}
+                    </Button>
+                )}
             </DialogActions>
         </Dialog>
     );

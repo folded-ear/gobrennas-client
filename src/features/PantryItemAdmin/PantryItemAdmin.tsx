@@ -23,10 +23,10 @@ const useErrorAlert = (error, setDialog) =>
     useEffect(() => {
         if (error)
             setDialog({
+                open: true,
                 title: "Error!",
                 content: error?.toString() || "unknown",
-                confirmLabel: "Ok",
-                onConfirm: () => setDialog(undefined),
+                onClose: () => setDialog(undefined),
             });
         else setDialog(undefined);
     }, [error, setDialog]);
@@ -154,10 +154,10 @@ export default function PantryItemAdmin() {
 
     const handleViewUses = useCallback((row: Result) => {
         setDialog({
+            open: true,
             title: `Uses of '${row.name}'`,
             content: <ViewUses row={row} />,
-            confirmLabel: "Ok",
-            onConfirm: () => setDialog(undefined),
+            onClose: () => setDialog(undefined),
         });
     }, []);
 
@@ -167,16 +167,17 @@ export default function PantryItemAdmin() {
     const handleDelete = useCallback(
         (row: Result) => {
             setDialog({
+                open: true,
                 title: `Delete '${row.name}'?`,
                 content: "This action cannot be undone.",
                 confirmLabel: "Delete",
-                onConfirm: () => {
+                onClose: (confirmed) => {
                     setDialog(undefined);
-                    deleteItem(row.id).then(() => {
-                        refetch();
-                    });
+                    confirmed &&
+                        deleteItem(row.id).then(() => {
+                            refetch();
+                        });
                 },
-                onCancel: () => setDialog(undefined),
             });
         },
         [deleteItem, refetch],
