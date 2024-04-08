@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
     GridColumnVisibilityModel,
     GridFilterModel,
@@ -15,6 +15,7 @@ import { SortDir } from "../../__generated__/graphql";
 import AdminGrid from "./components/AdminGrid";
 import { useRenamePantryItem } from "../../data/hooks/useRenamePantryItem";
 import { useCombinePantryItems } from "../../data/hooks/useCombinePantryItems";
+import { useDeletePantryItem } from "../../data/hooks/useDeletePantryItem";
 
 const useErrorAlert = (error) =>
     useEffect(() => {
@@ -69,53 +70,62 @@ export default function PantryItemAdmin() {
     const { loading, error, data, refetch } = usePantryItemSearch(queryOptions);
     useErrorAlert(error);
 
-    function toFirstPage() {
+    const toFirstPage = useCallback(() => {
         setPageModel((m) => (m.page === 0 ? m : { ...m, page: 0 }));
-    }
+    }, []);
 
-    function handleFilterChange(model) {
-        setFilterModel(model);
-        toFirstPage();
-    }
+    const handleFilterChange = useCallback(
+        (model) => {
+            setFilterModel(model);
+            toFirstPage();
+        },
+        [toFirstPage],
+    );
 
-    function handleSortChange(model) {
-        setSortModel(model);
-        toFirstPage();
-    }
+    const handleSortChange = useCallback(
+        (model) => {
+            setSortModel(model);
+            toFirstPage();
+        },
+        [toFirstPage],
+    );
 
     const [renameItem, { loading: renaming, error: renameError }] =
         useRenamePantryItem();
     useErrorAlert(renameError);
 
-    async function handleRowUpdate(newRow: Result, oldRow: Result) {
-        if (oldRow.name !== newRow.name) {
-            const saved = await renameItem(newRow.id, newRow.name);
-            return {
-                ...newRow,
-                name: saved.name,
-                synonyms: saved.synonyms,
-            };
-        }
-        return newRow;
-    }
+    const handleRowUpdate = useCallback(
+        async (newRow: Result, oldRow: Result) => {
+            if (oldRow.name !== newRow.name) {
+                const saved = await renameItem(newRow.id, newRow.name);
+                return {
+                    ...newRow,
+                    name: saved.name,
+                    synonyms: saved.synonyms,
+                };
+            }
+            return newRow;
+        },
+        [renameItem],
+    );
 
-    function handleRowUpdateError(error) {
+    const handleRowUpdateError = useCallback((error) => {
         alert("Failed to save: " + error);
-    }
+    }, []);
 
     const [selectionModel, setSelectionModel] = useState<GridRowSelectionModel>(
         [],
     );
 
-    function handleSelectionChange(model) {
+    const handleSelectionChange = useCallback((model) => {
         setSelectionModel(model);
-    }
+    }, []);
 
     const [combineItems, { loading: combining, error: combineError }] =
         useCombinePantryItems();
     useErrorAlert(combineError);
 
-    function handleCombine() {
+    const handleCombine = useCallback(() => {
         if (selectionModel.length < 2) {
             // eslint-disable-next-line no-console
             console.warn("Cannot combine fewer than two items", selectionModel);
@@ -129,7 +139,19 @@ export default function PantryItemAdmin() {
                 setSelectionModel([]);
             })
             .catch((error) => alert(error));
-    }
+    }, [combineItems, refetch, selectionModel]);
+
+    const [deleteItem, { loading: deleting, error: deleteError }] =
+        useDeletePantryItem();
+    useErrorAlert(deleteError);
+    const handleDelete = useCallback(
+        (id: string) => {
+            deleteItem(id).then(() => {
+                refetch();
+            });
+        },
+        [deleteItem, refetch],
+    );
 
     return (
         <AdminGrid
@@ -143,12 +165,13 @@ export default function PantryItemAdmin() {
             onSortModelChange={handleSortChange}
             paginationModel={pageModel}
             onPaginationModelChange={setPageModel}
-            loading={loading || renaming || combining}
+            loading={loading || renaming || combining || deleting}
             rows={data?.results || []}
             hasNextPage={data?.pageInfo.hasNextPage}
             processRowUpdate={handleRowUpdate}
             onProcessRowUpdateError={handleRowUpdateError}
             onCombine={handleCombine}
+            onDelete={handleDelete}
         />
     );
 }

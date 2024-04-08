@@ -22,8 +22,7 @@ query pantryItems($query: String!, $first: NonNegativeInt, $after: Cursor, $sort
           synonyms
           labels
           firstUse
-          myUseCount: useCount(scope: MINE)
-          allUseCount: useCount(scope: EVERYONE)
+          useCount
         }
       }
       pageInfo {
@@ -38,9 +37,8 @@ export type Result = Pick<
     PantryItemConnectionEdge["node"],
     "id" | "name" | "storeOrder" | "synonyms" | "labels"
 > & {
+    useCount: number;
     firstUse: Date;
-    myUseCount: PantryItemConnectionEdge["node"]["useCount"];
-    allUseCount: PantryItemConnectionEdge["node"]["useCount"];
 };
 
 type Results = {

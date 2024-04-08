@@ -2,13 +2,15 @@ import { Box, Paper } from "@mui/material";
 import {
     DataGrid,
     DataGridProps,
+    GRID_CHECKBOX_SELECTION_COL_DEF,
     GridColDef,
     GridRowSelectionModel,
 } from "@mui/x-data-grid";
 import Footer from "./Footer";
 import Header from "./Header";
-import React from "react";
+import React, { useMemo } from "react";
 import { Result } from "../../../data/hooks/usePantryItemSearch";
+import DeleteItemAction from "./DeleteItemAction";
 
 const formatStringSet = (value: string[]) => value.join(", ");
 const parseStringSet = (value: string) =>
@@ -48,29 +50,24 @@ const COLUMNS: GridColDef<Result[][number]>[] = [
         headerName: "Shop",
         headerAlign: "right",
         description: "Shopping and/or store order",
-        flex: 0.75,
+        flex: 0.5,
         editable: false,
         align: "right",
     },
     {
-        field: "useCounts",
+        field: "useCount",
+        type: "number",
         headerName: "Uses",
-        headerAlign: "right",
-        description: "Use count for this item: total (yours)",
-        flex: 0.75,
+        description: "Use count for this item",
+        flex: 0.5,
         sortable: true,
-        align: "right",
-        valueGetter: (_value, row) => {
-            const all = `${row.allUseCount || 0}`;
-            return row.myUseCount ? all + ` (${row.myUseCount})` : all;
-        },
     },
     {
         field: "firstUse",
         headerName: "First Use",
         type: "date",
         sortable: true,
-        flex: 1,
+        flex: 0.75,
     },
 ];
 
@@ -94,15 +91,35 @@ type Props = Pick<
     rowSelectionModel: GridRowSelectionModel;
     // custom props
     onCombine: () => void;
+    onDelete: (id: string) => void;
     hasNextPage?: boolean;
 };
 
 export default function AdminGrid({
     rowSelectionModel,
     onCombine,
+    onDelete,
     hasNextPage,
     ...passthrough
 }: Props) {
+    const columns = useMemo(() => {
+        const cs = COLUMNS.slice();
+        cs.unshift({
+            ...GRID_CHECKBOX_SELECTION_COL_DEF,
+            // don't show the 'select all' checkbox
+            renderHeader: () => null,
+        });
+        cs.push({
+            field: "Actions",
+            headerName: "",
+            type: "actions",
+            getActions: ({ row }) => [
+                <DeleteItemAction row={row} onDelete={onDelete} />,
+            ],
+        });
+        return cs;
+    }, [onDelete]);
+
     return (
         <Box
             component={Paper}
@@ -112,7 +129,7 @@ export default function AdminGrid({
             }}
         >
             <DataGrid
-                columns={COLUMNS}
+                columns={columns}
                 disableColumnFilter
                 disableDensitySelector
                 disableColumnMenu
