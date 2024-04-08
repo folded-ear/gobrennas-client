@@ -7,23 +7,34 @@ import {
     GridSortModel,
 } from "@mui/x-data-grid";
 import {
-    QueryOptions,
     Result,
     usePantryItemSearch,
+    Variables,
 } from "../../data/hooks/usePantryItemSearch";
 import { SortDir } from "../../__generated__/graphql";
 import AdminGrid from "./components/AdminGrid";
 import { useRenamePantryItem } from "../../data/hooks/useRenamePantryItem";
 import { useCombinePantryItems } from "../../data/hooks/useCombinePantryItems";
 import { useDeletePantryItem } from "../../data/hooks/useDeletePantryItem";
+import ConfirmDialog, { DialogProps } from "./components/ConfirmDialog";
+import ViewUses from "./components/ViewUses";
 
-const useErrorAlert = (error) =>
+const useErrorAlert = (error, setDialog) =>
     useEffect(() => {
-        if (error) alert("Error!\n\n" + error);
-    }, [error]);
+        if (error)
+            setDialog({
+                title: "Error!",
+                content: error?.toString() || "unknown",
+                confirmLabel: "Ok",
+                onConfirm: () => setDialog(undefined),
+            });
+        else setDialog(undefined);
+    }, [error, setDialog]);
 
 export default function PantryItemAdmin() {
-    const [queryOptions, setQueryOptions] = useState<QueryOptions>({});
+    const [dialog, setDialog] = useState<DialogProps>();
+
+    const [queryOptions, setQueryOptions] = useState<Variables>({});
 
     const [filterModel, setFilterModel] = useState<GridFilterModel>({
         items: [], // unused, but required
@@ -68,7 +79,7 @@ export default function PantryItemAdmin() {
         });
 
     const { loading, error, data, refetch } = usePantryItemSearch(queryOptions);
-    useErrorAlert(error);
+    useErrorAlert(error, setDialog);
 
     const toFirstPage = useCallback(() => {
         setPageModel((m) => (m.page === 0 ? m : { ...m, page: 0 }));
@@ -92,7 +103,7 @@ export default function PantryItemAdmin() {
 
     const [renameItem, { loading: renaming, error: renameError }] =
         useRenamePantryItem();
-    useErrorAlert(renameError);
+    useErrorAlert(renameError, setDialog);
 
     const handleRowUpdate = useCallback(
         async (newRow: Result, oldRow: Result) => {
@@ -123,7 +134,7 @@ export default function PantryItemAdmin() {
 
     const [combineItems, { loading: combining, error: combineError }] =
         useCombinePantryItems();
-    useErrorAlert(combineError);
+    useErrorAlert(combineError, setDialog);
 
     const handleCombine = useCallback(() => {
         if (selectionModel.length < 2) {
@@ -141,37 +152,59 @@ export default function PantryItemAdmin() {
             .catch((error) => alert(error));
     }, [combineItems, refetch, selectionModel]);
 
+    const handleViewUses = useCallback((row: Result) => {
+        setDialog({
+            title: `Uses of '${row.name}'`,
+            content: <ViewUses row={row} />,
+            confirmLabel: "Ok",
+            onConfirm: () => setDialog(undefined),
+        });
+    }, []);
+
     const [deleteItem, { loading: deleting, error: deleteError }] =
         useDeletePantryItem();
-    useErrorAlert(deleteError);
+    useErrorAlert(deleteError, setDialog);
     const handleDelete = useCallback(
-        (id: string) => {
-            deleteItem(id).then(() => {
-                refetch();
+        (row: Result) => {
+            setDialog({
+                title: `Delete '${row.name}'?`,
+                content: "This action cannot be undone.",
+                confirmLabel: "Delete",
+                onConfirm: () => {
+                    setDialog(undefined);
+                    deleteItem(row.id).then(() => {
+                        refetch();
+                    });
+                },
+                onCancel: () => setDialog(undefined),
             });
         },
         [deleteItem, refetch],
     );
 
     return (
-        <AdminGrid
-            columnVisibilityModel={columnVizModel}
-            onColumnVisibilityModelChange={setColumnVizModel}
-            rowSelectionModel={selectionModel}
-            onRowSelectionModelChange={handleSelectionChange}
-            filterModel={filterModel}
-            onFilterModelChange={handleFilterChange}
-            sortModel={sortModel}
-            onSortModelChange={handleSortChange}
-            paginationModel={pageModel}
-            onPaginationModelChange={setPageModel}
-            loading={loading || renaming || combining || deleting}
-            rows={data?.results || []}
-            hasNextPage={data?.pageInfo.hasNextPage}
-            processRowUpdate={handleRowUpdate}
-            onProcessRowUpdateError={handleRowUpdateError}
-            onCombine={handleCombine}
-            onDelete={handleDelete}
-        />
+        <>
+            <AdminGrid
+                columnVisibilityModel={columnVizModel}
+                onColumnVisibilityModelChange={setColumnVizModel}
+                rowSelectionModel={selectionModel}
+                onRowSelectionModelChange={handleSelectionChange}
+                filterModel={filterModel}
+                onFilterModelChange={handleFilterChange}
+                sortModel={sortModel}
+                onSortModelChange={handleSortChange}
+                paginationModel={pageModel}
+                onPaginationModelChange={setPageModel}
+                loading={loading || renaming || combining || deleting}
+                rows={data?.results || []}
+                hasNextPage={data?.pageInfo.hasNextPage}
+                processRowUpdate={handleRowUpdate}
+                onProcessRowUpdateError={handleRowUpdateError}
+                onCombine={handleCombine}
+                onViewUses={handleViewUses}
+                onDelete={handleDelete}
+            />
+            <ConfirmDialog {...dialog} />
+        </>
     );
 }

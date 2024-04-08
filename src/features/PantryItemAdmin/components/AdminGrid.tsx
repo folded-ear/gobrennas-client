@@ -11,6 +11,7 @@ import Header from "./Header";
 import React, { useMemo } from "react";
 import { Result } from "../../../data/hooks/usePantryItemSearch";
 import DeleteItemAction from "./DeleteItemAction";
+import ViewUsesAction from "./ViewUsesAction";
 
 const formatStringSet = (value: string[]) => value.join(", ");
 const parseStringSet = (value: string) =>
@@ -91,13 +92,15 @@ type Props = Pick<
     rowSelectionModel: GridRowSelectionModel;
     // custom props
     onCombine: () => void;
-    onDelete: (id: string) => void;
+    onViewUses: (row: Result) => void;
+    onDelete: (row: Result) => void;
     hasNextPage?: boolean;
 };
 
 export default function AdminGrid({
     rowSelectionModel,
     onCombine,
+    onViewUses,
     onDelete,
     hasNextPage,
     ...passthrough
@@ -114,11 +117,12 @@ export default function AdminGrid({
             headerName: "",
             type: "actions",
             getActions: ({ row }) => [
-                <DeleteItemAction row={row} onDelete={onDelete} />,
+                <ViewUsesAction row={row} onViewUses={() => onViewUses(row)} />,
+                <DeleteItemAction row={row} onDelete={() => onDelete(row)} />,
             ],
         });
         return cs;
-    }, [onDelete]);
+    }, [onViewUses, onDelete]);
 
     return (
         <Box

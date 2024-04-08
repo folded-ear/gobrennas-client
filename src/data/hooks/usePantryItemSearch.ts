@@ -46,7 +46,7 @@ type Results = {
     pageInfo: Pick<PageInfo, "hasNextPage">;
 } | null;
 
-export interface QueryOptions {
+export interface Variables {
     query?: string;
     page?: number;
     pageSize?: number;
@@ -75,7 +75,7 @@ export const usePantryItemSearch = ({
     pageSize = 25,
     sortBy = "name",
     sortDir = SortDir.Asc,
-}: QueryOptions): UseQueryResult<Results, QueryOptions> => {
+}: Variables): UseQueryResult<Results, Variables> => {
     // DataGrid uses a numeric page model, while the GraphQL API uses cursors,
     // in the style of Relay. However! For the moment those cursors are merely
     // encoded numeric offsets, so do an end-run around tracking cursors in the

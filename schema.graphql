@@ -121,6 +121,8 @@ type LibraryQuery {
         will be returned.
         """
         first: NonNegativeInt! = 10,
+        "Ingredient(s) to include. Missing/empty means \"all\"."
+        ingredients: [ID!]! = [],
         """
 
         The textual query to filter results by. Can include simple words, as
@@ -394,7 +396,10 @@ type Recipe implements Ingredient & Node & Owned {
     externalUrl: String
     favorite: Boolean!
     id: ID!
-    ingredients: [IngredientRef!]!
+    ingredients(
+        "Ingredient(s) to include. Missing/empty means \"all\"."
+        ingredients: [ID!]! = []
+    ): [IngredientRef!]!
     labels: [String!]
     name: String!
     owner: User!
