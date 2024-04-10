@@ -1,4 +1,4 @@
-import { Box, Paper } from "@mui/material";
+import { Box, Button, Paper } from "@mui/material";
 import {
     DataGrid,
     DataGridProps,
@@ -11,7 +11,7 @@ import Header from "./Header";
 import React, { useMemo } from "react";
 import { Result } from "../../../data/hooks/usePantryItemSearch";
 import DeleteItemAction from "./DeleteItemAction";
-import ViewUsesAction from "./ViewUsesAction";
+import { VisibilityOutlined as ViewUsesIcon } from "@mui/icons-material";
 
 const formatStringSet = (value: string[]) => value.join(", ");
 const parseStringSet = (value: string) =>
@@ -106,7 +106,25 @@ export default function AdminGrid({
     ...passthrough
 }: Props) {
     const columns = useMemo(() => {
-        const cs = COLUMNS.slice();
+        const cs = COLUMNS.map((c) => {
+            if (c.field === "useCount") {
+                c = {
+                    ...c,
+                    renderCell: ({ row, formattedValue }) => (
+                        <Button
+                            variant={"text"}
+                            endIcon={<ViewUsesIcon fontSize={"small"} />}
+                            size={"small"}
+                            onClick={() => onViewUses(row)}
+                            disabled={row.useCount === 0}
+                        >
+                            {formattedValue}
+                        </Button>
+                    ),
+                };
+            }
+            return c;
+        });
         cs.unshift({
             ...GRID_CHECKBOX_SELECTION_COL_DEF,
             // don't show the 'select all' checkbox
@@ -117,7 +135,6 @@ export default function AdminGrid({
             headerName: "",
             type: "actions",
             getActions: ({ row }) => [
-                <ViewUsesAction row={row} onViewUses={() => onViewUses(row)} />,
                 <DeleteItemAction row={row} onDelete={() => onDelete(row)} />,
             ],
         });
