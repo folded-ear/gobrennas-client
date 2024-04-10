@@ -10,18 +10,21 @@ import {
     Typography,
 } from "@mui/material";
 import User from "../../../views/user/User";
+import { Add as PlusIcon } from "@mui/icons-material";
+import ListItemIcon from "@mui/material/ListItemIcon";
 
 interface Props {
     row: Result;
 }
 export default function ViewUses({ row }: Props) {
     const { loading, error, data } = usePantryItemUses(row.id);
-    if (loading) {
-        return <CircularProgress />;
-    }
     if (error) {
         return <DialogContentText>{error}</DialogContentText>;
     }
+    if (loading || !data) {
+        return <CircularProgress />;
+    }
+    const recipeUseCount = data.reduce((t, r) => t + r.uses.length, 0);
     return (
         <List dense sx={{ my: -2 }}>
             {data?.map((r) => (
@@ -31,7 +34,7 @@ export default function ViewUses({ row }: Props) {
                     sx={{ gap: 4 }}
                     disableGutters
                 >
-                    <ListItemAvatar sx={{ order: 2, minWidth: "unset" }}>
+                    <ListItemAvatar sx={{ minWidth: "unset" }}>
                         <User inline {...r.owner} iconOnly />
                     </ListItemAvatar>
                     <ListItemText>
@@ -44,6 +47,18 @@ export default function ViewUses({ row }: Props) {
                     </ListItemText>
                 </ListItem>
             ))}
+            {recipeUseCount < row.useCount && (
+                <ListItem disableGutters>
+                    {data.length > 0 && (
+                        <ListItemIcon>
+                            <PlusIcon />
+                        </ListItemIcon>
+                    )}
+                    <ListItemText>
+                        {row.useCount - recipeUseCount} planned
+                    </ListItemText>
+                </ListItem>
+            )}
         </List>
     );
 }
