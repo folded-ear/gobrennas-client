@@ -86,7 +86,7 @@ function adapter(
         externalUrl: result.externalUrl,
         id: parseInt(result.id, 10),
         ingredients,
-        labels: [],
+        labels: result.labels || [],
         name: result.name || "",
         photo: result.photo?.url || null,
         photoFocus: result.photo?.focus || [],
