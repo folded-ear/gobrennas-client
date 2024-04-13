@@ -4,7 +4,15 @@ import User from "./User";
 import { CookThis } from "features/UserProfile/components/CookThis";
 import { Developer } from "features/UserProfile/components/Developer";
 import type { UserType } from "global/types/identity";
-import { Box, Button, Container, Grid, Paper, Typography } from "@mui/material";
+import {
+    Box,
+    Button,
+    Container,
+    Grid,
+    Paper,
+    Stack,
+    Typography,
+} from "@mui/material";
 import { styled } from "@mui/material/styles";
 import Avatar from "@mui/material/Avatar";
 
@@ -32,7 +40,7 @@ const Profile: React.FC<Props> = ({ currentUser: user }) => {
 
     return (
         <Container>
-            <Grid container gap={2} direction={"column"}>
+            <Stack gap={2}>
                 <ProfileDisplay>
                     <Grid container gap={2}>
                         <Box>
@@ -67,7 +75,7 @@ const Profile: React.FC<Props> = ({ currentUser: user }) => {
                         <Developer />
                     </ProfileDisplay>
                 )}
-            </Grid>
+            </Stack>
         </Container>
     );
 };

@@ -6,7 +6,7 @@ import Divider from "@mui/material/Divider";
 import Switch from "@mui/material/Switch";
 import useWindowSize from "data/useWindowSize";
 import preval from "preval.macro";
-import { Grid, ToggleButton, ToggleButtonGroup } from "@mui/material";
+import { Grid, Stack, ToggleButton, ToggleButtonGroup } from "@mui/material";
 import { AutoAwesome, Laptop, Smartphone } from "@mui/icons-material";
 import useFluxStore from "../../../data/useFluxStore";
 import preferencesStore from "../../../data/preferencesStore";
@@ -41,7 +41,7 @@ const DevMode: React.FC = () => {
     }
 
     return (
-        <Grid container direction={"column"} gap={2}>
+        <Stack gap={2}>
             <Divider />
             <Row label={"Window"}>
                 {windowSize.width}x{windowSize.height}
@@ -65,7 +65,7 @@ const DevMode: React.FC = () => {
                     </ToggleButton>
                 </ToggleButtonGroup>
             </Row>
-        </Grid>
+        </Stack>
     );
 };
 
