@@ -18,6 +18,7 @@ import { useCombinePantryItems } from "../../data/hooks/useCombinePantryItems";
 import { useDeletePantryItem } from "../../data/hooks/useDeletePantryItem";
 import ConfirmDialog, { DialogProps } from "./components/ConfirmDialog";
 import ViewUses from "./components/ViewUses";
+import { useSetPantryItemLabels } from "../../data/hooks/useSetPantryItemLabels";
 
 const useErrorAlert = (error, setDialog) =>
     useEffect(() => {
@@ -105,6 +106,10 @@ export default function PantryItemAdmin() {
         useRenamePantryItem();
     useErrorAlert(renameError, setDialog);
 
+    const [setLabels, { loading: settingLabels, error: setLabelsError }] =
+        useSetPantryItemLabels();
+    useErrorAlert(setLabelsError, setDialog);
+
     const handleRowUpdate = useCallback(
         async (newRow: Result, oldRow: Result) => {
             if (oldRow.name !== newRow.name) {
@@ -115,9 +120,21 @@ export default function PantryItemAdmin() {
                     synonyms: saved.synonyms,
                 };
             }
-            return newRow;
+            const oldLabels = new Set(oldRow.labels);
+            const newLabels = new Set(newRow.labels);
+            if (
+                oldLabels.size !== newLabels.size ||
+                [...oldLabels].some((l) => !newLabels.has(l))
+            ) {
+                const saved = await setLabels(newRow.id, [...newLabels]);
+                return {
+                    ...newRow,
+                    labels: saved.labels,
+                };
+            }
+            return oldRow;
         },
-        [renameItem],
+        [renameItem, setLabels],
     );
 
     const handleRowUpdateError = useCallback((error) => {
@@ -196,7 +213,13 @@ export default function PantryItemAdmin() {
                 onSortModelChange={handleSortChange}
                 paginationModel={pageModel}
                 onPaginationModelChange={setPageModel}
-                loading={loading || renaming || combining || deleting}
+                loading={
+                    loading ||
+                    renaming ||
+                    combining ||
+                    deleting ||
+                    settingLabels
+                }
                 rows={data?.results || []}
                 hasNextPage={data?.pageInfo.hasNextPage}
                 processRowUpdate={handleRowUpdate}

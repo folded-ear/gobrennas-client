@@ -5,6 +5,7 @@ import {
 } from "../../__generated__/graphql";
 import { gql } from "__generated__";
 import { useCallback } from "react";
+import throwAnyGraphQLErrors from "../../util/throwAnyGraphQLErrors";
 
 const COMBINE_PANTRY_ITEMS = gql(`
 mutation combinePantryItems($ids: [ID!]!) {
@@ -29,13 +30,7 @@ export const useCombinePantryItems = (): [
     const combine = useCallback(
         (ids) =>
             mutateFunction({ variables: { ids } }).then(({ data, errors }) => {
-                if (errors && errors.length) {
-                    let msg = "Combine items failed:\n\n" + errors[0];
-                    if (errors.length > 1) {
-                        msg += `\n\nPlus ${errors.length - 1} more.`;
-                    }
-                    return Promise.reject(msg);
-                }
+                throwAnyGraphQLErrors(errors);
                 if (!data?.pantry?.combineItems) {
                     return Promise.reject("Empty combine items response");
                 }

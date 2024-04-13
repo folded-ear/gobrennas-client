@@ -12,6 +12,8 @@ import React, { useMemo } from "react";
 import { Result } from "../../../data/hooks/usePantryItemSearch";
 import DeleteItemAction from "./DeleteItemAction";
 import { VisibilityOutlined as ViewUsesIcon } from "@mui/icons-material";
+import ChipsCell from "./ChipsCell";
+import LabelsEditCell from "./LabelsEditCell";
 
 const formatStringSet = (value: string[]) => value.join(", ");
 const parseStringSet = (value: string) =>
@@ -43,8 +45,9 @@ const COLUMNS: GridColDef<Result[][number]>[] = [
         type: "string",
         flex: 1,
         sortable: false,
-        valueFormatter: formatStringSet,
-        valueParser: parseStringSet,
+        editable: true,
+        renderCell: (params) => <ChipsCell {...params} />,
+        renderEditCell: (params) => <LabelsEditCell {...params} />,
     },
     {
         field: "storeOrder",
