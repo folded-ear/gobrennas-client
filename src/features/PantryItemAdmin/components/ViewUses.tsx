@@ -55,7 +55,7 @@ export default function ViewUses({ row }: Props) {
                         </ListItemIcon>
                     )}
                     <ListItemText>
-                        {row.useCount - recipeUseCount} planned
+                        {row.useCount - recipeUseCount} more
                     </ListItemText>
                 </ListItem>
             )}

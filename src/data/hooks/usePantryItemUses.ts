@@ -11,7 +11,7 @@ import useAdaptingQuery from "./useAdaptingQuery";
 const PANTRY_ITEMS_USES = gql(`
 query pantryItemUses($id: ID!) {
   library {
-    recipes(ingredients: [$id], first: 100, scope: EVERYONE) {
+    recipes(ingredients: [$id], first: 10, scope: EVERYONE) {
       edges {
         node {
           id
