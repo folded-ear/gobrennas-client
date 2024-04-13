@@ -1,4 +1,4 @@
-import { Box, Button, Paper } from "@mui/material";
+import { Box, IconButton, Paper } from "@mui/material";
 import {
     DataGrid,
     DataGridProps,
@@ -60,10 +60,11 @@ const COLUMNS: GridColDef<Result[][number]>[] = [
     },
     {
         field: "useCount",
-        type: "number",
+        type: "string",
         headerName: "Uses",
         description: "Use count for this item",
-        flex: 0.5,
+        align: "right",
+        width: 80,
         sortable: true,
     },
     {
@@ -109,20 +110,23 @@ export default function AdminGrid({
     ...passthrough
 }: Props) {
     const columns = useMemo(() => {
+        // This .map is acting as a .slice as well.
         const cs = COLUMNS.map((c) => {
             if (c.field === "useCount") {
                 c = {
                     ...c,
                     renderCell: ({ row, formattedValue }) => (
-                        <Button
-                            variant={"text"}
-                            endIcon={<ViewUsesIcon fontSize={"small"} />}
-                            size={"small"}
-                            onClick={() => onViewUses(row)}
-                            disabled={row.useCount === 0}
-                        >
-                            {formattedValue}
-                        </Button>
+                        <>
+                            {formattedValue}{" "}
+                            <IconButton
+                                color={"primary"}
+                                size={"small"}
+                                onClick={() => onViewUses(row)}
+                                disabled={row.useCount === 0}
+                            >
+                                <ViewUsesIcon fontSize={"small"} />
+                            </IconButton>
+                        </>
                     ),
                 };
             }
@@ -134,9 +138,11 @@ export default function AdminGrid({
             renderHeader: () => null,
         });
         cs.push({
-            field: "Actions",
-            headerName: "",
+            field: "actions",
+            headerName: "Actions",
             type: "actions",
+            width: 30,
+            renderHeader: () => null,
             getActions: ({ row }) => [
                 <DeleteItemAction row={row} onDelete={() => onDelete(row)} />,
             ],
