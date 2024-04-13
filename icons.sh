@@ -3,6 +3,7 @@
 cd "$(dirname $0)"
 SRC=icons
 OUT=public
+API=../gobrennas-api
 
 if [ "$1" = "--spit" ]; then
   shift
@@ -73,6 +74,9 @@ for x in 16 32 48; do
 done
 dkr convert favicon-48x48.ico favicon-32x32.ico favicon-16x16.ico $OUT/favicon.ico
 rm favicon-*.ico
+if [ -d $API ]; then
+  cp $OUT/favicon.ico $API/src/main/resources/public/favicon.ico
+fi
 
 for f in $SRC/*.svg.prod; do
   if [ -f "$f" ]; then
