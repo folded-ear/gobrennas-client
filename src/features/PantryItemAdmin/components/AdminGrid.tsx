@@ -12,7 +12,7 @@ import React, { useMemo } from "react";
 import { Result } from "../../../data/hooks/usePantryItemSearch";
 import DeleteItemAction from "./DeleteItemAction";
 import { VisibilityOutlined as ViewUsesIcon } from "@mui/icons-material";
-import ChipsCell from "./ChipsCell";
+import LabelsCell from "./LabelsCell";
 import LabelsEditCell from "./LabelsEditCell";
 import MultilineEditCell from "./MultilineEditCell";
 
@@ -43,7 +43,7 @@ const COLUMNS: GridColDef<Result[][number]>[] = [
         flex: 1,
         sortable: false,
         editable: true,
-        renderCell: (params) => <ChipsCell {...params} />,
+        renderCell: (params) => <LabelsCell {...params} />,
         renderEditCell: (params) => <LabelsEditCell {...params} />,
     },
     {

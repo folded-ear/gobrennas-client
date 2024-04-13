@@ -11,14 +11,11 @@ export default function SelectionStatus({
     selectedCount: count,
     onCombine,
 }: SelectionStatusProps) {
+    if (count === 0) return null;
     return (
         <Grid container gap={1} alignItems={"center"}>
-            {count > 0 && (
-                <>
-                    {count} {count === 1 ? "row" : "rows"} selected
-                </>
-            )}
-            {onCombine && count > 0 && (
+            {count} {count === 1 ? "row" : "rows"} selected
+            {onCombine && (
                 <Button
                     disabled={count < 2}
                     onClick={onCombine}

@@ -14,7 +14,7 @@ import type {
 /**
  * I apply an adapter to both query and refetched data, properly memoized. In
  * theory, I return a `QueryResult<TAdaptedData, TVariables>`, but Apollo's
- * types don't quite like that work without a bunch of pointless shenanigans, so
+ * types don't quite work like that without a bunch of pointless shenanigans, so
  * I opted to kick that can down the road a ways.
  *
  * @param query The GQL query to pass to useQuery.
