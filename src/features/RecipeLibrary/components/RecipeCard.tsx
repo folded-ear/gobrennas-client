@@ -1,4 +1,4 @@
-import { MenuBook } from "@mui/icons-material";
+import { Edit as EditIcon, Visibility as ViewIcon } from "@mui/icons-material";
 import {
     Box,
     Card,
@@ -25,7 +25,7 @@ import Source from "views/common/Source";
 import User from "views/user/User";
 import FavoriteIndicator from "../../Favorites/components/Indicator";
 import { Photo, User as UserType } from "../../../__generated__/graphql";
-import TextButton from "../../../views/common/TextButton";
+import { TaskIcon } from "global/components/TaskIcon";
 
 const useStyles = makeStyles({
     photo: {
@@ -159,17 +159,15 @@ const RecipeCard: React.FC<Props> = ({ recipe, mine, indicateMine, me }) => {
                 </CardContent>
             </>
             <CardActions>
-                <Stack direction="row" spacing={2} sx={{ maxWidth: "100%" }}>
-                    <TextButton
-                        variant="contained"
-                        color="secondary"
-                        disableElevation
-                        startIcon={<MenuBook />}
-                        component={Link}
-                        to={`/library/recipe/${recipe.id}`}
-                    >
-                        View
-                    </TextButton>
+                <Stack direction="row" spacing={1} sx={{ maxWidth: "100%" }}>
+                    <TaskIcon
+                        icon={<ViewIcon />}
+                        url={`/library/recipe/${recipe.id}`}
+                    />
+                    <TaskIcon
+                        icon={<EditIcon />}
+                        url={`/library/recipe/${recipe.id}/edit`}
+                    />
                     <SendToPlan
                         onClick={(planId) =>
                             Dispatcher.dispatch({
