@@ -1,17 +1,18 @@
 import { GridRenderEditCellParams, useGridApiContext } from "@mui/x-data-grid";
 import { Result } from "../../../data/hooks/usePantryItemSearch";
-import { useGetAllLabels } from "../../../data/hooks/useGetAllLabels";
-import { ChipPicker } from "../../../global/components/ChipPicker";
 import * as React from "react";
-import { useCallback, useLayoutEffect, useState } from "react";
+import { ChangeEvent, useCallback, useLayoutEffect, useState } from "react";
 import { Paper } from "@mui/material";
 import Popper from "@mui/material/Popper";
+import Input from "@mui/material/Input";
 
-export default function LabelsEditCell(
+export default function MultilineEditCell(
     props: GridRenderEditCellParams<Result, string[]>,
 ) {
     const { id, field, value, colDef, hasFocus } = props;
-    const { data: labelList } = useGetAllLabels();
+    const [valueState, setValueState] = React.useState(
+        value ? value.join(", ") : "",
+    );
     const [anchorEl, setAnchorEl] = useState<HTMLElement | null>();
     const [inputRef, setInputRef] = useState<HTMLInputElement | null>(null);
     const apiRef = useGridApiContext();
@@ -27,9 +28,22 @@ export default function LabelsEditCell(
     }, []);
 
     const handleChange = useCallback(
-        (e, labels: string[]) => {
-            const val = labels.map((label) => label.replace(/\/+/g, "-"));
-            apiRef.current.setEditCellValue({ id, field, value: val }, e);
+        (e: ChangeEvent<HTMLTextAreaElement>) => {
+            const value = e.target.value;
+            setValueState(value);
+            apiRef.current.setEditCellValue(
+                {
+                    id,
+                    field,
+                    value: value
+                        .replace(/\s+/, " ")
+                        .split(",")
+                        .map((s) => s.trim())
+                        .filter((s) => s),
+                    debounceMs: 200,
+                },
+                e,
+            );
         },
         [apiRef, id, field],
     );
@@ -56,11 +70,10 @@ export default function LabelsEditCell(
                             maxWidth: colDef.computedWidth * 2,
                         }}
                     >
-                        <ChipPicker
-                            value={value || []}
-                            options={labelList}
-                            size={"small"}
-                            fieldPlaceholder={"Add"}
+                        <Input
+                            multiline
+                            value={valueState}
+                            placeholder={"Comma-delimited " + colDef.headerName}
                             onChange={handleChange}
                             inputRef={(ref) => setInputRef(ref)}
                         />

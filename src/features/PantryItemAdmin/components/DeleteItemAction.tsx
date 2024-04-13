@@ -1,4 +1,4 @@
-import { DeleteOutlined as DeleteIcon } from "@mui/icons-material";
+import { DeleteForeverOutlined as DeleteIcon } from "@mui/icons-material";
 import { GridActionsCellItem } from "@mui/x-data-grid";
 import React from "react";
 import { Result } from "../../../data/hooks/usePantryItemSearch";

@@ -14,13 +14,9 @@ import DeleteItemAction from "./DeleteItemAction";
 import { VisibilityOutlined as ViewUsesIcon } from "@mui/icons-material";
 import ChipsCell from "./ChipsCell";
 import LabelsEditCell from "./LabelsEditCell";
+import MultilineEditCell from "./MultilineEditCell";
 
-const formatStringSet = (value: string[]) => value.join(", ");
-const parseStringSet = (value: string) =>
-    value
-        .split(",")
-        .map((s) => s.trim())
-        .filter((s) => s);
+const formatStringSet = (value: string[]) => (value ? value.join(", ") : "");
 
 const COLUMNS: GridColDef<Result[][number]>[] = [
     { field: "id", headerName: "ID", flex: 0.5 },
@@ -36,8 +32,9 @@ const COLUMNS: GridColDef<Result[][number]>[] = [
         type: "string",
         flex: 1.5,
         sortable: false,
-        valueFormatter: formatStringSet,
-        valueParser: parseStringSet,
+        editable: true,
+        renderCell: (params) => formatStringSet(params.value),
+        renderEditCell: (params) => <MultilineEditCell {...params} />,
     },
     {
         field: "labels",

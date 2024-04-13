@@ -19,6 +19,7 @@ import { useDeletePantryItem } from "../../data/hooks/useDeletePantryItem";
 import ConfirmDialog, { DialogProps } from "./components/ConfirmDialog";
 import ViewUses from "./components/ViewUses";
 import { useSetPantryItemLabels } from "../../data/hooks/useSetPantryItemLabels";
+import { useSetPantryItemSynonyms } from "../../data/hooks/useSetPantryItemSynonyms";
 
 const useErrorAlert = (error, setDialog) =>
     useEffect(() => {
@@ -109,6 +110,9 @@ export default function PantryItemAdmin() {
     const [setLabels, { loading: settingLabels, error: setLabelsError }] =
         useSetPantryItemLabels();
     useErrorAlert(setLabelsError, setDialog);
+    const [setSynonyms, { loading: settingSynonyms, error: setSynonymsError }] =
+        useSetPantryItemSynonyms();
+    useErrorAlert(setSynonymsError, setDialog);
 
     const handleRowUpdate = useCallback(
         async (newRow: Result, oldRow: Result) => {
@@ -120,21 +124,29 @@ export default function PantryItemAdmin() {
                     synonyms: saved.synonyms,
                 };
             }
-            const oldLabels = new Set(oldRow.labels);
-            const newLabels = new Set(newRow.labels);
-            if (
-                oldLabels.size !== newLabels.size ||
-                [...oldLabels].some((l) => !newLabels.has(l))
-            ) {
-                const saved = await setLabels(newRow.id, [...newLabels]);
-                return {
-                    ...newRow,
-                    labels: saved.labels,
-                };
+            const stringSetUpdaters = {
+                labels: setLabels,
+                synonyms: setSynonyms,
+            };
+            for (const key in stringSetUpdaters) {
+                const oldSet = new Set(oldRow[key]);
+                const newSet = new Set(newRow[key]);
+                if (
+                    oldSet.size !== newSet.size ||
+                    [...oldSet].some((l) => !newSet.has(l))
+                ) {
+                    const saved = await stringSetUpdaters[key](newRow.id, [
+                        ...newSet,
+                    ]);
+                    return {
+                        ...newRow,
+                        [key]: saved[key],
+                    };
+                }
             }
             return oldRow;
         },
-        [renameItem, setLabels],
+        [renameItem, setLabels, setSynonyms],
     );
 
     const handleRowUpdateError = useCallback((error) => {
@@ -218,7 +230,8 @@ export default function PantryItemAdmin() {
                     renaming ||
                     combining ||
                     deleting ||
-                    settingLabels
+                    settingLabels ||
+                    settingSynonyms
                 }
                 rows={data?.results || []}
                 hasNextPage={data?.pageInfo.hasNextPage}
