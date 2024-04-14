@@ -1,5 +1,16 @@
 import { createTheme, responsiveFontSizes, Theme } from "@mui/material/styles";
+import { grey } from "@mui/material/colors";
 import { IS_BETA } from "./constants";
+
+declare module "@mui/material/styles" {
+    interface Palette {
+        neutral: Palette["primary"];
+    }
+
+    interface PaletteOptions {
+        neutral?: PaletteOptions["primary"];
+    }
+}
 
 let theme: Theme = createTheme({
     palette: {
@@ -19,6 +30,12 @@ let theme: Theme = createTheme({
         // },
         background: {
             default: "#f7f7f7",
+        },
+        neutral: {
+            light: grey[100],
+            main: grey[200],
+            dark: grey[700],
+            contrastText: grey[900],
         },
     },
     typography: {
