@@ -1,7 +1,6 @@
 import * as React from "react";
-import Autocomplete from "@mui/lab/Autocomplete";
 import { Stack } from "@mui/material";
-import TextField from "@mui/material/TextField";
+import { ChipPicker } from "../../../global/components/ChipPicker";
 
 interface LabelAutoCompleteProps {
     recipeLabels: string[];
@@ -16,23 +15,11 @@ export const LabelAutoComplete: React.FC<LabelAutoCompleteProps> = ({
     onLabelChange,
 }) => (
     <Stack spacing={3} sx={{ width: 500 }}>
-        <Autocomplete
-            multiple
-            freeSolo
-            id="tags-standard"
-            options={labelList}
+        <ChipPicker
             value={recipeLabels}
+            options={labelList}
+            fieldLabel={"Recipe Labels"}
             onChange={onLabelChange}
-            renderInput={(params) => {
-                return (
-                    <TextField
-                        {...params}
-                        variant="standard"
-                        label="Recipe Labels"
-                        placeholder="Add Label"
-                    />
-                );
-            }}
         />
     </Stack>
 );

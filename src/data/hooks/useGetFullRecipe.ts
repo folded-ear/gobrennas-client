@@ -1,5 +1,4 @@
-import { useQuery } from "@apollo/client";
-import * as React from "react";
+import { useMemo } from "react";
 import {
     FullRecipe,
     IngredientRef,
@@ -9,6 +8,10 @@ import {
 import { useProfileId } from "providers/Profile";
 import { UseQueryResult } from "data/types";
 import { gql } from "__generated__";
+import { GetRecipeWithEverythingQuery } from "../../__generated__/graphql";
+import useAdaptingQuery from "./useAdaptingQuery";
+import { ApolloQueryResult, QueryResult } from "@apollo/client";
+import { BfsId } from "../../global/types/identity";
 
 const GET_FULL_RECIPE_QUERY = gql(`
 query getRecipeWithEverything($id: ID!) {
@@ -38,76 +41,73 @@ query getRecipeWithEverything($id: ID!) {
 }
 `);
 
-export const useGetFullRecipe = (id: string): UseQueryResult<FullRecipe> => {
-    const { loading, error, data } = useQuery(GET_FULL_RECIPE_QUERY, {
-        variables: { id: id },
-    });
-    const myId = useProfileId();
-
+function adapter(
+    myId: BfsId,
+    data: GetRecipeWithEverythingQuery | undefined,
+    { loading }: QueryResult | ApolloQueryResult<any>,
+) {
     const result = data?.library?.getRecipeById || null;
 
-    const ingredients: IngredientRef[] = React.useMemo(() => {
-        if (!result || !result.ingredients) return [];
-        return result.ingredients.map((item) => ({
-            raw: item.raw,
-            preparation: item.preparation,
-            quantity: item.quantity?.quantity || null,
-            units: item.quantity?.units?.name || null,
-            ingredient: item.ingredient,
-        }));
-    }, [result]);
+    if (!result || loading) return null;
 
-    const subrecipes: Subrecipe[] = React.useMemo(() => {
-        if (!result || !result.subrecipes) return [];
-        return result.subrecipes.map((recipe) => ({
-            id: parseInt(recipe.id, 10),
-            name: recipe.name,
-            totalTime: recipe.totalTime,
-            directions: recipe.directions,
-            ingredients: recipe.ingredients.map((item) => ({
-                raw: item.raw,
-                preparation: item.preparation,
-                quantity: item.quantity?.quantity || null,
-                units: item.quantity?.units?.name || null,
-                ingredient: item.ingredient || null,
-                ingredientId: 0,
-                uomId: "",
-            })),
-        }));
-    }, [result]);
+    const ingredients: IngredientRef[] =
+        !result || !result.ingredients
+            ? []
+            : result.ingredients.map((item) => ({
+                  raw: item.raw,
+                  preparation: item.preparation,
+                  quantity: item.quantity?.quantity || null,
+                  units: item.quantity?.units?.name || null,
+                  ingredient: item.ingredient,
+              }));
 
-    if (result && !loading) {
-        const recipe: Recipe = {
-            calories: result.calories,
-            directions: result.directions || "",
-            externalUrl: result.externalUrl,
-            id: parseInt(result.id, 10),
-            ingredients,
-            labels: [],
-            name: result.name || "",
-            photo: result.photo?.url || null,
-            photoFocus: result.photo?.focus || [],
-            totalTime: result.totalTime,
-            recipeYield: result.yield,
-        };
+    const subrecipes: Subrecipe[] =
+        !result || !result.subrecipes
+            ? []
+            : result.subrecipes.map((recipe) => ({
+                  id: parseInt(recipe.id, 10),
+                  name: recipe.name,
+                  totalTime: recipe.totalTime,
+                  directions: recipe.directions,
+                  ingredients: recipe.ingredients.map((item) => ({
+                      raw: item.raw,
+                      preparation: item.preparation,
+                      quantity: item.quantity?.quantity || null,
+                      units: item.quantity?.units?.name || null,
+                      ingredient: item.ingredient || null,
+                      ingredientId: 0,
+                      uomId: "",
+                  })),
+              }));
 
-        const fullRecipe: FullRecipe = {
-            mine: result.owner.id === myId.toString(),
-            owner: result.owner,
-            recipe,
-            subrecipes,
-        };
-
-        return {
-            loading,
-            error,
-            data: fullRecipe,
-        };
-    }
+    const recipe: Recipe = {
+        calories: result.calories,
+        directions: result.directions || "",
+        externalUrl: result.externalUrl,
+        id: parseInt(result.id, 10),
+        ingredients,
+        labels: result.labels || [],
+        name: result.name || "",
+        photo: result.photo?.url || null,
+        photoFocus: result.photo?.focus || [],
+        totalTime: result.totalTime,
+        recipeYield: result.yield,
+    };
 
     return {
-        loading,
-        error,
-        data: null,
+        mine: result.owner.id === myId.toString(),
+        owner: result.owner,
+        recipe,
+        subrecipes,
     };
+}
+
+export const useGetFullRecipe = (
+    id: string,
+): UseQueryResult<FullRecipe | null, { id: string }> => {
+    const myId = useProfileId();
+    const boundAdapter = useMemo(() => adapter.bind(undefined, myId), [myId]);
+    return useAdaptingQuery(GET_FULL_RECIPE_QUERY, boundAdapter, {
+        variables: { id: id },
+    });
 };

@@ -15,7 +15,6 @@ import RecipeActions from "data/RecipeActions";
 import useFluxStore from "data/useFluxStore";
 import ItemImage from "features/RecipeLibrary/components/ItemImage";
 import ItemImageUpload from "features/RecipeLibrary/components/ItemImageUpload";
-import LabelItem from "features/RecipeLibrary/components/LabelItem";
 import SendToPlan from "features/RecipeLibrary/components/SendToPlan";
 import React from "react";
 import { Link } from "react-router-dom";
@@ -26,6 +25,7 @@ import User from "views/user/User";
 import FavoriteIndicator from "../../Favorites/components/Indicator";
 import { Photo, User as UserType } from "../../../__generated__/graphql";
 import { TaskIcon } from "global/components/TaskIcon";
+import LabelItem from "../../../global/components/LabelItem";
 
 const useStyles = makeStyles({
     photo: {

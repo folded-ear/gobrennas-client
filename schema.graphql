@@ -5,6 +5,9 @@ schema {
     mutation: Mutation
 }
 
+"Indicates an Input Object is a OneOf Input Object."
+directive @oneOf on INPUT_OBJECT
+
 interface AccessControlled {
     "The ACL describing grants of access, by the other, to other users."
     grants: [AccessControlEntry!]!
@@ -104,14 +107,6 @@ type LibraryMutation {
 
 type LibraryQuery {
     getRecipeById(id: ID!): Recipe
-    """
-
-    Please ignore; I exist because GraphQL defines the available types as
-    those reachable from fields. Since PantryItem is currently only used
-    polymorphically (e.g., by `Query`'s `node` field), it will not be included
-    in the available types without this dummy field.
-    """
-    pantryItem: PantryItem
     "Search the recipe library."
     recipes(
         """
@@ -126,12 +121,14 @@ type LibraryQuery {
         will be returned.
         """
         first: NonNegativeInt! = 10,
+        "Ingredient(s) to include. Missing/empty means \"all\"."
+        ingredients: [ID!]! = [],
         """
 
         The textual query to filter results by. Can include simple words, as
         well as quoted phrases.
         """
-        query: String = "",
+        query: String! = "",
         "The scope to search for recipes within."
         scope: LibrarySearchScope! = MINE
     ): RecipeConnection!
@@ -156,6 +153,7 @@ type LibraryQuery {
 type Mutation {
     favorite: FavoriteMutation
     library: LibraryMutation
+    pantry: PantryMutation
     planner: PlannerMutation
     timer: TimerMutation
 }
@@ -180,10 +178,85 @@ type PageInfo {
 }
 
 type PantryItem implements Ingredient & Node {
+    "When this pantry item was first used."
+    firstUse: DateTime!
     id: ID!
     labels: [String!]
     name: String!
+    """
+
+    The relative order this pantry item will be shown on the shopping view.
+    The absolute value has no semantic, and may change arbitrarily.
+    """
     storeOrder: Int
+    """
+
+    Other names this pantry item can be referred to as. E.g., an "apple" item
+    may have synonym "pomme".
+    """
+    synonyms: [String!]
+    """
+
+    The number of times this pantry item is used, including synonyms, in both
+    library recipes and on a plan.
+    """
+    useCount: NonNegativeInt!
+}
+
+type PantryItemConnection {
+    edges: [PantryItemConnectionEdge!]!
+    pageInfo: PageInfo!
+}
+
+type PantryItemConnectionEdge {
+    cursor: Cursor!
+    node: PantryItem!
+}
+
+type PantryMutation {
+    addLabel(id: ID!, label: String!): PantryItem
+    addSynonym(id: ID!, synonym: String!): PantryItem
+    """
+
+    Combine two or more pantry items, and return the result, after unifying
+    synonyms, labels, and references.
+    """
+    combineItems(ids: [ID!]!): PantryItem
+    "Delete a pantry item, which MUST be unreferenced."
+    deleteItem(id: ID!): Boolean!
+    removeLabel(id: ID!, label: String!): PantryItem
+    removeSynonym(id: ID!, synonym: String!): PantryItem
+    renameItem(id: ID!, name: String!): PantryItem
+    setLabels(id: ID!, labels: [String!]!): PantryItem
+    setSynonyms(id: ID!, synonyms: [String!]!): PantryItem
+}
+
+type PantryQuery {
+    "Search available pantry items."
+    search(
+        """
+
+        Cursor to find results after. This should be omitted to retrieve the
+        first page.
+        """
+        after: Cursor,
+        "How many items to return in the connection."
+        first: NonNegativeInt = 25,
+        """
+
+        Textual query to filter items by. The exact query operation performed
+        is unspecified.
+        """
+        query: String,
+        """
+
+        Field to sort the result by. If omitted, the sort will be stable, but
+        is otherwise unspecified.
+        """
+        sortBy: String,
+        "Direction to sort the result, ascending by default."
+        sortDir: SortDir = ASC
+    ): PantryItemConnection!
 }
 
 type Photo {
@@ -312,6 +385,7 @@ type Query {
     labels: LabelsQuery
     library: LibraryQuery
     node(id: ID!): Node
+    pantry: PantryQuery
     planner: PlannerQuery
     timer: TimerQuery
 }
@@ -322,7 +396,10 @@ type Recipe implements Ingredient & Node & Owned {
     externalUrl: String
     favorite: Boolean!
     id: ID!
-    ingredients: [IngredientRef!]!
+    ingredients(
+        "Ingredient(s) to include. Missing/empty means \"all\"."
+        ingredients: [ID!]! = []
+    ): [IngredientRef!]!
     labels: [String!]
     name: String!
     owner: User!
@@ -485,6 +562,11 @@ enum RecognizedRangeType {
     QUANTITY
     UNIT
     UNKNOWN
+}
+
+enum SortDir {
+    ASC
+    DESC
 }
 
 "The type of a cursor, an opaque string used for walking connections."
