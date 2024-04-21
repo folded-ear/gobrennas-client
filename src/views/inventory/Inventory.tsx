@@ -18,7 +18,7 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-export default function Pantry() {
+export default function Inventory() {
     const classes = useStyles();
     const isMobile = useIsMobile();
     const [inventory, setInventory] =
@@ -83,7 +83,7 @@ export default function Pantry() {
 
     return (
         <PageBody>
-            <Typography variant="h2">Pantry</Typography>
+            <Typography variant="h2">Inventory</Typography>
             <OneShotEdit
                 ingredient={selection ? selection.ingredient.name : undefined}
                 onCommit={reloadInventory}

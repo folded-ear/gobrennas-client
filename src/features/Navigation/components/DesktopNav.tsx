@@ -9,8 +9,8 @@ import { Logo } from "features/Navigation/components/Logo";
 import { NavItem } from "features/Navigation/components/NavItem";
 import {
     EventNote as PlanIcon,
+    InventoryOutlined as InventoryIcon,
     Logout as LogoutIcon,
-    MeetingRoom as PantryIcon,
     MenuBook as LibraryIcon,
     RamenDining as PantryItemAdminIcon,
     ShoppingCart as ShopIcon,
@@ -81,16 +81,6 @@ export const DesktopNav: React.FC<DesktopNavProps> = ({
                             expanded={expanded}
                             selected={selected === "shop"}
                         />
-                        {devMode && (
-                            <NavItem
-                                to="/pantry"
-                                value="pantry"
-                                icon={<PantryIcon />}
-                                title="Pantry"
-                                expanded={expanded}
-                                selected={selected === "pantry"}
-                            />
-                        )}
                         {/*<NavItem*/}
                         {/*    to="/timers"*/}
                         {/*    value="timers"*/}
@@ -135,6 +125,16 @@ export const DesktopNav: React.FC<DesktopNavProps> = ({
                 </Box>
                 <Box sx={{ alignItem: "bottom" }}>
                     <List>
+                        {devMode && (
+                            <NavItem
+                                to="/inventory"
+                                value="inventory"
+                                icon={<InventoryIcon />}
+                                title="Inventory"
+                                expanded={expanded}
+                                selected={selected === "inventory"}
+                            />
+                        )}
                         {devMode && (
                             <NavItem
                                 to="/pantry-item-admin"

@@ -2,7 +2,7 @@ import * as React from "react";
 import { BottomNavigation, Paper } from "@mui/material";
 import {
     EventNote as PlanIcon,
-    MeetingRoom as PantryIcon,
+    InventoryOutlined as InventoryIcon,
     MenuBook as LibraryIcon,
     ShoppingCart as ShopIcon,
 } from "@mui/icons-material";
@@ -52,10 +52,10 @@ export const MobileNav: React.FC<MobileNavProps> = ({
                 />
                 {devMode && (
                     <MobileNavItem
-                        to="/pantry"
-                        value="pantry"
-                        icon={<PantryIcon />}
-                        title="Pantry"
+                        to="/inventory"
+                        value="inventory"
+                        icon={<InventoryIcon />}
+                        title="Inventory"
                     />
                 )}
                 <MobileNavItem
