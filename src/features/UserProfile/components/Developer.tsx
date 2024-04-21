@@ -76,12 +76,13 @@ export const Developer: React.FC = () => {
 
     return (
         <>
-            Dev Mode:{" "}
-            <Switch
-                checked={isDevMode}
-                onChange={handleDevModeChange}
-                color="primary"
-            />
+            <Row label={"Dev Mode"}>
+                <Switch
+                    checked={isDevMode}
+                    onChange={handleDevModeChange}
+                    color="primary"
+                />
+            </Row>
             {isDevMode && <DevMode />}
         </>
     );

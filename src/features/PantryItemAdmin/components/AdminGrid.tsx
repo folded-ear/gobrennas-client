@@ -195,6 +195,7 @@ export default function AdminGrid({
     return (
         <Box
             component={Paper}
+            elevation={0}
             sx={{
                 height: "95vh",
                 width: "100%",
