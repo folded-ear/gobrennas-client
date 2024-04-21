@@ -12,6 +12,7 @@ import { GetRecipeWithEverythingQuery } from "../../__generated__/graphql";
 import useAdaptingQuery from "./useAdaptingQuery";
 import { ApolloQueryResult, QueryResult } from "@apollo/client";
 import { BfsId } from "../../global/types/identity";
+import objectWithType from "../utils/objectWithType";
 
 const GET_FULL_RECIPE_QUERY = gql(`
 query getRecipeWithEverything($id: ID!) {
@@ -58,7 +59,7 @@ function adapter(
                   preparation: item.preparation,
                   quantity: item.quantity?.quantity || null,
                   units: item.quantity?.units?.name || null,
-                  ingredient: item.ingredient,
+                  ingredient: objectWithType(item.ingredient),
               }));
 
     const subrecipes: Subrecipe[] =
@@ -74,7 +75,7 @@ function adapter(
                       preparation: item.preparation,
                       quantity: item.quantity?.quantity || null,
                       units: item.quantity?.units?.name || null,
-                      ingredient: item.ingredient || null,
+                      ingredient: objectWithType(item.ingredient),
                       ingredientId: 0,
                       uomId: "",
                   })),
