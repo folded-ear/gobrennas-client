@@ -2,7 +2,6 @@ import { Box, IconButton, Paper } from "@mui/material";
 import {
     DataGrid,
     DataGridProps,
-    GRID_CHECKBOX_SELECTION_COL_DEF,
     GridColDef,
     GridRowSelectionModel,
 } from "@mui/x-data-grid";
@@ -11,10 +10,16 @@ import Header from "./Header";
 import React, { useMemo } from "react";
 import { Result } from "../../../data/hooks/usePantryItemSearch";
 import DeleteItemAction from "./DeleteItemAction";
-import { VisibilityOutlined as ViewUsesIcon } from "@mui/icons-material";
+import {
+    Search as ViewDuplicatesIcon,
+    SvgIconComponent,
+    VisibilityOutlined as ViewUsesIcon,
+} from "@mui/icons-material";
 import LabelsCell from "./LabelsCell";
 import LabelsEditCell from "./LabelsEditCell";
 import MultilineEditCell from "./MultilineEditCell";
+import { BfsId } from "../../../global/types/identity";
+import { GridRenderCellParams } from "@mui/x-data-grid/models/params/gridCellParams";
 
 const formatStringSet = (value: string[]) => (value ? value.join(", ") : "");
 
@@ -102,16 +107,48 @@ type Props = Pick<
     // custom props
     onCombine: () => void;
     onViewUses: (row: Result) => void;
+    onViewDuplicates: (row: Result) => void;
     onDelete: (row: Result) => void;
     hasNextPage?: boolean;
+    duplicatesOf?: BfsId;
 };
 
+function CellWithButton(
+    params: GridRenderCellParams<Result, any, any> & {
+        Icon: SvgIconComponent;
+        onClick(r: Result): void;
+    },
+) {
+    const { row, Icon, onClick, value, formattedValue } = params;
+    return (
+        <>
+            <IconButton
+                color={"primary"}
+                size={"small"}
+                onClick={(e) => {
+                    e.stopPropagation();
+                    onClick(row);
+                }}
+                disabled={!value}
+            >
+                <Icon fontSize={"small"} />
+            </IconButton>{" "}
+            {formattedValue}
+        </>
+    );
+}
+
 export default function AdminGrid({
+    // passthroughs we need to intercept
     rowSelectionModel,
+    // custom props
     onCombine,
     onViewUses,
+    onViewDuplicates,
     onDelete,
     hasNextPage,
+    duplicatesOf,
+    // everything else
     ...passthrough
 }: Props) {
     const columns = useMemo(() => {
@@ -120,27 +157,27 @@ export default function AdminGrid({
             if (c.field === "useCount") {
                 c = {
                     ...c,
-                    renderCell: ({ row, formattedValue }) => (
-                        <>
-                            <IconButton
-                                color={"primary"}
-                                size={"small"}
-                                onClick={() => onViewUses(row)}
-                                disabled={row.useCount === 0}
-                            >
-                                <ViewUsesIcon fontSize={"small"} />
-                            </IconButton>{" "}
-                            {formattedValue}
-                        </>
+                    renderCell: (params) => (
+                        <CellWithButton
+                            {...params}
+                            onClick={onViewUses}
+                            Icon={ViewUsesIcon}
+                        />
+                    ),
+                };
+            } else if (c.field === "duplicateCount") {
+                c = {
+                    ...c,
+                    renderCell: (params) => (
+                        <CellWithButton
+                            {...params}
+                            onClick={onViewDuplicates}
+                            Icon={ViewDuplicatesIcon}
+                        />
                     ),
                 };
             }
             return c;
-        });
-        cs.unshift({
-            ...GRID_CHECKBOX_SELECTION_COL_DEF,
-            // don't show the 'select all' checkbox
-            renderHeader: () => null,
         });
         cs.push({
             field: "actions",
@@ -153,7 +190,7 @@ export default function AdminGrid({
             ],
         });
         return cs;
-    }, [onViewUses, onDelete]);
+    }, [onViewUses, onViewDuplicates, onDelete]);
 
     return (
         <Box
@@ -179,6 +216,9 @@ export default function AdminGrid({
                 paginationMode={"server"}
                 rowCount={-1}
                 autoPageSize
+                getRowClassName={({ id }) =>
+                    id === duplicatesOf ? "duplicates-of" : ""
+                }
                 slots={{
                     footer: Footer as any, // should be DataGridProps["slots"]["footer"],
                     toolbar: Header,
