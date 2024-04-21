@@ -23,6 +23,7 @@ query pantryItems($query: String!, $first: NonNegativeInt, $after: Cursor, $sort
           labels
           firstUse
           useCount
+          duplicateCount
         }
       }
       pageInfo {
@@ -38,6 +39,7 @@ export type Result = Pick<
     "id" | "name" | "storeOrder" | "synonyms" | "labels"
 > & {
     useCount: number;
+    duplicateCount: number;
     firstUse: Date;
 };
 

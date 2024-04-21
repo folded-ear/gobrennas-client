@@ -178,6 +178,13 @@ type PageInfo {
 }
 
 type PantryItem implements Ingredient & Node {
+    """
+
+    The number of auto-detected duplicates of this pantry item. Exactly what
+    "duplicate" means is unspecified and subject to change, excepting that it
+    will remain consistent with a 'duplicates:12345' search query.
+    """
+    duplicateCount: NonNegativeInt!
     "When this pantry item was first used."
     firstUse: DateTime!
     id: ID!
@@ -245,7 +252,10 @@ type PantryQuery {
         """
 
         Textual query to filter items by. The exact query operation performed
-        is unspecified.
+        is unspecified, except that 'duplicates:12345' will return auto-detected
+        duplicates of the item with id '12345'. Exactly what "duplicate" means
+        is unspecified and subject to change, excepting that it will remain
+        consistent with results' "duplicateCount".
         """
         query: String,
         """

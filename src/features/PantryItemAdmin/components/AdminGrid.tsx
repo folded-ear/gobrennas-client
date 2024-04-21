@@ -50,26 +50,34 @@ const COLUMNS: GridColDef<Result[][number]>[] = [
         field: "storeOrder",
         headerName: "Shop",
         headerAlign: "right",
+        sortingOrder: ["asc", "desc"],
         description: "Shopping and/or store order",
         flex: 0.5,
         editable: false,
         align: "right",
     },
     {
-        field: "useCount",
-        type: "string",
-        headerName: "Uses",
-        description: "Use count for this item",
-        align: "right",
-        width: 80,
-        sortable: true,
+        field: "duplicateCount",
+        type: "number",
+        headerName: "Dupes",
+        sortingOrder: ["desc", "asc"],
+        description: "Potential duplicate count for this item",
+        width: 90,
     },
     {
         field: "firstUse",
         headerName: "First Use",
+        sortingOrder: ["asc", "desc"],
         type: "date",
-        sortable: true,
         flex: 0.75,
+    },
+    {
+        field: "useCount",
+        type: "number",
+        headerName: "Uses",
+        sortingOrder: ["desc", "asc"],
+        description: "Use count for this item",
+        width: 80,
     },
 ];
 
@@ -114,7 +122,6 @@ export default function AdminGrid({
                     ...c,
                     renderCell: ({ row, formattedValue }) => (
                         <>
-                            {formattedValue}{" "}
                             <IconButton
                                 color={"primary"}
                                 size={"small"}
@@ -122,7 +129,8 @@ export default function AdminGrid({
                                 disabled={row.useCount === 0}
                             >
                                 <ViewUsesIcon fontSize={"small"} />
-                            </IconButton>
+                            </IconButton>{" "}
+                            {formattedValue}
                         </>
                     ),
                 };
