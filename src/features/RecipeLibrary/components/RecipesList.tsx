@@ -1,4 +1,4 @@
-import { PostAdd as AddIcon } from "@mui/icons-material";
+import { AddRecipeIcon } from "../../../views/common/icons";
 import { Container as Content, Grid, useScrollTrigger } from "@mui/material";
 import RecipeCard from "features/RecipeLibrary/components/RecipeCard";
 import { useIsMobile } from "providers/IsMobile";
@@ -140,7 +140,7 @@ export const RecipesList: React.FC<RecipesListProps> = ({
             />
             {body}
             <FoodingerFab onClick={() => history.push(`/add`)}>
-                <AddIcon />
+                <AddRecipeIcon />
             </FoodingerFab>
         </Content>
     );

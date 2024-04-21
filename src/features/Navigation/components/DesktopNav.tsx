@@ -8,13 +8,13 @@ import {
 import { Logo } from "features/Navigation/components/Logo";
 import { NavItem } from "features/Navigation/components/NavItem";
 import {
-    EventNote as PlanIcon,
-    InventoryOutlined as InventoryIcon,
-    Logout as LogoutIcon,
-    MenuBook as LibraryIcon,
-    RamenDining as PantryItemAdminIcon,
-    ShoppingCart as ShopIcon,
-} from "@mui/icons-material";
+    InventoryIcon,
+    LibraryIcon,
+    LogoutIcon,
+    PantryItemAdminIcon,
+    PlanIcon,
+    ShopIcon,
+} from "views/common/icons";
 import { Box, List, ListItemButton, Typography } from "@mui/material";
 import { NavPlanItem } from "features/Navigation/components/NavPlanItem";
 import { colorHash } from "constants/colors";

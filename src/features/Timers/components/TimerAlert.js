@@ -8,7 +8,7 @@ import {
     IconButton,
 } from "@mui/material";
 import AddTimeButton from "./AddTimeButton";
-import { Replay as ResetIcon, Stop as StopIcon } from "@mui/icons-material";
+import { ResetIcon, StopIcon } from "views/common/icons";
 import { formatTimer } from "../../../util/time";
 import TimeLeft from "./TimeLeft";
 import alarm from "../media/alarm.mp3";

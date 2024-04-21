@@ -1,6 +1,10 @@
 import { Box, Grid, IconButton, Typography } from "@mui/material";
 import { makeStyles } from "@mui/styles";
-import { Close, RotateLeft, RotateRight } from "@mui/icons-material";
+import {
+    CloseIcon,
+    RotateClockwiseIcon,
+    RotateCounterClockwiseIcon,
+} from "views/common/icons";
 import React, { MouseEventHandler, ReactNode } from "react";
 import useFluxStore from "data/useFluxStore";
 import WindowStore from "data/WindowStore";
@@ -297,7 +301,7 @@ const TextractEditor: React.FC<Props> = ({
                             className={classes.rotateRight}
                             size="large"
                         >
-                            <RotateRight />
+                            <RotateClockwiseIcon />
                         </IconButton>
                         <IconButton
                             onClick={() =>
@@ -306,7 +310,7 @@ const TextractEditor: React.FC<Props> = ({
                             className={classes.rotateLeft}
                             size="large"
                         >
-                            <RotateLeft />
+                            <RotateCounterClockwiseIcon />
                         </IconButton>
                     </Box>
                 </Grid>
@@ -320,7 +324,7 @@ const TextractEditor: React.FC<Props> = ({
                                 right: 0,
                             }}
                         >
-                            <Close />
+                            <CloseIcon />
                         </IconButton>
                         <Typography component={"p"} variant={"h6"}>
                             Select some text on your photo.

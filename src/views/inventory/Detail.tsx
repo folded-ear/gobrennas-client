@@ -1,6 +1,6 @@
 import { Card, CardContent, CardHeader, IconButton } from "@mui/material";
 import { makeStyles } from "@mui/styles";
-import { Close as CloseIcon } from "@mui/icons-material";
+import { CloseIcon } from "views/common/icons";
 import { DataGrid } from "@mui/x-data-grid";
 import React, { MouseEventHandler, useEffect, useMemo, useState } from "react";
 import InventoryApi, {

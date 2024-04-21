@@ -1,6 +1,5 @@
 import { Box, IconButton, Stack, Typography } from "@mui/material";
 import List from "@mui/material/List";
-import AddIcon from "@mui/icons-material/Add";
 import React, { useCallback, useState } from "react";
 import Dispatcher from "data/dispatcher";
 import ShoppingActions from "data/ShoppingActions";
@@ -18,7 +17,7 @@ import PantryItemActions from "../../data/PantryItemActions";
 import DragContainer, {
     DragContainerProps,
 } from "../../features/Planner/components/DragContainer";
-import SweepIcon from "@mui/icons-material/CleaningServices";
+import { AddIcon, SweepIcon } from "views/common/icons";
 import { colorHash } from "../../constants/colors";
 import Avatar from "@mui/material/Avatar";
 import { useIsMobile } from "../../providers/IsMobile";

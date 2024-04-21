@@ -1,9 +1,4 @@
 import {
-    Add as AddIcon,
-    DynamicFeed as SortByBucketIcon,
-    Edit as EditIcon,
-} from "@mui/icons-material";
-import {
     Box,
     Drawer,
     Grid,
@@ -19,7 +14,13 @@ import UserById from "features/Planner/components/UserById";
 import PlanActions from "features/Planner/data/PlanActions";
 import PropTypes from "prop-types";
 import React, { useState } from "react";
-import { CollapseAll, ExpandAll } from "views/common/icons";
+import {
+    AddIcon,
+    CollapseAll,
+    EditIcon,
+    ExpandAll,
+    SortByBucketIcon,
+} from "views/common/icons";
 import SplitButton from "views/common/SplitButton";
 import AddToCalendar from "./AddToCalendar";
 import CollapseIconButton from "../../../global/components/CollapseIconButton";

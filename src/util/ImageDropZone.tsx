@@ -1,5 +1,5 @@
 import { makeStyles } from "@mui/styles";
-import { AddAPhoto, PhotoCamera } from "@mui/icons-material";
+import { AddPhotoIcon, NoPhotoIcon } from "views/common/icons";
 import clsx from "clsx";
 import * as React from "react";
 import { DragEvent } from "react";
@@ -54,7 +54,7 @@ const ImageDropZone: React.FC<ImageDropZoneProps> = ({
     if (disabled) {
         return (
             <label {...props} className={labelClassName}>
-                <PhotoCamera color="disabled" className={classes.icon} />
+                <NoPhotoIcon color="disabled" className={classes.icon} />
             </label>
         );
     }
@@ -101,7 +101,7 @@ const ImageDropZone: React.FC<ImageDropZoneProps> = ({
                     className={classes.preview}
                 />
             ) : (
-                <AddAPhoto color="disabled" className={classes.icon} />
+                <AddPhotoIcon color="disabled" className={classes.icon} />
             )}
             <input
                 id={inputId}

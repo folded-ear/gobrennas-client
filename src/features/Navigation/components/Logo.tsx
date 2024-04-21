@@ -1,8 +1,5 @@
 import * as React from "react";
-import {
-    Menu as MenuClosedIcon,
-    MenuOpen as MenuOpenIcon,
-} from "@mui/icons-material";
+import { MenuClosedIcon, MenuOpenIcon } from "views/common/icons";
 import { ListItemButton } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { ItemIcon } from "./Navigation.elements";

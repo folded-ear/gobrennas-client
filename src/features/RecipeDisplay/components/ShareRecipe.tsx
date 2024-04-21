@@ -1,5 +1,5 @@
 import { Box, Button, CircularProgress, TextField } from "@mui/material";
-import { Share as ShareIcon } from "@mui/icons-material";
+import { ShareIcon } from "../../../views/common/icons";
 import BaseAxios from "axios";
 import React from "react";
 import { API_BASE_URL, APP_BASE_URL } from "constants/index";

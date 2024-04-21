@@ -1,4 +1,4 @@
-import { HighlightOff as DeleteIcon, Kitchen } from "@mui/icons-material";
+import { ClearIcon, CookIcon } from "../../../views/common/icons";
 import { Chip, Divider, Menu, MenuItem } from "@mui/material";
 import dispatcher from "data/dispatcher";
 import getBucketLabel from "features/Planner/components/getBucketLabel";
@@ -8,6 +8,7 @@ import React from "react";
 import { clientOrDatabaseIdType } from "util/ClientId";
 import history from "util/history";
 import { humanDate } from "util/time";
+import ListItemIcon from "@mui/material/ListItemIcon";
 
 const BucketChip = ({ planId, bucketId, buckets = [], onSelect, onManage }) => {
     const [anchorEl, setAnchorEl] = React.useState(null);
@@ -43,7 +44,6 @@ const BucketChip = ({ planId, bucketId, buckets = [], onSelect, onManage }) => {
         }
         chipProps.label = label.substr(0, 3);
         chipProps.title = title;
-        chipProps.deleteIcon = <DeleteIcon opacity={0.4} />;
     } else {
         chipProps.variant = "outlined";
         chipProps.title = "Click to assign a bucket";
@@ -73,7 +73,9 @@ const BucketChip = ({ planId, bucketId, buckets = [], onSelect, onManage }) => {
                             history.push(`/plan/${planId}/bucket/${bucketId}`)
                         }
                     >
-                        <Kitchen />
+                        <ListItemIcon>
+                            <CookIcon />
+                        </ListItemIcon>
                         Cook &quot;{getBucketLabel(bucket)}&quot;
                     </MenuItem>
                 )}
@@ -90,6 +92,7 @@ const BucketChip = ({ planId, bucketId, buckets = [], onSelect, onManage }) => {
                                     : () => handleSelect(b.id)
                             }
                         >
+                            <ListItemIcon />
                             {getBucketLabel(b)}
                         </MenuItem>
                     );
@@ -99,10 +102,16 @@ const BucketChip = ({ planId, bucketId, buckets = [], onSelect, onManage }) => {
                     onClick={bucket ? () => handleSelect(null) : handleClose}
                     disabled={!bucket}
                 >
+                    <ListItemIcon>
+                        <ClearIcon />
+                    </ListItemIcon>
                     Clear
                 </MenuItem>
                 {onManage && (
-                    <MenuItem onClick={handleManage}>Manage Buckets</MenuItem>
+                    <MenuItem onClick={handleManage}>
+                        <ListItemIcon />
+                        Manage Buckets
+                    </MenuItem>
                 )}
             </Menu>
         </>

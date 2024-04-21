@@ -2,10 +2,7 @@ import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import { Box, Button, Typography } from "@mui/material";
 import { makeStyles } from "@mui/styles";
-import {
-    BackspaceOutlined as BackspaceIcon,
-    PlayArrow as PlayIcon,
-} from "@mui/icons-material";
+import { BackspaceIcon, PlayIcon } from "views/common/icons";
 import clsx from "clsx";
 
 const useStyles = makeStyles(() => ({

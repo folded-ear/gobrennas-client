@@ -1,6 +1,5 @@
 import { Grid, IconButton } from "@mui/material";
 import makeStyles from "@mui/styles/makeStyles";
-import LinkIcon from "@mui/icons-material/Link";
 import React from "react";
 import Dispatcher from "data/dispatcher";
 import PantryItemActions from "data/PantryItemActions";
@@ -11,6 +10,7 @@ import SendToPlan from "features/RecipeLibrary/components/SendToPlan";
 import type { IngredientRef } from "global/types/types";
 import type { BfsId } from "global/types/identity";
 import { useScale } from "util/ScalingContext";
+import { LinkIcon } from "./common/icons";
 
 const useStyles = makeStyles(() => ({
     quantity: {

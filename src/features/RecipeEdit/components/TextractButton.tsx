@@ -1,6 +1,6 @@
 import { Box, Button } from "@mui/material";
 import { makeStyles } from "@mui/styles";
-import { CameraAlt, MenuBook } from "@mui/icons-material";
+import { LibraryIcon, TextractIcon } from "views/common/icons";
 import React, { MouseEventHandler } from "react";
 
 const useStyles = makeStyles({
@@ -24,8 +24,8 @@ const TextractButton: React.FC<Props> = ({ onClick }) => {
         <Box className={classes.trigger}>
             <Button
                 variant={"text"}
-                startIcon={<MenuBook />}
-                endIcon={<CameraAlt />}
+                startIcon={<LibraryIcon />}
+                endIcon={<TextractIcon />}
                 size={"small"}
                 onClick={onClick}
             >

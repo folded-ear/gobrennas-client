@@ -10,7 +10,7 @@ import {
     Typography,
 } from "@mui/material";
 import User from "../../../views/user/User";
-import { Add as PlusIcon } from "@mui/icons-material";
+import { PlusIcon } from "views/common/icons";
 import ListItemIcon from "@mui/material/ListItemIcon";
 
 interface Props {

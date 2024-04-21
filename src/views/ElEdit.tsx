@@ -1,5 +1,5 @@
 import { Grid, InputAdornment, LinearProgress, TextField } from "@mui/material";
-import { CheckCircleOutline, ErrorOutline } from "@mui/icons-material";
+import { ErrorIcon, OkIcon } from "./common/icons";
 import React, { CSSProperties, PropsWithChildren } from "react";
 import ItemApi, { RecognitionResult } from "data/ItemApi";
 import debounce from "util/debounce";
@@ -244,9 +244,9 @@ class ElEdit extends React.PureComponent<ElEditProps, ElEditState> {
         const indicator = (
             <InputAdornment position={"start"}>
                 {ingredientName == null ? (
-                    <ErrorOutline color="error" />
+                    <ErrorIcon color="error" />
                 ) : (
-                    <CheckCircleOutline color="disabled" />
+                    <OkIcon color="disabled" />
                 )}
             </InputAdornment>
         );

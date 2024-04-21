@@ -1,4 +1,4 @@
-import { Edit as EditIcon, Visibility as ViewIcon } from "@mui/icons-material";
+import { EditIcon, ViewIcon } from "../../../views/common/icons";
 import {
     Box,
     Card,

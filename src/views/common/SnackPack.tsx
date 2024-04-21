@@ -1,7 +1,7 @@
 import * as React from "react";
 import { Alert, AlertColor, IconButton, Snackbar } from "@mui/material";
 import { makeStyles } from "@mui/styles";
-import { Close as CloseIcon } from "@mui/icons-material";
+import { CloseIcon } from "views/common/icons";
 import dispatcher from "../../data/dispatcher";
 import snackBarStore from "../../data/snackBarStore";
 import UiActions from "../../data/UiActions";

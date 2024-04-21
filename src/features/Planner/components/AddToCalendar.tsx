@@ -1,8 +1,5 @@
 import React from "react";
-import {
-    Add as PlusIcon,
-    CalendarMonth as CalendarIcon,
-} from "@mui/icons-material";
+import { AddIcon, AddToCalendarIcon } from "views/common/icons";
 import { PlanItem } from "../data/planStore";
 import ModalButton from "../../../views/ModalButton";
 import { API_BASE_URL } from "../../../constants";
@@ -96,7 +93,7 @@ const Body: React.FC<Props> = ({ plan }) => {
                 <p>
                     In Google Calendar, find "Other Calendars" in the sidebar,
                     click
-                    <PlusIcon />, select "From URL", and paste in the URL above.
+                    <AddIcon />, select "From URL", and paste in the URL above.
                 </p>
                 <p>
                     Other calendar applications are similar, perhaps labeled
@@ -111,7 +108,7 @@ const AddToCalendar: React.FC<Props> = ({ plan }) => {
     return (
         <ModalButton
             buttonTitle="Add to Calendar"
-            icon={<CalendarIcon />}
+            icon={<AddToCalendarIcon />}
             render={() => <Body plan={plan} />}
         />
     );

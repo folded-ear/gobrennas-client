@@ -1,11 +1,11 @@
 import * as React from "react";
 import { BottomNavigation, Paper } from "@mui/material";
 import {
-    EventNote as PlanIcon,
-    InventoryOutlined as InventoryIcon,
-    MenuBook as LibraryIcon,
-    ShoppingCart as ShopIcon,
-} from "@mui/icons-material";
+    InventoryIcon,
+    LibraryIcon,
+    PlanIcon,
+    ShopIcon,
+} from "views/common/icons";
 import { styled } from "@mui/material/styles";
 import { MobileNavItem } from "features/Navigation/components/MobileNavItem";
 import { useProfile } from "../../../providers/Profile";

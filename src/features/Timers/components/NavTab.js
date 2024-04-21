@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import TimeLeft from "./TimeLeft";
 import { Badge as TopRightBadge, Tab } from "@mui/material";
 import { withStyles } from "@mui/styles";
-import { Pause, Timer } from "@mui/icons-material";
+import { PauseIcon, TimerIcon } from "views/common/icons";
 import { useTimerList } from "../data/TimerContext";
 
 const BottomRightBadge = withStyles({
@@ -32,7 +32,7 @@ function NavTab({ defaultLabel, onClick }) {
         );
     }, [timers]);
 
-    let icon = <Timer />;
+    let icon = <TimerIcon />;
     if (timers.length > 1) {
         icon = (
             <TopRightBadge overlap={"rectangular"} badgeContent={timers.length}>
@@ -44,7 +44,7 @@ function NavTab({ defaultLabel, onClick }) {
         icon = (
             <BottomRightBadge
                 overlap={"rectangular"}
-                badgeContent={<Pause fontSize={"inherit"} />}
+                badgeContent={<PauseIcon fontSize={"inherit"} />}
             >
                 {icon}
             </BottomRightBadge>

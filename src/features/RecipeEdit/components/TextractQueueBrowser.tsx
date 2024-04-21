@@ -7,7 +7,7 @@ import {
 } from "@mui/material";
 import Drawer from "@mui/material/Drawer";
 import { makeStyles } from "@mui/styles";
-import { Close } from "@mui/icons-material";
+import { CloseIcon } from "../../../views/common/icons";
 import React, { MouseEventHandler } from "react";
 import DeleteButton from "views/common/DeleteButton";
 import ImageDropZone from "util/ImageDropZone";
@@ -98,7 +98,7 @@ const Ui: React.FC<UiProps> = ({
                     className={classes.closeButton}
                     size="large"
                 >
-                    <Close />
+                    <CloseIcon />
                 </IconButton>
                 <Typography variant="h3">Select Photo</Typography>
                 <ImageList>

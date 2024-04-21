@@ -8,11 +8,7 @@ import {
 import IconButton from "@mui/material/IconButton";
 import TableCell from "@mui/material/TableCell";
 import Tooltip from "@mui/material/Tooltip";
-import {
-    Add as AddIcon,
-    AddToPhotos as GenerateIcon,
-    Delete as DeleteIcon,
-} from "@mui/icons-material";
+import { AddIcon, DeleteIcon, GenerateBucketsIcon } from "views/common/icons";
 import React from "react";
 import dispatcher from "data/dispatcher";
 import PlanActions from "features/Planner/data/PlanActions";
@@ -98,7 +94,7 @@ const BucketManager = () => {
                                     onClick={() => onBucketGenerate()}
                                     size="small"
                                 >
-                                    <GenerateIcon />
+                                    <GenerateBucketsIcon />
                                 </IconButton>
                             </Tooltip>
                         </TableCell>
