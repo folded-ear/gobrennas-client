@@ -23,6 +23,7 @@ query pantryItems($query: String!, $first: NonNegativeInt, $after: Cursor, $sort
           labels
           firstUse
           useCount
+          duplicateCount
         }
       }
       pageInfo {
@@ -38,6 +39,7 @@ export type Result = Pick<
     "id" | "name" | "storeOrder" | "synonyms" | "labels"
 > & {
     useCount: number;
+    duplicateCount: number;
     firstUse: Date;
 };
 
@@ -80,7 +82,7 @@ export const usePantryItemSearch = ({
     // in the style of Relay. However! For the moment those cursors are merely
     // encoded numeric offsets, so do an end-run around tracking cursors in the
     // grid, and manually encode an offset-cursor as needed.
-    const after = page === 0 ? null : btoa("offset-" + page * pageSize);
+    const after = page === 0 ? null : btoa("offset-" + (page * pageSize - 1));
     return useAdaptingQuery(SEARCH_PANTRY_ITEMS_QUERY, adapter, {
         variables: { query, first: pageSize, after, sortBy, sortDir },
         skip: pageSize <= 0,
