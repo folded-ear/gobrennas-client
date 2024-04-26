@@ -32,7 +32,7 @@ export default function Paging({ hasNextPage }: PagingProps) {
         <Grid container gap={1} alignItems={"center"}>
             {showPaging && (
                 <>
-                    {start}-{end} of {hasNextPage ? `${end + 1}+` : end}
+                    {start} – {end} of {hasNextPage ? "many" : end}
                 </>
             )}
             <IconButton
