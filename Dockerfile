@@ -5,7 +5,8 @@ COPY . ./
 ENV NO_COLOR=true \
     CI=true
 ARG SERVICE_NAME
-RUN if echo "$SERVICE_NAME" | grep beta; then \
+RUN echo "Check if '$SERVICE_NAME' requires icon regen" \
+    && if echo "$SERVICE_NAME" | grep beta; then \
       ./icons.sh --beta; \
     fi \
     && npm ci \
