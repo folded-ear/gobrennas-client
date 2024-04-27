@@ -1,4 +1,4 @@
-import { Divider, Grid, Typography } from "@mui/material";
+import { Divider, Grid, Stack, Typography } from "@mui/material";
 import makeStyles from "@mui/styles/makeStyles";
 import React from "react";
 import { formatDuration } from "util/time";
@@ -6,11 +6,11 @@ import CollapseIconButton from "global/components/CollapseIconButton";
 import IngredientDirectionsRow from "./IngredientDirectionsRow";
 import { ScalingProvider } from "util/ScalingContext";
 import type { Subrecipe } from "global/types/types";
+import { BreadcrumbLink } from "../../../global/components/BreadcrumbLink";
 
 const useStyles = makeStyles({
     time: {
         display: "inline-block",
-        marginLeft: "1em",
         fontSize: "80%",
     },
 });
@@ -26,19 +26,21 @@ const SubrecipeItem: React.FC<Props> = ({ recipe, loggedIn }) => {
     return (
         <>
             <Grid item xs={12}>
-                <Typography variant="h5">
+                <Stack direction={"row"} gap={1} alignItems={"center"}>
                     <CollapseIconButton
                         expanded={expanded}
                         onClick={() => setExpanded((s) => !s)}
                     />
-                    <span
+                    <Typography
+                        variant="h5"
+                        mb={0}
                         onClick={() => setExpanded((s) => !s)}
                         style={{
                             cursor: "pointer",
                         }}
                     >
                         {recipe.name}
-                    </span>
+                    </Typography>
                     {recipe.totalTime && (
                         <Typography
                             variant={"subtitle1"}
@@ -48,7 +50,13 @@ const SubrecipeItem: React.FC<Props> = ({ recipe, loggedIn }) => {
                             ({formatDuration(recipe.totalTime)})
                         </Typography>
                     )}
-                </Typography>
+                    {expanded && recipe.libraryRecipeId && (
+                        <BreadcrumbLink
+                            text="Open Library Recipe"
+                            url={`/library/recipe/${recipe.libraryRecipeId}`}
+                        />
+                    )}
+                </Stack>
             </Grid>
             {expanded && (
                 <>

@@ -18,7 +18,7 @@ import User from "views/user/User";
 import IngredientDirectionsRow from "./IngredientDirectionsRow";
 import SubrecipeItem from "./SubrecipeItem";
 import SendToPlan from "features/RecipeLibrary/components/SendToPlan";
-import { BfsId, UserType } from "global/types/identity";
+import { UserType } from "global/types/identity";
 import type { Recipe, Subrecipe } from "global/types/types";
 import FavoriteIndicator from "features/Favorites/components/Indicator";
 import { ReentrantScalingProvider, useScale } from "util/ScalingContext";
@@ -51,7 +51,6 @@ const useStyles = makeStyles((theme) => ({
 interface Props {
     recipe: Recipe;
     subrecipes: Subrecipe[];
-    libraryRecipeId?: BfsId;
     anonymous?: boolean;
     mine?: boolean;
     owner?: Pick<UserType, "imageUrl" | "name" | "email">;
@@ -64,7 +63,6 @@ interface Props {
 const RecipeDetail: React.FC<Props> = ({
     recipe,
     subrecipes,
-    libraryRecipeId,
     mine = false,
     owner,
     anonymous = false,
@@ -160,10 +158,10 @@ const RecipeDetail: React.FC<Props> = ({
                             ))}
                         </Box>
                     )}
-                    {libraryRecipeId && (
+                    {recipe.libraryRecipeId && (
                         <BreadcrumbLink
                             text="Open Library Recipe"
-                            url={`/library/recipe/${libraryRecipeId}`}
+                            url={`/library/recipe/${recipe.libraryRecipeId}`}
                         />
                     )}
 

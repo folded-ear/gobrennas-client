@@ -71,11 +71,11 @@ export const recipeLoByItemLo = (
         Object.keys(r)
             .filter((k) => !item.hasOwnProperty(k))
             .forEach((k) => (item[k] = r[k]));
+        item.libraryRecipeId = item.ingredientId || undefined;
         return item;
     };
     const recipe = prepRecipe(lo.getValueEnforcing());
     recipe.subrecipes = subs;
-    recipe.libraryRecipeId = lo.getValueEnforcing().ingredientId || undefined;
     lo = LoadObject.withValue(recipe);
     if (loading) {
         lo = lo.loading();
