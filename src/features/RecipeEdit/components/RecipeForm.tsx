@@ -12,7 +12,13 @@ import {
 } from "@mui/material";
 import makeStyles from "@mui/styles/makeStyles";
 import type { DraftRecipe, Recipe } from "global/types/types";
-import { Add, Cancel, Delete, FileCopy, Save } from "@mui/icons-material";
+import {
+    AddIcon,
+    CancelIcon,
+    CopyIcon,
+    DeleteIcon,
+    SaveIcon,
+} from "views/common/icons";
 import React, { ReactNode } from "react";
 import useWindowSize from "data/useWindowSize";
 import ImageDropZone from "util/ImageDropZone";
@@ -194,7 +200,7 @@ const RecipeForm: React.FC<Props> = ({
                                                 onEditIngredientRef(i)
                                             }
                                         >
-                                            <Add />
+                                            <AddIcon />
                                         </IconButton>
                                     )}
                                     <IconButton
@@ -202,7 +208,7 @@ const RecipeForm: React.FC<Props> = ({
                                         tabIndex={-1}
                                         onClick={() => onDeleteIngredientRef(i)}
                                     >
-                                        <Delete />
+                                        <DeleteIcon />
                                     </IconButton>
                                 </>
                             }
@@ -228,7 +234,7 @@ const RecipeForm: React.FC<Props> = ({
             </DragContainer>
             <Button
                 className={classes.button}
-                startIcon={<Add />}
+                startIcon={<AddIcon />}
                 color="secondary"
                 variant="contained"
                 onClick={() => onAddIngredientRef()}
@@ -304,7 +310,7 @@ const RecipeForm: React.FC<Props> = ({
                         variant="contained"
                         color="primary"
                         onClick={() => onSave(draft)}
-                        startIcon={<Save />}
+                        startIcon={<SaveIcon />}
                     >
                         Save
                     </Button>
@@ -313,7 +319,7 @@ const RecipeForm: React.FC<Props> = ({
                             className={classes.button}
                             variant="contained"
                             color="secondary"
-                            startIcon={<FileCopy />}
+                            startIcon={<CopyIcon />}
                             onClick={() => onSaveCopy(draft)}
                         >
                             Save as Copy
@@ -324,7 +330,7 @@ const RecipeForm: React.FC<Props> = ({
                         variant="contained"
                         color="secondary"
                         onClick={() => onCancel(draft)}
-                        startIcon={<Cancel />}
+                        startIcon={<CancelIcon />}
                     >
                         Cancel
                     </Button>

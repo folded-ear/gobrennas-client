@@ -6,10 +6,7 @@ import {
     useGridSelector,
 } from "@mui/x-data-grid";
 import { Grid, IconButton } from "@mui/material";
-import {
-    NavigateBefore as PrevPageIcon,
-    NavigateNext as NextPageIcon,
-} from "@mui/icons-material";
+import { NextPageIcon, PrevPageIcon } from "views/common/icons";
 import React from "react";
 
 export interface PagingProps {

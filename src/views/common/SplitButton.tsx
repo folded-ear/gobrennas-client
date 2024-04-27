@@ -5,12 +5,12 @@ import Grid from "@mui/material/Grid";
 import Grow from "@mui/material/Grow";
 import MenuItem from "@mui/material/MenuItem";
 import MenuList from "@mui/material/MenuList";
-import Paper from "@mui/material/Paper";
 import Popper from "@mui/material/Popper";
 import { makeStyles } from "@mui/styles";
-import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
+import { DropDownIcon } from "views/common/icons";
 import React, { MouseEventHandler, ReactNode } from "react";
 import { BfsId } from "global/types/identity";
+import { Paper } from "@mui/material";
 
 const useStyles = makeStyles({
     popper: {
@@ -92,7 +92,7 @@ const SplitButton: React.FC<Props> = ({
                             dropdownDisabled || !options || !options.length
                         }
                     >
-                        <ArrowDropDownIcon />
+                        <DropDownIcon />
                     </Button>
                 </ButtonGroup>
                 <Popper

@@ -1,5 +1,5 @@
 import { IconButton } from "@mui/material";
-import { AddShoppingCart, ExitToApp as SendIcon } from "@mui/icons-material";
+import { SendToPlanIcon } from "../../../views/common/icons";
 import React from "react";
 import useActivePlanner from "data/useActivePlanner";
 import TextButton from "../../../views/common/TextButton";
@@ -23,7 +23,7 @@ const SendToPlan: React.FC<Props> = ({ onClick, iconOnly }) => {
                 onClick={handleClick}
                 title={`Send to "${list.name}"`}
             >
-                <AddShoppingCart fontSize="inherit" />
+                <SendToPlanIcon fontSize="inherit" />
             </IconButton>
         );
     } else {
@@ -34,7 +34,7 @@ const SendToPlan: React.FC<Props> = ({ onClick, iconOnly }) => {
                 color="secondary"
                 onClick={handleClick}
                 title={`Send to ${list.name}`}
-                startIcon={<SendIcon />}
+                startIcon={<SendToPlanIcon />}
             >
                 To {list.name}
             </TextButton>

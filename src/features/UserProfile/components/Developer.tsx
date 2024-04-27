@@ -7,7 +7,7 @@ import Switch from "@mui/material/Switch";
 import useWindowSize from "data/useWindowSize";
 import preval from "preval.macro";
 import { Grid, Stack, ToggleButton, ToggleButtonGroup } from "@mui/material";
-import { AutoAwesome, Laptop, Smartphone } from "@mui/icons-material";
+import { AutoAwesomeIcon, DesktopIcon, MobileIcon } from "views/common/icons";
 import useFluxStore from "../../../data/useFluxStore";
 import preferencesStore from "../../../data/preferencesStore";
 
@@ -55,13 +55,13 @@ const DevMode: React.FC = () => {
                     onChange={handleLayoutChange}
                 >
                     <ToggleButton value={"auto"} title={"auto / responsive"}>
-                        <AutoAwesome />
+                        <AutoAwesomeIcon />
                     </ToggleButton>
                     <ToggleButton value={"desktop"} title={"desktop"}>
-                        <Laptop />
+                        <DesktopIcon />
                     </ToggleButton>
                     <ToggleButton value={"mobile"} title={"mobile"}>
-                        <Smartphone />
+                        <MobileIcon />
                     </ToggleButton>
                 </ToggleButtonGroup>
             </Row>

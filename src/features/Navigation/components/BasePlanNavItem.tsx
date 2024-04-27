@@ -1,7 +1,4 @@
-import {
-    RadioButtonChecked as ActiveIcon,
-    RadioButtonUnchecked as InactiveIcon,
-} from "@mui/icons-material";
+import { RadioOffIcon, RadioOnIcon } from "views/common/icons";
 import { ListItemButton, Tooltip, Typography } from "@mui/material";
 import { ItemIcon } from "./Navigation.elements";
 import * as React from "react";
@@ -17,8 +14,8 @@ export interface BasePlanNavItemProps {
 }
 interface Props extends BasePlanNavItemProps {
     active: boolean;
-    activeIcon?: typeof ActiveIcon;
-    inactiveIcon?: typeof InactiveIcon;
+    activeIcon?: typeof RadioOnIcon;
+    inactiveIcon?: typeof RadioOffIcon;
 }
 
 export default function BasePlanNavItem({
@@ -31,8 +28,8 @@ export default function BasePlanNavItem({
     id,
     // abstract stuff
     active,
-    activeIcon = ActiveIcon,
-    inactiveIcon = InactiveIcon,
+    activeIcon = RadioOnIcon,
+    inactiveIcon = RadioOffIcon,
 }: Props) {
     const Icon = active ? activeIcon : inactiveIcon;
     return (

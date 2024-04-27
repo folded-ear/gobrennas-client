@@ -1,4 +1,4 @@
-import Add from "@mui/icons-material/Add";
+import { AddIcon } from "views/common/icons";
 import { List } from "@mui/material";
 import Dispatcher from "data/dispatcher";
 import LoadingItem from "features/Planner/components/LoadingItem";
@@ -101,7 +101,7 @@ function Plan({
                 <List>{itemTuples.map(renderItem)}</List>
             </DragContainer>
             <FoodingerFab onClick={handleAddNew}>
-                <Add />
+                <AddIcon />
             </FoodingerFab>
         </PageBody>
     );

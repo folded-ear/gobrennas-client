@@ -1,6 +1,6 @@
 import React, { MouseEventHandler } from "react";
 import { IconButton, Tooltip } from "@mui/material";
-import { Close } from "@mui/icons-material";
+import { CloseIcon } from "views/common/icons";
 
 interface Props {
     onClick?: MouseEventHandler;
@@ -10,7 +10,7 @@ const CloseButton: React.FC<Props> = ({ onClick }) => {
     return (
         <Tooltip title="Close" placement="top">
             <IconButton onClick={onClick}>
-                <Close />
+                <CloseIcon />
             </IconButton>
         </Tooltip>
     );

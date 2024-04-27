@@ -75,10 +75,29 @@
     "parserOptions": {
       "project": "./tsconfig.json"
     },
+    "overrides": [
+      {
+        "files": ["src/views/common/icons.tsx"],
+        "rules": {
+          "no-restricted-imports": "off"
+        }
+      }
+    ],
     "rules": {
       "no-console": 1,
       "no-debugger": "warn",
       "no-prototype-builtins": 0,
+      "no-restricted-imports": [
+        "error",
+        {
+          "paths": [
+            "@mui/icons-material"
+          ],
+          "patterns": [
+            "@mui/icons-material/*"
+          ]
+        }
+      ],
       "quotes": [
         "warn",
         "double",

@@ -1,9 +1,5 @@
 import { deepPurple } from "@mui/material/colors";
-import {
-    Check,
-    DeleteForeverOutlined,
-    QuestionAnswer,
-} from "@mui/icons-material";
+import { CheckIcon, DeleteIcon, SumthinsFuckyIcon } from "views/common/icons";
 import {
     acquiredColor,
     completeColor,
@@ -33,13 +29,13 @@ export function getColorForStatus(status: PlanItemStatus): MuiColorFamily {
     return colorByStatus[status] || deepPurple;
 }
 
-const iconByStatus: Record<PlanItemStatus, typeof Check> = {
-    [PlanItemStatus.NEEDED]: Check,
-    [PlanItemStatus.ACQUIRED]: Check,
-    [PlanItemStatus.COMPLETED]: Check,
-    [PlanItemStatus.DELETED]: DeleteForeverOutlined,
+const iconByStatus: Record<PlanItemStatus, typeof CheckIcon> = {
+    [PlanItemStatus.NEEDED]: CheckIcon,
+    [PlanItemStatus.ACQUIRED]: CheckIcon,
+    [PlanItemStatus.COMPLETED]: CheckIcon,
+    [PlanItemStatus.DELETED]: DeleteIcon,
 };
 export const getIconForStatus = (status: PlanItemStatus) =>
-    iconByStatus[status] || QuestionAnswer;
+    iconByStatus[status] || SumthinsFuckyIcon;
 
 export default PlanItemStatus;

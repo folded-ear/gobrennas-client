@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { Button } from "@mui/material";
 import * as React from "react";
-import { ArrowForward } from "@mui/icons-material";
+import { ForwardIcon } from "views/common/icons";
 
 type BreadcrumbLinkProps = {
     text: string;
@@ -18,7 +18,7 @@ export const BreadcrumbLink: React.FC<BreadcrumbLinkProps> = ({
                 component={Link}
                 variant="text"
                 to={url}
-                endIcon={<ArrowForward />}
+                endIcon={<ForwardIcon />}
                 size="small"
             >
                 {text}

@@ -15,6 +15,7 @@ import {
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import Avatar from "@mui/material/Avatar";
+import { LogoutIcon } from "../common/icons";
 
 const Info = styled(Box)({
     flex: 1,
@@ -58,7 +59,11 @@ const Profile: React.FC<Props> = ({ currentUser: user }) => {
                             <Typography>{user.email}</Typography>
                         </Info>
                         <div>
-                            <Button onClick={handleLogout} variant="outlined">
+                            <Button
+                                onClick={handleLogout}
+                                variant="outlined"
+                                startIcon={<LogoutIcon />}
+                            >
                                 Logout
                             </Button>
                         </div>

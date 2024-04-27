@@ -1,9 +1,9 @@
 import * as React from "react";
 import { API_BASE_URL, API_IS_SECURE, APP_BASE_URL } from "constants/index";
-import { LockOpen } from "@mui/icons-material";
+import { UnlockedIcon } from "views/common/icons";
 import qs from "qs";
 import { useAuthToken } from "providers/AuthToken";
-import { Button, Typography } from "@mui/material";
+import { Button, Stack, Typography } from "@mui/material";
 
 export const CookThis = () => {
     const cookThisRef = React.useRef<HTMLLinkElement>(null);
@@ -52,13 +52,15 @@ export const CookThis = () => {
                 </Button>
             </p>
             {!API_IS_SECURE && (
-                <p>
-                    <LockOpen />
-                    Since you hate SSL, you&apos;ll have to do this each time
-                    you log into Brenna&apos;s Food Software (deleting the old
-                    one first). Sorry, man.
-                    <LockOpen />
-                </p>
+                <Stack direction={"row"} alignItems={"center"} gap={1}>
+                    <UnlockedIcon />
+                    <p>
+                        Since you hate SSL, you&apos;ll have to do this each
+                        time you log into Brenna&apos;s Food Software (deleting
+                        the old one first). Sorry, man.
+                    </p>
+                    <UnlockedIcon />
+                </Stack>
             )}
         </>
     );

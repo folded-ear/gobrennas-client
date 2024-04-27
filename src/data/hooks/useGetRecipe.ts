@@ -4,6 +4,7 @@ import { IngredientRef, Recipe } from "global/types/types";
 import { BfsId } from "global/types/identity";
 import { GetRecipeQuery } from "../../__generated__/graphql";
 import useAdaptingQuery from "./useAdaptingQuery";
+import objectWithType from "../utils/objectWithType";
 
 const GET_RECIPE_QUERY = gql(`
 query getRecipe($id: ID!) {
@@ -34,7 +35,7 @@ function adapter(data: GetRecipeQuery | undefined) {
                   preparation: item.preparation,
                   quantity: item.quantity?.quantity || null,
                   units: item.quantity?.units?.name || null,
-                  ingredient: item.ingredient,
+                  ingredient: objectWithType(item.ingredient),
               }));
 
     const recipe: Recipe = {

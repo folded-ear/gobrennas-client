@@ -1,5 +1,5 @@
 import React from "react";
-import { Star, StarBorder } from "@mui/icons-material";
+import { FavoriteIcon, NotFavoriteIcon } from "views/common/icons";
 import {
     useIsFavorite,
     useMarkFavorite,
@@ -31,7 +31,7 @@ const Indicator: React.FC<Props> = ({ type, id }) => {
 
     return (
         <IconButton edge={"start"} size={"small"} onClick={handleClick}>
-            {favorite ? <Star /> : <StarBorder />}
+            {favorite ? <FavoriteIcon /> : <NotFavoriteIcon />}
         </IconButton>
     );
 };

@@ -14,12 +14,12 @@ import {
 } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import {
-    Add as AddIcon,
-    Close as CloseIcon,
-    Delete as DeleteIcon,
-    Pause as PauseIcon,
-    PlayArrow as PlayIcon,
-} from "@mui/icons-material";
+    AddIcon,
+    CloseIcon,
+    DeleteIcon,
+    PauseIcon,
+    PlayIcon,
+} from "views/common/icons";
 import TimeLeft from "./TimeLeft";
 import AddTimeButton from "./AddTimeButton";
 import { useTimerList } from "../data/TimerContext";

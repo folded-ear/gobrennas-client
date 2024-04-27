@@ -8,7 +8,7 @@ import RecipeEditController from "./features/RecipeEdit/RecipeEditController";
 import Shop from "./containers/Shop";
 import { SharedRecipeController } from "./features/RecipeDisplay/SharedRecipeController";
 import Landing from "./views/Landing";
-import Pantry from "./views/pantry/Pantry";
+import Inventory from "./views/inventory/Inventory";
 import OAuth2RedirectHandler from "views/user/OAuth2RedirectHandler";
 import { UserProfileView } from "views/UserProfile/UserProfileView";
 import Profile from "./views/user/Profile";
@@ -45,7 +45,8 @@ const routes = {
         { path: "/plan/:pid", component: Planner },
         { path: "/plan", component: Planner },
         { path: "/shop", component: Shop },
-        { path: "/pantry", component: Pantry },
+        { path: "/pantry", component: () => <Redirect to="/inventory" /> },
+        { path: "/inventory", component: Inventory },
         { path: "/pantry-item-admin", component: PantryItemAdmin },
     ],
 };

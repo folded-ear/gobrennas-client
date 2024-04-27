@@ -1,4 +1,4 @@
-import { ArrowRight } from "@mui/icons-material";
+import { CollapseIcon } from "views/common/icons";
 import PropTypes from "prop-types";
 import React from "react";
 import { IconButton, IconButtonProps } from "@mui/material";
@@ -6,7 +6,7 @@ import { styled } from "@mui/material/styles";
 
 interface Props extends IconButtonProps {
     expanded: boolean;
-    Icon?: typeof ArrowRight;
+    Icon?: typeof CollapseIcon;
 }
 
 const TwistyIconButton = styled(IconButton)<IconButtonProps>(({ theme }) => ({
@@ -18,7 +18,7 @@ const TwistyIconButton = styled(IconButton)<IconButtonProps>(({ theme }) => ({
 
 const CollapseIconButton: React.FC<Props> = ({
     expanded,
-    Icon = ArrowRight,
+    Icon = CollapseIcon,
     ...props
 }) => {
     return (

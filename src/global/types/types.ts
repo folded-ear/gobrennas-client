@@ -1,10 +1,12 @@
 import { CheckableActionType } from "util/typedAction";
 import { BfsId, UserType } from "global/types/identity";
 
+type IngredientType = "Recipe" | "PantryItem";
+
 export interface Ingredient {
     id: BfsId;
     name: string;
-    type?: "Recipe" | "PantryItem";
+    type?: IngredientType;
 }
 
 export interface Recipe extends Ingredient {
@@ -30,7 +32,7 @@ export interface IngredientRef {
     preparation?: string | null;
     units?: string | null;
     uomId?: BfsId;
-    ingredient?: Ingredient | string | null;
+    ingredient?: (Ingredient & { type: IngredientType }) | string | null;
     ingredientId?: BfsId;
 
     /**

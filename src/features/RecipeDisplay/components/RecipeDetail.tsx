@@ -1,6 +1,6 @@
 import { Box, Grid, Toolbar, Typography } from "@mui/material";
 import makeStyles from "@mui/styles/makeStyles";
-import { PostAdd } from "@mui/icons-material";
+import { AddRecipeIcon } from "../../../views/common/icons";
 import React from "react";
 import Dispatcher from "data/dispatcher";
 import RecipeActions from "data/RecipeActions";
@@ -201,7 +201,7 @@ const RecipeDetail: React.FC<Props> = ({
             </Grid>
             {loggedIn && (
                 <FoodingerFab onClick={() => history.push(`/add`)}>
-                    <PostAdd />
+                    <AddRecipeIcon />
                 </FoodingerFab>
             )}
         </PageBody>

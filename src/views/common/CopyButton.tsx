@@ -1,5 +1,5 @@
 import { IconButton, Tooltip } from "@mui/material";
-import { FileCopy } from "@mui/icons-material";
+import { CopyIcon } from "views/common/icons";
 import React, { MouseEventHandler } from "react";
 
 interface Props {
@@ -11,7 +11,7 @@ const CopyButton: React.FC<Props> = ({ title, onClick }) => {
     return (
         <Tooltip title={title} placement="top">
             <IconButton onClick={onClick}>
-                <FileCopy />
+                <CopyIcon />
             </IconButton>
         </Tooltip>
     );

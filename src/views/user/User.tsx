@@ -45,6 +45,7 @@ const User: React.FC<UserProps> = ({
     const avatar = (
         <Avatar
             src={imageUrl || undefined}
+            title={name || email || undefined}
             className={
                 classes[
                     size && classes.hasOwnProperty(size)

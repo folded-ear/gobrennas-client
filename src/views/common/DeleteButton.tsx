@@ -2,7 +2,7 @@ import { Button, IconButton, Tooltip } from "@mui/material";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogTitle from "@mui/material/DialogTitle";
-import { Delete } from "@mui/icons-material";
+import { DeleteIcon } from "views/common/icons";
 import * as React from "react";
 import { MouseEventHandler } from "react";
 
@@ -10,10 +10,10 @@ interface Props {
     onClick: MouseEventHandler;
 }
 
-const DeleteIcon: React.FC<Props> = ({ onClick, ...props }) => (
+const DeleteIconButton: React.FC<Props> = ({ onClick, ...props }) => (
     <Tooltip title="Delete" placement="top">
         <IconButton onClick={onClick} {...props}>
-            <Delete />
+            <DeleteIcon />
         </IconButton>
     </Tooltip>
 );
@@ -58,14 +58,14 @@ const DeleteButton: React.FC<DeleteButtonProps> = ({
                 <Button
                     variant="contained"
                     color="primary"
-                    startIcon={<Delete />}
+                    startIcon={<DeleteIcon />}
                     onClick={handleOpen}
                     {...props}
                 >
                     {label}
                 </Button>
             ) : (
-                <DeleteIcon onClick={handleOpen} {...props} />
+                <DeleteIconButton onClick={handleOpen} {...props} />
             )}
             <Dialog
                 open={open}

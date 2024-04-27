@@ -11,10 +11,10 @@ import React, { useMemo } from "react";
 import { Result } from "../../../data/hooks/usePantryItemSearch";
 import DeleteItemAction from "./DeleteItemAction";
 import {
-    Search as ViewDuplicatesIcon,
+    SearchIcon as ViewDuplicatesIcon,
     SvgIconComponent,
-    VisibilityOutlined as ViewUsesIcon,
-} from "@mui/icons-material";
+    ViewIcon,
+} from "views/common/icons";
 import LabelsCell from "./LabelsCell";
 import LabelsEditCell from "./LabelsEditCell";
 import MultilineEditCell from "./MultilineEditCell";
@@ -161,7 +161,7 @@ export default function AdminGrid({
                         <CellWithButton
                             {...params}
                             onClick={onViewUses}
-                            Icon={ViewUsesIcon}
+                            Icon={ViewIcon}
                         />
                     ),
                 };
