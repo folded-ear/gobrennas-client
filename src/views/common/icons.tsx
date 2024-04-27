@@ -3,7 +3,8 @@ import React from "react";
 
 export type { SvgIconComponent } from "@mui/icons-material";
 export {
-    // sorted by export name (i.e., `head -n <last> src/views/common/icons.tsx | tail +<first> | sort -k3`)
+    // sorted by export name:
+    // egrep ' .+ as .+Icon,$' src/views/common/icons.tsx | sort -k3
     Add as AddIcon,
     AddAPhotoOutlined as AddPhotoIcon,
     PostAdd as AddRecipeIcon,
