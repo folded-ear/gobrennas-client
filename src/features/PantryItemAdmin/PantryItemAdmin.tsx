@@ -21,6 +21,8 @@ import ViewUses from "./components/ViewUses";
 import { useSetPantryItemLabels } from "../../data/hooks/useSetPantryItemLabels";
 import { useSetPantryItemSynonyms } from "../../data/hooks/useSetPantryItemSynonyms";
 
+const DUPLICATE_PREFIX = "duplicates:";
+
 const useErrorAlert = (error, setDialog) =>
     useEffect(() => {
         if (error)
@@ -37,6 +39,7 @@ export default function PantryItemAdmin() {
     const [dialog, setDialog] = useState<DialogProps>();
 
     const [queryOptions, setQueryOptions] = useState<Variables>({});
+    const [duplicatesOf, setDuplicatesOf] = useState<string>();
 
     const [filterModel, setFilterModel] = useState<GridFilterModel>({
         items: [], // unused, but required
@@ -47,6 +50,13 @@ export default function PantryItemAdmin() {
             ...opts,
             query: filterModel.quickFilterValues?.join(" ") || "",
         }));
+        setDuplicatesOf(
+            filterModel.quickFilterValues
+                ?.filter((it) => (it as string).startsWith(DUPLICATE_PREFIX))
+                .map((it) =>
+                    (it as string).substring(DUPLICATE_PREFIX.length),
+                )[0],
+        );
     }, [filterModel]);
 
     const [sortModel, setSortModel] = useState<GridSortModel>([]);
@@ -190,6 +200,17 @@ export default function PantryItemAdmin() {
         });
     }, []);
 
+    const handleViewDuplicate = useCallback(
+        (row: Result) => {
+            setFilterModel((m) => ({
+                ...m,
+                quickFilterValues: [DUPLICATE_PREFIX + row.id],
+            }));
+            toFirstPage();
+        },
+        [toFirstPage],
+    );
+
     const [deleteItem, { loading: deleting, error: deleteError }] =
         useDeletePantryItem();
     useErrorAlert(deleteError, setDialog);
@@ -220,6 +241,7 @@ export default function PantryItemAdmin() {
                 rowSelectionModel={selectionModel}
                 onRowSelectionModelChange={handleSelectionChange}
                 filterModel={filterModel}
+                duplicatesOf={duplicatesOf}
                 onFilterModelChange={handleFilterChange}
                 sortModel={sortModel}
                 onSortModelChange={handleSortChange}
@@ -239,6 +261,7 @@ export default function PantryItemAdmin() {
                 onProcessRowUpdateError={handleRowUpdateError}
                 onCombine={handleCombine}
                 onViewUses={handleViewUses}
+                onViewDuplicates={handleViewDuplicate}
                 onDelete={handleDelete}
             />
             <ConfirmDialog {...dialog} />
