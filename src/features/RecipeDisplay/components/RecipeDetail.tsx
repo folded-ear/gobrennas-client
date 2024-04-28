@@ -59,6 +59,7 @@ interface Props {
     canShare?: boolean;
     canSendToPlan?: boolean;
     nav?: React.ReactNode;
+    showFab?: boolean;
 }
 
 const RecipeDetail: React.FC<Props> = ({
@@ -71,6 +72,7 @@ const RecipeDetail: React.FC<Props> = ({
     canFavorite = false,
     canSendToPlan = false,
     nav,
+    showFab = false,
 }) => {
     const classes = useStyles();
 
@@ -83,6 +85,7 @@ const RecipeDetail: React.FC<Props> = ({
         console.warn("Viewer is anonymous, but thinks they own the recipe?!");
         mine = false;
     }
+    const hasFab = loggedIn && showFab;
 
     const photo = extractRecipePhoto(recipe);
 
@@ -90,7 +93,7 @@ const RecipeDetail: React.FC<Props> = ({
         recipe.labels &&
         recipe.labels.filter((label) => label.indexOf("--") !== 0);
     return (
-        <PageBody hasFab id="toolbar">
+        <PageBody hasFab={hasFab} id="toolbar">
             <SubHeader>
                 <Toolbar className={classes.toolbar}>
                     {canFavorite && (
@@ -199,7 +202,7 @@ const RecipeDetail: React.FC<Props> = ({
                     />
                 </ReentrantScalingProvider>
             </Grid>
-            {loggedIn && (
+            {hasFab && (
                 <FoodingerFab onClick={() => history.push(`/add`)}>
                     <AddRecipeIcon />
                 </FoodingerFab>

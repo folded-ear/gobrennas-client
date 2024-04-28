@@ -41,6 +41,7 @@ const RecipeController: React.FC<Props> = ({ match }) => {
                     subrecipes={fullRecipe.subrecipes}
                     mine={fullRecipe.mine}
                     owner={fullRecipe.owner}
+                    showFab
                     nav={
                         <>
                             <CopyButton
