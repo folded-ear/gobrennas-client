@@ -1,4 +1,4 @@
-import { Button, IconButton, Tooltip } from "@mui/material";
+import { Button, ButtonProps, IconButton, Tooltip } from "@mui/material";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogTitle from "@mui/material/DialogTitle";
@@ -19,16 +19,16 @@ const DeleteIconButton: React.FC<Props> = ({ onClick, ...props }) => (
 );
 
 type DeleteButtonProps = {
-    type: string;
+    forType: string;
     onConfirm(): void;
     label?: string;
     onClick?(): void;
     onCancel?(): void;
     className?: string;
-};
+} & ButtonProps;
 
 const DeleteButton: React.FC<DeleteButtonProps> = ({
-    type,
+    forType,
     onConfirm,
     label,
     onClick,
@@ -75,7 +75,7 @@ const DeleteButton: React.FC<DeleteButtonProps> = ({
                 aria-describedby="alert-dialog-description"
             >
                 <DialogTitle id="alert-dialog-title">
-                    Irrevocably delete this {type}?
+                    Irrevocably delete this {forType}?
                 </DialogTitle>
                 <DialogActions>
                     <Button onClick={handleCancel}>Cancel</Button>
