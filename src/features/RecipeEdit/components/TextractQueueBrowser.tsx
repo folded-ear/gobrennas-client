@@ -131,7 +131,7 @@ const Ui: React.FC<UiProps> = ({
                                     (j.state === "ready" ||
                                         j.state === "extracting") && (
                                         <DeleteButton
-                                            type="photo"
+                                            forType="photo"
                                             onConfirm={() => onDelete(j.id)}
                                             className={classes.deleteButton}
                                         />

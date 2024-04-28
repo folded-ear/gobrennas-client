@@ -194,7 +194,7 @@ const PlanSidebar: React.FC<Props> = ({ plan }) => {
                     }}
                 >
                     <DeleteButton
-                        type="plan"
+                        forType="plan"
                         onConfirm={handleDelete}
                         label="Delete Plan"
                     />
