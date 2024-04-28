@@ -49,7 +49,12 @@ export const recipeLoByItemLo = (
                         recurse = recurse || ing.type === "Recipe";
                     }
                 }
-                if (recurse) subs.push(prepRecipe(ref, iLO));
+                if (recurse) {
+                    const sub = prepRecipe(ref, iLO);
+                    if (subs.every((s) => s.id !== sub.id)) {
+                        subs.push(sub);
+                    }
+                }
                 return ref;
             }),
         };
