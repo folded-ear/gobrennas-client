@@ -19,6 +19,11 @@ export interface Recipe extends Ingredient {
     photoFocus: number[] | null;
     totalTime: number | null;
     recipeYield: number | null;
+    /**
+     * For synthetic recipes, this points back to the real/library recipe it
+     * is based upon.
+     */
+    libraryRecipeId?: BfsId;
 }
 
 export interface PantryItem extends Ingredient {
@@ -55,7 +60,12 @@ export interface RecipeFromPlanItem extends Recipe {
 
 export type Subrecipe = Pick<
     Recipe,
-    "id" | "name" | "totalTime" | "ingredients" | "directions"
+    | "id"
+    | "name"
+    | "totalTime"
+    | "ingredients"
+    | "directions"
+    | "libraryRecipeId"
 >;
 
 export interface FullRecipe {

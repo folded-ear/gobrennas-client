@@ -32,7 +32,6 @@ const PlannedRecipeController: React.FC<Props> = ({ match }) => {
             <RecipeDetail
                 recipe={lo.getValueEnforcing()}
                 subrecipes={lo.getValueEnforcing().subrecipes}
-                libraryRecipeId={lo.getValueEnforcing().libraryRecipeId}
                 nav={
                     <>
                         <CloseButton
