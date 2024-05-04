@@ -9,9 +9,10 @@ import history from "util/history";
 
 type Props = Omit<ButtonProps, "onClick"> & {
     recipe: FromPlanItem;
+    stayOnPage?: boolean;
 };
 
-const CookButton: React.FC<Props> = ({ recipe, ...props }) => {
+const CookButton: React.FC<Props> = ({ recipe, stayOnPage, ...props }) => {
     const pending = recipe.completing;
     const disabled =
         recipe.ancestorCompleting || recipe.deleting || recipe.ancestorDeleting;
@@ -25,9 +26,9 @@ const CookButton: React.FC<Props> = ({ recipe, ...props }) => {
                 id: recipe.id,
                 status: PlanItemStatus.COMPLETED,
             });
-            history.goBack();
+            if (!stayOnPage) history.goBack();
         },
-        [recipe.completing, recipe.id],
+        [recipe.completing, recipe.id, stayOnPage],
     );
 
     const text = pending ? "WAIT, NO!" : "I Cooked It!";

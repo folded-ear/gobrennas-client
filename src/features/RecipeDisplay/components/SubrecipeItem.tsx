@@ -48,7 +48,7 @@ const SubrecipeItem: React.FC<Props> = ({ recipe, loggedIn }) => {
                     </Stack>
                     {expanded && recipe.libraryRecipeId && (
                         <Stack direction={"row"} alignItems={"center"} gap={1}>
-                            <CookedItButton recipe={recipe} />
+                            <CookedItButton recipe={recipe} stayOnPage />
                             <BreadcrumbLink
                                 text="Open Library Recipe"
                                 url={`/library/recipe/${recipe.libraryRecipeId}`}
