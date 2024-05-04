@@ -71,10 +71,9 @@ const DeleteButton: React.FC<DeleteButtonProps> = ({
                 open={open}
                 maxWidth="xs"
                 onClose={handleClose}
-                aria-labelledby="alert-dialog-title"
-                aria-describedby="alert-dialog-description"
+                aria-labelledby="delete-dialog-title"
             >
-                <DialogTitle id="alert-dialog-title">
+                <DialogTitle id="delete-dialog-title">
                     Irrevocably delete this {type}?
                 </DialogTitle>
                 <DialogActions>
