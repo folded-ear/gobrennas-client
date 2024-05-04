@@ -1,5 +1,11 @@
-import { Box, Divider, Grid, Stack, Typography } from "@mui/material";
-import React from "react";
+import {
+    Divider,
+    Grid,
+    Stack,
+    Typography,
+    TypographyProps,
+} from "@mui/material";
+import React, { useCallback } from "react";
 import { formatDuration } from "util/time";
 import CollapseIconButton from "global/components/CollapseIconButton";
 import IngredientDirectionsRow from "./IngredientDirectionsRow";
@@ -7,6 +13,11 @@ import { ScalingProvider } from "util/ScalingContext";
 import type { Subrecipe } from "global/types/types";
 import { BreadcrumbLink } from "../../../global/components/BreadcrumbLink";
 import CookedItButton from "../../Planner/components/CookedItButton";
+import { styled } from "@mui/material/styles";
+
+const ActiveTypography = styled(Typography)<TypographyProps>({
+    cursor: "pointer",
+});
 
 interface Props {
     recipe: Subrecipe;
@@ -15,6 +26,7 @@ interface Props {
 
 const SubrecipeItem: React.FC<Props> = ({ recipe, loggedIn }) => {
     const [expanded, setExpanded] = React.useState(false);
+    const toggleExpanded = useCallback(() => setExpanded((s) => !s), []);
     return (
         <>
             <Grid item xs={12}>
@@ -22,28 +34,25 @@ const SubrecipeItem: React.FC<Props> = ({ recipe, loggedIn }) => {
                     <Stack direction={"row"} alignItems={"center"}>
                         <CollapseIconButton
                             expanded={expanded}
-                            onClick={() => setExpanded((s) => !s)}
+                            onClick={toggleExpanded}
                         />
-                        <Typography
+                        <ActiveTypography
                             variant="h5"
                             mb={0}
-                            onClick={() => setExpanded((s) => !s)}
-                            style={{
-                                cursor: "pointer",
-                            }}
+                            onClick={toggleExpanded}
                         >
                             {recipe.name}
-                        </Typography>
+                        </ActiveTypography>
                         {recipe.totalTime && (
-                            <Box ml={1}>
-                                <Typography
-                                    variant={"subtitle1"}
-                                    component={"span"}
-                                    fontSize={"80%"}
-                                >
-                                    ({formatDuration(recipe.totalTime)})
-                                </Typography>
-                            </Box>
+                            <ActiveTypography
+                                ml={1}
+                                variant={"subtitle1"}
+                                component={"span"}
+                                onClick={toggleExpanded}
+                                fontSize={"80%"}
+                            >
+                                ({formatDuration(recipe.totalTime)})
+                            </ActiveTypography>
                         )}
                     </Stack>
                     {expanded && recipe.libraryRecipeId && (
