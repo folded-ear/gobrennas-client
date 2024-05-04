@@ -20,6 +20,7 @@ export {
     ArrowRight as CollapseIcon,
     MergeType as CombineIcon,
     Kitchen as CookIcon,
+    SoupKitchenOutlined as CookedItIcon,
     FileCopy as CopyIcon,
     DeleteForeverOutlined as DeleteIcon,
     Laptop as DesktopIcon,

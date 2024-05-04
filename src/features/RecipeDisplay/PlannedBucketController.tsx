@@ -9,6 +9,7 @@ import { useLoadedPlan } from "features/RecipeDisplay/hooks/useLoadedPlan";
 import { recipeLoByItemAndBucket } from "features/RecipeDisplay/utils/recipeLoByItemAndBucket";
 import CloseButton from "../../views/common/CloseButton";
 import history from "../../util/history";
+import CookedItButton from "features/Planner/components/CookedItButton";
 
 type Props = RouteComponentProps<{
     pid: string;
@@ -27,12 +28,17 @@ const PlannedBucketController: React.FC<Props> = ({ match }) => {
     useLoadedPlan(pid);
 
     if (lo.hasValue()) {
+        const recipe = lo.getValueEnforcing();
         return (
             <RecipeDetail
-                recipe={lo.getValueEnforcing()}
-                subrecipes={lo.getValueEnforcing().subrecipes}
+                recipe={recipe}
+                subrecipes={recipe.subrecipes}
                 nav={
                     <>
+                        {recipe.libraryRecipeId != null && (
+                            // only if the bucket is a single recipe
+                            <CookedItButton recipe={recipe} />
+                        )}
                         <CloseButton
                             onClick={() => history.push(`/plan/${pid}`)}
                         />

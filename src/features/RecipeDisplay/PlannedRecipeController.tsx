@@ -11,6 +11,7 @@ import CloseButton from "../../views/common/CloseButton";
 import history from "../../util/history";
 import LoadObject from "util/LoadObject";
 import { RecipeFromPlanItem } from "global/types/types";
+import CookedItButton from "features/Planner/components/CookedItButton";
 
 type Props = RouteComponentProps<{
     pid: string;
@@ -28,12 +29,14 @@ const PlannedRecipeController: React.FC<Props> = ({ match }) => {
     useLoadedPlan(match.params.pid);
 
     if (lo.hasValue()) {
+        const recipe = lo.getValueEnforcing();
         return (
             <RecipeDetail
-                recipe={lo.getValueEnforcing()}
-                subrecipes={lo.getValueEnforcing().subrecipes}
+                recipe={recipe}
+                subrecipes={recipe.subrecipes}
                 nav={
                     <>
+                        <CookedItButton recipe={recipe} />
                         <CloseButton
                             onClick={() =>
                                 history.push(`/plan/${match.params.pid}`)
