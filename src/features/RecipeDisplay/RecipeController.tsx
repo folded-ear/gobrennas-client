@@ -68,7 +68,7 @@ const RecipeController: React.FC<Props> = ({ match }) => {
                             )}
                             {fullRecipe.mine && (
                                 <DeleteButton
-                                    type="recipe"
+                                    forType="recipe"
                                     onConfirm={() =>
                                         RecipeApi.deleteRecipe(
                                             fullRecipe.recipe.id,

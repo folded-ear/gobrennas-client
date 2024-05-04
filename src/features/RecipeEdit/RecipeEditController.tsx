@@ -83,7 +83,9 @@ const RecipeEditController: React.FC<Props> = ({ match }) => {
                 labelList={labelList}
                 extraButtons={
                     <DeleteButton
-                        type="recipe"
+                        variant="text"
+                        color="error"
+                        forType="recipe"
                         label="Delete Recipe"
                         onConfirm={() => handleDelete(recipe.id)}
                     />
