@@ -209,6 +209,7 @@ class PlanItem extends React.PureComponent {
         const expanded = isExpanded(item);
         const recipeIsh = parent || item.fromRecipe;
         const question = isQuestionable(item);
+        const completing = item._next_status === PlanItemStatus.COMPLETED;
         const deleting = item._next_status === PlanItemStatus.DELETED;
         const acquiring = item._next_status === PlanItemStatus.ACQUIRED;
         const needing = item._next_status === PlanItemStatus.NEEDED;
@@ -228,7 +229,7 @@ class PlanItem extends React.PureComponent {
             );
         }
         const curr = item._next_status || item.status;
-        if (loading || deleting || ancestorDeleting) {
+        if (loading || completing || deleting || ancestorDeleting) {
             addonBefore.push(<LoadingIconButton key="acquire" />);
         } else if (section) {
             addonBefore.push(
@@ -249,7 +250,7 @@ class PlanItem extends React.PureComponent {
             );
         }
         const addonAfter = [
-            deleting && !ancestorDeleting ? (
+            (completing || deleting) && !ancestorDeleting ? (
                 <DontChangeStatusButton
                     key="delete"
                     id={item.id}
@@ -268,7 +269,7 @@ class PlanItem extends React.PureComponent {
                 />
             ),
         ];
-        if (recipeIsh) {
+        if (recipeIsh && !(completing || deleting)) {
             addonAfter.unshift(
                 <CookButton
                     key="cook"
@@ -278,7 +279,7 @@ class PlanItem extends React.PureComponent {
                 />,
             );
         }
-        if (buckets && buckets.length > 0) {
+        if (buckets && buckets.length > 0 && !(completing || deleting)) {
             addonAfter.unshift(
                 <PlanItemBucketChip
                     key="bucket"
@@ -301,6 +302,7 @@ class PlanItem extends React.PureComponent {
                     [classes.active]: active,
                     [classes.selected]: selected,
                     [classes.question]: question,
+                    [classes.completing]: completing,
                     [classes.deleting]: deleting,
                     [classes.acquiring]: acquiring,
                     [classes.needing]: needing,

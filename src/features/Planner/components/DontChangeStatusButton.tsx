@@ -1,4 +1,4 @@
-import React, { MouseEventHandler } from "react";
+import React from "react";
 import Dispatcher from "data/dispatcher";
 import PlanActions from "features/Planner/data/PlanActions";
 import PlanItemStatus, {
@@ -6,6 +6,7 @@ import PlanItemStatus, {
 } from "features/Planner/data/PlanItemStatus";
 import { coloredButton } from "views/common/colors";
 import { BfsId } from "global/types/identity";
+import { ButtonProps } from "@mui/material";
 
 const buttonLookup = {}; // Map<next, Button>
 const findButton = (next) => {
@@ -15,14 +16,13 @@ const findButton = (next) => {
     return buttonLookup[next];
 };
 
-interface Props {
+interface Props extends Omit<ButtonProps, "id"> {
     next: PlanItemStatus;
     id?: BfsId;
-    onClick?: MouseEventHandler;
 }
 
-const DontChangeStatusButton: React.FC<Props> = (props) => {
-    const Btn = findButton(props.next);
+const DontChangeStatusButton: React.FC<Props> = ({ id, next, ...props }) => {
+    const Btn = findButton(next);
     return (
         <Btn
             variant="contained"
@@ -32,7 +32,7 @@ const DontChangeStatusButton: React.FC<Props> = (props) => {
                 e.stopPropagation();
                 Dispatcher.dispatch({
                     type: PlanActions.UNDO_SET_STATUS,
-                    id: props.id,
+                    id,
                 });
             }}
             {...props}

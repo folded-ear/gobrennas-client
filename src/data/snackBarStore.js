@@ -1,6 +1,8 @@
 import { Button } from "@mui/material";
 import PlanActions from "features/Planner/data/PlanActions";
-import { willStatusDelete } from "features/Planner/data/PlanItemStatus";
+import PlanItemStatus, {
+    willStatusDelete,
+} from "features/Planner/data/PlanItemStatus";
 import planStore from "features/Planner/data/planStore";
 import LibraryStore from "features/RecipeLibrary/data/LibraryStore";
 import { ReduceStore } from "flux/utils";
@@ -50,7 +52,10 @@ const forPlanItemStatusChanges = (state, ids, status) => {
                         });
                     }}
                 >
-                    Delete {comps.length === 1 ? "It" : "Them"}
+                    {status === PlanItemStatus.COMPLETED
+                        ? "I Cooked"
+                        : "Delete"}{" "}
+                    {comps.length === 1 ? "It" : "Them"}
                 </Button>
             );
         },

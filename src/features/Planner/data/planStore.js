@@ -1359,7 +1359,9 @@ class PlanStore extends ReduceStore {
         const queue = t.componentIds.slice();
         const result = [];
         while (queue.length) {
-            const comp = taskForId(state, queue.shift());
+            const lo = loForId(state, queue.shift());
+            if (!lo.hasValue()) continue;
+            const comp = lo.getValueEnforcing();
             // walk upward and see if it's within the tree...
             let curr = comp;
             let descendant = false;

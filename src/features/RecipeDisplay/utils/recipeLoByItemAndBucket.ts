@@ -30,16 +30,16 @@ export const recipeLoByItemAndBucket = (
     return buildSingleItemRecipeLO(
         LoadObject.withValue({
             name: getBucketLabel(bucket),
-            subtaskIds: items.map((it) => it.id),
+            componentIds: items.map((it) => it.id),
         }),
     ).map((r) => {
         const idToIdx = new Map();
-        r.subtaskIds.forEach((id, i) => idToIdx.set(id, i));
+        items.forEach((it, i) => idToIdx.set(it.id, i));
         const itToSubIdx = new Map();
         r.subrecipes.forEach((it) =>
             itToSubIdx.set(it, idToIdx.has(it.id) ? idToIdx.get(it.id) : -1),
         );
-        const withPhoto = r.subrecipes
+        const recipeWithPhoto = r.subrecipes
             .slice()
             .sort((a, b) => {
                 const ai = itToSubIdx.get(a);
@@ -49,11 +49,11 @@ export const recipeLoByItemAndBucket = (
                 return 0;
             })
             .find((it) => it.photo);
-        return withPhoto
+        return recipeWithPhoto
             ? {
                   ...r,
-                  photo: withPhoto.photo,
-                  photoFocus: withPhoto.photoFocus,
+                  photo: recipeWithPhoto.photo,
+                  photoFocus: recipeWithPhoto.photoFocus,
               }
             : r;
     });

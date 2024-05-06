@@ -2,6 +2,7 @@ import { CardMedia } from "@mui/material";
 import React from "react";
 import { CommonProps } from "@mui/material/OverridableComponent";
 import { Maybe } from "graphql/jsutils/Maybe";
+import { grey } from "@mui/material/colors";
 
 interface Props extends CommonProps {
     url: string;
@@ -27,6 +28,7 @@ const ItemImage: React.FC<Props> = ({
             {...props}
             style={{
                 ...style,
+                backgroundColor: grey[100],
                 backgroundPosition: `${x == null ? 50 : x}% ${
                     y == null ? 50 : y
                 }%`,

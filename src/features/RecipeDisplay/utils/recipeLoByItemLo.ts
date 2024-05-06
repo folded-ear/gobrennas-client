@@ -2,6 +2,7 @@ import LoadObject from "../../../util/LoadObject";
 import planStore from "features/Planner/data/planStore";
 import LibraryStore from "../../RecipeLibrary/data/LibraryStore";
 import type { RecipeFromPlanItem } from "global/types/types";
+import PlanItemStatus from "../../Planner/data/PlanItemStatus";
 
 export const recipeLoByItemLo = (
     itemLO: LoadObject<any>,
@@ -28,9 +29,20 @@ export const recipeLoByItemLo = (
             })
             .map((lo) => lo.getValueEnforcing());
     };
-    const prepRecipe = (item, rLO?: LoadObject<any>) => {
+    const prepRecipe = (
+        item,
+        rLO?: LoadObject<any>,
+        ancestorCompleting = false,
+        ancestorDeleting = false,
+    ): RecipeFromPlanItem => {
+        const completing = item._next_status === PlanItemStatus.COMPLETED;
+        const deleting = item._next_status === PlanItemStatus.DELETED;
         item = {
             ...item,
+            completing,
+            deleting,
+            ancestorCompleting,
+            ancestorDeleting,
             ingredients: computeKids(item).map((ref) => {
                 ref = {
                     ...ref,
@@ -49,7 +61,16 @@ export const recipeLoByItemLo = (
                         recurse = recurse || ing.type === "Recipe";
                     }
                 }
-                if (recurse) subs.push(prepRecipe(ref, iLO));
+                if (recurse && subs.every((s) => s.id !== ref.id)) {
+                    subs.push(
+                        prepRecipe(
+                            ref,
+                            iLO,
+                            completing || ancestorCompleting,
+                            deleting || ancestorDeleting,
+                        ),
+                    );
+                }
                 return ref;
             }),
         };

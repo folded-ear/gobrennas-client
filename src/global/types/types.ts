@@ -52,10 +52,17 @@ export interface Quantity {
     uomId?: number;
 }
 
-export interface RecipeFromPlanItem extends Recipe {
+export interface FromPlanItem {
+    id: BfsId;
+    completing?: boolean;
+    deleting?: boolean;
+    ancestorCompleting?: boolean;
+    ancestorDeleting?: boolean;
+}
+
+export interface RecipeFromPlanItem extends Recipe, FromPlanItem {
     subtaskIds: number[];
-    subrecipes: Recipe[];
-    libraryRecipeId?: BfsId;
+    subrecipes: RecipeFromPlanItem[];
 }
 
 export type Subrecipe = Pick<
@@ -66,7 +73,15 @@ export type Subrecipe = Pick<
     | "ingredients"
     | "directions"
     | "libraryRecipeId"
->;
+> &
+    Pick<
+        FromPlanItem,
+        | "id"
+        | "completing"
+        | "deleting"
+        | "ancestorCompleting"
+        | "ancestorDeleting"
+    >;
 
 export interface FullRecipe {
     recipe: Recipe;
