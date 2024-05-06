@@ -39,6 +39,7 @@ const RecipeController: React.FC<Props> = ({ match }) => {
                 <RecipeDetail
                     recipe={fullRecipe.recipe}
                     subrecipes={fullRecipe.subrecipes}
+                    planHistory={fullRecipe.planHistory}
                     mine={fullRecipe.mine}
                     owner={fullRecipe.owner}
                     showFab
