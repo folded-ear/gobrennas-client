@@ -1,5 +1,6 @@
 import { CheckableActionType } from "util/typedAction";
 import { BfsId, UserType } from "global/types/identity";
+import { PlannedRecipeHistory, User } from "../../__generated__/graphql";
 
 type IngredientType = "Recipe" | "PantryItem";
 
@@ -83,9 +84,18 @@ export type Subrecipe = Pick<
         | "ancestorDeleting"
     >;
 
+export type RecipeHistory = Pick<
+    PlannedRecipeHistory,
+    "id" | "status" | "plannedDate" | "doneDate" | "notes"
+> & {
+    rating: number;
+    owner: Pick<User, "name" | "email" | "imageUrl">;
+};
+
 export interface FullRecipe {
     recipe: Recipe;
     subrecipes: Subrecipe[];
+    planHistory: RecipeHistory[];
     mine: boolean;
     owner: Omit<UserType, "provider" | "roles">;
 }

@@ -317,6 +317,26 @@ type PlanItem implements CorePlanItem & Node {
     status: PlanItemStatus!
 }
 
+type PlannedRecipeHistory implements Node {
+    doneAt: DateTime!
+    doneDate: Date!
+    id: ID!
+    notes: String
+    """
+
+    The user who owns this history item, which may or may not be the recipe's
+    owner.
+    """
+    owner: User!
+    plannedAt: DateTime!
+    plannedDate: Date!
+    rating: Rating
+    ratingInt: PositiveInt
+    "The recipe this history item is for."
+    recipe: Recipe!
+    status: PlanItemStatus!
+}
+
 type PlannerMutation {
     "Assign a plan item to a bucket (in the same plan)."
     assignBucket(bucketId: ID!, id: ID!): PlanItem!
@@ -414,6 +434,19 @@ type Recipe implements Ingredient & Node & Owned {
     name: String!
     owner: User!
     photo: Photo
+    """
+
+    Number of times this recipe has been sent to any plan, optionally
+    filtered by the result status (only COMPLETED and DELETED make sense).
+    """
+    plannedCount(status: PlanItemStatus): Int!
+    """
+
+    History of this recipe being planned, in reverse-chronological order,
+    optionally filtered by the result status (only COMPLETED and DELETED make
+    sense). By default, only the five most recent records will be returned.
+    """
+    plannedHistory(last: NonNegativeInt = 5, status: PlanItemStatus): [PlannedRecipeHistory!]!
     """
 
     All subrecipes. Multiple layers of nested recipes are flattened, and the
@@ -563,6 +596,14 @@ enum PlanItemStatus {
     COMPLETED
     DELETED
     NEEDED
+}
+
+enum Rating {
+    FIVE_STARS
+    FOUR_STARS
+    ONE_STAR
+    THREE_STARS
+    TWO_STARS
 }
 
 enum RecognizedRangeType {

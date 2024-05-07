@@ -37,6 +37,19 @@ query getRecipeWithEverything($id: ID!) {
       subrecipes {
         ...recipeCore
       }
+      plannedHistory {
+        id
+        plannedDate
+        doneDate
+        status
+        owner {
+          name
+          email
+          imageUrl
+        }
+        rating: ratingInt
+        notes
+      }
     }
   }
 }
@@ -81,6 +94,9 @@ function adapter(
                   })),
               }));
 
+    const planHistory =
+        !result || !result.plannedHistory ? [] : result.plannedHistory;
+
     const recipe: Recipe = {
         calories: result.calories,
         directions: result.directions || "",
@@ -100,6 +116,7 @@ function adapter(
         owner: result.owner,
         recipe,
         subrecipes,
+        planHistory,
     };
 }
 

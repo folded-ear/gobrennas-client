@@ -1,6 +1,18 @@
-import { Box, Grid, Toolbar, Typography } from "@mui/material";
+import {
+    Box,
+    Grid,
+    Table,
+    TableHead,
+    TableRow,
+    Toolbar,
+    Typography,
+} from "@mui/material";
 import makeStyles from "@mui/styles/makeStyles";
-import { AddRecipeIcon } from "../../../views/common/icons";
+import {
+    AddRecipeIcon,
+    CookedItIcon,
+    DeleteIcon,
+} from "../../../views/common/icons";
 import React from "react";
 import Dispatcher from "data/dispatcher";
 import RecipeActions from "data/RecipeActions";
@@ -19,12 +31,15 @@ import IngredientDirectionsRow from "./IngredientDirectionsRow";
 import SubrecipeItem from "./SubrecipeItem";
 import SendToPlan from "features/RecipeLibrary/components/SendToPlan";
 import { UserType } from "global/types/identity";
-import type { Recipe, Subrecipe } from "global/types/types";
+import type { Recipe, RecipeHistory, Subrecipe } from "global/types/types";
 import FavoriteIndicator from "features/Favorites/components/Indicator";
 import { ReentrantScalingProvider, useScale } from "util/ScalingContext";
 import { SubHeader } from "./Subheader";
 import { extractRecipePhoto } from "features/RecipeDisplay/utils/extractRecipePhoto";
 import { BreadcrumbLink } from "global/components/BreadcrumbLink";
+import { PlanItemStatus } from "../../../__generated__/graphql";
+import TableCell from "@mui/material/TableCell";
+import useIsDevMode from "../../../data/useIsDevMode";
 
 const useStyles = makeStyles((theme) => ({
     name: {
@@ -51,6 +66,7 @@ const useStyles = makeStyles((theme) => ({
 interface Props {
     recipe: Recipe;
     subrecipes: Subrecipe[];
+    planHistory?: RecipeHistory[];
     anonymous?: boolean;
     mine?: boolean;
     owner?: Pick<UserType, "imageUrl" | "name" | "email">;
@@ -64,6 +80,7 @@ interface Props {
 const RecipeDetail: React.FC<Props> = ({
     recipe,
     subrecipes,
+    planHistory = [],
     mine = false,
     owner,
     anonymous = false,
@@ -73,6 +90,7 @@ const RecipeDetail: React.FC<Props> = ({
     showFab = false,
 }) => {
     const classes = useStyles();
+    const devMode = useIsDevMode();
 
     const windowSize = useWindowSize();
     const scale = useScale();
@@ -199,6 +217,54 @@ const RecipeDetail: React.FC<Props> = ({
                         loggedIn={loggedIn}
                     />
                 </ReentrantScalingProvider>
+
+                {devMode && planHistory && planHistory.length > 0 && (
+                    <Grid item xs={12}>
+                        <Typography variant="h5">History</Typography>
+                        <Table size={"small"}>
+                            <TableHead>
+                                <TableRow>
+                                    <TableCell />
+                                    <TableCell>Planned</TableCell>
+                                    <TableCell>Done</TableCell>
+                                    <TableCell>Rating</TableCell>
+                                    <TableCell>Notes</TableCell>
+                                    <TableCell />
+                                    <TableCell>ID</TableCell>
+                                </TableRow>
+                            </TableHead>
+                            {planHistory.map((h) => (
+                                <TableRow key={h.id}>
+                                    <TableCell>
+                                        {PlanItemStatus.Completed ===
+                                        h.status ? (
+                                            <CookedItIcon />
+                                        ) : (
+                                            <DeleteIcon />
+                                        )}
+                                    </TableCell>
+                                    <TableCell>{h.plannedDate}</TableCell>
+                                    <TableCell>{h.doneDate}</TableCell>
+                                    <TableCell>
+                                        {h.rating ||
+                                            Math.ceil(Math.random() * 5)}{" "}
+                                        out of 5
+                                    </TableCell>
+                                    <TableCell>
+                                        {h.notes ||
+                                        PlanItemStatus.Completed === h.status
+                                            ? `${h.owner.name} is the quiet type.`
+                                            : `${h.owner.name} HATES this recipe.`}
+                                    </TableCell>
+                                    <TableCell>
+                                        <User {...h.owner} iconOnly />
+                                    </TableCell>
+                                    <TableCell>{h.id}</TableCell>
+                                </TableRow>
+                            ))}
+                        </Table>
+                    </Grid>
+                )}
             </Grid>
             {hasFab && (
                 <FoodingerFab onClick={() => history.push(`/add`)}>
