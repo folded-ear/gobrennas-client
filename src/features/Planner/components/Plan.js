@@ -114,7 +114,7 @@ Plan.propTypes = {
     itemTuples: PropTypes.arrayOf(
         PropTypes.shape({
             data: PropTypes.any,
-            loading: PropTypes.bool.isRequired,
+            loading: PropTypes.bool,
             depth: PropTypes.number.isRequired,
             ancestorDeleting: PropTypes.bool,
         }),

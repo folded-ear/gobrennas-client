@@ -3,8 +3,8 @@ import RPTSecret from "prop-types/lib/ReactPropTypesSecret";
 import LoadObject from "./LoadObject";
 
 export interface RippedLO<T> {
-    loading: boolean;
-    deleting: boolean;
+    loading?: boolean;
+    deleting?: boolean;
     data?: T | null;
     error?: any;
 }
@@ -23,6 +23,13 @@ export function ripLoadObject<T>(lo: LoadObject<T>): RippedLO<T> {
         data: lo.getValue(),
         error: lo.getError(),
     };
+}
+
+export function requiredData<T>(rlo: RippedLO<T> | undefined): T {
+    if (!rlo?.data) {
+        throw new Error("Expected ripped load object to have data.");
+    }
+    return rlo.data;
 }
 
 export const rippedLoadObjectOf = (dataTypeChecker, optionalErrorTypeChecker) =>

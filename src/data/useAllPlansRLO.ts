@@ -3,10 +3,10 @@ import { ripLoadObject } from "../util/ripLoadObject";
 import planStore from "../features/Planner/data/planStore";
 import friendStore from "./FriendStore";
 import { zippedComparator } from "../util/comparators";
-import { useProfileLO } from "../providers/Profile";
+import { usePendingProfile } from "../providers/Profile";
 
 export default function useAllPlansRLO() {
-    const profileRLO = ripLoadObject(useProfileLO());
+    const profileRLO = usePendingProfile();
     return useFluxStore(
         () =>
             ripLoadObject(

@@ -7,11 +7,10 @@ import React, {
     useEffect,
     useState,
 } from "react";
-import LoadObject from "util/LoadObject";
 import { API_BASE_URL, LOCAL_STORAGE_ACCESS_TOKEN } from "../constants";
 import GTag from "../GTag";
-import { Maybe } from "graphql/jsutils/Maybe";
 import type { UserType } from "global/types/identity";
+import { emptyRLO, requiredData, RippedLO } from "../util/ripLoadObject";
 
 // global side effect to ensure cookies are passed
 BaseAxios.defaults.withCredentials = true;
@@ -20,32 +19,33 @@ const axios = BaseAxios.create({
     baseURL: API_BASE_URL,
 });
 
-const ProfileLOContext = createContext<Maybe<LoadObject<UserType>>>(undefined);
+type Profile = RippedLO<UserType> | undefined;
 
-let globalProfileLoadObject;
+let globalProfile: Profile = undefined;
+
+const ProfileContext = createContext<Profile>(globalProfile);
 
 type Props = PropsWithChildren<unknown>;
 
 export const ProfileProvider: React.FC<Props> = ({ children }) => {
-    const [profileLO, setProfileLO] =
-        useState<Maybe<LoadObject<UserType>>>(undefined);
+    const [profile, setProfile] = useState(globalProfile);
 
-    const doSetProfileLO = useCallback(
-        (valueOrUpdater) => {
+    const doSetProfile = useCallback(
+        (valueOrUpdater: Profile | ((p: Profile) => Profile)) => {
             const next =
                 typeof valueOrUpdater === "function"
-                    ? valueOrUpdater(globalProfileLoadObject)
+                    ? valueOrUpdater(globalProfile)
                     : valueOrUpdater;
-            setProfileLO((globalProfileLoadObject = next));
+            setProfile((globalProfile = next));
         },
-        [setProfileLO],
+        [setProfile],
     );
 
     useEffect(() => {
-        if (profileLO) {
-            if (profileLO.hasValue()) return;
-            if (!profileLO.isDone()) return;
-            if (profileLO.hasError()) return;
+        if (profile) {
+            if (profile.data) return;
+            if (profile.loading || profile.deleting) return;
+            if (profile.error) return;
         }
         axios
             .get("/api/user/me")
@@ -53,25 +53,27 @@ export const ProfileProvider: React.FC<Props> = ({ children }) => {
                 GTag("set", {
                     uid: data.data.id,
                 });
-                doSetProfileLO((lo) => lo.setValue(data.data).done());
+                doSetProfile({
+                    data: data.data,
+                });
             })
             .catch((error) => {
                 if (isAuthError(error)) {
-                    doSetProfileLO(
-                        LoadObject.withError(
-                            new Error(ProfileState.ERR_NO_TOKEN),
-                        ),
-                    );
+                    doSetProfile({
+                        error: new Error(ProfileState.ERR_NO_TOKEN),
+                    });
                 } else {
-                    doSetProfileLO((lo) => lo.setError(error).done());
+                    doSetProfile({
+                        error,
+                    });
                 }
             });
-        doSetProfileLO((lo) => (lo ? lo.loading() : LoadObject.loading()));
-    }, [profileLO, doSetProfileLO]);
+        doSetProfile((p) => ({ ...(p || {}), loading: true }));
+    }, [profile, doSetProfile]);
     return (
-        <ProfileLOContext.Provider value={profileLO}>
+        <ProfileContext.Provider value={profile}>
             {children}
-        </ProfileLOContext.Provider>
+        </ProfileContext.Provider>
     );
 };
 
@@ -85,7 +87,7 @@ let lastReauthPrompt = 0;
 const promptForReauthFrequency = 10 * 60 * 1000;
 
 export const askUserToReauth = () => {
-    if (!globalProfileLoadObject || !globalProfileLoadObject.hasValue()) {
+    if (!globalProfile?.data) {
         return false;
     }
     const now = Date.now();
@@ -102,8 +104,7 @@ export const askUserToReauth = () => {
     return true;
 };
 
-export const useProfileLO = () =>
-    useContext(ProfileLOContext) || LoadObject.loading();
+export const usePendingProfile = () => useContext(ProfileContext) || emptyRLO();
 
 const ProfileState = {
     AUTHENTICATED: "AUTHENTICATED",
@@ -115,12 +116,12 @@ const ProfileState = {
 };
 
 export const useProfileState = () => {
-    const lo = useProfileLO();
-    if (!lo) return ProfileState.INITIALIZING;
-    if (lo.hasValue()) return ProfileState.AUTHENTICATED;
-    if (!lo.isDone()) return ProfileState.PENDING;
-    if (lo.hasError()) {
-        const message = lo.getErrorEnforcing().message;
+    const pendingProfile = useContext(ProfileContext);
+    if (!pendingProfile) return ProfileState.INITIALIZING;
+    if (pendingProfile.data) return ProfileState.AUTHENTICATED;
+    if (pendingProfile.loading) return ProfileState.PENDING;
+    if (pendingProfile.error) {
+        const message = pendingProfile.error.message;
         return ProfileState.hasOwnProperty(message)
             ? message
             : ProfileState.ERROR;
@@ -137,15 +138,15 @@ export const useIsProfilePending = () =>
 export const useIsAuthenticated = () =>
     useProfileState() === ProfileState.AUTHENTICATED;
 
-export const useProfile = () => useProfileLO().getValueEnforcing();
+export const useProfile = () => requiredData(useContext(ProfileContext));
 
 export const useProfileId = () => useProfile().id;
 
 export const useIsDeveloper = () => {
-    const lo = useProfileLO();
-    if (!lo.hasValue()) return false;
-    if (!lo.isDone()) return false; // in-flight means "gotta wait"
-    const profile = lo.getValueEnforcing();
+    const pendingProfile = useContext(ProfileContext);
+    if (!pendingProfile?.data) return false;
+    if (pendingProfile.loading) return false; // in-flight means "gotta wait"
+    const profile = requiredData(pendingProfile);
     return profile.roles && profile.roles.indexOf("DEVELOPER") >= 0;
 };
 

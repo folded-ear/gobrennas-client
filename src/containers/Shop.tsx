@@ -73,7 +73,7 @@ interface OrderableIngredient {
     id: number;
     items: PathedItemTuple[];
     data?: Ingredient;
-    loading: boolean;
+    loading?: boolean;
 }
 
 /**
