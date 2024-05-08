@@ -32,6 +32,16 @@ export function requiredData<T>(rlo: RippedLO<T> | undefined): T {
     return rlo.data;
 }
 
+export function mapData<T, R>(rlo: RippedLO<T>, fn: (T) => R) {
+    if (!rlo.data) return rlo;
+    const data = fn(rlo.data);
+    if (data === rlo.data) return rlo;
+    return {
+        ...rlo,
+        data,
+    };
+}
+
 export const rippedLoadObjectOf = (dataTypeChecker, optionalErrorTypeChecker) =>
     createChainableTypeChecker(
         (props, propName, componentName, location, propFullName) => {

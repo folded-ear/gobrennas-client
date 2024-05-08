@@ -5,6 +5,7 @@ import promiseFlux from "util/promiseFlux";
 import { API_BASE_URL } from "../constants/index";
 import Dispatcher from "./dispatcher";
 import FriendActions from "./FriendActions";
+import { mapData, ripLoadObject } from "../util/ripLoadObject";
 
 const axios = BaseAxios.create({
     baseURL: `${API_BASE_URL}/api/friends`,
@@ -51,13 +52,15 @@ class FriendStore extends ReduceStore {
         }
     }
 
-    getFriendsLO() {
-        return this.getState().getLoadObject();
+    getFriendsRlo() {
+        return ripLoadObject(this.getState().getLoadObject());
     }
 
-    getFriendLO(id) {
+    getFriendRlo(id) {
         const id_s = "" + id;
-        return this.getFriendsLO().map((fs) => fs.find((f) => f.id_s === id_s));
+        return mapData(this.getFriendsRlo(), (fs) =>
+            fs.find((f) => f.id_s === id_s),
+        );
     }
 }
 

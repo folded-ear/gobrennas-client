@@ -20,9 +20,7 @@ export default function useAllPlansRLO() {
                         if (ownerId === myId) {
                             ownerId = -1;
                         } else {
-                            const rlo = ripLoadObject(
-                                friendStore.getFriendLO(ownerId),
-                            );
+                            const rlo = friendStore.getFriendRlo(ownerId);
                             if (rlo.data) {
                                 // eslint-disable-next-line @typescript-eslint/no-extra-non-null-assertion
                                 ownerName = rlo.data.name!!; // eslint-disable-line @typescript-eslint/no-non-null-assertion
