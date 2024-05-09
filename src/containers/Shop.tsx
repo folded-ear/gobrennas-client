@@ -19,7 +19,6 @@ import { ripLoadObject } from "util/ripLoadObject";
 import windowStore from "../data/WindowStore";
 import partition from "../util/partition";
 import { intersection } from "../util/arrayAsSet";
-import LoadObject from "../util/LoadObject";
 import useActiveShoppingPlanIds from "../data/useActiveShoppingPlanIds";
 
 interface ItemTuple extends PlanItem, ItemProps {
@@ -218,19 +217,17 @@ const Shop = () => {
     const activePlanIds = useActiveShoppingPlanIds();
     const [plans, itemTuples] = useFluxStore(
         () => {
-            const los: LoadObject<PlanItem>[] = [];
+            const plans: PlanItem[] = [];
             if (activePlanIds != null && activePlanIds.length > 0) {
                 const allPlanIds = planStore.getPlanIdsLO().getValue();
                 for (const id of intersection(allPlanIds, activePlanIds)) {
-                    los.push(planStore.getItemLO(id));
+                    const lo = planStore.getItemLO(id);
+                    const p = ripLoadObject(lo).data;
+                    if (p != null) plans.push(p);
                 }
             }
-            if (los.length === 0) {
-                los.push(planStore.getActivePlanLO());
-            }
-            const plans: PlanItem[] = [];
-            for (const lo of los) {
-                const p = ripLoadObject(lo).data;
+            if (plans.length === 0) {
+                const p = ripLoadObject(planStore.getActivePlanLO()).data;
                 if (p != null) plans.push(p);
             }
             return [plans, groupItems(plans, expandedId, activeItem)];
