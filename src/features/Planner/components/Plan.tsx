@@ -6,13 +6,22 @@ import PlanHeader from "features/Planner/components/PlanHeader";
 import PlanItem from "features/Planner/components/PlanItem";
 import PlanActions from "features/Planner/data/PlanActions";
 import { isParent } from "features/Planner/data/plannerUtils";
-import PropTypes from "prop-types";
 import React from "react";
 import FoodingerFab from "views/common/FoodingerFab";
 import LoadingIndicator from "views/common/LoadingIndicator";
 import PageBody from "views/common/PageBody";
-import { rippedLoadObjectOf } from "../../../util/ripLoadObject";
 import DragContainer from "./DragContainer";
+import { ItemTuple } from "../PlannerController";
+import { FluxAction } from "../../../global/types/types";
+
+interface Props {
+    allPlans: any;
+    activePlan?: any;
+    planDetailVisible: boolean;
+    itemTuples: ItemTuple[];
+    isItemActive: (it: ItemTuple) => boolean;
+    isItemSelected: (it: ItemTuple) => boolean;
+}
 
 function Plan({
     allPlans,
@@ -21,7 +30,7 @@ function Plan({
     itemTuples,
     isItemActive,
     isItemSelected,
-}) {
+}: Props) {
     if (!allPlans.data) {
         return <LoadingIndicator primary="Loading plans..." />;
     }
@@ -34,9 +43,9 @@ function Plan({
     };
 
     const handleDrop = (id, targetId, vertical, horizontal) => {
-        const item = itemTuples.find((it) => it.data.id === targetId).data;
+        const item = itemTuples.find((it) => it.data.id === targetId)?.data;
         if (!item) return;
-        const action = {
+        const action: FluxAction = {
             type: PlanActions.MOVE_SUBTREE,
             id,
         };
@@ -106,21 +115,5 @@ function Plan({
         </PageBody>
     );
 }
-
-Plan.propTypes = {
-    allPlans: rippedLoadObjectOf(PropTypes.any).isRequired,
-    activePlan: rippedLoadObjectOf(PropTypes.any),
-    planDetailVisible: PropTypes.bool.isRequired,
-    itemTuples: PropTypes.arrayOf(
-        PropTypes.shape({
-            data: PropTypes.any,
-            loading: PropTypes.bool,
-            depth: PropTypes.number.isRequired,
-            ancestorDeleting: PropTypes.bool,
-        }),
-    ),
-    isItemActive: PropTypes.func.isRequired,
-    isItemSelected: PropTypes.func.isRequired,
-};
 
 export default Plan;
