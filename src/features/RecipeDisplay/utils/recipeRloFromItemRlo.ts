@@ -1,15 +1,13 @@
-import LoadObject from "../../../util/LoadObject";
 import planStore from "features/Planner/data/planStore";
 import LibraryStore from "../../RecipeLibrary/data/LibraryStore";
 import type { RecipeFromPlanItem } from "global/types/types";
 import PlanItemStatus from "../../Planner/data/PlanItemStatus";
 import { ripLoadObject, RippedLO } from "../../../util/ripLoadObject";
 
-export const recipeRloFromItemLo = (
-    itemLO: LoadObject<any>,
+export const recipeRloFromItemRlo = (
+    itemRlo: RippedLO<any>,
 ): RippedLO<RecipeFromPlanItem> => {
-    const rlo = ripLoadObject(itemLO);
-    if (!rlo.data) return rlo;
+    if (!itemRlo.data) return itemRlo;
 
     const subs: any[] = [];
     let loading = false;
@@ -32,7 +30,7 @@ export const recipeRloFromItemLo = (
     };
     const prepRecipe = (
         item,
-        rLO?: LoadObject<any>,
+        rLO?: RippedLO<any>,
         ancestorCompleting = false,
         ancestorDeleting = false,
     ): RecipeFromPlanItem => {
@@ -82,24 +80,22 @@ export const recipeRloFromItemLo = (
         if (!item.ingredientId) return item;
         rLO =
             rLO ||
-            (LibraryStore.getIngredientById(
-                item.ingredientId,
-            ) as LoadObject<any>);
-        if (rLO.isLoading()) {
+            ripLoadObject(LibraryStore.getIngredientById(item.ingredientId));
+        if (rLO.loading) {
             loading = true;
         }
-        if (!rLO.hasValue()) return item;
-        const r = rLO.getValueEnforcing();
+        const r = rLO.data;
+        if (!r) return item;
         Object.keys(r)
             .filter((k) => !item.hasOwnProperty(k))
             .forEach((k) => (item[k] = r[k]));
         item.libraryRecipeId = item.ingredientId || undefined;
         return item;
     };
-    const recipe = prepRecipe(rlo.data);
+    const recipe = prepRecipe(itemRlo.data);
     recipe.subrecipes = subs;
     return {
-        ...rlo,
+        ...itemRlo,
         data: recipe,
         loading,
     };

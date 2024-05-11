@@ -1,7 +1,6 @@
-import LoadObject from "util/LoadObject";
 import type { RecipeFromPlanItem } from "global/types/types";
 import planStore from "features/Planner/data/planStore";
-import { recipeRloFromItemLo as buildSingleItemRecipeLO } from "features/RecipeDisplay/utils/recipeRloFromItemLo";
+import { recipeRloFromItemRlo as buildSingleItemRecipeLO } from "features/RecipeDisplay/utils/recipeRloFromItemRlo";
 import getBucketLabel from "features/Planner/components/getBucketLabel";
 import {
     emptyRLO,
@@ -25,21 +24,18 @@ export const recipeRloByPlanAndBucket = (
     const items = planStore.getItemsInBucket(planId, bucketId);
     if (items.length === 0) return emptyRLO();
     if (items.length === 1) {
-        return mapData(
-            buildSingleItemRecipeLO(LoadObject.withValue(items[0])),
-            (it) => ({
-                ...it,
-                name: `${it.name} (${getBucketLabel(bucket)})`,
-            }),
-        );
+        return mapData(buildSingleItemRecipeLO({ data: items[0] }), (it) => ({
+            ...it,
+            name: `${it.name} (${getBucketLabel(bucket)})`,
+        }));
     }
     return mapData(
-        buildSingleItemRecipeLO(
-            LoadObject.withValue({
+        buildSingleItemRecipeLO({
+            data: {
                 name: getBucketLabel(bucket),
                 componentIds: items.map((it) => it.id),
-            }),
-        ),
+            },
+        }),
         (r) => {
             const idToIdx = new Map();
             items.forEach((it, i) => idToIdx.set(it.id, i));
