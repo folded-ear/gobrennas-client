@@ -91,7 +91,7 @@ export const DesktopNav: React.FC<DesktopNavProps> = ({
                         {/*    title="Timers"*/}
                         {/*    expanded={expanded}*/}
                         {/*/>*/}
-                        {planItems.map((plan, i) => {
+                        {planItems.map((plan, idx) => {
                             const elements = [
                                 <PlanItem
                                     key={plan.id}
@@ -103,18 +103,18 @@ export const DesktopNav: React.FC<DesktopNavProps> = ({
                                     color={colorHash(plan.id)}
                                 />,
                             ];
-                            if (i === 0) {
+                            if (idx === 0) {
                                 elements.unshift(
                                     <Subheader key={-plan.id}>Plans</Subheader>,
                                 );
                             } else if (
-                                plan.owner.id !== planItems[i - 1].owner.id
+                                plan.owner.id !== planItems[idx - 1].owner.id
                             ) {
                                 elements.unshift(
                                     <NavOwnerItem
                                         key={-plan.id}
                                         expanded={expanded}
-                                        id={plan.owner.id}
+                                        name={plan.owner.name || "..."}
                                     />,
                                 );
                             }
