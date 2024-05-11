@@ -1,13 +1,13 @@
 import LibraryStore from "features/RecipeLibrary/data/LibraryStore";
-import type { Recipe as RecipeType } from "global/types/types";
+import type { Recipe } from "global/types/types";
 import LoadObject from "util/LoadObject";
 
-export const recipeLoById = (id) => {
-    let lo = LibraryStore.getIngredientById(id);
+export function recipeLoById(id): LoadObject<Recipe> {
+    let lo = LibraryStore.getRecipeById(id);
     if (!lo.hasValue()) return lo;
 
     const subIds = new Set();
-    const subs: RecipeType[] = [];
+    const subs: Recipe[] = [];
     let loading = false;
     const prepRecipe = (recipe) => ({
         ...recipe,
@@ -37,4 +37,4 @@ export const recipeLoById = (id) => {
         lo = lo.loading();
     }
     return lo;
-};
+}

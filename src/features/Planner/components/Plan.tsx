@@ -43,7 +43,7 @@ function Plan({
     };
 
     const handleDrop = (id, targetId, vertical, horizontal) => {
-        const item = itemTuples.find((it) => it.data.id === targetId)?.data;
+        const item = itemTuples.find((it) => it.data?.id === targetId)?.data;
         if (!item) return;
         const action: FluxAction = {
             type: PlanActions.MOVE_SUBTREE,

@@ -4,33 +4,39 @@ import { isExpanded } from "features/Planner/data/plannerUtils";
 import planStore from "features/Planner/data/planStore";
 import useFluxStore from "data/useFluxStore";
 import Plan from "features/Planner/components/Plan";
-import LoadObject from "../../util/LoadObject";
 import { ripLoadObject, RippedLO } from "util/ripLoadObject";
 import { RouteComponentProps } from "react-router";
 import { useLoadedPlan } from "../RecipeDisplay/hooks/useLoadedPlan";
 import useAllPlansRLO from "../../data/useAllPlansRLO";
+import { PlanItem } from "./data/planStore";
+import { Ingredient } from "../../global/types/types";
 
-export interface ItemTuple extends RippedLO<any> {
+interface ItemData extends PlanItem {
+    ingredient?: Ingredient;
+    fromRecipe?: boolean;
+}
+
+export interface ItemTuple extends RippedLO<ItemData> {
     ancestorDeleting: boolean;
     depth: number;
 }
 
 function listTheTree(id, ancestorDeleting = false, depth = 0): ItemTuple[] {
-    const list = planStore.getChildItemLOs(id).map((lo: LoadObject<any>) => ({
+    const list: ItemTuple[] = planStore.getChildItemLOs(id).map((lo) => ({
         ...ripLoadObject(lo),
         ancestorDeleting,
         depth,
     }));
     for (let i = list.length - 1; i >= 0; i--) {
-        if (!list[i].data) continue;
         const t = list[i].data;
+        if (!t) continue;
         if (t.ingredientId) {
             const ing = ripLoadObject(
                 LibraryStore.getIngredientById(t.ingredientId),
             ).data;
             if (ing) {
                 list[i].data = {
-                    ...list[i].data,
+                    ...t,
                     ingredient: ing,
                     fromRecipe: ing.type === "Recipe",
                 };

@@ -3,7 +3,7 @@ import LoadObject from "./LoadObject";
 export interface RippedLO<T> {
     loading?: boolean;
     deleting?: boolean;
-    data?: T | null;
+    data?: T;
     error?: any;
 }
 
@@ -18,7 +18,7 @@ export function ripLoadObject<T>(lo: LoadObject<T>): RippedLO<T> {
     return {
         loading: lo.isLoading(),
         deleting: lo.isDeleting(),
-        data: lo.getValue(),
+        data: lo.getValue() || undefined,
         error: lo.getError(),
     };
 }
