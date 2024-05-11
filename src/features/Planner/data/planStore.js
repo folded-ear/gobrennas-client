@@ -19,6 +19,7 @@ import LoadObject from "util/LoadObject";
 import LoadObjectState from "util/LoadObjectState";
 import { formatLocalDate, parseLocalDate } from "util/time";
 import PlanApi from "./PlanApi";
+import { ripLoadObject } from "../../../util/ripLoadObject";
 
 /*
  * This store is way too muddled. But leaving it that way for the moment, to
@@ -1346,10 +1347,18 @@ class PlanStore extends ReduceStore {
         );
     }
 
+    getPlansRlo() {
+        return ripLoadObject(this.getPlansLO());
+    }
+
     getChildItemLOs(id) {
         const s = this.getState();
         const t = taskForId(s, id);
         return losForIds(s, t.subtaskIds);
+    }
+
+    getChildItemRlos(id) {
+        return this.getChildItemLOs(id).map(ripLoadObject);
     }
 
     getNonDescendantComponents(id) {
@@ -1391,6 +1400,10 @@ class PlanStore extends ReduceStore {
             : loForId(s, s.activeListId);
     }
 
+    getActivePlanRlo() {
+        return ripLoadObject(this.getActivePlanLO());
+    }
+
     getActiveItem() {
         const s = this.getState();
         if (s.activeTaskId == null) return null;
@@ -1402,6 +1415,10 @@ class PlanStore extends ReduceStore {
         if (id == null) throw new Error("No task has the null ID");
         const s = this.getState();
         return isKnown(s, id) ? loForId(s, id) : LoadObject.empty();
+    }
+
+    getItemRlo(id) {
+        return ripLoadObject(this.getItemLO(id));
     }
 
     getSelectedItems() {

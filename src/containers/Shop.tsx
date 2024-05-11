@@ -15,7 +15,6 @@ import { BaseItemProp, ItemProps } from "views/shop/types";
 import { Maybe } from "graphql/jsutils/Maybe";
 import { Quantity } from "global/types/types";
 import { BfsId } from "global/types/identity";
-import { ripLoadObject } from "util/ripLoadObject";
 import windowStore from "../data/WindowStore";
 import partition from "../util/partition";
 import { intersection } from "../util/arrayAsSet";
@@ -40,8 +39,7 @@ function gatherLeaves(item: PlanItem): PathedItemTuple[] {
         ];
     }
     return planStore
-        .getChildItemLOs(item.id)
-        .map((lo) => ripLoadObject(lo))
+        .getChildItemRlos(item.id)
         .filter((rippedLO) => rippedLO.data)
         .map((rippedLO) => {
             const item = rippedLO.data;
@@ -110,7 +108,7 @@ function groupItems(
         orderedIngredients.push({
             id: ingId,
             items: items,
-            ...ripLoadObject(LibraryStore.getIngredientById(ingId)),
+            ...LibraryStore.getIngredientRloById(ingId),
         });
     }
     orderedIngredients.sort(({ data: a }, { data: b }) => {
@@ -219,15 +217,14 @@ const Shop = () => {
         () => {
             const plans: PlanItem[] = [];
             if (activePlanIds != null && activePlanIds.length > 0) {
-                const allPlanIds = planStore.getPlanIdsLO().getValue();
+                const allPlanIds = planStore.getPlanIdsRlo().data;
                 for (const id of intersection(allPlanIds, activePlanIds)) {
-                    const lo = planStore.getItemLO(id);
-                    const p = ripLoadObject(lo).data;
+                    const p = planStore.getItemRlo(id).data;
                     if (p != null) plans.push(p);
                 }
             }
             if (plans.length === 0) {
-                const p = ripLoadObject(planStore.getActivePlanLO()).data;
+                const p = planStore.getActivePlanRlo().data;
                 if (p != null) plans.push(p);
             }
             return [plans, groupItems(plans, expandedId, activeItem)];
