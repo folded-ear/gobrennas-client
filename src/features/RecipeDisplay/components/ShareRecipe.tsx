@@ -4,7 +4,7 @@ import BaseAxios from "axios";
 import React from "react";
 import { API_BASE_URL, APP_BASE_URL } from "constants/index";
 import type { Recipe, SharedRecipe } from "global/types/types";
-import { emptyRLO, RippedLO } from "util/ripLoadObject";
+import { RippedLO } from "util/ripLoadObject";
 import ModalButton from "../../../views/ModalButton";
 
 const axios = BaseAxios.create({
@@ -16,13 +16,12 @@ type ShareRecipeProps = {
 };
 
 const Body: React.FC<ShareRecipeProps> = ({ recipe }) => {
-    const [rlo, setRlo] = React.useState<RippedLO<SharedRecipe>>(emptyRLO());
+    const [rlo, setRlo] = React.useState<RippedLO<SharedRecipe>>({});
     React.useEffect(() => {
         if (rlo.data && rlo.data.id === recipe.id) {
             return;
         }
         setRlo({
-            ...emptyRLO(),
             loading: true,
             data: {
                 id: recipe.id,
@@ -33,12 +32,10 @@ const Body: React.FC<ShareRecipeProps> = ({ recipe }) => {
         axios.get(`/${recipe.id}/share`).then(
             (data) =>
                 setRlo({
-                    ...emptyRLO(),
                     data: data.data,
                 }),
             (error) =>
                 setRlo({
-                    ...emptyRLO(),
                     error,
                 }),
         );
@@ -54,9 +51,7 @@ const Body: React.FC<ShareRecipeProps> = ({ recipe }) => {
             <div>
                 Something went wrong getting a sharable link.
                 <div style={{ textAlign: "right" }}>
-                    <Button onClick={() => setRlo(emptyRLO())}>
-                        Try Again
-                    </Button>
+                    <Button onClick={() => setRlo({})}>Try Again</Button>
                 </div>
             </div>
         );

@@ -2,7 +2,7 @@ import type { RecipeFromPlanItem } from "global/types/types";
 import planStore from "features/Planner/data/planStore";
 import { recipeRloFromItemRlo as buildSingleItemRecipeLO } from "features/RecipeDisplay/utils/recipeRloFromItemRlo";
 import getBucketLabel from "features/Planner/components/getBucketLabel";
-import { emptyRLO, mapData, RippedLO } from "../../../util/ripLoadObject";
+import { mapData, RippedLO } from "../../../util/ripLoadObject";
 
 export const recipeRloByPlanAndBucket = (
     planId: number,
@@ -15,9 +15,9 @@ export const recipeRloByPlanAndBucket = (
         return planRLO as RippedLO<any>;
     }
     const bucket = plan.buckets.find((b) => b.id === bucketId);
-    if (!bucket) return emptyRLO();
+    if (!bucket) return {};
     const items = planStore.getItemsInBucket(planId, bucketId);
-    if (items.length === 0) return emptyRLO();
+    if (items.length === 0) return {};
     if (items.length === 1) {
         return mapData(buildSingleItemRecipeLO({ data: items[0] }), (it) => ({
             ...it,

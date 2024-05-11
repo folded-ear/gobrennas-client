@@ -7,13 +7,6 @@ export interface RippedLO<T> {
     error?: any;
 }
 
-export function emptyRLO<T>(): RippedLO<T> {
-    return {
-        loading: false,
-        deleting: false,
-    };
-}
-
 export function ripLoadObject<T>(lo: LoadObject<T>): RippedLO<T> {
     return {
         loading: lo.isLoading(),

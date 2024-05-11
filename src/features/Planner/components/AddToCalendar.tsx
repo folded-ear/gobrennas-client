@@ -11,7 +11,7 @@ import {
     Divider,
     TextField,
 } from "@mui/material";
-import { emptyRLO, RippedLO } from "../../../util/ripLoadObject";
+import { RippedLO } from "../../../util/ripLoadObject";
 
 const axios = BaseAxios.create({
     baseURL: `${API_BASE_URL}/api/plan`,
@@ -28,13 +28,12 @@ interface SharedPlan {
 }
 
 const Body: React.FC<Props> = ({ plan }) => {
-    const [rlo, setRlo] = React.useState<RippedLO<SharedPlan>>(emptyRLO());
+    const [rlo, setRlo] = React.useState<RippedLO<SharedPlan>>({});
     React.useEffect(() => {
         if (rlo.data && rlo.data.id === plan.id) {
             return;
         }
         setRlo({
-            ...emptyRLO(),
             loading: true,
             data: {
                 id: plan.id,
@@ -45,12 +44,10 @@ const Body: React.FC<Props> = ({ plan }) => {
         axios.get(`/${plan.id}/share`).then(
             (data) =>
                 setRlo({
-                    ...emptyRLO(),
                     data: data.data,
                 }),
             (error) =>
                 setRlo({
-                    ...emptyRLO(),
                     error,
                 }),
         );
@@ -66,9 +63,7 @@ const Body: React.FC<Props> = ({ plan }) => {
             <div>
                 Something went wrong getting a sharable link.
                 <div style={{ textAlign: "right" }}>
-                    <Button onClick={() => setRlo(emptyRLO())}>
-                        Try Again
-                    </Button>
+                    <Button onClick={() => setRlo({})}>Try Again</Button>
                 </div>
             </div>
         );

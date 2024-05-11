@@ -10,7 +10,7 @@ import TextractEditor, {
     Line,
     RenderActionsForLines,
 } from "features/RecipeEdit/components/TextractEditor";
-import { emptyRLO, RippedLO } from "util/ripLoadObject";
+import { RippedLO } from "util/ripLoadObject";
 import { BfsId } from "global/types/identity";
 
 export interface PendingJob {
@@ -31,7 +31,7 @@ interface Props {
 
 const TextractFormAugment: React.FC<Props> = ({ renderActions }) => {
     const [browserOpen, setBrowserOpen] = React.useState(false);
-    const [jobLO, setJobLO] = React.useState<RippedLO<Job>>(emptyRLO());
+    const [jobLO, setJobLO] = React.useState<RippedLO<Job>>({});
     const [creating, setCreating] = React.useState<PendingJob[]>([]);
     const [deleting, setDeleting] = React.useState<BfsId[]>([]);
     const queryClient = useQueryClient();
@@ -41,7 +41,7 @@ const TextractFormAugment: React.FC<Props> = ({ renderActions }) => {
             {jobLO.data && (
                 <TextractEditor
                     {...jobLO.data}
-                    onClose={() => setJobLO(emptyRLO())}
+                    onClose={() => setJobLO({})}
                     renderActions={renderActions}
                 />
             )}
@@ -51,12 +51,10 @@ const TextractFormAugment: React.FC<Props> = ({ renderActions }) => {
                     onClose={() => setBrowserOpen(false)}
                     onSelect={(id) => {
                         setJobLO({
-                            ...emptyRLO(),
                             loading: true,
                         });
                         TextractApi.promiseJob(id).then((data) =>
                             setJobLO({
-                                ...emptyRLO(),
                                 data: {
                                     image: data.data.photo.url,
                                     textract: data.data.lines || [],

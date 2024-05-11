@@ -10,7 +10,7 @@ import React, {
 import { API_BASE_URL, LOCAL_STORAGE_ACCESS_TOKEN } from "../constants";
 import GTag from "../GTag";
 import type { UserType } from "global/types/identity";
-import { emptyRLO, requiredData, RippedLO } from "../util/ripLoadObject";
+import { requiredData, RippedLO } from "../util/ripLoadObject";
 
 // global side effect to ensure cookies are passed
 BaseAxios.defaults.withCredentials = true;
@@ -104,7 +104,7 @@ export const askUserToReauth = () => {
     return true;
 };
 
-export const usePendingProfile = () => useContext(ProfileContext) || emptyRLO();
+export const usePendingProfile = () => useContext(ProfileContext) || {};
 
 const ProfileState = {
     AUTHENTICATED: "AUTHENTICATED",
