@@ -6,7 +6,7 @@ import LoadingIndicator from "views/common/LoadingIndicator";
 import RecipeDetail from "./components/RecipeDetail";
 import { RouteComponentProps } from "react-router";
 import { useLoadedPlan } from "features/RecipeDisplay/hooks/useLoadedPlan";
-import { recipeRloByItemAndBucket } from "features/RecipeDisplay/utils/recipeRloByItemAndBucket";
+import { recipeRloByPlanAndBucket } from "features/RecipeDisplay/utils/recipeRloByPlanAndBucket";
 import CloseButton from "../../views/common/CloseButton";
 import history from "../../util/history";
 import CookedItButton from "features/Planner/components/CookedItButton";
@@ -20,7 +20,7 @@ const PlannedBucketController: React.FC<Props> = ({ match }) => {
     const pid = parseInt(match.params.pid, 10);
     const bid = parseInt(match.params.bid, 10);
     const recipe = useFluxStore(
-        () => recipeRloByItemAndBucket(pid, bid).data,
+        () => recipeRloByPlanAndBucket(pid, bid).data,
         [planStore, LibraryStore],
         [pid, bid],
     );

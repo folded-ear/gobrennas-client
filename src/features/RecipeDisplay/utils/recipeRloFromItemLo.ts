@@ -3,12 +3,13 @@ import planStore from "features/Planner/data/planStore";
 import LibraryStore from "../../RecipeLibrary/data/LibraryStore";
 import type { RecipeFromPlanItem } from "global/types/types";
 import PlanItemStatus from "../../Planner/data/PlanItemStatus";
+import { ripLoadObject, RippedLO } from "../../../util/ripLoadObject";
 
-export const recipeLoByItemLo = (
+export const recipeRloFromItemLo = (
     itemLO: LoadObject<any>,
-): LoadObject<RecipeFromPlanItem> => {
-    let lo = itemLO;
-    if (!lo.hasValue()) return lo;
+): RippedLO<RecipeFromPlanItem> => {
+    const rlo = ripLoadObject(itemLO);
+    if (!rlo.data) return rlo;
 
     const subs: any[] = [];
     let loading = false;
@@ -95,11 +96,11 @@ export const recipeLoByItemLo = (
         item.libraryRecipeId = item.ingredientId || undefined;
         return item;
     };
-    const recipe = prepRecipe(lo.getValueEnforcing());
+    const recipe = prepRecipe(rlo.data);
     recipe.subrecipes = subs;
-    lo = LoadObject.withValue(recipe);
-    if (loading) {
-        lo = lo.loading();
-    }
-    return lo;
+    return {
+        ...rlo,
+        data: recipe,
+        loading,
+    };
 };

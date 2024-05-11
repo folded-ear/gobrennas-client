@@ -1,11 +1,16 @@
 import LoadObject from "util/LoadObject";
 import type { RecipeFromPlanItem } from "global/types/types";
 import planStore from "features/Planner/data/planStore";
-import { recipeLoByItemLo as buildSingleItemRecipeLO } from "features/RecipeDisplay/utils/recipeLoByItemLo";
+import { recipeRloFromItemLo as buildSingleItemRecipeLO } from "features/RecipeDisplay/utils/recipeRloFromItemLo";
 import getBucketLabel from "features/Planner/components/getBucketLabel";
-import { emptyRLO, ripLoadObject, RippedLO } from "../../../util/ripLoadObject";
+import {
+    emptyRLO,
+    mapData,
+    ripLoadObject,
+    RippedLO,
+} from "../../../util/ripLoadObject";
 
-export const recipeRloByItemAndBucket = (
+export const recipeRloByPlanAndBucket = (
     planId: number,
     bucketId: number,
 ): RippedLO<RecipeFromPlanItem> => {
@@ -20,22 +25,22 @@ export const recipeRloByItemAndBucket = (
     const items = planStore.getItemsInBucket(planId, bucketId);
     if (items.length === 0) return emptyRLO();
     if (items.length === 1) {
-        return ripLoadObject(
-            buildSingleItemRecipeLO(LoadObject.withValue(items[0])).map(
-                (it) => ({
-                    ...it,
-                    name: `${it.name} (${getBucketLabel(bucket)})`,
-                }),
-            ),
+        return mapData(
+            buildSingleItemRecipeLO(LoadObject.withValue(items[0])),
+            (it) => ({
+                ...it,
+                name: `${it.name} (${getBucketLabel(bucket)})`,
+            }),
         );
     }
-    return ripLoadObject(
+    return mapData(
         buildSingleItemRecipeLO(
             LoadObject.withValue({
                 name: getBucketLabel(bucket),
                 componentIds: items.map((it) => it.id),
             }),
-        ).map((r) => {
+        ),
+        (r) => {
             const idToIdx = new Map();
             items.forEach((it, i) => idToIdx.set(it.id, i));
             const itToSubIdx = new Map();
@@ -62,6 +67,6 @@ export const recipeRloByItemAndBucket = (
                       photoFocus: recipeWithPhoto.photoFocus,
                   }
                 : r;
-        }),
+        },
     );
 };
