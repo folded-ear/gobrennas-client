@@ -50,7 +50,6 @@ export const DesktopNav: React.FC<DesktopNavProps> = ({
 }) => {
     const me = useProfile();
     const { data: planItems } = useGetAllPlans();
-    console.log("data: ", planItems);
 
     const PlanItem = shopView ? NavShopItem : NavPlanItem;
     return (
