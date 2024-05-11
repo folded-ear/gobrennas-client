@@ -8,7 +8,7 @@ import RecipeDetail from "features/RecipeDisplay/components/RecipeDetail";
 import LibraryActions from "features/RecipeLibrary/data/LibraryActions";
 import { UserType } from "global/types/identity";
 import { Maybe } from "graphql/jsutils/Maybe";
-import { recipeLoById } from "features/RecipeDisplay/utils/recipeLoById";
+import { recipeRloById } from "features/RecipeDisplay/utils/recipeRloById";
 
 const axios = BaseAxios.create({
     baseURL: `${API_BASE_URL}/shared/recipe`,
@@ -44,16 +44,15 @@ const DoTheDance: React.FC<MatchParams> = ({ slug, secret, id }) => {
     if (!owner) {
         return <LoadingIndicator />;
     }
-    const recipeLO = recipeLoById(parseInt(id));
+    const recipe = recipeRloById(parseInt(id)).data;
+    if (!recipe) {
+        return <LoadingIndicator />;
+    }
     return (
         <RecipeDetail
             anonymous
-            recipe={recipeLO.getValueEnforcing()}
-            subrecipes={
-                recipeLO.hasValue()
-                    ? recipeLO.getValueEnforcing().subrecipes
-                    : null
-            }
+            recipe={recipe}
+            subrecipes={recipe.subrecipes}
             owner={owner}
         />
     );
