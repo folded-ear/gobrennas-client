@@ -49,7 +49,6 @@ export const DesktopNav: React.FC<DesktopNavProps> = ({
     devMode = false,
 }) => {
     const me = useProfile();
-    // const planItems = useAllPlansRLO().data;
     const { data: planItems } = useGetAllPlans();
     console.log("data: ", planItems);
 

@@ -110,6 +110,7 @@ function Plan({
 
 Plan.propTypes = {
     allPlans: rippedLoadObjectOf(PropTypes.any).isRequired,
+    loading: PropTypes.bool,
     activePlan: rippedLoadObjectOf(PropTypes.any),
     planDetailVisible: PropTypes.bool.isRequired,
     itemTuples: PropTypes.arrayOf(
