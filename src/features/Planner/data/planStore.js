@@ -19,7 +19,7 @@ import LoadObject from "util/LoadObject";
 import LoadObjectState from "util/LoadObjectState";
 import { formatLocalDate, parseLocalDate } from "util/time";
 import PlanApi from "./PlanApi";
-import { ripLoadObject } from "../../../util/ripLoadObject";
+import { mapData, ripLoadObject } from "../../../util/ripLoadObject";
 
 /*
  * This store is way too muddled. But leaving it that way for the moment, to
@@ -1342,27 +1342,19 @@ class PlanStore extends ReduceStore {
         return ripLoadObject(this.getPlanIdsLO());
     }
 
-    getPlansLO() {
+    getPlansRlo() {
         const s = this.getState();
-        return this.getPlanIdsLO().map((ids) =>
+        return mapData(this.getPlanIdsRlo(), (ids) =>
             losForIds(s, ids)
                 .filter((lo) => lo.isDone())
                 .map((lo) => lo.getValueEnforcing()),
         );
     }
 
-    getPlansRlo() {
-        return ripLoadObject(this.getPlansLO());
-    }
-
-    getChildItemLOs(id) {
+    getChildItemRlos(id) {
         const s = this.getState();
         const t = taskForId(s, id);
-        return losForIds(s, t.subtaskIds);
-    }
-
-    getChildItemRlos(id) {
-        return this.getChildItemLOs(id).map(ripLoadObject);
+        return losForIds(s, t.subtaskIds).map(ripLoadObject);
     }
 
     getNonDescendantComponents(id) {

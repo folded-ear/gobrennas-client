@@ -55,10 +55,8 @@ declare class PlanStore extends FluxReduceStore<State, FluxAction> {
     getPlanIdsLO(): LoadObject<clientOrDatabaseIdType>;
     getPlanIdsRlo(): RippedLO<clientOrDatabaseIdType>;
 
-    getPlansLO(): LoadObject<PlanItem[]>;
     getPlansRlo(): RippedLO<PlanItem[]>;
 
-    getChildItemLOs(id: clientOrDatabaseIdType): LoadObject<PlanItem>[];
     getChildItemRlos(id: clientOrDatabaseIdType): RippedLO<PlanItem>[];
 
     getNonDescendantComponents(id: number): PlanItem[];
