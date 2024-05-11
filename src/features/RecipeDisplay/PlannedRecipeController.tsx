@@ -10,7 +10,6 @@ import { recipeRloFromItemRlo } from "features/RecipeDisplay/utils/recipeRloFrom
 import CloseButton from "../../views/common/CloseButton";
 import history from "../../util/history";
 import CookedItButton from "features/Planner/components/CookedItButton";
-import { ripLoadObject } from "../../util/ripLoadObject";
 
 type Props = RouteComponentProps<{
     pid: string;
@@ -20,8 +19,7 @@ type Props = RouteComponentProps<{
 const PlannedRecipeController: React.FC<Props> = ({ match }) => {
     const rid = parseInt(match.params.rid, 10);
     const recipe = useFluxStore(
-        () =>
-            recipeRloFromItemRlo(ripLoadObject(planStore.getItemLO(rid))).data,
+        () => recipeRloFromItemRlo(planStore.getItemRlo(rid)).data,
         [planStore, LibraryStore],
         [rid],
     );
