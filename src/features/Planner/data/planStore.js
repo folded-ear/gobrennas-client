@@ -1338,6 +1338,10 @@ class PlanStore extends ReduceStore {
         return this.getState().topLevelIds.getLoadObject();
     }
 
+    getPlanIdsRlo() {
+        return ripLoadObject(this.getPlanIdsLO());
+    }
+
     getPlansLO() {
         const s = this.getState();
         return this.getPlanIdsLO().map((ids) =>

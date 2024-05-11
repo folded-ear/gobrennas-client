@@ -7,13 +7,13 @@ import { BfsId } from "global/types/identity";
 
 export const useLoadedPlan = (pid: BfsId | undefined) => {
     // ensure it's loaded
-    const allPlansLO = useFluxStore(
-        () => planStore.getPlanIdsLO(),
+    const allPlansRlo = useFluxStore(
+        () => planStore.getPlanIdsRlo(),
         [planStore],
     );
     // ensure it's selected
     React.useEffect(() => {
-        if (pid != null && allPlansLO.hasValue()) {
+        if (pid != null && allPlansRlo.data) {
             // The contract implies that effects trigger after the render
             // cycle completes, but doesn't guarantee it. The setTimeout
             // avoids a reentrant dispatch if the effect isn't deferred.
@@ -24,5 +24,5 @@ export const useLoadedPlan = (pid: BfsId | undefined) => {
                 }),
             );
         }
-    }, [allPlansLO, pid]);
+    }, [allPlansRlo, pid]);
 };
