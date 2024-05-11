@@ -17,6 +17,7 @@ declare class LibraryStore extends FluxReduceStore<State, FluxAction> {
     getIngredientRloById(id: number): RippedLO<Ingredient>;
 
     getRecipeById(id: number): LoadObject<Recipe>;
+    getRecipeRloById(id: number): RippedLO<Recipe>;
 }
 
 const libraryStore: LibraryStore;
