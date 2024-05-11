@@ -1,19 +1,14 @@
 import * as React from "react";
 import { Subheader } from "./Navigation.elements";
-import { ripLoadObject } from "../../../util/ripLoadObject";
-import useFriendLO from "../../../data/useFriendLO";
-import { BfsId } from "global/types/identity";
 
 interface NavOwnerItemProps {
-    id: BfsId;
+    name: string;
     expanded: boolean;
 }
 
-export const NavOwnerItem: React.FC<NavOwnerItemProps> = ({ id, expanded }) => {
-    const { data: user } = ripLoadObject(useFriendLO(id));
-    return (
-        <Subheader title={`${user?.name} (${id})`}>
-            {user?.name || "…"}
-        </Subheader>
-    );
+export const NavOwnerItem: React.FC<NavOwnerItemProps> = ({
+    name,
+    expanded,
+}) => {
+    return <Subheader title={name}>{name}</Subheader>;
 };

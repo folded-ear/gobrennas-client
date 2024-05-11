@@ -16,13 +16,14 @@ import DragContainer from "./DragContainer";
 
 function Plan({
     allPlans,
+    loading,
     activePlan,
     planDetailVisible,
     itemTuples,
     isItemActive,
     isItemSelected,
 }) {
-    if (!allPlans.data) {
+    if (loading) {
         return <LoadingIndicator primary="Loading plans..." />;
     }
 
@@ -82,7 +83,7 @@ function Plan({
     return (
         <PageBody hasFab fullWidth>
             <PlanHeader
-                allPlans={allPlans.data}
+                allPlans={allPlans}
                 activePlan={plan}
                 planDetailVisible={planDetailVisible}
                 hasBuckets={!!buckets}
@@ -109,6 +110,7 @@ function Plan({
 
 Plan.propTypes = {
     allPlans: rippedLoadObjectOf(PropTypes.any).isRequired,
+    loading: PropTypes.bool,
     activePlan: rippedLoadObjectOf(PropTypes.any),
     planDetailVisible: PropTypes.bool.isRequired,
     itemTuples: PropTypes.arrayOf(

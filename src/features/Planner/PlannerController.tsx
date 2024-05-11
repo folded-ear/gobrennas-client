@@ -8,7 +8,7 @@ import LoadObject from "../../util/LoadObject";
 import { ripLoadObject, RippedLO } from "util/ripLoadObject";
 import { RouteComponentProps } from "react-router";
 import { useLoadedPlan } from "../RecipeDisplay/hooks/useLoadedPlan";
-import useAllPlansRLO from "../../data/useAllPlansRLO";
+import { useGetAllPlans } from "data/hooks/useGetAllPlans";
 
 export interface ItemTuple extends RippedLO<any> {
     ancestorDeleting: boolean;
@@ -56,7 +56,7 @@ type Props = RouteComponentProps<{
 
 export const PlannerController: React.FC<Props> = ({ match }) => {
     useLoadedPlan(match.params.pid);
-    const allPlans = useAllPlansRLO();
+    const { data: allPlans, loading } = useGetAllPlans();
     const state = useFluxStore(() => {
         const activePlan = ripLoadObject(planStore.getActivePlanLO());
         const activeItem = planStore.getActiveItem();
@@ -76,5 +76,5 @@ export const PlannerController: React.FC<Props> = ({ match }) => {
                 : () => false,
         };
     }, [planStore, LibraryStore]);
-    return <Plan allPlans={allPlans} {...state} />;
+    return <Plan loading={loading} allPlans={allPlans} {...state} />;
 };
