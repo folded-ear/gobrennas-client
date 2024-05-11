@@ -211,13 +211,9 @@ class LibraryStore extends ReduceStore {
         return ripLoadObject(this.getIngredientById(id));
     }
 
-    getRecipeById(id) {
-        invariant(typeof id === "number", "That is not a valid integer");
-        return this.getIngredientById(id);
-    }
-
     getRecipeRloById(id) {
-        return ripLoadObject(this.getRecipeById(id));
+        invariant(typeof id === "number", "That is not a valid integer");
+        return ripLoadObject(this.getIngredientById(id));
     }
 }
 
