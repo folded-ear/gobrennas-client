@@ -2,18 +2,13 @@ import type { RecipeFromPlanItem } from "global/types/types";
 import planStore from "features/Planner/data/planStore";
 import { recipeRloFromItemRlo as buildSingleItemRecipeLO } from "features/RecipeDisplay/utils/recipeRloFromItemRlo";
 import getBucketLabel from "features/Planner/components/getBucketLabel";
-import {
-    emptyRLO,
-    mapData,
-    ripLoadObject,
-    RippedLO,
-} from "../../../util/ripLoadObject";
+import { emptyRLO, mapData, RippedLO } from "../../../util/ripLoadObject";
 
 export const recipeRloByPlanAndBucket = (
     planId: number,
     bucketId: number,
 ): RippedLO<RecipeFromPlanItem> => {
-    const planRLO = ripLoadObject(planStore.getItemLO(planId));
+    const planRLO = planStore.getItemRlo(planId);
     const plan = planRLO.data;
     if (!plan) {
         // no value means value's type is irrelevant
