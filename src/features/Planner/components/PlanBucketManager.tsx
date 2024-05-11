@@ -17,7 +17,6 @@ import useFluxStore from "data/useFluxStore";
 import { formatLocalDate, parseLocalDate } from "util/time";
 import LocalTextField from "views/common/LocalTextField";
 import getBucketLabel from "features/Planner/components/getBucketLabel";
-import { ripLoadObject } from "util/ripLoadObject";
 
 const BucketManager = () => {
     const {
@@ -28,7 +27,7 @@ const BucketManager = () => {
         onBucketDateChange,
         onBucketDelete,
     } = useFluxStore(() => {
-        const plan = ripLoadObject(planStore.getActivePlanLO()).data;
+        const plan = planStore.getActivePlanRlo().data;
         if (!plan) throw new TypeError("Missing required plan");
         return {
             buckets: plan.buckets || [],
