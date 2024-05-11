@@ -23,7 +23,7 @@ import User from "views/user/User";
 import { useProfile } from "providers/Profile";
 import { NavShopItem } from "./NavShopItem";
 import { BfsId } from "global/types/identity";
-import useAllPlansRLO from "../../../data/useAllPlansRLO";
+import { useGetAllPlans } from "data/hooks/useGetAllPlans";
 
 type DesktopNavProps = {
     selected: string;
@@ -49,7 +49,10 @@ export const DesktopNav: React.FC<DesktopNavProps> = ({
     devMode = false,
 }) => {
     const me = useProfile();
-    const planItems = useAllPlansRLO().data;
+    // const planItems = useAllPlansRLO().data;
+    const { data: planItems, loading, error } = useGetAllPlans();
+    console.log("data: ", planItems);
+
     const PlanItem = shopView ? NavShopItem : NavPlanItem;
     return (
         <>
@@ -88,39 +91,35 @@ export const DesktopNav: React.FC<DesktopNavProps> = ({
                         {/*    title="Timers"*/}
                         {/*    expanded={expanded}*/}
                         {/*/>*/}
-                        {planItems &&
-                            planItems.map((item, i) => {
-                                const elements = [
-                                    <PlanItem
-                                        key={item.id}
-                                        id={item.id}
-                                        onIconClick={onSelectPlan}
-                                        onClick={onOpenPlan}
+                        {planItems.map((plan, i) => {
+                            const elements = [
+                                <PlanItem
+                                    key={plan.id}
+                                    id={plan.id}
+                                    onIconClick={onSelectPlan}
+                                    onClick={onOpenPlan}
+                                    expanded={expanded}
+                                    name={plan.name}
+                                    color={colorHash(plan.id)}
+                                />,
+                            ];
+                            if (i === 0) {
+                                elements.unshift(
+                                    <Subheader key={-plan.id}>Plans</Subheader>,
+                                );
+                            } else if (
+                                plan.owner.id !== planItems[i - 1].owner.id
+                            ) {
+                                elements.unshift(
+                                    <NavOwnerItem
+                                        key={-plan.id}
                                         expanded={expanded}
-                                        name={item.name}
-                                        color={colorHash(item.id)}
+                                        id={plan.owner.id}
                                     />,
-                                ];
-                                if (i === 0) {
-                                    elements.unshift(
-                                        <Subheader key={-item.id}>
-                                            Plans
-                                        </Subheader>,
-                                    );
-                                } else if (
-                                    item.acl.ownerId !==
-                                    planItems[i - 1].acl.ownerId
-                                ) {
-                                    elements.unshift(
-                                        <NavOwnerItem
-                                            key={-item.id}
-                                            expanded={expanded}
-                                            id={item.acl.ownerId}
-                                        />,
-                                    );
-                                }
-                                return elements;
-                            })}
+                                );
+                            }
+                            return elements;
+                        })}
                     </Navigation>
                 </Box>
                 <Box sx={{ alignItem: "bottom" }}>
