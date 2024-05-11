@@ -4,7 +4,7 @@ import { isExpanded } from "features/Planner/data/plannerUtils";
 import planStore from "features/Planner/data/planStore";
 import useFluxStore from "data/useFluxStore";
 import Plan from "features/Planner/components/Plan";
-import { ripLoadObject, RippedLO } from "util/ripLoadObject";
+import { RippedLO } from "util/ripLoadObject";
 import { RouteComponentProps } from "react-router";
 import { useLoadedPlan } from "../RecipeDisplay/hooks/useLoadedPlan";
 import useAllPlansRLO from "../../data/useAllPlansRLO";
@@ -22,8 +22,8 @@ export interface ItemTuple extends RippedLO<ItemData> {
 }
 
 function listTheTree(id, ancestorDeleting = false, depth = 0): ItemTuple[] {
-    const list: ItemTuple[] = planStore.getChildItemLOs(id).map((lo) => ({
-        ...ripLoadObject(lo),
+    const list: ItemTuple[] = planStore.getChildItemRlos(id).map((rlo) => ({
+        ...rlo,
         ancestorDeleting,
         depth,
     }));
@@ -31,9 +31,7 @@ function listTheTree(id, ancestorDeleting = false, depth = 0): ItemTuple[] {
         const t = list[i].data;
         if (!t) continue;
         if (t.ingredientId) {
-            const ing = ripLoadObject(
-                LibraryStore.getIngredientById(t.ingredientId),
-            ).data;
+            const ing = LibraryStore.getIngredientRloById(t.ingredientId).data;
             if (ing) {
                 list[i].data = {
                     ...t,
@@ -64,7 +62,7 @@ export const PlannerController: React.FC<Props> = ({ match }) => {
     useLoadedPlan(match.params.pid);
     const allPlans = useAllPlansRLO();
     const state = useFluxStore(() => {
-        const activePlan = ripLoadObject(planStore.getActivePlanLO());
+        const activePlan = planStore.getActivePlanRlo();
         const activeItem = planStore.getActiveItem();
         const selectedItems = planStore.getSelectedItems();
         return {
