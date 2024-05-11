@@ -1,8 +1,8 @@
 import planStore from "features/Planner/data/planStore";
 import LibraryStore from "../../RecipeLibrary/data/LibraryStore";
-import type { RecipeFromPlanItem } from "global/types/types";
+import type { Ingredient, RecipeFromPlanItem } from "global/types/types";
 import PlanItemStatus from "../../Planner/data/PlanItemStatus";
-import { ripLoadObject, RippedLO } from "../../../util/ripLoadObject";
+import { RippedLO } from "../../../util/ripLoadObject";
 
 export const recipeRloFromItemRlo = (
     itemRlo: RippedLO<any>,
@@ -18,15 +18,15 @@ export const recipeRloFromItemRlo = (
             .concat(
                 (item.componentIds || []).filter((id) => !subIdLookup.has(id)),
             )
-            .map((id) => planStore.getItemLO(id))
-            .filter((lo) => {
-                if (!lo.hasValue()) {
+            .map((id) => planStore.getItemRlo(id))
+            .filter((rlo) => {
+                if (!rlo.data) {
                     loading = true;
                     return false;
                 }
                 return true;
             })
-            .map((lo) => lo.getValueEnforcing());
+            .map((rlo) => rlo.data);
     };
     const prepRecipe = (
         item,
@@ -48,14 +48,14 @@ export const recipeRloFromItemRlo = (
                     raw: ref.name,
                 };
                 let recurse = ref.subtaskIds && ref.subtaskIds.length;
-                let iLO;
+                let iRlo: RippedLO<Ingredient> | undefined;
                 if (ref.ingredientId) {
-                    iLO = LibraryStore.getIngredientById(ref.ingredientId);
-                    if (iLO.isLoading()) {
+                    iRlo = LibraryStore.getIngredientRloById(ref.ingredientId);
+                    if (iRlo.loading) {
                         loading = true;
                     }
-                    if (iLO.hasValue()) {
-                        const ing = iLO.getValueEnforcing();
+                    const ing = iRlo.data;
+                    if (ing) {
                         ref.ingredient = ing;
                         recurse = recurse || ing.type === "Recipe";
                     }
@@ -64,7 +64,7 @@ export const recipeRloFromItemRlo = (
                     subs.push(
                         prepRecipe(
                             ref,
-                            iLO,
+                            iRlo,
                             completing || ancestorCompleting,
                             deleting || ancestorDeleting,
                         ),
@@ -78,9 +78,7 @@ export const recipeRloFromItemRlo = (
             item.directions = item.notes;
         }
         if (!item.ingredientId) return item;
-        rLO =
-            rLO ||
-            ripLoadObject(LibraryStore.getIngredientById(item.ingredientId));
+        rLO = rLO || LibraryStore.getIngredientRloById(item.ingredientId);
         if (rLO.loading) {
             loading = true;
         }
