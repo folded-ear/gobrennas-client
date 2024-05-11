@@ -5,6 +5,7 @@ import { Plan } from "features/Planner/types";
 import { useProfileId } from "providers/Profile";
 import { BfsId } from "global/types/identity";
 import { zippedComparator } from "util/comparators";
+import { ensureInt } from "global/utils";
 
 export const GET_PLANS = gql(`
 query getPlans {
@@ -23,7 +24,7 @@ query getPlans {
 
 const orderComponentsById = (plans: Plan[], userId: BfsId) => {
     return plans.reduce((byId, plan) => {
-        let ownerId = plan.owner.id || Number.MAX_SAFE_INTEGER;
+        let ownerId = ensureInt(plan.owner.id) || Number.MAX_SAFE_INTEGER;
         const ownerName = plan.owner.name || "";
 
         if (ownerId === userId) {
@@ -49,7 +50,8 @@ export const useGetAllPlans = () => {
         .slice()
         .sort((a, b) =>
             zippedComparator(orderedPlans[a.id], orderedPlans[b.id]),
-        ) as Plan[];
+        )
+        .map((plan) => ({ ...plan, id: ensureInt(plan.id) }));
 
     return {
         ...result,
