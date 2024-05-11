@@ -16,6 +16,7 @@ import { FluxAction } from "../../../global/types/types";
 
 interface Props {
     allPlans: any;
+    loading: boolean;
     activePlan?: any;
     planDetailVisible: boolean;
     itemTuples: ItemTuple[];
@@ -25,13 +26,14 @@ interface Props {
 
 function Plan({
     allPlans,
+    loading,
     activePlan,
     planDetailVisible,
     itemTuples,
     isItemActive,
     isItemSelected,
 }: Props) {
-    if (!allPlans.data) {
+    if (loading) {
         return <LoadingIndicator primary="Loading plans..." />;
     }
 
@@ -91,7 +93,7 @@ function Plan({
     return (
         <PageBody hasFab fullWidth>
             <PlanHeader
-                allPlans={allPlans.data}
+                allPlans={allPlans}
                 activePlan={plan}
                 planDetailVisible={planDetailVisible}
                 hasBuckets={!!buckets}
