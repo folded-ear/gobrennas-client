@@ -8,7 +8,6 @@ const sendToPlanShape = {
 };
 
 const RecipeActions = {
-    RECIPE_DELETED: "recipe/recipe-deleted",
     SEND_TO_PLAN: typedAction("recipe/send-to-plan", sendToPlanShape),
     SENT_TO_PLAN: typedAction("recipe/sent-to-plan", sendToPlanShape),
     ERROR_SENDING_TO_PLAN: typedAction(
