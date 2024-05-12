@@ -17,17 +17,13 @@ type ShareRecipeProps = {
 
 const Body: React.FC<ShareRecipeProps> = ({ recipe }) => {
     const [rlo, setRlo] = React.useState<RippedLO<SharedRecipe>>({});
+    const [retry, setRetry] = React.useState(0);
     React.useEffect(() => {
-        if (rlo.data && rlo.data.id === recipe.id) {
+        if (rlo.data?.id === recipe.id) {
             return;
         }
         setRlo({
             loading: true,
-            data: {
-                id: recipe.id,
-                slug: "",
-                secret: "",
-            },
         });
         axios.get(`/${recipe.id}/share`).then(
             (data) =>
@@ -39,21 +35,23 @@ const Body: React.FC<ShareRecipeProps> = ({ recipe }) => {
                     error,
                 }),
         );
-    }, [rlo, recipe.id]);
-    if (rlo.loading || !rlo.data) {
-        return (
-            <Box style={{ textAlign: "center" }}>
-                <CircularProgress />
-            </Box>
-        );
-    } else if (rlo.error) {
+    }, [rlo.data?.id, recipe.id, retry]);
+    if (rlo.error && !rlo.loading) {
         return (
             <div>
                 Something went wrong getting a sharable link.
                 <div style={{ textAlign: "right" }}>
-                    <Button onClick={() => setRlo({})}>Try Again</Button>
+                    <Button onClick={() => setRetry((r) => r + 1)}>
+                        Try Again
+                    </Button>
                 </div>
             </div>
+        );
+    } else if (rlo.loading || !rlo.data) {
+        return (
+            <Box style={{ textAlign: "center" }}>
+                <CircularProgress />
+            </Box>
         );
     } else {
         // got it!
