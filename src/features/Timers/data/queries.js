@@ -146,7 +146,9 @@ export const useAddTimeToTimer = (options) =>
 const DELETE_TIMER = gql`
     mutation deleteTimer($id: ID!) {
         timer {
-            delete(id: $id)
+            delete(id: $id) {
+                id
+            }
         }
     }
 `;
@@ -161,13 +163,19 @@ export const useDeleteTimer = (options) =>
                     id,
                 },
                 refetchQueries: ["listAllTimers"],
+                update(cache, r) {
+                    const id = r.data?.timer?.delete.id;
+                    cache.evict({ id });
+                },
             }),
     );
 
 const RESET_TIMER = gql`
     mutation resetTimer($id: ID!, $duration: PositiveInt!) {
         timer {
-            delete(id: $id)
+            delete(id: $id) {
+                id
+            }
             create(duration: $duration) {
                 id
             }
@@ -186,5 +194,9 @@ export const useResetTimer = (options) =>
                     duration,
                 },
                 refetchQueries: ["listAllTimers"],
+                update(cache, r) {
+                    const id = r.data?.timer?.delete.id;
+                    cache.evict({ id });
+                },
             }),
     );

@@ -235,7 +235,7 @@ type PantryMutation {
     """
     combineItems(ids: [ID!]!): PantryItem
     "Delete a pantry item, which MUST be unreferenced."
-    deleteItem(id: ID!): Boolean!
+    deleteItem(id: ID!): Deletion!
     removeLabel(id: ID!, label: String!): PantryItem
     removeSynonym(id: ID!, synonym: String!): PantryItem
     renameItem(id: ID!, name: String!): PantryItem
@@ -357,17 +357,11 @@ type PlannerMutation {
     "Create a new empty plan."
     createPlan(name: String!): Plan!
     "Delete a bucket from a plan."
-    deleteBucket(bucketId: ID!, planId: ID!): Plan!
-    "Deletes the grant for a user w/in a plan, if one exists."
-    deleteGrant(planId: ID!, userId: ID!): Plan!
-    """
-
-    Deletes an item from a plan, and return its former parent (plan or item).
-    This operation cascades.
-    """
-    deleteItem(id: ID!): PlanItem
+    deleteBucket(bucketId: ID!, planId: ID!): Deletion!
+    "Deletes an item from a plan. This operation cascades."
+    deleteItem(id: ID!): Deletion!
     "Deletes the given plan, and all its related data."
-    deletePlan(id: ID!): Boolean!
+    deletePlan(id: ID!): Deletion!
     "Create a new plan by duplicating the specified source plan."
     duplicatePlan(name: String!, sourcePlanId: ID!): Plan!
     """
@@ -386,6 +380,8 @@ type PlannerMutation {
     under this item.
     """
     reorderSubitems(itemIds: [ID!]!, parentId: ID!): PlanItem
+    "Revokes the grant for a user w/in a plan, if one exists."
+    revokeGrant(planId: ID!, userId: ID!): Plan!
     "Set the access level granted to a user w/in a plan."
     setGrant(accessLevel: AccessLevel, planId: ID!, userId: ID!): Plan!
     """
@@ -553,7 +549,7 @@ type TimerMutation {
     Ensure the specified timer has been deleted, regardless of its status or
     existence, returning whether any action was taken.
     """
-    delete(id: ID!): Boolean!
+    delete(id: ID!): Deletion!
     "Pause the specified running timer."
     pause(id: ID!): Timer!
     "Resume the specified paused timer."
