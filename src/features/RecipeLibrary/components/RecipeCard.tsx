@@ -163,10 +163,12 @@ const RecipeCard: React.FC<Props> = ({ recipe, mine, indicateMine, me }) => {
                         icon={<ViewIcon />}
                         url={`/library/recipe/${recipe.id}`}
                     />
-                    <TaskIcon
-                        icon={<EditIcon />}
-                        url={`/library/recipe/${recipe.id}/edit`}
-                    />
+                    {mine && (
+                        <TaskIcon
+                            icon={<EditIcon />}
+                            url={`/library/recipe/${recipe.id}/edit`}
+                        />
+                    )}
                     <SendToPlan
                         onClick={(planId) =>
                             Dispatcher.dispatch({
