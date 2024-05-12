@@ -25,6 +25,7 @@ export interface Recipe extends Ingredient {
      * is based upon.
      */
     libraryRecipeId?: BfsId;
+    ownerId?: BfsId;
 }
 
 export interface PantryItem extends Ingredient {

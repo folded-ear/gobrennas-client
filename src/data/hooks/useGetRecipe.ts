@@ -19,6 +19,9 @@ query getRecipe($id: ID!) {
         url
         focus
       }
+      owner {
+        id
+      }
     }
   }
 }
@@ -40,6 +43,7 @@ function adapter(data: GetRecipeQuery | undefined) {
 
     const recipe: Recipe = {
         id: result?.id as BfsId,
+        ownerId: result?.owner.id,
         calories: result?.calories || null,
         directions: result?.directions || null,
         externalUrl: result?.externalUrl || null,
