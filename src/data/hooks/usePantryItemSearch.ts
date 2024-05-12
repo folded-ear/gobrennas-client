@@ -84,6 +84,7 @@ export const usePantryItemSearch = ({
     // grid, and manually encode an offset-cursor as needed.
     const after = page === 0 ? null : btoa("offset-" + (page * pageSize - 1));
     return useAdaptingQuery(SEARCH_PANTRY_ITEMS_QUERY, adapter, {
+        fetchPolicy: "cache-and-network",
         variables: { query, first: pageSize, after, sortBy, sortDir },
         skip: pageSize <= 0,
     });

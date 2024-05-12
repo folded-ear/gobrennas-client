@@ -23,6 +23,7 @@ export const useSearchLibrary = ({
         GetSearchLibraryQuery,
         GetSearchLibraryQueryVariables
     >(SEARCH_RECIPES, {
+        fetchPolicy: "cache-and-network",
         variables: {
             query,
             scope,
