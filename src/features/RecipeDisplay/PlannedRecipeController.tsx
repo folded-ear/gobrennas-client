@@ -6,11 +6,9 @@ import LoadingIndicator from "views/common/LoadingIndicator";
 import RecipeDetail from "./components/RecipeDetail";
 import { RouteComponentProps } from "react-router";
 import { useLoadedPlan } from "features/RecipeDisplay/hooks/useLoadedPlan";
-import { recipeLoByItemLo } from "features/RecipeDisplay/utils/recipeLoByItemLo";
+import { recipeRloFromItemRlo } from "features/RecipeDisplay/utils/recipeRloFromItemRlo";
 import CloseButton from "../../views/common/CloseButton";
 import history from "../../util/history";
-import LoadObject from "util/LoadObject";
-import { RecipeFromPlanItem } from "global/types/types";
 import CookedItButton from "features/Planner/components/CookedItButton";
 
 type Props = RouteComponentProps<{
@@ -20,35 +18,34 @@ type Props = RouteComponentProps<{
 
 const PlannedRecipeController: React.FC<Props> = ({ match }) => {
     const rid = parseInt(match.params.rid, 10);
-    const lo: LoadObject<RecipeFromPlanItem> = useFluxStore(
-        () => recipeLoByItemLo(planStore.getItemLO(rid)),
+    const recipe = useFluxStore(
+        () => recipeRloFromItemRlo(planStore.getItemRlo(rid)).data,
         [planStore, LibraryStore],
         [rid],
     );
 
-    useLoadedPlan(match.params.pid);
+    useLoadedPlan(match.params.pid); // don't actually need the data, just need it loaded
 
-    if (lo.hasValue()) {
-        const recipe = lo.getValueEnforcing();
-        return (
-            <RecipeDetail
-                recipe={recipe}
-                subrecipes={recipe.subrecipes}
-                nav={
-                    <>
-                        <CookedItButton recipe={recipe} />
-                        <CloseButton
-                            onClick={() =>
-                                history.push(`/plan/${match.params.pid}`)
-                            }
-                        />
-                    </>
-                }
-            />
-        );
+    if (!recipe) {
+        return <LoadingIndicator />;
     }
 
-    return <LoadingIndicator />;
+    return (
+        <RecipeDetail
+            recipe={recipe}
+            subrecipes={recipe.subrecipes}
+            nav={
+                <>
+                    <CookedItButton recipe={recipe} />
+                    <CloseButton
+                        onClick={() =>
+                            history.push(`/plan/${match.params.pid}`)
+                        }
+                    />
+                </>
+            }
+        />
+    );
 };
 
 export default PlannedRecipeController;

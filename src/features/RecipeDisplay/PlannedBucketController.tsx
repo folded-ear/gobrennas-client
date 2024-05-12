@@ -6,7 +6,7 @@ import LoadingIndicator from "views/common/LoadingIndicator";
 import RecipeDetail from "./components/RecipeDetail";
 import { RouteComponentProps } from "react-router";
 import { useLoadedPlan } from "features/RecipeDisplay/hooks/useLoadedPlan";
-import { recipeLoByItemAndBucket } from "features/RecipeDisplay/utils/recipeLoByItemAndBucket";
+import { recipeRloByPlanAndBucket } from "features/RecipeDisplay/utils/recipeRloByPlanAndBucket";
 import CloseButton from "../../views/common/CloseButton";
 import history from "../../util/history";
 import CookedItButton from "features/Planner/components/CookedItButton";
@@ -19,36 +19,33 @@ type Props = RouteComponentProps<{
 const PlannedBucketController: React.FC<Props> = ({ match }) => {
     const pid = parseInt(match.params.pid, 10);
     const bid = parseInt(match.params.bid, 10);
-    const lo = useFluxStore(
-        () => recipeLoByItemAndBucket(pid, bid),
+    const recipe = useFluxStore(
+        () => recipeRloByPlanAndBucket(pid, bid).data,
         [planStore, LibraryStore],
         [pid, bid],
     );
 
-    useLoadedPlan(pid);
+    useLoadedPlan(pid); // don't actually need the data, just need it loaded
 
-    if (lo.hasValue()) {
-        const recipe = lo.getValueEnforcing();
-        return (
-            <RecipeDetail
-                recipe={recipe}
-                subrecipes={recipe.subrecipes}
-                nav={
-                    <>
-                        {recipe.libraryRecipeId != null && (
-                            // only if the bucket is a single recipe
-                            <CookedItButton recipe={recipe} />
-                        )}
-                        <CloseButton
-                            onClick={() => history.push(`/plan/${pid}`)}
-                        />
-                    </>
-                }
-            />
-        );
+    if (!recipe) {
+        return <LoadingIndicator />;
     }
 
-    return <LoadingIndicator />;
+    return (
+        <RecipeDetail
+            recipe={recipe}
+            subrecipes={recipe.subrecipes}
+            nav={
+                <>
+                    {recipe.libraryRecipeId != null && (
+                        // only if the bucket is a single recipe
+                        <CookedItButton recipe={recipe} />
+                    )}
+                    <CloseButton onClick={() => history.push(`/plan/${pid}`)} />
+                </>
+            }
+        />
+    );
 };
 
 export default PlannedBucketController;

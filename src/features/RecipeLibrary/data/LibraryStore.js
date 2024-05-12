@@ -14,6 +14,7 @@ import { loadObjectMapOf } from "util/loadObjectTypes";
 import { fromMilliseconds } from "util/time";
 import typedStore from "util/typedStore";
 import LibraryActions from "./LibraryActions";
+import { ripLoadObject } from "../../../util/ripLoadObject";
 
 export const adaptTime = (recipe) => {
     if (!recipe.totalTime) return recipe;
@@ -206,12 +207,13 @@ class LibraryStore extends ReduceStore {
         return lo;
     }
 
-    getRecipeById(selectedRecipe) {
-        invariant(
-            typeof selectedRecipe === "number",
-            "That is not a valid integer",
-        );
-        return this.getIngredientById(selectedRecipe);
+    getIngredientRloById(id) {
+        return ripLoadObject(this.getIngredientById(id));
+    }
+
+    getRecipeRloById(id) {
+        invariant(typeof id === "number", "That is not a valid integer");
+        return ripLoadObject(this.getIngredientById(id));
     }
 }
 

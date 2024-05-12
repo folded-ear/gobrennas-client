@@ -4,6 +4,7 @@ import LoadObjectState from "../../../util/LoadObjectState";
 import AccessLevel from "../../../data/AccessLevel";
 import { FluxAction } from "global/types/types";
 import { BfsId } from "global/types/identity";
+import { RippedLO } from "../../../util/ripLoadObject";
 
 export interface PlanBucket {
     id: BfsId;
@@ -52,18 +53,21 @@ declare namespace TaskStore {}
 
 declare class PlanStore extends FluxReduceStore<State, FluxAction> {
     getPlanIdsLO(): LoadObject<clientOrDatabaseIdType>;
+    getPlanIdsRlo(): RippedLO<clientOrDatabaseIdType>;
 
-    getPlansLO(): LoadObject<PlanItem[]>;
+    getPlansRlo(): RippedLO<PlanItem[]>;
 
-    getChildItemLOs(id: clientOrDatabaseIdType): LoadObject<PlanItem>[];
+    getChildItemRlos(id: clientOrDatabaseIdType): RippedLO<PlanItem>[];
 
     getNonDescendantComponents(id: number): PlanItem[];
 
     getActivePlanLO(): LoadObject<PlanItem>;
+    getActivePlanRlo(): RippedLO<PlanItem>;
 
     getActiveItem(): PlanItem;
 
     getItemLO(id: clientOrDatabaseIdType): LoadObject<PlanItem>;
+    getItemRlo(id: clientOrDatabaseIdType): RippedLO<PlanItem>;
 
     getSelectedItems(): PlanItem[];
 

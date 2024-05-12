@@ -15,11 +15,9 @@ import { BaseItemProp, ItemProps } from "views/shop/types";
 import { Maybe } from "graphql/jsutils/Maybe";
 import { Quantity } from "global/types/types";
 import { BfsId } from "global/types/identity";
-import { ripLoadObject } from "util/ripLoadObject";
 import windowStore from "../data/WindowStore";
 import partition from "../util/partition";
 import { intersection } from "../util/arrayAsSet";
-import LoadObject from "../util/LoadObject";
 import useActiveShoppingPlanIds from "../data/useActiveShoppingPlanIds";
 
 interface ItemTuple extends PlanItem, ItemProps {
@@ -41,8 +39,7 @@ function gatherLeaves(item: PlanItem): PathedItemTuple[] {
         ];
     }
     return planStore
-        .getChildItemLOs(item.id)
-        .map((lo) => ripLoadObject(lo))
+        .getChildItemRlos(item.id)
         .filter((rippedLO) => rippedLO.data)
         .map((rippedLO) => {
             const item = rippedLO.data;
@@ -73,7 +70,7 @@ interface OrderableIngredient {
     id: number;
     items: PathedItemTuple[];
     data?: Ingredient;
-    loading: boolean;
+    loading?: boolean;
 }
 
 /**
@@ -111,7 +108,7 @@ function groupItems(
         orderedIngredients.push({
             id: ingId,
             items: items,
-            ...ripLoadObject(LibraryStore.getIngredientById(ingId)),
+            ...LibraryStore.getIngredientRloById(ingId),
         });
     }
     orderedIngredients.sort(({ data: a }, { data: b }) => {
@@ -218,19 +215,16 @@ const Shop = () => {
     const activePlanIds = useActiveShoppingPlanIds();
     const [plans, itemTuples] = useFluxStore(
         () => {
-            const los: LoadObject<PlanItem>[] = [];
+            const plans: PlanItem[] = [];
             if (activePlanIds != null && activePlanIds.length > 0) {
-                const allPlanIds = planStore.getPlanIdsLO().getValue();
+                const allPlanIds = planStore.getPlanIdsRlo().data;
                 for (const id of intersection(allPlanIds, activePlanIds)) {
-                    los.push(planStore.getItemLO(id));
+                    const p = planStore.getItemRlo(id).data;
+                    if (p != null) plans.push(p);
                 }
             }
-            if (los.length === 0) {
-                los.push(planStore.getActivePlanLO());
-            }
-            const plans: PlanItem[] = [];
-            for (const lo of los) {
-                const p = ripLoadObject(lo).data;
+            if (plans.length === 0) {
+                const p = planStore.getActivePlanRlo().data;
                 if (p != null) plans.push(p);
             }
             return [plans, groupItems(plans, expandedId, activeItem)];

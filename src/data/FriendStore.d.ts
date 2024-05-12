@@ -1,14 +1,14 @@
 import FluxReduceStore from "flux/lib/FluxReduceStore";
-import LoadObject from "../util/LoadObject";
 import { BfsId, FluxAction, UserType } from "../global/types/types";
 import { State } from "@dnd-kit/core/dist/store";
+import { RippedLO } from "../util/ripLoadObject";
 
 declare namespace FriendStore {}
 
 declare class FriendStore extends FluxReduceStore<State, FluxAction> {
-    getFriendsLO(): LoadObject<UserType[]>;
+    getFriendsRlo(): RippedLO<UserType[]>;
 
-    getFriendLO(id: BfsId): LoadObject<UserType>;
+    getFriendRlo(id: BfsId): RippedLO<UserType>;
 }
 
 const friendStore: FriendStore;

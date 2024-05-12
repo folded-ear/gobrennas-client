@@ -21,7 +21,6 @@ import PlanBucketManager from "features/Planner/components/PlanBucketManager";
 import SidebarUnit from "features/Planner/components/SidebarUnit";
 import User from "views/user/User";
 import { PlanItem } from "features/Planner/data/planStore";
-import { ripLoadObject } from "util/ripLoadObject";
 
 const LEVEL_NO_ACCESS = "NO_ACCESS";
 
@@ -32,7 +31,7 @@ interface Props {
 const PlanSidebar: React.FC<Props> = ({ plan }) => {
     const me = useProfile();
     const [friendsLoading, friendList, friendsById] = useFluxStore(() => {
-        const { data: friendList } = ripLoadObject(FriendStore.getFriendsLO());
+        const { data: friendList } = FriendStore.getFriendsRlo();
         const loading = friendList == null;
         return [
             loading,

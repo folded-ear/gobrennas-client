@@ -6,7 +6,7 @@ function useActiveShoppingPlanIds() {
     return useFluxStore(() => {
         const ids = shoppingStore.getActivePlanIds();
         if (ids != null && ids.length > 0) return ids;
-        return [planStore.getActivePlanLO().getValue()?.id];
+        return [planStore.getActivePlanRlo().data?.id];
     }, [planStore, shoppingStore]);
 }
 

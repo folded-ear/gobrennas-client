@@ -11,6 +11,7 @@ import { bucketComparator } from "util/comparators";
 import LoadObject from "util/LoadObject";
 import LoadObjectState from "util/LoadObjectState";
 import PlanApi from "./PlanApi";
+import { mapData, ripLoadObject } from "../../../util/ripLoadObject";
 import {
     addTask,
     addTaskAndFlush,
@@ -489,19 +490,23 @@ class PlanStore extends ReduceStore {
         return this.getState().topLevelIds.getLoadObject();
     }
 
-    getPlansLO() {
+    getPlanIdsRlo() {
+        return ripLoadObject(this.getPlanIdsLO());
+    }
+
+    getPlansRlo() {
         const s = this.getState();
-        return this.getPlanIdsLO().map((ids) =>
+        return mapData(this.getPlanIdsRlo(), (ids) =>
             losForIds(s, ids)
                 .filter((lo) => lo.isDone())
                 .map((lo) => lo.getValueEnforcing()),
         );
     }
 
-    getChildItemLOs(id) {
+    getChildItemRlos(id) {
         const s = this.getState();
         const t = taskForId(s, id);
-        return losForIds(s, t.subtaskIds);
+        return losForIds(s, t.subtaskIds).map(ripLoadObject);
     }
 
     getNonDescendantComponents(id) {
@@ -543,6 +548,10 @@ class PlanStore extends ReduceStore {
             : loForId(s, s.activeListId);
     }
 
+    getActivePlanRlo() {
+        return ripLoadObject(this.getActivePlanLO());
+    }
+
     getActiveItem() {
         const s = this.getState();
         if (s.activeTaskId == null) return null;
@@ -554,6 +563,10 @@ class PlanStore extends ReduceStore {
         if (id == null) throw new Error("No task has the null ID");
         const s = this.getState();
         return isKnown(s, id) ? loForId(s, id) : LoadObject.empty();
+    }
+
+    getItemRlo(id) {
+        return ripLoadObject(this.getItemLO(id));
     }
 
     getSelectedItems() {

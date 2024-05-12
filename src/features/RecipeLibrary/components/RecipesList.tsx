@@ -1,6 +1,8 @@
 import { AddRecipeIcon } from "../../../views/common/icons";
 import { Container as Content, Grid, useScrollTrigger } from "@mui/material";
-import RecipeCard from "features/RecipeLibrary/components/RecipeCard";
+import RecipeCard, {
+    RecipeType,
+} from "features/RecipeLibrary/components/RecipeCard";
 import { useIsMobile } from "providers/IsMobile";
 import React, { useState } from "react";
 import history from "util/history";
@@ -17,7 +19,7 @@ interface RecipesListProps {
     scope?: LibrarySearchScope;
     isLoading: boolean;
     isComplete: boolean;
-    recipes?: Array<any>;
+    recipes?: RecipeType[];
 
     onSearch(filter: string, scope: LibrarySearchScope): void;
 

@@ -1,14 +1,13 @@
-import LoadObject from "../../../util/LoadObject";
 import planStore from "features/Planner/data/planStore";
 import LibraryStore from "../../RecipeLibrary/data/LibraryStore";
-import type { RecipeFromPlanItem } from "global/types/types";
+import type { Ingredient, RecipeFromPlanItem } from "global/types/types";
 import PlanItemStatus from "../../Planner/data/PlanItemStatus";
+import { RippedLO } from "../../../util/ripLoadObject";
 
-export const recipeLoByItemLo = (
-    itemLO: LoadObject<any>,
-): LoadObject<RecipeFromPlanItem> => {
-    let lo = itemLO;
-    if (!lo.hasValue()) return lo;
+export const recipeRloFromItemRlo = (
+    itemRlo: RippedLO<any>,
+): RippedLO<RecipeFromPlanItem> => {
+    if (!itemRlo.data) return itemRlo;
 
     const subs: any[] = [];
     let loading = false;
@@ -19,19 +18,19 @@ export const recipeLoByItemLo = (
             .concat(
                 (item.componentIds || []).filter((id) => !subIdLookup.has(id)),
             )
-            .map((id) => planStore.getItemLO(id))
-            .filter((lo) => {
-                if (!lo.hasValue()) {
+            .map((id) => planStore.getItemRlo(id))
+            .filter((rlo) => {
+                if (!rlo.data) {
                     loading = true;
                     return false;
                 }
                 return true;
             })
-            .map((lo) => lo.getValueEnforcing());
+            .map((rlo) => rlo.data);
     };
     const prepRecipe = (
         item,
-        rLO?: LoadObject<any>,
+        rLO?: RippedLO<any>,
         ancestorCompleting = false,
         ancestorDeleting = false,
     ): RecipeFromPlanItem => {
@@ -49,14 +48,14 @@ export const recipeLoByItemLo = (
                     raw: ref.name,
                 };
                 let recurse = ref.subtaskIds && ref.subtaskIds.length;
-                let iLO;
+                let iRlo: RippedLO<Ingredient> | undefined;
                 if (ref.ingredientId) {
-                    iLO = LibraryStore.getIngredientById(ref.ingredientId);
-                    if (iLO.isLoading()) {
+                    iRlo = LibraryStore.getIngredientRloById(ref.ingredientId);
+                    if (iRlo.loading) {
                         loading = true;
                     }
-                    if (iLO.hasValue()) {
-                        const ing = iLO.getValueEnforcing();
+                    const ing = iRlo.data;
+                    if (ing) {
                         ref.ingredient = ing;
                         recurse = recurse || ing.type === "Recipe";
                     }
@@ -65,7 +64,7 @@ export const recipeLoByItemLo = (
                     subs.push(
                         prepRecipe(
                             ref,
-                            iLO,
+                            iRlo,
                             completing || ancestorCompleting,
                             deleting || ancestorDeleting,
                         ),
@@ -79,27 +78,23 @@ export const recipeLoByItemLo = (
             item.directions = item.notes;
         }
         if (!item.ingredientId) return item;
-        rLO =
-            rLO ||
-            (LibraryStore.getIngredientById(
-                item.ingredientId,
-            ) as LoadObject<any>);
-        if (rLO.isLoading()) {
+        rLO = rLO || LibraryStore.getIngredientRloById(item.ingredientId);
+        if (rLO.loading) {
             loading = true;
         }
-        if (!rLO.hasValue()) return item;
-        const r = rLO.getValueEnforcing();
+        const r = rLO.data;
+        if (!r) return item;
         Object.keys(r)
             .filter((k) => !item.hasOwnProperty(k))
             .forEach((k) => (item[k] = r[k]));
         item.libraryRecipeId = item.ingredientId || undefined;
         return item;
     };
-    const recipe = prepRecipe(lo.getValueEnforcing());
+    const recipe = prepRecipe(itemRlo.data);
     recipe.subrecipes = subs;
-    lo = LoadObject.withValue(recipe);
-    if (loading) {
-        lo = lo.loading();
-    }
-    return lo;
+    return {
+        ...itemRlo,
+        data: recipe,
+        loading,
+    };
 };

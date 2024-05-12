@@ -62,8 +62,7 @@ const RecipeCard: React.FC<Props> = ({ recipe, mine, indicateMine, me }) => {
     const owner = useFluxStore(
         () => {
             if (mine) return indicateMine ? me : null;
-            const lo = FriendStore.getFriendLO(recipe.owner.id);
-            return lo.hasValue() ? lo.getValueEnforcing() : null;
+            return FriendStore.getFriendRlo(recipe.owner.id).data;
         },
         [FriendStore],
         [mine, indicateMine, me, recipe.owner.id],

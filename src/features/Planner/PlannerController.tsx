@@ -4,33 +4,37 @@ import { isExpanded } from "features/Planner/data/plannerUtils";
 import planStore from "features/Planner/data/planStore";
 import useFluxStore from "data/useFluxStore";
 import Plan from "features/Planner/components/Plan";
-import LoadObject from "../../util/LoadObject";
-import { ripLoadObject, RippedLO } from "util/ripLoadObject";
+import { RippedLO } from "util/ripLoadObject";
 import { RouteComponentProps } from "react-router";
 import { useLoadedPlan } from "../RecipeDisplay/hooks/useLoadedPlan";
 import { useGetAllPlans } from "data/hooks/useGetAllPlans";
+import { PlanItem } from "./data/planStore";
+import { Ingredient } from "../../global/types/types";
 
-export interface ItemTuple extends RippedLO<any> {
+interface ItemData extends PlanItem {
+    ingredient?: Ingredient;
+    fromRecipe?: boolean;
+}
+
+export interface ItemTuple extends RippedLO<ItemData> {
     ancestorDeleting: boolean;
     depth: number;
 }
 
 function listTheTree(id, ancestorDeleting = false, depth = 0): ItemTuple[] {
-    const list = planStore.getChildItemLOs(id).map((lo: LoadObject<any>) => ({
-        ...ripLoadObject(lo),
+    const list: ItemTuple[] = planStore.getChildItemRlos(id).map((rlo) => ({
+        ...rlo,
         ancestorDeleting,
         depth,
     }));
     for (let i = list.length - 1; i >= 0; i--) {
-        if (!list[i].data) continue;
         const t = list[i].data;
+        if (!t) continue;
         if (t.ingredientId) {
-            const ing = ripLoadObject(
-                LibraryStore.getIngredientById(t.ingredientId),
-            ).data;
+            const ing = LibraryStore.getIngredientRloById(t.ingredientId).data;
             if (ing) {
                 list[i].data = {
-                    ...list[i].data,
+                    ...t,
                     ingredient: ing,
                     fromRecipe: ing.type === "Recipe",
                 };
@@ -58,7 +62,7 @@ export const PlannerController: React.FC<Props> = ({ match }) => {
     useLoadedPlan(match.params.pid);
     const { data: allPlans, loading } = useGetAllPlans();
     const state = useFluxStore(() => {
-        const activePlan = ripLoadObject(planStore.getActivePlanLO());
+        const activePlan = planStore.getActivePlanRlo();
         const activeItem = planStore.getActiveItem();
         const selectedItems = planStore.getSelectedItems();
         return {

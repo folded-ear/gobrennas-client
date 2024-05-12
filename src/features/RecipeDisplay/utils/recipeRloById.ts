@@ -1,24 +1,24 @@
 import LibraryStore from "features/RecipeLibrary/data/LibraryStore";
-import type { Recipe as RecipeType } from "global/types/types";
-import LoadObject from "util/LoadObject";
+import type { Recipe } from "global/types/types";
+import { RippedLO } from "../../../util/ripLoadObject";
 
-export const recipeLoById = (id) => {
-    let lo = LibraryStore.getIngredientById(id);
-    if (!lo.hasValue()) return lo;
+export function recipeRloById(id): RippedLO<Recipe & { subrecipes: Recipe[] }> {
+    const rlo = LibraryStore.getRecipeRloById(id);
+    if (!rlo.data) return rlo;
 
     const subIds = new Set();
-    const subs: RecipeType[] = [];
+    const subs: Recipe[] = [];
     let loading = false;
     const prepRecipe = (recipe) => ({
         ...recipe,
         ingredients: (recipe.ingredients || []).map((ref) => {
             if (!ref.ingredientId) return ref;
-            const iLO = LibraryStore.getIngredientById(ref.ingredientId);
-            if (iLO.isLoading()) {
+            const iRlo = LibraryStore.getIngredientRloById(ref.ingredientId);
+            if (iRlo.loading) {
                 loading = true;
             }
-            if (!iLO.hasValue()) return ref;
-            const ing = iLO.getValueEnforcing();
+            const ing = iRlo.data;
+            if (!ing) return ref;
             ref = {
                 ...ref,
                 ingredient: ing,
@@ -30,11 +30,11 @@ export const recipeLoById = (id) => {
             return ref;
         }),
     });
-    const recipe = prepRecipe(lo.getValueEnforcing());
+    const recipe = prepRecipe(rlo.data);
     recipe.subrecipes = subs;
-    lo = LoadObject.withValue(recipe);
-    if (loading) {
-        lo = lo.loading();
-    }
-    return lo;
-};
+    return {
+        ...rlo,
+        data: recipe,
+        loading,
+    };
+}
