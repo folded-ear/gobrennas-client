@@ -9,13 +9,6 @@ const axios = BaseAxios.create({
 });
 
 const RecipeApi = {
-    deleteRecipe(id) {
-        promiseFlux(axios.delete(`/recipe/${id}`), () => ({
-            type: RecipeActions.RECIPE_DELETED,
-            id,
-        }));
-    },
-
     sendToPlan(recipeId, planId, scale) {
         promiseFlux(
             axios.post(

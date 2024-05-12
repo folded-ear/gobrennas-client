@@ -7,7 +7,6 @@ import { ReduceStore } from "flux/utils";
 import invariant from "invariant";
 import PropTypes from "prop-types";
 import { clientOrDatabaseIdType } from "util/ClientId";
-import history from "util/history";
 import LoadObject from "util/LoadObject";
 import LoadObjectMap from "util/LoadObjectMap";
 import { loadObjectMapOf } from "util/loadObjectTypes";
@@ -39,14 +38,6 @@ class LibraryStore extends ReduceStore {
 
     reduce(state, action) {
         switch (action.type) {
-            case RecipeActions.RECIPE_DELETED: {
-                history.push("/library");
-                return {
-                    ...state,
-                    byId: state.byId.delete(action.id),
-                };
-            }
-
             case LibraryActions.LOAD_INGREDIENTS: {
                 if (action.ids.length === 0) {
                     return state;
