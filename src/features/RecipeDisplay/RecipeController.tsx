@@ -10,8 +10,8 @@ import ShareRecipe from "./components/ShareRecipe";
 import CloseButton from "../../views/common/CloseButton";
 import EditButton from "../../views/common/EditButton";
 import DeleteButton from "../../views/common/DeleteButton";
-import RecipeApi from "../../data/RecipeApi";
 import NotFound from "../../views/common/NotFound";
+import { useDeleteRecipe } from "../../data/hooks/useDeleteRecipe";
 
 type Props = RouteComponentProps<{
     id: string;
@@ -23,6 +23,7 @@ const RecipeController: React.FC<Props> = ({ match }) => {
         error,
         data: fullRecipe,
     } = useGetFullRecipe(match.params.id);
+    const [deleteRecipe] = useDeleteRecipe();
 
     if (loading) {
         return <LoadingIndicator />;
@@ -31,6 +32,12 @@ const RecipeController: React.FC<Props> = ({ match }) => {
     if (error) {
         return <NotFound />;
     }
+
+    const handleDelete = () =>
+        fullRecipe?.recipe &&
+        deleteRecipe(fullRecipe.recipe.id).then((result) => {
+            if (result) history.push("/library");
+        });
 
     return (
         fullRecipe &&
@@ -70,11 +77,7 @@ const RecipeController: React.FC<Props> = ({ match }) => {
                             {fullRecipe.mine && (
                                 <DeleteButton
                                     forType="recipe"
-                                    onConfirm={() =>
-                                        RecipeApi.deleteRecipe(
-                                            fullRecipe.recipe.id,
-                                        )
-                                    }
+                                    onConfirm={handleDelete}
                                 />
                             )}
                             <CloseButton onClick={() => history.goBack()} />

@@ -6,12 +6,12 @@ import { useGetRecipe } from "data/hooks/useGetRecipe";
 import PageBody from "views/common/PageBody";
 import RecipeForm from "features/RecipeEdit/components/RecipeForm";
 import DeleteButton from "views/common/DeleteButton";
-import RecipeApi from "data/RecipeApi";
 import { Alert, CircularProgress } from "@mui/material";
 import { useUpdateRecipe } from "data/hooks/useUpdateRecipe";
 import { useCreateRecipe } from "data/hooks/useCreateRecipe";
 import type { BfsId } from "global/types/identity";
-import type { DraftRecipe, Recipe } from "global/types/types";
+import type { DraftRecipe } from "global/types/types";
+import { useDeleteRecipe } from "../../data/hooks/useDeleteRecipe";
 
 type Props = RouteComponentProps<{ id?: string }>;
 
@@ -22,7 +22,7 @@ const RecipeEditController: React.FC<Props> = ({ match }) => {
     const { data: labelList } = useGetAllLabels();
     const { error: updateError, updateRecipe } = useUpdateRecipe();
     const { error: createError, createRecipe } = useCreateRecipe();
-    let draft: Recipe;
+    const [deleteRecipe] = useDeleteRecipe();
 
     if (!id) {
         return <Redirect to="/library" />;
@@ -34,9 +34,9 @@ const RecipeEditController: React.FC<Props> = ({ match }) => {
 
     const shouldCreateCopy = match.path.split("/").includes("make-copy");
 
-    draft = { ...recipe };
+    const draft = { ...recipe };
     if (shouldCreateCopy) {
-        draft = { ...recipe, name: `Copy of ${recipe.name}` };
+        draft.name = `Copy of ${draft.name}`;
     }
 
     const handleUpdate = (recipe: DraftRecipe) => {
@@ -55,7 +55,9 @@ const RecipeEditController: React.FC<Props> = ({ match }) => {
     };
 
     const handleDelete = (id: BfsId) => {
-        RecipeApi.deleteRecipe(id);
+        deleteRecipe(id).then((result) => {
+            if (result) history.push("/library");
+        });
     };
 
     const handleCancel = () => {

@@ -46,6 +46,11 @@ type AccessControlEntry {
     user: User
 }
 
+type Deletion {
+    id: ID!
+    name: String
+}
+
 type Favorite implements Node {
     id: ID!
     "The name/title of the object that is a favorite."
@@ -100,7 +105,7 @@ type LabelsQuery {
 
 type LibraryMutation {
     createRecipe(cookThis: Boolean, info: IngredientInfo!, photo: Upload): Recipe!
-    deleteRecipe(id: ID!): Boolean!
+    deleteRecipe(id: ID!): Deletion!
     setRecipePhoto(id: ID!, photo: Upload!): Recipe!
     updateRecipe(id: ID!, info: IngredientInfo!, photo: Upload): Recipe!
 }
