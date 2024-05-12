@@ -47,47 +47,6 @@ class LibraryStore extends ReduceStore {
                 };
             }
 
-            case RecipeActions.CREATE_RECIPE: {
-                return {
-                    ...state,
-                    byId: state.byId.set(
-                        action.data.id,
-                        LoadObject.withValue(action.data).creating(),
-                    ),
-                };
-            }
-
-            case RecipeActions.RECIPE_CREATED: {
-                return {
-                    ...state,
-                    byId: state.byId
-                        .set(
-                            action.data.id,
-                            LoadObject.withValue(adaptTime(action.data)),
-                        )
-                        .delete(action.id),
-                };
-            }
-
-            case RecipeActions.UPDATE_RECIPE: {
-                return {
-                    ...state,
-                    byId: state.byId.update(action.data.id, (lo) =>
-                        lo.updating(),
-                    ),
-                };
-            }
-
-            case RecipeActions.RECIPE_UPDATED: {
-                return {
-                    ...state,
-                    byId: state.byId.set(
-                        action.id,
-                        LoadObject.withValue(adaptTime(action.data)).done(),
-                    ),
-                };
-            }
-
             case LibraryActions.LOAD_INGREDIENTS: {
                 if (action.ids.length === 0) {
                     return state;
@@ -134,26 +93,6 @@ class LibraryStore extends ReduceStore {
                 };
             }
 
-            case LibraryActions.SEARCH_LOADED: {
-                if (
-                    action.filter !== state.filter ||
-                    action.scope !== state.scope
-                ) {
-                    // out of order
-                    // eslint-disable-next-line no-console
-                    console.log("OUT OF ORDER - IGNORE", action.filter);
-                    return state;
-                }
-                return {
-                    ...state,
-                    byId: action.data.content.reduce(
-                        (byId, r) =>
-                            byId.set(r.id, LoadObject.withValue(adaptTime(r))),
-                        state.byId,
-                    ),
-                };
-            }
-
             case RecipeActions.SEND_TO_PLAN: {
                 RecipeApi.sendToPlan(
                     action.recipeId,
@@ -183,13 +122,6 @@ class LibraryStore extends ReduceStore {
                         })),
                     ),
                 };
-            }
-
-            // This takes place in ad hoc fashion, outside the normal edit flows
-            // which uses DraftRecipeStore. So it's here.
-            case RecipeActions.SET_RECIPE_PHOTO: {
-                RecipeApi.setRecipePhoto(action.id, action.photo);
-                return state;
             }
 
             default: {
