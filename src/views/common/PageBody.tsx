@@ -1,4 +1,4 @@
-import { Container } from "@mui/material";
+import { Container, ContainerProps } from "@mui/material";
 import { CreateCSSProperties, makeStyles } from "@mui/styles";
 import classnames from "classnames";
 import React from "react";
@@ -32,7 +32,7 @@ type PageBodyProps = {
     fullWidth?: boolean;
     className?: string;
     id?: string;
-};
+} & ContainerProps;
 
 const PageBody: React.FC<PageBodyProps> = (props) => {
     const { children, hasFab, fullWidth, className, ...passthrough } = props;
