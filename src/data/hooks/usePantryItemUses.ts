@@ -56,8 +56,7 @@ export const usePantryItemUses = (
     id: string,
 ): UseQueryResult<Results, Variables> => {
     return useAdaptingQuery(PANTRY_ITEMS_USES, adapter, {
+        fetchPolicy: "cache-and-network",
         variables: { id },
-        // This is required to make Apollo refetch when 'id' changes.
-        fetchPolicy: "network-only",
     });
 };
