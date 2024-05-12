@@ -1,6 +1,6 @@
 import * as React from "react";
 import { useGetAllLabels } from "data/hooks/useGetAllLabels";
-import { Redirect, useHistory, withRouter } from "react-router-dom";
+import { Link, Redirect, useHistory, withRouter } from "react-router-dom";
 import { RouteComponentProps } from "react-router";
 import { useGetRecipe } from "data/hooks/useGetRecipe";
 import PageBody from "views/common/PageBody";
@@ -12,6 +12,8 @@ import { useCreateRecipe } from "data/hooks/useCreateRecipe";
 import type { BfsId } from "global/types/identity";
 import type { DraftRecipe } from "global/types/types";
 import { useDeleteRecipe } from "../../data/hooks/useDeleteRecipe";
+import { useProfileId } from "../../providers/Profile";
+import Banner from "../../views/common/Banner";
 
 type Props = RouteComponentProps<{ id?: string }>;
 
@@ -22,6 +24,7 @@ const RecipeEditController: React.FC<Props> = ({ match }) => {
     const { data: labelList } = useGetAllLabels();
     const { error: updateError, updateRecipe } = useUpdateRecipe();
     const { error: createError, createRecipe } = useCreateRecipe();
+    const myProfileId = useProfileId();
     const [deleteRecipe] = useDeleteRecipe();
 
     if (!id) {
@@ -30,6 +33,18 @@ const RecipeEditController: React.FC<Props> = ({ match }) => {
 
     if (loading || !recipe) {
         return <CircularProgress />;
+    }
+
+    if (myProfileId && recipe.ownerId && myProfileId !== recipe.ownerId) {
+        return (
+            <>
+                <Banner>
+                    You can only{" "}
+                    <Link to={`/library/recipe/${id}`}>view this recipe</Link>,
+                    not edit it, because it's not yours.
+                </Banner>
+            </>
+        );
     }
 
     const shouldCreateCopy = match.path.split("/").includes("make-copy");
