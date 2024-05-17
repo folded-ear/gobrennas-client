@@ -28,6 +28,7 @@ import { useIsMobile } from "../../../providers/IsMobile";
 import MobilePlanSelector from "../../../views/shop/MobilePlanSelector";
 import { NavPlanItem } from "../../Navigation/components/NavPlanItem";
 import { selectPlan } from "../../Navigation/NavigationController";
+import { Plan } from "features/Planner/types";
 
 const isValidName = (name) => name != null && name.trim().length > 0;
 
@@ -58,13 +59,21 @@ const sortByBucket = () =>
         type: PlanActions.SORT_BY_BUCKET,
     });
 
+type PlanHeaderProps = {
+    allPlans: Plan[];
+    activePlan?: any;
+    planDetailVisible?: boolean;
+    hasBuckets?: boolean;
+    canExpand?: boolean;
+};
+
 function PlanHeader({
     activePlan,
     allPlans,
     planDetailVisible = false,
     hasBuckets = false,
     canExpand = true,
-}) {
+}: PlanHeaderProps) {
     const [name, setName] = React.useState("");
     const [showAdd, setShowAdd] = React.useState(false);
     const showPlanSelector = useIsMobile() && allPlans && allPlans.length >= 2;
@@ -217,11 +226,12 @@ function PlanHeader({
                                     primary={<AddIcon />}
                                     onClick={onCreate}
                                     options={
-                                        allPlans.length > 0 &&
-                                        allPlans.map((l) => ({
-                                            label: `Duplicate "${l.name}"`,
-                                            id: l.id,
-                                        }))
+                                        (allPlans.length > 0 &&
+                                            allPlans.map((l) => ({
+                                                label: `Duplicate "${l.name}"`,
+                                                id: l.id,
+                                            }))) ||
+                                        []
                                     }
                                     onSelect={onDuplicate}
                                     disabled={!isValidName(name)}
@@ -246,13 +256,5 @@ function PlanHeader({
         </Box>
     );
 }
-
-PlanHeader.propTypes = {
-    allPlans: PropTypes.array.isRequired,
-    activePlan: PropTypes.object,
-    planDetailVisible: PropTypes.bool,
-    hasBuckets: PropTypes.bool,
-    canExpand: PropTypes.bool,
-};
 
 export default PlanHeader;
