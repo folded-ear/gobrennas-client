@@ -23,7 +23,7 @@ const errorLink = onError(({ graphQLErrors }) => {
     });
 });
 
-const client = new ApolloClientInstance({
+export const client = new ApolloClientInstance({
     cache: new InMemoryCache({
         typePolicies: {
             Query: {
