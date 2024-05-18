@@ -2,6 +2,11 @@ import BaseAxios from "axios";
 import { API_BASE_URL } from "constants/index";
 import promiseFlux from "util/promiseFlux";
 import PlanActions from "./PlanActions";
+import { client } from "providers/ApolloClient";
+import { RENAME_PLAN_ITEM } from "./mutations";
+import type { RenamePlanItemMutation } from "__generated__/graphql";
+import type { FetchResult } from "@apollo/client";
+import { ensureInt } from "global/utils";
 
 const axios = BaseAxios.create({
     baseURL: `${API_BASE_URL}/api/plan`,
@@ -15,11 +20,49 @@ const PlanApi = {
             newIds: r.data.newIds,
         })),
 
-    renameItem: (planId, body) =>
-        promiseFlux(axios.put(`/${planId}/rename`, body), (r) => ({
-            type: PlanActions.UPDATED,
-            data: r.data.info,
-        })),
+    renameItem: (planId, name) =>
+        promiseFlux(
+            client.mutate({
+                mutation: RENAME_PLAN_ITEM,
+                variables: {
+                    id: planId,
+                    name,
+                },
+            }),
+            (result: FetchResult<RenamePlanItemMutation>) => {
+                const planItem = result?.data?.planner?.rename || null;
+                return {
+                    type: PlanActions.UPDATED,
+                    data: planItem && {
+                        id: ensureInt(planItem.id),
+                        name: planItem.name,
+                        notes: planItem.notes,
+                        status: planItem.status,
+                        parentId: planItem.parent?.id
+                            ? ensureInt(planItem.parent?.id)
+                            : null,
+                        aggregateId: planItem.aggregate?.id
+                            ? ensureInt(planItem.aggregate?.id)
+                            : null,
+                        quantity: planItem.quantity?.quantity || null,
+                        units: planItem.quantity?.units?.name || null,
+                        uomId: planItem.quantity?.units?.id
+                            ? ensureInt(planItem.quantity?.units?.id)
+                            : null,
+                        ingredientId: planItem.ingredient?.id
+                            ? ensureInt(planItem.ingredient?.id)
+                            : null,
+                        bucketId: planItem.bucket?.id
+                            ? ensureInt(planItem.bucket?.id)
+                            : null,
+                        preparation: planItem.preparation,
+                    },
+                };
+            },
+            (error) => {
+                throw error;
+            },
+        ),
 
     deleteItem: (planId, id) =>
         promiseFlux(axios.delete(`/${planId}/${id}`), () => ({

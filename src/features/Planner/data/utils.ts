@@ -241,10 +241,7 @@ export const flushTasksToRename = (state) => {
     for (const id of tasksToRename) {
         const task = taskForId(state, id);
         if (!ClientId.is(id)) {
-            PlanApi.renameItem(state.activeListId, {
-                id,
-                name: task.name,
-            });
+            PlanApi.renameItem(id, task.name);
             continue;
         }
         if (ClientId.is(task.parentId)) {
