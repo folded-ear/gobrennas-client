@@ -313,6 +313,7 @@ type PlanItem implements CorePlanItem & Node {
     descendantCount: NonNegativeInt!
     descendants: [PlanItem!]!
     id: ID!
+    ingredient: Ingredient
     name: String!
     notes: String
     parent: PlanItem
