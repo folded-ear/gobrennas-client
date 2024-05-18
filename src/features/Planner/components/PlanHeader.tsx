@@ -12,7 +12,6 @@ import Dispatcher from "data/dispatcher";
 import PlanSidebar from "features/Planner/components/PlanSidebar";
 import UserById from "features/Planner/components/UserById";
 import PlanActions from "features/Planner/data/PlanActions";
-import PropTypes from "prop-types";
 import React, { useState } from "react";
 import {
     AddIcon,
