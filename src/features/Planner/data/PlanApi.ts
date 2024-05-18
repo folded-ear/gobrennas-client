@@ -4,7 +4,7 @@ import promiseFlux from "util/promiseFlux";
 import PlanActions from "./PlanActions";
 import { client } from "providers/ApolloClient";
 import { RENAME_PLAN_ITEM } from "./mutations";
-import type { PlanItem, RenamePlanItemMutation } from "__generated__/graphql";
+import type { RenamePlanItemMutation } from "__generated__/graphql";
 import type { FetchResult } from "@apollo/client";
 import {
     handleErrors,
