@@ -7,7 +7,9 @@ const PlanActions = {
     FOCUS: "plan/focus",
     FOCUS_NEXT: "plan/focus-next",
     FOCUS_PREVIOUS: "plan/focus-previous",
-    SELECT_PLAN: "plan/select-plan",
+    SELECT_PLAN: typedAction("plan/select-plan", {
+        id: PropTypes.number.isRequired,
+    }),
     SELECT_NEXT: "plan/select-next",
     SELECT_PREVIOUS: "plan/select-previous",
     SELECT_TO: "plan/select-to",
