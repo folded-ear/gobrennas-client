@@ -35,7 +35,11 @@ const RecipeEditController: React.FC<Props> = ({ match }) => {
         return <CircularProgress />;
     }
 
-    if (myProfileId && recipe.ownerId && myProfileId !== recipe.ownerId) {
+    if (
+        myProfileId &&
+        recipe.ownerId &&
+        myProfileId.toString() !== recipe.ownerId.toString()
+    ) {
         return (
             <Banner>
                 You can only{" "}
