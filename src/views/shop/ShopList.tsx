@@ -18,13 +18,12 @@ import DragContainer, {
     DragContainerProps,
 } from "../../features/Planner/components/DragContainer";
 import { AddIcon, SweepIcon } from "views/common/icons";
-import { colorHash } from "../../constants/colors";
-import Avatar from "@mui/material/Avatar";
 import { useIsMobile } from "../../providers/IsMobile";
 import MobilePlanSelector from "./MobilePlanSelector";
 import useAllPlansRLO from "../../data/useAllPlansRLO";
 import { NavShopItem } from "../../features/Navigation/components/NavShopItem";
 import { toggleShoppingPlan } from "../../features/Navigation/NavigationController";
+import PlanAvatar from "./PlanAvatar";
 
 export enum ShopItemType {
     INGREDIENT,
@@ -146,18 +145,7 @@ const ShopList: React.FC<ShopListProps> = ({
                             <Stack direction={"row"} gap={1}>
                                 <span>Shop</span>
                                 {plans.map((p) => (
-                                    <Avatar
-                                        key={p.id}
-                                        alt={p.name}
-                                        title={p.name}
-                                        sx={{
-                                            // width: 24,
-                                            // height: 24,
-                                            bgcolor: colorHash(p.id),
-                                        }}
-                                    >
-                                        {p.name.substring(0, 2)}
-                                    </Avatar>
+                                    <PlanAvatar key={p.id} plan={p} />
                                 ))}
                             </Stack>
                         )}
