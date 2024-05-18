@@ -1,6 +1,6 @@
 import BaseAxios from "axios";
 import { API_BASE_URL } from "constants/index";
-import promiseFlux, { soakUpUnauthorized } from "util/promiseFlux";
+import promiseFlux from "util/promiseFlux";
 import PlanActions from "./PlanActions";
 import { client } from "providers/ApolloClient";
 import { RENAME_PLAN_ITEM } from "./mutations";
@@ -29,14 +29,10 @@ const PlanApi = {
                 },
             }),
             (result: FetchResult<RenamePlanItemMutation>) => {
-                const planItem = result?.data?.planner?.rename;
-                if (!planItem) {
-                    // TODO
-                    return;
-                }
+                const planItem = result?.data?.planner?.rename || null;
                 return {
                     type: PlanActions.UPDATED,
-                    data: {
+                    data: planItem && {
                         id: planItem.id,
                         name: planItem.name,
                         notes: planItem.notes,
@@ -52,7 +48,9 @@ const PlanApi = {
                     },
                 };
             },
-            soakUpUnauthorized,
+            (error) => {
+                throw error;
+            },
         ),
 
     deleteItem: (planId, id) =>
