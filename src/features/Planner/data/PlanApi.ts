@@ -4,9 +4,12 @@ import promiseFlux from "util/promiseFlux";
 import PlanActions from "./PlanActions";
 import { client } from "providers/ApolloClient";
 import { RENAME_PLAN_ITEM } from "./mutations";
-import type { RenamePlanItemMutation } from "__generated__/graphql";
+import type { PlanItem, RenamePlanItemMutation } from "__generated__/graphql";
 import type { FetchResult } from "@apollo/client";
-import { ensureInt } from "global/utils";
+import {
+    handleErrors,
+    toRestPlanItem,
+} from "features/Planner/data/conversion_helpers";
 
 const axios = BaseAxios.create({
     baseURL: `${API_BASE_URL}/api/plan`,
@@ -33,35 +36,10 @@ const PlanApi = {
                 const planItem = result?.data?.planner?.rename || null;
                 return {
                     type: PlanActions.UPDATED,
-                    data: planItem && {
-                        id: ensureInt(planItem.id),
-                        name: planItem.name,
-                        notes: planItem.notes,
-                        status: planItem.status,
-                        parentId: planItem.parent?.id
-                            ? ensureInt(planItem.parent?.id)
-                            : null,
-                        aggregateId: planItem.aggregate?.id
-                            ? ensureInt(planItem.aggregate?.id)
-                            : null,
-                        quantity: planItem.quantity?.quantity || null,
-                        units: planItem.quantity?.units?.name || null,
-                        uomId: planItem.quantity?.units?.id
-                            ? ensureInt(planItem.quantity?.units?.id)
-                            : null,
-                        ingredientId: planItem.ingredient?.id
-                            ? ensureInt(planItem.ingredient?.id)
-                            : null,
-                        bucketId: planItem.bucket?.id
-                            ? ensureInt(planItem.bucket?.id)
-                            : null,
-                        preparation: planItem.preparation,
-                    },
+                    data: planItem && toRestPlanItem(planItem),
                 };
             },
-            (error) => {
-                throw error;
-            },
+            handleErrors,
         ),
 
     deleteItem: (planId, id) =>
