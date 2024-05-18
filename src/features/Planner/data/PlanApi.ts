@@ -6,6 +6,7 @@ import { client } from "providers/ApolloClient";
 import { RENAME_PLAN_ITEM } from "./mutations";
 import type { RenamePlanItemMutation } from "__generated__/graphql";
 import type { FetchResult } from "@apollo/client";
+import { ensureInt } from "global/utils";
 
 const axios = BaseAxios.create({
     baseURL: `${API_BASE_URL}/api/plan`,
@@ -33,17 +34,27 @@ const PlanApi = {
                 return {
                     type: PlanActions.UPDATED,
                     data: planItem && {
-                        id: planItem.id,
+                        id: ensureInt(planItem.id),
                         name: planItem.name,
                         notes: planItem.notes,
                         status: planItem.status,
-                        parentId: planItem.parent?.id || null,
-                        aggregateId: planItem.aggregate?.id || null,
+                        parentId: planItem.parent?.id
+                            ? ensureInt(planItem.parent?.id)
+                            : null,
+                        aggregateId: planItem.aggregate?.id
+                            ? ensureInt(planItem.aggregate?.id)
+                            : null,
                         quantity: planItem.quantity?.quantity || null,
                         units: planItem.quantity?.units?.name || null,
-                        uomId: planItem.quantity?.units?.id || null,
-                        ingredientId: planItem.ingredient?.id || null,
-                        bucketId: planItem.bucket?.id || null,
+                        uomId: planItem.quantity?.units?.id
+                            ? ensureInt(planItem.quantity?.units?.id)
+                            : null,
+                        ingredientId: planItem.ingredient?.id
+                            ? ensureInt(planItem.ingredient?.id)
+                            : null,
+                        bucketId: planItem.bucket?.id
+                            ? ensureInt(planItem.bucket?.id)
+                            : null,
                         preparation: planItem.preparation,
                     },
                 };
