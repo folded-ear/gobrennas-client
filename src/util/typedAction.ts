@@ -27,6 +27,7 @@ const typedAction = (type: string, shape: object): CheckableActionType => {
                 type: PropTypes.instanceOf(String).isRequired,
             }).isRequired,
         };
+        return checkable;
     }
     return type;
 };

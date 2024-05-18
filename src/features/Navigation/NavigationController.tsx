@@ -21,20 +21,21 @@ import PlanActions from "../Planner/data/PlanActions";
 import useIsNavCollapsed, {
     setNavCollapsed,
 } from "../../data/useIsNavCollapsed";
+import { BfsId } from "../../global/types/identity";
 
 type NavigationControllerProps = {
     authenticated: boolean;
     children?: ReactNode;
 };
 
-export function toggleShoppingPlan(id) {
+export function toggleShoppingPlan(id: BfsId) {
     return Dispatcher.dispatch({
         type: ShoppingActions.TOGGLE_PLAN,
         id,
     });
 }
 
-export function selectPlan(id) {
+export function selectPlan(id: BfsId) {
     return Dispatcher.dispatch({
         type: PlanActions.SELECT_PLAN,
         id,
