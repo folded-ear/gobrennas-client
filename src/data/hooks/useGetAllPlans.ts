@@ -23,16 +23,15 @@ query getPlans {
 `);
 
 const orderComponentsById = (plans: Plan[], userId: BfsId) => {
-    return plans.reduce((byId, plan) => {
-        let ownerId = ensureInt(plan.owner.id) || Number.MAX_SAFE_INTEGER;
-        const ownerName = plan.owner.name || "";
-
-        if (ownerId === userId) {
-            ownerId = -1;
-        }
-        byId[plan.id] = [ownerId, ownerName, plan.name];
-        return byId;
-    }, {});
+    const byId = {};
+    for (const plan of plans) {
+        const ownerName =
+            plan.owner.id.toString() === userId.toString()
+                ? "" // me first!
+                : plan.owner.name || "\u7fff";
+        byId[plan.id] = [ownerName, plan.name];
+    }
+    return byId;
 };
 
 const adapter = (data?: GetPlansQuery): Plan[] => {
