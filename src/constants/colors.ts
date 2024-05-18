@@ -1,25 +1,24 @@
-import {
-    blue,
-    blueGrey,
-    indigo,
-    lightGreen,
-    lime,
-    purple,
-    red,
-    teal,
-} from "@mui/material/colors";
 import { BfsId } from "global/types/identity";
 
 export const planColors = [
     // ¡¡ Make sure this always has a size equal to a power of 2 !!
-    red[500],
-    purple[400],
-    indigo[900],
-    blue[300],
-    teal[300],
-    lightGreen[900],
-    lime[500],
-    blueGrey[500],
+    // generated at http://medialab.github.io/iwanthue/
+    "#cb4771",
+    "#caa29e",
+    "#783b32",
+    "#d14f32",
+    "#c9954c",
+    "#cbd152",
+    "#56713c",
+    "#6dce55",
+    "#8dd4aa",
+    "#77adc2",
+    "#6a7dc8",
+    "#3b3a41",
+    "#7145ca",
+    "#552b6b",
+    "#c583bd",
+    "#cc4ac0",
 ];
 
 if (process.env.NODE_ENV === "development") {
