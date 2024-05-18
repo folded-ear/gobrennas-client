@@ -17,12 +17,13 @@ export const useLoadedPlan = (pid: BfsId | undefined) => {
             // The contract implies that effects trigger after the render
             // cycle completes, but doesn't guarantee it. The setTimeout
             // avoids a reentrant dispatch if the effect isn't deferred.
-            setTimeout(() =>
+            const t = setTimeout(() =>
                 Dispatcher.dispatch({
                     type: PlanActions.SELECT_PLAN,
                     id: typeof pid === "string" ? parseInt(pid, 10) : pid,
                 }),
             );
+            return () => clearTimeout(t);
         }
     }, [allPlansRlo, pid]);
 };
