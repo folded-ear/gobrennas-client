@@ -1,8 +1,12 @@
 import BaseAxios from "axios";
+import { client } from "providers/ApolloClient";
 import { API_BASE_URL } from "constants/index";
 import PlanActions from "features/Planner/data/PlanActions";
 import promiseFlux, { soakUpUnauthorized } from "util/promiseFlux";
 import serializeObjectOfPromiseFns from "util/serializeObjectOfPromiseFns";
+import { CREATE_PLAN } from "./mutations";
+import { handleErrors, toRestPlan } from "./conversion_helpers";
+import { ensureInt } from "../../../global/utils";
 
 const axios = BaseAxios.create({
     baseURL: `${API_BASE_URL}/api/tasks`,
@@ -11,17 +15,25 @@ const axios = BaseAxios.create({
 const TaskApi = {
     createList: (name, clientId, fromId) =>
         promiseFlux(
-            axios.post(`/`, {
-                name,
-                fromId,
+            client.mutate({
+                mutation: CREATE_PLAN,
+                variables: {
+                    name,
+                },
             }),
-            (data) => ({
-                type: PlanActions.PLAN_CREATED,
-                clientId,
-                id: data.data.id,
-                data: data.data,
-                fromId,
-            }),
+            (result) => {
+                const plan = result?.data?.planner.createPlan || null;
+                return (
+                    plan && {
+                        type: PlanActions.PLAN_CREATED,
+                        clientId,
+                        id: ensureInt(plan.id),
+                        data: toRestPlan(plan),
+                        fromId,
+                    }
+                );
+            },
+            handleErrors,
         ),
 
     loadLists: () =>

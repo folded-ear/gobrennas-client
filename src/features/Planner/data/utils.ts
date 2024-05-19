@@ -233,11 +233,11 @@ export const createTaskBefore = (state, id) => {
     return state;
 };
 
-let tasksToRename = new Set();
+let tasksToRename: Set<number> = new Set();
 
 export const flushTasksToRename = (state) => {
     if (tasksToRename.size === 0) return state;
-    const requeue = new Set();
+    const requeue: Set<number> = new Set();
     for (const id of tasksToRename) {
         const task = taskForId(state, id);
         if (!ClientId.is(id)) {
@@ -424,9 +424,9 @@ export const unqueueTaskId = (id) => {
     statusUpdatesToFlush.delete(id);
 };
 
-export const doTaskDelete = (state, id) => {
+export const doTaskDelete = (state, id: number) => {
     unqueueTaskId(id);
-    PlanApi.deleteItem(state.activeListId, id);
+    PlanApi.deleteItem(id);
     return state;
 };
 
