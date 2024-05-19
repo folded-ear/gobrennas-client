@@ -2,6 +2,7 @@ import {
     ApolloClient as ApolloClientInstance,
     ApolloLink,
     ApolloProvider,
+    defaultDataIdFromObject,
     InMemoryCache,
 } from "@apollo/client";
 import { onError } from "@apollo/client/link/error";
@@ -40,6 +41,18 @@ export const client = new ApolloClientInstance({
                     recipes: relayStylePagination(["scope", "query"]),
                 },
             },
+        },
+        dataIdFromObject(responseObject) {
+            switch (responseObject.__typename) {
+                // use keys based on the root of inheritance hierarchies
+                case "Plan":
+                    return `PlanItem:${responseObject.id}`;
+                case "PantryItem":
+                case "Recipe":
+                    return `Ingredient:${responseObject.id}`;
+                default:
+                    return defaultDataIdFromObject(responseObject);
+            }
         },
     }),
     link: ApolloLink.from([
