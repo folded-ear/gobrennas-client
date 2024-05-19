@@ -233,11 +233,11 @@ export const createTaskBefore = (state, id) => {
     return state;
 };
 
-let tasksToRename = new Set();
+let tasksToRename: Set<number> = new Set();
 
 export const flushTasksToRename = (state) => {
     if (tasksToRename.size === 0) return state;
-    const requeue = new Set();
+    const requeue: Set<number> = new Set();
     for (const id of tasksToRename) {
         const task = taskForId(state, id);
         if (!ClientId.is(id)) {

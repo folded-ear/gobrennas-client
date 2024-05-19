@@ -41,9 +41,9 @@ export const toRestPlanItem = (
 });
 
 export const toRestPlan = (plan) => ({
-    id: plan.id,
+    id: ensureInt(plan.id),
     name: plan.name,
     acl: {
-        ownerId: plan.owner.id,
+        ownerId: ensureInt(plan.owner.id),
     },
 });

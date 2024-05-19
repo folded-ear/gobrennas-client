@@ -27,12 +27,12 @@ const PlanApi = {
             newIds: r.data.newIds,
         })),
 
-    renameItem: (planId, name) =>
+    renameItem: (id: number, name: string) =>
         promiseFlux(
             client.mutate({
                 mutation: RENAME_PLAN_ITEM,
                 variables: {
-                    id: planId,
+                    id: id.toString(),
                     name,
                 },
             }),
@@ -46,20 +46,20 @@ const PlanApi = {
             handleErrors,
         ),
 
-    deleteItem: (planId: number) =>
+    deleteItem: (id: number) =>
         promiseFlux(
             client.mutate({
                 mutation: DELETE_PLAN_ITEM,
                 variables: {
-                    id: planId.toString(),
+                    id: id.toString(),
                 },
             }),
             (result: FetchResult<DeletePlanItemMutation>) => {
-                const planId = result?.data?.planner?.deleteItem?.id || null;
+                const id = result?.data?.planner?.deleteItem?.id || null;
                 return (
-                    planId && {
+                    id && {
                         type: PlanActions.DELETED,
-                        id: ensureInt(planId),
+                        id: ensureInt(id),
                     }
                 );
             },
