@@ -3,13 +3,17 @@ import { API_BASE_URL } from "constants/index";
 import promiseFlux from "util/promiseFlux";
 import PlanActions from "./PlanActions";
 import { client } from "providers/ApolloClient";
-import { RENAME_PLAN_ITEM } from "./mutations";
-import type { RenamePlanItemMutation } from "__generated__/graphql";
+import { DELETE_PLAN_ITEM, RENAME_PLAN_ITEM } from "./mutations";
+import type {
+    DeletePlanItemMutation,
+    RenamePlanItemMutation,
+} from "__generated__/graphql";
 import type { FetchResult } from "@apollo/client";
 import {
     handleErrors,
     toRestPlanItem,
 } from "features/Planner/data/conversion_helpers";
+import { ensureInt } from "global/utils";
 
 const axios = BaseAxios.create({
     baseURL: `${API_BASE_URL}/api/plan`,
@@ -42,11 +46,25 @@ const PlanApi = {
             handleErrors,
         ),
 
-    deleteItem: (planId, id) =>
-        promiseFlux(axios.delete(`/${planId}/${id}`), () => ({
-            type: PlanActions.DELETED,
-            id,
-        })),
+    deleteItem: (planId: number) =>
+        promiseFlux(
+            client.mutate({
+                mutation: DELETE_PLAN_ITEM,
+                variables: {
+                    id: planId.toString(),
+                },
+            }),
+            (result: FetchResult<DeletePlanItemMutation>) => {
+                const planId = result?.data?.planner?.deleteItem?.id || null;
+                return (
+                    planId && {
+                        type: PlanActions.DELETED,
+                        id: ensureInt(planId),
+                    }
+                );
+            },
+            handleErrors,
+        ),
 
     updateItemStatus: (planId, body) =>
         promiseFlux(axios.put(`/${planId}/status`, body), (r) =>

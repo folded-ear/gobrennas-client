@@ -424,9 +424,9 @@ export const unqueueTaskId = (id) => {
     statusUpdatesToFlush.delete(id);
 };
 
-export const doTaskDelete = (state, id) => {
+export const doTaskDelete = (state, id: number) => {
     unqueueTaskId(id);
-    PlanApi.deleteItem(state.activeListId, id);
+    PlanApi.deleteItem(id);
     return state;
 };
 

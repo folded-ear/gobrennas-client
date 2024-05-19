@@ -38,3 +38,13 @@ mutation renamePlanItem($id: ID!, $name: String!) {
   }
 }
 `);
+
+export const DELETE_PLAN_ITEM = gql(`
+mutation deletePlanItem($id: ID!) {
+  planner {
+    deleteItem(id: $id) {
+      id
+    }
+  }
+}
+`);
