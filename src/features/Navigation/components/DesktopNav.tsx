@@ -82,13 +82,6 @@ export const DesktopNav: React.FC<DesktopNavProps> = ({
                             expanded={expanded}
                             selected={selected === "shop"}
                         />
-                        {/*<NavItem*/}
-                        {/*    to="/timers"*/}
-                        {/*    value="timers"*/}
-                        {/*    icon={<TimerIcon/>}*/}
-                        {/*    title="Timers"*/}
-                        {/*    expanded={expanded}*/}
-                        {/*/>*/}
                         {planItems.map((plan, idx) => {
                             const elements = [
                                 <PlanItem

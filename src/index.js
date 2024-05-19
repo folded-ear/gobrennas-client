@@ -28,7 +28,6 @@ ReactDOM.render(
         AuthTokenProvider,
         ProfileProvider,
         IsMobileProvider,
-        // TimerProvider,
     ].reduceRight(
         (kids, Decorator) => <Decorator>{kids}</Decorator>,
         <QueryClientProvider client={queryClient}>
