@@ -1,11 +1,6 @@
 import * as React from "react";
 import { BottomNavigation, Paper } from "@mui/material";
-import {
-    InventoryIcon,
-    LibraryIcon,
-    PlanIcon,
-    ShopIcon,
-} from "views/common/icons";
+import { LibraryIcon, PlanIcon, ShopIcon } from "views/common/icons";
 import { styled } from "@mui/material/styles";
 import { MobileNavItem } from "features/Navigation/components/MobileNavItem";
 import { useProfile } from "../../../providers/Profile";
@@ -50,14 +45,6 @@ export const MobileNav: React.FC<MobileNavProps> = ({
                     to="/shop"
                     value="shop"
                 />
-                {devMode && (
-                    <MobileNavItem
-                        to="/inventory"
-                        value="inventory"
-                        icon={<InventoryIcon />}
-                        title="Inventory"
-                    />
-                )}
                 <MobileNavItem
                     title="Profile"
                     icon={<User inline {...me} />}
