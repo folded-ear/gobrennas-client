@@ -48,3 +48,17 @@ mutation deletePlanItem($id: ID!) {
   }
 }
 `);
+
+export const CREATE_PLAN = gql(`
+mutation createPlan($name: String!) {
+  planner {
+    createPlan(name: $name) {
+      id
+      name
+      owner {
+        id
+      }
+    }
+  }
+}
+`);

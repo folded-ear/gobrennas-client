@@ -39,3 +39,11 @@ export const toRestPlanItem = (
     bucketId: ensureIdIsInt(planItem.bucket?.id),
     preparation: planItem.preparation,
 });
+
+export const toRestPlan = (plan) => ({
+    id: plan.id,
+    name: plan.name,
+    acl: {
+        ownerId: plan.owner.id,
+    },
+});
