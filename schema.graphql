@@ -160,7 +160,6 @@ type Mutation {
     library: LibraryMutation
     pantry: PantryMutation
     planner: PlannerMutation
-    timer: TimerMutation
 }
 
 type PageInfo {
@@ -419,7 +418,6 @@ type Query {
     node(id: ID!): Node
     pantry: PantryQuery
     planner: PlannerQuery
-    timer: TimerQuery
 }
 
 type Recipe implements Ingredient & Node & Owned {
@@ -513,53 +511,6 @@ type ShareInfo {
     id: ID!
     secret: String!
     slug: String!
-}
-
-"Represents a pause-able timer of user-specified length."
-type Timer implements AccessControlled & Node & Owned {
-    "Whether the timer is complete."
-    complete: Boolean!
-    "Number of seconds the timer is currently set for."
-    duration: PositiveInt!
-    "When the timer reached or will reach completion; null if paused."
-    endAt: DateTime
-    grants: [AccessControlEntry!]!
-    id: ID!
-    "Number of seconds the timer was originally created for."
-    initialDuration: PositiveInt!
-    owner: User!
-    "Whether the timer is paused."
-    paused: Boolean!
-    "Number of seconds remaining; negative if already complete."
-    remaining: Int!
-    "Whether the timer is running."
-    running: Boolean!
-}
-
-type TimerMutation {
-    """
-
-    Add the specified duration to the specified timer, which may not be
-    complete, but may be paused.
-    """
-    addTime(duration: PositiveInt!, id: ID!): Timer!
-    "Create a new timer with the specified duration and start it."
-    create(duration: PositiveInt!): Timer!
-    """
-
-    Ensure the specified timer has been deleted, regardless of its status or
-    existence, returning whether any action was taken.
-    """
-    delete(id: ID!): Deletion!
-    "Pause the specified running timer."
-    pause(id: ID!): Timer!
-    "Resume the specified paused timer."
-    resume(id: ID!): Timer!
-}
-
-type TimerQuery {
-    all: [Timer!]!
-    byId(id: ID!): Timer!
 }
 
 type UnitOfMeasure implements Node {
