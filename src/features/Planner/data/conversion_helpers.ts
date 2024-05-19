@@ -1,5 +1,7 @@
 import throwAnyGraphQLErrors from "util/throwAnyGraphQLErrors";
 import { ensureInt } from "global/utils";
+import { BfsId } from "../../../global/types/identity";
+import type { RenamePlanItemMutation } from "__generated__/graphql";
 
 export const handleErrors = (error) => {
     throwAnyGraphQLErrors(error);
@@ -9,23 +11,31 @@ export const handleErrors = (error) => {
     };
 };
 
-export const toRestPlanItem = (planItem) => ({
+const ensureIdIsInt = (id: BfsId | undefined) => {
+    if (id == null) return null;
+    return ensureInt(id);
+};
+
+const pluckIntIds = (collection: { id: BfsId }[]) => {
+    if (collection == null) return null;
+    return collection.map((c) => ensureInt(c.id));
+};
+
+export const toRestPlanItem = (
+    planItem: NonNullable<RenamePlanItemMutation["planner"]>["rename"],
+) => ({
     id: ensureInt(planItem.id),
     name: planItem.name,
     notes: planItem.notes,
     status: planItem.status,
-    parentId: planItem.parent?.id ? ensureInt(planItem.parent?.id) : null,
-    aggregateId: planItem.aggregate?.id
-        ? ensureInt(planItem.aggregate?.id)
-        : null,
+    parentId: ensureIdIsInt(planItem.parent?.id),
+    aggregateId: ensureIdIsInt(planItem.aggregate?.id),
+    subtaskIds: pluckIntIds(planItem.children),
+    componentIds: pluckIntIds(planItem.components),
     quantity: planItem.quantity?.quantity || null,
     units: planItem.quantity?.units?.name || null,
-    uomId: planItem.quantity?.units?.id
-        ? ensureInt(planItem.quantity?.units?.id)
-        : null,
-    ingredientId: planItem.ingredient?.id
-        ? ensureInt(planItem.ingredient?.id)
-        : null,
-    bucketId: planItem.bucket?.id ? ensureInt(planItem.bucket?.id) : null,
+    uomId: ensureIdIsInt(planItem.quantity?.units?.id),
+    ingredientId: ensureIdIsInt(planItem.ingredient?.id),
+    bucketId: ensureIdIsInt(planItem.bucket?.id),
     preparation: planItem.preparation,
 });

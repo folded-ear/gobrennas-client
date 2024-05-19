@@ -28,6 +28,9 @@ mutation renamePlanItem($id: ID!, $name: String!) {
       children {
         id
       }
+      components {
+        id
+      }
       bucket {
         id
       }
