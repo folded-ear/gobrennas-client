@@ -1,6 +1,6 @@
 import PropTypes from "prop-types";
 import React from "react";
-import { Switch } from "react-router-dom";
+import { Switch, useLocation } from "react-router-dom";
 import { useIsAuthenticated } from "providers/Profile";
 import FluxRoute from "./views/common/FluxRoute";
 import NotFound from "./views/common/NotFound";
@@ -10,6 +10,7 @@ import Login from "./views/user/Login";
 function RoutingSwitch(props) {
     const { routes } = props;
     const authenticated = useIsAuthenticated();
+    const location = useLocation();
 
     return (
         <Switch>
@@ -29,6 +30,7 @@ function RoutingSwitch(props) {
             {routes.private.map((route) => (
                 <PrivateRoute
                     key={route.path}
+                    location={location}
                     path={route.path}
                     component={route.component}
                     authenticated={authenticated}
