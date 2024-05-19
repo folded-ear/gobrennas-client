@@ -31,7 +31,6 @@ export {
     AddToPhotos as GenerateBucketsIcon,
     HelpOutline as HelpIcon,
     InfoOutlined as InfoIcon,
-    InventoryOutlined as InventoryIcon,
     MenuBook as LibraryIcon,
     Link as LinkIcon,
     Logout as LogoutIcon,
