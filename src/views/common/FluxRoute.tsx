@@ -1,19 +1,11 @@
 import * as React from "react";
-import { match, Route } from "react-router-dom";
+import { Route, RouteProps } from "react-router-dom";
 import Dispatcher from "../../data/dispatcher";
 import RouteActions from "../../data/RouteActions";
 import RouteStore from "../../data/RouteStore";
 import GTag from "../../GTag";
-import { RouteComponentProps } from "react-router";
 
-type FluxRouteProps = {
-    render?: (props: RouteComponentProps) => React.ReactNode;
-    component?: React.ElementType;
-    match?: match;
-    location?: any;
-};
-
-const FluxRoute: React.FC<FluxRouteProps> = ({
+const FluxRoute: React.FC<RouteProps> = ({
     render,
     component: Component,
     ...rest
