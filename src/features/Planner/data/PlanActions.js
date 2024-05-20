@@ -80,7 +80,6 @@ const PlanActions = {
     BUCKET_CREATED: typedAction("plan/bucket-created", {
         planId: PropTypes.number.isRequired,
         data: PropTypes.object.isRequired,
-        oldId: clientOrDatabaseIdType.isRequired,
     }),
     BUCKET_UPDATED: typedAction("plan/bucket-updated", {
         planId: PropTypes.number.isRequired,

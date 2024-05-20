@@ -887,10 +887,10 @@ export const serializeBucket = (b) =>
     b.date ? { ...b, date: formatLocalDate(b.date) } : b;
 
 export const saveBucket = (state, bucket) => {
-    const body = serializeBucket(bucket);
+    const variables = serializeBucket(bucket);
     ClientId.is(bucket.id)
-        ? PlanApi.createBucket(state.activeListId, body)
-        : PlanApi.updateBucket(state.activeListId, bucket.id, body);
+        ? PlanApi.createBucket(state.activeListId, variables)
+        : PlanApi.updateBucket(state.activeListId, bucket.id, variables);
 };
 
 export const doInteractiveStatusChange = (state, id, status) => {
