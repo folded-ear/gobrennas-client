@@ -50,9 +50,9 @@ mutation deletePlanItem($id: ID!) {
 `);
 
 export const CREATE_PLAN = gql(`
-mutation createPlan($name: String!) {
+mutation createPlan($name: String!, $sourcePlanId: ID) {
   planner {
-    createPlan(name: $name) {
+    createPlan(name: $name, sourcePlanId: $sourcePlanId) {
       id
       name
       owner {

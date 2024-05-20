@@ -14,12 +14,13 @@ const axios = BaseAxios.create({
 });
 
 const TaskApi = {
-    createList: (name, clientId, fromId) =>
+    createList: (name, clientId, sourcePlanId) =>
         promiseFlux(
             client.mutate({
                 mutation: CREATE_PLAN,
                 variables: {
                     name,
+                    sourcePlanId,
                 },
                 refetchQueries: [GET_PLANS],
             }),
@@ -31,7 +32,7 @@ const TaskApi = {
                         clientId,
                         id: ensureInt(plan.id),
                         data: toRestPlan(plan),
-                        fromId,
+                        fromId: sourcePlanId,
                     }
                 );
             },
