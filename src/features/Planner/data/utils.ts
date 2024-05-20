@@ -116,7 +116,7 @@ export const listCreated = (state, clientId, id, list) => {
         id,
         "",
     );
-    state = selectList(state, idFixer(state.activeListId));
+    state = selectList(state, id);
     return state;
 };
 
