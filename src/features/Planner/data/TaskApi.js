@@ -7,6 +7,7 @@ import serializeObjectOfPromiseFns from "util/serializeObjectOfPromiseFns";
 import { CREATE_PLAN } from "./mutations";
 import { handleErrors, toRestPlan } from "./conversion_helpers";
 import { ensureInt } from "../../../global/utils";
+import { GET_PLANS } from "../../../data/hooks/useGetAllPlans";
 
 const axios = BaseAxios.create({
     baseURL: `${API_BASE_URL}/api/tasks`,
@@ -20,6 +21,7 @@ const TaskApi = {
                 variables: {
                     name,
                 },
+                refetchQueries: [GET_PLANS],
             }),
             (result) => {
                 const plan = result?.data?.planner.createPlan || null;
@@ -46,11 +48,16 @@ const TaskApi = {
             soakUpUnauthorized,
         ),
 
-    deleteList: (id) =>
-        promiseFlux(axios.delete(`/${id}`), () => ({
-            type: PlanActions.PLAN_DELETED,
-            id,
-        })),
+    deleteList: (id) => {
+        client.cache.evict({ id });
+        return promiseFlux(axios.delete(`/${id}`), () => {
+            client.refetchQueries({ include: [GET_PLANS] });
+            return {
+                type: PlanActions.PLAN_DELETED,
+                id,
+            };
+        });
+    },
 
     setListGrant: (id, userId, level) =>
         // i was not thinking when i designed this endpoint. :)
