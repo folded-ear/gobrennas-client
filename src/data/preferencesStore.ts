@@ -65,20 +65,17 @@ class PreferencesStore extends ReduceStore<State, FluxAction> {
             case UserActions.RESTORE_PREFERENCES: {
                 return Map(action.preferences);
             }
+
+            case PlanActions.SELECT_PLAN:
+            case PlanActions.PLAN_CREATED:
+            case PlanActions.DELETE_PLAN:
+            case PlanActions.PLAN_DELETED:
             case PlanActions.PLANS_LOADED: {
                 this.__dispatcher.waitFor([planStore.getDispatchToken()]);
-                const lo = planStore.getActivePlanLO();
-                return lo.hasValue()
-                    ? setPref(
-                          state,
-                          PrefNames.ACTIVE_PLAN,
-                          lo.getValueEnforcing().id,
-                      )
+                const rlo = planStore.getActivePlanRlo();
+                return rlo.data
+                    ? setPref(state, PrefNames.ACTIVE_PLAN, rlo.data.id)
                     : state;
-            }
-            case PlanActions.SELECT_PLAN:
-            case PlanActions.PLAN_CREATED: {
-                return setPref(state, PrefNames.ACTIVE_PLAN, action.id);
             }
 
             case ShoppingActions.TOGGLE_PLAN: {
