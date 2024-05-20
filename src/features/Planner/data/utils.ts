@@ -14,6 +14,7 @@ import dotProp from "dot-prop-immutable";
 import { bucketComparator } from "util/comparators";
 import preferencesStore from "data/preferencesStore";
 import { formatLocalDate, parseLocalDate } from "util/time";
+import history from "../../../util/history";
 
 export const AT_END = Math.random();
 
@@ -121,10 +122,9 @@ export const listCreated = (state, clientId, id, list) => {
 
 export const selectList = (state, id) => {
     if (state.activeListId === id) return state;
-    // // flush any yet-unsaved changes
+    // flush any yet-unsaved changes
     state = flushTasksToRename(state);
     // only valid ids, please
-    const list = taskForId(state, id);
     invariant(
         state.topLevelIds
             .getLoadObject()
@@ -132,6 +132,7 @@ export const selectList = (state, id) => {
             .some((it) => it === id),
         `Task '${id}' is not a list.`,
     );
+    const list = taskForId(state, id);
     state = {
         ...state,
         activeListId: id,
@@ -146,6 +147,7 @@ export const selectList = (state, id) => {
         state = addTask(state, id, "");
     }
     PlanApi.getDescendantsAsList(state.activeListId);
+    history.push(`/plan/${id}`);
     return state;
 };
 
@@ -852,7 +854,7 @@ export function selectDefaultList(state) {
         let activePlanId = preferencesStore.getActivePlan();
         if (listIds.find((id) => id === activePlanId) == null) {
             // auto-select the first one
-            activePlanId = listIds[0];
+            activePlanId = listIds[0]; // todo: select MY first one, if I have any
         }
         state = selectList(state, activePlanId);
     }

@@ -1,7 +1,10 @@
 import throwAnyGraphQLErrors from "util/throwAnyGraphQLErrors";
 import { ensureInt } from "global/utils";
 import { BfsId } from "../../../global/types/identity";
-import type { RenamePlanItemMutation } from "__generated__/graphql";
+import type {
+    CreatePlanMutation,
+    RenamePlanItemMutation,
+} from "__generated__/graphql";
 
 export const handleErrors = (error) => {
     throwAnyGraphQLErrors(error);
@@ -40,10 +43,13 @@ export const toRestPlanItem = (
     preparation: planItem.preparation,
 });
 
-export const toRestPlan = (plan) => ({
+export const toRestPlan = (
+    plan: NonNullable<CreatePlanMutation["planner"]>["createPlan"],
+) => ({
     id: ensureInt(plan.id),
     name: plan.name,
     acl: {
         ownerId: ensureInt(plan.owner.id),
     },
+    subtaskIds: [],
 });

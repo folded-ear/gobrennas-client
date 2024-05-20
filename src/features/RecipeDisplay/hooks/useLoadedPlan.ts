@@ -4,6 +4,7 @@ import React from "react";
 import Dispatcher from "../../../data/dispatcher";
 import PlanActions from "features/Planner/data/PlanActions";
 import { BfsId } from "global/types/identity";
+import { ensureInt } from "../../../global/utils";
 
 export const useLoadedPlan = (pid: BfsId | undefined) => {
     // ensure it's loaded
@@ -13,17 +14,17 @@ export const useLoadedPlan = (pid: BfsId | undefined) => {
     );
     // ensure it's selected
     React.useEffect(() => {
-        if (pid != null && allPlansRlo.data) {
+        if (pid != null && allPlansRlo?.data) {
             // The contract implies that effects trigger after the render
             // cycle completes, but doesn't guarantee it. The setTimeout
             // avoids a reentrant dispatch if the effect isn't deferred.
             const t = setTimeout(() =>
                 Dispatcher.dispatch({
                     type: PlanActions.SELECT_PLAN,
-                    id: typeof pid === "string" ? parseInt(pid, 10) : pid,
+                    id: ensureInt(pid),
                 }),
             );
             return () => clearTimeout(t);
         }
-    }, [allPlansRlo, pid]);
+    }, [allPlansRlo?.data, pid]);
 };
