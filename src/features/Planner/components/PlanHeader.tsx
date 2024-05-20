@@ -80,22 +80,23 @@ function PlanHeader({
 
     const onCreate = () => {
         if (!isValidName(name)) return;
-        setName("");
-        setShowAdd(false);
         Dispatcher.dispatch({
             type: PlanActions.CREATE_PLAN,
             name: name.trim(),
         });
+        setName("");
+        setShowAdd(false);
     };
 
     const onDuplicate = (e, list) => {
         if (!isValidName(name)) return;
-        setName("");
         Dispatcher.dispatch({
             type: PlanActions.DUPLICATE_PLAN,
             name: name.trim(),
             fromId: list.id,
         });
+        setName("");
+        setShowAdd(false);
     };
 
     return (
