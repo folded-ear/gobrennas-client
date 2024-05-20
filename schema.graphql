@@ -354,8 +354,8 @@ type PlannerMutation {
     the specified name.
     """
     createItem(afterId: ID, name: String!, parentId: ID!): PlanItem!
-    "Create a new empty plan."
-    createPlan(name: String!): Plan!
+    "Create a new empty plan, optionally duplicating the specified source plan."
+    createPlan(name: String!, sourcePlanId: ID): Plan!
     "Delete a bucket from a plan."
     deleteBucket(bucketId: ID!, planId: ID!): Deletion!
     "Deletes an item from a plan. This operation cascades."
