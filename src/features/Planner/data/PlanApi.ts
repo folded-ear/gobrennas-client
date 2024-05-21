@@ -153,7 +153,6 @@ const PlanApi = {
             }),
             (result: FetchResult<UpdateBucketMutation>) => {
                 const bucket = result?.data?.planner?.updateBucket || null;
-                console.log(result);
                 return (
                     bucket && {
                         type: PlanActions.BUCKET_UPDATED,
@@ -179,7 +178,6 @@ const PlanApi = {
             }),
             (result: FetchResult<DeleteBucketMutation>) => {
                 const bucket = result?.data?.planner?.deleteBucket || null;
-                console.log(result);
                 return (
                     bucket && {
                         type: PlanActions.BUCKET_DELETED,
