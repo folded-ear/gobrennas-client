@@ -3,7 +3,12 @@ import { API_BASE_URL } from "constants/index";
 import promiseFlux from "util/promiseFlux";
 import PlanActions from "./PlanActions";
 import { client } from "providers/ApolloClient";
-import { CREATE_BUCKET, DELETE_PLAN_ITEM, RENAME_PLAN_ITEM } from "./mutations";
+import {
+    CREATE_BUCKET,
+    DELETE_PLAN_ITEM,
+    RENAME_PLAN_ITEM,
+    UPDATE_BUCKET,
+} from "./mutations";
 import type {
     CreateBucketMutation,
     DeletePlanItemMutation,
@@ -132,14 +137,30 @@ const PlanApi = {
             handleErrors,
         ),
 
-    updateBucket: (planId, id, body) =>
+    updateBucket: (planId: number, id: number, variables) =>
         promiseFlux(
-            axios.put(`/${planId}/buckets/${id}`, body),
-            ({ data }) => ({
-                type: PlanActions.BUCKET_UPDATED,
-                planId,
-                data: data.info,
+            client.mutate({
+                mutation: UPDATE_BUCKET,
+                variables: {
+                    planId: planId.toString(),
+                    bucketId: id.toString(),
+                    name: variables.name,
+                    date: variables.date,
+                },
             }),
+            (result) => {
+                const bucket = result?.data?.planner?.updateBucket || null;
+                console.log(result);
+                return {
+                    type: PlanActions.BUCKET_UPDATED,
+                    planId,
+                    data: {
+                        id: ensureInt(bucket.id),
+                        name: bucket.name,
+                        date: bucket.date,
+                    },
+                };
+            },
         ),
 
     deleteBucket: (planId, id) =>

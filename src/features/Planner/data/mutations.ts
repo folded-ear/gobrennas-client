@@ -74,3 +74,15 @@ mutation createBucket($planId: ID!, $name: String, $date: Date ) {
  }
 }
 `);
+
+export const UPDATE_BUCKET = gql(`
+mutation updateBucket($planId: ID!, $bucketId: ID!, $name: String, $date: Date) {
+  planner {
+    updateBucket(planId: $planId, bucketId: $bucketId, name: $name, date: $date) {
+      id
+      name
+      date
+    }
+  }
+}
+`);
