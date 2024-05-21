@@ -62,3 +62,37 @@ mutation createPlan($name: String!, $sourcePlanId: ID) {
   }
 }
 `);
+
+export const CREATE_BUCKET = gql(`
+mutation createBucket($planId: ID!, $name: String, $date: Date ) {
+  planner {
+    createBucket(planId: $planId, name: $name, date: $date ) {
+     id
+     name
+     date
+   }
+ }
+}
+`);
+
+export const UPDATE_BUCKET = gql(`
+mutation updateBucket($planId: ID!, $bucketId: ID!, $name: String, $date: Date) {
+  planner {
+    updateBucket(planId: $planId, bucketId: $bucketId, name: $name, date: $date) {
+      id
+      name
+      date
+    }
+  }
+}
+`);
+
+export const DELETE_BUCKET = gql(`
+mutation deleteBucket($planId: ID!, $bucketId: ID!) {
+  planner {
+    deleteBucket(planId: $planId, bucketId: $bucketId) {
+      id
+    }
+  }
+}
+`);

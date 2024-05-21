@@ -382,9 +382,9 @@ class PlanStore extends ReduceStore {
             case PlanActions.BUCKET_CREATED: {
                 return mapPlanBuckets(state, action.planId, (bs) =>
                     bs
-                        .filter((b) => b.id !== action.oldId)
                         .concat(deserializeBucket(action.data))
-                        .sort(bucketComparator),
+                        .sort(bucketComparator)
+                        .filter((b) => !ClientId.is(b.id)),
                 );
             }
 

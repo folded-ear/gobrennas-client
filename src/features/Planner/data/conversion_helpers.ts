@@ -1,6 +1,6 @@
 import throwAnyGraphQLErrors from "util/throwAnyGraphQLErrors";
 import { ensureInt } from "global/utils";
-import { BfsId } from "../../../global/types/identity";
+import { BfsId } from "global/types/identity";
 import type {
     CreatePlanMutation,
     RenamePlanItemMutation,

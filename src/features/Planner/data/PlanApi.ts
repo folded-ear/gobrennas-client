@@ -3,10 +3,19 @@ import { API_BASE_URL } from "constants/index";
 import promiseFlux from "util/promiseFlux";
 import PlanActions from "./PlanActions";
 import { client } from "providers/ApolloClient";
-import { DELETE_PLAN_ITEM, RENAME_PLAN_ITEM } from "./mutations";
+import {
+    CREATE_BUCKET,
+    DELETE_BUCKET,
+    DELETE_PLAN_ITEM,
+    RENAME_PLAN_ITEM,
+    UPDATE_BUCKET,
+} from "./mutations";
 import type {
+    CreateBucketMutation,
+    DeleteBucketMutation,
     DeletePlanItemMutation,
     RenamePlanItemMutation,
+    UpdateBucketMutation,
 } from "__generated__/graphql";
 import type { FetchResult } from "@apollo/client";
 import {
@@ -104,30 +113,80 @@ const PlanApi = {
             data: r.data,
         })),
 
-    createBucket: (planId, body) =>
-        promiseFlux(axios.post(`/${planId}/buckets`, body), ({ data }) => ({
-            type: PlanActions.BUCKET_CREATED,
-            planId,
-            data: data.info,
-            oldId: data.newIds[data.id],
-        })),
-
-    updateBucket: (planId, id, body) =>
+    createBucket: (planId: number, variables) =>
         promiseFlux(
-            axios.put(`/${planId}/buckets/${id}`, body),
-            ({ data }) => ({
-                type: PlanActions.BUCKET_UPDATED,
-                planId,
-                data: data.info,
+            client.mutate({
+                mutation: CREATE_BUCKET,
+                variables: {
+                    planId: planId.toString(),
+                    name: variables.name,
+                    date: variables.date,
+                },
             }),
+            (result: FetchResult<CreateBucketMutation>) => {
+                const bucket = result?.data?.planner?.createBucket || null;
+                return (
+                    bucket && {
+                        type: PlanActions.BUCKET_CREATED,
+                        planId,
+                        data: {
+                            id: ensureInt(bucket.id),
+                            name: bucket.name,
+                            date: bucket.date,
+                        },
+                    }
+                );
+            },
+            handleErrors,
         ),
 
-    deleteBucket: (planId, id) =>
-        promiseFlux(axios.delete(`/${planId}/buckets/${id}`), ({ data }) => ({
-            type: PlanActions.BUCKET_DELETED,
-            planId,
-            id: data.id,
-        })),
+    updateBucket: (planId: number, id: number, variables) =>
+        promiseFlux(
+            client.mutate({
+                mutation: UPDATE_BUCKET,
+                variables: {
+                    planId: planId.toString(),
+                    bucketId: id.toString(),
+                    name: variables.name,
+                    date: variables.date,
+                },
+            }),
+            (result: FetchResult<UpdateBucketMutation>) => {
+                const bucket = result?.data?.planner?.updateBucket || null;
+                return (
+                    bucket && {
+                        type: PlanActions.BUCKET_UPDATED,
+                        planId,
+                        data: {
+                            id: ensureInt(bucket.id),
+                            name: bucket.name,
+                            date: bucket.date,
+                        },
+                    }
+                );
+            },
+        ),
+
+    deleteBucket: (planId: number, id: number) =>
+        promiseFlux(
+            client.mutate({
+                mutation: DELETE_BUCKET,
+                variables: {
+                    planId: planId.toString(),
+                    bucketId: id.toString(),
+                },
+            }),
+            (result: FetchResult<DeleteBucketMutation>) => {
+                const bucket = result?.data?.planner?.deleteBucket || null;
+                return (
+                    bucket && {
+                        type: PlanActions.BUCKET_DELETED,
+                        planId,
+                        id: ensureInt(bucket.id),
+                    }
+                );
+            },
+        ),
 };
 
 export default PlanApi;
