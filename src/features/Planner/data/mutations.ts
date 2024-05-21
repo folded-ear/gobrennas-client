@@ -86,3 +86,13 @@ mutation updateBucket($planId: ID!, $bucketId: ID!, $name: String, $date: Date) 
   }
 }
 `);
+
+export const DELETE_BUCKET = gql(`
+mutation deleteBucket($planId: ID!, $bucketId: ID!) {
+  planner {
+    deleteBucket(planId: $planId, bucketId: $bucketId) {
+      id
+    }
+  }
+}
+`);

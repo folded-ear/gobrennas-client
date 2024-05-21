@@ -5,14 +5,17 @@ import PlanActions from "./PlanActions";
 import { client } from "providers/ApolloClient";
 import {
     CREATE_BUCKET,
+    DELETE_BUCKET,
     DELETE_PLAN_ITEM,
     RENAME_PLAN_ITEM,
     UPDATE_BUCKET,
 } from "./mutations";
 import type {
     CreateBucketMutation,
+    DeleteBucketMutation,
     DeletePlanItemMutation,
     RenamePlanItemMutation,
+    UpdateBucketMutation,
 } from "__generated__/graphql";
 import type { FetchResult } from "@apollo/client";
 import {
@@ -148,27 +151,44 @@ const PlanApi = {
                     date: variables.date,
                 },
             }),
-            (result) => {
+            (result: FetchResult<UpdateBucketMutation>) => {
                 const bucket = result?.data?.planner?.updateBucket || null;
                 console.log(result);
-                return {
-                    type: PlanActions.BUCKET_UPDATED,
-                    planId,
-                    data: {
-                        id: ensureInt(bucket.id),
-                        name: bucket.name,
-                        date: bucket.date,
-                    },
-                };
+                return (
+                    bucket && {
+                        type: PlanActions.BUCKET_UPDATED,
+                        planId,
+                        data: {
+                            id: ensureInt(bucket.id),
+                            name: bucket.name,
+                            date: bucket.date,
+                        },
+                    }
+                );
             },
         ),
 
-    deleteBucket: (planId, id) =>
-        promiseFlux(axios.delete(`/${planId}/buckets/${id}`), ({ data }) => ({
-            type: PlanActions.BUCKET_DELETED,
-            planId,
-            id: data.id,
-        })),
+    deleteBucket: (planId: number, id: number) =>
+        promiseFlux(
+            client.mutate({
+                mutation: DELETE_BUCKET,
+                variables: {
+                    planId: planId.toString(),
+                    bucketId: id.toString(),
+                },
+            }),
+            (result: FetchResult<DeleteBucketMutation>) => {
+                const bucket = result?.data?.planner?.deleteBucket || null;
+                console.log(result);
+                return (
+                    bucket && {
+                        type: PlanActions.BUCKET_DELETED,
+                        planId,
+                        id: ensureInt(bucket.id),
+                    }
+                );
+            },
+        ),
 };
 
 export default PlanApi;
