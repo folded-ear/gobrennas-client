@@ -12,7 +12,9 @@ const LIST_ALL_LABELS_QUERY = gql(`
 `);
 
 export const useGetAllLabels = () => {
-    const { loading, error, data } = useQuery(LIST_ALL_LABELS_QUERY);
+    const { loading, error, data } = useQuery(LIST_ALL_LABELS_QUERY, {
+        fetchPolicy: "cache-and-network",
+    });
     const labels = data?.labels?.all || [];
 
     return {
