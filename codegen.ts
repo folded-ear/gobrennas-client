@@ -14,7 +14,12 @@ const config: CodegenConfig = {
             plugins: [],
             config: {
                 scalars: {
-                    Date: "Date",
+                    Date: "string",
+                    DateTime: "string",
+                    Long: "number",
+                    NonNegativeFloat: "number",
+                    NonNegativeInt: "number",
+                    PositiveInt: "number",
                     Upload: "File",
                 },
                 avoidOptionals: true,

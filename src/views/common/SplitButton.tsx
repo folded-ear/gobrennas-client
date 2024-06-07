@@ -1,5 +1,5 @@
 import Button from "@mui/material/Button";
-import ButtonGroup from "@mui/material/ButtonGroup";
+import ButtonGroup, { ButtonGroupOwnProps } from "@mui/material/ButtonGroup";
 import ClickAwayListener from "@mui/material/ClickAwayListener";
 import Grid from "@mui/material/Grid";
 import Grow from "@mui/material/Grow";
@@ -7,10 +7,10 @@ import MenuItem from "@mui/material/MenuItem";
 import MenuList from "@mui/material/MenuList";
 import Popper from "@mui/material/Popper";
 import { makeStyles } from "@mui/styles";
-import { DropDownIcon } from "views/common/icons";
+import { CookedItIcon, DropDownIcon } from "views/common/icons";
 import React, { MouseEventHandler, ReactNode } from "react";
 import { BfsId } from "global/types/identity";
-import { Paper } from "@mui/material";
+import { ButtonProps, Color, Paper } from "@mui/material";
 
 const useStyles = makeStyles({
     popper: {
@@ -18,22 +18,22 @@ const useStyles = makeStyles({
     },
 });
 
-interface Option {
+export type SelectOption = {
     id: BfsId;
     label: string;
-}
+    value?: string | null;
+};
 
 interface Props {
     primary: ReactNode;
-
     onClick: MouseEventHandler;
-
-    options: Option[];
-
-    onSelect(event: Event, opt: Option): void;
-
+    options: SelectOption[];
+    onSelect(event: Event, opt: SelectOption): void;
     disabled?: boolean;
     dropdownDisabled?: boolean;
+    variant?: ButtonGroupOwnProps["variant"];
+    color?: ButtonGroupOwnProps["color"];
+    startIcon?: ReactNode;
 }
 
 const SplitButton: React.FC<Props> = ({
@@ -43,6 +43,9 @@ const SplitButton: React.FC<Props> = ({
     options,
     disabled = false,
     dropdownDisabled = disabled,
+    variant = "contained",
+    color = "primary",
+    startIcon,
 }) => {
     const classes = useStyles();
     const [open, setOpen] = React.useState(false);
@@ -74,11 +77,13 @@ const SplitButton: React.FC<Props> = ({
         <Grid container direction="column" alignItems="center">
             <Grid item xs={12}>
                 <ButtonGroup
-                    variant="contained"
+                    variant={variant}
                     ref={anchorRef}
                     aria-label="split button"
+                    color={color}
                 >
                     <Button
+                        startIcon={startIcon ? startIcon : null}
                         size="small"
                         onClick={handleClick}
                         disabled={disabled}
