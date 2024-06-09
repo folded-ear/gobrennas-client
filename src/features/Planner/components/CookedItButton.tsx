@@ -50,28 +50,21 @@ const CookButton: React.FC<Props> = ({ recipe, stayOnPage, ...props }) => {
 
     const cookedItOptions = React.useMemo(() => {
         const start = DateTime.now();
-        return [
-            {
-                id: 1,
-                label: "Today",
-                value: start.toJSDate(),
-            },
-            {
-                id: 2,
-                label: "Yesterday",
-                value: start.minus({ days: 1 }).toJSDate(),
-            },
-            {
-                id: 3,
-                label: "2 Days Ago",
-                value: start.minus({ days: 2 }).toJSDate(),
-            },
-            {
-                id: 4,
-                label: "3 Days Ago",
-                value: start.minus({ days: 3 }).toJSDate(),
-            },
-        ];
+        const days = [...Array(7).keys()];
+        const createLabel = (day: number) => {
+            if (day === 0) {
+                return "Today";
+            }
+            if (day === 1) {
+                return "Yesterday";
+            }
+            return day + " Days Ago";
+        };
+        return days.map((day) => ({
+            id: day,
+            label: createLabel(day),
+            value: start.minus({ days: day }).toJSDate(),
+        }));
     }, []);
 
     const text = pending ? "WAIT, NO!" : "I Cooked It!";
