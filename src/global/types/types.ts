@@ -89,7 +89,7 @@ export type RecipeHistory = Pick<
     PlannedRecipeHistory,
     "id" | "status" | "plannedDate" | "doneDate" | "notes"
 > & {
-    rating: number;
+    rating: number | null;
     owner: Pick<User, "name" | "email" | "imageUrl">;
 };
 

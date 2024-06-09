@@ -106,6 +106,7 @@ type LabelsQuery {
 type LibraryMutation {
     createRecipe(cookThis: Boolean, info: IngredientInfo!, photo: Upload): Recipe!
     deleteRecipe(id: ID!): Deletion!
+    history(recipeId: ID!): RecipeHistoryMutation
     setRecipePhoto(id: ID!, photo: Upload!): Recipe!
     updateRecipe(id: ID!, info: IngredientInfo!, photo: Upload): Recipe!
 }
@@ -389,7 +390,7 @@ type PlannerMutation {
     Sets the status of the given item. This will always return the updated
     item, though it may immediately moved to the trash (in the background).
     """
-    setStatus(id: ID!, status: PlanItemStatus!): PlanItem!
+    setStatus(doneAt: DateTime, id: ID!, status: PlanItemStatus!): PlanItem!
     "Update a bucket w/in a plan, by setting or clearing its name and date."
     updateBucket(bucketId: ID!, date: Date, name: String, planId: ID!): PlanBucket!
 }
@@ -465,6 +466,15 @@ type RecipeConnection {
 type RecipeConnectionEdge {
     cursor: Cursor!
     node: Recipe!
+}
+
+type RecipeHistoryMutation {
+    """
+
+    Set/update the rating on this history item. Either rating OR ratingInt
+    should be supplied, not both.
+    """
+    setRating(id: ID!, rating: Rating, ratingInt: PositiveInt): PlannedRecipeHistory!
 }
 
 """
