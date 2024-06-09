@@ -14,7 +14,6 @@ import dotProp from "dot-prop-immutable";
 import { bucketComparator } from "util/comparators";
 import preferencesStore from "data/preferencesStore";
 import { formatLocalDate, parseLocalDate } from "util/time";
-import history from "../../../util/history";
 
 export const AT_END = Math.random();
 
@@ -147,7 +146,6 @@ export const selectList = (state, id) => {
         state = addTask(state, id, "");
     }
     PlanApi.getDescendantsAsList(state.activeListId);
-    history.push(`/plan/${id}`);
     return state;
 };
 

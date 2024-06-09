@@ -57,6 +57,7 @@ import {
     toggleExpanded,
     unnestTask,
 } from "./utils";
+import history from "../../../util/history";
 
 /*
  * This store is way too muddled. But leaving it that way for the moment, to
@@ -126,12 +127,18 @@ class PlanStore extends ReduceStore {
             }
 
             case PlanActions.PLAN_DELETED: {
-                return selectDefaultList({
+                // noinspection EqualityComparisonWithCoercionJS
+                const wasActive = state.activeListId == action.id; // eslint-disable-line eqeqeq
+                state = selectDefaultList({
                     ...dotProp.delete(state, ["byId", action.id]),
                     topLevelIds: state.topLevelIds.map((ids) =>
                         ids.filter((id) => id !== action.id),
                     ),
                 });
+                if (wasActive && state.activeListId) {
+                    history.push(`/plan/${state.activeListId}`);
+                }
+                return state;
             }
 
             case PlanActions.LOAD_PLANS:
