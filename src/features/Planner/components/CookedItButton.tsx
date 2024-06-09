@@ -36,7 +36,6 @@ const CookButton: React.FC<Props> = ({ recipe, stayOnPage, ...props }) => {
 
     const handleSelect = React.useCallback(
         (e, option: SelectOption<Date>) => {
-            console.log(option);
             e.preventDefault();
             dispatcher.dispatch({
                 type: PlanActions.COMPLETE_PLAN_ITEM,
