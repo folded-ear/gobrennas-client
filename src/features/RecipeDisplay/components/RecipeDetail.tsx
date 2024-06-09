@@ -1,18 +1,6 @@
-import {
-    Box,
-    Grid,
-    Table,
-    TableHead,
-    TableRow,
-    Toolbar,
-    Typography,
-} from "@mui/material";
+import { Box, Grid, Toolbar, Typography } from "@mui/material";
 import makeStyles from "@mui/styles/makeStyles";
-import {
-    AddRecipeIcon,
-    CookedItIcon,
-    DeleteIcon,
-} from "../../../views/common/icons";
+import { AddRecipeIcon } from "../../../views/common/icons";
 import React from "react";
 import Dispatcher from "data/dispatcher";
 import RecipeActions from "data/RecipeActions";
@@ -37,9 +25,8 @@ import { ReentrantScalingProvider, useScale } from "util/ScalingContext";
 import { SubHeader } from "./Subheader";
 import { extractRecipePhoto } from "features/RecipeDisplay/utils/extractRecipePhoto";
 import { BreadcrumbLink } from "global/components/BreadcrumbLink";
-import { PlanItemStatus } from "../../../__generated__/graphql";
-import TableCell from "@mui/material/TableCell";
 import useIsDevMode from "../../../data/useIsDevMode";
+import RecipeHistoryGrid from "./RecipeHistoryGrid";
 
 const useStyles = makeStyles((theme) => ({
     name: {
@@ -217,53 +204,11 @@ const RecipeDetail: React.FC<Props> = ({
                         loggedIn={loggedIn}
                     />
                 </ReentrantScalingProvider>
-
                 {devMode && planHistory && planHistory.length > 0 && (
-                    <Grid item xs={12}>
-                        <Typography variant="h5">History</Typography>
-                        <Table size={"small"}>
-                            <TableHead>
-                                <TableRow>
-                                    <TableCell />
-                                    <TableCell>Planned</TableCell>
-                                    <TableCell>Done</TableCell>
-                                    <TableCell>Rating</TableCell>
-                                    <TableCell>Notes</TableCell>
-                                    <TableCell />
-                                    <TableCell>ID</TableCell>
-                                </TableRow>
-                            </TableHead>
-                            {planHistory.map((h) => (
-                                <TableRow key={h.id}>
-                                    <TableCell>
-                                        {PlanItemStatus.Completed ===
-                                        h.status ? (
-                                            <CookedItIcon />
-                                        ) : (
-                                            <DeleteIcon />
-                                        )}
-                                    </TableCell>
-                                    <TableCell>{h.plannedDate}</TableCell>
-                                    <TableCell>{h.doneDate}</TableCell>
-                                    <TableCell>
-                                        {h.rating ||
-                                            Math.ceil(Math.random() * 5)}{" "}
-                                        out of 5
-                                    </TableCell>
-                                    <TableCell>
-                                        {h.notes ||
-                                        PlanItemStatus.Completed === h.status
-                                            ? `${h.owner.name} is the quiet type.`
-                                            : `${h.owner.name} HATES this recipe.`}
-                                    </TableCell>
-                                    <TableCell>
-                                        <User {...h.owner} iconOnly />
-                                    </TableCell>
-                                    <TableCell>{h.id}</TableCell>
-                                </TableRow>
-                            ))}
-                        </Table>
-                    </Grid>
+                    <RecipeHistoryGrid
+                        recipeId={recipe.id}
+                        history={planHistory}
+                    />
                 )}
             </Grid>
             {hasFab && (

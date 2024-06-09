@@ -106,6 +106,7 @@ type LabelsQuery {
 type LibraryMutation {
     createRecipe(cookThis: Boolean, info: IngredientInfo!, photo: Upload): Recipe!
     deleteRecipe(id: ID!): Deletion!
+    history(recipeId: ID!): RecipeHistoryMutation
     setRecipePhoto(id: ID!, photo: Upload!): Recipe!
     updateRecipe(id: ID!, info: IngredientInfo!, photo: Upload): Recipe!
 }
@@ -465,6 +466,15 @@ type RecipeConnection {
 type RecipeConnectionEdge {
     cursor: Cursor!
     node: Recipe!
+}
+
+type RecipeHistoryMutation {
+    """
+
+    Set/update the rating on this history item. Either rating OR ratingInt
+    should be supplied, not both.
+    """
+    setRating(id: ID!, rating: Rating, ratingInt: PositiveInt): PlannedRecipeHistory!
 }
 
 """
