@@ -44,8 +44,9 @@ const CookButton: React.FC<Props> = ({ recipe, stayOnPage, ...props }) => {
                 status: PlanItemStatus.COMPLETED,
                 doneAt: option.value,
             });
+            if (!stayOnPage) history.goBack();
         },
-        [recipe.id],
+        [recipe.id, stayOnPage],
     );
 
     const cookedItOptions = React.useMemo(() => {
