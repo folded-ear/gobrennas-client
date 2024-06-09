@@ -88,6 +88,7 @@ const PlanApi = {
                 },
             }),
             (result: FetchResult<SetStatusMutation>) => {
+                // TODO: Apollo cache needs to be updated, and is not yet
                 const id = result?.data?.planner?.setStatus?.id || null;
                 return (
                     id && {
