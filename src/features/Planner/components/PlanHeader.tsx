@@ -20,7 +20,7 @@ import {
     ExpandAll,
     SortByBucketIcon,
 } from "views/common/icons";
-import SplitButton from "views/common/SplitButton";
+import SplitButton, { SelectOption } from "views/common/SplitButton";
 import AddToCalendar from "./AddToCalendar";
 import CollapseIconButton from "../../../global/components/CollapseIconButton";
 import { useIsMobile } from "../../../providers/IsMobile";
@@ -88,12 +88,12 @@ function PlanHeader({
         setShowAdd(false);
     };
 
-    const onDuplicate = (e, list) => {
+    const onDuplicate = (_, plan: SelectOption<never>) => {
         if (!isValidName(name)) return;
         Dispatcher.dispatch({
             type: PlanActions.DUPLICATE_PLAN,
             name: name.trim(),
-            fromId: list.id,
+            fromId: plan.id,
         });
         setName("");
         setShowAdd(false);

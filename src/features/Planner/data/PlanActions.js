@@ -41,6 +41,12 @@ const PlanActions = {
         id: clientOrDatabaseIdType.isRequired,
         status: PropTypes.string.isRequired,
     }),
+    COMPLETE_PLAN_ITEM: typedAction("plan/complete-plan-item", {
+        id: clientOrDatabaseIdType.isRequired,
+        status: PropTypes.string.isRequired,
+        doneAt: PropTypes.instanceOf(Date), // can be null
+    }),
+    PLAN_ITEM_COMPLETED: "plan/plan-item-completed",
     BULK_SET_STATUS: typedAction("plan/bulk-set-status", {
         ids: PropTypes.arrayOf(clientOrDatabaseIdType).isRequired,
         status: PropTypes.string.isRequired,

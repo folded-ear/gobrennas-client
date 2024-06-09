@@ -4,6 +4,7 @@ import promiseFlux from "util/promiseFlux";
 import PlanActions from "./PlanActions";
 import { client } from "providers/ApolloClient";
 import {
+    COMPLETE_PLAN_ITEM,
     CREATE_BUCKET,
     DELETE_BUCKET,
     DELETE_PLAN_ITEM,
@@ -23,6 +24,7 @@ import {
     toRestPlanItem,
 } from "features/Planner/data/conversion_helpers";
 import { ensureInt } from "global/utils";
+import { PlanItemStatus, SetStatusMutation } from "__generated__/graphql";
 
 const axios = BaseAxios.create({
     baseURL: `${API_BASE_URL}/api/plan`,
@@ -68,6 +70,29 @@ const PlanApi = {
                 return (
                     id && {
                         type: PlanActions.DELETED,
+                        id: ensureInt(id),
+                    }
+                );
+            },
+            handleErrors,
+        ),
+
+    completeItem: (id: number, doneAt: Date) =>
+        promiseFlux(
+            client.mutate({
+                mutation: COMPLETE_PLAN_ITEM,
+                variables: {
+                    id: id.toString(),
+                    status: PlanItemStatus.Completed,
+                    doneAt: doneAt?.toISOString() || null,
+                },
+            }),
+            (result: FetchResult<SetStatusMutation>) => {
+                // TODO: Apollo cache needs to be updated, and is not yet
+                const id = result?.data?.planner?.setStatus?.id || null;
+                return (
+                    id && {
+                        type: PlanActions.PLAN_ITEM_COMPLETED,
                         id: ensureInt(id),
                     }
                 );

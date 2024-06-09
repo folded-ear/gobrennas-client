@@ -254,6 +254,16 @@ class PlanStore extends ReduceStore {
                 return queueDelete(state, action.id);
             }
 
+            case PlanActions.COMPLETE_PLAN_ITEM: {
+                PlanApi.completeItem(action.id, action.doneAt);
+                return state;
+            }
+
+            // TODO: This is not going through the queue...YET! Will be addressed in future work
+            case PlanActions.PLAN_ITEM_COMPLETED: {
+                return taskDeleted(state, action.id);
+            }
+
             case PlanActions.SET_STATUS: {
                 return doInteractiveStatusChange(
                     state,
