@@ -1,5 +1,5 @@
-import { ButtonProps, Tooltip } from "@mui/material";
-import { CookedItIcon } from "views/common/icons";
+import { ButtonProps, Stack, Tooltip } from "@mui/material";
+import { CookedItIcon, HelpIcon } from "views/common/icons";
 import React, { useCallback } from "react";
 import { FromPlanItem } from "../../../global/types/types";
 import dispatcher from "../../../data/dispatcher";
@@ -7,6 +7,7 @@ import PlanActions from "../data/PlanActions";
 import PlanItemStatus from "../data/PlanItemStatus";
 import history from "util/history";
 import SplitButton, { SelectOption } from "views/common/SplitButton";
+import { DateTime } from "luxon";
 
 type Props = Omit<ButtonProps, "onClick"> & {
     recipe: FromPlanItem;
@@ -33,17 +34,42 @@ const CookButton: React.FC<Props> = ({ recipe, stayOnPage, ...props }) => {
         [recipe.completing, recipe.id, stayOnPage],
     );
 
-    const handleSelect = (e, option: SelectOption) => {
-        console.log(e);
-        console.log(option);
-    };
+    const handleSelect = React.useCallback(
+        (e, option: SelectOption<Date>) => {
+            console.log(option);
+            e.preventDefault();
+            dispatcher.dispatch({
+                type: PlanActions.COMPLETE_PLAN_ITEM,
+                id: recipe.id,
+                status: PlanItemStatus.COMPLETED,
+                doneAt: option.value,
+            });
+        },
+        [recipe.id],
+    );
 
     const cookedItOptions = React.useMemo(() => {
+        const start = DateTime.now();
         return [
             {
                 id: 1,
+                label: "Today",
+                value: start.toJSDate(),
+            },
+            {
+                id: 2,
                 label: "Yesterday",
-                value: "2024-06-04T22:53:49.361Z",
+                value: start.minus({ days: 1 }).toJSDate(),
+            },
+            {
+                id: 3,
+                label: "2 Days Ago",
+                value: start.minus({ days: 2 }).toJSDate(),
+            },
+            {
+                id: 4,
+                label: "3 Days Ago",
+                value: start.minus({ days: 3 }).toJSDate(),
             },
         ];
     }, []);
@@ -53,7 +79,13 @@ const CookButton: React.FC<Props> = ({ recipe, stayOnPage, ...props }) => {
         ? text
         : "Mark this cooked and remove it from the plan.";
     return (
-        <Tooltip title={title} placement="top">
+        <Stack
+            justifyContent="center"
+            alignItems="center"
+            direction="row"
+            spacing={1}
+            sx={{ marginRight: "20px" }}
+        >
             <SplitButton
                 variant={pending ? "contained" : "outlined"}
                 color={"success"}
@@ -64,7 +96,10 @@ const CookButton: React.FC<Props> = ({ recipe, stayOnPage, ...props }) => {
                 primary={text}
                 options={cookedItOptions}
             />
-        </Tooltip>
+            <Tooltip title={title} placement="top">
+                <HelpIcon sx={{ fontSize: 16 }} />
+            </Tooltip>
+        </Stack>
     );
 };
 

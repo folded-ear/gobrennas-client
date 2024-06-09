@@ -7,10 +7,10 @@ import MenuItem from "@mui/material/MenuItem";
 import MenuList from "@mui/material/MenuList";
 import Popper from "@mui/material/Popper";
 import { makeStyles } from "@mui/styles";
-import { CookedItIcon, DropDownIcon } from "views/common/icons";
+import { DropDownIcon } from "views/common/icons";
 import React, { MouseEventHandler, ReactNode } from "react";
 import { BfsId } from "global/types/identity";
-import { ButtonProps, Color, Paper } from "@mui/material";
+import { Paper } from "@mui/material";
 
 const useStyles = makeStyles({
     popper: {
@@ -18,17 +18,17 @@ const useStyles = makeStyles({
     },
 });
 
-export type SelectOption = {
+export type SelectOption<TOption> = {
     id: BfsId;
     label: string;
-    value?: string | null;
+    value?: TOption | null;
 };
 
-interface Props {
+interface Props<TOption> {
     primary: ReactNode;
     onClick: MouseEventHandler;
-    options: SelectOption[];
-    onSelect(event: Event, opt: SelectOption): void;
+    options: SelectOption<TOption>[];
+    onSelect(event: Event, opt: SelectOption<TOption>): void;
     disabled?: boolean;
     dropdownDisabled?: boolean;
     variant?: ButtonGroupOwnProps["variant"];
@@ -36,7 +36,7 @@ interface Props {
     startIcon?: ReactNode;
 }
 
-const SplitButton: React.FC<Props> = ({
+const SplitButton = <TOption,>({
     primary,
     onClick,
     onSelect,
@@ -46,7 +46,7 @@ const SplitButton: React.FC<Props> = ({
     variant = "contained",
     color = "primary",
     startIcon,
-}) => {
+}: Props<TOption>) => {
     const classes = useStyles();
     const [open, setOpen] = React.useState(false);
     const anchorRef = React.useRef<HTMLDivElement>(null);

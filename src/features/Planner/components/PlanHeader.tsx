@@ -88,7 +88,7 @@ function PlanHeader({
         setShowAdd(false);
     };
 
-    const onDuplicate = (_, plan: SelectOption) => {
+    const onDuplicate = (_, plan: SelectOption<never>) => {
         if (!isValidName(name)) return;
         Dispatcher.dispatch({
             type: PlanActions.DUPLICATE_PLAN,
