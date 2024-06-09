@@ -27,6 +27,7 @@
     "history": "^4.10.1",
     "immutable": "^4.0.0-rc.12",
     "invariant": "^2.2.4",
+    "luxon": "^3.4.4",
     "preval.macro": "^5.0.0",
     "prop-types": "^15.7.2",
     "qs": "^6.10.1",
@@ -77,7 +78,9 @@
     },
     "overrides": [
       {
-        "files": ["src/views/common/icons.tsx"],
+        "files": [
+          "src/views/common/icons.tsx"
+        ],
         "rules": {
           "no-restricted-imports": "off"
         }
@@ -153,6 +156,7 @@
     "@testing-library/jest-dom": "^5.12.0",
     "@testing-library/react": "^11.2.7",
     "@testing-library/user-event": "^12.8.3",
+    "@types/luxon": "^3.4.2",
     "@types/react-router-dom": "^5.3.3",
     "prettier": "3.0.3",
     "react": "^17.0.2",
