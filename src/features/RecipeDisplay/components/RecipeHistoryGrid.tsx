@@ -18,6 +18,7 @@ import User from "../../../views/user/User";
 import React, { useCallback } from "react";
 import { useRateRecipeHistory } from "../../../data/hooks/useRateRecipeHistory";
 import { BfsId } from "../../../global/types/identity";
+import Markdown from "../../../views/common/Markdown";
 
 interface Props {
     recipeId: BfsId;
@@ -42,7 +43,14 @@ export default function RecipeHistoryGrid({ recipeId, history }: Props) {
                     {rateError}
                 </Stack>
             </Typography>
-            <Table size={"small"}>
+            <Table
+                size={"small"}
+                sx={{
+                    "tr td": {
+                        verticalAlign: "top",
+                    },
+                }}
+            >
                 <TableHead>
                     <TableRow>
                         <TableCell />
@@ -78,7 +86,9 @@ export default function RecipeHistoryGrid({ recipeId, history }: Props) {
                                         />
                                     )}
                                 </TableCell>
-                                <TableCell>{h.notes}</TableCell>
+                                <TableCell>
+                                    {!!h.notes && <Markdown text={h.notes} />}
+                                </TableCell>
                                 <TableCell>
                                     <User {...h.owner} iconOnly inline />
                                 </TableCell>
