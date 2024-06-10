@@ -39,8 +39,8 @@ query getRecipeWithEverything($id: ID!) {
       }
       plannedHistory {
         id
-        plannedDate
-        doneDate
+        plannedAt
+        doneAt
         status
         owner {
           name

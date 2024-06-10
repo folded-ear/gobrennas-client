@@ -87,7 +87,7 @@ export type Subrecipe = Pick<
 
 export type RecipeHistory = Pick<
     PlannedRecipeHistory,
-    "id" | "status" | "plannedDate" | "doneDate" | "notes"
+    "id" | "status" | "plannedAt" | "doneAt" | "notes"
 > & {
     rating: number | null;
     owner: Pick<User, "name" | "email" | "imageUrl">;
