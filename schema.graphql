@@ -325,7 +325,6 @@ type PlanItem implements CorePlanItem & Node {
 
 type PlannedRecipeHistory implements Node {
     doneAt: DateTime!
-    doneDate: Date!
     id: ID!
     notes: String
     """
@@ -335,7 +334,6 @@ type PlannedRecipeHistory implements Node {
     """
     owner: User!
     plannedAt: DateTime!
-    plannedDate: Date!
     rating: Rating
     ratingInt: PositiveInt
     "The recipe this history item is for."
@@ -469,6 +467,7 @@ type RecipeConnectionEdge {
 }
 
 type RecipeHistoryMutation {
+    recipeId: ID!
     """
 
     Set/update the rating on this history item. Either rating OR ratingInt

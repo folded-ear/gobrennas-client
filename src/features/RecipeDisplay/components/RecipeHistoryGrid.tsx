@@ -18,6 +18,7 @@ import User from "../../../views/user/User";
 import React, { useCallback } from "react";
 import { useRateRecipeHistory } from "../../../data/hooks/useRateRecipeHistory";
 import { BfsId } from "../../../global/types/identity";
+import { DateTime } from "luxon";
 import Markdown from "../../../views/common/Markdown";
 
 interface Props {
@@ -73,8 +74,16 @@ export default function RecipeHistoryGrid({ recipeId, history }: Props) {
                                         <DeleteIcon />
                                     )}
                                 </TableCell>
-                                <TableCell>{h.plannedDate}</TableCell>
-                                <TableCell>{h.doneDate}</TableCell>
+                                <TableCell>
+                                    {DateTime.fromISO(
+                                        h.plannedAt,
+                                    ).toLocaleString()}
+                                </TableCell>
+                                <TableCell>
+                                    {DateTime.fromISO(
+                                        h.doneAt,
+                                    ).toLocaleString()}
+                                </TableCell>
                                 <TableCell>
                                     {(mine || !!h.rating) && (
                                         <Rating
