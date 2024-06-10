@@ -10,15 +10,48 @@ const Markdown: React.FC<Props> = ({ text }) => {
         return null;
     }
     return (
-        <div className="markdown">
-            <MarkdownView
-                markdown={text}
-                options={{
-                    strikethrough: true,
-                    simpleLineBreaks: true,
-                }}
-            />
-        </div>
+        <MarkdownView
+            markdown={text}
+            options={{
+                strikethrough: true,
+                simpleLineBreaks: true,
+            }}
+            extensions={[
+                {
+                    type: "lang",
+                    filter: (text: string) => {
+                        const lines = text.split("\n");
+                        let prev = 0;
+                        let start: number;
+                        while ((start = lines.indexOf("```diff", prev)) >= 0) {
+                            const end = lines.indexOf("```", start + 1);
+                            if (end < 0) break;
+                            lines[start] = `<pre class="diff">`;
+                            lines[end] = `</pre>`;
+                            for (let i = start + 1; i < end; i++) {
+                                const l = lines[i];
+                                if (l.startsWith("@@")) {
+                                    lines[
+                                        i
+                                    ] = `<span class="range">${l}</span>`;
+                                } else if (l.startsWith("+")) {
+                                    lines[
+                                        i
+                                    ] = `<span class="inserted">${l}</span>`;
+                                } else if (l.startsWith("-")) {
+                                    lines[
+                                        i
+                                    ] = `<span class="deleted">${l}</span>`;
+                                }
+                            }
+                            prev = end + 1;
+                        }
+                        return lines.join("\n");
+                    },
+                },
+            ]}
+            className="markdown"
+        />
     );
 };
 
