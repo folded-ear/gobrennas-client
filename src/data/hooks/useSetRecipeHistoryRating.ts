@@ -2,13 +2,13 @@ import { MutationResult, useMutation } from "@apollo/client";
 import { gql } from "__generated__";
 import {
     PlannedRecipeHistory,
-    RateRecipeHistoryMutation,
+    SetRecipeHistoryRatingMutation,
 } from "../../__generated__/graphql";
 import { useCallback } from "react";
 import { BfsId } from "../../global/types/identity";
 
-const RATE_RECIPE_HISTORY = gql(`
-mutation rateRecipeHistory($recipeId: ID!, $id: ID!, $rating: PositiveInt!) {
+const SET_RECIPE_HISTORY_RATING = gql(`
+mutation setRecipeHistoryRating($recipeId: ID!, $id: ID!, $rating: PositiveInt!) {
   library {
     history(recipeId: $recipeId) {
       setRating(id: $id, ratingInt: $rating) {
@@ -24,13 +24,13 @@ type Result = Pick<PlannedRecipeHistory, "id"> & {
     rating: PlannedRecipeHistory["ratingInt"];
 };
 
-export const useRateRecipeHistory = (): [
+export const useSetRecipeHistoryRating = (): [
     (recipeId: BfsId, id: BfsId, rating: number) => Promise<Result>,
-    MutationResult<RateRecipeHistoryMutation>,
+    MutationResult<SetRecipeHistoryRatingMutation>,
 ] => {
-    const [mutateFunction, out] = useMutation(RATE_RECIPE_HISTORY);
+    const [mutateFunction, out] = useMutation(SET_RECIPE_HISTORY_RATING);
 
-    const rate = useCallback(
+    const setRating = useCallback(
         (recipeId: BfsId, id: BfsId, rating: number) =>
             mutateFunction({
                 variables: {
@@ -40,7 +40,7 @@ export const useRateRecipeHistory = (): [
                 },
             }).then(({ data, errors }) => {
                 if (errors && errors.length) {
-                    let msg = "Rate history failed:\n\n" + errors[0];
+                    let msg = "Set history rating failed:\n\n" + errors[0];
                     if (errors.length > 1) {
                         msg += `\n\nPlus ${errors.length - 1} more.`;
                     }
@@ -48,12 +48,12 @@ export const useRateRecipeHistory = (): [
                 }
                 const setRating = data?.library?.history?.setRating;
                 if (!setRating) {
-                    return Promise.reject("Empty rate response");
+                    return Promise.reject("Empty set rating response");
                 }
                 return setRating;
             }),
         [mutateFunction],
     );
 
-    return [rate, out];
+    return [setRating, out];
 };
