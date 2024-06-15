@@ -73,6 +73,16 @@ const RecipeCard: React.FC<Props> = ({ recipe, mine, indicateMine, me }) => {
     const labelsToDisplay =
         recipe.labels &&
         recipe.labels.filter((label) => label.indexOf("--") !== 0);
+
+    const handleClick = (planId: number, scale?: number) => {
+        Dispatcher.dispatch({
+            type: RecipeActions.SEND_TO_PLAN,
+            recipeId: parseInt(recipe.id),
+            planId,
+            scale: scale ? scale : 1,
+        });
+    };
+
     return (
         <Card
             raised={raised}
@@ -160,24 +170,16 @@ const RecipeCard: React.FC<Props> = ({ recipe, mine, indicateMine, me }) => {
             <CardActions>
                 <Stack direction="row" spacing={1} sx={{ maxWidth: "100%" }}>
                     <TaskIcon
-                        icon={<ViewIcon />}
+                        icon={<ViewIcon fontSize="inherit" />}
                         url={`/library/recipe/${recipe.id}`}
                     />
                     {mine && (
                         <TaskIcon
-                            icon={<EditIcon />}
+                            icon={<EditIcon fontSize="inherit" />}
                             url={`/library/recipe/${recipe.id}/edit`}
                         />
                     )}
-                    <SendToPlan
-                        onClick={(planId) =>
-                            Dispatcher.dispatch({
-                                type: RecipeActions.SEND_TO_PLAN,
-                                recipeId: parseInt(recipe.id),
-                                planId,
-                            })
-                        }
-                    />
+                    <SendToPlan onClick={handleClick} showScaleOptions />
                 </Stack>
             </CardActions>
         </Card>
