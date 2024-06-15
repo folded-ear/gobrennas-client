@@ -26,6 +26,7 @@ import FavoriteIndicator from "../../Favorites/components/Indicator";
 import { Photo, User as UserType } from "../../../__generated__/graphql";
 import { TaskIcon } from "global/components/TaskIcon";
 import LabelItem from "../../../global/components/LabelItem";
+import { useScale } from "util/ScalingContext";
 
 const useStyles = makeStyles({
     photo: {
@@ -69,10 +70,21 @@ const RecipeCard: React.FC<Props> = ({ recipe, mine, indicateMine, me }) => {
     );
     const classes = useStyles();
     const [raised, setRaised] = React.useState(false);
+    const scale = useScale();
 
     const labelsToDisplay =
         recipe.labels &&
         recipe.labels.filter((label) => label.indexOf("--") !== 0);
+
+    const handleClick = (planId: number, scale?: number) => {
+        Dispatcher.dispatch({
+            type: RecipeActions.SEND_TO_PLAN,
+            recipeId: parseInt(recipe.id),
+            planId,
+            scale: scale ? scale : 1,
+        });
+    };
+
     return (
         <Card
             raised={raised}
@@ -169,15 +181,7 @@ const RecipeCard: React.FC<Props> = ({ recipe, mine, indicateMine, me }) => {
                             url={`/library/recipe/${recipe.id}/edit`}
                         />
                     )}
-                    <SendToPlan
-                        onClick={(planId) =>
-                            Dispatcher.dispatch({
-                                type: RecipeActions.SEND_TO_PLAN,
-                                recipeId: parseInt(recipe.id),
-                                planId,
-                            })
-                        }
-                    />
+                    <SendToPlan onClick={handleClick} showScaleOptions />
                 </Stack>
             </CardActions>
         </Card>

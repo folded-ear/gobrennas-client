@@ -5,6 +5,7 @@ import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
 import { LibrarySearchScope } from "__generated__/graphql";
 import { useSearchLibrary } from "features/RecipeLibrary/hooks/useSearchLibrary";
+import { ScalingProvider } from "util/ScalingContext";
 
 export const LibraryController = () => {
     const me = useProfile();
@@ -53,15 +54,17 @@ export const LibraryController = () => {
     }
 
     return (
-        <RecipesList
-            me={me}
-            onSearch={handleSearch}
-            scope={scope}
-            filter={query}
-            recipes={recipes}
-            isLoading={loading}
-            isComplete={isComplete}
-            onNeedMore={handleNeedMore}
-        />
+        <ScalingProvider>
+            <RecipesList
+                me={me}
+                onSearch={handleSearch}
+                scope={scope}
+                filter={query}
+                recipes={recipes}
+                isLoading={loading}
+                isComplete={isComplete}
+                onNeedMore={handleNeedMore}
+            />
+        </ScalingProvider>
     );
 };

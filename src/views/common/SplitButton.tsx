@@ -24,15 +24,13 @@ export type SelectOption<TOption> = {
     value?: TOption | null;
 };
 
-interface Props<TOption> {
-    primary: ReactNode;
+interface Props<TOption> extends ButtonGroupOwnProps {
+    primary: ReactNode | string;
     onClick: MouseEventHandler;
     options: SelectOption<TOption>[];
     onSelect(event: Event, opt: SelectOption<TOption>): void;
     disabled?: boolean;
     dropdownDisabled?: boolean;
-    variant?: ButtonGroupOwnProps["variant"];
-    color?: ButtonGroupOwnProps["color"];
     startIcon?: ReactNode;
 }
 
@@ -46,6 +44,7 @@ const SplitButton = <TOption,>({
     variant = "contained",
     color = "primary",
     startIcon,
+    disableElevation,
 }: Props<TOption>) => {
     const classes = useStyles();
     const [open, setOpen] = React.useState(false);
@@ -77,6 +76,7 @@ const SplitButton = <TOption,>({
         <Grid container direction="column" alignItems="center">
             <Grid item xs={12}>
                 <ButtonGroup
+                    disableElevation={disableElevation}
                     variant={variant}
                     ref={anchorRef}
                     aria-label="split button"

@@ -1,21 +1,41 @@
 import { IconButton } from "@mui/material";
-import { SendToPlanIcon } from "../../../views/common/icons";
+import { SendToPlanIcon } from "views/common/icons";
 import React from "react";
 import useActivePlanner from "data/useActivePlanner";
-import TextButton from "../../../views/common/TextButton";
+import SplitButton, { SelectOption } from "views/common/SplitButton";
+import { useScaleOptions } from "util/ScalingContext";
+import TextButton from "views/common/TextButton";
 
 interface Props {
-    onClick(planId: number): void;
+    onClick(planId: number, scale?: number | null): void;
     iconOnly?: boolean;
+    showScaleOptions?: boolean;
 }
 
-const SendToPlan: React.FC<Props> = ({ onClick, iconOnly }) => {
+const SendToPlan: React.FC<Props> = ({
+    onClick,
+    iconOnly,
+    showScaleOptions = false,
+}) => {
     const list = useActivePlanner().data;
+    const scaleOpts = useScaleOptions();
+
+    const scaleToPlanOpts = scaleOpts.map((it, idx) => ({
+        id: idx,
+        label: it.label,
+        value: it.value,
+    }));
+
     if (!list) return null;
     const handleClick = () =>
         // While items can exist in the store in an unsaved state, plans
         // cannot, so this type assertion is safe.
         onClick && onClick(list.id as number);
+
+    const handleSelect = (_, selected: SelectOption<number>) => {
+        onClick && onClick(list.id as number, selected?.value);
+    };
+
     if (iconOnly) {
         return (
             <IconButton
@@ -26,20 +46,35 @@ const SendToPlan: React.FC<Props> = ({ onClick, iconOnly }) => {
                 <SendToPlanIcon fontSize="inherit" />
             </IconButton>
         );
-    } else {
+    }
+
+    if (showScaleOptions) {
         return (
-            <TextButton
+            <SplitButton
                 disableElevation
-                variant="contained"
-                color="secondary"
+                primary={`To ${list.name}`}
                 onClick={handleClick}
-                title={`Send to ${list.name}`}
+                options={scaleToPlanOpts}
+                color="secondary"
+                variant="contained"
+                onSelect={handleSelect}
                 startIcon={<SendToPlanIcon />}
-            >
-                To {list.name}
-            </TextButton>
+            />
         );
     }
+
+    return (
+        <TextButton
+            disableElevation
+            variant="contained"
+            color="secondary"
+            onClick={handleClick}
+            title={`Send to ${list.name}`}
+            startIcon={<SendToPlanIcon />}
+        >
+            To {list.name}
+        </TextButton>
+    );
 };
 
 export default SendToPlan;
