@@ -170,12 +170,12 @@ const RecipeCard: React.FC<Props> = ({ recipe, mine, indicateMine, me }) => {
             <CardActions>
                 <Stack direction="row" spacing={1} sx={{ maxWidth: "100%" }}>
                     <TaskIcon
-                        icon={<ViewIcon />}
+                        icon={<ViewIcon fontSize="inherit" />}
                         url={`/library/recipe/${recipe.id}`}
                     />
                     {mine && (
                         <TaskIcon
-                            icon={<EditIcon />}
+                            icon={<EditIcon fontSize="inherit" />}
                             url={`/library/recipe/${recipe.id}/edit`}
                         />
                     )}
