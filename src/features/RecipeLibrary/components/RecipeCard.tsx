@@ -26,7 +26,6 @@ import FavoriteIndicator from "../../Favorites/components/Indicator";
 import { Photo, User as UserType } from "../../../__generated__/graphql";
 import { TaskIcon } from "global/components/TaskIcon";
 import LabelItem from "../../../global/components/LabelItem";
-import { useScale } from "util/ScalingContext";
 
 const useStyles = makeStyles({
     photo: {
@@ -70,7 +69,6 @@ const RecipeCard: React.FC<Props> = ({ recipe, mine, indicateMine, me }) => {
     );
     const classes = useStyles();
     const [raised, setRaised] = React.useState(false);
-    const scale = useScale();
 
     const labelsToDisplay =
         recipe.labels &&
