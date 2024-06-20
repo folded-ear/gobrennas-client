@@ -38,3 +38,5 @@ not, click the link. The client isn't useful without an API; see above.
 
 That static website from the "Build" section is perfect! Stick it somewhere! Or
 hit https://gobrennas.com/ to see it in action.
+
+Nothing to see here.
