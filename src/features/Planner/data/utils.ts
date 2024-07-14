@@ -14,6 +14,7 @@ import dotProp from "dot-prop-immutable";
 import { bucketComparator } from "util/comparators";
 import preferencesStore from "data/preferencesStore";
 import { formatLocalDate, parseLocalDate } from "util/time";
+import { PlanBucket, WireBucket } from "./planStore";
 
 export const AT_END = Math.random();
 
@@ -878,13 +879,15 @@ export const mapPlanBuckets = (state, planId, work) =>
         })),
     );
 
-export const deserializeBucket = (b) =>
-    b.date ? { ...b, date: parseLocalDate(b.date) } : b;
+export function deserializeBucket(b: WireBucket): PlanBucket {
+    return { ...b, date: parseLocalDate(b.date) };
+}
 
-export const serializeBucket = (b) =>
-    b.date ? { ...b, date: formatLocalDate(b.date) } : b;
+export function serializeBucket(b: PlanBucket): WireBucket {
+    return { ...b, date: formatLocalDate(b.date) };
+}
 
-export const saveBucket = (state, bucket) => {
+export const saveBucket = (state, bucket: PlanBucket) => {
     const variables = serializeBucket(bucket);
     ClientId.is(bucket.id)
         ? PlanApi.createBucket(state.activeListId, variables)
