@@ -894,6 +894,31 @@ export const saveBucket = (state, bucket: PlanBucket) => {
         : PlanApi.updateBucket(state.activeListId, bucket.id, wireBucket);
 };
 
+// T should be PlanStore.TState...
+export function resetToThisWeeksBuckets<T>(state: T, planId: number): T {
+    return mapPlanBuckets(state, planId, (buckets) => {
+        if (buckets.length > 0) {
+            const ids = buckets
+                .map((b) => b.id)
+                .filter((id) => !ClientId.is(id));
+            PlanApi.deleteBuckets(planId, ids);
+        }
+        const today = new Date();
+        const newOnes: PlanBucket[] = [];
+        for (let i = 0; i < 7; i++) {
+            const date = new Date(today.valueOf());
+            date.setDate(date.getDate() + i);
+            const b = {
+                id: ClientId.next(),
+                date,
+            };
+            saveBucket(state, b);
+            newOnes.push(b);
+        }
+        return newOnes;
+    });
+}
+
 export const doInteractiveStatusChange = (state, id, status) => {
     if (willStatusDelete(status) && id === state.activeTaskId) {
         state = focusDelta(state, id, 1);

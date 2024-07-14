@@ -373,28 +373,8 @@ class PlanStore extends ReduceStore {
                 );
             }
 
-            case PlanActions.GENERATE_ONE_WEEKS_BUCKETS: {
-                return mapPlanBuckets(state, action.planId, (bs) => {
-                    const yesterday = new Date();
-                    yesterday.setDate(yesterday.getDate() - 1);
-                    const maxDate = bs.reduce(
-                        (max, b) =>
-                            b.date != null && b.date > max ? b.date : max,
-                        yesterday,
-                    );
-                    const newOnes = [];
-                    for (let i = 1; i <= 7; i++) {
-                        const date = new Date(maxDate.valueOf());
-                        date.setDate(date.getDate() + i);
-                        const b = {
-                            id: ClientId.next(),
-                            date,
-                        };
-                        saveBucket(state, b);
-                        newOnes.push(b);
-                    }
-                    return bs.concat(newOnes);
-                });
+            case PlanActions.RESET_TO_THIS_WEEKS_BUCKETS: {
+                return resetToThisWeeksBuckets(state, action.planId);
             }
 
             case PlanActions.BUCKET_CREATED: {

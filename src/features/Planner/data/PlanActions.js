@@ -66,9 +66,12 @@ const PlanActions = {
     CREATE_BUCKET: typedAction("plan/create-bucket", {
         planId: clientOrDatabaseIdType.isRequired,
     }),
-    GENERATE_ONE_WEEKS_BUCKETS: typedAction("plan/generate-one-weeks-buckets", {
-        planId: clientOrDatabaseIdType.isRequired,
-    }),
+    RESET_TO_THIS_WEEKS_BUCKETS: typedAction(
+        "plan/reset-to-this-weeks-buckets",
+        {
+            planId: clientOrDatabaseIdType.isRequired,
+        },
+    ),
     RENAME_BUCKET: typedAction("plan/rename-bucket", {
         planId: clientOrDatabaseIdType.isRequired,
         id: clientOrDatabaseIdType.isRequired,
