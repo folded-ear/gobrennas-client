@@ -22,7 +22,7 @@ const BucketManager = () => {
     const {
         buckets,
         onBucketCreate,
-        onBucketGenerate,
+        onBucketReset,
         onBucketNameChange,
         onBucketDateChange,
         onBucketDelete,
@@ -36,9 +36,9 @@ const BucketManager = () => {
                     type: PlanActions.CREATE_BUCKET,
                     planId: plan.id,
                 }),
-            onBucketGenerate: () =>
+            onBucketReset: () =>
                 dispatcher.dispatch({
-                    type: PlanActions.GENERATE_ONE_WEEKS_BUCKETS,
+                    type: PlanActions.RESET_TO_THIS_WEEKS_BUCKETS,
                     planId: plan.id,
                 }),
             onBucketNameChange: (id, value) =>
@@ -85,12 +85,12 @@ const BucketManager = () => {
                                 </IconButton>
                             </Tooltip>
                             <Tooltip
-                                title="Generate a week's buckets"
+                                title="Reset to this week's buckets"
                                 placement="bottom-end"
                             >
                                 <IconButton
                                     edge="end"
-                                    onClick={() => onBucketGenerate()}
+                                    onClick={() => onBucketReset()}
                                     size="small"
                                 >
                                     <GenerateBucketsIcon />

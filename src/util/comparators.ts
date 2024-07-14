@@ -1,3 +1,5 @@
+import { PlanBucket } from "../features/Planner/data/planStore";
+
 const collator = new Intl.Collator(undefined, {
     sensitivity: "base",
     ignorePunctuation: true,
@@ -26,13 +28,7 @@ interface Dated {
     date?: Date;
 }
 
-type Bucket = Named & Dated;
-
-/**
- * I am an object comparator based on the "date" and "name" keys, used for
- * sorting plan buckets.
- */
-export const bucketComparator = (a: Bucket, b: Bucket) => {
+export const byDateComparator = (a: Dated, b: Dated) => {
     const ad = a.date;
     const bd = b.date;
     if (ad != null || bd != null) {
@@ -43,7 +39,16 @@ export const bucketComparator = (a: Bucket, b: Bucket) => {
         if (ad < bd) return -1;
         if (ad > bd) return +1;
     }
-    return humanStringComparator(a.name, b.name);
+    // equal (including both null)
+    return 0;
+};
+
+/**
+ * I am an object comparator based on the "date" and "name" keys, used for
+ * sorting plan buckets.
+ */
+export const bucketComparator = (a: PlanBucket, b: PlanBucket) => {
+    return byDateComparator(a, b) || humanStringComparator(a.name, b.name);
 };
 
 /**

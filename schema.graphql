@@ -357,6 +357,8 @@ type PlannerMutation {
     createPlan(name: String!, sourcePlanId: ID): Plan!
     "Delete a bucket from a plan."
     deleteBucket(bucketId: ID!, planId: ID!): Deletion!
+    "Delete multiple buckets from a single plan."
+    deleteBuckets(bucketIds: [ID!]!, planId: ID!): [Deletion!]!
     "Deletes an item from a plan. This operation cascades."
     deleteItem(id: ID!): Deletion!
     "Deletes the given plan, and all its related data."

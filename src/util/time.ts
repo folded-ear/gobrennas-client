@@ -42,7 +42,7 @@ export const formatTimer = (seconds?: number) => {
 
 const TEN_YEARS_FROM_NOW_THIS_CENTURY = (new Date().getFullYear() % 100) + 10;
 
-export function parseLocalDate(date: string): Maybe<Date> {
+export function parseLocalDate(date: Maybe<string>): Maybe<Date> {
     if (!date) return null;
     if (!/^\d+-\d+-\d+(\D|$)/.test(date)) return null;
     const parts = date
@@ -70,7 +70,7 @@ function pad(number: number): string {
     return "" + number;
 }
 
-export function formatLocalDate(date?: Date): Maybe<string> {
+export function formatLocalDate(date: Maybe<Date>): Maybe<string> {
     if (!date) return null;
     return (
         date.getFullYear() +

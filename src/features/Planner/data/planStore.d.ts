@@ -8,8 +8,14 @@ import { RippedLO } from "../../../util/ripLoadObject";
 
 export interface PlanBucket {
     id: BfsId;
-    name?: string;
-    date?: Date;
+    name?: Maybe<string>;
+    date: Maybe<Date>;
+}
+
+export interface WireBucket {
+    id: BfsId;
+    name?: Maybe<string>;
+    date: Maybe<string>;
 }
 
 export interface PlanItem {
