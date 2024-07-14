@@ -97,6 +97,16 @@ mutation deleteBucket($planId: ID!, $bucketId: ID!) {
 }
 `);
 
+export const DELETE_BUCKETS = gql(`
+mutation deleteBuckets($planId: ID!, $bucketIds: [ID!]!) {
+  planner {
+    deleteBuckets(planId: $planId, bucketIds: $bucketIds) {
+      id
+    }
+  }
+}
+`);
+
 export const COMPLETE_PLAN_ITEM = gql(`
 mutation setStatus($id: ID!, $status: PlanItemStatus!, $doneAt: DateTime) {
   planner {

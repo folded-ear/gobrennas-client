@@ -219,6 +219,25 @@ const PlanApi = {
                 );
             },
         ),
+
+    deleteBuckets: (planId: number, ids: number[]) =>
+        promiseFlux(
+            client.mutate({
+                mutation: DELETE_BUCKETS,
+                variables: {
+                    planId: planId.toString(),
+                    bucketIds: ids.map((id) => id.toString()),
+                },
+            }),
+            (result: FetchResult<DeleteBucketsMutation>) => {
+                const dels = result?.data?.planner?.deleteBuckets || [];
+                return {
+                    type: PlanActions.BUCKETS_DELETED,
+                    planId,
+                    id: dels.map((d) => ensureInt(d.id)),
+                };
+            },
+        ),
 };
 
 export default PlanApi;
