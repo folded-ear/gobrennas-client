@@ -15,6 +15,7 @@ import { bucketComparator } from "util/comparators";
 import preferencesStore from "data/preferencesStore";
 import { formatLocalDate, parseLocalDate } from "util/time";
 import { PlanBucket, WireBucket } from "./planStore";
+import { BfsId } from "global/types/identity";
 
 export const AT_END = Math.random();
 
@@ -897,25 +898,36 @@ export const saveBucket = (state, bucket: PlanBucket) => {
 // T should be PlanStore.TState...
 export function resetToThisWeeksBuckets<T>(state: T, planId: number): T {
     return mapPlanBuckets(state, planId, (buckets) => {
-        if (buckets.length > 0) {
-            const ids = buckets
-                .map((b) => b.id)
-                .filter((id) => !ClientId.is(id));
-            PlanApi.deleteBuckets(planId, ids);
-        }
-        const today = new Date();
-        const newOnes: PlanBucket[] = [];
+        const result: PlanBucket[] = [];
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        const today = parseLocalDate(formatLocalDate(new Date()))!.valueOf();
+        const desiredDates = new Set<number>();
         for (let i = 0; i < 7; i++) {
-            const date = new Date(today.valueOf());
+            const date = new Date(today);
             date.setDate(date.getDate() + i);
+            desiredDates.add(date.valueOf());
+        }
+        const toDelete: BfsId[] = [];
+        for (const b of buckets) {
+            if (b.date && desiredDates.has(b.date.valueOf())) {
+                desiredDates.delete(b.date.valueOf());
+                result.push(b);
+            } else if (!ClientId.is(b.id)) {
+                toDelete.push(b.id);
+            }
+        }
+        if (toDelete.length > 0) {
+            PlanApi.deleteBuckets(planId, toDelete);
+        }
+        for (const d of desiredDates) {
             const b = {
                 id: ClientId.next(),
-                date,
+                date: new Date(d),
             };
             saveBucket(state, b);
-            newOnes.push(b);
+            result.push(b);
         }
-        return newOnes;
+        return result.sort(bucketComparator);
     });
 }
 

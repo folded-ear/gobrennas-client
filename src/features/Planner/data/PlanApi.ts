@@ -220,7 +220,7 @@ const PlanApi = {
             },
         ),
 
-    deleteBuckets: (planId: number, ids: number[]) =>
+    deleteBuckets: (planId: number, ids: BfsId[]) =>
         promiseFlux(
             client.mutate({
                 mutation: DELETE_BUCKETS,
