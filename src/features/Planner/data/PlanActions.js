@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import { clientOrDatabaseIdType } from "util/ClientId";
+import ClientId, { clientOrDatabaseIdType } from "util/ClientId";
 import typedAction from "util/typedAction";
 
 const PlanActions = {
@@ -85,6 +85,7 @@ const PlanActions = {
     }),
     BUCKET_CREATED: typedAction("plan/bucket-created", {
         planId: PropTypes.number.isRequired,
+        clientId: ClientId.propType.isRequired,
         data: PropTypes.object.isRequired,
     }),
     BUCKET_UPDATED: typedAction("plan/bucket-updated", {

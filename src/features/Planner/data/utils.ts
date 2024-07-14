@@ -888,10 +888,10 @@ export function serializeBucket(b: PlanBucket): WireBucket {
 }
 
 export const saveBucket = (state, bucket: PlanBucket) => {
-    const variables = serializeBucket(bucket);
+    const wireBucket = serializeBucket(bucket);
     ClientId.is(bucket.id)
-        ? PlanApi.createBucket(state.activeListId, variables)
-        : PlanApi.updateBucket(state.activeListId, bucket.id, variables);
+        ? PlanApi.createBucket(state.activeListId, wireBucket)
+        : PlanApi.updateBucket(state.activeListId, bucket.id, wireBucket);
 };
 
 export const doInteractiveStatusChange = (state, id, status) => {

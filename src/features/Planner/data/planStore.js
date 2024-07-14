@@ -43,6 +43,7 @@ import {
     queueDelete,
     queueStatusUpdate,
     renameTask,
+    resetToThisWeeksBuckets,
     saveBucket,
     selectDefaultList,
     selectDelta,
@@ -399,9 +400,9 @@ class PlanStore extends ReduceStore {
             case PlanActions.BUCKET_CREATED: {
                 return mapPlanBuckets(state, action.planId, (bs) =>
                     bs
+                        .filter((b) => b.id !== action.clientId)
                         .concat(deserializeBucket(action.data))
-                        .sort(bucketComparator)
-                        .filter((b) => !ClientId.is(b.id)),
+                        .sort(bucketComparator),
                 );
             }
 
