@@ -28,7 +28,7 @@ export {
     ErrorOutline as ErrorIcon,
     Star as FavoriteIcon,
     ArrowForward as ForwardIcon,
-    AddToPhotos as GenerateBucketsIcon,
+    DateRange as GenerateBucketsIcon,
     HelpOutline as HelpIcon,
     InfoOutlined as InfoIcon,
     MenuBook as LibraryIcon,

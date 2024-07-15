@@ -14,6 +14,8 @@ import dotProp from "dot-prop-immutable";
 import { bucketComparator } from "util/comparators";
 import preferencesStore from "data/preferencesStore";
 import { formatLocalDate, parseLocalDate } from "util/time";
+import { PlanBucket, WireBucket } from "./planStore";
+import { BfsId } from "global/types/identity";
 
 export const AT_END = Math.random();
 
@@ -878,18 +880,56 @@ export const mapPlanBuckets = (state, planId, work) =>
         })),
     );
 
-export const deserializeBucket = (b) =>
-    b.date ? { ...b, date: parseLocalDate(b.date) } : b;
+export function deserializeBucket(b: WireBucket): PlanBucket {
+    return { ...b, date: parseLocalDate(b.date) };
+}
 
-export const serializeBucket = (b) =>
-    b.date ? { ...b, date: formatLocalDate(b.date) } : b;
+export function serializeBucket(b: PlanBucket): WireBucket {
+    return { ...b, date: formatLocalDate(b.date) };
+}
 
-export const saveBucket = (state, bucket) => {
-    const variables = serializeBucket(bucket);
+export const saveBucket = (state, bucket: PlanBucket) => {
+    const wireBucket = serializeBucket(bucket);
     ClientId.is(bucket.id)
-        ? PlanApi.createBucket(state.activeListId, variables)
-        : PlanApi.updateBucket(state.activeListId, bucket.id, variables);
+        ? PlanApi.createBucket(state.activeListId, wireBucket)
+        : PlanApi.updateBucket(state.activeListId, bucket.id, wireBucket);
 };
+
+// T should be PlanStore.TState...
+export function resetToThisWeeksBuckets<T>(state: T, planId: number): T {
+    return mapPlanBuckets(state, planId, (buckets) => {
+        const result: PlanBucket[] = [];
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        const today = parseLocalDate(formatLocalDate(new Date()))!.valueOf();
+        const desiredDates = new Set<number>();
+        for (let i = 0; i < 7; i++) {
+            const date = new Date(today);
+            date.setDate(date.getDate() + i);
+            desiredDates.add(date.valueOf());
+        }
+        const toDelete: BfsId[] = [];
+        for (const b of buckets) {
+            if (b.date && desiredDates.has(b.date.valueOf())) {
+                desiredDates.delete(b.date.valueOf());
+                result.push(b);
+            } else if (!ClientId.is(b.id)) {
+                toDelete.push(b.id);
+            }
+        }
+        if (toDelete.length > 0) {
+            PlanApi.deleteBuckets(planId, toDelete);
+        }
+        for (const d of desiredDates) {
+            const b = {
+                id: ClientId.next(),
+                date: new Date(d),
+            };
+            saveBucket(state, b);
+            result.push(b);
+        }
+        return result.sort(bucketComparator);
+    });
+}
 
 export const doInteractiveStatusChange = (state, id, status) => {
     if (willStatusDelete(status) && id === state.activeTaskId) {

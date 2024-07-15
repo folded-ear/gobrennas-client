@@ -1,10 +1,18 @@
 import Dispatcher from "data/dispatcher";
 import { askUserToReauth, isAuthError } from "../providers/Profile";
 
-// this will be given jitter of up to 50% in either direction
-const ARTIFICIAL_SETTLEMENT_DELAY = 150;
-
 let helper = (settleKey, typeTemplateOrCallback) => (data) => {
+    if (!typeTemplateOrCallback) {
+        if (process.env.NODE_ENV !== "production") {
+            // eslint-disable-next-line no-console
+            console.error(
+                "Null 'typeTemplateOrCallback' for in 'promiseFlux' w/ key '" +
+                    settleKey +
+                    "'",
+            );
+        }
+        return;
+    }
     Dispatcher.dispatch(
         typeof typeTemplateOrCallback === "function"
             ? typeTemplateOrCallback(data)
@@ -14,15 +22,20 @@ let helper = (settleKey, typeTemplateOrCallback) => (data) => {
     );
 };
 
-if (process.env.NODE_ENV !== "production" && ARTIFICIAL_SETTLEMENT_DELAY > 0) {
-    const oldHelper = helper;
-    helper = (k, ttc) => {
-        const fast = oldHelper(k, ttc);
-        return (data) => {
-            const delay = ARTIFICIAL_SETTLEMENT_DELAY * (0.5 + Math.random());
-            return setTimeout(() => fast(data), delay);
+if (process.env.NODE_ENV !== "production") {
+    // this will be given jitter of up to 50% in either direction
+    const ARTIFICIAL_SETTLEMENT_DELAY = 150;
+    if (ARTIFICIAL_SETTLEMENT_DELAY > 0) {
+        const oldHelper = helper;
+        helper = (k, ttc) => {
+            const fast = oldHelper(k, ttc);
+            return (data) => {
+                const delay =
+                    ARTIFICIAL_SETTLEMENT_DELAY * (0.5 + Math.random());
+                return setTimeout(() => fast(data), delay);
+            };
         };
-    };
+    }
 }
 
 const fallthrough = (error) => ({

@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import { clientOrDatabaseIdType } from "util/ClientId";
+import ClientId, { clientOrDatabaseIdType } from "util/ClientId";
 import typedAction from "util/typedAction";
 
 const PlanActions = {
@@ -66,9 +66,12 @@ const PlanActions = {
     CREATE_BUCKET: typedAction("plan/create-bucket", {
         planId: clientOrDatabaseIdType.isRequired,
     }),
-    GENERATE_ONE_WEEKS_BUCKETS: typedAction("plan/generate-one-weeks-buckets", {
-        planId: clientOrDatabaseIdType.isRequired,
-    }),
+    RESET_TO_THIS_WEEKS_BUCKETS: typedAction(
+        "plan/reset-to-this-weeks-buckets",
+        {
+            planId: clientOrDatabaseIdType.isRequired,
+        },
+    ),
     RENAME_BUCKET: typedAction("plan/rename-bucket", {
         planId: clientOrDatabaseIdType.isRequired,
         id: clientOrDatabaseIdType.isRequired,
@@ -85,6 +88,7 @@ const PlanActions = {
     }),
     BUCKET_CREATED: typedAction("plan/bucket-created", {
         planId: PropTypes.number.isRequired,
+        clientId: ClientId.propType.isRequired,
         data: PropTypes.object.isRequired,
     }),
     BUCKET_UPDATED: typedAction("plan/bucket-updated", {

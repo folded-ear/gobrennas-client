@@ -7,6 +7,7 @@ import {
     COMPLETE_PLAN_ITEM,
     CREATE_BUCKET,
     DELETE_BUCKET,
+    DELETE_BUCKETS,
     DELETE_PLAN_ITEM,
     RENAME_PLAN_ITEM,
     UPDATE_BUCKET,
@@ -14,17 +15,20 @@ import {
 import type {
     CreateBucketMutation,
     DeleteBucketMutation,
+    DeleteBucketsMutation,
     DeletePlanItemMutation,
     RenamePlanItemMutation,
     UpdateBucketMutation,
 } from "__generated__/graphql";
+import { PlanItemStatus, SetStatusMutation } from "__generated__/graphql";
 import type { FetchResult } from "@apollo/client";
 import {
     handleErrors,
     toRestPlanItem,
 } from "features/Planner/data/conversion_helpers";
 import { ensureInt } from "global/utils";
-import { PlanItemStatus, SetStatusMutation } from "__generated__/graphql";
+import { BfsId } from "../../../global/types/identity";
+import { WireBucket } from "./planStore";
 
 const axios = BaseAxios.create({
     baseURL: `${API_BASE_URL}/api/plan`,
@@ -138,14 +142,15 @@ const PlanApi = {
             data: r.data,
         })),
 
-    createBucket: (planId: number, variables) =>
-        promiseFlux(
+    createBucket: (planId: number, bucket: WireBucket) => {
+        const clientId = bucket.id;
+        return promiseFlux(
             client.mutate({
                 mutation: CREATE_BUCKET,
                 variables: {
                     planId: planId.toString(),
-                    name: variables.name,
-                    date: variables.date,
+                    name: bucket.name,
+                    date: bucket.date,
                 },
             }),
             (result: FetchResult<CreateBucketMutation>) => {
@@ -154,6 +159,7 @@ const PlanApi = {
                     bucket && {
                         type: PlanActions.BUCKET_CREATED,
                         planId,
+                        clientId: clientId,
                         data: {
                             id: ensureInt(bucket.id),
                             name: bucket.name,
@@ -163,17 +169,18 @@ const PlanApi = {
                 );
             },
             handleErrors,
-        ),
+        );
+    },
 
-    updateBucket: (planId: number, id: number, variables) =>
+    updateBucket: (planId: number, id: BfsId, bucket: WireBucket) =>
         promiseFlux(
             client.mutate({
                 mutation: UPDATE_BUCKET,
                 variables: {
                     planId: planId.toString(),
                     bucketId: id.toString(),
-                    name: variables.name,
-                    date: variables.date,
+                    name: bucket.name,
+                    date: bucket.date,
                 },
             }),
             (result: FetchResult<UpdateBucketMutation>) => {
@@ -210,6 +217,25 @@ const PlanApi = {
                         id: ensureInt(bucket.id),
                     }
                 );
+            },
+        ),
+
+    deleteBuckets: (planId: number, ids: BfsId[]) =>
+        promiseFlux(
+            client.mutate({
+                mutation: DELETE_BUCKETS,
+                variables: {
+                    planId: planId.toString(),
+                    bucketIds: ids.map((id) => id.toString()),
+                },
+            }),
+            (result: FetchResult<DeleteBucketsMutation>) => {
+                const dels = result?.data?.planner?.deleteBuckets || [];
+                return {
+                    type: PlanActions.BUCKETS_DELETED,
+                    planId,
+                    id: dels.map((d) => ensureInt(d.id)),
+                };
             },
         ),
 };

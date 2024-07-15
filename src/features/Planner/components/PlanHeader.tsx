@@ -1,6 +1,5 @@
 import {
     Box,
-    Drawer,
     Grid,
     IconButton,
     Stack,
@@ -181,22 +180,11 @@ function PlanHeader({
                                 <AddToCalendar plan={activePlan} />
                             </>
                         )}
-                        <Drawer
+                        <PlanSidebar
                             open={planDetailVisible}
-                            anchor="right"
                             onClose={onCloseDrawer}
-                        >
-                            <div
-                                style={{
-                                    minHeight: "100%",
-                                    minWidth: "40vw",
-                                    maxWidth: "90vw",
-                                    backgroundColor: "#f7f7f7",
-                                }}
-                            >
-                                <PlanSidebar plan={activePlan} />
-                            </div>
-                        </Drawer>
+                            plan={activePlan}
+                        />
                     </Grid>
                 )}
                 <Grid item>
