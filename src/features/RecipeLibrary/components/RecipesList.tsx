@@ -12,6 +12,8 @@ import LoadingIndicator from "views/common/LoadingIndicator";
 import { LibrarySearchScope } from "__generated__/graphql";
 import { MessagePaper } from "features/RecipeLibrary/components/MessagePaper";
 import { SearchRecipes } from "features/RecipeLibrary/components/SearchRecipes";
+import useIsDevMode from "../../../data/useIsDevMode";
+import { CurrentPlanSidebar, drawerWidth } from "./CurrentPlanSidebar";
 
 interface RecipesListProps {
     me: any; // todo
@@ -41,6 +43,7 @@ export const RecipesList: React.FC<RecipesListProps> = ({
         threshold: 15,
     });
     const isMobile = useIsMobile();
+    const isDevMode = useIsDevMode();
     const [unsavedFilter, setUnsavedFilter] = useState(filter);
 
     function handleSearchChange(e) {
@@ -127,9 +130,8 @@ export const RecipesList: React.FC<RecipesListProps> = ({
     } else {
         body = <LoadingIndicator />;
     }
-
-    return (
-        <Content disableGutters={!isMobile}>
+    body = (
+        <>
             <SearchRecipes
                 isSearchFloating={isSearchFloating}
                 isMobile={isMobile}
@@ -141,7 +143,21 @@ export const RecipesList: React.FC<RecipesListProps> = ({
                 toggleScope={toggleScope}
             />
             {body}
-            <FoodingerFab onClick={() => history.push(`/add`)}>
+        </>
+    );
+
+    let fabSx: any = undefined;
+    if (!isMobile && isDevMode) {
+        fabSx = {
+            right: (theme) => `calc(${theme.spacing(2)} + ${drawerWidth}px)`,
+        };
+        body = <CurrentPlanSidebar>{body}</CurrentPlanSidebar>;
+    }
+
+    return (
+        <Content disableGutters={!isMobile}>
+            {body}
+            <FoodingerFab onClick={() => history.push(`/add`)} sx={fabSx}>
                 <AddRecipeIcon />
             </FoodingerFab>
         </Content>
