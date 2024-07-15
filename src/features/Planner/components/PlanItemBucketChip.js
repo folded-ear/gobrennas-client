@@ -10,7 +10,14 @@ import history from "util/history";
 import { humanDate } from "util/time";
 import ListItemIcon from "@mui/material/ListItemIcon";
 
-const BucketChip = ({ planId, bucketId, buckets = [], onSelect, onManage }) => {
+const BucketChip = ({
+    planId,
+    bucketId,
+    buckets = [],
+    onSelect,
+    onManage,
+    offPlan,
+}) => {
     const [anchorEl, setAnchorEl] = React.useState(null);
 
     const handleClick = (event) => {
@@ -67,7 +74,7 @@ const BucketChip = ({ planId, bucketId, buckets = [], onSelect, onManage }) => {
                     dense: true,
                 }}
             >
-                {bucket && (
+                {bucket && !offPlan && (
                     <MenuItem
                         onClick={() =>
                             history.push(`/plan/${planId}/bucket/${bucketId}`)
@@ -79,7 +86,7 @@ const BucketChip = ({ planId, bucketId, buckets = [], onSelect, onManage }) => {
                         Cook &quot;{getBucketLabel(bucket)}&quot;
                     </MenuItem>
                 )}
-                {bucket && <Divider />}
+                {bucket && !offPlan && <Divider />}
                 {buckets.map((b) => {
                     const selected = b === bucket;
                     return (
@@ -107,7 +114,7 @@ const BucketChip = ({ planId, bucketId, buckets = [], onSelect, onManage }) => {
                     </ListItemIcon>
                     Clear
                 </MenuItem>
-                {onManage && (
+                {onManage && !offPlan && (
                     <MenuItem onClick={handleManage}>
                         <ListItemIcon />
                         Manage Buckets
@@ -124,6 +131,7 @@ BucketChip.propTypes = {
     buckets: PropTypes.array.isRequired, // todo: PropTypes.arrayOf(bucketType).isRequired,
     onSelect: PropTypes.func.isRequired,
     onManage: PropTypes.func,
+    offPlan: PropTypes.bool,
 };
 
 const PlanItemBucketChip = ({ itemId, ...props }) => (
