@@ -5,6 +5,7 @@ import AccessLevel from "../../../data/AccessLevel";
 import { FluxAction } from "global/types/types";
 import { BfsId } from "global/types/identity";
 import { RippedLO } from "../../../util/ripLoadObject";
+import PlanItemStatus from "./PlanItemStatus";
 
 export interface PlanBucket {
     id: BfsId;
@@ -18,7 +19,7 @@ export interface WireBucket {
     date: Maybe<string>;
 }
 
-export interface PlanItem {
+export interface BasePlanItem {
     //  core
     id: BfsId;
     name: string;
@@ -29,21 +30,25 @@ export interface PlanItem {
     aggregateId?: number;
     componentIds?: number[];
     bucketId?: number;
-    // lists
-    acl: {
-        ownerId: number;
-        grants: Record<string, AccessLevel>;
-    };
-    buckets: PlanBucket[];
-    // item
+    // client-side
+    _expanded?: boolean;
+    _next_status?: PlanItemStatus;
+}
+
+export interface PlanItem extends BasePlanItem {
     quantity?: number;
     uomId?: number;
     units?: string;
     ingredientId?: number;
     preparation?: string;
-    // client-side
-    _expanded?: boolean;
-    _next_status?: string;
+}
+
+export interface Plan extends BasePlanItem {
+    acl: {
+        ownerId: number;
+        grants: Record<string, AccessLevel>;
+    };
+    buckets: PlanBucket[];
 }
 
 interface State {
@@ -61,14 +66,14 @@ declare class PlanStore extends FluxReduceStore<State, FluxAction> {
     getPlanIdsLO(): LoadObject<clientOrDatabaseIdType>;
     getPlanIdsRlo(): RippedLO<clientOrDatabaseIdType>;
 
-    getPlansRlo(): RippedLO<PlanItem[]>;
+    getPlansRlo(): RippedLO<Plan[]>;
 
     getChildItemRlos(id: clientOrDatabaseIdType): RippedLO<PlanItem>[];
 
     getNonDescendantComponents(id: number): PlanItem[];
 
-    getActivePlanLO(): LoadObject<PlanItem>;
-    getActivePlanRlo(): RippedLO<PlanItem>;
+    getActivePlanLO(): LoadObject<Plan>;
+    getActivePlanRlo(): RippedLO<Plan>;
 
     getActiveItem(): PlanItem;
 

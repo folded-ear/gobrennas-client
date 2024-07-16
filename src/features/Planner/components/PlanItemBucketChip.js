@@ -20,6 +20,8 @@ const BucketChip = ({
 }) => {
     const [anchorEl, setAnchorEl] = React.useState(null);
 
+    if (buckets.length === 0) return null;
+
     const handleClick = (event) => {
         setAnchorEl(event.currentTarget);
     };

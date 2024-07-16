@@ -12,7 +12,11 @@ import {
 } from "@mui/material";
 import { Subheader } from "../../Navigation/components/Navigation.elements";
 import useFluxStore from "../../../data/useFluxStore";
-import planStore, { PlanBucket, PlanItem } from "../../Planner/data/planStore";
+import planStore, {
+    Plan,
+    PlanBucket,
+    PlanItem,
+} from "../../Planner/data/planStore";
 import LibraryStore from "../data/LibraryStore";
 import { Recipe } from "../../../global/types/types";
 import Divider from "@mui/material/Divider";
@@ -56,7 +60,7 @@ interface RecipeInfo extends PlanItem {
     photo: Recipe["photo"];
 }
 
-type PlanInfo = Pick<PlanItem, "id" | "name" | "buckets"> & {
+type PlanInfo = Pick<Plan, "id" | "name" | "buckets"> & {
     recipes: RecipeInfo[];
 };
 
@@ -94,6 +98,7 @@ const BodyContainer: React.FC<Props> = () => {
             recipes,
         };
     }, [planStore, LibraryStore]);
+
     if (!plan) return null;
 
     return (
@@ -101,7 +106,7 @@ const BodyContainer: React.FC<Props> = () => {
             <Subheader>{plan.name}</Subheader>
             <Divider component="li" />
             {plan.recipes.map((item) => {
-                return <Item key={item.id} item={item} plan={plan} />;
+                return <PlannedRecipe key={item.id} item={item} plan={plan} />;
             })}
         </List>
     );
@@ -112,7 +117,7 @@ interface ItemProps {
     plan: PlanInfo;
 }
 
-const Item: React.FC<ItemProps> = ({ item, plan }) => (
+const PlannedRecipe: React.FC<ItemProps> = ({ item, plan }) => (
     <ListItem key={item.id} alignItems={"flex-start"}>
         <ListItemText
             disableTypography

@@ -21,8 +21,7 @@ export default function useAllPlansRLO() {
                     } else {
                         const rlo = friendStore.getFriendRlo(ownerId);
                         if (rlo.data) {
-                            // eslint-disable-next-line @typescript-eslint/no-extra-non-null-assertion
-                            ownerName = rlo.data.name!!; // eslint-disable-line @typescript-eslint/no-non-null-assertion
+                            ownerName = rlo.data.name;
                         }
                     }
                     byId[p.id] = [ownerId, ownerName, p.name];
