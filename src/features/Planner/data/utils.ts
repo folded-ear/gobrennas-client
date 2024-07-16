@@ -897,7 +897,7 @@ export const saveBucket = (state, bucket: PlanBucket) => {
 
 // T should be PlanStore.TState...
 export function resetToThisWeeksBuckets<T>(state: T, planId: number): T {
-    return mapPlanBuckets(state, planId, (buckets) => {
+    return mapPlanBuckets(state, planId, (buckets: PlanBucket[]) => {
         const result: PlanBucket[] = [];
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         const today = parseLocalDate(formatLocalDate(new Date()))!.valueOf();
@@ -909,12 +909,18 @@ export function resetToThisWeeksBuckets<T>(state: T, planId: number): T {
         }
         const toDelete: BfsId[] = [];
         for (const b of buckets) {
-            if (b.date && desiredDates.has(b.date.valueOf())) {
-                desiredDates.delete(b.date.valueOf());
-                result.push(b);
-            } else if (!ClientId.is(b.id)) {
-                toDelete.push(b.id);
+            if (b.date) {
+                const dateVal: number = b.date.valueOf();
+                if (desiredDates.has(dateVal)) {
+                    // don't need to create one
+                    desiredDates.delete(dateVal);
+                } else if (dateVal < today && !ClientId.is(b.id)) {
+                    // in the past, so delete it
+                    toDelete.push(b.id);
+                    continue;
+                }
             }
+            result.push(b);
         }
         if (toDelete.length > 0) {
             PlanApi.deleteBuckets(planId, toDelete);
