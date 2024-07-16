@@ -163,15 +163,21 @@ const BodyContainer: React.FC<Props> = () => {
         >
             <List dense>
                 <Header>{plan.name}</Header>
-                {plan.recipes.map((item) => {
+                {plan.recipes.map((item, i) => {
                     const ri = renderItem(item);
-                    if (item.bucket === prevBucket) return ri;
                     const toDraw: PlanBucket[] = [];
-                    let hot = prevBucket == null;
-                    for (const b of plan.buckets) {
-                        if (hot) toDraw.push(b);
-                        if (b === item.bucket) break;
-                        if (b === prevBucket) hot = true;
+                    if (i === 0 && !item.bucket) {
+                        // no recipes are assigned to a bucket
+                        toDraw.push(...plan.buckets);
+                    } else if (item.bucket === prevBucket) {
+                        return ri;
+                    } else {
+                        let hot = prevBucket == null;
+                        for (const b of plan.buckets) {
+                            if (hot) toDraw.push(b);
+                            if (b === item.bucket) break;
+                            if (b === prevBucket) hot = true;
+                        }
                     }
                     prevBucket = item.bucket;
                     return (
@@ -179,7 +185,9 @@ const BodyContainer: React.FC<Props> = () => {
                             {toDraw.map((b) => (
                                 <Bucket key={b.id} bucket={b}></Bucket>
                             ))}
-                            {!item.bucket && <Bucket />}
+                            {!item.bucket && plan.buckets.length > 0 && (
+                                <Bucket />
+                            )}
                             {ri}
                         </React.Fragment>
                     );
