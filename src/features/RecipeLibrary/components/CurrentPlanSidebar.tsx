@@ -29,8 +29,6 @@ type Props = PropsWithChildren<unknown>;
 
 export const drawerWidth = 200;
 const BUCKET_PREFIX = "bucket-";
-// eslint-disable-next-line @typescript-eslint/no-empty-function
-const noop = () => {};
 
 const openedMixin: CSSObject = {
     width: drawerWidth,
@@ -147,17 +145,13 @@ const BodyContainer: React.FC<Props> = () => {
                     // eslint-disable-next-line eqeqeq
                     targetBucket = plan?.buckets.find((b) => b.id == bucketId);
                 }
-                const doMove = target
-                    ? moveSubtree.bind(null, activeId, target, "none", vertical)
-                    : // eslint-disable-next-line @typescript-eslint/no-empty-function
-                      noop;
                 // triple equals doesn't equate null and undefined, but Maybe allows either
                 // eslint-disable-next-line eqeqeq
                 if (act.bucket != targetBucket) {
                     assignItemToBucket(act.id, targetBucket?.id);
-                    setTimeout(doMove, 1000); // todo: ghetto! PlanApi is supposed to single-thread, but it doesn't?!
-                } else {
-                    doMove();
+                }
+                if (target) {
+                    moveSubtree(activeId, target, "none", vertical);
                 }
             }}
         >
