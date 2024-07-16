@@ -136,15 +136,17 @@ BucketChip.propTypes = {
     offPlan: PropTypes.bool,
 };
 
+export function assignItemToBucket(itemId, bucketId) {
+    dispatcher.dispatch({
+        type: PlanActions.ASSIGN_ITEM_TO_BUCKET,
+        id: itemId,
+        bucketId,
+    });
+}
+
 const PlanItemBucketChip = ({ itemId, ...props }) => (
     <BucketChip
-        onSelect={(bucketId) =>
-            dispatcher.dispatch({
-                type: PlanActions.ASSIGN_ITEM_TO_BUCKET,
-                id: itemId,
-                bucketId,
-            })
-        }
+        onSelect={(bucketId) => assignItemToBucket(itemId, bucketId)}
         onManage={() =>
             dispatcher.dispatch({
                 type: PlanActions.PLAN_DETAIL_VISIBILITY,

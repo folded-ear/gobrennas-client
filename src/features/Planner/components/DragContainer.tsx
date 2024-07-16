@@ -9,8 +9,8 @@ import {
 import { BfsId } from "global/types/identity";
 import { Box, lighten, useTheme } from "@mui/material";
 
-type Vert = "above" | "below";
-type Horiz = "left" | "right" | "none";
+export type Vert = "above" | "below";
+export type Horiz = "left" | "right" | "none";
 
 interface Props extends DndContextProps {
     renderOverlay?(activeId: BfsId): React.ReactNode;
