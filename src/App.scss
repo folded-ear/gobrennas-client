@@ -70,8 +70,9 @@ body {
         }
     }
 }
+
 .MuiDataGrid-row.duplicates-of {
-    background-color: #fff9c4; // `yellow[100]` from Material
+    background-color: rgba(255, 228, 1, 0.26);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -98,4 +99,5 @@ body {
             }
         }
     }
+
 }
