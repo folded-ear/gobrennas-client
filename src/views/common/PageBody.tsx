@@ -8,7 +8,7 @@ const useStyles = makeStyles((theme) => {
     return {
         root: (props: PageBodyProps) => {
             const styles: CreateCSSProperties = {
-                backgroundColor: "white",
+                backgroundColor: theme.palette.background.paper,
                 minHeight: `calc(100vh - ${HEADER_HEIGHT}px)`,
             };
             if (props.fullWidth) {
