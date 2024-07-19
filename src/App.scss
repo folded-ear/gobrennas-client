@@ -73,3 +73,29 @@ body {
 .MuiDataGrid-row.duplicates-of {
     background-color: #fff9c4; // `yellow[100]` from Material
 }
+
+@media (prefers-color-scheme: dark) {
+    .markdown {
+        .diff {
+            .range {
+                color: #a990d7;
+            }
+
+            .inserted {
+                background-color: #212622;
+                color: #22c953;
+            }
+
+            .deleted {
+                background-color: #1e1111;
+                color: #ef899b;
+            }
+        }
+
+        ol li {
+            &::before {
+                color: #ff9595;
+            }
+        }
+    }
+}
