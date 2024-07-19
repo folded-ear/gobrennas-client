@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useLayoutEffect, useState } from "react";
 import {
     DndContext,
     DndContextProps,
@@ -7,7 +7,7 @@ import {
     rectIntersection,
 } from "@dnd-kit/core";
 import { BfsId } from "global/types/identity";
-import { Box, lighten, useTheme } from "@mui/material";
+import { Box, darken, lighten, useTheme } from "@mui/material";
 
 type Vert = "above" | "below";
 type Horiz = "left" | "right" | "none";
@@ -40,6 +40,18 @@ const DragContainer: React.FC<Props> = ({
     const [activeId, setActiveId] = useState(undefined);
     const overlay =
         renderOverlay && activeId !== undefined && renderOverlay(activeId);
+    const [overlayStyles, setOverlayStyles] = useState({});
+
+    useLayoutEffect(() => {
+        setOverlayStyles({
+            backgroundColor:
+                theme.palette.mode === "dark"
+                    ? darken(theme.palette.primary.main, 0.4)
+                    : lighten(theme.palette.primary.main, 0.4),
+            opacity: 0.85,
+            listStyle: "none",
+        });
+    }, [theme.palette.mode, theme.palette.primary.main]);
 
     function handleDragStart(event) {
         setActiveId(event.active.id);
@@ -75,20 +87,7 @@ const DragContainer: React.FC<Props> = ({
         >
             {children}
             <DragOverlay>
-                {overlay ? (
-                    <Box
-                        style={{
-                            backgroundColor: lighten(
-                                theme.palette.primary.main,
-                                0.4,
-                            ),
-                            opacity: 0.85,
-                            listStyle: "none",
-                        }}
-                    >
-                        {overlay}
-                    </Box>
-                ) : null}
+                {overlay ? <Box style={overlayStyles}>{overlay}</Box> : null}
             </DragOverlay>
         </DndContext>
     );
