@@ -1,4 +1,4 @@
-import { Box, Grid, IconButton, Typography } from "@mui/material";
+import { Box, Grid, IconButton, TextField, Typography } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import {
     CloseIcon,
@@ -329,19 +329,29 @@ const TextractEditor: React.FC<Props> = ({
                         <Typography component={"p"} variant={"h6"}>
                             Select some text on your photo.
                         </Typography>
-                        <textarea
+                        <TextField
+                            multiline
+                            variant="outlined"
+                            size={"small"}
+                            fullWidth
+                            minRows={4}
                             value={selectedText.join("\n")}
                             onChange={(e) =>
                                 setSelectedText(e.target.value.split("\n"))
                             }
-                            style={{
-                                width: "100%",
-                                height: `calc(${
-                                    rotation % 180 === 0
-                                        ? scaledHeight
-                                        : scaledWidth
-                                }px - 100px)`,
-                                whiteSpace: "pre",
+                            inputProps={{
+                                sx: {
+                                    // width: "100%",
+                                    // height: `${Math.max(
+                                    //     100,
+                                    //     (rotation % 180 === 0
+                                    //         ? scaledHeight
+                                    //         : scaledWidth) - 100,
+                                    // )}px`,
+                                    whiteSpace: "pre",
+                                    fontFamily: "monospace",
+                                    fontSize: "80%",
+                                },
                             }}
                         />
                         {renderActions && renderActions(selectedText)}

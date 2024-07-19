@@ -3,16 +3,16 @@ import { makeStyles } from "@mui/styles";
 import { LibraryIcon, TextractIcon } from "views/common/icons";
 import React, { MouseEventHandler } from "react";
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme) => ({
     trigger: {
         position: "absolute",
         right: 0,
         zIndex: 1000,
-        backgroundColor: "white",
+        backgroundColor: theme.palette.background.paper,
         transformOrigin: "bottom right",
         transform: `rotate(90deg) translateY(100%) translateX(50%)`,
     },
-});
+}));
 
 interface Props {
     onClick: MouseEventHandler;

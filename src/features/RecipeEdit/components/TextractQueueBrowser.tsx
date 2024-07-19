@@ -1,11 +1,11 @@
 import {
+    Drawer,
     IconButton,
     ImageList,
     ImageListItem,
     ImageListItemBar,
     Typography,
 } from "@mui/material";
-import Drawer from "@mui/material/Drawer";
 import { makeStyles } from "@mui/styles";
 import { CloseIcon } from "../../../views/common/icons";
 import React, { MouseEventHandler } from "react";
@@ -16,12 +16,12 @@ import TextractApi from "data/TextractApi";
 import { PendingJob } from "features/RecipeEdit/components/TextractFormAugment";
 import { BfsId } from "global/types/identity";
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme) => ({
     drawer: {
         minHeight: "100%",
         minWidth: "30vw",
         maxWidth: "50vw",
-        backgroundColor: "#f7f7f7",
+        backgroundColor: theme.palette.background.paper,
         padding: "0 1em",
         position: "relative",
     },
@@ -31,7 +31,7 @@ const useStyles = makeStyles({
         width: "100%",
         textAlign: "center",
         paddingTop: "40px",
-        backgroundColor: "#eee",
+        backgroundColor: theme.palette.background.default,
         cursor: "pointer",
     },
     closeButton: {
@@ -48,7 +48,7 @@ const useStyles = makeStyles({
     deleteButton: {
         color: "white",
     },
-});
+}));
 
 interface PassthroughProps {
     onSelect: (id: string) => void;
