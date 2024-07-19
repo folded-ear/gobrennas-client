@@ -47,15 +47,17 @@ const typography: ThemeOptions["typography"] = {
     },
 };
 
+const primary = {
+    light: IS_BETA ? "#90caf9" : "#F99339",
+    main: IS_BETA ? "#1976d2" : "#F57F17",
+    dark: IS_BETA ? "#0d47a1" : "#B85600",
+    contrastText: "#FFFDE7",
+};
+
 const theme_light: () => Theme = () =>
     createTheme({
         palette: {
-            primary: {
-                light: IS_BETA ? "#90caf9" : "#F99339",
-                main: IS_BETA ? "#1976d2" : "#F57F17",
-                dark: IS_BETA ? "#0d47a1" : "#B85600",
-                contrastText: "#FFFDE7",
-            },
+            primary,
             secondary: {
                 main: "#EEEEEE",
                 contrastText: "#000",
@@ -91,10 +93,8 @@ const theme_dark: () => Theme = () =>
         palette: {
             mode: "dark",
             primary: {
-                light: IS_BETA ? "#1d2831" : "#36200c",
-                main: IS_BETA ? "#0b3864" : "#6b3708",
-                dark: IS_BETA ? "#092f6b" : "#673101",
-                contrastText: "#070606",
+                ...primary,
+                contrastText: "#000",
             },
             secondary: {
                 main: "#151515",
@@ -104,10 +104,10 @@ const theme_dark: () => Theme = () =>
                 default: "#333333",
             },
             neutral: {
-                light: grey[700],
-                main: grey[200],
-                dark: grey[100],
-                contrastText: grey[100],
+                light: grey[900],
+                main: "#151515",
+                dark: grey[300],
+                contrastText: "#ffffff",
             },
         },
         typography,
