@@ -1,6 +1,6 @@
 import { Grid, InputAdornment, LinearProgress, TextField } from "@mui/material";
 import { ErrorIcon, OkIcon } from "./common/icons";
-import React, { CSSProperties, PropsWithChildren } from "react";
+import React, { PropsWithChildren } from "react";
 import ItemApi, { RecognitionResult } from "data/ItemApi";
 import debounce from "util/debounce";
 import processRecognizedItem from "util/processRecognizedItem";
@@ -284,7 +284,7 @@ class ElEdit extends React.PureComponent<ElEditProps, ElEditState> {
                     />
                 </Grid>
 
-                <Grid item sm={6} xs={12}>
+                <Grid item sm={6} xs={12} className={"el-edit"}>
                     {!recog || !raw ? (
                         doRecog(raw) ? (
                             <Hunk>
@@ -294,28 +294,22 @@ class ElEdit extends React.PureComponent<ElEditProps, ElEditState> {
                     ) : (
                         <Hunk>
                             {quantity && (
-                                <Hunk style={{ backgroundColor: "#fde" }}>
-                                    {quantity}
-                                </Hunk>
+                                <Hunk className={"quantity"}>{quantity}</Hunk>
                             )}
                             {unit && (
                                 <Hunk
-                                    style={{
-                                        backgroundColor: unitValue
-                                            ? "#efd"
-                                            : "#dfe",
-                                    }}
+                                    className={unitValue ? "unit" : "new-unit"}
                                 >
                                     {unit}
                                 </Hunk>
                             )}
                             {ingredientName && (
                                 <Hunk
-                                    style={{
-                                        backgroundColor: nameValue
-                                            ? "#def"
-                                            : "#edf",
-                                    }}
+                                    className={
+                                        nameValue
+                                            ? "ingredient"
+                                            : "new-ingredient"
+                                    }
                                 >
                                     {ingredientName}
                                 </Hunk>
@@ -335,13 +329,13 @@ class ElEdit extends React.PureComponent<ElEditProps, ElEditState> {
 }
 
 interface HunkProps extends PropsWithChildren<unknown> {
-    style?: CSSProperties;
+    className?: string;
 }
 
-const Hunk: React.FC<HunkProps> = ({ children, style }) => (
+const Hunk: React.FC<HunkProps> = ({ children, className }) => (
     <span
+        className={className}
         style={{
-            ...style,
             marginLeft: "0.4em",
             padding: "0 0.25em",
         }}

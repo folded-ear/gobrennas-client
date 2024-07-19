@@ -71,6 +71,28 @@ body {
     }
 }
 
+.el-edit {
+    .quantity {
+        background-color: #fde;
+    }
+
+    .unit {
+        background-color: #efd;
+    }
+
+    .new-unit {
+        background-color: #dfe;
+    }
+
+    .ingredient {
+        background-color: #def;
+    }
+
+    .new-ingredient {
+        background-color: #edf;
+    }
+}
+
 .MuiDataGrid-row.duplicates-of {
     background-color: rgba(255, 228, 1, 0.26);
 }
@@ -100,4 +122,25 @@ body {
         }
     }
 
+    .el-edit {
+        .quantity {
+            background-color: darken(desaturate(#fde, 30), 70);
+        }
+
+        .unit {
+            background-color: darken(desaturate(#efd, 30), 80);
+        }
+
+        .new-unit {
+            background-color: darken(desaturate(#dfe, 60), 65);
+        }
+
+        .ingredient {
+            background-color: darken(desaturate(#def, 30), 75);
+        }
+
+        .new-ingredient {
+            background-color: darken(desaturate(#edf, 30), 65);
+        }
+    }
 }
