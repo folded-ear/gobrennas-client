@@ -3,7 +3,7 @@ import { HelpIcon, InfoIcon } from "views/common/icons";
 import React, { MouseEventHandler, PropsWithChildren } from "react";
 import CloseButton from "views/common/CloseButton";
 import { lightBlue } from "@mui/material/colors";
-import { Box } from "@mui/material";
+import { alpha, Box, useTheme } from "@mui/material";
 
 interface Props extends PropsWithChildren<unknown> {
     severity?: "info";
@@ -11,13 +11,20 @@ interface Props extends PropsWithChildren<unknown> {
 }
 
 const Banner: React.FC<Props> = ({ severity, children, onClose }) => {
+    const theme = useTheme();
     return (
         <Box
             display="flex"
             alignItems="center"
             style={{
                 backgroundColor:
-                    severity === "info" ? lightBlue[100] : grey[200],
+                    theme.palette.mode === "dark"
+                        ? severity === "info"
+                            ? alpha(lightBlue[800], 0.4)
+                            : grey[700]
+                        : severity === "info"
+                        ? lightBlue[100]
+                        : grey[200],
             }}
         >
             <Box m={1}>{severity === "info" ? <InfoIcon /> : <HelpIcon />}</Box>

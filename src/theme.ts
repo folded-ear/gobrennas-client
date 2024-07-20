@@ -1,6 +1,5 @@
 import {
     createTheme,
-    PaletteColorOptions,
     responsiveFontSizes,
     ThemeOptions,
 } from "@mui/material/styles";
@@ -88,9 +87,6 @@ const lightTokens: ThemeOptions = {
 const darkTokens: ThemeOptions = {
     palette: {
         mode: "dark",
-        primary: {
-            contrastText: "#000",
-        } as PaletteColorOptions,
         secondary: {
             main: "#151515",
             contrastText: "#ffffff",
