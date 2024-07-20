@@ -36,7 +36,7 @@ function adapter(data: GetRecipeQuery | undefined) {
             : result.ingredients.map((item) => ({
                   raw: item.raw,
                   preparation: item.preparation,
-                  quantity: item.quantity?.quantity || null,
+                  quantity: item.quantity?.quantity,
                   units: item.quantity?.units?.name || null,
                   ingredient: objectWithType(item.ingredient),
               }));

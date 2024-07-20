@@ -28,7 +28,7 @@ function processRecognizedItem(recog: RecognitionResult) {
         return s.substring(1, s.length - 1);
     };
     const q = textFromRange(qr);
-    const qv = qr && (qr.quantity || qr.value); // value is deprecated
+    const qv = qr && (qr.quantity != null ? qr.quantity : qr.value); // value is deprecated
     const u = textFromRange(ur);
     const uv = ur && (ur.id || ur.value); // value is deprecated
     const n = textFromRange(nr);
