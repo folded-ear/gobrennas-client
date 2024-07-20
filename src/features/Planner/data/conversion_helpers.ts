@@ -35,7 +35,7 @@ export const toRestPlanItem = (
     aggregateId: ensureIdIsInt(planItem.aggregate?.id),
     subtaskIds: pluckIntIds(planItem.children),
     componentIds: pluckIntIds(planItem.components),
-    quantity: planItem.quantity?.quantity || null,
+    quantity: planItem.quantity?.quantity,
     units: planItem.quantity?.units?.name || null,
     uomId: ensureIdIsInt(planItem.quantity?.units?.id),
     ingredientId: ensureIdIsInt(planItem.ingredient?.id),
