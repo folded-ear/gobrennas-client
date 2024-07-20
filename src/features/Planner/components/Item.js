@@ -18,9 +18,11 @@ const Item = ({
     className,
     hideDivider,
     dragId,
+    noDrag = false,
     ...props
 }) => {
-    const draggable = dragId != null;
+    const droppable = dragId != null;
+    const draggable = droppable && !noDrag;
     const {
         attributes,
         listeners,
@@ -33,7 +35,7 @@ const Item = ({
     });
     const { isOver, setNodeRef: setDroppableRef } = useDroppable({
         id: dragId,
-        disabled: !draggable,
+        disabled: !droppable,
     });
     const setNodeRef = (...args) => {
         setDraggableRef(...args);
@@ -47,11 +49,11 @@ const Item = ({
             className={classnames(className, {
                 [classes.root]: !hideDivider,
                 [classes.dragging]: draggable && isDragging,
-                [classes.over]: draggable && isOver && !isDragging,
+                [classes.over]: droppable && isOver && !isDragging,
             })}
             {...props}
         >
-            {(draggable || prefix || depth) && (
+            {(draggable || prefix || depth > 0) && (
                 <ListItemIcon>
                     {draggable && (
                         <DragHandle
@@ -89,6 +91,7 @@ Item.propTypes = {
     className: PropTypes.string,
     hideDivider: PropTypes.bool,
     dragId: PropTypes.any,
+    noDrag: PropTypes.bool,
 };
 
 export default withStyles((theme) => ({

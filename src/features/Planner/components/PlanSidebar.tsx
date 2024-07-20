@@ -21,14 +21,15 @@ import LoadingIndicator from "views/common/LoadingIndicator";
 import PlanBucketManager from "features/Planner/components/PlanBucketManager";
 import SidebarUnit from "features/Planner/components/SidebarUnit";
 import User from "views/user/User";
-import { PlanItem } from "features/Planner/data/planStore";
+import { Plan } from "features/Planner/data/planStore";
 import { UserType } from "../../../global/types/identity";
+import { mapBy } from "../../../util/groupBy";
 
 const LEVEL_NO_ACCESS = "NO_ACCESS";
 
 interface Props {
     open: boolean;
-    plan: PlanItem;
+    plan: Plan;
     onClose(): void;
 }
 
@@ -89,15 +90,7 @@ const PlanSidebar: React.FC<Props> = ({ open, onClose, plan }) => {
         return [
             loading,
             loading ? [] : friendList,
-            loading
-                ? {}
-                : friendList.reduce(
-                      (idx, f) => ({
-                          ...idx,
-                          [f.id]: f,
-                      }),
-                      {},
-                  ),
+            loading ? new Map() : mapBy(friendList, (f) => f.id),
         ];
     }, [FriendStore]);
 
@@ -135,9 +128,11 @@ const PlanSidebar: React.FC<Props> = ({ open, onClose, plan }) => {
         });
     };
 
-    const grants = plan.acl.grants || {};
-    const isMine = plan.acl.ownerId === me.id;
-    const owner = isMine ? me : friendsById[plan.acl.ownerId];
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const acl = plan.acl!;
+    const grants = acl.grants || {};
+    const isMine = acl.ownerId === me.id;
+    const owner = isMine ? me : friendsById.get(acl.ownerId);
     const isAdministrator =
         isMine || includesLevel(grants[me.id], AccessLevel.ADMINISTER);
 
@@ -186,9 +181,7 @@ const PlanSidebar: React.FC<Props> = ({ open, onClose, plan }) => {
                                 {(isMine
                                     ? friendList
                                     : friendList
-                                          .filter(
-                                              (f) => f.id !== plan.acl.ownerId,
-                                          )
+                                          .filter((f) => f.id !== acl.ownerId)
                                           .concat(me)
                                 ).map((f) => (
                                     <ListItem key={f.id}>

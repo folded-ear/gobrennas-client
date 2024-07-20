@@ -1,4 +1,4 @@
-import { Grid, IconButton } from "@mui/material";
+import { Chip, Grid, IconButton } from "@mui/material";
 import makeStyles from "@mui/styles/makeStyles";
 import React from "react";
 import Dispatcher from "data/dispatcher";
@@ -55,7 +55,9 @@ const IngredientItem: React.FC<Props> = ({
     const scale = useScale();
 
     let left, right;
-    if (ref.quantity != null) {
+    if (ref.quantity === 0) {
+        left = <Chip label="NO" size={"small"} color={"error"} />;
+    } else if (ref.quantity != null) {
         left = <Quantity quantity={ref.quantity * scale} units={ref.units} />;
     }
 

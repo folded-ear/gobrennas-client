@@ -73,12 +73,15 @@ interface OrderableIngredient {
     loading?: boolean;
 }
 
-/**
- * This is really "when all pending changes are flushed, will it be acquired."
- */
-function isAcquiring(it: PathedItemTuple) {
+function isZeroQuantity(it: PathedItemTuple) {
+    return it.quantity === 0;
+}
+
+function isOrWillBeAcquired(it: PathedItemTuple) {
     return (
-        it.acquiring || (it.status === PlanItemStatus.ACQUIRED && !it.needing)
+        it.acquiring ||
+        (it.status === PlanItemStatus.ACQUIRED && !it.needing) ||
+        isZeroQuantity(it)
     );
 }
 
@@ -129,12 +132,11 @@ function groupItems(
         loading,
     } of orderedIngredients) {
         if (items.length === 0) continue;
-        const allAcquiring = items.every(isAcquiring);
-        const someAcquiring = items.some(isAcquiring);
+        const allAcquiring = items.every(isOrWillBeAcquired);
         const toAgg =
-            someAcquiring && !allAcquiring
-                ? items.filter((it) => !isAcquiring(it))
-                : items;
+            !allAcquiring && items.some(isOrWillBeAcquired)
+                ? items.filter((it) => !isOrWillBeAcquired(it))
+                : items.filter((it) => !isZeroQuantity(it));
         const unitLookup = new Map();
         const byUnit = groupBy(toAgg, (it) => {
             if (it.uomId) {
@@ -177,7 +179,7 @@ function groupItems(
                     blockId: ingId,
                     ingredient,
                     ...it,
-                    acquiring: isAcquiring(it),
+                    acquiring: isOrWillBeAcquired(it),
                 })),
             );
         }
@@ -188,7 +190,7 @@ function groupItems(
             _type: ShopItemType.PLAN_ITEM,
             depth: 0,
             ...it,
-            acquiring: isAcquiring(it),
+            acquiring: isOrWillBeAcquired(it),
         })),
     );
     return activeItem

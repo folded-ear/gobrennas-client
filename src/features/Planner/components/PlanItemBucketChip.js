@@ -10,8 +10,17 @@ import history from "util/history";
 import { humanDate } from "util/time";
 import ListItemIcon from "@mui/material/ListItemIcon";
 
-const BucketChip = ({ planId, bucketId, buckets = [], onSelect, onManage }) => {
+const BucketChip = ({
+    planId,
+    bucketId,
+    buckets = [],
+    onSelect,
+    onManage,
+    offPlan,
+}) => {
     const [anchorEl, setAnchorEl] = React.useState(null);
+
+    if (buckets.length === 0) return null;
 
     const handleClick = (event) => {
         setAnchorEl(event.currentTarget);
@@ -67,7 +76,7 @@ const BucketChip = ({ planId, bucketId, buckets = [], onSelect, onManage }) => {
                     dense: true,
                 }}
             >
-                {bucket && (
+                {bucket && !offPlan && (
                     <MenuItem
                         onClick={() =>
                             history.push(`/plan/${planId}/bucket/${bucketId}`)
@@ -79,7 +88,7 @@ const BucketChip = ({ planId, bucketId, buckets = [], onSelect, onManage }) => {
                         Cook &quot;{getBucketLabel(bucket)}&quot;
                     </MenuItem>
                 )}
-                {bucket && <Divider />}
+                {bucket && !offPlan && <Divider />}
                 {buckets.map((b) => {
                     const selected = b === bucket;
                     return (
@@ -107,7 +116,7 @@ const BucketChip = ({ planId, bucketId, buckets = [], onSelect, onManage }) => {
                     </ListItemIcon>
                     Clear
                 </MenuItem>
-                {onManage && (
+                {onManage && !offPlan && (
                     <MenuItem onClick={handleManage}>
                         <ListItemIcon />
                         Manage Buckets
@@ -124,17 +133,20 @@ BucketChip.propTypes = {
     buckets: PropTypes.array.isRequired, // todo: PropTypes.arrayOf(bucketType).isRequired,
     onSelect: PropTypes.func.isRequired,
     onManage: PropTypes.func,
+    offPlan: PropTypes.bool,
 };
+
+export function assignItemToBucket(itemId, bucketId) {
+    dispatcher.dispatch({
+        type: PlanActions.ASSIGN_ITEM_TO_BUCKET,
+        id: itemId,
+        bucketId,
+    });
+}
 
 const PlanItemBucketChip = ({ itemId, ...props }) => (
     <BucketChip
-        onSelect={(bucketId) =>
-            dispatcher.dispatch({
-                type: PlanActions.ASSIGN_ITEM_TO_BUCKET,
-                id: itemId,
-                bucketId,
-            })
-        }
+        onSelect={(bucketId) => assignItemToBucket(itemId, bucketId)}
         onManage={() =>
             dispatcher.dispatch({
                 type: PlanActions.PLAN_DETAIL_VISIBILITY,

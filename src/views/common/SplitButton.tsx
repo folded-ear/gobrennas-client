@@ -96,6 +96,9 @@ const SplitButton = <TOption,>({
                         disabled={
                             dropdownDisabled || !options || !options.length
                         }
+                        sx={{
+                            paddingX: 0,
+                        }}
                     >
                         <DropDownIcon />
                     </Button>
