@@ -28,28 +28,47 @@ const withItemStyles = withStyles((theme) => ({
         },
     },
     question: {
-        backgroundColor: questionColor[100],
+        backgroundColor:
+            theme.palette.mode === "dark"
+                ? darken(questionColor["A200"], 0.7)
+                : questionColor[100],
     },
     active: {
-        backgroundColor: selectionColor[100],
+        backgroundColor:
+            theme.palette.mode === "dark"
+                ? darken(selectionColor[900], 0.4)
+                : selectionColor[100],
     },
     selected: {
-        backgroundColor: selectionColor[50],
+        backgroundColor:
+            theme.palette.mode === "dark"
+                ? darken(selectionColor[900], 0.6)
+                : selectionColor[50],
     },
     acquiring: {
-        backgroundColor: acquiredColor[50],
+        backgroundColor:
+            theme.palette.mode === "dark"
+                ? darken(acquiredColor[900], 0.7)
+                : acquiredColor[50],
     },
     needing: {
-        backgroundColor: neededColor[100],
+        backgroundColor:
+            theme.palette.mode === "dark" ? neededColor[900] : neededColor[100],
     },
     deleting: {
         opacity: 0.8,
         textDecoration: "line-through",
-        backgroundColor: deleteColor[50],
+        backgroundColor:
+            theme.palette.mode === "dark"
+                ? darken(deleteColor[900], 0.4)
+                : deleteColor[50],
     },
     completing: {
         opacity: 0.8,
-        backgroundColor: completeColor[50],
+        backgroundColor:
+            theme.palette.mode === "dark"
+                ? darken(completeColor[900], 0.4)
+                : completeColor[50],
     },
     ancestorDeleting: {
         opacity: 0.6,
