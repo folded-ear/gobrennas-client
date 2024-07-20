@@ -1,9 +1,10 @@
 import {
     createTheme,
+    PaletteColorOptions,
     responsiveFontSizes,
-    Theme,
     ThemeOptions,
 } from "@mui/material/styles";
+import { deepmerge } from "@mui/utils";
 import { grey } from "@mui/material/colors";
 import { IS_BETA } from "./constants";
 import { useMediaQuery } from "@mui/material";
@@ -20,107 +21,100 @@ declare module "@mui/material/styles" {
     }
 }
 
-const typography: ThemeOptions["typography"] = {
-    fontFamily: [
-        '"Encode Sans Semi Condensed"',
-        '"Roboto"',
-        '"Arial"',
-        '"sans-serif"',
-        '"Apple Color Emoji"',
-        '"Segoe UI Emoji"',
-        '"Segoe UI Symbol"',
-    ].join(","),
-    h2: {
-        fontFamily: "'Encode Sans', sans-serif",
-        fontSize: "2.5rem",
+const baseTokens: ThemeOptions = {
+    palette: {
+        primary: {
+            light: IS_BETA ? "#90caf9" : "#F99339",
+            main: IS_BETA ? "#1976d2" : "#F57F17",
+            dark: IS_BETA ? "#0d47a1" : "#B85600",
+            contrastText: "#FFFDE7",
+        },
     },
-    h3: {
-        fontFamily: "'Encode Sans', sans-serif",
-        fontSize: "2rem",
-    },
-    h5: {
-        fontFamily: "News Cycle",
-        fontWeight: 600,
-        fontSize: "1.1rem",
-        textTransform: "uppercase",
-        marginBottom: ".5em",
+    typography: {
+        fontFamily: [
+            '"Encode Sans Semi Condensed"',
+            '"Roboto"',
+            '"Arial"',
+            '"sans-serif"',
+            '"Apple Color Emoji"',
+            '"Segoe UI Emoji"',
+            '"Segoe UI Symbol"',
+        ].join(","),
+        h2: {
+            fontFamily: "'Encode Sans', sans-serif",
+            fontSize: "2.5rem",
+        },
+        h3: {
+            fontFamily: "'Encode Sans', sans-serif",
+            fontSize: "2rem",
+        },
+        h5: {
+            fontFamily: "News Cycle",
+            fontWeight: 600,
+            fontSize: "1.1rem",
+            textTransform: "uppercase",
+            marginBottom: ".5em",
+        },
     },
 };
 
-const primary = {
-    light: IS_BETA ? "#90caf9" : "#F99339",
-    main: IS_BETA ? "#1976d2" : "#F57F17",
-    dark: IS_BETA ? "#0d47a1" : "#B85600",
-    contrastText: "#FFFDE7",
+const lightTokens: ThemeOptions = {
+    palette: {
+        secondary: {
+            main: "#EEEEEE",
+            contrastText: "#000",
+        },
+        background: {
+            default: "#f7f7f7",
+        },
+        neutral: {
+            light: grey[100],
+            main: grey[200],
+            dark: grey[700],
+            contrastText: grey[900],
+        },
+    },
+    components: {
+        MuiTextField: {
+            styleOverrides: {
+                root: {
+                    backgroundColor: "white",
+                },
+            },
+        },
+    },
 };
 
-const theme_light: () => Theme = () =>
-    createTheme({
-        palette: {
-            primary,
-            secondary: {
-                main: "#EEEEEE",
-                contrastText: "#000",
-            },
-            // secondary: {
-            //     main: "#FFFDE7",
-            //     contrastText: "#000",
-            // },
-            background: {
-                default: "#f7f7f7",
-            },
-            neutral: {
-                light: grey[100],
-                main: grey[200],
-                dark: grey[700],
-                contrastText: grey[900],
-            },
+const darkTokens: ThemeOptions = {
+    palette: {
+        mode: "dark",
+        primary: {
+            contrastText: "#000",
+        } as PaletteColorOptions,
+        secondary: {
+            main: "#151515",
+            contrastText: "#ffffff",
         },
-        typography,
-        components: {
-            MuiTextField: {
-                styleOverrides: {
-                    root: {
-                        backgroundColor: "white",
-                    },
+        background: {
+            default: "#333333",
+        },
+        neutral: {
+            light: grey[900],
+            main: "#151515",
+            dark: grey[300],
+            contrastText: "#ffffff",
+        },
+    },
+    components: {
+        MuiTextField: {
+            styleOverrides: {
+                root: {
+                    backgroundColor: "black",
                 },
             },
         },
-    });
-
-const theme_dark: () => Theme = () =>
-    createTheme({
-        palette: {
-            mode: "dark",
-            primary: {
-                ...primary,
-                contrastText: "#000",
-            },
-            secondary: {
-                main: "#151515",
-                contrastText: "#ffffff",
-            },
-            background: {
-                default: "#333333",
-            },
-            neutral: {
-                light: grey[900],
-                main: "#151515",
-                dark: grey[300],
-                contrastText: "#ffffff",
-            },
-        },
-        typography,
-        components: {
-            MuiTextField: {
-                styleOverrides: {
-                    root: {
-                        backgroundColor: "black",
-                    },
-                },
-            },
-        },
-    });
+    },
+};
 
 export function useBfsTheme() {
     const devMode = useIsDevMode();
@@ -128,7 +122,12 @@ export function useBfsTheme() {
     return useMemo(
         () =>
             responsiveFontSizes(
-                devMode && preferDark ? theme_dark() : theme_light(),
+                createTheme(
+                    deepmerge(
+                        baseTokens,
+                        devMode && preferDark ? darkTokens : lightTokens,
+                    ),
+                ),
             ),
         [devMode, preferDark],
     );
