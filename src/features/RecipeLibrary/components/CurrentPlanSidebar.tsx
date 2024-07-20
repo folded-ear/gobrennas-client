@@ -1,5 +1,5 @@
 import { FlexBox } from "../../../global/components/FlexBox";
-import React, { PropsWithChildren, ReactElement, useState } from "react";
+import React, { PropsWithChildren, ReactElement } from "react";
 import { CSSObject, styled } from "@mui/material/styles";
 import {
     Drawer,
@@ -9,7 +9,11 @@ import {
     Typography,
 } from "@mui/material";
 import useFluxStore from "../../../data/useFluxStore";
-import planStore, { PlanBucket, PlanItem } from "../../Planner/data/planStore";
+import planStore, {
+    Plan as TPlan,
+    PlanBucket,
+    PlanItem,
+} from "../../Planner/data/planStore";
 import LibraryStore from "../data/LibraryStore";
 import { Recipe } from "../../../global/types/types";
 import groupBy, { mapBy } from "../../../util/groupBy";
@@ -23,6 +27,8 @@ import StatusIconButton from "../../Planner/components/StatusIconButton";
 import { assignItemToBucket } from "../../Planner/components/PlanItemBucketChip";
 import withStyles from "@mui/styles/withStyles";
 import { moveSubtree } from "../../Planner/components/Plan";
+import ResetBucketsButton from "../../Planner/components/ResetBucketsButton";
+import useWhileOver from "../../../util/useWhileOver";
 
 type Props = PropsWithChildren<unknown>;
 
@@ -65,10 +71,14 @@ interface RecipeInfo extends PlanItem {
     photo: Recipe["photo"];
 }
 
+type PlanInfo = Pick<TPlan, "id" | "name" | "buckets"> & {
+    recipes: RecipeInfo[];
+};
+
 const BodyContainer: React.FC<Props> = () => {
-    const plan = useFluxStore(() => {
+    const plan = useFluxStore<Maybe<PlanInfo>>(() => {
         const { data: plan, loading } = planStore.getActivePlanRlo();
-        if (!plan || loading) return null;
+        if (!plan || loading) return;
         const recipes: RecipeInfo[] = [];
         const dfs = (it: PlanItem, depth: number) => {
             if (it.ingredientId) {
@@ -163,7 +173,7 @@ const BodyContainer: React.FC<Props> = () => {
             }}
         >
             <List dense>
-                <Header>{plan.name}</Header>
+                <Plan plan={plan} />
                 {children}
             </List>
         </DragContainer>
@@ -181,12 +191,30 @@ const Subheader = withStyles((theme) => ({
 const Bucket = ({ bucket }: { bucket?: PlanBucket }) => {
     return (
         <Subheader dragId={BUCKET_PREFIX + (bucket ? bucket.id : -1)} noDrag>
-            <ListItemText
-                primary={
-                    bucket ? getBucketLabel(bucket) : "Ain't Got No Bucket"
-                }
-            />
+            <ListItemText primary={bucket ? getBucketLabel(bucket) : "Other"} />
         </Subheader>
+    );
+};
+
+interface PlanProps {
+    plan: PlanInfo;
+}
+
+const Plan: React.FC<PlanProps> = ({ plan }) => {
+    const { over, sensorProps } = useWhileOver();
+    return (
+        <Header sx={{ position: "relative" }} {...sensorProps}>
+            {plan.name}
+            <ResetBucketsButton
+                planId={plan.id}
+                sx={{
+                    display: over ? "block" : "none",
+                    position: "absolute",
+                    right: 0,
+                    top: 7,
+                }}
+            />
+        </Header>
     );
 };
 
@@ -195,17 +223,13 @@ interface PlannedRecipeProps {
 }
 
 const PlannedRecipe: React.FC<PlannedRecipeProps> = ({ item }) => {
-    const [showing, setShowing] = useState(false);
+    const { over: buttonVisible, sensorProps } = useWhileOver();
     const goingAway =
         item._next_status === PlanItemStatus.COMPLETED ||
         item._next_status === PlanItemStatus.DELETED;
     return (
         <DndItem key={item.id} dragId={item.id} position={"relative"}>
-            <ListItemText
-                onMouseEnter={() => setShowing(true)}
-                onMouseLeave={() => setShowing(false)}
-                disableTypography
-            >
+            <ListItemText disableTypography {...sensorProps}>
                 <Typography
                     component={goingAway ? "del" : "div"}
                     variant={"body2"}
@@ -217,7 +241,8 @@ const PlannedRecipe: React.FC<PlannedRecipeProps> = ({ item }) => {
                             position: "absolute",
                             right: 0,
                             top: 0,
-                            display: showing || goingAway ? "block" : "none",
+                            display:
+                                buttonVisible || goingAway ? "block" : "none",
                         }}
                     >
                         {goingAway ? (
