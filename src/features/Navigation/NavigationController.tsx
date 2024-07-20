@@ -1,6 +1,5 @@
 import * as React from "react";
 import { ReactNode, useEffect } from "react";
-import CssBaseline from "@mui/material/CssBaseline";
 import {
     Header,
     MainDesktop,
@@ -112,7 +111,6 @@ export const NavigationController: React.FC<NavigationControllerProps> = ({
 
     return (
         <FlexBox>
-            <CssBaseline />
             <Header elevation={0} />
             <DesktopNav
                 selected={selected}
