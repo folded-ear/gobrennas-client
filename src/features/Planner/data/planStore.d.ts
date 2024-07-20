@@ -29,7 +29,7 @@ export interface BasePlanItem {
     subtaskIds?: BfsId[];
     aggregateId?: number;
     componentIds?: number[];
-    bucketId?: number;
+    bucketId?: BfsId;
     // client-side
     _expanded?: boolean;
     _next_status?: PlanItemStatus;
