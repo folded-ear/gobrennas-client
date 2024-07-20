@@ -1,5 +1,5 @@
 import { FlexBox } from "../../../global/components/FlexBox";
-import React, { PropsWithChildren, useState } from "react";
+import React, { PropsWithChildren, ReactElement, useState } from "react";
 import { CSSObject, styled } from "@mui/material/styles";
 import {
     Drawer,
@@ -12,11 +12,10 @@ import useFluxStore from "../../../data/useFluxStore";
 import planStore, { PlanBucket, PlanItem } from "../../Planner/data/planStore";
 import LibraryStore from "../data/LibraryStore";
 import { Recipe } from "../../../global/types/types";
-import { mapBy } from "../../../util/groupBy";
+import groupBy, { mapBy } from "../../../util/groupBy";
 import PlanItemStatus from "../../Planner/data/PlanItemStatus";
 import DontChangeStatusButton from "../../Planner/components/DontChangeStatusButton";
 import { Maybe } from "graphql/jsutils/Maybe";
-import { bucketComparator } from "../../../util/comparators";
 import DragContainer from "../../Planner/components/DragContainer";
 import Item from "../../Planner/components/Item";
 import getBucketLabel from "../../Planner/components/getBucketLabel";
@@ -97,14 +96,6 @@ const BodyContainer: React.FC<Props> = () => {
                         ? bucketsById.get(it.bucketId)
                         : undefined),
             );
-            recipes.sort((a, b) => {
-                const ab = a.bucket;
-                const bb = b.bucket;
-                if (ab === bb) return 0;
-                if (ab == null) return +1;
-                if (bb == null) return -1;
-                return bucketComparator(ab, bb);
-            });
         }
 
         return {
@@ -121,7 +112,23 @@ const BodyContainer: React.FC<Props> = () => {
         return <PlannedRecipe key={item.id} item={item} />;
     };
 
-    let prevBucket: Maybe<PlanBucket>;
+    const children: ReactElement[] = [];
+    if (plan.buckets.length === 0) {
+        if (plan.recipes.length > 0) {
+            plan.recipes.forEach((item) => children.push(renderItem(item)));
+        }
+    } else {
+        const byBucket = groupBy(plan.recipes, (item) => item.bucketId);
+        plan.buckets.forEach((b) => {
+            children.push(<Bucket key={b.id} bucket={b} />);
+            const rs = byBucket.get(b.id);
+            if (rs) rs.forEach((item) => children.push(renderItem(item)));
+        });
+        children.push(<Bucket key={"none"} />);
+        const rs = byBucket.get(undefined);
+        if (rs) rs.forEach((item) => children.push(renderItem(item)));
+    }
+
     return (
         <DragContainer
             renderOverlay={(id) => {
@@ -157,36 +164,7 @@ const BodyContainer: React.FC<Props> = () => {
         >
             <List dense>
                 <Header>{plan.name}</Header>
-                {plan.recipes.map((item, i) => {
-                    const ri = renderItem(item);
-                    const toDraw: PlanBucket[] = [];
-                    if (i === 0 && !item.bucket) {
-                        // no recipes are assigned to a bucket
-                        toDraw.push(...plan.buckets);
-                    } else if (item.bucket === prevBucket) {
-                        return ri;
-                    } else {
-                        let hot = prevBucket == null;
-                        for (const b of plan.buckets) {
-                            if (hot) toDraw.push(b);
-                            if (b === item.bucket) break;
-                            if (b === prevBucket) hot = true;
-                        }
-                    }
-                    prevBucket = item.bucket;
-                    return (
-                        <React.Fragment key={item.id}>
-                            {toDraw.map((b) => (
-                                <Bucket key={b.id} bucket={b} />
-                            ))}
-                            {!item.bucket && plan.buckets.length > 0 && (
-                                <Bucket />
-                            )}
-                            {ri}
-                        </React.Fragment>
-                    );
-                })}
-                {prevBucket && <Bucket />}
+                {children}
             </List>
         </DragContainer>
     );
