@@ -30,26 +30,26 @@ interface Props {
     onClick?: MouseEventHandler;
 }
 
-const StatusIconButton: React.FC<Props> = (props) => {
-    const Btn = findButton(props.next, props.current || props.next);
-    const Icn = getIconForStatus(props.next);
+const StatusIconButton: React.FC<Props> = ({ next, current, id, ...props }) => {
+    const Btn = findButton(next, current || next);
+    const Icn = getIconForStatus(next);
     return (
         <Tooltip
-            title={`Mark ${props.next.substring(0, 1)}${props.next
+            title={`Mark ${next.substring(0, 1)}${next
                 .substring(1)
                 .toLowerCase()}`}
             disableInteractive
             enterDelay={750}
         >
             <Btn
-                aria-label={props.next.toLowerCase()}
+                aria-label={next.toLowerCase()}
                 size="small"
                 onClick={(e) => {
                     e.stopPropagation();
                     Dispatcher.dispatch({
                         type: PlanActions.SET_STATUS,
-                        id: props.id,
-                        status: props.next,
+                        id: id,
+                        status: next,
                     });
                 }}
                 {...props}
