@@ -177,7 +177,7 @@ const BodyContainer: React.FC<Props> = () => {
                     return (
                         <React.Fragment key={item.id}>
                             {toDraw.map((b) => (
-                                <Bucket key={b.id} bucket={b}></Bucket>
+                                <Bucket key={b.id} bucket={b} />
                             ))}
                             {!item.bucket && plan.buckets.length > 0 && (
                                 <Bucket />
@@ -266,7 +266,7 @@ const PlannedRecipe: React.FC<PlannedRecipeProps> = ({ item }) => {
 export const CurrentPlanSidebar: React.FC<Props> = ({ children }: Props) => {
     return (
         <FlexBox>
-            <div>{children}</div>
+            <div style={{ width: "100%" }}>{children}</div>
             <Sidebar variant="permanent" anchor={"right"}>
                 <BodyContainer />
             </Sidebar>
