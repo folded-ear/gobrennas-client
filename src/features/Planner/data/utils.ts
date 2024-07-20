@@ -793,10 +793,12 @@ export const expandAll = forceExpansionBuilder(true);
 export const collapseAll = forceExpansionBuilder(false);
 
 export const taskLoaded = (state, task) => {
-    if (task.buckets) {
+    if (task.acl) {
         task = {
             ...task,
-            buckets: task.buckets.map(deserializeBucket).sort(bucketComparator),
+            buckets: task.buckets
+                ? task.buckets.map(deserializeBucket).sort(bucketComparator)
+                : [],
         };
     }
     let lo = state.byId[task.id] || LoadObject.empty();

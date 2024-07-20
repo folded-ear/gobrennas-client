@@ -29,6 +29,7 @@ import {
 import { ensureInt } from "global/utils";
 import { BfsId } from "../../../global/types/identity";
 import { WireBucket } from "./planStore";
+import serializeObjectOfPromiseFns from "../../../util/serializeObjectOfPromiseFns";
 
 const axios = BaseAxios.create({
     baseURL: `${API_BASE_URL}/api/plan`,
@@ -117,23 +118,19 @@ const PlanApi = {
                   },
         ),
 
-    mutateTree(planId, body) {
-        axios.post(`/${planId}/mutate-tree`, body);
-    },
+    mutateTree: (planId, body) => axios.post(`/${planId}/mutate-tree`, body),
 
-    assignBucket(planId, id, bucketId) {
+    assignBucket: (planId, id, bucketId) =>
         axios.post(`/${planId}/assign-bucket`, {
             id,
             bucketId,
-        });
-    },
+        }),
 
-    reorderSubitems(id, subitemIds) {
+    reorderSubitems: (id, subitemIds) =>
         axios.post(`/${id}/reorder-subitems`, {
             id,
             subitemIds,
-        });
-    },
+        }),
 
     getDescendantsAsList: (id) =>
         promiseFlux(axios.get(`/${id}/descendants`), (r) => ({
@@ -240,4 +237,4 @@ const PlanApi = {
         ),
 };
 
-export default PlanApi;
+export default serializeObjectOfPromiseFns(PlanApi);

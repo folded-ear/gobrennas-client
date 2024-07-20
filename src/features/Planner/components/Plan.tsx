@@ -10,9 +10,11 @@ import React from "react";
 import FoodingerFab from "views/common/FoodingerFab";
 import LoadingIndicator from "views/common/LoadingIndicator";
 import PageBody from "views/common/PageBody";
-import DragContainer from "./DragContainer";
+import DragContainer, { Horiz, Vert } from "./DragContainer";
 import { ItemTuple } from "../PlannerController";
 import { FluxAction } from "../../../global/types/types";
+import { PlanItem as PlanItemType } from "../data/planStore";
+import { BfsId } from "../../../global/types/identity";
 
 interface Props {
     allPlans: any;
@@ -22,6 +24,31 @@ interface Props {
     itemTuples: ItemTuple[];
     isItemActive: (it: ItemTuple) => boolean;
     isItemSelected: (it: ItemTuple) => boolean;
+}
+
+export function moveSubtree(
+    id: BfsId,
+    target: PlanItemType | undefined,
+    horizontal: Horiz,
+    vertical: Vert,
+) {
+    if (!target) return;
+    const action: FluxAction = {
+        type: PlanActions.MOVE_SUBTREE,
+        id,
+    };
+    if (horizontal === "right") {
+        action.parentId = target.id;
+        action.before = null; // last
+    } else {
+        action.parentId = target.parentId;
+        if (vertical === "above") {
+            action.before = target.id;
+        } else {
+            action.after = target.id;
+        }
+    }
+    Dispatcher.dispatch(action);
 }
 
 function Plan({
@@ -45,24 +72,8 @@ function Plan({
     };
 
     const handleDrop = (id, targetId, vertical, horizontal) => {
-        const item = itemTuples.find((it) => it.data?.id === targetId)?.data;
-        if (!item) return;
-        const action: FluxAction = {
-            type: PlanActions.MOVE_SUBTREE,
-            id,
-        };
-        if (horizontal === "right") {
-            action.parentId = targetId;
-            action.before = null; // last
-        } else {
-            action.parentId = item.parentId;
-            if (vertical === "above") {
-                action.before = targetId;
-            } else {
-                action.after = targetId;
-            }
-        }
-        Dispatcher.dispatch(action);
+        const target = itemTuples.find((it) => it.data?.id === targetId)?.data;
+        moveSubtree(id, target, horizontal, targetId);
     };
 
     const plan = activePlan.data;
