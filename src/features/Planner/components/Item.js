@@ -93,7 +93,11 @@ Item.propTypes = {
 
 export default withStyles((theme) => ({
     root: {
-        borderBottom: "1px solid #eee",
+        borderBottom:
+            "1px solid " +
+            (theme.palette.mode === "dark"
+                ? theme.palette.neutral.light
+                : theme.palette.neutral.main),
     },
     over: {
         backgroundColor:

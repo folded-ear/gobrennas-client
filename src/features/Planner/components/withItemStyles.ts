@@ -7,15 +7,19 @@ import {
     questionColor,
     selectionColor,
 } from "views/common/colors";
+import { darken, lighten } from "@mui/material";
 
-const withItemStyles = withStyles({
+const withItemStyles = withStyles((theme) => ({
     text: {
         whiteSpace: "nowrap",
         overflow: "hidden",
         textOverflow: "ellipsis",
     },
     section: {
-        borderBottomColor: "#ccc",
+        borderBottomColor:
+            theme.palette.mode === "dark"
+                ? lighten(theme.palette.neutral.light, 0.2)
+                : darken(theme.palette.neutral.main, 0.25),
         "& input": {
             fontWeight: "bold",
         },
@@ -51,6 +55,6 @@ const withItemStyles = withStyles({
         opacity: 0.6,
         textDecoration: "line-through",
     },
-});
+}));
 
 export default withItemStyles;
