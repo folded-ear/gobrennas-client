@@ -55,7 +55,7 @@ const SendToPlan: React.FC<Props> = ({
                 primary={`To ${list.name}`}
                 onClick={handleClick}
                 options={scaleToPlanOpts}
-                color="secondary"
+                color="neutral"
                 variant="contained"
                 onSelect={handleSelect}
                 startIcon={<SendToPlanIcon />}
@@ -67,7 +67,7 @@ const SendToPlan: React.FC<Props> = ({
         <TextButton
             disableElevation
             variant="contained"
-            color="secondary"
+            color="neutral"
             onClick={handleClick}
             title={`Send to ${list.name}`}
             startIcon={<SendToPlanIcon />}

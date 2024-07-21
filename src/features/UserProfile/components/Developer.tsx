@@ -165,7 +165,7 @@ const DevMode: React.FC = () => {
                 >
                     <Button
                         variant={"contained"}
-                        color={"secondary"}
+                        color={"neutral"}
                         size={"small"}
                         onClick={handleResample}
                     >

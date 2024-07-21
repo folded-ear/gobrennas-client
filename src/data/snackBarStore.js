@@ -41,7 +41,7 @@ const forPlanItemStatusChanges = (state, ids, status) => {
         renderAction(dismiss) {
             return (
                 <Button
-                    color="secondary"
+                    color="neutral"
                     size="small"
                     onClick={(e) => {
                         dismiss(e);

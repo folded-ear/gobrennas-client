@@ -105,8 +105,8 @@ export default withStyles((theme) => ({
     over: {
         backgroundColor:
             theme.palette.mode === "dark"
-                ? lighten(theme.palette.secondary.main, 0.2) + " !important"
-                : darken(theme.palette.secondary.main, 0.2) + " !important",
+                ? lighten(theme.palette.neutral.main, 0.2) + " !important"
+                : darken(theme.palette.neutral.main, 0.2) + " !important",
     },
     dragging: {
         opacity: 0.3,
