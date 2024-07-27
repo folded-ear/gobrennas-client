@@ -91,7 +91,7 @@ const BodyContainer: React.FC<Props> = () => {
                         photo: ing.photo,
                     });
                 }
-            } else if (depth === 1) {
+            } else if (depth === 1 && it.name !== "") {
                 // top-level, non-recipe item
                 recipes.push({
                     ...it,
