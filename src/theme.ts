@@ -1,6 +1,13 @@
-import { createTheme, responsiveFontSizes, Theme } from "@mui/material/styles";
+import {
+    createTheme,
+    responsiveFontSizes,
+    ThemeOptions,
+} from "@mui/material/styles";
+import { deepmerge } from "@mui/utils";
 import { grey } from "@mui/material/colors";
 import { IS_BETA } from "./constants";
+import { useMediaQuery } from "@mui/material";
+import { useMemo } from "react";
 
 declare module "@mui/material/styles" {
     interface Palette {
@@ -12,30 +19,34 @@ declare module "@mui/material/styles" {
     }
 }
 
-let theme: Theme = createTheme({
+declare module "@mui/material/Button" {
+    interface ButtonPropsColorOverrides {
+        neutral: true;
+    }
+}
+declare module "@mui/material/ButtonGroup" {
+    interface ButtonGroupPropsColorOverrides {
+        neutral: true;
+    }
+}
+declare module "@mui/material/IconButton" {
+    interface IconButtonPropsColorOverrides {
+        neutral: true;
+    }
+}
+declare module "@mui/material/AppBar" {
+    interface AppBarPropsColorOverrides {
+        neutral: true;
+    }
+}
+
+const baseTokens: ThemeOptions = {
     palette: {
         primary: {
             light: IS_BETA ? "#90caf9" : "#F99339",
             main: IS_BETA ? "#1976d2" : "#F57F17",
             dark: IS_BETA ? "#0d47a1" : "#B85600",
             contrastText: "#FFFDE7",
-        },
-        secondary: {
-            main: "#EEEEEE",
-            contrastText: "#000",
-        },
-        // secondary: {
-        //     main: "#FFFDE7",
-        //     contrastText: "#000",
-        // },
-        background: {
-            default: "#f7f7f7",
-        },
-        neutral: {
-            light: grey[100],
-            main: grey[200],
-            dark: grey[700],
-            contrastText: grey[900],
         },
     },
     typography: {
@@ -64,16 +75,53 @@ let theme: Theme = createTheme({
             marginBottom: ".5em",
         },
     },
-    components: {
-        MuiTextField: {
-            styleOverrides: {
-                root: {
-                    backgroundColor: "white",
-                },
-            },
+};
+
+const lightTokens: ThemeOptions = {
+    palette: {
+        background: {
+            default: "#f7f7f7",
+        },
+        neutral: {
+            main: grey[200],
         },
     },
-});
-theme = responsiveFontSizes(theme);
+};
 
-export default theme;
+const darkTokens: ThemeOptions = {
+    palette: {
+        mode: "dark",
+        text: { primary: "#c2c4c5" },
+        action: {
+            active: "#afb1b3",
+        },
+        background: {
+            default: "#2b2b2b",
+            paper: "#3d3f41",
+        },
+        neutral: {
+            main: "#313335",
+        },
+    },
+};
+
+export function useBfsTheme() {
+    const preferDark = useMediaQuery("(prefers-color-scheme: dark)");
+    return useMemo(() => {
+        const theme = createTheme(
+            deepmerge(baseTokens, preferDark ? darkTokens : lightTokens),
+        );
+        return responsiveFontSizes(
+            createTheme(theme, {
+                palette: {
+                    neutral: theme.palette.augmentColor({
+                        color: {
+                            main: theme.palette.neutral.main,
+                        },
+                        name: "neutral",
+                    }),
+                },
+            }),
+        );
+    }, [preferDark]);
+}

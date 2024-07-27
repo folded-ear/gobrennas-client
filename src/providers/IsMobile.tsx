@@ -1,6 +1,6 @@
 import { useMediaQuery } from "@mui/material";
 import React, { createContext, PropsWithChildren, useContext } from "react";
-import theme from "../theme";
+import { useTheme } from "@mui/material/styles";
 import useFluxStore from "../data/useFluxStore";
 import preferencesStore from "../data/preferencesStore";
 
@@ -9,7 +9,7 @@ const MobileContext = createContext(true);
 type Props = PropsWithChildren<unknown>;
 
 export function IsMobileProvider({ children }: Props): React.ReactElement {
-    const bound = theme.breakpoints.values.sm;
+    const bound = useTheme().breakpoints.values.sm;
     const query = `@media (max-width:${bound}px), (max-height:${bound}px)`;
     const mobile = useMediaQuery(query, {
         noSsr: true, // don't double-render

@@ -62,7 +62,7 @@ const BucketChip = ({
         <>
             <Chip
                 size="small"
-                color="secondary"
+                color="neutral"
                 onClick={handleClick}
                 {...chipProps}
             />

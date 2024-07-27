@@ -38,7 +38,7 @@ export const SearchRecipes: React.FC<SearchRecipesProps> = ({
         <SearchRecipesContainer
             elevation={isSearchFloating ? 4 : 1}
             position="sticky"
-            color="secondary"
+            color="neutral"
         >
             <Toolbar>
                 <InputBase

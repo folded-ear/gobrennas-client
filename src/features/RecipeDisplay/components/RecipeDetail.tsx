@@ -45,7 +45,7 @@ const useStyles = makeStyles((theme) => ({
         [theme.breakpoints.down("sm")]: {
             flexWrap: "wrap-reverse",
         },
-        backgroundColor: "white",
+        backgroundColor: theme.palette.background.paper,
         padding: 0,
     },
 }));

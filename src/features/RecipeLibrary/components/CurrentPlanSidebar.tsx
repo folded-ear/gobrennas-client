@@ -183,7 +183,7 @@ const BodyContainer: React.FC<Props> = () => {
 const Subheader = withStyles((theme) => ({
     root: {
         paddingLeft: theme.spacing(1),
-        color: theme.palette.text.secondary,
+        color: theme.palette.text.neutral,
         borderTop: `1px solid ${theme.palette.divider}`,
     },
 }))(DndItem);

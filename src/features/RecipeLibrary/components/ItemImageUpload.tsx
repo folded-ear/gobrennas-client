@@ -25,7 +25,6 @@ const useStyles = makeStyles({
         height: 140,
         textAlign: "center",
         paddingTop: "30px",
-        backgroundColor: "#eee",
     },
 });
 

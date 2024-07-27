@@ -7,7 +7,7 @@ import {
     Theme,
     ThemeProvider,
 } from "@mui/material/styles";
-import theme from "./theme";
+import { useBfsTheme } from "./theme";
 import CssBaseline from "@mui/material/CssBaseline";
 import { NavigationController } from "features/Navigation/NavigationController";
 import RoutingSwitch from "RoutingSwitch";
@@ -26,7 +26,7 @@ function App() {
 
     return (
         <StyledEngineProvider injectFirst>
-            <ThemeProvider theme={theme}>
+            <ThemeProvider theme={useBfsTheme()}>
                 <CssBaseline />
                 <NavigationController authenticated={authenticated}>
                     {authenticated && newVersionAvailable && (

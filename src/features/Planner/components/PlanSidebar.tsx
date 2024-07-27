@@ -143,7 +143,6 @@ const PlanSidebar: React.FC<Props> = ({ open, onClose, plan }) => {
                     minHeight: "100%",
                     minWidth: "40vw",
                     maxWidth: "90vw",
-                    backgroundColor: "#f7f7f7",
                 }}
             >
                 <Box m={2}>

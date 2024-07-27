@@ -7,7 +7,7 @@ import React from "react";
 import { useDraggable, useDroppable } from "@dnd-kit/core";
 import DragHandle from "./DragHandle";
 import classnames from "classnames";
-import { darken } from "@mui/material";
+import { darken, lighten } from "@mui/material";
 
 const Item = ({
     depth = 0,
@@ -96,11 +96,17 @@ Item.propTypes = {
 
 export default withStyles((theme) => ({
     root: {
-        borderBottom: "1px solid #eee",
+        borderBottom:
+            "1px solid " +
+            (theme.palette.mode === "dark"
+                ? theme.palette.neutral.light
+                : theme.palette.neutral.main),
     },
     over: {
         backgroundColor:
-            darken(theme.palette.secondary.main, 0.2) + " !important",
+            theme.palette.mode === "dark"
+                ? lighten(theme.palette.neutral.main, 0.2) + " !important"
+                : darken(theme.palette.neutral.main, 0.2) + " !important",
     },
     dragging: {
         opacity: 0.3,

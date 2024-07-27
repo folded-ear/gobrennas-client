@@ -16,13 +16,9 @@ const NavWrapper = styled(Paper)(({ theme }) => ({
 
 type MobileNavProps = {
     selected?: string;
-    devMode?: boolean;
 };
 
-export const MobileNav: React.FC<MobileNavProps> = ({
-    selected = false,
-    devMode = false,
-}) => {
+export const MobileNav: React.FC<MobileNavProps> = ({ selected = false }) => {
     const me = useProfile();
     return (
         <NavWrapper elevation={3}>

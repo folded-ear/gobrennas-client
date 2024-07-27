@@ -1,6 +1,5 @@
 import * as React from "react";
 import { ReactNode, useEffect } from "react";
-import CssBaseline from "@mui/material/CssBaseline";
 import {
     Header,
     MainDesktop,
@@ -8,7 +7,6 @@ import {
 } from "features/Navigation/components/Navigation.elements";
 import { FlexBox } from "global/components/FlexBox";
 import useFluxStore from "data/useFluxStore";
-import useIsDevMode from "data/useIsDevMode";
 import { useIsMobile } from "providers/IsMobile";
 import { MobileNav } from "features/Navigation/components/MobileNav";
 import { DesktopNav } from "features/Navigation/components/DesktopNav";
@@ -48,7 +46,6 @@ export const NavigationController: React.FC<NavigationControllerProps> = ({
 }) => {
     const expanded = !useIsNavCollapsed();
     const isMobile = useIsMobile();
-    const devMode = useIsDevMode();
     const history = useHistory();
     const [selected, setSelected] = React.useState("");
 
@@ -104,7 +101,7 @@ export const NavigationController: React.FC<NavigationControllerProps> = ({
         return (
             <MainMobile>
                 <Header elevation={0} />
-                <MobileNav selected={selected} devMode={devMode} />
+                <MobileNav selected={selected} />
                 {children}
             </MainMobile>
         );
@@ -112,7 +109,6 @@ export const NavigationController: React.FC<NavigationControllerProps> = ({
 
     return (
         <FlexBox>
-            <CssBaseline />
             <Header elevation={0} />
             <DesktopNav
                 selected={selected}
@@ -123,7 +119,6 @@ export const NavigationController: React.FC<NavigationControllerProps> = ({
                 onSelectPlan={handleSelectPlan}
                 onOpenPlan={handleOpenPlan}
                 onExpand={handleExpand}
-                devMode={devMode}
             />
             <MainDesktop open={expanded}>{children}</MainDesktop>
         </FlexBox>

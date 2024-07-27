@@ -166,7 +166,8 @@ const RecipeForm: React.FC<Props> = ({
                             onImage={(file) => onUpdate("photoUpload", file)}
                             style={{
                                 display: "inline-block",
-                                backgroundColor: "#eee",
+                                backgroundColor:
+                                    theme.palette.background.default,
                                 textAlign: "center",
                                 cursor: "pointer",
                             }}
@@ -235,7 +236,7 @@ const RecipeForm: React.FC<Props> = ({
             <Button
                 className={classes.button}
                 startIcon={<AddIcon />}
-                color="secondary"
+                color="neutral"
                 variant="contained"
                 onClick={() => onAddIngredientRef()}
             >
@@ -318,7 +319,7 @@ const RecipeForm: React.FC<Props> = ({
                         <Button
                             className={classes.button}
                             variant="contained"
-                            color="secondary"
+                            color="neutral"
                             startIcon={<CopyIcon />}
                             onClick={() => onSaveCopy(draft)}
                         >
@@ -328,7 +329,7 @@ const RecipeForm: React.FC<Props> = ({
                     <Button
                         className={classes.button}
                         variant="contained"
-                        color="secondary"
+                        color="neutral"
                         onClick={() => onCancel(draft)}
                         startIcon={<CancelIcon />}
                     >

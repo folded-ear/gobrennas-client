@@ -23,6 +23,7 @@ import { useProfile } from "providers/Profile";
 import { NavShopItem } from "./NavShopItem";
 import { BfsId } from "global/types/identity";
 import { useGetAllPlans } from "data/hooks/useGetAllPlans";
+import useIsDevMode from "../../../data/useIsDevMode";
 
 type DesktopNavProps = {
     selected: string;
@@ -33,7 +34,6 @@ type DesktopNavProps = {
     shopView?: boolean;
     onExpand: () => void;
     expanded?: boolean;
-    devMode?: boolean;
 };
 
 export const DesktopNav: React.FC<DesktopNavProps> = ({
@@ -45,9 +45,9 @@ export const DesktopNav: React.FC<DesktopNavProps> = ({
     onOpenPlan,
     shopView,
     expanded = false,
-    devMode = false,
 }) => {
     const me = useProfile();
+    const devMode = useIsDevMode();
     const { data: planItems } = useGetAllPlans();
 
     const PlanItem = shopView ? NavShopItem : NavPlanItem;
