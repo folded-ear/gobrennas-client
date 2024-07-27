@@ -91,7 +91,7 @@ const lightTokens: ThemeOptions = {
 const darkTokens: ThemeOptions = {
     palette: {
         mode: "dark",
-        text: { primary: "#afb1b3" },
+        text: { primary: "#c2c4c5" },
         action: {
             active: "#afb1b3",
         },
