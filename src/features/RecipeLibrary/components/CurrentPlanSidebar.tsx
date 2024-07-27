@@ -68,7 +68,7 @@ const DndItem = withStyles(() => ({
 interface RecipeInfo extends PlanItem {
     depth: number;
     bucket?: Maybe<PlanBucket>;
-    photo: Recipe["photo"];
+    photo?: Recipe["photo"];
 }
 
 type PlanInfo = Pick<TPlan, "id" | "name" | "buckets"> & {
@@ -91,6 +91,12 @@ const BodyContainer: React.FC<Props> = () => {
                         photo: ing.photo,
                     });
                 }
+            } else if (depth === 1) {
+                // top-level, non-recipe item
+                recipes.push({
+                    ...it,
+                    depth,
+                });
             }
             for (const kid of planStore.getChildItemRlos(it.id)) {
                 if (!kid.loading && kid.data) dfs(kid.data, depth + 1);
