@@ -43,7 +43,7 @@ export const RecipesList: React.FC<RecipesListProps> = ({
         threshold: 15,
     });
     const isMobile = useIsMobile();
-    const isDevMode = useIsDevMode();
+    const devMode = useIsDevMode();
     const [unsavedFilter, setUnsavedFilter] = useState(filter);
 
     function handleSearchChange(e) {
@@ -147,7 +147,7 @@ export const RecipesList: React.FC<RecipesListProps> = ({
     );
 
     let fabSx: any = undefined;
-    if (!isMobile && isDevMode) {
+    if (!isMobile && devMode) {
         fabSx = {
             right: (theme) => `calc(${theme.spacing(2)} + ${drawerWidth}px)`,
         };

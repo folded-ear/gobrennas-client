@@ -190,7 +190,7 @@ const DevMode: React.FC = () => {
 };
 
 export const Developer: React.FC = () => {
-    const isDevMode = useIsDevMode();
+    const devMode = useIsDevMode();
 
     const handleDevModeChange = (e) => setDevMode(e.target.checked);
 
@@ -198,12 +198,12 @@ export const Developer: React.FC = () => {
         <>
             <Row label={"Dev Mode"}>
                 <Switch
-                    checked={isDevMode}
+                    checked={devMode}
                     onChange={handleDevModeChange}
                     color="primary"
                 />
             </Row>
-            {isDevMode && <DevMode />}
+            {devMode && <DevMode />}
         </>
     );
 };

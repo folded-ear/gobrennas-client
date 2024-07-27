@@ -7,7 +7,6 @@ import { deepmerge } from "@mui/utils";
 import { grey } from "@mui/material/colors";
 import { IS_BETA } from "./constants";
 import { useMediaQuery } from "@mui/material";
-import useIsDevMode from "./data/useIsDevMode";
 import { useMemo } from "react";
 
 declare module "@mui/material/styles" {
@@ -107,14 +106,10 @@ const darkTokens: ThemeOptions = {
 };
 
 export function useBfsTheme() {
-    const devMode = useIsDevMode();
     const preferDark = useMediaQuery("(prefers-color-scheme: dark)");
     return useMemo(() => {
         const theme = createTheme(
-            deepmerge(
-                baseTokens,
-                devMode && preferDark ? darkTokens : lightTokens,
-            ),
+            deepmerge(baseTokens, preferDark ? darkTokens : lightTokens),
         );
         return responsiveFontSizes(
             createTheme(theme, {
@@ -128,5 +123,5 @@ export function useBfsTheme() {
                 },
             }),
         );
-    }, [devMode, preferDark]);
+    }, [preferDark]);
 }
