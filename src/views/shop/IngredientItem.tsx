@@ -14,12 +14,15 @@ import StatusIconButton from "features/Planner/components/StatusIconButton";
 import withItemStyles from "features/Planner/components/withItemStyles";
 import { BaseItemProp, ItemProps, TupleProps } from "./types";
 import { ShopItemType } from "views/shop/ShopList";
+import ListItemIcon from "@mui/material/ListItemIcon";
+import { UnknownLocation } from "../common/icons";
 
 type IngredientItemProps = TupleProps & {
     item: ItemProps &
         BaseItemProp & {
             expanded: boolean;
             itemIds: string[];
+            storeOrder?: number;
             quantities: {
                 units: any;
                 quantity: number;
@@ -142,6 +145,13 @@ class IngredientItem extends React.PureComponent<IngredientItemProps> {
                         ))}
                     </OxfordList>
                 </ListItemText>
+                {item.storeOrder === 0 && (
+                    <ListItemIcon
+                        title={"Where in the shopping order should this go?"}
+                    >
+                        <UnknownLocation />
+                    </ListItemIcon>
+                )}
             </Item>
         );
     }

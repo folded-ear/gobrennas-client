@@ -58,6 +58,7 @@ export {
     NoDrinks as SumthinsFuckyIcon,
     CleaningServices as SweepIcon,
     CameraAlt as TextractIcon,
+    NotListedLocation as UnknownLocation,
     LockOpen as UnlockedIcon,
     VisibilityOutlined as ViewIcon,
 } from "@mui/icons-material";

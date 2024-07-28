@@ -161,6 +161,7 @@ function groupItems(
             id: ingId,
             itemIds: items.map((it) => it.id),
             name: ingredient ? ingredient.name : items[0].name,
+            storeOrder: ingredient?.storeOrder,
             quantities,
             expanded,
             loading: loading || items.some((it) => it.loading),

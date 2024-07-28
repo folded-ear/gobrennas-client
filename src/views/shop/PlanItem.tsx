@@ -168,7 +168,11 @@ class PlanItem extends React.PureComponent<PlanItemProps> {
                         secondary={item.path.map((p) => p.name).join(" / ")}
                     >
                         {!item.ingredient ? (
-                            item.name
+                            item.name.length && item.name[0] === "!" ? (
+                                item.name.substring(1)
+                            ) : (
+                                item.name
+                            )
                         ) : (
                             <IngredientItem
                                 ingRef={item}

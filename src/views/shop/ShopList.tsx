@@ -36,6 +36,7 @@ export interface ShopItemTuple extends ItemProps {
     active?: boolean;
     depth: number;
     expanded?: boolean;
+    storeOrder?: number;
     itemIds?: BfsId[];
     quantities?: Quantity[];
     path: BaseItemProp[];
