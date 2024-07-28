@@ -328,8 +328,12 @@ class PlanItem extends React.PureComponent {
                         className={classes.text}
                         onDoubleClick={parent ? this.onToggleExpanded : null}
                     >
-                        {recipeIsh || !item.ingredient ? (
-                            item.name
+                        {recipeIsh || !item.ingredient || section ? (
+                            item.name.length && item.name[0] === "!" ? (
+                                item.name.substring(1)
+                            ) : (
+                                item.name
+                            )
                         ) : (
                             <IngredientItem
                                 ingRef={item}
