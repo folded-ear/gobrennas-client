@@ -91,13 +91,13 @@ const lightTokens: ThemeOptions = {
 const darkTokens: ThemeOptions = {
     palette: {
         mode: "dark",
-        text: { primary: "#c2c4c5" },
+        text: { primary: "#f2f4f5" },
         action: {
-            active: "#afb1b3",
+            active: "#bfc1c3",
         },
         background: {
-            default: "#2b2b2b",
-            paper: "#3d3f41",
+            default: "#1b1b1b",
+            paper: "#2d2f31",
         },
         neutral: {
             main: "#313335",

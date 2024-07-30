@@ -1,20 +1,36 @@
-import React from "react";
+import React, { useLayoutEffect, useState } from "react";
+import { Typography } from "@mui/material";
 
 interface Props {
     url: string;
 }
 
 const Source: React.FC<Props> = ({ url }) => {
-    try {
-        const source = new URL(url);
-        return (
-            <a href={url} target="_blank" rel="noreferrer noopener">
-                {source.hostname}
-            </a>
-        );
-    } catch (e) {
-        return <>{url}</>;
-    }
+    const [hostname, setHostname] = useState("");
+    useLayoutEffect(() => {
+        try {
+            let hostname = new URL(url).hostname;
+            if (hostname.startsWith("www.")) {
+                hostname = hostname.substring(4);
+            }
+            setHostname(hostname);
+        } catch (e) {
+            setHostname("");
+        }
+    }, [url]);
+    return hostname ? (
+        <Typography
+            color={"secondary"}
+            component={"a"}
+            href={url}
+            target="_blank"
+            rel="noreferrer noopener"
+        >
+            {hostname}
+        </Typography>
+    ) : (
+        <>{url}</>
+    );
 };
 
 export default Source;

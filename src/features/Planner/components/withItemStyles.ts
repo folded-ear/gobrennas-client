@@ -18,8 +18,8 @@ const withItemStyles = withStyles((theme) => ({
     section: {
         borderBottomColor:
             theme.palette.mode === "dark"
-                ? lighten(theme.palette.neutral.light, 0.2)
-                : darken(theme.palette.neutral.main, 0.25),
+                ? lighten(theme.palette.neutral.light, 0.5)
+                : darken(theme.palette.neutral.main, 0.15),
         "& input": {
             fontWeight: "bold",
         },
@@ -30,44 +30,44 @@ const withItemStyles = withStyles((theme) => ({
     question: {
         backgroundColor:
             theme.palette.mode === "dark"
-                ? darken(questionColor["A200"], 0.7)
+                ? darken(questionColor[100], 0.65)
                 : questionColor[100],
     },
     active: {
         backgroundColor:
             theme.palette.mode === "dark"
-                ? darken(selectionColor[900], 0.4)
+                ? darken(selectionColor[100], 0.6)
                 : selectionColor[100],
     },
     selected: {
         backgroundColor:
             theme.palette.mode === "dark"
-                ? darken(selectionColor[900], 0.6)
+                ? darken(selectionColor[50], 0.7)
                 : selectionColor[50],
     },
     acquiring: {
         backgroundColor:
             theme.palette.mode === "dark"
-                ? darken(acquiredColor[900], 0.7)
+                ? darken(acquiredColor[100], 0.7)
                 : acquiredColor[50],
     },
     needing: {
         backgroundColor:
-            theme.palette.mode === "dark" ? neededColor[900] : neededColor[100],
+            theme.palette.mode === "dark" ? neededColor[800] : neededColor[100],
     },
     deleting: {
         opacity: 0.8,
         textDecoration: "line-through",
         backgroundColor:
             theme.palette.mode === "dark"
-                ? darken(deleteColor[900], 0.4)
+                ? darken(deleteColor[200], 0.5)
                 : deleteColor[50],
     },
     completing: {
         opacity: 0.8,
         backgroundColor:
             theme.palette.mode === "dark"
-                ? darken(completeColor[900], 0.4)
+                ? darken(completeColor[200], 0.6)
                 : completeColor[50],
     },
     ancestorDeleting: {
