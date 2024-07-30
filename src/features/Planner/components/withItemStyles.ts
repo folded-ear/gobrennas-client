@@ -18,8 +18,8 @@ const withItemStyles = withStyles((theme) => ({
     section: {
         borderBottomColor:
             theme.palette.mode === "dark"
-                ? lighten(theme.palette.neutral.light, 0.2)
-                : darken(theme.palette.neutral.main, 0.25),
+                ? lighten(theme.palette.neutral.light, 0.5)
+                : darken(theme.palette.neutral.main, 0.15),
         "& input": {
             fontWeight: "bold",
         },
