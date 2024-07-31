@@ -71,6 +71,7 @@ const SendToPlan: React.FC<Props> = ({
             onClick={handleClick}
             title={`Send to ${list.name}`}
             startIcon={<SendToPlanIcon />}
+            sx={{ maxWidth: "100%" }}
         >
             To {list.name}
         </TextButton>

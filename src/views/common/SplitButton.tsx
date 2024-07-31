@@ -1,7 +1,6 @@
 import Button from "@mui/material/Button";
 import ButtonGroup, { ButtonGroupOwnProps } from "@mui/material/ButtonGroup";
 import ClickAwayListener from "@mui/material/ClickAwayListener";
-import Grid from "@mui/material/Grid";
 import Grow from "@mui/material/Grow";
 import MenuItem from "@mui/material/MenuItem";
 import MenuList from "@mui/material/MenuList";
@@ -73,79 +72,84 @@ const SplitButton = <TOption,>({
     };
 
     return (
-        <Grid container direction="column" alignItems="center">
-            <Grid item xs={12}>
-                <ButtonGroup
-                    disableElevation={disableElevation}
-                    variant={variant}
-                    ref={anchorRef}
-                    aria-label="split button"
-                    color={color}
+        <>
+            <ButtonGroup
+                disableElevation={disableElevation}
+                variant={variant}
+                ref={anchorRef}
+                aria-label="split button"
+                color={color}
+                sx={{
+                    minWidth: 0,
+                }}
+            >
+                <Button
+                    startIcon={startIcon ? startIcon : null}
+                    size="small"
+                    onClick={handleClick}
+                    disabled={disabled}
                 >
-                    <Button
-                        startIcon={startIcon ? startIcon : null}
-                        size="small"
-                        onClick={handleClick}
-                        disabled={disabled}
-                    >
-                        {primary}
-                    </Button>
-                    <Button
-                        size="small"
-                        onClick={handleToggle}
-                        disabled={
-                            dropdownDisabled || !options || !options.length
-                        }
-                        sx={{
-                            paddingX: 0,
+                    <span
+                        style={{
+                            whiteSpace: "nowrap",
+                            textOverflow: "ellipsis",
+                            overflow: "hidden",
                         }}
                     >
-                        <DropDownIcon />
-                    </Button>
-                </ButtonGroup>
-                <Popper
-                    open={open}
-                    anchorEl={anchorRef.current}
-                    role={undefined}
-                    transition
-                    disablePortal
-                    className={classes.popper}
-                    placement={"bottom-end"}
+                        {primary}
+                    </span>
+                </Button>
+                <Button
+                    size="small"
+                    onClick={handleToggle}
+                    disabled={dropdownDisabled || !options || !options.length}
+                    sx={{
+                        paddingX: 0,
+                    }}
                 >
-                    {({ TransitionProps, placement }) => (
-                        <Grow
-                            {...TransitionProps}
-                            style={{
-                                transformOrigin:
-                                    placement === "bottom"
-                                        ? "right top"
-                                        : "right bottom",
-                            }}
-                        >
-                            <Paper>
-                                <ClickAwayListener onClickAway={handleClose}>
-                                    <MenuList id="split-button-menu">
-                                        {options.map((option) => (
-                                            <MenuItem
-                                                key={option.id}
-                                                selected={
-                                                    option === selectedOption
-                                                }
-                                                onClick={(event) =>
-                                                    handleSelect(event, option)
-                                                }
-                                            >
-                                                {option.label}
-                                            </MenuItem>
-                                        ))}
-                                    </MenuList>
-                                </ClickAwayListener>
-                            </Paper>
-                        </Grow>
-                    )}
-                </Popper>
-            </Grid>
-        </Grid>
+                    <DropDownIcon />
+                </Button>
+            </ButtonGroup>
+            <Popper
+                open={open}
+                anchorEl={anchorRef.current}
+                role={undefined}
+                transition
+                disablePortal
+                className={classes.popper}
+                placement={"bottom-end"}
+            >
+                {({ TransitionProps, placement }) => (
+                    <Grow
+                        {...TransitionProps}
+                        style={{
+                            transformOrigin:
+                                placement === "bottom"
+                                    ? "right top"
+                                    : "right bottom",
+                        }}
+                    >
+                        <Paper>
+                            <ClickAwayListener onClickAway={handleClose}>
+                                <MenuList id="split-button-menu">
+                                    {options.map((option) => (
+                                        <MenuItem
+                                            key={option.id}
+                                            selected={option === selectedOption}
+                                            onClick={(event) =>
+                                                handleSelect(event, option)
+                                            }
+                                        >
+                                            {option.label}
+                                        </MenuItem>
+                                    ))}
+                                </MenuList>
+                            </ClickAwayListener>
+                        </Paper>
+                    </Grow>
+                )}
+            </Popper>
+        </>
     );
 };
 
