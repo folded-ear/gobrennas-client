@@ -33,6 +33,7 @@ export {
     InfoOutlined as InfoIcon,
     MenuBook as LibraryIcon,
     Link as LinkIcon,
+    DataSaverOff as LoadingIcon,
     Logout as LogoutIcon,
     Menu as MenuClosedIcon,
     MenuOpen as MenuOpenIcon,
