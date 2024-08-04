@@ -31,7 +31,8 @@ import {
     teal,
 } from "@mui/material/colors";
 
-const dateTimeStamp = preval`module.exports = new Date().toISOString();`;
+// Take the build timestamp and put it in the code
+// const dateTimeStamp = preval`module.exports = new Date().toISOString();`;
 
 interface RowProps {
     label: string;
@@ -99,7 +100,7 @@ const DevMode: React.FC = () => {
             <Row label={"Window"}>
                 {windowSize.width}x{windowSize.height}
             </Row>
-            <Row label={"Build"}>{dateTimeStamp}</Row>
+            {/*<Row label={"Build"}>{dateTimeStamp}</Row>*/}
             <Row label={"Layout"}>
                 <ToggleButtonGroup
                     size={"small"}
