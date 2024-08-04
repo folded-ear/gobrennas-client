@@ -39,11 +39,7 @@ export const CookThis = () => {
                     ref={cookThisRef as any}
                     component={"a"}
                     href="#"
-                    variant={
-                        import.meta.env.NODE_ENV === "production"
-                            ? "contained"
-                            : "outlined"
-                    }
+                    variant={import.meta.env.PROD ? "contained" : "outlined"}
                     color="primary"
                 >
                     {import.meta.env.NODE_ENV === "production"
