@@ -186,7 +186,11 @@ export default function AdminGrid({
             width: 30,
             renderHeader: () => null,
             getActions: ({ row }) => [
-                <DeleteItemAction row={row} onDelete={() => onDelete(row)} />,
+                <DeleteItemAction
+                    key={row.id}
+                    row={row}
+                    onDelete={() => onDelete(row)}
+                />,
             ],
         });
         return cs;

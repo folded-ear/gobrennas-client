@@ -71,7 +71,7 @@ export const RecipesList: React.FC<RecipesListProps> = ({
     }
 
     let body;
-    if (!!recipes) {
+    if (recipes) {
         if (recipes.length > 0) {
             body = (
                 <LazyInfinite

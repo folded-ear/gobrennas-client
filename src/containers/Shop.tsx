@@ -260,17 +260,11 @@ const Shop = () => {
         handleRepartition();
     }, [handleRepartition, activePlanIds]);
     const [acquiredIds, setAcquiredIds] = useState<Set<BfsId>>(new Set());
-    useEffect(
-        () => {
-            setAcquiredIds(
-                new Set(
-                    itemTuples.filter((it) => it.acquiring).map((it) => it.id),
-                ),
-            );
-        },
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-        [partitionReqCount],
-    );
+    useEffect(() => {
+        setAcquiredIds(
+            new Set(itemTuples.filter((it) => it.acquiring).map((it) => it.id)),
+        );
+    }, [partitionReqCount]);
     const [partitionedTuples, setPartitionedTuples] = useState<
         ShopItemTuple[][]
     >([[], []]);

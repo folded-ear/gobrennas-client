@@ -95,6 +95,7 @@ const RecipeForm: React.FC<Props> = ({
         reason: AutocompleteChangeReason,
     ) => {
         // One of "createOption", "selectOption", "removeOption", "blur" or "clear".
+        // eslint-disable-next-line
         if (reason === "selectOption" || "createOption" || "removeOption") {
             const val = labels.map((label) => label.replace(/\/+/g, "-"));
             onUpdate("labels", val);

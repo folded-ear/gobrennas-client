@@ -68,12 +68,10 @@ interface ExpandedProps extends ContainerProps {
     open?: boolean;
 }
 
-export const MainDesktop = styled(Container)<ExpandedProps>(
-    ({ theme, open }) => ({
-        marginTop: TOP_MARGIN,
-        marginBottom: theme.spacing(1),
-    }),
-);
+export const MainDesktop = styled(Container)<ExpandedProps>(({ theme }) => ({
+    marginTop: TOP_MARGIN,
+    marginBottom: theme.spacing(1),
+}));
 
 export const MainMobile = styled(Container)(({ theme }) => ({
     marginTop: theme.spacing(1),
@@ -81,10 +79,10 @@ export const MainMobile = styled(Container)(({ theme }) => ({
     padding: 0,
 }));
 
-export const Subheader = styled(ListSubheader)(({ theme }) => ({
+export const Subheader = styled(ListSubheader)({
     overflow: "hidden",
     textOverflow: "ellipsis",
-}));
+});
 
 interface ItemIconProps extends ListItemIconProps {
     open: ExpandedProps["open"];

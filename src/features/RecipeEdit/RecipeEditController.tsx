@@ -57,7 +57,7 @@ const RecipeEditController: React.FC<Props> = ({ match }) => {
     }
 
     const handleUpdate = (recipe: DraftRecipe) => {
-        updateRecipe(recipe).then((_) => {
+        updateRecipe(recipe).then(() => {
             history.push(`/library/recipe/${recipe.id}`);
         });
     };

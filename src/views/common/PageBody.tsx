@@ -35,7 +35,7 @@ type PageBodyProps = {
 } & ContainerProps;
 
 const PageBody: React.FC<PageBodyProps> = (props) => {
-    const { children, hasFab, fullWidth, className, ...passthrough } = props;
+    const { children, hasFab, className, ...passthrough } = props;
     const classes = useStyles(props);
     return (
         <Container

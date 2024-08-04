@@ -5,9 +5,9 @@ import pluginReactConfig from "eslint-plugin-react/configs/recommended.js";
 
 
 export default [
-  {files: ["**/*.{js,mjs,cjs,ts,jsx,tsx}"]},
+  { files: ["**/*.{js,mjs,cjs,ts,jsx,tsx}"]},
   { languageOptions: { parserOptions: { ecmaFeatures: { jsx: true } } } },
-  {languageOptions: { globals: globals.browser }},
+  { languageOptions: { globals: globals.browser }},
   pluginJs.configs.recommended,
   ...tseslint.configs.recommended,
   pluginReactConfig,
@@ -37,7 +37,10 @@ export default [
       "react/prop-types": 1,
       "semi": ["warn", "always"],
       "@typescript-eslint/no-explicit-any": 0,
-      "@typescript-eslint/no-unsafe-assignment": 0
+      "@typescript-eslint/no-unsafe-assignment": 0,
+      "react/react-in-jsx-scope": 1,
+      "react/no-unescaped-entities": 1,
+      "react/no-deprecated": 1,
     }
   }
 ];

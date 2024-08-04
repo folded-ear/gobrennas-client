@@ -6,9 +6,6 @@ interface NavOwnerItemProps {
     expanded: boolean;
 }
 
-export const NavOwnerItem: React.FC<NavOwnerItemProps> = ({
-    name,
-    expanded,
-}) => {
+export const NavOwnerItem: React.FC<NavOwnerItemProps> = ({ name }) => {
     return <Subheader title={name}>{name}</Subheader>;
 };
