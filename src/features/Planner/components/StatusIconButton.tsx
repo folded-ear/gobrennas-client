@@ -1,4 +1,4 @@
-import { Tooltip } from "@mui/material";
+import { IconButton, Tooltip } from "@mui/material";
 import React, { MouseEventHandler } from "react";
 import Dispatcher from "data/dispatcher";
 import PlanActions from "features/Planner/data/PlanActions";
@@ -9,8 +9,11 @@ import PlanItemStatus, {
 import { coloredIconButton } from "views/common/colors";
 import { BfsId } from "global/types/identity";
 
-const buttonLookup = {}; // Map<next, Map<curr, Button>>
-const findButton = (next, curr) => {
+const buttonLookup = {};
+function findButton(
+    next: PlanItemStatus,
+    curr: PlanItemStatus,
+): typeof IconButton {
     if (!buttonLookup.hasOwnProperty(next)) {
         buttonLookup[next] = {};
     }
@@ -21,7 +24,7 @@ const findButton = (next, curr) => {
         );
     }
     return buttonLookup[next][curr];
-};
+}
 
 interface Props {
     next: PlanItemStatus;
