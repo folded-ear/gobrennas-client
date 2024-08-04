@@ -15,7 +15,6 @@ import WindowActions from "@/data/WindowActions";
 import debounce from "@/util/debounce";
 import history from "@/util/history";
 
-// TODO: dev favicon
 // TODO: benchmarking and load and build times
 
 if (import.meta.env.NODE_ENV === "development") {
