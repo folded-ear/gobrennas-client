@@ -1,3 +1,4 @@
+import { expect, describe, it } from "vitest";
 import { formatDuration, formatTimer } from "./time";
 
 describe("time utilities", () => {
