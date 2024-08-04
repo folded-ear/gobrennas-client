@@ -42,9 +42,7 @@ export const CookThis = () => {
                     variant={import.meta.env.PROD ? "contained" : "outlined"}
                     color="primary"
                 >
-                    {import.meta.env.NODE_ENV === "production"
-                        ? "Cook This!"
-                        : "DEV Cook This!"}
+                    {import.meta.env.PROD ? "Cook This!" : "DEV Cook This!"}
                 </Button>
             </p>
             {!API_IS_SECURE && (

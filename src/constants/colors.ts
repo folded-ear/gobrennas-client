@@ -21,7 +21,7 @@ export const planColors = [
     "#cc4ac0",
 ];
 
-if (import.meta.env.NODE_ENV === "development") {
+if (import.meta.env.DEV) {
     if (
         planColors.length !==
         Math.pow(2, Math.floor(Math.log2(planColors.length)))

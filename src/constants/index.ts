@@ -1,13 +1,10 @@
 export const APP_BASE_URL = window.location.origin;
 export const IS_BETA = APP_BASE_URL.includes("beta");
-export const API_BASE_URL =
-    import.meta.env.NODE_ENV === "development"
-        ? "http://localhost:8080"
-        : IS_BETA
-        ? "https://beta.api.gobrennas.com"
-        : "https://api.gobrennas.com";
-export const IS_DEV =
-    APP_BASE_URL.includes("localhost") || API_BASE_URL.includes("localhost");
+export const API_BASE_URL = import.meta.env.DEV
+    ? "http://localhost:8080"
+    : IS_BETA
+    ? "https://beta.api.gobrennas.com"
+    : "https://api.gobrennas.com";
 export const API_IS_SECURE = API_BASE_URL.indexOf("https:") === 0;
 export const COOKIE_AUTH_TOKEN = "FTOKEN";
 export const LOCAL_STORAGE_ACCESS_TOKEN = "accessToken";
