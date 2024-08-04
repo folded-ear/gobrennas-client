@@ -1,22 +1,34 @@
 import { ClearIcon, CookIcon } from "../../../views/common/icons";
-import { Chip, Divider, Menu, MenuItem } from "@mui/material";
+import { Chip, ChipProps, Divider, Menu, MenuItem } from "@mui/material";
 import dispatcher from "data/dispatcher";
 import getBucketLabel from "features/Planner/components/getBucketLabel";
 import PlanActions from "features/Planner/data/PlanActions";
-import PropTypes from "prop-types";
 import React from "react";
-import { clientOrDatabaseIdType } from "util/ClientId";
 import history from "util/history";
 import { humanDate } from "util/time";
 import ListItemIcon from "@mui/material/ListItemIcon";
+import { BfsId } from "../../../global/types/identity";
+import { Maybe } from "graphql/jsutils/Maybe";
+import { PlanBucket } from "../data/planStore";
 
-const BucketChip = ({
+interface BucketChipProps {
+    planId: BfsId;
+    bucketId: Maybe<BfsId>;
+    buckets: PlanBucket[];
+    onSelect(bucketId: Maybe<BfsId>): void;
+    onManage?: () => void;
+    offPlan: boolean;
+    size: ChipProps["size"];
+}
+
+const BucketChip: React.FC<BucketChipProps> = ({
     planId,
     bucketId,
     buckets = [],
     onSelect,
     onManage,
     offPlan,
+    size = "small",
 }) => {
     const [anchorEl, setAnchorEl] = React.useState(null);
 
@@ -30,7 +42,7 @@ const BucketChip = ({
         setAnchorEl(null);
     };
 
-    const handleSelect = (bucketId) => {
+    const handleSelect = (bucketId: Maybe<BfsId>) => {
         onSelect && onSelect(bucketId);
         setAnchorEl(null);
     };
@@ -40,7 +52,7 @@ const BucketChip = ({
         setAnchorEl(null);
     };
 
-    const chipProps = {};
+    const chipProps: ChipProps = { size };
     const bucket = buckets.find((b) => b.id === bucketId);
     if (bucket) {
         const label = getBucketLabel(bucket);
@@ -51,7 +63,7 @@ const BucketChip = ({
                 title += ` (${dateLabel})`;
             }
         }
-        chipProps.label = label.substr(0, 3);
+        chipProps.label = label.slice(0, 3);
         chipProps.title = title;
     } else {
         chipProps.variant = "outlined";
@@ -60,12 +72,7 @@ const BucketChip = ({
 
     return (
         <>
-            <Chip
-                size="small"
-                color="neutral"
-                onClick={handleClick}
-                {...chipProps}
-            />
+            <Chip color="neutral" onClick={handleClick} {...chipProps} />
             <Menu
                 id="simple-menu"
                 anchorEl={anchorEl}
@@ -127,16 +134,7 @@ const BucketChip = ({
     );
 };
 
-BucketChip.propTypes = {
-    planId: PropTypes.number.isRequired,
-    bucketId: PropTypes.number,
-    buckets: PropTypes.array.isRequired, // todo: PropTypes.arrayOf(bucketType).isRequired,
-    onSelect: PropTypes.func.isRequired,
-    onManage: PropTypes.func,
-    offPlan: PropTypes.bool,
-};
-
-export function assignItemToBucket(itemId, bucketId) {
+export function assignItemToBucket(itemId: BfsId, bucketId: Maybe<BfsId>) {
     dispatcher.dispatch({
         type: PlanActions.ASSIGN_ITEM_TO_BUCKET,
         id: itemId,
@@ -144,7 +142,15 @@ export function assignItemToBucket(itemId, bucketId) {
     });
 }
 
-const PlanItemBucketChip = ({ itemId, ...props }) => (
+interface PlanItemBucketChipProps
+    extends Omit<BucketChipProps, "onSelect" | "onManage"> {
+    itemId: BfsId;
+}
+
+const PlanItemBucketChip: React.FC<PlanItemBucketChipProps> = ({
+    itemId,
+    ...props
+}) => (
     <BucketChip
         onSelect={(bucketId) => assignItemToBucket(itemId, bucketId)}
         onManage={() =>
@@ -156,12 +162,5 @@ const PlanItemBucketChip = ({ itemId, ...props }) => (
         {...props}
     />
 );
-
-PlanItemBucketChip.propTypes = {
-    planId: PropTypes.number.isRequired,
-    itemId: clientOrDatabaseIdType.isRequired,
-    bucketId: PropTypes.number,
-    buckets: PropTypes.array.isRequired, // todo: PropTypes.arrayOf(bucketType).isRequired,
-};
 
 export default PlanItemBucketChip;
