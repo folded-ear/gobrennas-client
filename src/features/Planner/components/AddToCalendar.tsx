@@ -1,8 +1,8 @@
 import React from "react";
-import { AddIcon, AddToCalendarIcon } from "views/common/icons";
-import { PlanItem } from "../data/planStore";
-import ModalButton from "../../../views/ModalButton";
-import { API_BASE_URL } from "../../../constants";
+import { AddIcon, AddToCalendarIcon } from "@/views/common/icons";
+import type { PlanItem } from "@/features/Planner/data/planStore";
+import ModalButton from "@/views/ModalButton";
+import { API_BASE_URL } from "@/constants";
 import BaseAxios from "axios";
 import {
     Box,
@@ -11,7 +11,7 @@ import {
     Divider,
     TextField,
 } from "@mui/material";
-import { RippedLO } from "../../../util/ripLoadObject";
+import { RippedLO } from "@/util/ripLoadObject";
 
 const axios = BaseAxios.create({
     baseURL: `${API_BASE_URL}/api/plan`,

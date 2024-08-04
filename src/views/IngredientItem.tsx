@@ -1,15 +1,15 @@
 import { Chip, Grid, IconButton } from "@mui/material";
 import makeStyles from "@mui/styles/makeStyles";
 import React from "react";
-import Dispatcher from "data/dispatcher";
-import PantryItemActions from "data/PantryItemActions";
-import PlanActions from "features/Planner/data/PlanActions";
-import history from "util/history";
-import Quantity from "views/common/Quantity";
-import SendToPlan from "features/RecipeLibrary/components/SendToPlan";
-import type { IngredientRef } from "global/types/types";
-import type { BfsId } from "global/types/identity";
-import { useScale } from "util/ScalingContext";
+import Dispatcher from "@/data/dispatcher";
+import PantryItemActions from "@/data/PantryItemActions";
+import PlanActions from "@/features/Planner/data/PlanActions";
+import history from "@/util/history";
+import Quantity from "@/views/common/Quantity";
+import SendToPlan from "@/features/RecipeLibrary/components/SendToPlan";
+import type { IngredientRef } from "@/global/types/types";
+import type { BfsId } from "@/global/types/identity";
+import { useScale } from "@/util/ScalingContext";
 import { LinkIcon } from "./common/icons";
 
 const useStyles = makeStyles(() => ({

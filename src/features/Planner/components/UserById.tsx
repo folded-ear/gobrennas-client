@@ -1,6 +1,6 @@
 import React from "react";
-import useFriendRlo from "data/useFriendRlo";
-import User, { UserProps } from "views/user/User";
+import useFriendRlo from "@/data/useFriendRlo";
+import User, { UserProps } from "@/views/user/User";
 
 interface Props extends Pick<UserProps, "size" | "iconOnly"> {
     id: number;

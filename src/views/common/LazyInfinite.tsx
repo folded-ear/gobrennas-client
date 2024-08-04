@@ -1,6 +1,6 @@
 import React, { PropsWithChildren } from "react";
-import useWindowSize from "../../data/useWindowSize";
-import debounce from "../../util/debounce";
+import useWindowSize from "@/data/useWindowSize";
+import debounce from "@/util/debounce";
 
 interface Props extends PropsWithChildren<unknown> {
     onNeedMore(): void;

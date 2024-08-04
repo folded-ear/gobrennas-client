@@ -1,5 +1,5 @@
-import { Photo, User as UserType } from "__generated__/graphql";
-import { BfsId } from "global/types/identity";
+import { Photo, User as UserType } from "@/__generated__/graphql";
+import { BfsId } from "@/global/types/identity";
 
 export interface RecipeCard {
     id: BfsId;

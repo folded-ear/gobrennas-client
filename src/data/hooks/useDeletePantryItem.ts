@@ -1,8 +1,8 @@
-import { gql } from "../../__generated__";
+import { gql } from "@/__generated__";
 import { MutationResult, useMutation } from "@apollo/client";
 import { useCallback } from "react";
-import { DeletePantryItemMutation } from "../../__generated__/graphql";
-import throwAnyGraphQLErrors from "../../util/throwAnyGraphQLErrors";
+import { DeletePantryItemMutation } from "@/__generated__/graphql";
+import throwAnyGraphQLErrors from "@/util/throwAnyGraphQLErrors";
 
 const DELETE_PANTRY_ITEM = gql(`
 mutation deletePantryItem($id: ID!) {

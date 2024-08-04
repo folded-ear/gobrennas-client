@@ -1,5 +1,5 @@
-import Dispatcher from "data/dispatcher";
-import { askUserToReauth, isAuthError } from "../providers/Profile";
+import Dispatcher from "@/data/dispatcher";
+import { askUserToReauth, isAuthError } from "@/providers/Profile";
 
 let helper = (settleKey, typeTemplateOrCallback) => (data) => {
     if (!typeTemplateOrCallback) {

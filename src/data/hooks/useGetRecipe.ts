@@ -1,10 +1,10 @@
-import { gql } from "__generated__";
-import { UseQueryResult } from "data/types";
-import { IngredientRef, Recipe } from "global/types/types";
-import { BfsId } from "global/types/identity";
-import { GetRecipeQuery } from "../../__generated__/graphql";
+import { gql } from "@/__generated__";
+import { UseQueryResult } from "@/data/types";
+import { IngredientRef, Recipe } from "@/global/types/types";
+import { BfsId } from "@/global/types/identity";
+import { GetRecipeQuery } from "@/__generated__/graphql";
 import useAdaptingQuery from "./useAdaptingQuery";
-import objectWithType from "../utils/objectWithType";
+import objectWithType from "@/data/utils/objectWithType";
 
 const GET_RECIPE_QUERY = gql(`
 query getRecipe($id: ID!) {

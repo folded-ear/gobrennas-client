@@ -1,6 +1,6 @@
-import LabelItem from "../../../global/components/LabelItem";
+import LabelItem from "@/global/components/LabelItem";
 import { GridRenderCellParams } from "@mui/x-data-grid";
-import { Result } from "../../../data/hooks/usePantryItemSearch";
+import { Result } from "@/data/hooks/usePantryItemSearch";
 
 export default function LabelsCell(
     props: GridRenderCellParams<Result, string[]>,

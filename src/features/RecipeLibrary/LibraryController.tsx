@@ -1,11 +1,11 @@
-import { RecipesList } from "features/RecipeLibrary/components/RecipesList";
-import { useProfile } from "providers/Profile";
+import { RecipesList } from "@/features/RecipeLibrary/components/RecipesList";
+import { useProfile } from "@/providers/Profile";
 import qs from "qs";
 import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
-import { LibrarySearchScope } from "__generated__/graphql";
-import { useSearchLibrary } from "features/RecipeLibrary/hooks/useSearchLibrary";
-import { ScalingProvider } from "util/ScalingContext";
+import { LibrarySearchScope } from "@/__generated__/graphql";
+import { useSearchLibrary } from "@/features/RecipeLibrary/hooks/useSearchLibrary";
+import { ScalingProvider } from "@/util/ScalingContext";
 
 export const LibraryController = () => {
     const me = useProfile();

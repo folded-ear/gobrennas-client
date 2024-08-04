@@ -1,8 +1,8 @@
 import * as React from "react";
 import { Route, RouteProps } from "react-router-dom";
-import Dispatcher from "../../data/dispatcher";
-import RouteActions from "../../data/RouteActions";
-import RouteStore from "../../data/RouteStore";
+import Dispatcher from "@/data/dispatcher";
+import RouteActions from "@/data/RouteActions";
+import RouteStore from "@/data/RouteStore";
 import GTag from "../../GTag";
 
 const FluxRoute: React.FC<RouteProps> = ({

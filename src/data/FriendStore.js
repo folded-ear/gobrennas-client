@@ -1,11 +1,11 @@
 import BaseAxios from "axios";
 import { ReduceStore } from "flux/utils";
-import LoadObjectState from "util/LoadObjectState";
-import promiseFlux from "util/promiseFlux";
-import { API_BASE_URL } from "../constants/index";
+import LoadObjectState from "@/util/LoadObjectState";
+import promiseFlux from "@/util/promiseFlux";
+import { API_BASE_URL } from "@/constants";
 import Dispatcher from "./dispatcher";
 import FriendActions from "./FriendActions";
-import { mapData, ripLoadObject } from "../util/ripLoadObject";
+import { mapData, ripLoadObject } from "@/util/ripLoadObject";
 
 const axios = BaseAxios.create({
     baseURL: `${API_BASE_URL}/api/friends`,

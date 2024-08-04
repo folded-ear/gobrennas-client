@@ -4,26 +4,26 @@ import {
     Navigation,
     Sidebar,
     Subheader,
-} from "features/Navigation/components/Navigation.elements";
-import { Logo } from "features/Navigation/components/Logo";
-import { NavItem } from "features/Navigation/components/NavItem";
+} from "@/features/Navigation/components/Navigation.elements";
+import { Logo } from "@/features/Navigation/components/Logo";
+import { NavItem } from "@/features/Navigation/components/NavItem";
 import {
     LibraryIcon,
     LogoutIcon,
     PantryItemAdminIcon,
     PlanIcon,
     ShopIcon,
-} from "views/common/icons";
+} from "@/views/common/icons";
 import { Box, List, ListItemButton, Typography } from "@mui/material";
-import { NavPlanItem } from "features/Navigation/components/NavPlanItem";
-import { colorHash } from "constants/colors";
+import { NavPlanItem } from "@/features/Navigation/components/NavPlanItem";
+import { colorHash } from "@/constants/colors";
 import { NavOwnerItem } from "./NavOwnerItem";
-import User from "views/user/User";
-import { useProfile } from "providers/Profile";
+import User from "@/views/user/User";
+import { useProfile } from "@/providers/Profile";
 import { NavShopItem } from "./NavShopItem";
-import { BfsId } from "global/types/identity";
-import { useGetAllPlans } from "data/hooks/useGetAllPlans";
-import useIsDevMode from "../../../data/useIsDevMode";
+import { BfsId } from "@/global/types/identity";
+import { useGetAllPlans } from "@/data/hooks/useGetAllPlans";
+import useIsDevMode from "@/data/useIsDevMode";
 
 type DesktopNavProps = {
     selected: string;

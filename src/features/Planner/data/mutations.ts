@@ -1,4 +1,4 @@
-import { gql } from "__generated__";
+import { gql } from "@/__generated__";
 
 export const RENAME_PLAN_ITEM = gql(`
 mutation renamePlanItem($id: ID!, $name: String!) {

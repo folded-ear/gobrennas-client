@@ -1,8 +1,8 @@
-import type { RecipeFromPlanItem } from "global/types/types";
-import planStore, { Plan } from "features/Planner/data/planStore";
-import { recipeRloFromItemRlo as buildSingleItemRecipeLO } from "features/RecipeDisplay/utils/recipeRloFromItemRlo";
-import getBucketLabel from "features/Planner/components/getBucketLabel";
-import { mapData, RippedLO } from "../../../util/ripLoadObject";
+import type { RecipeFromPlanItem } from "@/global/types/types";
+import planStore, { Plan } from "@/features/Planner/data/planStore";
+import { recipeRloFromItemRlo as buildSingleItemRecipeLO } from "@/features/RecipeDisplay/utils/recipeRloFromItemRlo";
+import getBucketLabel from "@/features/Planner/components/getBucketLabel";
+import { mapData, RippedLO } from "@/util/ripLoadObject";
 
 export const recipeRloByPlanAndBucket = (
     planId: number,

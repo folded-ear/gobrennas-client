@@ -1,4 +1,4 @@
-import { BfsId } from "global/types/identity";
+import { BfsId } from "@/global/types/identity";
 
 export const planColors = [
     // ¡¡ Make sure this always has a size equal to a power of 2 !!
@@ -21,7 +21,7 @@ export const planColors = [
     "#cc4ac0",
 ];
 
-if (process.env.NODE_ENV === "development") {
+if (import.meta.env.NODE_ENV === "development") {
     if (
         planColors.length !==
         Math.pow(2, Math.floor(Math.log2(planColors.length)))

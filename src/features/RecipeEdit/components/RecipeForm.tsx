@@ -11,25 +11,25 @@ import {
     useTheme,
 } from "@mui/material";
 import makeStyles from "@mui/styles/makeStyles";
-import type { DraftRecipe, Recipe } from "global/types/types";
+import type { DraftRecipe, Recipe } from "@/global/types/types";
 import {
     AddIcon,
     CancelIcon,
     CopyIcon,
     DeleteIcon,
     SaveIcon,
-} from "views/common/icons";
+} from "@/views/common/icons";
 import React, { ReactNode } from "react";
-import useWindowSize from "data/useWindowSize";
-import ImageDropZone from "util/ImageDropZone";
-import ElEdit from "views/ElEdit";
-import PositionPicker from "features/RecipeEdit/components/PositionPicker";
+import useWindowSize from "@/data/useWindowSize";
+import ImageDropZone from "@/util/ImageDropZone";
+import ElEdit from "@/views/ElEdit";
+import PositionPicker from "@/features/RecipeEdit/components/PositionPicker";
 import { LabelAutoComplete } from "./LabelAutoComplete";
-import DragContainer from "features/Planner/components/DragContainer";
-import Item from "features/Planner/components/Item";
-import DragHandle from "features/Planner/components/DragHandle";
-import { TextractForm } from "features/RecipeEdit/components/TextractForm";
-import { useRecipeForm } from "data/hooks/useRecipeForm";
+import DragContainer from "@/features/Planner/components/DragContainer";
+import Item from "@/features/Planner/components/Item";
+import DragHandle from "@/features/Planner/components/DragHandle";
+import { TextractForm } from "@/features/RecipeEdit/components/TextractForm";
+import { useRecipeForm } from "@/data/hooks/useRecipeForm";
 
 const useStyles = makeStyles((theme) => ({
     button: {

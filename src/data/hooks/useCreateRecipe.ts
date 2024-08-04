@@ -1,9 +1,9 @@
 import { useMutation } from "@apollo/client";
-import { DraftRecipe } from "global/types/types";
-import { gql } from "__generated__";
-import { GetSearchLibraryDocument } from "__generated__/graphql";
-import promiseWellSizedFile from "util/promiseWellSizedFile";
-import { recipeToIngredientInfo } from "data/utils/graphql";
+import { DraftRecipe } from "@/global/types/types";
+import { gql } from "@/__generated__";
+import { GetSearchLibraryDocument } from "@/__generated__/graphql";
+import promiseWellSizedFile from "@/util/promiseWellSizedFile";
+import { recipeToIngredientInfo } from "@/data/utils/graphql";
 
 const CREATE_RECIPE_MUTATION = gql(`
 mutation createRecipe($info: IngredientInfo!, $photo: Upload, $cookThis: Boolean) {

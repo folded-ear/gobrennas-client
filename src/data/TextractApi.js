@@ -1,5 +1,5 @@
 import BaseAxios from "axios";
-import { API_BASE_URL } from "../constants/index";
+import { API_BASE_URL } from "@/constants/index";
 
 const axios = BaseAxios.create({
     baseURL: `${API_BASE_URL}/api/textract`,

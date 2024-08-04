@@ -1,20 +1,20 @@
-import { AddIcon } from "views/common/icons";
+import { AddIcon } from "@/views/common/icons";
 import { List } from "@mui/material";
-import Dispatcher from "data/dispatcher";
-import LoadingItem from "features/Planner/components/LoadingItem";
-import PlanHeader from "features/Planner/components/PlanHeader";
-import PlanItem from "features/Planner/components/PlanItem";
-import PlanActions from "features/Planner/data/PlanActions";
-import { isParent } from "features/Planner/data/plannerUtils";
+import Dispatcher from "@/data/dispatcher";
+import LoadingItem from "@/features/Planner/components/LoadingItem";
+import PlanHeader from "@/features/Planner/components/PlanHeader";
+import PlanItem from "@/features/Planner/components/PlanItem";
+import PlanActions from "@/features/Planner/data/PlanActions";
+import { isParent } from "@/features/Planner/data/plannerUtils";
 import React from "react";
-import FoodingerFab from "views/common/FoodingerFab";
-import LoadingIndicator from "views/common/LoadingIndicator";
-import PageBody from "views/common/PageBody";
+import FoodingerFab from "@/views/common/FoodingerFab";
+import LoadingIndicator from "@/views/common/LoadingIndicator";
+import PageBody from "@/views/common/PageBody";
 import DragContainer, { Horiz, Vert } from "./DragContainer";
 import { ItemTuple } from "../PlannerController";
-import { FluxAction } from "../../../global/types/types";
-import { PlanItem as PlanItemType } from "../data/planStore";
-import { BfsId } from "../../../global/types/identity";
+import { FluxAction } from "@/global/types/types";
+import { PlanItem as PlanItemType } from "@/features/Planner/data/planStore";
+import { BfsId } from "@/global/types/identity";
 
 interface Props {
     allPlans: any;

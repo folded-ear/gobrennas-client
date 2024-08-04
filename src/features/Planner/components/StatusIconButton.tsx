@@ -1,13 +1,13 @@
 import { IconButton, Tooltip } from "@mui/material";
 import React, { MouseEventHandler } from "react";
-import Dispatcher from "data/dispatcher";
-import PlanActions from "features/Planner/data/PlanActions";
+import Dispatcher from "@/data/dispatcher";
+import PlanActions from "@/features/Planner/data/PlanActions";
 import PlanItemStatus, {
     getColorForStatus,
     getIconForStatus,
-} from "features/Planner/data/PlanItemStatus";
-import { coloredIconButton } from "views/common/colors";
-import { BfsId } from "global/types/identity";
+} from "@/features/Planner/data/PlanItemStatus";
+import { coloredIconButton } from "@/views/common/colors";
+import { BfsId } from "@/global/types/identity";
 
 const buttonLookup = {};
 function findButton(

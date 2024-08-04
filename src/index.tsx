@@ -1,20 +1,19 @@
-import PlanItemSynchronizer from "features/Planner/data/PlanItemSynchronizer";
-import { ApolloClient } from "providers/ApolloClient";
-import { AuthTokenProvider } from "providers/AuthToken";
-import { IsMobileProvider } from "providers/IsMobile";
-import { ProfileProvider } from "providers/Profile";
+import PlanItemSynchronizer from "@/features/Planner/data/PlanItemSynchronizer";
+import { ApolloClient } from "@/providers/ApolloClient";
+import { AuthTokenProvider } from "@/providers/AuthToken";
+import { IsMobileProvider } from "@/providers/IsMobile";
+import { ProfileProvider } from "@/providers/Profile";
 import React from "react";
 import ReactDOM from "react-dom";
 import { QueryClientProvider } from "react-query";
 import { Router } from "react-router-dom";
 import App from "./App";
-import Dispatcher from "./data/dispatcher";
-import PantryItemSynchronizer from "./data/PantryItemSynchronizer";
-import queryClient from "./data/queryClient";
-import WindowActions from "./data/WindowActions";
-import * as serviceWorkerRegistration from "./serviceWorkerRegistration";
-import debounce from "./util/debounce";
-import history from "./util/history";
+import Dispatcher from "@/data/dispatcher";
+import PantryItemSynchronizer from "@/data/PantryItemSynchronizer";
+import queryClient from "@/data/queryClient";
+import WindowActions from "@/data/WindowActions";
+import debounce from "@/util/debounce";
+import history from "@/util/history";
 
 // if (process.env.NODE_ENV === "development") {
 //     // eslint-disable-next-line @typescript-eslint/no-var-requires

@@ -1,8 +1,8 @@
 import { useMediaQuery } from "@mui/material";
 import React, { createContext, PropsWithChildren, useContext } from "react";
 import { useTheme } from "@mui/material/styles";
-import useFluxStore from "../data/useFluxStore";
-import preferencesStore from "../data/preferencesStore";
+import useFluxStore from "@/data/useFluxStore";
+import preferencesStore from "@/data/preferencesStore";
 
 const MobileContext = createContext(true);
 

@@ -1,4 +1,4 @@
-import { useIsAuthenticated } from "providers/Profile";
+import { useIsAuthenticated } from "@/providers/Profile";
 import React from "react";
 import { useQueries } from "react-query";
 import { UseQueryOptions } from "react-query/types/react/types";

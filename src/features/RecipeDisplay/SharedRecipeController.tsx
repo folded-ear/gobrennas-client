@@ -1,14 +1,14 @@
 import BaseAxios from "axios";
 import React from "react";
 import { match, Redirect } from "react-router-dom";
-import { API_BASE_URL } from "constants/index";
-import Dispatcher from "data/dispatcher";
-import LoadingIndicator from "views/common/LoadingIndicator";
-import RecipeDetail from "features/RecipeDisplay/components/RecipeDetail";
-import LibraryActions from "features/RecipeLibrary/data/LibraryActions";
-import { UserType } from "global/types/identity";
+import { API_BASE_URL } from "@/constants/index";
+import Dispatcher from "@/data/dispatcher";
+import LoadingIndicator from "@/views/common/LoadingIndicator";
+import RecipeDetail from "@/features/RecipeDisplay/components/RecipeDetail";
+import LibraryActions from "@/features/RecipeLibrary/data/LibraryActions";
+import { UserType } from "@/global/types/identity";
 import { Maybe } from "graphql/jsutils/Maybe";
-import { recipeRloById } from "features/RecipeDisplay/utils/recipeRloById";
+import { recipeRloById } from "@/features/RecipeDisplay/utils/recipeRloById";
 
 const axios = BaseAxios.create({
     baseURL: `${API_BASE_URL}/shared/recipe`,

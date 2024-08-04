@@ -1,8 +1,8 @@
 import BaseAxios from "axios";
-import { API_BASE_URL } from "constants/index";
-import promiseFlux from "util/promiseFlux";
+import { API_BASE_URL } from "@/constants/index";
+import promiseFlux from "@/util/promiseFlux";
 import PlanActions from "./PlanActions";
-import { client } from "providers/ApolloClient";
+import { client } from "@/providers/ApolloClient";
 import {
     COMPLETE_PLAN_ITEM,
     CREATE_BUCKET,
@@ -19,17 +19,17 @@ import type {
     DeletePlanItemMutation,
     RenamePlanItemMutation,
     UpdateBucketMutation,
-} from "__generated__/graphql";
-import { PlanItemStatus, SetStatusMutation } from "__generated__/graphql";
+} from "@/__generated__/graphql";
+import { PlanItemStatus, SetStatusMutation } from "@/__generated__/graphql";
 import type { FetchResult } from "@apollo/client";
 import {
     handleErrors,
     toRestPlanItem,
-} from "features/Planner/data/conversion_helpers";
-import { ensureInt } from "global/utils";
-import { BfsId } from "../../../global/types/identity";
+} from "@/features/Planner/data/conversion_helpers";
+import { ensureInt } from "@/global/utils";
+import { BfsId } from "@/global/types/identity";
 import { WireBucket } from "./planStore";
-import serializeObjectOfPromiseFns from "../../../util/serializeObjectOfPromiseFns";
+import serializeObjectOfPromiseFns from "@/util/serializeObjectOfPromiseFns";
 
 const axios = BaseAxios.create({
     baseURL: `${API_BASE_URL}/api/plan`,

@@ -1,11 +1,11 @@
 import { MutationResult, useMutation } from "@apollo/client";
-import { gql } from "__generated__";
+import { gql } from "@/__generated__";
 import {
     PlannedRecipeHistory,
     SetRecipeHistoryRatingMutation,
-} from "../../__generated__/graphql";
+} from "@/__generated__/graphql";
 import { useCallback } from "react";
-import { BfsId } from "../../global/types/identity";
+import { BfsId } from "@/global/types/identity";
 
 const SET_RECIPE_HISTORY_RATING = gql(`
 mutation setRecipeHistoryRating($recipeId: ID!, $id: ID!, $rating: PositiveInt!) {

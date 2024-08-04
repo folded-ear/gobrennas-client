@@ -1,5 +1,5 @@
 import { IconButton, Tooltip } from "@mui/material";
-import { CopyIcon } from "views/common/icons";
+import { CopyIcon } from "@/views/common/icons";
 import React, { MouseEventHandler } from "react";
 
 interface Props {

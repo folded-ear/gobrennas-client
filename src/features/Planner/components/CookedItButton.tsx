@@ -1,12 +1,12 @@
 import { ButtonProps, Stack, Tooltip } from "@mui/material";
-import { CookedItIcon, HelpIcon } from "views/common/icons";
+import { CookedItIcon, HelpIcon } from "@/views/common/icons";
 import React, { useCallback } from "react";
-import { FromPlanItem } from "../../../global/types/types";
-import dispatcher from "../../../data/dispatcher";
-import PlanActions from "../data/PlanActions";
-import PlanItemStatus from "../data/PlanItemStatus";
-import history from "util/history";
-import SplitButton, { SelectOption } from "views/common/SplitButton";
+import { FromPlanItem } from "@/global/types/types";
+import dispatcher from "@/data/dispatcher";
+import PlanActions from "@/features/Planner/data/PlanActions";
+import PlanItemStatus from "@/features/Planner/data/PlanItemStatus";
+import history from "@/util/history";
+import SplitButton, { SelectOption } from "@/views/common/SplitButton";
 import { DateTime } from "luxon";
 
 type Props = Omit<ButtonProps, "onClick"> & {

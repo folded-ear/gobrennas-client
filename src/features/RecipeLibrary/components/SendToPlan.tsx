@@ -1,10 +1,10 @@
 import { IconButton } from "@mui/material";
-import { SendToPlanIcon } from "views/common/icons";
+import { SendToPlanIcon } from "@/views/common/icons";
 import React from "react";
-import useActivePlanner from "data/useActivePlanner";
-import SplitButton, { SelectOption } from "views/common/SplitButton";
-import { useScaleOptions } from "util/ScalingContext";
-import TextButton from "views/common/TextButton";
+import useActivePlanner from "@/data/useActivePlanner";
+import SplitButton, { SelectOption } from "@/views/common/SplitButton";
+import { useScaleOptions } from "@/util/ScalingContext";
+import TextButton from "@/views/common/TextButton";
 
 interface Props {
     onClick(planId: number, scale?: number | null): void;

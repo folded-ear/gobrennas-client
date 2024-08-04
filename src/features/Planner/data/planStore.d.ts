@@ -1,10 +1,10 @@
 import FluxReduceStore from "flux/lib/FluxReduceStore";
-import LoadObject from "../../../util/LoadObject";
-import LoadObjectState from "../../../util/LoadObjectState";
-import AccessLevel from "../../../data/AccessLevel";
-import { FluxAction } from "global/types/types";
-import { BfsId } from "global/types/identity";
-import { RippedLO } from "../../../util/ripLoadObject";
+import LoadObject from "@/util/LoadObject";
+import LoadObjectState from "@/util/LoadObjectState";
+import AccessLevel from "@/data/AccessLevel";
+import { FluxAction } from "@/global/types/types";
+import { BfsId } from "@/global/types/identity";
+import { RippedLO } from "@/util/ripLoadObject";
 import PlanItemStatus from "./PlanItemStatus";
 
 export interface PlanBucket {

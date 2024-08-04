@@ -1,7 +1,7 @@
 import React, { CSSProperties, PropsWithChildren } from "react";
-import useWindowSize from "../../../data/useWindowSize";
+import useWindowSize from "@/data/useWindowSize";
 import { Box, useScrollTrigger } from "@mui/material";
-import { HEADER_HEIGHT } from "../../../constants/layout";
+import { HEADER_HEIGHT } from "@/constants/layout";
 
 type Props = PropsWithChildren<unknown>;
 

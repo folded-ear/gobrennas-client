@@ -1,4 +1,4 @@
-import { PlanBucket } from "../features/Planner/data/planStore";
+import { PlanBucket } from "@/features/Planner/data/planStore";
 
 const collator = new Intl.Collator(undefined, {
     sensitivity: "base",

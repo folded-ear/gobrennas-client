@@ -1,7 +1,7 @@
 import grey from "@mui/material/colors/grey";
-import { HelpIcon, InfoIcon } from "views/common/icons";
+import { HelpIcon, InfoIcon } from "@/views/common/icons";
 import React, { MouseEventHandler, PropsWithChildren } from "react";
-import CloseButton from "views/common/CloseButton";
+import CloseButton from "@/views/common/CloseButton";
 import { lightBlue } from "@mui/material/colors";
 import { alpha, Box, useTheme } from "@mui/material";
 

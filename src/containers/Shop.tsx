@@ -1,24 +1,24 @@
 import React, { useCallback, useEffect, useState } from "react";
-import LibraryStore from "features/RecipeLibrary/data/LibraryStore";
-import shoppingStore, { Item } from "data/shoppingStore";
+import LibraryStore from "@/features/RecipeLibrary/data/LibraryStore";
+import shoppingStore, { Item } from "@/data/shoppingStore";
 import {
     isParent,
     isQuestionable,
     isSection,
-} from "features/Planner/data/plannerUtils";
-import PlanItemStatus from "features/Planner/data/PlanItemStatus";
-import planStore, { PlanItem } from "features/Planner/data/planStore";
-import useFluxStore from "data/useFluxStore";
-import groupBy from "util/groupBy";
-import ShopList, { ShopItemTuple, ShopItemType } from "views/shop/ShopList";
-import { BaseItemProp, ItemProps } from "views/shop/types";
+} from "@/features/Planner/data/plannerUtils";
+import PlanItemStatus from "@/features/Planner/data/PlanItemStatus";
+import planStore, { PlanItem } from "@/features/Planner/data/planStore";
+import useFluxStore from "@/data/useFluxStore";
+import groupBy from "@/util/groupBy";
+import ShopList, { ShopItemTuple, ShopItemType } from "@/views/shop/ShopList";
+import { BaseItemProp, ItemProps } from "@/views/shop/types";
 import { Maybe } from "graphql/jsutils/Maybe";
-import { Quantity } from "global/types/types";
-import { BfsId } from "global/types/identity";
-import windowStore from "../data/WindowStore";
-import partition from "../util/partition";
-import { intersection } from "../util/arrayAsSet";
-import useActiveShoppingPlanIds from "../data/useActiveShoppingPlanIds";
+import { Quantity } from "@/global/types/types";
+import { BfsId } from "@/global/types/identity";
+import windowStore from "@/data/WindowStore";
+import partition from "@/util/partition";
+import { intersection } from "@/util/arrayAsSet";
+import useActiveShoppingPlanIds from "@/data/useActiveShoppingPlanIds";
 
 interface ItemTuple extends PlanItem, ItemProps {
     status: string;

@@ -1,13 +1,13 @@
 import BaseAxios from "axios";
-import { client } from "providers/ApolloClient";
-import { API_BASE_URL } from "constants/index";
-import PlanActions from "features/Planner/data/PlanActions";
-import promiseFlux, { soakUpUnauthorized } from "util/promiseFlux";
-import serializeObjectOfPromiseFns from "util/serializeObjectOfPromiseFns";
+import { client } from "@/providers/ApolloClient";
+import { API_BASE_URL } from "@/constants/index";
+import PlanActions from "@/features/Planner/data/PlanActions";
+import promiseFlux, { soakUpUnauthorized } from "@/util/promiseFlux";
+import serializeObjectOfPromiseFns from "@/util/serializeObjectOfPromiseFns";
 import { CREATE_PLAN } from "./mutations";
 import { handleErrors, toRestPlan } from "./conversion_helpers";
-import { ensureInt } from "../../../global/utils";
-import { GET_PLANS } from "../../../data/hooks/useGetAllPlans";
+import { ensureInt } from "@/global/utils";
+import { GET_PLANS } from "@/data/hooks/useGetAllPlans";
 
 const axios = BaseAxios.create({
     baseURL: `${API_BASE_URL}/api/tasks`,

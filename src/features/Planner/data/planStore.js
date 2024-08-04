@@ -1,17 +1,17 @@
-import Dispatcher from "data/dispatcher";
-import PantryItemActions from "data/PantryItemActions";
-import ShoppingActions from "data/ShoppingActions";
+import Dispatcher from "@/data/dispatcher";
+import PantryItemActions from "@/data/PantryItemActions";
+import ShoppingActions from "@/data/ShoppingActions";
 import dotProp from "dot-prop-immutable";
-import PlanActions from "features/Planner/data/PlanActions";
-import TaskApi from "features/Planner/data/TaskApi";
+import PlanActions from "@/features/Planner/data/PlanActions";
+import TaskApi from "@/features/Planner/data/TaskApi";
 import { ReduceStore } from "flux/utils";
-import { removeAtIndex } from "util/arrayAsSet";
-import ClientId from "util/ClientId";
-import { bucketComparator } from "util/comparators";
-import LoadObject from "util/LoadObject";
-import LoadObjectState from "util/LoadObjectState";
+import { removeAtIndex } from "@/util/arrayAsSet";
+import ClientId from "@/util/ClientId";
+import { bucketComparator } from "@/util/comparators";
+import LoadObject from "@/util/LoadObject";
+import LoadObjectState from "@/util/LoadObjectState";
 import PlanApi from "./PlanApi";
-import { mapData, ripLoadObject } from "../../../util/ripLoadObject";
+import { mapData, ripLoadObject } from "@/util/ripLoadObject";
 import {
     addTask,
     addTaskAndFlush,
@@ -58,7 +58,7 @@ import {
     toggleExpanded,
     unnestTask,
 } from "./utils";
-import history from "../../../util/history";
+import history from "@/util/history";
 
 /*
  * This store is way too muddled. But leaving it that way for the moment, to

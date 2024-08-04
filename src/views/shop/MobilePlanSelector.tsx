@@ -1,11 +1,11 @@
-import useAllPlansRLO from "../../data/useAllPlansRLO";
+import useAllPlansRLO from "@/data/useAllPlansRLO";
 import { Box, Collapse, List, ListSubheader } from "@mui/material";
 import * as React from "react";
-import { NavShopItem } from "../../features/Navigation/components/NavShopItem";
-import { colorHash } from "../../constants/colors";
+import { NavShopItem } from "@/features/Navigation/components/NavShopItem";
+import { colorHash } from "@/constants/colors";
 import Divider from "@mui/material/Divider";
-import useFriendRlo from "../../data/useFriendRlo";
-import { BfsId } from "../../global/types/identity";
+import useFriendRlo from "@/data/useFriendRlo";
+import { BfsId } from "@/global/types/identity";
 
 function OwnerSubheader({ id }: { id: BfsId }) {
     const { data: user } = useFriendRlo(id);

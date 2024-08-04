@@ -1,9 +1,9 @@
 import { makeStyles } from "@mui/styles";
-import { AddPhotoIcon, NoPhotoIcon } from "views/common/icons";
+import { AddPhotoIcon, NoPhotoIcon } from "@/views/common/icons";
 import clsx from "clsx";
 import * as React from "react";
 import { DragEvent } from "react";
-import ImageOrPreview from "../views/common/ImageOrPreview";
+import ImageOrPreview from "@/views/common/ImageOrPreview";
 import buildSequence from "./buildSequence";
 
 const { next } = buildSequence();

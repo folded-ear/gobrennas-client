@@ -1,4 +1,4 @@
-import { MAX_UPLOAD_BYTES } from "../constants";
+import { MAX_UPLOAD_BYTES } from "@/constants";
 
 function get2dContextFromCanvas(canvas: HTMLCanvasElement) {
     const ctx = canvas.getContext("2d");
