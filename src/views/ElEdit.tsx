@@ -1,4 +1,4 @@
-import { Grid, InputAdornment, LinearProgress, TextField } from "@mui/material";
+import { Grid, InputAdornment, TextField } from "@mui/material";
 import { ErrorIcon, OkIcon } from "./common/icons";
 import React, { PropsWithChildren } from "react";
 import ItemApi, { RecognitionResult } from "data/ItemApi";
@@ -7,6 +7,7 @@ import processRecognizedItem from "util/processRecognizedItem";
 import type { IngredientRef } from "global/types/types";
 import { BfsId } from "global/types/identity";
 import Autocomplete from "@mui/lab/Autocomplete";
+import LoadingIconButton from "./common/LoadingIconButton";
 
 const doRecog = (raw) => raw != null && raw.trim().length >= 2;
 
@@ -288,7 +289,7 @@ class ElEdit extends React.PureComponent<ElEditProps, ElEditState> {
                     {!recog || !raw ? (
                         doRecog(raw) ? (
                             <Hunk>
-                                <LinearProgress />
+                                <LoadingIconButton />
                             </Hunk>
                         ) : null
                     ) : (
