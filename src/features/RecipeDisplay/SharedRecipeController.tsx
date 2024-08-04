@@ -1,7 +1,7 @@
 import BaseAxios from "axios";
 import React from "react";
 import { match, Redirect } from "react-router-dom";
-import { API_BASE_URL } from "@/constants/index";
+import { API_BASE_URL } from "@/constants";
 import Dispatcher from "@/data/dispatcher";
 import LoadingIndicator from "@/views/common/LoadingIndicator";
 import RecipeDetail from "@/features/RecipeDisplay/components/RecipeDetail";

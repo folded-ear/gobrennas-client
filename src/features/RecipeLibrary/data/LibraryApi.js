@@ -1,5 +1,5 @@
 import BaseAxios from "axios";
-import { API_BASE_URL } from "@/constants/index";
+import { API_BASE_URL } from "@/constants";
 import queryClient from "@/data/queryClient";
 import LibraryActions from "@/features/RecipeLibrary/data/LibraryActions";
 import promiseFlux, { soakUpUnauthorized } from "@/util/promiseFlux";

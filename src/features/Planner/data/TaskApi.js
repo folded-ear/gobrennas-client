@@ -1,6 +1,6 @@
 import BaseAxios from "axios";
 import { client } from "@/providers/ApolloClient";
-import { API_BASE_URL } from "@/constants/index";
+import { API_BASE_URL } from "@/constants";
 import PlanActions from "@/features/Planner/data/PlanActions";
 import promiseFlux, { soakUpUnauthorized } from "@/util/promiseFlux";
 import serializeObjectOfPromiseFns from "@/util/serializeObjectOfPromiseFns";

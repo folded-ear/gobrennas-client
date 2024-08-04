@@ -1,5 +1,5 @@
 import BaseAxios from "axios";
-import { API_BASE_URL } from "@/constants/index";
+import { API_BASE_URL } from "@/constants";
 import promiseFlux from "@/util/promiseFlux";
 import PlanActions from "./PlanActions";
 import { client } from "@/providers/ApolloClient";

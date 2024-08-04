@@ -9,11 +9,11 @@ type LogoProps = {
     onClick: () => void;
 };
 
-const LogoText = styled("div")(({ theme }) => ({
+const LogoText = styled("div")({
     whiteSpace: "nowrap",
     fontSize: "120%",
     position: "relative",
-}));
+});
 
 const B = styled("span")(({ theme }) => ({
     transform: "scaleX(-1)",

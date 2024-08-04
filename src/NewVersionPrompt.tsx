@@ -1,8 +1,6 @@
 import { useRegisterSW } from "virtual:pwa-register/react";
 import Banner from "@/views/common/Banner";
 import Button from "@mui/material/Button";
-import Dispatcher from "@/data/dispatcher";
-import WindowActions from "@/data/WindowActions";
 import React from "react";
 
 function NewVersionPrompt() {
