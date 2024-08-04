@@ -19,23 +19,32 @@ declare module "@mui/material/styles" {
     }
 }
 
+declare module "@mui/material/AppBar" {
+    interface AppBarPropsColorOverrides {
+        neutral: true;
+    }
+}
+
 declare module "@mui/material/Button" {
     interface ButtonPropsColorOverrides {
         neutral: true;
     }
 }
+
 declare module "@mui/material/ButtonGroup" {
     interface ButtonGroupPropsColorOverrides {
         neutral: true;
     }
 }
-declare module "@mui/material/IconButton" {
-    interface IconButtonPropsColorOverrides {
+
+declare module "@mui/material/Chip" {
+    interface ChipPropsColorOverrides {
         neutral: true;
     }
 }
-declare module "@mui/material/AppBar" {
-    interface AppBarPropsColorOverrides {
+
+declare module "@mui/material/IconButton" {
+    interface IconButtonPropsColorOverrides {
         neutral: true;
     }
 }
