@@ -86,19 +86,3 @@ document.addEventListener("visibilitychange", () =>
         visible: !document.hidden,
     }),
 );
-
-// Learn more about service workers: https://bit.ly/CRA-PWA
-serviceWorkerRegistration.register({
-    // called when the cache is populated (i.e., offline will work)
-    onSuccess: (registration) =>
-        Dispatcher.dispatch({
-            type: WindowActions.PWA_CACHE_HOT,
-            registration,
-        }),
-    // called when there is a new version of the app available
-    onUpdate: (registration) =>
-        Dispatcher.dispatch({
-            type: WindowActions.NEW_VERSION_AVAILABLE,
-            registration,
-        }),
-});
