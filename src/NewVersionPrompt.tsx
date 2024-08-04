@@ -30,8 +30,6 @@ function NewVersionPrompt() {
         setNeedRefresh(false);
     }
 
-    console.log(needRefresh);
-
     return needRefresh ? (
         <Banner severity="info">
             Brenna&apos;s Food Software has updated!{" "}
