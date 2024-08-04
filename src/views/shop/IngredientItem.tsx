@@ -15,7 +15,7 @@ import withItemStyles from "@/features/Planner/components/withItemStyles";
 import { BaseItemProp, ItemProps, TupleProps } from "./types";
 import { ShopItemType } from "@/views/shop/ShopList";
 import ListItemIcon from "@mui/material/ListItemIcon";
-import { UnknownLocation } from "@/common/icons";
+import { UnknownLocation } from "@/views/common/icons";
 
 type IngredientItemProps = TupleProps & {
     item: ItemProps &

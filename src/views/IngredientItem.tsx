@@ -10,7 +10,7 @@ import SendToPlan from "@/features/RecipeLibrary/components/SendToPlan";
 import type { IngredientRef } from "@/global/types/types";
 import type { BfsId } from "@/global/types/identity";
 import { useScale } from "@/util/ScalingContext";
-import { LinkIcon } from "./common/icons";
+import { LinkIcon } from "@/views/common/icons";
 
 const useStyles = makeStyles(() => ({
     quantity: {
