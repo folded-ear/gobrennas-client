@@ -104,6 +104,7 @@
     "sass": "^1.57.1",
     "typescript": "^4.9.5",
     "typescript-eslint": "^7.16.1",
+    "vite-plugin-html-injection": "^1.4.2",
     "vite-plugin-pwa": "^0.20.0",
     "vitest": "^2.0.3"
   },

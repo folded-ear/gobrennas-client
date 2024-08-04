@@ -2,6 +2,7 @@ import { defineConfig } from "vitest/config";
 import react from "@vitejs/plugin-react-swc";
 import path from "path";
 import { VitePWA } from "vite-plugin-pwa";
+import { htmlInjectionPlugin } from "vite-plugin-html-injection";
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -112,6 +113,24 @@ export default defineConfig({
                 suppressWarnings: true,
                 type: "module",
             },
+        }),
+        htmlInjectionPlugin({
+            injections: [
+                {
+                    name: "meta prod",
+                    path: "./src/snippets/meta.html",
+                    type: "raw",
+                    injectTo: "head",
+                    buildModes: "prod",
+                },
+                {
+                    name: "meta dev",
+                    path: "./src/snippets/meta_dev.html",
+                    type: "raw",
+                    injectTo: "head",
+                    buildModes: "dev",
+                },
+            ],
         }),
     ],
     test: {
