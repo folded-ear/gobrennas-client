@@ -15,11 +15,9 @@ import WindowActions from "@/data/WindowActions";
 import debounce from "@/util/debounce";
 import history from "@/util/history";
 
-// TODO: benchmarking and load and build times
-
-if (import.meta.env.NODE_ENV === "development") {
-    Dispatcher.register(require("./util/logAction").default);
-}
+// if (!import.meta.env.PROD) {
+//     Dispatcher.register(require("./util/logAction").default);
+// }
 
 ReactDOM.render(
     [
