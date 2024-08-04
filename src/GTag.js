@@ -15,4 +15,4 @@ const GTag = (cmd, ...rest) => {
     }
 };
 
-export default process.env.NODE_ENV === "production" ? window.gtag : GTag;
+export default import.meta.env.NODE_ENV === "production" ? window.gtag : GTag;

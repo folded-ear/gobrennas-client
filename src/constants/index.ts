@@ -1,7 +1,7 @@
 export const APP_BASE_URL = window.location.origin;
 export const IS_BETA = APP_BASE_URL.includes("beta");
 export const API_BASE_URL =
-    process.env.NODE_ENV === "development"
+    import.meta.env.NODE_ENV === "development"
         ? "http://localhost:8080"
         : IS_BETA
         ? "https://beta.api.gobrennas.com"
