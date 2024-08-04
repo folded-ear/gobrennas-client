@@ -155,7 +155,7 @@ const RecipeCard: React.FC<Props> = ({ recipe, mine, indicateMine, me }) => {
                         />
                     )}
                     {recipe.calories && (
-                        <RecipeInfo label="Calories" text={recipe.calories} />
+                        <RecipeInfo label="Cal." text={recipe.calories} />
                     )}
 
                     {labelsToDisplay && (

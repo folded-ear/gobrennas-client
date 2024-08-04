@@ -134,7 +134,7 @@ const RecipeDetail: React.FC<Props> = ({
                         />
                     )}
                 </Grid>
-                <Grid item xs={5}>
+                <Grid item xs={7}>
                     {recipe.externalUrl && (
                         <RecipeInfo
                             label="Source"
@@ -155,7 +155,7 @@ const RecipeDetail: React.FC<Props> = ({
                     )}
                     {recipe.calories && (
                         <RecipeInfo
-                            label="Calories"
+                            label="Cal."
                             text={`${recipe.calories} per serving`}
                         />
                     )}
