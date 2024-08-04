@@ -7,6 +7,7 @@ import processRecognizedItem from "@/util/processRecognizedItem";
 import type { IngredientRef } from "@/global/types/types";
 import { BfsId } from "@/global/types/identity";
 import Autocomplete from "@mui/lab/Autocomplete";
+import LoadingIconButton from "./common/LoadingIconButton";
 
 const doRecog = (raw) => raw != null && raw.trim().length >= 2;
 
