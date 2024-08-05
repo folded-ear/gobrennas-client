@@ -1,12 +1,12 @@
-import { gql } from "../../__generated__";
+import { gql } from "@/__generated__";
 import { MutationResult, useMutation } from "@apollo/client";
 import { useCallback } from "react";
 import {
     DeleteRecipeMutation,
     GetSearchLibraryDocument,
-} from "../../__generated__/graphql";
-import throwAnyGraphQLErrors from "../../util/throwAnyGraphQLErrors";
-import { BfsId } from "../../global/types/identity";
+} from "@/__generated__/graphql";
+import throwAnyGraphQLErrors from "@/util/throwAnyGraphQLErrors";
+import { BfsId } from "@/global/types/identity";
 
 const DELETE_RECIPE = gql(`
 mutation deleteRecipe($id: ID!) {

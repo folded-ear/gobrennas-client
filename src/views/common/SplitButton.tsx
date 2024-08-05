@@ -6,9 +6,9 @@ import MenuItem from "@mui/material/MenuItem";
 import MenuList from "@mui/material/MenuList";
 import Popper from "@mui/material/Popper";
 import { makeStyles } from "@mui/styles";
-import { DropDownIcon } from "views/common/icons";
+import { DropDownIcon } from "@/views/common/icons";
 import React, { MouseEventHandler, ReactNode } from "react";
-import { BfsId } from "global/types/identity";
+import { BfsId } from "@/global/types/identity";
 import { Paper } from "@mui/material";
 
 const useStyles = makeStyles({

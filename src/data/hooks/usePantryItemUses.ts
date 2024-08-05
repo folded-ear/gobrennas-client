@@ -1,11 +1,11 @@
-import { gql } from "__generated__";
-import { UseQueryResult } from "data/types";
+import { gql } from "@/__generated__";
+import { UseQueryResult } from "@/data/types";
 import {
     IngredientRef,
     PantryItemUsesQuery,
     Recipe,
     User,
-} from "../../__generated__/graphql";
+} from "@/__generated__/graphql";
 import useAdaptingQuery from "./useAdaptingQuery";
 
 const PANTRY_ITEMS_USES = gql(`

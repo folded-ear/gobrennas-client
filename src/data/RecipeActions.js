@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import typedAction from "util/typedAction";
+import typedAction from "@/util/typedAction";
 
 const sendToPlanShape = {
     recipeId: PropTypes.number.isRequired,

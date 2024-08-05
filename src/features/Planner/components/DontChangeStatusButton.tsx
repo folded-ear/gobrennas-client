@@ -1,11 +1,11 @@
 import React from "react";
-import Dispatcher from "data/dispatcher";
-import PlanActions from "features/Planner/data/PlanActions";
+import Dispatcher from "@/data/dispatcher";
+import PlanActions from "@/features/Planner/data/PlanActions";
 import PlanItemStatus, {
     getColorForStatus,
-} from "features/Planner/data/PlanItemStatus";
-import { coloredButton } from "views/common/colors";
-import { BfsId } from "global/types/identity";
+} from "@/features/Planner/data/PlanItemStatus";
+import { coloredButton } from "@/views/common/colors";
+import { BfsId } from "@/global/types/identity";
 import { ButtonProps } from "@mui/material";
 
 const buttonLookup = {}; // Map<next, Button>

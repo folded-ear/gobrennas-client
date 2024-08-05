@@ -1,21 +1,21 @@
 import { ListItemText } from "@mui/material";
 import classnames from "classnames";
 import React from "react";
-import Dispatcher from "../../data/dispatcher";
-import ShoppingActions from "../../data/ShoppingActions";
-import PlanItemStatus from "features/Planner/data/PlanItemStatus";
+import Dispatcher from "@/data/dispatcher";
+import ShoppingActions from "@/data/ShoppingActions";
+import PlanItemStatus from "@/features/Planner/data/PlanItemStatus";
 import LoadingIconButton from "../common/LoadingIconButton";
 import OxfordList from "../common/OxfordList";
 import Quantity from "../common/Quantity";
-import CollapseIconButton from "global/components/CollapseIconButton";
-import DontChangeStatusButton from "features/Planner/components/DontChangeStatusButton";
-import Item from "features/Planner/components/Item";
-import StatusIconButton from "features/Planner/components/StatusIconButton";
-import withItemStyles from "features/Planner/components/withItemStyles";
+import CollapseIconButton from "@/global/components/CollapseIconButton";
+import DontChangeStatusButton from "@/features/Planner/components/DontChangeStatusButton";
+import Item from "@/features/Planner/components/Item";
+import StatusIconButton from "@/features/Planner/components/StatusIconButton";
+import withItemStyles from "@/features/Planner/components/withItemStyles";
 import { BaseItemProp, ItemProps, TupleProps } from "./types";
-import { ShopItemType } from "views/shop/ShopList";
+import { ShopItemType } from "@/views/shop/ShopList";
 import ListItemIcon from "@mui/material/ListItemIcon";
-import { UnknownLocation } from "../common/icons";
+import { UnknownLocation } from "@/views/common/icons";
 
 type IngredientItemProps = TupleProps & {
     item: ItemProps &

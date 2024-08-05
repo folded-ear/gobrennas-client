@@ -7,10 +7,10 @@ import {
     Tooltip,
     Typography,
 } from "@mui/material";
-import Dispatcher from "data/dispatcher";
-import PlanSidebar from "features/Planner/components/PlanSidebar";
-import UserById from "features/Planner/components/UserById";
-import PlanActions from "features/Planner/data/PlanActions";
+import Dispatcher from "@/data/dispatcher";
+import PlanSidebar from "@/features/Planner/components/PlanSidebar";
+import UserById from "@/features/Planner/components/UserById";
+import PlanActions from "@/features/Planner/data/PlanActions";
 import React, { useState } from "react";
 import {
     AddIcon,
@@ -18,15 +18,15 @@ import {
     EditIcon,
     ExpandAll,
     SortByBucketIcon,
-} from "views/common/icons";
-import SplitButton, { SelectOption } from "views/common/SplitButton";
+} from "@/views/common/icons";
+import SplitButton, { SelectOption } from "@/views/common/SplitButton";
 import AddToCalendar from "./AddToCalendar";
-import CollapseIconButton from "../../../global/components/CollapseIconButton";
-import { useIsMobile } from "../../../providers/IsMobile";
-import MobilePlanSelector from "../../../views/shop/MobilePlanSelector";
+import CollapseIconButton from "@/global/components/CollapseIconButton";
+import { useIsMobile } from "@/providers/IsMobile";
+import MobilePlanSelector from "@/views/shop/MobilePlanSelector";
 import { NavPlanItem } from "../../Navigation/components/NavPlanItem";
 import { selectPlan } from "../../Navigation/NavigationController";
-import { Plan } from "features/Planner/types";
+import { Plan } from "@/features/Planner/types";
 
 const isValidName = (name) => name != null && name.trim().length > 0;
 

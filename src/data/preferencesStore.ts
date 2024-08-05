@@ -1,13 +1,13 @@
-import PlanActions from "features/Planner/data/PlanActions";
-import planStore from "features/Planner/data/planStore";
+import PlanActions from "@/features/Planner/data/PlanActions";
+import planStore from "@/features/Planner/data/planStore";
 import { ReduceStore } from "flux/utils";
 import { Map } from "immutable";
-import { getJsonItem, setJsonItem } from "util/storage";
+import { getJsonItem, setJsonItem } from "@/util/storage";
 // noinspection ES6PreferShortImport
-import { LOCAL_STORAGE_PREFERENCES } from "../constants/index";
+import { LOCAL_STORAGE_PREFERENCES } from "@/constants/index";
 import Dispatcher from "./dispatcher";
 import UserActions from "./UserActions";
-import { FluxAction } from "global/types/types";
+import { FluxAction } from "@/global/types/types";
 import ShoppingActions from "./ShoppingActions";
 import shoppingStore from "./shoppingStore";
 

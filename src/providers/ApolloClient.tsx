@@ -9,7 +9,7 @@ import { onError } from "@apollo/client/link/error";
 import { relayStylePagination } from "@apollo/client/utilities";
 import * as React from "react";
 import { PropsWithChildren } from "react";
-import { API_BASE_URL } from "../constants";
+import { API_BASE_URL } from "@/constants";
 import { askUserToReauth, isAuthError } from "./Profile";
 import createUploadLink from "apollo-upload-client/createUploadLink.mjs";
 

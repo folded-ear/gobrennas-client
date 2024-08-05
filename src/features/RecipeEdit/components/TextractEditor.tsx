@@ -4,12 +4,12 @@ import {
     CloseIcon,
     RotateClockwiseIcon,
     RotateCounterClockwiseIcon,
-} from "views/common/icons";
+} from "@/views/common/icons";
 import React, { MouseEventHandler, ReactNode } from "react";
-import useFluxStore from "data/useFluxStore";
-import WindowStore from "data/WindowStore";
-import { findSvg } from "util/findAncestorByName";
-import getPositionWithin from "util/getPositionWithin";
+import useFluxStore from "@/data/useFluxStore";
+import WindowStore from "@/data/WindowStore";
+import { findSvg } from "@/util/findAncestorByName";
+import getPositionWithin from "@/util/getPositionWithin";
 
 const useStyles = makeStyles({
     rotateRight: {

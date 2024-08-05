@@ -8,15 +8,15 @@ import {
 import IconButton from "@mui/material/IconButton";
 import TableCell from "@mui/material/TableCell";
 import Tooltip from "@mui/material/Tooltip";
-import { AddIcon, DeleteIcon } from "views/common/icons";
+import { AddIcon, DeleteIcon } from "@/views/common/icons";
 import React from "react";
-import dispatcher from "data/dispatcher";
-import PlanActions from "features/Planner/data/PlanActions";
-import planStore from "features/Planner/data/planStore";
-import useFluxStore from "data/useFluxStore";
-import { formatLocalDate, parseLocalDate } from "util/time";
-import LocalTextField from "views/common/LocalTextField";
-import getBucketLabel from "features/Planner/components/getBucketLabel";
+import dispatcher from "@/data/dispatcher";
+import PlanActions from "@/features/Planner/data/PlanActions";
+import planStore from "@/features/Planner/data/planStore";
+import useFluxStore from "@/data/useFluxStore";
+import { formatLocalDate, parseLocalDate } from "@/util/time";
+import LocalTextField from "@/views/common/LocalTextField";
+import getBucketLabel from "@/features/Planner/components/getBucketLabel";
 import ResetBucketsButton from "./ResetBucketsButton";
 
 const BucketManager = () => {

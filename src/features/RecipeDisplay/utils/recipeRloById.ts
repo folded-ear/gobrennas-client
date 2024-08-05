@@ -1,6 +1,6 @@
-import LibraryStore from "features/RecipeLibrary/data/LibraryStore";
-import type { Recipe } from "global/types/types";
-import { RippedLO } from "../../../util/ripLoadObject";
+import LibraryStore from "@/features/RecipeLibrary/data/LibraryStore";
+import type { Recipe } from "@/global/types/types";
+import { RippedLO } from "@/util/ripLoadObject";
 
 export function recipeRloById(id): RippedLO<Recipe & { subrecipes: Recipe[] }> {
     const rlo = LibraryStore.getRecipeRloById(id);

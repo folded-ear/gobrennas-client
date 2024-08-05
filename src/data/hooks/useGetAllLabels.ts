@@ -1,5 +1,5 @@
 import { useQuery } from "@apollo/client";
-import { gql } from "__generated__";
+import { gql } from "@/__generated__";
 
 const LIST_ALL_LABELS_QUERY = gql(`
   query listAllLabels {

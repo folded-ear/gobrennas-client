@@ -6,7 +6,7 @@ import {
     neededColor,
     questionColor,
     selectionColor,
-} from "views/common/colors";
+} from "@/views/common/colors";
 import { darken, lighten } from "@mui/material";
 
 const withItemStyles = withStyles((theme) => ({

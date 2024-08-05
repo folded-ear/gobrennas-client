@@ -1,17 +1,17 @@
 import React from "react";
 import { RouteComponentProps } from "react-router";
-import { ScalingProvider } from "util/ScalingContext";
-import LoadingIndicator from "views/common/LoadingIndicator";
+import { ScalingProvider } from "@/util/ScalingContext";
+import LoadingIndicator from "@/views/common/LoadingIndicator";
 import RecipeDetail from "./components/RecipeDetail";
-import { useGetFullRecipe } from "data/hooks/useGetFullRecipe";
-import CopyButton from "../../views/common/CopyButton";
-import history from "../../util/history";
+import { useGetFullRecipe } from "@/data/hooks/useGetFullRecipe";
+import CopyButton from "@/views/common/CopyButton";
+import history from "@/util/history";
 import ShareRecipe from "./components/ShareRecipe";
-import CloseButton from "../../views/common/CloseButton";
-import EditButton from "../../views/common/EditButton";
-import DeleteButton from "../../views/common/DeleteButton";
-import NotFound from "../../views/common/NotFound";
-import { useDeleteRecipe } from "../../data/hooks/useDeleteRecipe";
+import CloseButton from "@/views/common/CloseButton";
+import EditButton from "@/views/common/EditButton";
+import DeleteButton from "@/views/common/DeleteButton";
+import NotFound from "@/views/common/NotFound";
+import { useDeleteRecipe } from "@/data/hooks/useDeleteRecipe";
 
 type Props = RouteComponentProps<{
     id: string;

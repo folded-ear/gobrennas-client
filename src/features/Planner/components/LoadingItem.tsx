@@ -1,6 +1,6 @@
 import ListItemText from "@mui/material/ListItemText";
 import React from "react";
-import LoadingIconButton from "views/common/LoadingIconButton";
+import LoadingIconButton from "@/views/common/LoadingIconButton";
 import Item from "./Item";
 import { grey } from "@mui/material/colors";
 

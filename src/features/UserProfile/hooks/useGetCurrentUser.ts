@@ -1,4 +1,4 @@
-import { GetCurrentUserQuery } from "../data/queries";
+import { GetCurrentUserQuery } from "@/features/UserProfile/data/queries";
 import { useQuery } from "@apollo/client";
 
 export const useGetCurrentUser = () => {

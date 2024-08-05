@@ -29,7 +29,7 @@ const ImageOrPreview: React.FC<Props> = ({ src, ...props }) => {
         }
     }, [src]);
     // noinspection HtmlRequiredAltAttribute
-    return <img src={srcUrl} {...props} />; // eslint-disable-line jsx-a11y/alt-text
+    return <img src={srcUrl} {...props} />;
 };
 
 export default ImageOrPreview;

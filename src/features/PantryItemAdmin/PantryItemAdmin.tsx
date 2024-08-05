@@ -10,16 +10,16 @@ import {
     Result,
     usePantryItemSearch,
     Variables,
-} from "../../data/hooks/usePantryItemSearch";
-import { SortDir } from "../../__generated__/graphql";
+} from "@/data/hooks/usePantryItemSearch";
+import { SortDir } from "@/__generated__/graphql";
 import AdminGrid from "./components/AdminGrid";
-import { useRenamePantryItem } from "../../data/hooks/useRenamePantryItem";
-import { useCombinePantryItems } from "../../data/hooks/useCombinePantryItems";
-import { useDeletePantryItem } from "../../data/hooks/useDeletePantryItem";
+import { useRenamePantryItem } from "@/data/hooks/useRenamePantryItem";
+import { useCombinePantryItems } from "@/data/hooks/useCombinePantryItems";
+import { useDeletePantryItem } from "@/data/hooks/useDeletePantryItem";
 import ConfirmDialog, { DialogProps } from "./components/ConfirmDialog";
 import ViewUses from "./components/ViewUses";
-import { useSetPantryItemLabels } from "../../data/hooks/useSetPantryItemLabels";
-import { useSetPantryItemSynonyms } from "../../data/hooks/useSetPantryItemSynonyms";
+import { useSetPantryItemLabels } from "@/data/hooks/useSetPantryItemLabels";
+import { useSetPantryItemSynonyms } from "@/data/hooks/useSetPantryItemSynonyms";
 
 const DUPLICATE_PREFIX = "duplicates:";
 

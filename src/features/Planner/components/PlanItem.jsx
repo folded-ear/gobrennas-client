@@ -1,28 +1,28 @@
 import { ListItemText } from "@mui/material";
 import Input from "@mui/material/Input";
 import classnames from "classnames";
-import Dispatcher from "data/dispatcher";
-import CookButton from "features/Planner/components/CookButton";
-import DontChangeStatusButton from "features/Planner/components/DontChangeStatusButton";
-import Item from "features/Planner/components/Item";
-import PlanItemBucketChip from "features/Planner/components/PlanItemBucketChip";
-import StatusIconButton from "features/Planner/components/StatusIconButton";
-import withItemStyles from "features/Planner/components/withItemStyles";
-import PlanActions from "features/Planner/data/PlanActions";
-import PlanItemStatus from "features/Planner/data/PlanItemStatus";
+import Dispatcher from "@/data/dispatcher";
+import CookButton from "@/features/Planner/components/CookButton";
+import DontChangeStatusButton from "@/features/Planner/components/DontChangeStatusButton";
+import Item from "@/features/Planner/components/Item";
+import PlanItemBucketChip from "@/features/Planner/components/PlanItemBucketChip";
+import StatusIconButton from "@/features/Planner/components/StatusIconButton";
+import withItemStyles from "@/features/Planner/components/withItemStyles";
+import PlanActions from "@/features/Planner/data/PlanActions";
+import PlanItemStatus from "@/features/Planner/data/PlanItemStatus";
 import {
     isExpanded,
     isParent,
     isQuestionable,
     isSection,
-} from "features/Planner/data/plannerUtils";
-import planStore from "features/Planner/data/planStore";
-import CollapseIconButton from "global/components/CollapseIconButton";
+} from "@/features/Planner/data/plannerUtils";
+import planStore from "@/features/Planner/data/planStore";
+import CollapseIconButton from "@/global/components/CollapseIconButton";
 import PropTypes from "prop-types";
 import React from "react";
-import LoadingIconButton from "views/common/LoadingIconButton";
-import PlaceholderIconButton from "views/common/PlaceholderIconButton";
-import IngredientItem from "views/IngredientItem";
+import LoadingIconButton from "@/views/common/LoadingIconButton";
+import PlaceholderIconButton from "@/views/common/PlaceholderIconButton";
+import IngredientItem from "@/views/IngredientItem";
 
 class PlanItem extends React.PureComponent {
     constructor(props) {

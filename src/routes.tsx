@@ -1,6 +1,6 @@
 import React from "react";
 import { Redirect } from "react-router-dom";
-import { PlannerController as Planner } from "features/Planner/PlannerController";
+import { PlannerController as Planner } from "@/features/Planner/PlannerController";
 import PlannedBucketController from "./features/RecipeDisplay/PlannedBucketController";
 import PlannedRecipeController from "./features/RecipeDisplay/PlannedRecipeController";
 import Recipe from "./features/RecipeDisplay/RecipeController";
@@ -8,12 +8,12 @@ import RecipeEditController from "./features/RecipeEdit/RecipeEditController";
 import Shop from "./containers/Shop";
 import { SharedRecipeController } from "./features/RecipeDisplay/SharedRecipeController";
 import Landing from "./views/Landing";
-import OAuth2RedirectHandler from "views/user/OAuth2RedirectHandler";
-import { UserProfileView } from "views/UserProfile/UserProfileView";
+import OAuth2RedirectHandler from "@/views/user/OAuth2RedirectHandler";
+import { UserProfileView } from "@/views/UserProfile/UserProfileView";
 import Profile from "./views/user/Profile";
-import Foodinger from "views/Foodinger";
+import Foodinger from "@/views/Foodinger";
 import { RecipeAddController } from "./features/RecipeEdit/RecipeAddController";
-import { Library } from "views/Library";
+import { Library } from "@/views/Library";
 import PantryItemAdmin from "./features/PantryItemAdmin/PantryItemAdmin";
 
 const routes = {

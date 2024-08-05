@@ -1,8 +1,8 @@
 import { IconButton, Tooltip } from "@mui/material";
-import { CookIcon } from "views/common/icons";
+import { CookIcon } from "@/views/common/icons";
 import React from "react";
-import history from "util/history";
-import { BfsId } from "global/types/identity";
+import history from "@/util/history";
+import { BfsId } from "@/global/types/identity";
 
 interface Props {
     planId: BfsId;

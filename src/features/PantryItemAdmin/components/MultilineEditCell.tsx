@@ -1,5 +1,5 @@
 import { GridRenderEditCellParams, useGridApiContext } from "@mui/x-data-grid";
-import { Result } from "../../../data/hooks/usePantryItemSearch";
+import { Result } from "@/data/hooks/usePantryItemSearch";
 import * as React from "react";
 import { ChangeEvent, useCallback } from "react";
 import Input from "@mui/material/Input";

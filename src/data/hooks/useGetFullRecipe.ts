@@ -4,15 +4,15 @@ import {
     IngredientRef,
     Recipe,
     Subrecipe,
-} from "global/types/types";
-import { useProfileId } from "providers/Profile";
-import { UseQueryResult } from "data/types";
-import { gql } from "__generated__";
-import { GetRecipeWithEverythingQuery } from "../../__generated__/graphql";
+} from "@/global/types/types";
+import { useProfileId } from "@/providers/Profile";
+import { UseQueryResult } from "@/data/types";
+import { gql } from "@/__generated__";
+import { GetRecipeWithEverythingQuery } from "@/__generated__/graphql";
 import useAdaptingQuery from "./useAdaptingQuery";
 import { ApolloQueryResult, QueryResult } from "@apollo/client";
-import { BfsId } from "../../global/types/identity";
-import objectWithType from "../utils/objectWithType";
+import { BfsId } from "@/global/types/identity";
+import objectWithType from "@/data/utils/objectWithType";
 
 const GET_FULL_RECIPE_QUERY = gql(`
 query getRecipeWithEverything($id: ID!) {

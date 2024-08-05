@@ -1,5 +1,5 @@
 // This is "duplicated" as RawIngredientDissection.fromRecognizedItem
-import { RecognitionRangeType, RecognitionResult } from "../data/ItemApi";
+import { RecognitionRangeType, RecognitionResult } from "@/data/ItemApi";
 
 function processRecognizedItem(recog: RecognitionResult) {
     const qr = recog.ranges.find(

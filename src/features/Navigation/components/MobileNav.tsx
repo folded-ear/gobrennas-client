@@ -1,10 +1,10 @@
 import * as React from "react";
 import { BottomNavigation, Paper } from "@mui/material";
-import { LibraryIcon, PlanIcon, ShopIcon } from "views/common/icons";
+import { LibraryIcon, PlanIcon, ShopIcon } from "@/views/common/icons";
 import { styled } from "@mui/material/styles";
-import { MobileNavItem } from "features/Navigation/components/MobileNavItem";
-import { useProfile } from "../../../providers/Profile";
-import User from "../../../views/user/User";
+import { MobileNavItem } from "@/features/Navigation/components/MobileNavItem";
+import { useProfile } from "@/providers/Profile";
+import User from "@/views/user/User";
 
 const NavWrapper = styled(Paper)(({ theme }) => ({
     position: "fixed",

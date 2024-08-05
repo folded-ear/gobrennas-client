@@ -1,12 +1,12 @@
 import * as React from "react";
 import Divider from "@mui/material/Divider";
 import { useGetCurrentUser } from "./hooks/useGetCurrentUser";
-import User from "../../views/user/User";
+import User from "@/views/user/User";
 import { selectCurrentUser } from "./selectors/selectCurrentUser";
-import { useIsDeveloper } from "../../providers/Profile";
+import { useIsDeveloper } from "@/providers/Profile";
 import { Developer } from "./components/Developer";
 import { CookThis } from "./components/CookThis";
-import LoadingIndicator from "../../views/common/LoadingIndicator";
+import LoadingIndicator from "@/views/common/LoadingIndicator";
 import { Profile } from "./components/Profile";
 
 export const UserProfileController: React.FC = () => {

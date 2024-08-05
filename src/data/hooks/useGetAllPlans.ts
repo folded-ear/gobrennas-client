@@ -1,11 +1,11 @@
-import { gql } from "__generated__";
-import useAdaptingQuery from "data/hooks/useAdaptingQuery";
-import { GetPlansQuery } from "__generated__/graphql";
-import { Plan } from "features/Planner/types";
-import { useProfileId } from "providers/Profile";
-import { BfsId } from "global/types/identity";
-import { zippedComparator } from "util/comparators";
-import { ensureInt } from "global/utils";
+import { gql } from "@/__generated__";
+import useAdaptingQuery from "@/data/hooks/useAdaptingQuery";
+import { GetPlansQuery } from "@/__generated__/graphql";
+import { Plan } from "@/features/Planner/types";
+import { useProfileId } from "@/providers/Profile";
+import { BfsId } from "@/global/types/identity";
+import { zippedComparator } from "@/util/comparators";
+import { ensureInt } from "@/global/utils";
 
 export const GET_PLANS = gql(`
 query getPlans {

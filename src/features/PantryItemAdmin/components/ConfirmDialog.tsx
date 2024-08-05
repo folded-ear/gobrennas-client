@@ -37,7 +37,7 @@ export default function ConfirmDialog({
             </DialogContent>
             <DialogActions>
                 <Button onClick={handleCancel}>
-                    {!!confirmLabel ? "Cancel" : "Ok"}
+                    {confirmLabel ? "Cancel" : "Ok"}
                 </Button>
                 {!!confirmLabel && (
                     <Button

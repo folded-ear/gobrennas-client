@@ -1,9 +1,9 @@
 import Fab from "@mui/material/Fab";
 import React, { PropsWithChildren } from "react";
-import dispatcher from "../../data/dispatcher";
-import UiActions from "../../data/UiActions";
+import dispatcher from "@/data/dispatcher";
+import UiActions from "@/data/UiActions";
 import { styled } from "@mui/material/styles";
-import { useIsMobile } from "providers/IsMobile";
+import { useIsMobile } from "@/providers/IsMobile";
 
 type AddFabProps = {
     isMobile?: boolean;

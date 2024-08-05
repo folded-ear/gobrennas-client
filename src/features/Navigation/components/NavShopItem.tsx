@@ -1,8 +1,8 @@
-import { CheckboxOffIcon, CheckboxOnIcon } from "views/common/icons";
+import { CheckboxOffIcon, CheckboxOnIcon } from "@/views/common/icons";
 import * as React from "react";
-import useActiveShoppingPlanIds from "../../../data/useActiveShoppingPlanIds";
+import useActiveShoppingPlanIds from "@/data/useActiveShoppingPlanIds";
 import BasePlanNavItem, { BasePlanNavItemProps } from "./BasePlanNavItem";
-import { ensureInt } from "global/utils";
+import { ensureInt } from "@/global/utils";
 
 export const NavShopItem: React.FC<BasePlanNavItemProps> = ({
     id,

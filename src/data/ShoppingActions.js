@@ -1,5 +1,5 @@
-import PlanActions from "features/Planner/data/PlanActions";
-import typedAction from "../util/typedAction";
+import PlanActions from "@/features/Planner/data/PlanActions";
+import typedAction from "@/util/typedAction";
 import PropTypes from "prop-types";
 
 const ShoppingActions = {

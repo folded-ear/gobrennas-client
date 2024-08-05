@@ -1,10 +1,10 @@
-import throwAnyGraphQLErrors from "util/throwAnyGraphQLErrors";
-import { ensureInt } from "global/utils";
-import { BfsId } from "global/types/identity";
+import throwAnyGraphQLErrors from "@/util/throwAnyGraphQLErrors";
+import { ensureInt } from "@/global/utils";
+import { BfsId } from "@/global/types/identity";
 import type {
     CreatePlanMutation,
     RenamePlanItemMutation,
-} from "__generated__/graphql";
+} from "@/__generated__/graphql";
 
 export const handleErrors = (error) => {
     throwAnyGraphQLErrors(error);

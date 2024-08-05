@@ -1,13 +1,13 @@
-import { ClearIcon, CookIcon } from "../../../views/common/icons";
+import { ClearIcon, CookIcon } from "@/views/common/icons";
 import { Chip, ChipProps, Divider, Menu, MenuItem } from "@mui/material";
-import dispatcher from "data/dispatcher";
-import getBucketLabel from "features/Planner/components/getBucketLabel";
-import PlanActions from "features/Planner/data/PlanActions";
+import dispatcher from "@/data/dispatcher";
+import getBucketLabel from "@/features/Planner/components/getBucketLabel";
+import PlanActions from "@/features/Planner/data/PlanActions";
 import React from "react";
-import history from "util/history";
-import { humanDate } from "util/time";
+import history from "@/util/history";
+import { humanDate } from "@/util/time";
 import ListItemIcon from "@mui/material/ListItemIcon";
-import { BfsId } from "../../../global/types/identity";
+import { BfsId } from "@/global/types/identity";
 import { Maybe } from "graphql/jsutils/Maybe";
 import { PlanBucket } from "../data/planStore";
 

@@ -1,4 +1,4 @@
-import { FlexBox } from "../../../global/components/FlexBox";
+import { FlexBox } from "@/global/components/FlexBox";
 import React, { PropsWithChildren, ReactElement } from "react";
 import { CSSObject, styled } from "@mui/material/styles";
 import {
@@ -8,27 +8,27 @@ import {
     ListSubheader,
     Typography,
 } from "@mui/material";
-import useFluxStore from "../../../data/useFluxStore";
+import useFluxStore from "@/data/useFluxStore";
 import planStore, {
     Plan as TPlan,
     PlanBucket,
     PlanItem,
-} from "../../Planner/data/planStore";
+} from "@/features/Planner/data/planStore";
 import LibraryStore from "../data/LibraryStore";
-import { Recipe } from "../../../global/types/types";
-import groupBy, { mapBy } from "../../../util/groupBy";
-import PlanItemStatus from "../../Planner/data/PlanItemStatus";
-import DontChangeStatusButton from "../../Planner/components/DontChangeStatusButton";
+import { Recipe } from "@/global/types/types";
+import groupBy, { mapBy } from "@/util/groupBy";
+import PlanItemStatus from "@/features/Planner/data/PlanItemStatus";
+import DontChangeStatusButton from "@/features/Planner/components/DontChangeStatusButton";
 import { Maybe } from "graphql/jsutils/Maybe";
-import DragContainer from "../../Planner/components/DragContainer";
-import Item from "../../Planner/components/Item";
-import getBucketLabel from "../../Planner/components/getBucketLabel";
-import StatusIconButton from "../../Planner/components/StatusIconButton";
-import { assignItemToBucket } from "../../Planner/components/PlanItemBucketChip";
+import DragContainer from "@/features/Planner/components/DragContainer";
+import Item from "@/features/Planner/components/Item";
+import getBucketLabel from "@/features/Planner/components/getBucketLabel";
+import StatusIconButton from "@/features/Planner/components/StatusIconButton";
+import { assignItemToBucket } from "@/features/Planner/components/PlanItemBucketChip";
 import withStyles from "@mui/styles/withStyles";
-import { moveSubtree } from "../../Planner/components/Plan";
-import ResetBucketsButton from "../../Planner/components/ResetBucketsButton";
-import useWhileOver from "../../../util/useWhileOver";
+import { moveSubtree } from "@/features/Planner/components/Plan";
+import ResetBucketsButton from "@/features/Planner/components/ResetBucketsButton";
+import useWhileOver from "@/util/useWhileOver";
 
 type Props = PropsWithChildren<unknown>;
 

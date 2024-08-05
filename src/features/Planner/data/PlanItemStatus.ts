@@ -1,12 +1,12 @@
 import { deepPurple } from "@mui/material/colors";
-import { CheckIcon, DeleteIcon, SumthinsFuckyIcon } from "views/common/icons";
+import { CheckIcon, DeleteIcon, SumthinsFuckyIcon } from "@/views/common/icons";
 import {
     acquiredColor,
     completeColor,
     deleteColor,
     MuiColorFamily,
     neededColor,
-} from "views/common/colors";
+} from "@/views/common/colors";
 
 enum PlanItemStatus {
     NEEDED = "NEEDED",

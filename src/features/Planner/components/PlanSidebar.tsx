@@ -10,20 +10,20 @@ import {
     Typography,
 } from "@mui/material";
 import React from "react";
-import AccessLevel, { includesLevel } from "data/AccessLevel";
-import Dispatcher from "data/dispatcher";
-import FriendStore from "data/FriendStore";
-import PlanActions from "features/Planner/data/PlanActions";
-import useFluxStore from "data/useFluxStore";
-import { useProfile } from "providers/Profile";
-import DeleteButton from "views/common/DeleteButton";
-import LoadingIndicator from "views/common/LoadingIndicator";
-import PlanBucketManager from "features/Planner/components/PlanBucketManager";
-import SidebarUnit from "features/Planner/components/SidebarUnit";
-import User from "views/user/User";
-import { Plan } from "features/Planner/data/planStore";
-import { UserType } from "../../../global/types/identity";
-import { mapBy } from "../../../util/groupBy";
+import AccessLevel, { includesLevel } from "@/data/AccessLevel";
+import Dispatcher from "@/data/dispatcher";
+import FriendStore from "@/data/FriendStore";
+import PlanActions from "@/features/Planner/data/PlanActions";
+import useFluxStore from "@/data/useFluxStore";
+import { useProfile } from "@/providers/Profile";
+import DeleteButton from "@/views/common/DeleteButton";
+import LoadingIndicator from "@/views/common/LoadingIndicator";
+import PlanBucketManager from "@/features/Planner/components/PlanBucketManager";
+import SidebarUnit from "@/features/Planner/components/SidebarUnit";
+import User from "@/views/user/User";
+import { Plan } from "@/features/Planner/data/planStore";
+import { UserType } from "@/global/types/identity";
+import { mapBy } from "@/util/groupBy";
 
 const LEVEL_NO_ACCESS = "NO_ACCESS";
 

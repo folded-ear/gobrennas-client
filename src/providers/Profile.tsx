@@ -7,10 +7,10 @@ import React, {
     useEffect,
     useState,
 } from "react";
-import { API_BASE_URL, LOCAL_STORAGE_ACCESS_TOKEN } from "../constants";
+import { API_BASE_URL, LOCAL_STORAGE_ACCESS_TOKEN } from "@/constants";
 import GTag from "../GTag";
-import type { UserType } from "global/types/identity";
-import { requiredData, RippedLO } from "../util/ripLoadObject";
+import type { UserType } from "@/global/types/identity";
+import { requiredData, RippedLO } from "@/util/ripLoadObject";
 
 // global side effect to ensure cookies are passed
 BaseAxios.defaults.withCredentials = true;

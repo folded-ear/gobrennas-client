@@ -41,39 +41,6 @@ class WindowStore extends ReduceStore {
                     ...state,
                     focused: action.focused,
                 };
-            case WindowActions.NEW_VERSION_AVAILABLE:
-                return {
-                    ...state,
-                    newVersion: {
-                        available: true,
-                        waitingWorker: action.registration.waiting,
-                        ignored: false,
-                    },
-                };
-            case WindowActions.IGNORE_NEW_VERSION:
-                return {
-                    ...state,
-                    newVersion: {
-                        ...state.newVersion,
-                        ignored: true,
-                    },
-                };
-
-            case WindowActions.LAUNCH_NEW_VERSION: {
-                // this dance is based on:
-                // https://github.com/facebook/create-react-app/issues/5316#issuecomment-496292914
-                const waitingWorker = state.newVersion.waitingWorker;
-                if (waitingWorker) {
-                    waitingWorker.addEventListener("statechange", (event) => {
-                        if (event.target.state === "activated") {
-                            window.location.reload();
-                        }
-                    });
-                    waitingWorker.postMessage({ type: "SKIP_WAITING" });
-                }
-                return state;
-            }
-
             default:
                 return state;
         }

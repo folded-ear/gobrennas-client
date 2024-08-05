@@ -1,6 +1,6 @@
 import { Box, Button } from "@mui/material";
 import { makeStyles } from "@mui/styles";
-import { LibraryIcon, TextractIcon } from "views/common/icons";
+import { LibraryIcon, TextractIcon } from "@/views/common/icons";
 import React, { MouseEventHandler } from "react";
 
 const useStyles = makeStyles((theme) => ({

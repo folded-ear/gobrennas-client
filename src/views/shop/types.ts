@@ -1,4 +1,4 @@
-import type { BfsId } from "global/types/identity";
+import type { BfsId } from "@/global/types/identity";
 
 export type TupleProps = {
     active: boolean;

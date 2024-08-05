@@ -1,14 +1,14 @@
-import planStore from "features/Planner/data/planStore";
+import planStore from "@/features/Planner/data/planStore";
 import { ReduceStore } from "flux/utils";
-import { ShopItemType } from "views/shop/ShopList";
+import { ShopItemType } from "@/views/shop/ShopList";
 import Dispatcher from "./dispatcher";
 import PantryItemActions from "./PantryItemActions";
 import ShoppingActions from "./ShoppingActions";
-import { FluxAction } from "global/types/types";
-import PlanActions from "../features/Planner/data/PlanActions";
-import { removeDistinct, toggleDistinct } from "../util/arrayAsSet";
+import { FluxAction } from "@/global/types/types";
+import PlanActions from "@/features/Planner/data/PlanActions";
+import { removeDistinct, toggleDistinct } from "@/util/arrayAsSet";
 import preferencesStore from "./preferencesStore";
-import PlanApi from "../features/Planner/data/PlanApi";
+import PlanApi from "@/features/Planner/data/PlanApi";
 
 const placeFocus = (state, id, type) => ({
     ...state,

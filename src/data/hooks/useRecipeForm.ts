@@ -1,6 +1,6 @@
 import * as React from "react";
-import ClientId from "util/ClientId";
-import { DraftRecipe, FormValue, Recipe } from "global/types/types";
+import ClientId from "@/util/ClientId";
+import { DraftRecipe, FormValue, Recipe } from "@/global/types/types";
 import dotProp from "dot-prop-immutable";
 
 type UseRecipeFormReturn = {

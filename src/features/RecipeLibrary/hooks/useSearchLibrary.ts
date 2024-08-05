@@ -1,10 +1,10 @@
-import { SEARCH_RECIPES } from "features/RecipeLibrary/data/queries";
+import { SEARCH_RECIPES } from "@/features/RecipeLibrary/data/queries";
 import { QueryResult, useQuery } from "@apollo/client";
-import type { RecipeCard } from "features/RecipeLibrary/types";
+import type { RecipeCard } from "@/features/RecipeLibrary/types";
 import {
     GetSearchLibraryQuery,
     GetSearchLibraryQueryVariables,
-} from "__generated__/graphql";
+} from "@/__generated__/graphql";
 
 interface UseSearchLibraryQueryResult
     extends Pick<

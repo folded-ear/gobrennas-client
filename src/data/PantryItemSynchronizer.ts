@@ -1,5 +1,5 @@
-import LibraryApi from "features/RecipeLibrary/data/LibraryApi";
-import useSynchronizer from "util/useSynchronizer";
+import LibraryApi from "@/features/RecipeLibrary/data/LibraryApi";
+import useSynchronizer from "@/util/useSynchronizer";
 
 function PantryItemSynchronizer() {
     useSynchronizer(["pantry-items"], (ts) =>

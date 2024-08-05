@@ -1,5 +1,5 @@
-import { RecipeHistory } from "global/types/types";
-import { useProfile } from "../../../providers/Profile";
+import { RecipeHistory } from "@/global/types/types";
+import { useProfile } from "@/providers/Profile";
 import {
     Button,
     CircularProgress,
@@ -15,19 +15,15 @@ import {
     Typography,
 } from "@mui/material";
 import TableCell from "@mui/material/TableCell";
-import { PlanItemStatus } from "../../../__generated__/graphql";
-import {
-    CookedItIcon,
-    DeleteIcon,
-    EditIcon,
-} from "../../../views/common/icons";
-import User from "../../../views/user/User";
+import { PlanItemStatus } from "@/__generated__/graphql";
+import { CookedItIcon, DeleteIcon, EditIcon } from "@/views/common/icons";
+import User from "@/views/user/User";
 import React, { useCallback, useState } from "react";
-import { useSetRecipeHistoryRating } from "../../../data/hooks/useSetRecipeHistoryRating";
-import { BfsId } from "../../../global/types/identity";
+import { useSetRecipeHistoryRating } from "@/data/hooks/useSetRecipeHistoryRating";
+import { BfsId } from "@/global/types/identity";
 import { DateTime } from "luxon";
-import Markdown from "../../../views/common/Markdown";
-import { useSetRecipeHistoryNotes } from "../../../data/hooks/useSetRecipeHistoryNotes";
+import Markdown from "@/views/common/Markdown";
+import { useSetRecipeHistoryNotes } from "@/data/hooks/useSetRecipeHistoryNotes";
 
 interface NotesCellProps {
     value: string | null;

@@ -1,4 +1,4 @@
-import preferencesStore from "data/preferencesStore";
+import preferencesStore from "@/data/preferencesStore";
 import useFluxStore from "./useFluxStore";
 import Dispatcher from "./dispatcher";
 import UserActions from "./UserActions";

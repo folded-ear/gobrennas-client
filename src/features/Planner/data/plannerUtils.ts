@@ -1,4 +1,4 @@
-import { PlanItem } from "features/Planner/data/planStore";
+import { PlanItem } from "@/features/Planner/data/planStore";
 import { Maybe } from "graphql/jsutils/Maybe";
 
 function endsWith(itemOrName: Maybe<PlanItem | string>, char: string) {

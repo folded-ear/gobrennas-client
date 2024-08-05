@@ -1,7 +1,10 @@
 import SvgIcon from "@mui/material/SvgIcon";
 import React from "react";
 
+//eslint-disable-next-line no-restricted-imports
 export type { SvgIconComponent } from "@mui/icons-material";
+
+//eslint-disable-next-line no-restricted-imports
 export {
     // sorted by export name:
     // egrep ' .+ as .+Icon,$' src/views/common/icons.tsx | sort -k3

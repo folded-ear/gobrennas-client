@@ -1,6 +1,6 @@
 import PropTypes from "prop-types";
-import ClientId, { clientOrDatabaseIdType } from "util/ClientId";
-import typedAction from "util/typedAction";
+import ClientId, { clientOrDatabaseIdType } from "@/util/ClientId";
+import typedAction from "@/util/typedAction";
 
 const PlanActions = {
     // user actions (client-only)

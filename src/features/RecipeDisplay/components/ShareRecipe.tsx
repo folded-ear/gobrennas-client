@@ -1,11 +1,11 @@
 import { Box, Button, CircularProgress, TextField } from "@mui/material";
-import { ShareIcon } from "../../../views/common/icons";
+import { ShareIcon } from "@/views/common/icons";
 import BaseAxios from "axios";
 import React from "react";
-import { API_BASE_URL, APP_BASE_URL } from "constants/index";
-import type { Recipe, SharedRecipe } from "global/types/types";
-import { RippedLO } from "util/ripLoadObject";
-import ModalButton from "../../../views/ModalButton";
+import { API_BASE_URL, APP_BASE_URL } from "@/constants";
+import type { Recipe, SharedRecipe } from "@/global/types/types";
+import { RippedLO } from "@/util/ripLoadObject";
+import ModalButton from "@/views/ModalButton";
 
 const axios = BaseAxios.create({
     baseURL: `${API_BASE_URL}/api/recipe`,

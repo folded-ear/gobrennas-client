@@ -16,7 +16,7 @@ export type CheckableActionType = string | (String & { actionTypes?: object });
  * complaints (you can't sometimes hide extra stuff in an action).
  */
 const typedAction = (type: string, shape: object): CheckableActionType => {
-    if (process.env.NODE_ENV !== "production" && shape != null) {
+    if (!import.meta.env.PROD && shape != null) {
         // noinspection JSPrimitiveTypeWrapperUsage
         const checkable: CheckableActionType = new String(type); // eslint-disable-line no-new-wrappers
         // noinspection JSPrimitiveTypeWrapperUsage

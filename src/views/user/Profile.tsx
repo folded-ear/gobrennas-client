@@ -1,9 +1,9 @@
 import React from "react";
-import { useIsDeveloper, useLogoutHandler } from "providers/Profile";
+import { useIsDeveloper, useLogoutHandler } from "@/providers/Profile";
 import User from "./User";
-import { CookThis } from "features/UserProfile/components/CookThis";
-import { Developer } from "features/UserProfile/components/Developer";
-import type { UserType } from "global/types/identity";
+import { CookThis } from "@/features/UserProfile/components/CookThis";
+import { Developer } from "@/features/UserProfile/components/Developer";
+import type { UserType } from "@/global/types/identity";
 import {
     Box,
     Button,

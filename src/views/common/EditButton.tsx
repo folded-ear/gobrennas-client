@@ -1,6 +1,6 @@
 import { IconButton, Tooltip, TooltipProps } from "@mui/material";
 import React, { MouseEventHandler } from "react";
-import { EditIcon } from "views/common/icons";
+import { EditIcon } from "@/views/common/icons";
 
 interface Props {
     tooltipPlacement?: TooltipProps["placement"];

@@ -1,10 +1,10 @@
-import useFluxStore from "../../../data/useFluxStore";
-import planStore from "features/Planner/data/planStore";
+import useFluxStore from "@/data/useFluxStore";
+import planStore from "@/features/Planner/data/planStore";
 import React from "react";
-import Dispatcher from "../../../data/dispatcher";
-import PlanActions from "features/Planner/data/PlanActions";
-import { BfsId } from "global/types/identity";
-import { ensureInt } from "../../../global/utils";
+import Dispatcher from "@/data/dispatcher";
+import PlanActions from "@/features/Planner/data/PlanActions";
+import { BfsId } from "@/global/types/identity";
+import { ensureInt } from "@/global/utils";
 
 export const useLoadedPlan = (pid: BfsId | undefined) => {
     // ensure it's loaded

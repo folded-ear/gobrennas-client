@@ -1,4 +1,4 @@
-import { EditIcon, ViewIcon } from "../../../views/common/icons";
+import { EditIcon, ViewIcon } from "@/views/common/icons";
 import {
     Box,
     Card,
@@ -9,23 +9,23 @@ import {
     Typography,
 } from "@mui/material";
 import { makeStyles } from "@mui/styles";
-import Dispatcher from "data/dispatcher";
-import FriendStore from "data/FriendStore";
-import RecipeActions from "data/RecipeActions";
-import useFluxStore from "data/useFluxStore";
-import ItemImage from "features/RecipeLibrary/components/ItemImage";
-import ItemImageUpload from "features/RecipeLibrary/components/ItemImageUpload";
-import SendToPlan from "features/RecipeLibrary/components/SendToPlan";
+import Dispatcher from "@/data/dispatcher";
+import FriendStore from "@/data/FriendStore";
+import RecipeActions from "@/data/RecipeActions";
+import useFluxStore from "@/data/useFluxStore";
+import ItemImage from "@/features/RecipeLibrary/components/ItemImage";
+import ItemImageUpload from "@/features/RecipeLibrary/components/ItemImageUpload";
+import SendToPlan from "@/features/RecipeLibrary/components/SendToPlan";
 import React from "react";
 import { Link } from "react-router-dom";
-import { formatDuration } from "util/time";
-import RecipeInfo from "views/common/RecipeInfo";
-import Source from "views/common/Source";
-import User from "views/user/User";
+import { formatDuration } from "@/util/time";
+import RecipeInfo from "@/views/common/RecipeInfo";
+import Source from "@/views/common/Source";
+import User from "@/views/user/User";
 import FavoriteIndicator from "../../Favorites/components/Indicator";
-import { Photo, User as UserType } from "../../../__generated__/graphql";
-import { TaskIcon } from "global/components/TaskIcon";
-import LabelItem from "../../../global/components/LabelItem";
+import { Photo, User as UserType } from "@/__generated__/graphql";
+import { TaskIcon } from "@/global/components/TaskIcon";
+import LabelItem from "@/global/components/LabelItem";
 
 const useStyles = makeStyles({
     photo: {

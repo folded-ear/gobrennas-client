@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { Button } from "@mui/material";
 import * as React from "react";
-import { ForwardIcon } from "views/common/icons";
+import { ForwardIcon } from "@/views/common/icons";
 
 type BreadcrumbLinkProps = {
     text: string;

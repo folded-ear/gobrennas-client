@@ -1,4 +1,4 @@
-import { CollapseIcon } from "views/common/icons";
+import { CollapseIcon } from "@/views/common/icons";
 import PropTypes from "prop-types";
 import React from "react";
 import { IconButton, IconButtonProps } from "@mui/material";
