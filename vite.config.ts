@@ -21,7 +21,7 @@ export default defineConfig({
         react(),
         VitePWA({
             registerType: "prompt",
-            injectRegister: false,
+            injectRegister: "script",
             pwaAssets: {
                 disabled: false,
                 config: true,
@@ -108,9 +108,9 @@ export default defineConfig({
                 clientsClaim: true,
             },
             devOptions: {
-                enabled: false,
+                enabled: true,
                 navigateFallback: "index.html",
-                suppressWarnings: true,
+                suppressWarnings: false,
                 type: "module",
             },
         }),
