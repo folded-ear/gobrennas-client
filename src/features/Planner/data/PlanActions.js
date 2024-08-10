@@ -99,6 +99,10 @@ const PlanActions = {
         planId: PropTypes.number.isRequired,
         id: PropTypes.number.isRequired,
     }),
+    BUCKETS_DELETED: typedAction("plan/bucket-deleted", {
+        planId: PropTypes.number.isRequired,
+        ids: PropTypes.arrayOf(PropTypes.number).isRequired,
+    }),
     ASSIGN_ITEM_TO_BUCKET: typedAction("plan/assign-item-to-bucket", {
         id: PropTypes.number.isRequired,
         bucketId: PropTypes.number,
