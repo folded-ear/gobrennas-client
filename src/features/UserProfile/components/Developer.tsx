@@ -6,7 +6,6 @@ import UserActions from "@/data/UserActions";
 import Divider from "@mui/material/Divider";
 import Switch from "@mui/material/Switch";
 import useWindowSize from "@/data/useWindowSize";
-// import preval from "preval.macro";
 import {
     Button,
     Grid,
@@ -30,9 +29,6 @@ import {
     red,
     teal,
 } from "@mui/material/colors";
-
-// Take the build timestamp and put it in the code
-// const dateTimeStamp = preval`module.exports = new Date().toISOString();`;
 
 interface RowProps {
     label: string;
