@@ -1,7 +1,6 @@
 import { RadioOffIcon, RadioOnIcon } from "@/views/common/icons";
 import { ListItemButton, Tooltip, Typography } from "@mui/material";
 import { ItemIcon } from "./Navigation.elements";
-import * as React from "react";
 import { BfsId } from "@/global/types/identity";
 
 export interface BasePlanNavItemProps {

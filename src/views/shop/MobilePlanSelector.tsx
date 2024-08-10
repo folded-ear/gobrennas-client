@@ -1,6 +1,5 @@
 import useAllPlansRLO from "@/data/useAllPlansRLO";
 import { Box, Collapse, List, ListSubheader } from "@mui/material";
-import * as React from "react";
 import { NavShopItem } from "@/features/Navigation/components/NavShopItem";
 import { colorHash } from "@/constants/colors";
 import Divider from "@mui/material/Divider";

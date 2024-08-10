@@ -1,6 +1,5 @@
 import { GridFooterContainer, GridSlotProps } from "@mui/x-data-grid";
 import { Box, Grid } from "@mui/material";
-import React from "react";
 import SelectionStatus, { SelectionStatusProps } from "./SelectionStatus";
 import Paging, { PagingProps } from "./Paging";
 

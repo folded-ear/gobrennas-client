@@ -6,7 +6,6 @@ import PlanHeader from "@/features/Planner/components/PlanHeader";
 import PlanItem from "@/features/Planner/components/PlanItem";
 import PlanActions from "@/features/Planner/data/PlanActions";
 import { isParent } from "@/features/Planner/data/plannerUtils";
-import React from "react";
 import FoodingerFab from "@/views/common/FoodingerFab";
 import LoadingIndicator from "@/views/common/LoadingIndicator";
 import PageBody from "@/views/common/PageBody";

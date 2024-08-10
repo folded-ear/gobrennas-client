@@ -1,4 +1,3 @@
-import * as React from "react";
 import { DraftRecipe } from "@/global/types/types";
 import RecipeForm from "@/features/RecipeEdit/components/RecipeForm";
 import PageBody from "@/views/common/PageBody";

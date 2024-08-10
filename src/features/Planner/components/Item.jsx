@@ -3,7 +3,6 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemSecondaryAction from "@mui/material/ListItemSecondaryAction";
 import withStyles from "@mui/styles/withStyles";
 import PropTypes from "prop-types";
-import React from "react";
 import { useDraggable, useDroppable } from "@dnd-kit/core";
 import DragHandle from "./DragHandle";
 import classnames from "classnames";

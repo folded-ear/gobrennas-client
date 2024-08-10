@@ -1,6 +1,6 @@
 import { colorHash } from "@/constants/colors";
 import Avatar from "@mui/material/Avatar";
-import React, { useMemo } from "react";
+import { useMemo } from "react";
 import { PlanItem } from "@/features/Planner/data/planStore";
 
 interface Props {

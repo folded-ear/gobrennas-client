@@ -3,7 +3,6 @@ import {
     GridToolbarColumnsButton,
     GridToolbarQuickFilter,
 } from "@mui/x-data-grid";
-import React from "react";
 
 export default function Header() {
     return (

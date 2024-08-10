@@ -1,6 +1,5 @@
 import makeStyles from "@mui/styles/makeStyles";
 import { Button } from "@mui/material";
-import React from "react";
 
 const useStyles = makeStyles({
     body: {

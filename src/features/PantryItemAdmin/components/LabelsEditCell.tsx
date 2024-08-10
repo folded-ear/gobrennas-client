@@ -2,7 +2,6 @@ import { GridRenderEditCellParams, useGridApiContext } from "@mui/x-data-grid";
 import { Result } from "@/data/hooks/usePantryItemSearch";
 import { useGetAllLabels } from "@/data/hooks/useGetAllLabels";
 import { ChipPicker } from "@/global/components/ChipPicker";
-import * as React from "react";
 import { useCallback } from "react";
 import PopperEditCell from "./PopperEditCell";
 

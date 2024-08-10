@@ -1,7 +1,6 @@
 import { useRegisterSW } from "virtual:pwa-register/react";
 import Banner from "@/views/common/Banner";
 import Button from "@mui/material/Button";
-import React from "react";
 
 function NewVersionPrompt() {
     // periodic sync is disabled, change the value to enable it, the period is in milliseconds

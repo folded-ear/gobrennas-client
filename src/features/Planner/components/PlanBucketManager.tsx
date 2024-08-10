@@ -9,7 +9,6 @@ import IconButton from "@mui/material/IconButton";
 import TableCell from "@mui/material/TableCell";
 import Tooltip from "@mui/material/Tooltip";
 import { AddIcon, DeleteIcon } from "@/views/common/icons";
-import React from "react";
 import dispatcher from "@/data/dispatcher";
 import PlanActions from "@/features/Planner/data/PlanActions";
 import planStore from "@/features/Planner/data/planStore";
