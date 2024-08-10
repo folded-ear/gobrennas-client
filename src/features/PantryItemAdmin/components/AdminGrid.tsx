@@ -8,17 +8,17 @@ import {
 import Footer from "./Footer";
 import Header from "./Header";
 import React, { useMemo } from "react";
-import { Result } from "../../../data/hooks/usePantryItemSearch";
+import { Result } from "@/data/hooks/usePantryItemSearch";
 import DeleteItemAction from "./DeleteItemAction";
 import {
     SearchIcon as ViewDuplicatesIcon,
     SvgIconComponent,
     ViewIcon,
-} from "views/common/icons";
+} from "@/views/common/icons";
 import LabelsCell from "./LabelsCell";
 import LabelsEditCell from "./LabelsEditCell";
 import MultilineEditCell from "./MultilineEditCell";
-import { BfsId } from "../../../global/types/identity";
+import { BfsId } from "@/global/types/identity";
 import { GridRenderCellParams } from "@mui/x-data-grid/models/params/gridCellParams";
 
 const formatStringSet = (value: string[]) => (value ? value.join(", ") : "");
@@ -186,7 +186,11 @@ export default function AdminGrid({
             width: 30,
             renderHeader: () => null,
             getActions: ({ row }) => [
-                <DeleteItemAction row={row} onDelete={() => onDelete(row)} />,
+                <DeleteItemAction
+                    key={row.id}
+                    row={row}
+                    onDelete={() => onDelete(row)}
+                />,
             ],
         });
         return cs;

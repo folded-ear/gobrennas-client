@@ -1,15 +1,15 @@
-import useFluxStore from "data/useFluxStore";
-import planStore from "features/Planner/data/planStore";
-import LibraryStore from "features/RecipeLibrary/data/LibraryStore";
+import useFluxStore from "@/data/useFluxStore";
+import planStore from "@/features/Planner/data/planStore";
+import LibraryStore from "@/features/RecipeLibrary/data/LibraryStore";
 import React from "react";
-import LoadingIndicator from "views/common/LoadingIndicator";
+import LoadingIndicator from "@/views/common/LoadingIndicator";
 import RecipeDetail from "./components/RecipeDetail";
 import { RouteComponentProps } from "react-router";
-import { useLoadedPlan } from "features/RecipeDisplay/hooks/useLoadedPlan";
-import { recipeRloByPlanAndBucket } from "features/RecipeDisplay/utils/recipeRloByPlanAndBucket";
-import CloseButton from "../../views/common/CloseButton";
-import history from "../../util/history";
-import CookedItButton from "features/Planner/components/CookedItButton";
+import { useLoadedPlan } from "@/features/RecipeDisplay/hooks/useLoadedPlan";
+import { recipeRloByPlanAndBucket } from "@/features/RecipeDisplay/utils/recipeRloByPlanAndBucket";
+import CloseButton from "@/views/common/CloseButton";
+import history from "@/util/history";
+import CookedItButton from "@/features/Planner/components/CookedItButton";
 
 type Props = RouteComponentProps<{
     pid: string;

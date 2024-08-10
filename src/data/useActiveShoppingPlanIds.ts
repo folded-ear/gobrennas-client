@@ -1,6 +1,6 @@
 import useFluxStore from "./useFluxStore";
 import shoppingStore from "./shoppingStore";
-import planStore from "../features/Planner/data/planStore";
+import planStore from "@/features/Planner/data/planStore";
 
 function useActiveShoppingPlanIds() {
     return useFluxStore(() => {

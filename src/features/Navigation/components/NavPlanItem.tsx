@@ -1,7 +1,7 @@
 import * as React from "react";
-import useActivePlanner from "../../../data/useActivePlanner";
+import useActivePlanner from "@/data/useActivePlanner";
 import BasePlanNavItem, { BasePlanNavItemProps } from "./BasePlanNavItem";
-import { ensureInt } from "global/utils";
+import { ensureInt } from "@/global/utils";
 
 export const NavPlanItem: React.FC<BasePlanNavItemProps> = ({
     id,

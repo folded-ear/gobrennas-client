@@ -1,4 +1,4 @@
-import { GetCurrentUserQuery } from "../../../__generated__/graphql";
+import { GetCurrentUserQuery } from "@/__generated__/graphql";
 
 export const selectCurrentUser = (data?: GetCurrentUserQuery) => {
     let currentUser;

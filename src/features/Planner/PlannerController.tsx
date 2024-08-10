@@ -1,15 +1,15 @@
 import React from "react";
-import LibraryStore from "features/RecipeLibrary/data/LibraryStore";
-import { isExpanded } from "features/Planner/data/plannerUtils";
-import planStore from "features/Planner/data/planStore";
-import useFluxStore from "data/useFluxStore";
-import Plan from "features/Planner/components/Plan";
-import { RippedLO } from "util/ripLoadObject";
+import LibraryStore from "@/features/RecipeLibrary/data/LibraryStore";
+import { isExpanded } from "@/features/Planner/data/plannerUtils";
+import planStore from "@/features/Planner/data/planStore";
+import useFluxStore from "@/data/useFluxStore";
+import Plan from "@/features/Planner/components/Plan";
+import { RippedLO } from "@/util/ripLoadObject";
 import { RouteComponentProps } from "react-router";
 import { useLoadedPlan } from "../RecipeDisplay/hooks/useLoadedPlan";
-import { useGetAllPlans } from "data/hooks/useGetAllPlans";
+import { useGetAllPlans } from "@/data/hooks/useGetAllPlans";
 import { PlanItem } from "./data/planStore";
-import { Ingredient } from "../../global/types/types";
+import { Ingredient } from "@/global/types/types";
 
 interface ItemData extends PlanItem {
     ingredient?: Ingredient;

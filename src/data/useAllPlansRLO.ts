@@ -1,9 +1,9 @@
 import useFluxStore from "./useFluxStore";
-import { mapData } from "../util/ripLoadObject";
-import planStore from "../features/Planner/data/planStore";
+import { mapData } from "@/util/ripLoadObject";
+import planStore from "@/features/Planner/data/planStore";
 import friendStore from "./FriendStore";
-import { zippedComparator } from "../util/comparators";
-import { usePendingProfile } from "../providers/Profile";
+import { zippedComparator } from "@/util/comparators";
+import { usePendingProfile } from "@/providers/Profile";
 
 export default function useAllPlansRLO() {
     const profileRLO = usePendingProfile();

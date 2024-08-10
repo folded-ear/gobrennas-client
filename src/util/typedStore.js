@@ -34,7 +34,7 @@ const builder = (self, method, typesKey, initial) => {
 };
 
 const typedStore = (self) => {
-    if (process.env.NODE_ENV !== "production") {
+    if (!import.meta.env.PROD) {
         invariant(self.reduce, "No 'reduce' method found on store.");
         self.reduce = builder(
             self,

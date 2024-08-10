@@ -1,8 +1,8 @@
-import useActivePlanner from "data/useActivePlanner";
-import useActiveShoppingPlanIds from "../../../data/useActiveShoppingPlanIds";
-import { useSynchronizers } from "../../../util/useSynchronizer";
+import useActivePlanner from "@/data/useActivePlanner";
+import useActiveShoppingPlanIds from "@/data/useActiveShoppingPlanIds";
+import { useSynchronizers } from "@/util/useSynchronizer";
 import TaskApi from "./TaskApi";
-import ClientId from "../../../util/ClientId";
+import ClientId from "@/util/ClientId";
 
 function PlanItemSynchronizer() {
     let planIds = useActiveShoppingPlanIds();

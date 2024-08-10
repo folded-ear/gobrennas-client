@@ -2,7 +2,7 @@ import { Container, ContainerProps } from "@mui/material";
 import { CreateCSSProperties, makeStyles } from "@mui/styles";
 import classnames from "classnames";
 import React from "react";
-import { HEADER_HEIGHT } from "../../constants/layout";
+import { HEADER_HEIGHT } from "@/constants/layout";
 
 const useStyles = makeStyles((theme) => {
     return {
@@ -35,7 +35,7 @@ type PageBodyProps = {
 } & ContainerProps;
 
 const PageBody: React.FC<PageBodyProps> = (props) => {
-    const { children, hasFab, fullWidth, className, ...passthrough } = props;
+    const { children, hasFab, className, ...passthrough } = props;
     const classes = useStyles(props);
     return (
         <Container

@@ -1,5 +1,5 @@
 import { Button, Grid } from "@mui/material";
-import { CombineIcon } from "views/common/icons";
+import { CombineIcon } from "@/views/common/icons";
 import React from "react";
 
 export interface SelectionStatusProps {

@@ -1,10 +1,10 @@
-import Dispatcher from "data/dispatcher";
+import Dispatcher from "@/data/dispatcher";
 
 const timeoutRegistry = new Map();
 
 const flushPending = () => {
     // to avoid jacking your data on hot reload, disable the unload flush in dev
-    if (process.env.NODE_ENV !== "development") {
+    if (import.meta.env.PROD) {
         for (const k of timeoutRegistry.keys()) {
             doFutureWork(k);
         }

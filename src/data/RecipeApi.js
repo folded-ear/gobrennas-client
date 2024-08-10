@@ -1,7 +1,7 @@
 import BaseAxios from "axios";
-import queryClient from "data/queryClient";
-import promiseFlux from "util/promiseFlux";
-import { API_BASE_URL } from "../constants/index";
+import queryClient from "@/data/queryClient";
+import promiseFlux from "@/util/promiseFlux";
+import { API_BASE_URL } from "@/constants";
 import RecipeActions from "./RecipeActions";
 
 const axios = BaseAxios.create({

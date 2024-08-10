@@ -1,5 +1,5 @@
 import * as React from "react";
-import { MenuClosedIcon, MenuOpenIcon } from "views/common/icons";
+import { MenuClosedIcon, MenuOpenIcon } from "@/views/common/icons";
 import { ListItemButton } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { ItemIcon } from "./Navigation.elements";
@@ -9,11 +9,11 @@ type LogoProps = {
     onClick: () => void;
 };
 
-const LogoText = styled("div")(({ theme }) => ({
+const LogoText = styled("div")({
     whiteSpace: "nowrap",
     fontSize: "120%",
     position: "relative",
-}));
+});
 
 const B = styled("span")(({ theme }) => ({
     transform: "scaleX(-1)",

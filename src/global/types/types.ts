@@ -1,6 +1,6 @@
-import { CheckableActionType } from "util/typedAction";
-import { BfsId, UserType } from "global/types/identity";
-import { PlannedRecipeHistory, User } from "../../__generated__/graphql";
+import { CheckableActionType } from "@/util/typedAction";
+import { BfsId, UserType } from "@/global/types/identity";
+import { PlannedRecipeHistory, User } from "@/__generated__/graphql";
 
 type IngredientType = "Recipe" | "PantryItem";
 

@@ -1,8 +1,8 @@
 import * as React from "react";
-import { API_BASE_URL, API_IS_SECURE, APP_BASE_URL } from "constants/index";
-import { UnlockedIcon } from "views/common/icons";
+import { API_BASE_URL, API_IS_SECURE, APP_BASE_URL } from "@/constants";
+import { UnlockedIcon } from "@/views/common/icons";
 import qs from "qs";
-import { useAuthToken } from "providers/AuthToken";
+import { useAuthToken } from "@/providers/AuthToken";
 import { Button, Stack, Typography } from "@mui/material";
 
 export const CookThis = () => {
@@ -39,16 +39,10 @@ export const CookThis = () => {
                     ref={cookThisRef as any}
                     component={"a"}
                     href="#"
-                    variant={
-                        process.env.NODE_ENV === "production"
-                            ? "contained"
-                            : "outlined"
-                    }
+                    variant={import.meta.env.PROD ? "contained" : "outlined"}
                     color="primary"
                 >
-                    {process.env.NODE_ENV === "production"
-                        ? "Cook This!"
-                        : "DEV Cook This!"}
+                    {import.meta.env.PROD ? "Cook This!" : "DEV Cook This!"}
                 </Button>
             </p>
             {!API_IS_SECURE && (

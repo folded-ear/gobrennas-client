@@ -1,28 +1,28 @@
 import { Box, IconButton, Stack, Typography } from "@mui/material";
 import List from "@mui/material/List";
 import React, { useCallback, useState } from "react";
-import Dispatcher from "data/dispatcher";
-import ShoppingActions from "data/ShoppingActions";
-import FoodingerFab from "views/common/FoodingerFab";
-import LoadingIndicator from "views/common/LoadingIndicator";
-import PageBody from "views/common/PageBody";
-import IngredientItem from "views/shop/IngredientItem";
-import PlanItem from "views/shop/PlanItem";
+import Dispatcher from "@/data/dispatcher";
+import ShoppingActions from "@/data/ShoppingActions";
+import FoodingerFab from "@/views/common/FoodingerFab";
+import LoadingIndicator from "@/views/common/LoadingIndicator";
+import PageBody from "@/views/common/PageBody";
+import IngredientItem from "@/views/shop/IngredientItem";
+import PlanItem from "@/views/shop/PlanItem";
 import { BaseItemProp, ItemProps } from "./types";
-import { PlanItem as PlanItemType } from "features/Planner/data/planStore";
-import type { Quantity } from "global/types/types";
-import type { BfsId } from "global/types/identity";
-import CollapseIconButton from "../../global/components/CollapseIconButton";
-import PantryItemActions from "../../data/PantryItemActions";
+import { PlanItem as PlanItemType } from "@/features/Planner/data/planStore";
+import type { Quantity } from "@/global/types/types";
+import type { BfsId } from "@/global/types/identity";
+import CollapseIconButton from "@/global/components/CollapseIconButton";
+import PantryItemActions from "@/data/PantryItemActions";
 import DragContainer, {
     DragContainerProps,
-} from "../../features/Planner/components/DragContainer";
-import { AddIcon, SweepIcon } from "views/common/icons";
-import { useIsMobile } from "../../providers/IsMobile";
+} from "@/features/Planner/components/DragContainer";
+import { AddIcon, SweepIcon } from "@/views/common/icons";
+import { useIsMobile } from "@/providers/IsMobile";
 import MobilePlanSelector from "./MobilePlanSelector";
-import useAllPlansRLO from "../../data/useAllPlansRLO";
-import { NavShopItem } from "../../features/Navigation/components/NavShopItem";
-import { toggleShoppingPlan } from "../../features/Navigation/NavigationController";
+import useAllPlansRLO from "@/data/useAllPlansRLO";
+import { NavShopItem } from "@/features/Navigation/components/NavShopItem";
+import { toggleShoppingPlan } from "@/features/Navigation/NavigationController";
 import PlanAvatar from "./PlanAvatar";
 
 export enum ShopItemType {

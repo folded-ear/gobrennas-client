@@ -4,6 +4,7 @@ import React, { forwardRef } from "react";
 import { IconButtonProps } from "@mui/material";
 import { grey } from "@mui/material/colors";
 
+// eslint-disable-next-line react/display-name
 const DragHandle: React.FC<IconButtonProps> = forwardRef((props, ref) => {
     return (
         <IconButton

@@ -1,4 +1,4 @@
-import { Ingredient, IngredientRef } from "global/types/types";
+import { Ingredient, IngredientRef } from "@/global/types/types";
 
 export interface Recipe extends Ingredient {
     externalUrl: string;

@@ -1,11 +1,11 @@
 import { MutationResult, useMutation } from "@apollo/client";
-import { gql } from "__generated__";
+import { gql } from "@/__generated__";
 import {
     PantryItem,
     SetPantryItemSynonymsMutation,
-} from "../../__generated__/graphql";
+} from "@/__generated__/graphql";
 import { useCallback } from "react";
-import throwAnyGraphQLErrors from "../../util/throwAnyGraphQLErrors";
+import throwAnyGraphQLErrors from "@/util/throwAnyGraphQLErrors";
 
 const SET_PANTRY_ITEM_SYNONYMS = gql(`
 mutation setPantryItemSynonyms($id: ID!, $synonyms: [String!]!) {

@@ -4,7 +4,7 @@ import {
     useIsProfileInitializing,
     useIsProfilePending,
     useProfile,
-} from "../../providers/Profile";
+} from "@/providers/Profile";
 import FluxRoute from "./FluxRoute";
 import LoadingIndicator from "./LoadingIndicator";
 import { Location } from "history";

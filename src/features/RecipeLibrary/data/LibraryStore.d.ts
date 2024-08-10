@@ -1,10 +1,10 @@
 import FluxReduceStore from "flux/lib/FluxReduceStore";
-import { FluxAction } from "../global/types/types";
-import LoadObject from "../../../util/LoadObject";
-import LoadObjectMap from "../../../util/LoadObjectMap";
-import { BfsId } from "global/types/identity";
-import { Ingredient } from "../../../global/types/types";
-import { RippedLO } from "../../../util/ripLoadObject";
+import { FluxAction } from "@/global/types/types";
+import LoadObject from "@/util/LoadObject";
+import LoadObjectMap from "@/util/LoadObjectMap";
+import { BfsId } from "@/global/types/identity";
+import { Ingredient } from "@/global/types/types";
+import { RippedLO } from "@/util/ripLoadObject";
 
 interface State {
     byId: LoadObjectMap<BfsId, Ingredient>;

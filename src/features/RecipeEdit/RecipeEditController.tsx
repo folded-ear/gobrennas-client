@@ -1,19 +1,19 @@
 import * as React from "react";
-import { useGetAllLabels } from "data/hooks/useGetAllLabels";
+import { useGetAllLabels } from "@/data/hooks/useGetAllLabels";
 import { Link, Redirect, useHistory, withRouter } from "react-router-dom";
 import { RouteComponentProps } from "react-router";
-import { useGetRecipe } from "data/hooks/useGetRecipe";
-import PageBody from "views/common/PageBody";
-import RecipeForm from "features/RecipeEdit/components/RecipeForm";
-import DeleteButton from "views/common/DeleteButton";
+import { useGetRecipe } from "@/data/hooks/useGetRecipe";
+import PageBody from "@/views/common/PageBody";
+import RecipeForm from "@/features/RecipeEdit/components/RecipeForm";
+import DeleteButton from "@/views/common/DeleteButton";
 import { Alert, CircularProgress } from "@mui/material";
-import { useUpdateRecipe } from "data/hooks/useUpdateRecipe";
-import { useCreateRecipe } from "data/hooks/useCreateRecipe";
-import type { BfsId } from "global/types/identity";
-import type { DraftRecipe } from "global/types/types";
-import { useDeleteRecipe } from "../../data/hooks/useDeleteRecipe";
-import { useProfileId } from "../../providers/Profile";
-import Banner from "../../views/common/Banner";
+import { useUpdateRecipe } from "@/data/hooks/useUpdateRecipe";
+import { useCreateRecipe } from "@/data/hooks/useCreateRecipe";
+import type { BfsId } from "@/global/types/identity";
+import type { DraftRecipe } from "@/global/types/types";
+import { useDeleteRecipe } from "@/data/hooks/useDeleteRecipe";
+import { useProfileId } from "@/providers/Profile";
+import Banner from "@/views/common/Banner";
 
 type Props = RouteComponentProps<{ id?: string }>;
 
@@ -57,7 +57,7 @@ const RecipeEditController: React.FC<Props> = ({ match }) => {
     }
 
     const handleUpdate = (recipe: DraftRecipe) => {
-        updateRecipe(recipe).then((_) => {
+        updateRecipe(recipe).then(() => {
             history.push(`/library/recipe/${recipe.id}`);
         });
     };

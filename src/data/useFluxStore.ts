@@ -38,17 +38,13 @@ function useFluxStore<S>(
     deps: any[] = [],
 ): S {
     const [state, setState] = React.useState(calculateState);
-    React.useEffect(
-        () => {
-            const subs = new FluxContainerSubscriptions();
-            subs.setStores(stores);
-            subs.addListener(() => setState(calculateState));
-            setState(calculateState);
-            return () => subs.reset();
-        },
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-        stores.concat(deps),
-    );
+    React.useEffect(() => {
+        const subs = new FluxContainerSubscriptions();
+        subs.setStores(stores);
+        subs.addListener(() => setState(calculateState));
+        setState(calculateState);
+        return () => subs.reset();
+    }, stores.concat(deps));
     return state;
 }
 

@@ -2,18 +2,18 @@ import { ListItemText } from "@mui/material";
 import Input from "@mui/material/Input";
 import classnames from "classnames";
 import React from "react";
-import Dispatcher from "../../data/dispatcher";
-import ShoppingActions from "../../data/ShoppingActions";
-import PlanItemStatus from "features/Planner/data/PlanItemStatus";
+import Dispatcher from "@/data/dispatcher";
+import ShoppingActions from "@/data/ShoppingActions";
+import PlanItemStatus from "@/features/Planner/data/PlanItemStatus";
 import LoadingIconButton from "../common/LoadingIconButton";
 import PlaceholderIconButton from "../common/PlaceholderIconButton";
 import IngredientItem from "../IngredientItem";
-import DontChangeStatusButton from "features/Planner/components/DontChangeStatusButton";
-import Item from "features/Planner/components/Item";
-import StatusIconButton from "features/Planner/components/StatusIconButton";
-import withItemStyles from "features/Planner/components/withItemStyles";
+import DontChangeStatusButton from "@/features/Planner/components/DontChangeStatusButton";
+import Item from "@/features/Planner/components/Item";
+import StatusIconButton from "@/features/Planner/components/StatusIconButton";
+import withItemStyles from "@/features/Planner/components/withItemStyles";
 import { BaseItemProp, ItemProps, TupleProps } from "./types";
-import { ShopItemType } from "views/shop/ShopList";
+import { ShopItemType } from "@/views/shop/ShopList";
 
 type PlanItemProps = TupleProps & {
     depth: number;

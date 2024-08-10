@@ -1,12 +1,12 @@
 import * as React from "react";
 import { HTMLProps, useState } from "react";
-import useIsDevMode, { setDevMode } from "data/useIsDevMode";
-import Dispatcher from "data/dispatcher";
-import UserActions from "data/UserActions";
+import useIsDevMode, { setDevMode } from "@/data/useIsDevMode";
+import Dispatcher from "@/data/dispatcher";
+import UserActions from "@/data/UserActions";
 import Divider from "@mui/material/Divider";
 import Switch from "@mui/material/Switch";
-import useWindowSize from "data/useWindowSize";
-import preval from "preval.macro";
+import useWindowSize from "@/data/useWindowSize";
+// import preval from "preval.macro";
 import {
     Button,
     Grid,
@@ -15,10 +15,10 @@ import {
     ToggleButtonGroup,
     Tooltip,
 } from "@mui/material";
-import { AutoAwesomeIcon, DesktopIcon, MobileIcon } from "views/common/icons";
-import useFluxStore from "../../../data/useFluxStore";
-import preferencesStore from "../../../data/preferencesStore";
-import { colorHash, planColors } from "../../../constants/colors";
+import { AutoAwesomeIcon, DesktopIcon, MobileIcon } from "@/views/common/icons";
+import useFluxStore from "@/data/useFluxStore";
+import preferencesStore from "@/data/preferencesStore";
+import { colorHash, planColors } from "@/constants/colors";
 import Input from "@mui/material/Input";
 import {
     blue,
@@ -31,7 +31,8 @@ import {
     teal,
 } from "@mui/material/colors";
 
-const dateTimeStamp = preval`module.exports = new Date().toISOString();`;
+// Take the build timestamp and put it in the code
+// const dateTimeStamp = preval`module.exports = new Date().toISOString();`;
 
 interface RowProps {
     label: string;
@@ -99,7 +100,7 @@ const DevMode: React.FC = () => {
             <Row label={"Window"}>
                 {windowSize.width}x{windowSize.height}
             </Row>
-            <Row label={"Build"}>{dateTimeStamp}</Row>
+            {/*<Row label={"Build"}>{dateTimeStamp}</Row>*/}
             <Row label={"Layout"}>
                 <ToggleButtonGroup
                     size={"small"}

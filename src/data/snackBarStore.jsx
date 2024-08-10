@@ -1,14 +1,14 @@
 import { Button } from "@mui/material";
-import PlanActions from "features/Planner/data/PlanActions";
+import PlanActions from "@/features/Planner/data/PlanActions";
 import PlanItemStatus, {
     willStatusDelete,
-} from "features/Planner/data/PlanItemStatus";
-import planStore from "features/Planner/data/planStore";
-import LibraryStore from "features/RecipeLibrary/data/LibraryStore";
+} from "@/features/Planner/data/PlanItemStatus";
+import planStore from "@/features/Planner/data/planStore";
+import LibraryStore from "@/features/RecipeLibrary/data/LibraryStore";
 import { ReduceStore } from "flux/utils";
 import PropTypes from "prop-types";
 import React from "react";
-import typedStore from "util/typedStore";
+import typedStore from "@/util/typedStore";
 import dispatcher from "./dispatcher";
 import PantryItemActions from "./PantryItemActions";
 import RecipeActions from "./RecipeActions";

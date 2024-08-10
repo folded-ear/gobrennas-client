@@ -1,17 +1,17 @@
 import React from "react";
-import LoadingIndicator from "views/common/LoadingIndicator";
-import ClientId from "util/ClientId";
-import promiseWellSizedFile from "util/promiseWellSizedFile";
-import TextractButton from "features/RecipeEdit/components/TextractButton";
-import TextractQueueBrowser from "features/RecipeEdit/components/TextractQueueBrowser";
-import TextractApi from "data/TextractApi";
+import LoadingIndicator from "@/views/common/LoadingIndicator";
+import ClientId from "@/util/ClientId";
+import promiseWellSizedFile from "@/util/promiseWellSizedFile";
+import TextractButton from "@/features/RecipeEdit/components/TextractButton";
+import TextractQueueBrowser from "@/features/RecipeEdit/components/TextractQueueBrowser";
+import TextractApi from "@/data/TextractApi";
 import { useQueryClient } from "react-query";
 import TextractEditor, {
     Line,
     RenderActionsForLines,
-} from "features/RecipeEdit/components/TextractEditor";
-import { RippedLO } from "util/ripLoadObject";
-import { BfsId } from "global/types/identity";
+} from "@/features/RecipeEdit/components/TextractEditor";
+import { RippedLO } from "@/util/ripLoadObject";
+import { BfsId } from "@/global/types/identity";
 
 export interface PendingJob {
     id: string;

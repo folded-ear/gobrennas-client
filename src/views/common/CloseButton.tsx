@@ -1,6 +1,6 @@
 import React, { MouseEventHandler } from "react";
 import { IconButton, Tooltip } from "@mui/material";
-import { CloseIcon } from "views/common/icons";
+import { CloseIcon } from "@/views/common/icons";
 
 interface Props {
     onClick?: MouseEventHandler;

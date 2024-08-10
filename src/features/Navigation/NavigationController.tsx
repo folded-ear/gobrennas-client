@@ -4,22 +4,20 @@ import {
     Header,
     MainDesktop,
     MainMobile,
-} from "features/Navigation/components/Navigation.elements";
-import { FlexBox } from "global/components/FlexBox";
-import useFluxStore from "data/useFluxStore";
-import { useIsMobile } from "providers/IsMobile";
-import { MobileNav } from "features/Navigation/components/MobileNav";
-import { DesktopNav } from "features/Navigation/components/DesktopNav";
+} from "@/features/Navigation/components/Navigation.elements";
+import { FlexBox } from "@/global/components/FlexBox";
+import useFluxStore from "@/data/useFluxStore";
+import { useIsMobile } from "@/providers/IsMobile";
+import { MobileNav } from "@/features/Navigation/components/MobileNav";
+import { DesktopNav } from "@/features/Navigation/components/DesktopNav";
 import { useHistory } from "react-router-dom";
-import { useLogoutHandler } from "providers/Profile";
-import RouteStore from "../../data/RouteStore";
-import Dispatcher from "../../data/dispatcher";
-import ShoppingActions from "../../data/ShoppingActions";
+import { useLogoutHandler } from "@/providers/Profile";
+import RouteStore from "@/data/RouteStore";
+import Dispatcher from "@/data/dispatcher";
+import ShoppingActions from "@/data/ShoppingActions";
 import PlanActions from "../Planner/data/PlanActions";
-import useIsNavCollapsed, {
-    setNavCollapsed,
-} from "../../data/useIsNavCollapsed";
-import { BfsId } from "../../global/types/identity";
+import useIsNavCollapsed, { setNavCollapsed } from "@/data/useIsNavCollapsed";
+import { BfsId } from "@/global/types/identity";
 
 type NavigationControllerProps = {
     authenticated: boolean;

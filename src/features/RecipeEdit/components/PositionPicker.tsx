@@ -1,8 +1,8 @@
 import makeStyles from "@mui/styles/makeStyles";
 import React from "react";
-import { findSvg } from "util/findAncestorByName";
-import getPositionWithin from "util/getPositionWithin";
-import ImageOrPreview from "views/common/ImageOrPreview";
+import { findSvg } from "@/util/findAncestorByName";
+import getPositionWithin from "@/util/getPositionWithin";
+import ImageOrPreview from "@/views/common/ImageOrPreview";
 
 const useStyles = makeStyles((theme) => ({
     root: {

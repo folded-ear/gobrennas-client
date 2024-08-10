@@ -1,9 +1,9 @@
-import Dispatcher from "data/dispatcher";
-import { askUserToReauth, isAuthError } from "../providers/Profile";
+import Dispatcher from "@/data/dispatcher";
+import { askUserToReauth, isAuthError } from "@/providers/Profile";
 
 let helper = (settleKey, typeTemplateOrCallback) => (data) => {
     if (!typeTemplateOrCallback) {
-        if (process.env.NODE_ENV !== "production") {
+        if (!import.meta.env.PROD) {
             // eslint-disable-next-line no-console
             console.error(
                 "Null 'typeTemplateOrCallback' for in 'promiseFlux' w/ key '" +
@@ -22,7 +22,7 @@ let helper = (settleKey, typeTemplateOrCallback) => (data) => {
     );
 };
 
-if (process.env.NODE_ENV !== "production") {
+if (!import.meta.env.PROD) {
     // this will be given jitter of up to 50% in either direction
     const ARTIFICIAL_SETTLEMENT_DELAY = 150;
     if (ARTIFICIAL_SETTLEMENT_DELAY > 0) {

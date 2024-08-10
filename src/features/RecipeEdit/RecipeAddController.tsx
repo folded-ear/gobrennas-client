@@ -1,10 +1,10 @@
 import * as React from "react";
-import { DraftRecipe } from "global/types/types";
-import RecipeForm from "features/RecipeEdit/components/RecipeForm";
-import PageBody from "views/common/PageBody";
-import { useCreateRecipe } from "data/hooks/useCreateRecipe";
-import { useGetAllLabels } from "data/hooks/useGetAllLabels";
-import ClientId from "util/ClientId";
+import { DraftRecipe } from "@/global/types/types";
+import RecipeForm from "@/features/RecipeEdit/components/RecipeForm";
+import PageBody from "@/views/common/PageBody";
+import { useCreateRecipe } from "@/data/hooks/useCreateRecipe";
+import { useGetAllLabels } from "@/data/hooks/useGetAllLabels";
+import ClientId from "@/util/ClientId";
 import { useHistory } from "react-router-dom";
 import { Alert } from "@mui/material";
 

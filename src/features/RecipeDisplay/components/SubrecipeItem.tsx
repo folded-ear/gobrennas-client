@@ -6,12 +6,12 @@ import {
     TypographyProps,
 } from "@mui/material";
 import React, { useCallback } from "react";
-import { formatDuration } from "util/time";
-import CollapseIconButton from "global/components/CollapseIconButton";
+import { formatDuration } from "@/util/time";
+import CollapseIconButton from "@/global/components/CollapseIconButton";
 import IngredientDirectionsRow from "./IngredientDirectionsRow";
-import { ScalingProvider } from "util/ScalingContext";
-import type { Subrecipe } from "global/types/types";
-import { BreadcrumbLink } from "../../../global/components/BreadcrumbLink";
+import { ScalingProvider } from "@/util/ScalingContext";
+import type { Subrecipe } from "@/global/types/types";
+import { BreadcrumbLink } from "@/global/components/BreadcrumbLink";
 import CookedItButton from "../../Planner/components/CookedItButton";
 import { styled } from "@mui/material/styles";
 

@@ -4,8 +4,8 @@ import React, {
     useContext,
     useMemo,
 } from "react";
-import { COOKIE_AUTH_TOKEN } from "../constants";
-import { getCookie } from "util/cookies";
+import { COOKIE_AUTH_TOKEN } from "@/constants";
+import { getCookie } from "@/util/cookies";
 
 const AuthTokenContext = createContext(true);
 
