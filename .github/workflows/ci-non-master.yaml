@@ -1,6 +1,7 @@
 name: CI
 
 on:
+  # does NOT fire on retarget, only create!
   pull_request:
     branches:
       - master
