@@ -96,7 +96,7 @@ const DevMode: React.FC = () => {
             <Row label={"Window"}>
                 {windowSize.width}x{windowSize.height}
             </Row>
-            {/*<Row label={"Build"}>{dateTimeStamp}</Row>*/}
+            <Row label={"Build"}>{import.meta.env.BUILD_TIMESTAMP}</Row>
             <Row label={"Layout"}>
                 <ToggleButtonGroup
                     size={"small"}

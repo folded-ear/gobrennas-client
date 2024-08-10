@@ -6,6 +6,11 @@ import { htmlInjectionPlugin } from "vite-plugin-html-injection";
 
 // https://vitejs.dev/config/
 export default defineConfig({
+    define: {
+        "import.meta.env.BUILD_TIMESTAMP": JSON.stringify(
+            new Date().toISOString(),
+        ),
+    },
     resolve: {
         alias: {
             "@": path.resolve(__dirname, "./src"),
