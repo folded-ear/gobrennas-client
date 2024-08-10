@@ -2,6 +2,7 @@ import globals from "globals";
 import pluginJs from "@eslint/js";
 import tseslint from "typescript-eslint";
 import pluginReactConfig from "eslint-plugin-react/configs/recommended.js";
+import pluginJsxRuntimeConfig from "eslint-plugin-react/configs/jsx-runtime.js";
 
 export default [
     { files: ["**/*.{js,mjs,cjs,ts,jsx,tsx}"] },
@@ -10,6 +11,7 @@ export default [
     pluginJs.configs.recommended,
     ...tseslint.configs.recommended,
     pluginReactConfig,
+    pluginJsxRuntimeConfig,
     {
         ignores: ["**/__generated__/**/*"],
     },
@@ -37,7 +39,6 @@ export default [
             semi: ["warn", "always"],
             "@typescript-eslint/no-explicit-any": 0,
             "@typescript-eslint/no-unsafe-assignment": 0,
-            "react/react-in-jsx-scope": 1,
             "react/no-unescaped-entities": 1,
             "react/no-deprecated": 1,
         },
