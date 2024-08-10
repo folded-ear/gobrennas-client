@@ -3,6 +3,7 @@ import pluginJs from "@eslint/js";
 import tseslint from "typescript-eslint";
 import pluginReactConfig from "eslint-plugin-react/configs/recommended.js";
 import pluginJsxRuntimeConfig from "eslint-plugin-react/configs/jsx-runtime.js";
+import pluginReactHooks_nonFlat from "eslint-plugin-react-hooks";
 
 export default [
     { files: ["**/*.{js,mjs,cjs,ts,jsx,tsx}"] },
@@ -12,6 +13,12 @@ export default [
     ...tseslint.configs.recommended,
     pluginReactConfig,
     pluginJsxRuntimeConfig,
+    {
+        plugins: {
+            "react-hooks": pluginReactHooks_nonFlat,
+        },
+        rules: pluginReactHooks_nonFlat.configs.recommended.rules,
+    },
     {
         ignores: ["**/__generated__/**/*"],
     },
