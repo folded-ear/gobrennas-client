@@ -44,7 +44,7 @@ const RecipeEditController: React.FC<Props> = ({ match }) => {
             <Banner>
                 You can only{" "}
                 <Link to={`/library/recipe/${id}`}>view this recipe</Link>, not
-                edit it, because it's not yours.
+                edit it, because it&apos;s not yours.
             </Banner>
         );
     }

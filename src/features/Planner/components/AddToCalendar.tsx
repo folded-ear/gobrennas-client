@@ -86,13 +86,14 @@ const Body: React.FC<Props> = ({ plan }) => {
                 />
                 <Divider />
                 <p>
-                    In Google Calendar, find "Other Calendars" in the sidebar,
-                    click
-                    <AddIcon />, select "From URL", and paste in the URL above.
+                    In Google Calendar, find &quot;Other Calendars&quot; in the
+                    sidebar, click <AddIcon />, select &quot;From URL&quot;, and
+                    paste in the URL above.
                 </p>
                 <p>
                     Other calendar applications are similar, perhaps labeled
-                    "Import from URL" or "Add Calendar from iCal".
+                    &quot;Import from URL&quot; or &quot;Add Calendar from
+                    iCal&quot;.
                 </p>
             </>
         );
