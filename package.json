@@ -63,7 +63,7 @@
     "test": "vitest",
     "test:coverage": "vitest run --coverage --watch=false",
     "pretest": "npm run compile",
-    "posttest": "eslint ./src",
+    "posttest": "eslint --max-warnings 0 ./src",
     "lint": "eslint ./src",
     "lint:fix": "eslint --fix ./src",
     "format:write": "prettier . --write",
