@@ -402,6 +402,12 @@ class PlanStore extends ReduceStore {
                 );
             }
 
+            case PlanActions.BUCKETS_DELETED: {
+                return mapPlanBuckets(state, action.planId, (bs) =>
+                    bs.filter((b) => !action.ids.includes(b.id)),
+                );
+            }
+
             case PlanActions.RENAME_BUCKET: {
                 return mapPlanBuckets(state, action.planId, (bs) =>
                     bs

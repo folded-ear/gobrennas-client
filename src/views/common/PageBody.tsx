@@ -35,7 +35,8 @@ type PageBodyProps = {
 } & ContainerProps;
 
 const PageBody: React.FC<PageBodyProps> = (props) => {
-    const { children, hasFab, className, ...passthrough } = props;
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { fullWidth, children, hasFab, className, ...passthrough } = props;
     const classes = useStyles(props);
     return (
         <Container

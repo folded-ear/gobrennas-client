@@ -1,5 +1,5 @@
 import { Typography } from "@mui/material";
-import React, { Component } from "react";
+import { Component } from "react";
 import PageBody from "./PageBody";
 
 class NotFound extends Component {

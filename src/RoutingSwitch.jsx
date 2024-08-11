@@ -1,5 +1,4 @@
 import PropTypes from "prop-types";
-import React from "react";
 import { Switch, useLocation } from "react-router-dom";
 import { useIsAuthenticated } from "@/providers/Profile";
 import FluxRoute from "./views/common/FluxRoute";

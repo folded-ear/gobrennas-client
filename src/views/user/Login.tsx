@@ -1,5 +1,5 @@
 import Button from "@mui/material/Button";
-import React, { Component } from "react";
+import { Component } from "react";
 import { Redirect } from "react-router-dom";
 import { GOOGLE_AUTH_URL, SESSION_STORAGE_POST_LOGIN } from "@/constants";
 import { setJsonItem } from "@/util/storage";

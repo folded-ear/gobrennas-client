@@ -7,7 +7,7 @@ import {
 } from "@mui/x-data-grid";
 import Footer from "./Footer";
 import Header from "./Header";
-import React, { useMemo } from "react";
+import { useMemo } from "react";
 import { Result } from "@/data/hooks/usePantryItemSearch";
 import DeleteItemAction from "./DeleteItemAction";
 import {

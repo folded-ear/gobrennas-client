@@ -1,4 +1,3 @@
-import React from "react";
 import { Redirect } from "react-router-dom";
 import { PlannerController as Planner } from "@/features/Planner/PlannerController";
 import PlannedBucketController from "./features/RecipeDisplay/PlannedBucketController";

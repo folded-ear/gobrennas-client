@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import LibraryStore from "@/features/RecipeLibrary/data/LibraryStore";
 import shoppingStore, { Item } from "@/data/shoppingStore";
 import {
@@ -260,11 +260,17 @@ const Shop = () => {
         handleRepartition();
     }, [handleRepartition, activePlanIds]);
     const [acquiredIds, setAcquiredIds] = useState<Set<BfsId>>(new Set());
-    useEffect(() => {
-        setAcquiredIds(
-            new Set(itemTuples.filter((it) => it.acquiring).map((it) => it.id)),
-        );
-    }, [partitionReqCount]);
+    useEffect(
+        () => {
+            setAcquiredIds(
+                new Set(
+                    itemTuples.filter((it) => it.acquiring).map((it) => it.id),
+                ),
+            );
+        },
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        [partitionReqCount],
+    );
     const [partitionedTuples, setPartitionedTuples] = useState<
         ShopItemTuple[][]
     >([[], []]);

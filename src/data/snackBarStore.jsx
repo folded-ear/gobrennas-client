@@ -7,7 +7,6 @@ import planStore from "@/features/Planner/data/planStore";
 import LibraryStore from "@/features/RecipeLibrary/data/LibraryStore";
 import { ReduceStore } from "flux/utils";
 import PropTypes from "prop-types";
-import React from "react";
 import typedStore from "@/util/typedStore";
 import dispatcher from "./dispatcher";
 import PantryItemActions from "./PantryItemActions";

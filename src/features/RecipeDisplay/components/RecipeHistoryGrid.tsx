@@ -18,7 +18,7 @@ import TableCell from "@mui/material/TableCell";
 import { PlanItemStatus } from "@/__generated__/graphql";
 import { CookedItIcon, DeleteIcon, EditIcon } from "@/views/common/icons";
 import User from "@/views/user/User";
-import React, { useCallback, useState } from "react";
+import { useCallback, useState } from "react";
 import { useSetRecipeHistoryRating } from "@/data/hooks/useSetRecipeHistoryRating";
 import { BfsId } from "@/global/types/identity";
 import { DateTime } from "luxon";

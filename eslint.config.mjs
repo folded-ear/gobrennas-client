@@ -2,6 +2,8 @@ import globals from "globals";
 import pluginJs from "@eslint/js";
 import tseslint from "typescript-eslint";
 import pluginReactConfig from "eslint-plugin-react/configs/recommended.js";
+import pluginJsxRuntimeConfig from "eslint-plugin-react/configs/jsx-runtime.js";
+import pluginReactHooks_nonFlat from "eslint-plugin-react-hooks";
 
 export default [
     { files: ["**/*.{js,mjs,cjs,ts,jsx,tsx}"] },
@@ -10,6 +12,13 @@ export default [
     pluginJs.configs.recommended,
     ...tseslint.configs.recommended,
     pluginReactConfig,
+    pluginJsxRuntimeConfig,
+    {
+        plugins: {
+            "react-hooks": pluginReactHooks_nonFlat,
+        },
+        rules: pluginReactHooks_nonFlat.configs.recommended.rules,
+    },
     {
         ignores: ["**/__generated__/**/*"],
     },
@@ -37,7 +46,6 @@ export default [
             semi: ["warn", "always"],
             "@typescript-eslint/no-explicit-any": 0,
             "@typescript-eslint/no-unsafe-assignment": 0,
-            "react/react-in-jsx-scope": 1,
             "react/no-unescaped-entities": 1,
             "react/no-deprecated": 1,
         },

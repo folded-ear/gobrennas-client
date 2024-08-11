@@ -231,7 +231,7 @@ const PlanApi = {
                 return {
                     type: PlanActions.BUCKETS_DELETED,
                     planId,
-                    id: dels.map((d) => ensureInt(d.id)),
+                    ids: dels.map((d) => ensureInt(d.id)),
                 };
             },
         ),

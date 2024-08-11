@@ -19,6 +19,11 @@ import history from "@/util/history";
 //     Dispatcher.register(require("./util/logAction").default);
 // }
 
+// ReactDOM.render is the only option for React 17, which we're bound to via the
+// 'withStyles' and friends MUI v4 helpers. Once they're gone, and we use only
+// MUI v5 goodies, we can upgrade React and its ecosystem to 18.
+//
+// eslint-disable-next-line react/no-deprecated
 ReactDOM.render(
     [
         React.StrictMode,
