@@ -1,4 +1,4 @@
-import { Redirect } from "react-router-dom";
+import { Redirect, RouteProps } from "react-router-dom";
 import { PlannerController as Planner } from "@/features/Planner/PlannerController";
 import PlannedBucketController from "./features/RecipeDisplay/PlannedBucketController";
 import PlannedRecipeController from "./features/RecipeDisplay/PlannedRecipeController";
@@ -14,8 +14,32 @@ import Foodinger from "@/views/Foodinger";
 import { RecipeAddController } from "./features/RecipeEdit/RecipeAddController";
 import { Library } from "@/views/Library";
 import PantryItemAdmin from "./features/PantryItemAdmin/PantryItemAdmin";
+import * as React from "react";
+import { RouteComponentProps } from "react-router";
 
-const routes = {
+interface BfsRouteComponentProps extends RouteComponentProps {
+    readonly authenticated: boolean;
+}
+
+// Don't allow an undefined component. Not sure why that'd be useful.
+type BfsRouteComponent =
+    | React.ComponentType<BfsRouteComponentProps>
+    | React.ComponentType<any>;
+
+export interface BfsRoute extends RouteProps {
+    // React Router allows a string[], but we don't use that. We do, however use
+    // paths as keys, which must be string. Express that here, as well as that
+    // a path is required and cannot be null/undefined. At least for now. :)
+    readonly path: string;
+    readonly component: BfsRouteComponent;
+}
+
+export interface BfsRoutes {
+    readonly public: BfsRoute[];
+    readonly private: BfsRoute[];
+}
+
+const routes: BfsRoutes = {
     public: [
         { path: "/", component: Landing, exact: true },
         { path: "/foodinger", component: Foodinger },
