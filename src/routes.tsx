@@ -2,7 +2,7 @@ import { Redirect, RouteProps } from "react-router-dom";
 import { PlannerController as Planner } from "@/features/Planner/PlannerController";
 import PlannedBucketController from "./features/RecipeDisplay/PlannedBucketController";
 import PlannedRecipeController from "./features/RecipeDisplay/PlannedRecipeController";
-import Recipe from "./features/RecipeDisplay/RecipeController";
+import RecipeController from "./features/RecipeDisplay/RecipeController";
 import RecipeEditController from "./features/RecipeEdit/RecipeEditController";
 import Shop from "./containers/Shop";
 import { SharedRecipeController } from "./features/RecipeDisplay/SharedRecipeController";
@@ -12,10 +12,11 @@ import { UserProfileView } from "@/views/UserProfile/UserProfileView";
 import Profile from "./views/user/Profile";
 import Foodinger from "@/views/Foodinger";
 import { RecipeAddController } from "./features/RecipeEdit/RecipeAddController";
-import { Library } from "@/views/Library";
 import PantryItemAdmin from "./features/PantryItemAdmin/PantryItemAdmin";
+import { CurrentPlanSidebar } from "@/features/RecipeLibrary/components/CurrentPlanSidebar";
 import * as React from "react";
 import { RouteComponentProps } from "react-router";
+import { LibraryController } from "@/features/RecipeLibrary/LibraryController";
 
 interface BfsRouteComponentProps extends RouteComponentProps {
     readonly authenticated: boolean;
@@ -34,9 +35,14 @@ export interface BfsRoute extends RouteProps {
     readonly component: BfsRouteComponent;
 }
 
+interface PrivateBfsRoute extends BfsRoute {
+    // sidebars are not supported on mobile (as you'd expect).
+    readonly sidebar?: BfsRouteComponent | undefined;
+}
+
 export interface BfsRoutes {
     readonly public: BfsRoute[];
-    readonly private: BfsRoute[];
+    readonly private: PrivateBfsRoute[];
 }
 
 const routes: BfsRoutes = {
@@ -57,8 +63,16 @@ const routes: BfsRoutes = {
             path: "/library/recipe/:id/make-copy",
             component: RecipeEditController,
         },
-        { path: "/library/recipe/:id", component: Recipe },
-        { path: "/library", component: Library },
+        {
+            path: "/library/recipe/:id",
+            component: RecipeController,
+            sidebar: CurrentPlanSidebar,
+        },
+        {
+            path: "/library",
+            component: LibraryController,
+            sidebar: CurrentPlanSidebar,
+        },
         { path: "/add", component: RecipeAddController },
         // eslint-disable-next-line react/display-name
         { path: "/tasks", component: () => <Redirect to="/plan" /> },

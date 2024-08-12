@@ -1,5 +1,4 @@
-import { FlexBox } from "@/global/components/FlexBox";
-import React, { PropsWithChildren, ReactElement } from "react";
+import React, { ReactElement } from "react";
 import { CSSObject, styled } from "@mui/material/styles";
 import {
     Drawer,
@@ -30,9 +29,7 @@ import { moveSubtree } from "@/features/Planner/components/Plan";
 import ResetBucketsButton from "@/features/Planner/components/ResetBucketsButton";
 import useWhileOver from "@/util/useWhileOver";
 
-type Props = PropsWithChildren<unknown>;
-
-export const drawerWidth = 200;
+const drawerWidth = 200;
 const BUCKET_PREFIX = "bucket-";
 
 const openedMixin: CSSObject = {
@@ -75,7 +72,7 @@ type PlanInfo = Pick<TPlan, "id" | "name" | "buckets"> & {
     recipes: RecipeInfo[];
 };
 
-const BodyContainer: React.FC<Props> = () => {
+const BodyContainer: React.FC = () => {
     const plan = useFluxStore<Maybe<PlanInfo>>(() => {
         const { data: plan, loading } = planStore.getActivePlanRlo();
         if (!plan || loading) return;
@@ -272,13 +269,10 @@ const PlannedRecipe: React.FC<PlannedRecipeProps> = ({ item }) => {
     );
 };
 
-export const CurrentPlanSidebar: React.FC<Props> = ({ children }: Props) => {
+export const CurrentPlanSidebar: React.FC = () => {
     return (
-        <FlexBox>
-            <div style={{ width: "100%" }}>{children}</div>
-            <Sidebar variant="permanent" anchor={"right"}>
-                <BodyContainer />
-            </Sidebar>
-        </FlexBox>
+        <Sidebar variant="permanent" anchor={"right"}>
+            <BodyContainer />
+        </Sidebar>
     );
 };
