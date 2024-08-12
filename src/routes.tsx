@@ -8,8 +8,7 @@ import Shop from "./containers/Shop";
 import { SharedRecipeController } from "./features/RecipeDisplay/SharedRecipeController";
 import Landing from "./views/Landing";
 import OAuth2RedirectHandler from "@/views/user/OAuth2RedirectHandler";
-import { UserProfileView } from "@/views/UserProfile/UserProfileView";
-import Profile from "./views/user/Profile";
+import Profile from "./features/UserProfile/components/Profile";
 import Foodinger from "@/views/Foodinger";
 import { RecipeAddController } from "./features/RecipeEdit/RecipeAddController";
 import { Library } from "@/views/Library";
@@ -26,7 +25,7 @@ const routes = {
         },
     ],
     private: [
-        { path: "/user-profile", component: UserProfileView },
+        { path: "/user-profile", component: () => <Redirect to="/profile" /> },
         { path: "/profile", component: Profile },
         { path: "/library/recipe/:id/edit", component: RecipeEditController },
         {
