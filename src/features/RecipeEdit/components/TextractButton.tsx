@@ -2,12 +2,13 @@ import { Box, Button } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import { LibraryIcon, TextractIcon } from "@/views/common/icons";
 import React, { MouseEventHandler } from "react";
+import { Theme } from "@mui/material/styles";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles((theme: Theme) => ({
     trigger: {
         position: "absolute",
         right: 0,
-        zIndex: 1000,
+        zIndex: theme.zIndex.fab,
         backgroundColor: theme.palette.background.paper,
         transformOrigin: "bottom right",
         transform: `rotate(90deg) translateY(100%) translateX(50%)`,

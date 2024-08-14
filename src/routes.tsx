@@ -1,8 +1,8 @@
-import { Redirect } from "react-router-dom";
+import { Redirect, RouteProps } from "react-router-dom";
 import { PlannerController as Planner } from "@/features/Planner/PlannerController";
 import PlannedBucketController from "./features/RecipeDisplay/PlannedBucketController";
 import PlannedRecipeController from "./features/RecipeDisplay/PlannedRecipeController";
-import Recipe from "./features/RecipeDisplay/RecipeController";
+import RecipeController from "./features/RecipeDisplay/RecipeController";
 import RecipeEditController from "./features/RecipeEdit/RecipeEditController";
 import Shop from "./containers/Shop";
 import { SharedRecipeController } from "./features/RecipeDisplay/SharedRecipeController";
@@ -11,10 +11,40 @@ import OAuth2RedirectHandler from "@/views/user/OAuth2RedirectHandler";
 import Profile from "./features/UserProfile/components/Profile";
 import Foodinger from "@/views/Foodinger";
 import { RecipeAddController } from "./features/RecipeEdit/RecipeAddController";
-import { Library } from "@/views/Library";
 import PantryItemAdmin from "./features/PantryItemAdmin/PantryItemAdmin";
+import { CurrentPlanSidebar } from "@/features/RecipeLibrary/components/CurrentPlanSidebar";
+import * as React from "react";
+import { RouteComponentProps } from "react-router";
+import { LibraryController } from "@/features/RecipeLibrary/LibraryController";
 
-const routes = {
+interface BfsRouteComponentProps extends RouteComponentProps {
+    readonly authenticated: boolean;
+}
+
+// Don't allow an undefined component. Not sure why that'd be useful.
+type BfsRouteComponent =
+    | React.ComponentType<BfsRouteComponentProps>
+    | React.ComponentType<any>;
+
+export interface BfsRoute extends RouteProps {
+    // React Router allows a string[], but we don't use that. We do, however use
+    // paths as keys, which must be string. Express that here, as well as that
+    // a path is required and cannot be null/undefined. At least for now. :)
+    readonly path: string;
+    readonly component: BfsRouteComponent;
+}
+
+interface PrivateBfsRoute extends BfsRoute {
+    // sidebars are not supported on mobile (as you'd expect).
+    readonly sidebar?: BfsRouteComponent | undefined;
+}
+
+export interface BfsRoutes {
+    readonly public: BfsRoute[];
+    readonly private: PrivateBfsRoute[];
+}
+
+const routes: BfsRoutes = {
     public: [
         { path: "/", component: Landing, exact: true },
         { path: "/foodinger", component: Foodinger },
@@ -32,8 +62,16 @@ const routes = {
             path: "/library/recipe/:id/make-copy",
             component: RecipeEditController,
         },
-        { path: "/library/recipe/:id", component: Recipe },
-        { path: "/library", component: Library },
+        {
+            path: "/library/recipe/:id",
+            component: RecipeController,
+            sidebar: CurrentPlanSidebar,
+        },
+        {
+            path: "/library",
+            component: LibraryController,
+            sidebar: CurrentPlanSidebar,
+        },
         { path: "/add", component: RecipeAddController },
         // eslint-disable-next-line react/display-name
         { path: "/tasks", component: () => <Redirect to="/plan" /> },

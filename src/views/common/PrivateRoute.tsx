@@ -1,4 +1,4 @@
-import React, { ComponentType } from "react";
+import React from "react";
 import { Redirect } from "react-router-dom";
 import {
     useIsProfileInitializing,
@@ -8,11 +8,12 @@ import {
 import FluxRoute from "./FluxRoute";
 import LoadingIndicator from "./LoadingIndicator";
 import { Location } from "history";
+import { BfsRoute } from "@/routes";
 
-function AuthenticatedHelper({ render, ...rest }) {
+function AuthenticatedHelper({ render, ...route }) {
     return render({
         currentUser: useProfile(),
-        ...rest,
+        ...route,
     });
 }
 
@@ -30,29 +31,27 @@ const AnonymousHelper: React.FC<{ location: Location }> = ({ location }) => {
     );
 };
 
-interface Props {
+interface Props extends BfsRoute {
     authenticated: boolean;
-    component: ComponentType;
-    location: Location;
 }
 
 const PrivateRoute: React.FC<Props> = ({
     component: Component,
     authenticated,
-    ...rest
+    ...route
 }) => {
     if (useIsProfilePending()) {
         return <LoadingIndicator />;
     }
     return (
         <FluxRoute
-            {...rest}
+            {...route}
             render={(props) => {
                 if (authenticated) {
                     return (
                         <AuthenticatedHelper
                             render={(props) => <Component {...props} />}
-                            {...rest}
+                            {...route}
                             {...props}
                         />
                     );

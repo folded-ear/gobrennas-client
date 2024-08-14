@@ -84,6 +84,11 @@ const baseTokens: ThemeOptions = {
             marginBottom: ".5em",
         },
     },
+    zIndex: {
+        // These place the FAB above drawer
+        fab: 1250,
+        speedDial: 1250,
+    },
 };
 
 const lightTokens: ThemeOptions = {

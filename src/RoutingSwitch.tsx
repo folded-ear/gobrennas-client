@@ -1,14 +1,17 @@
-import PropTypes from "prop-types";
 import { Switch, useLocation } from "react-router-dom";
-import { useIsAuthenticated } from "@/providers/Profile";
 import FluxRoute from "./views/common/FluxRoute";
 import NotFound from "./views/common/NotFound";
 import PrivateRoute from "./views/common/PrivateRoute";
 import Login from "./views/user/Login";
+import React from "react";
+import { BfsRoutes } from "@/routes";
 
-function RoutingSwitch(props) {
-    const { routes } = props;
-    const authenticated = useIsAuthenticated();
+export interface SwitchProps {
+    readonly routes: BfsRoutes;
+    readonly authenticated: boolean;
+}
+
+const RoutingSwitch: React.FC<SwitchProps> = ({ routes, authenticated }) => {
     const location = useLocation();
 
     return (
@@ -44,20 +47,6 @@ function RoutingSwitch(props) {
             <FluxRoute component={NotFound} />
         </Switch>
     );
-}
-
-const routeType = PropTypes.shape({
-    path: PropTypes.string.isRequired,
-    component: PropTypes.elementType.isRequired,
-    exact: PropTypes.bool,
-});
-
-RoutingSwitch.propTypes = {
-    authenticated: PropTypes.bool.isRequired,
-    routes: PropTypes.shape({
-        public: PropTypes.arrayOf(routeType),
-        private: PropTypes.arrayOf(routeType),
-    }).isRequired,
 };
 
 export default RoutingSwitch;

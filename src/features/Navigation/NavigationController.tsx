@@ -18,6 +18,8 @@ import ShoppingActions from "@/data/ShoppingActions";
 import PlanActions from "../Planner/data/PlanActions";
 import useIsNavCollapsed, { setNavCollapsed } from "@/data/useIsNavCollapsed";
 import { BfsId } from "@/global/types/identity";
+import routes from "@/routes";
+import SidebarSwitch from "@/SidebarSwitch";
 
 type NavigationControllerProps = {
     authenticated: boolean;
@@ -119,6 +121,7 @@ export const NavigationController: React.FC<NavigationControllerProps> = ({
                 onExpand={handleExpand}
             />
             <MainDesktop open={expanded}>{children}</MainDesktop>
+            <SidebarSwitch routes={routes} authenticated={authenticated} />
         </FlexBox>
     );
 };
