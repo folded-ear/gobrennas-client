@@ -1,6 +1,7 @@
 import { useRegisterSW } from "virtual:pwa-register/react";
 import Banner from "@/views/common/Banner";
 import Button from "@mui/material/Button";
+import { Stack, Typography } from "@mui/material";
 
 function NewVersionPrompt() {
     // periodic sync is disabled, change the value to enable it, the period is in milliseconds
@@ -31,23 +32,27 @@ function NewVersionPrompt() {
 
     return needRefresh ? (
         <Banner severity="info">
-            Brenna&apos;s Food Software has updated!{" "}
-            <Button
-                size="small"
-                color="primary"
-                variant="outlined"
-                onClick={() => updateServiceWorker(true)}
-            >
-                Relaunch
-            </Button>
-            <Button
-                size="small"
-                color="secondary"
-                variant="outlined"
-                onClick={() => close()}
-            >
-                Ignore
-            </Button>
+            <Stack direction={"row"} gap={1} alignItems={"baseline"}>
+                <Typography>
+                    Brenna&apos;s Food Software has updated!
+                </Typography>
+                <Button
+                    size="small"
+                    color="primary"
+                    variant="outlined"
+                    onClick={() => updateServiceWorker(true)}
+                >
+                    Relaunch
+                </Button>
+                <Button
+                    size="small"
+                    color="secondary"
+                    variant="outlined"
+                    onClick={() => close()}
+                >
+                    Ignore
+                </Button>
+            </Stack>
         </Banner>
     ) : null;
 }
