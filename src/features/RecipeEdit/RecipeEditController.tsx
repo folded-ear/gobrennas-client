@@ -13,7 +13,6 @@ import type { BfsId } from "@/global/types/identity";
 import type { DraftRecipe } from "@/global/types/types";
 import { useDeleteRecipe } from "@/data/hooks/useDeleteRecipe";
 import { useProfileId } from "@/providers/Profile";
-import Banner from "@/views/common/Banner";
 
 type Props = RouteComponentProps<{ id?: string }>;
 
@@ -41,11 +40,11 @@ const RecipeEditController: React.FC<Props> = ({ match }) => {
         myProfileId.toString() !== recipe.ownerId.toString()
     ) {
         return (
-            <Banner>
+            <Alert severity={"error"}>
                 You can only{" "}
                 <Link to={`/library/recipe/${id}`}>view this recipe</Link>, not
                 edit it, because it&apos;s not yours.
-            </Banner>
+            </Alert>
         );
     }
 

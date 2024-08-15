@@ -33,7 +33,6 @@ export {
     ArrowForward as ForwardIcon,
     DateRange as GenerateBucketsIcon,
     HelpOutline as HelpIcon,
-    InfoOutlined as InfoIcon,
     MenuBook as LibraryIcon,
     Link as LinkIcon,
     DataSaverOff as LoadingIcon,
