@@ -34,11 +34,13 @@ const RecipeEditController: React.FC<Props> = ({ match }) => {
         return <CircularProgress />;
     }
 
-    if (
+    const shouldCreateCopy = match.path.split("/").includes("make-copy");
+
+    const isMine =
         myProfileId &&
         recipe.ownerId &&
-        myProfileId.toString() !== recipe.ownerId.toString()
-    ) {
+        myProfileId.toString() === recipe.ownerId.toString();
+    if (!isMine && !shouldCreateCopy) {
         return (
             <Alert severity={"error"}>
                 You can only{" "}
@@ -46,13 +48,6 @@ const RecipeEditController: React.FC<Props> = ({ match }) => {
                 edit it, because it&apos;s not yours.
             </Alert>
         );
-    }
-
-    const shouldCreateCopy = match.path.split("/").includes("make-copy");
-
-    const draft = { ...recipe };
-    if (shouldCreateCopy) {
-        draft.name = `Copy of ${draft.name}`;
     }
 
     const handleUpdate = (recipe: DraftRecipe) => {
@@ -93,20 +88,26 @@ const RecipeEditController: React.FC<Props> = ({ match }) => {
                 </Alert>
             )}
             <RecipeForm
-                title={`Editing ${draft.name}`}
-                recipe={draft}
+                title={
+                    shouldCreateCopy
+                        ? `Copy ${recipe.name}`
+                        : `Editing ${recipe.name}`
+                }
+                recipe={recipe}
                 onSave={shouldCreateCopy ? handleSaveCopy : handleUpdate}
-                onSaveCopy={handleSaveCopy}
+                onSaveCopy={shouldCreateCopy ? undefined : handleSaveCopy}
                 onCancel={handleCancel}
                 labelList={labelList}
                 extraButtons={
-                    <DeleteButton
-                        variant="text"
-                        color="error"
-                        forType="recipe"
-                        label="Delete Recipe"
-                        onConfirm={() => handleDelete(recipe.id)}
-                    />
+                    shouldCreateCopy ? undefined : (
+                        <DeleteButton
+                            variant="text"
+                            color="error"
+                            forType="recipe"
+                            label="Delete Recipe"
+                            onConfirm={() => handleDelete(recipe.id)}
+                        />
+                    )
                 }
             />
         </PageBody>
