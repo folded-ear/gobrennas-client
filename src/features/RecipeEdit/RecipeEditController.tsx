@@ -8,7 +8,7 @@ import RecipeForm from "@/features/RecipeEdit/components/RecipeForm";
 import DeleteButton from "@/views/common/DeleteButton";
 import { Alert, CircularProgress } from "@mui/material";
 import { useUpdateRecipe } from "@/data/hooks/useUpdateRecipe";
-import { useCreateRecipe } from "@/data/hooks/useCreateRecipe";
+import { useCreateRecipeFrom } from "@/data/hooks/useCreateRecipeFrom";
 import type { BfsId } from "@/global/types/identity";
 import type { DraftRecipe } from "@/global/types/types";
 import { useDeleteRecipe } from "@/data/hooks/useDeleteRecipe";
@@ -22,7 +22,7 @@ const RecipeEditController: React.FC<Props> = ({ match }) => {
     const { loading, data: recipe } = useGetRecipe(id);
     const { data: labelList } = useGetAllLabels();
     const { error: updateError, updateRecipe } = useUpdateRecipe();
-    const { error: createError, createRecipe } = useCreateRecipe();
+    const { error: createError, createRecipeFrom } = useCreateRecipeFrom();
     const myProfileId = useProfileId();
     const [deleteRecipe] = useDeleteRecipe();
 
@@ -57,8 +57,8 @@ const RecipeEditController: React.FC<Props> = ({ match }) => {
     };
 
     const handleSaveCopy = (recipe: DraftRecipe) => {
-        createRecipe(recipe).then((result) => {
-            const id = result.data?.library?.createRecipe.id;
+        createRecipeFrom(recipe).then((result) => {
+            const id = result.data?.library?.createRecipeFrom.id;
             id
                 ? history.push(`/library/recipe/${id}`)
                 : history.push(`/library`);
