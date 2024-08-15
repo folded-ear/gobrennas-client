@@ -1,7 +1,6 @@
 import { useRegisterSW } from "virtual:pwa-register/react";
-import Banner from "@/views/common/Banner";
 import Button from "@mui/material/Button";
-import { Stack, Typography } from "@mui/material";
+import { Alert, AlertTitle, Stack } from "@mui/material";
 
 function NewVersionPrompt() {
     // periodic sync is disabled, change the value to enable it, the period is in milliseconds
@@ -31,11 +30,9 @@ function NewVersionPrompt() {
     }
 
     return needRefresh ? (
-        <Banner severity="info">
-            <Stack direction={"row"} gap={1} alignItems={"baseline"}>
-                <Typography>
-                    Brenna&apos;s Food Software has updated!
-                </Typography>
+        <Alert severity="info">
+            <AlertTitle>Brenna&apos;s Food Software has updated!</AlertTitle>
+            <Stack direction={"row"} gap={1}>
                 <Button
                     size="small"
                     color="primary"
@@ -53,7 +50,7 @@ function NewVersionPrompt() {
                     Ignore
                 </Button>
             </Stack>
-        </Banner>
+        </Alert>
     ) : null;
 }
 

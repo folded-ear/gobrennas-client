@@ -13,7 +13,6 @@ import type { BfsId } from "@/global/types/identity";
 import type { DraftRecipe } from "@/global/types/types";
 import { useDeleteRecipe } from "@/data/hooks/useDeleteRecipe";
 import { useProfileId } from "@/providers/Profile";
-import Banner from "@/views/common/Banner";
 
 type Props = RouteComponentProps<{ id?: string }>;
 
@@ -35,25 +34,20 @@ const RecipeEditController: React.FC<Props> = ({ match }) => {
         return <CircularProgress />;
     }
 
-    if (
+    const shouldCreateCopy = match.path.split("/").includes("make-copy");
+
+    const isMine =
         myProfileId &&
         recipe.ownerId &&
-        myProfileId.toString() !== recipe.ownerId.toString()
-    ) {
+        myProfileId.toString() === recipe.ownerId.toString();
+    if (!isMine && !shouldCreateCopy) {
         return (
-            <Banner>
+            <Alert severity={"error"}>
                 You can only{" "}
                 <Link to={`/library/recipe/${id}`}>view this recipe</Link>, not
                 edit it, because it&apos;s not yours.
-            </Banner>
+            </Alert>
         );
-    }
-
-    const shouldCreateCopy = match.path.split("/").includes("make-copy");
-
-    const draft = { ...recipe };
-    if (shouldCreateCopy) {
-        draft.name = `Copy of ${draft.name}`;
     }
 
     const handleUpdate = (recipe: DraftRecipe) => {
@@ -94,20 +88,26 @@ const RecipeEditController: React.FC<Props> = ({ match }) => {
                 </Alert>
             )}
             <RecipeForm
-                title={`Editing ${draft.name}`}
-                recipe={draft}
+                title={
+                    shouldCreateCopy
+                        ? `Copy ${recipe.name}`
+                        : `Editing ${recipe.name}`
+                }
+                recipe={recipe}
                 onSave={shouldCreateCopy ? handleSaveCopy : handleUpdate}
-                onSaveCopy={handleSaveCopy}
+                onSaveCopy={shouldCreateCopy ? undefined : handleSaveCopy}
                 onCancel={handleCancel}
                 labelList={labelList}
                 extraButtons={
-                    <DeleteButton
-                        variant="text"
-                        color="error"
-                        forType="recipe"
-                        label="Delete Recipe"
-                        onConfirm={() => handleDelete(recipe.id)}
-                    />
+                    shouldCreateCopy ? undefined : (
+                        <DeleteButton
+                            variant="text"
+                            color="error"
+                            forType="recipe"
+                            label="Delete Recipe"
+                            onConfirm={() => handleDelete(recipe.id)}
+                        />
+                    )
                 }
             />
         </PageBody>
