@@ -4,7 +4,6 @@ import { AuthTokenProvider } from "@/providers/AuthToken";
 import { IsMobileProvider } from "@/providers/IsMobile";
 import { ProfileProvider } from "@/providers/Profile";
 import React from "react";
-import ReactDOM from "react-dom";
 import { QueryClientProvider } from "react-query";
 import { Router } from "react-router-dom";
 import App from "./App";
@@ -14,17 +13,13 @@ import queryClient from "@/data/queryClient";
 import WindowActions from "@/data/WindowActions";
 import debounce from "@/util/debounce";
 import history from "@/util/history";
+import { createRoot } from "react-dom/client";
 
 // if (!import.meta.env.PROD) {
 //     Dispatcher.register(require("./util/logAction").default);
 // }
 
-// ReactDOM.render is the only option for React 17, which we're bound to via the
-// 'withStyles' and friends MUI v4 helpers. Once they're gone, and we use only
-// MUI v5 goodies, we can upgrade React and its ecosystem to 18.
-//
-// eslint-disable-next-line react/no-deprecated
-ReactDOM.render(
+createRoot(document.getElementById("root")!).render(
     [
         React.StrictMode,
         ApolloClient,
@@ -41,7 +36,6 @@ ReactDOM.render(
             </Router>
         </QueryClientProvider>,
     ),
-    document.getElementById("root"),
 );
 
 /*
