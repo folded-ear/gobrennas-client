@@ -6,7 +6,7 @@ import {
 
 export type UseQueryResult<T, V extends OperationVariables> = {
     loading: boolean;
-    error?: ApolloError | boolean;
+    error?: ApolloError;
     data: T | null;
     refetch: ObservableQueryFields<T, V>["refetch"];
 };
