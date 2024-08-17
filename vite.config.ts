@@ -21,6 +21,10 @@ export default defineConfig({
     },
     build: {
         outDir: "build",
+        // When switching from CRA to Vite, the main bundle was ~550 kb, for
+        // both systems. Setting this slightly larger to hopefully catch any
+        // egregious future growth, but not warn about the status quo.
+        chunkSizeWarningLimit: 600,
     },
     plugins: [
         react(),
