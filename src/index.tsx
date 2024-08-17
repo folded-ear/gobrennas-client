@@ -1,19 +1,8 @@
-import PlanItemSynchronizer from "@/features/Planner/data/PlanItemSynchronizer";
-import { client as apolloClient } from "@/providers/ApolloClient";
-import { ApolloProvider } from "@apollo/client";
-import { AuthTokenProvider } from "@/providers/AuthToken";
-import { IsMobileProvider } from "@/providers/IsMobile";
-import { ProfileProvider } from "@/providers/Profile";
 import { StrictMode } from "react";
-import { QueryClientProvider } from "react-query";
-import { Router } from "react-router-dom";
 import GoBrennas from "./GoBrennas";
 import Dispatcher from "@/data/dispatcher";
-import PantryItemSynchronizer from "@/data/PantryItemSynchronizer";
-import queryClient from "@/data/queryClient";
 import WindowActions from "@/data/WindowActions";
 import debounce from "@/util/debounce";
-import history from "@/util/history";
 import { createRoot } from "react-dom/client";
 
 // if (!import.meta.env.PROD) {
@@ -22,21 +11,7 @@ import { createRoot } from "react-dom/client";
 
 createRoot(document.getElementById("root")!).render(
     <StrictMode>
-        <ApolloProvider client={apolloClient}>
-            <AuthTokenProvider>
-                <ProfileProvider>
-                    <IsMobileProvider>
-                        <QueryClientProvider client={queryClient}>
-                            <Router history={history}>
-                                <PantryItemSynchronizer />
-                                <PlanItemSynchronizer />
-                                <GoBrennas />
-                            </Router>
-                        </QueryClientProvider>
-                    </IsMobileProvider>
-                </ProfileProvider>
-            </AuthTokenProvider>
-        </ApolloProvider>
+        <GoBrennas />
     </StrictMode>,
 );
 

@@ -1,5 +1,4 @@
-import * as React from "react";
-import { ReactNode, useEffect } from "react";
+import { PropsWithChildren, useEffect, useState } from "react";
 import {
     Header,
     MainDesktop,
@@ -11,7 +10,7 @@ import { useIsMobile } from "@/providers/IsMobile";
 import { MobileNav } from "@/features/Navigation/components/MobileNav";
 import { DesktopNav } from "@/features/Navigation/components/DesktopNav";
 import { useHistory } from "react-router-dom";
-import { useLogoutHandler } from "@/providers/Profile";
+import { useIsAuthenticated, useLogoutHandler } from "@/providers/Profile";
 import RouteStore from "@/data/RouteStore";
 import Dispatcher from "@/data/dispatcher";
 import ShoppingActions from "@/data/ShoppingActions";
@@ -20,11 +19,6 @@ import useIsNavCollapsed, { setNavCollapsed } from "@/data/useIsNavCollapsed";
 import { BfsId } from "@/global/types/identity";
 import routes from "@/routes";
 import SidebarSwitch from "@/SidebarSwitch";
-
-type NavigationControllerProps = {
-    authenticated: boolean;
-    children?: ReactNode;
-};
 
 export function toggleShoppingPlan(id: BfsId) {
     return Dispatcher.dispatch({
@@ -40,14 +34,12 @@ export function selectPlan(id: BfsId) {
     });
 }
 
-export const NavigationController: React.FC<NavigationControllerProps> = ({
-    authenticated,
-    children,
-}) => {
+export const NavigationController = ({ children }: PropsWithChildren) => {
+    const authenticated = useIsAuthenticated();
     const expanded = !useIsNavCollapsed();
     const isMobile = useIsMobile();
     const history = useHistory();
-    const [selected, setSelected] = React.useState("");
+    const [selected, setSelected] = useState("");
 
     const path = useFluxStore(() => {
         const state = RouteStore.getState();
@@ -121,7 +113,7 @@ export const NavigationController: React.FC<NavigationControllerProps> = ({
                 onExpand={handleExpand}
             />
             <MainDesktop open={expanded}>{children}</MainDesktop>
-            <SidebarSwitch routes={routes} authenticated={authenticated} />
+            <SidebarSwitch routes={routes} />
         </FlexBox>
     );
 };

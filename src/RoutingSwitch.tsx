@@ -3,15 +3,15 @@ import FluxRoute from "./views/common/FluxRoute";
 import NotFound from "./views/common/NotFound";
 import PrivateRoute from "./views/common/PrivateRoute";
 import Login from "./views/user/Login";
-import React from "react";
 import { BfsRoutes } from "@/routes";
+import { useIsAuthenticated } from "@/providers/Profile";
 
 export interface SwitchProps {
     readonly routes: BfsRoutes;
-    readonly authenticated: boolean;
 }
 
-const RoutingSwitch: React.FC<SwitchProps> = ({ routes, authenticated }) => {
+const RoutingSwitch = ({ routes }: SwitchProps) => {
+    const authenticated = useIsAuthenticated();
     const location = useLocation();
 
     return (

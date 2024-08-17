@@ -1,5 +1,5 @@
 import "./GoBrennas.scss";
-import { useIsAuthenticated } from "@/providers/Profile";
+import { ProfileProvider } from "@/providers/Profile";
 import {
     StyledEngineProvider,
     Theme,
@@ -12,6 +12,16 @@ import RoutingSwitch from "./RoutingSwitch";
 import routes from "./routes";
 import SnackPack from "@/views/common/SnackPack";
 import NewVersionPrompt from "@/NewVersionPrompt";
+import { ApolloProvider } from "@apollo/client";
+import { client as apolloClient } from "@/providers/ApolloClient";
+import { AuthTokenProvider } from "@/providers/AuthToken";
+import { IsMobileProvider } from "@/providers/IsMobile";
+import { QueryClientProvider } from "react-query";
+import queryClient from "@/data/queryClient";
+import { Router } from "react-router-dom";
+import history from "@/util/history";
+import PantryItemSynchronizer from "@/data/PantryItemSynchronizer";
+import PlanItemSynchronizer from "@/features/Planner/data/PlanItemSynchronizer";
 
 declare module "@mui/styles/defaultTheme" {
     // eslint-disable-next-line @typescript-eslint/no-empty-interface
@@ -19,22 +29,31 @@ declare module "@mui/styles/defaultTheme" {
 }
 
 function GoBrennas() {
-    const authenticated = useIsAuthenticated();
-
     return (
-        <StyledEngineProvider injectFirst>
-            <ThemeProvider theme={useBfsTheme()}>
-                <CssBaseline />
-                <NavigationController authenticated={authenticated}>
-                    {authenticated && <NewVersionPrompt />}
-                    <RoutingSwitch
-                        routes={routes}
-                        authenticated={authenticated}
-                    />
-                </NavigationController>
-                <SnackPack />
-            </ThemeProvider>
-        </StyledEngineProvider>
+        <ApolloProvider client={apolloClient}>
+            <AuthTokenProvider>
+                <ProfileProvider>
+                    <IsMobileProvider>
+                        <QueryClientProvider client={queryClient}>
+                            <Router history={history}>
+                                <PantryItemSynchronizer />
+                                <PlanItemSynchronizer />
+                                <StyledEngineProvider injectFirst>
+                                    <ThemeProvider theme={useBfsTheme()}>
+                                        <CssBaseline />
+                                        <NavigationController>
+                                            <NewVersionPrompt />
+                                            <RoutingSwitch routes={routes} />
+                                        </NavigationController>
+                                        <SnackPack />
+                                    </ThemeProvider>
+                                </StyledEngineProvider>
+                            </Router>
+                        </QueryClientProvider>
+                    </IsMobileProvider>
+                </ProfileProvider>
+            </AuthTokenProvider>
+        </ApolloProvider>
     );
 }
 

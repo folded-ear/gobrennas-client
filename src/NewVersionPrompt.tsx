@@ -1,8 +1,10 @@
 import { useRegisterSW } from "virtual:pwa-register/react";
 import Button from "@mui/material/Button";
 import { Alert, AlertTitle, Stack } from "@mui/material";
+import { useIsAuthenticated } from "@/providers/Profile";
 
 function NewVersionPrompt() {
+    const authenticated = useIsAuthenticated();
     // periodic sync is disabled, change the value to enable it, the period is in milliseconds
     // You can remove onRegisteredSW callback and registerPeriodicSync function
     const period = 0;
@@ -29,7 +31,7 @@ function NewVersionPrompt() {
         setNeedRefresh(false);
     }
 
-    return needRefresh ? (
+    return authenticated && needRefresh ? (
         <Alert severity="info">
             <AlertTitle>Brenna&apos;s Food Software has updated!</AlertTitle>
             <Stack direction={"row"} gap={1}>
