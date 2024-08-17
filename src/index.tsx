@@ -1,9 +1,10 @@
 import PlanItemSynchronizer from "@/features/Planner/data/PlanItemSynchronizer";
-import { ApolloClient } from "@/providers/ApolloClient";
+import { client as apolloClient } from "@/providers/ApolloClient";
+import { ApolloProvider } from "@apollo/client";
 import { AuthTokenProvider } from "@/providers/AuthToken";
 import { IsMobileProvider } from "@/providers/IsMobile";
 import { ProfileProvider } from "@/providers/Profile";
-import React from "react";
+import { StrictMode } from "react";
 import { QueryClientProvider } from "react-query";
 import { Router } from "react-router-dom";
 import App from "./App";
@@ -20,22 +21,23 @@ import { createRoot } from "react-dom/client";
 // }
 
 createRoot(document.getElementById("root")!).render(
-    [
-        React.StrictMode,
-        ApolloClient,
-        AuthTokenProvider,
-        ProfileProvider,
-        IsMobileProvider,
-    ].reduceRight(
-        (kids, Decorator) => <Decorator>{kids}</Decorator>,
-        <QueryClientProvider client={queryClient}>
-            <Router history={history}>
-                <PantryItemSynchronizer />
-                <PlanItemSynchronizer />
-                <App />
-            </Router>
-        </QueryClientProvider>,
-    ),
+    <StrictMode>
+        <ApolloProvider client={apolloClient}>
+            <AuthTokenProvider>
+                <ProfileProvider>
+                    <IsMobileProvider>
+                        <QueryClientProvider client={queryClient}>
+                            <Router history={history}>
+                                <PantryItemSynchronizer />
+                                <PlanItemSynchronizer />
+                                <App />
+                            </Router>
+                        </QueryClientProvider>
+                    </IsMobileProvider>
+                </ProfileProvider>
+            </AuthTokenProvider>
+        </ApolloProvider>
+    </StrictMode>,
 );
 
 /*
