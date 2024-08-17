@@ -1,21 +1,18 @@
 import { Container, ContainerProps } from "@mui/material";
-import { CreateCSSProperties, makeStyles } from "@mui/styles";
+import { makeStyles } from "@mui/styles";
 import classnames from "classnames";
-import React from "react";
+import { ReactNode } from "react";
 import { HEADER_HEIGHT } from "@/constants/layout";
 
 const useStyles = makeStyles((theme) => {
     return {
-        root: (props: PageBodyProps) => {
-            const styles: CreateCSSProperties = {
-                backgroundColor: theme.palette.background.paper,
-                minHeight: `calc(100vh - ${HEADER_HEIGHT}px)`,
-            };
-            if (props.fullWidth) {
-                styles.paddingLeft = 0;
-                styles.paddingRight = 0;
-            }
-            return styles;
+        root: {
+            backgroundColor: theme.palette.background.paper,
+            minHeight: `calc(100vh - ${HEADER_HEIGHT}px)`,
+        },
+        fullWidth: {
+            paddingLeft: 0,
+            paddingRight: 0,
         },
         noFab: {
             paddingBottom: theme.spacing(2),
@@ -27,27 +24,25 @@ const useStyles = makeStyles((theme) => {
 });
 
 type PageBodyProps = {
-    children: any;
+    children: ReactNode;
     hasFab?: boolean;
     fullWidth?: boolean;
     className?: string;
     id?: string;
 } & ContainerProps;
 
-const PageBody: React.FC<PageBodyProps> = (props) => {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { fullWidth, children, hasFab, className, ...passthrough } = props;
-    const classes = useStyles(props);
+const PageBody = (props: PageBodyProps) => {
+    const classes = useStyles();
+    const { fullWidth, hasFab, className, ...passthrough } = props;
     return (
         <Container
             className={classnames(classes.root, className, {
+                [classes.fullWidth]: fullWidth,
                 [classes.hasFab]: hasFab,
                 [classes.noFab]: !hasFab,
             })}
             {...passthrough}
-        >
-            {children}
-        </Container>
+        />
     );
 };
 
