@@ -1,4 +1,4 @@
-import "./App.scss";
+import "./GoBrennas.scss";
 import { useIsAuthenticated } from "@/providers/Profile";
 import {
     StyledEngineProvider,
@@ -18,7 +18,7 @@ declare module "@mui/styles/defaultTheme" {
     interface DefaultTheme extends Theme {}
 }
 
-function App() {
+function GoBrennas() {
     const authenticated = useIsAuthenticated();
 
     return (
@@ -38,4 +38,4 @@ function App() {
     );
 }
 
-export default App;
+export default GoBrennas;

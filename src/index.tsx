@@ -7,7 +7,7 @@ import { ProfileProvider } from "@/providers/Profile";
 import { StrictMode } from "react";
 import { QueryClientProvider } from "react-query";
 import { Router } from "react-router-dom";
-import App from "./App";
+import GoBrennas from "./GoBrennas";
 import Dispatcher from "@/data/dispatcher";
 import PantryItemSynchronizer from "@/data/PantryItemSynchronizer";
 import queryClient from "@/data/queryClient";
@@ -30,7 +30,7 @@ createRoot(document.getElementById("root")!).render(
                             <Router history={history}>
                                 <PantryItemSynchronizer />
                                 <PlanItemSynchronizer />
-                                <App />
+                                <GoBrennas />
                             </Router>
                         </QueryClientProvider>
                     </IsMobileProvider>
