@@ -1,13 +1,11 @@
 import {
-    ApolloClient as ApolloClientInstance,
+    ApolloClient,
     ApolloLink,
-    ApolloProvider,
     defaultDataIdFromObject,
     InMemoryCache,
 } from "@apollo/client";
 import { onError } from "@apollo/client/link/error";
 import { relayStylePagination } from "@apollo/client/utilities";
-import { PropsWithChildren } from "react";
 import { API_BASE_URL } from "@/constants";
 import { askUserToReauth, isAuthError } from "./Profile";
 import createUploadLink from "apollo-upload-client/createUploadLink.mjs";
@@ -23,7 +21,7 @@ const errorLink = onError(({ graphQLErrors }) => {
     });
 });
 
-export const client = new ApolloClientInstance({
+export const client = new ApolloClient({
     cache: new InMemoryCache({
         typePolicies: {
             Query: {
@@ -65,7 +63,3 @@ export const client = new ApolloClientInstance({
         }),
     ]),
 });
-
-export function ApolloClient({ children }: PropsWithChildren<unknown>) {
-    return <ApolloProvider client={client}>{children}</ApolloProvider>;
-}

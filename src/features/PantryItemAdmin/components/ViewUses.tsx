@@ -19,7 +19,7 @@ interface Props {
 export default function ViewUses({ row }: Props) {
     const { loading, error, data } = usePantryItemUses(row.id);
     if (error) {
-        return <DialogContentText>{error}</DialogContentText>;
+        return <DialogContentText>{error.message}</DialogContentText>;
     }
     if (loading || !data) {
         return <CircularProgress />;

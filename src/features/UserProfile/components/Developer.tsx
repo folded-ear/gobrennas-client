@@ -31,9 +31,10 @@ import {
 } from "@mui/material/colors";
 
 interface RowProps {
+    children?: React.ReactNode;
     label: string;
 }
-const Row: React.FC<RowProps> = ({ label, children }) => (
+const Row = ({ label, children }: RowProps) => (
     <Grid item>
         <Grid container alignItems={"center"} gap={1}>
             <span style={{ minWidth: "6em" }}>{label}:</span>

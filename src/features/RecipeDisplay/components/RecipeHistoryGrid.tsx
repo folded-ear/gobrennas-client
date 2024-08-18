@@ -1,6 +1,7 @@
 import { RecipeHistory } from "@/global/types/types";
 import { useProfile } from "@/providers/Profile";
 import {
+    Alert,
     Button,
     CircularProgress,
     Grid,
@@ -130,9 +131,13 @@ export default function RecipeHistoryGrid({ recipeId, history }: Props) {
                     {(settingRating || settingNotes) && (
                         <CircularProgress size={"1em"} />
                     )}
-                    {ratingError || notesError}
                 </Stack>
             </Typography>
+            {(ratingError || notesError) && (
+                <Alert severity={"error"}>
+                    {(ratingError || notesError)?.message}
+                </Alert>
+            )}
             <Table
                 size={"small"}
                 sx={{

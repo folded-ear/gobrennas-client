@@ -1,47 +1,18 @@
-import PlanItemSynchronizer from "@/features/Planner/data/PlanItemSynchronizer";
-import { ApolloClient } from "@/providers/ApolloClient";
-import { AuthTokenProvider } from "@/providers/AuthToken";
-import { IsMobileProvider } from "@/providers/IsMobile";
-import { ProfileProvider } from "@/providers/Profile";
-import React from "react";
-import ReactDOM from "react-dom";
-import { QueryClientProvider } from "react-query";
-import { Router } from "react-router-dom";
-import App from "./App";
+import { StrictMode } from "react";
+import GoBrennas from "./GoBrennas";
 import Dispatcher from "@/data/dispatcher";
-import PantryItemSynchronizer from "@/data/PantryItemSynchronizer";
-import queryClient from "@/data/queryClient";
 import WindowActions from "@/data/WindowActions";
 import debounce from "@/util/debounce";
-import history from "@/util/history";
+import { createRoot } from "react-dom/client";
 
 // if (!import.meta.env.PROD) {
 //     Dispatcher.register(require("./util/logAction").default);
 // }
 
-// ReactDOM.render is the only option for React 17, which we're bound to via the
-// 'withStyles' and friends MUI v4 helpers. Once they're gone, and we use only
-// MUI v5 goodies, we can upgrade React and its ecosystem to 18.
-//
-// eslint-disable-next-line react/no-deprecated
-ReactDOM.render(
-    [
-        React.StrictMode,
-        ApolloClient,
-        AuthTokenProvider,
-        ProfileProvider,
-        IsMobileProvider,
-    ].reduceRight(
-        (kids, Decorator) => <Decorator>{kids}</Decorator>,
-        <QueryClientProvider client={queryClient}>
-            <Router history={history}>
-                <PantryItemSynchronizer />
-                <PlanItemSynchronizer />
-                <App />
-            </Router>
-        </QueryClientProvider>,
-    ),
-    document.getElementById("root"),
+createRoot(document.getElementById("root")!).render(
+    <StrictMode>
+        <GoBrennas />
+    </StrictMode>,
 );
 
 /*

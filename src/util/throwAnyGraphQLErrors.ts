@@ -1,7 +1,7 @@
-import { GraphQLError } from "graphql/index";
+import { GraphQLFormattedError } from "graphql/index";
 
 export default function throwAnyGraphQLErrors(
-    errors: ReadonlyArray<GraphQLError> | undefined,
+    errors: ReadonlyArray<GraphQLFormattedError> | undefined,
 ) {
     if (errors && errors.length) {
         let msg = "GraphQL error:\n\n" + errors[0];
