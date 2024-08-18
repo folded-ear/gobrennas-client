@@ -1,5 +1,4 @@
-import { IconButton, Tooltip } from "@mui/material";
-import React, { MouseEventHandler } from "react";
+import { IconButton, IconButtonProps, Tooltip } from "@mui/material";
 import Dispatcher from "@/data/dispatcher";
 import PlanActions from "@/features/Planner/data/PlanActions";
 import PlanItemStatus, {
@@ -26,14 +25,13 @@ function findButton(
     return buttonLookup[next][curr];
 }
 
-interface Props {
+interface Props extends Omit<IconButtonProps, "id"> {
     next: PlanItemStatus;
     current?: PlanItemStatus;
     id?: BfsId;
-    onClick?: MouseEventHandler;
 }
 
-const StatusIconButton: React.FC<Props> = ({ next, current, id, ...props }) => {
+const StatusIconButton = ({ next, current, id, ...props }: Props) => {
     const Btn = findButton(next, current || next);
     const Icn = getIconForStatus(next);
     return (
