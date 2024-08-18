@@ -1,10 +1,10 @@
-import { IconButton, Tooltip } from "@mui/material";
+import { IconButton, IconButtonProps, Tooltip } from "@mui/material";
 import { CookIcon } from "@/views/common/icons";
 import React from "react";
 import history from "@/util/history";
 import { BfsId } from "@/global/types/identity";
 
-interface Props {
+interface Props extends IconButtonProps {
     planId: BfsId;
     itemId: BfsId;
 }

@@ -1,6 +1,8 @@
 import React, { ReactElement } from "react";
 import { CSSObject, styled } from "@mui/material/styles";
 import {
+    alpha,
+    Box,
     Drawer,
     List,
     ListItemText,
@@ -28,8 +30,10 @@ import withStyles from "@mui/styles/withStyles";
 import { moveSubtree } from "@/features/Planner/components/Plan";
 import ResetBucketsButton from "@/features/Planner/components/ResetBucketsButton";
 import useWhileOver from "@/util/useWhileOver";
+import CookButton from "@/features/Planner/components/CookButton";
+import { BfsId } from "@/global/types/identity";
 
-const drawerWidth = 200;
+const drawerWidth = 220;
 const BUCKET_PREFIX = "bucket-";
 
 const openedMixin: CSSObject = {
@@ -62,11 +66,17 @@ const DndItem = withStyles(() => ({
     },
 }))(Item);
 
-interface RecipeInfo extends PlanItem {
+type RecipeInfo = PlanItem & {
     depth: number;
     bucket?: Maybe<PlanBucket>;
     photo?: Recipe["photo"];
-}
+} & (
+        | { canCook: false }
+        | {
+              canCook: true;
+              planId: BfsId;
+          }
+    );
 
 type PlanInfo = Pick<TPlan, "id" | "name" | "buckets"> & {
     recipes: RecipeInfo[];
@@ -84,6 +94,8 @@ const BodyContainer: React.FC = () => {
                 if (ing && ing.type === "Recipe") {
                     recipes.push({
                         ...it,
+                        canCook: true,
+                        planId: plan.id,
                         depth,
                         photo: ing.photo,
                     });
@@ -92,6 +104,7 @@ const BodyContainer: React.FC = () => {
                 // top-level, non-recipe item
                 recipes.push({
                     ...it,
+                    canCook: false,
                     depth,
                 });
             }
@@ -239,15 +252,28 @@ const PlannedRecipe: React.FC<PlannedRecipeProps> = ({ item }) => {
                     fontWeight={"bold"}
                 >
                     {item.name}
-                    <span
-                        style={{
+                    <Box
+                        component={"span"}
+                        sx={(theme) => ({
                             position: "absolute",
                             right: 0,
                             top: 0,
+                            backgroundColor: alpha(
+                                theme.palette.background.paper,
+                                0.7,
+                            ),
                             display:
                                 buttonVisible || goingAway ? "block" : "none",
-                        }}
+                        })}
                     >
+                        {buttonVisible && !goingAway && item.canCook && (
+                            <CookButton
+                                key="cook"
+                                size="small"
+                                planId={item.planId}
+                                itemId={item.id}
+                            />
+                        )}
                         {goingAway ? (
                             <DontChangeStatusButton
                                 id={item.id}
@@ -262,7 +288,7 @@ const PlannedRecipe: React.FC<PlannedRecipeProps> = ({ item }) => {
                                 next={PlanItemStatus.DELETED}
                             />
                         )}
-                    </span>
+                    </Box>
                 </Typography>
             </ListItemText>
         </DndItem>

@@ -17,8 +17,8 @@ interface BucketChipProps {
     buckets: PlanBucket[];
     onSelect(bucketId: Maybe<BfsId>): void;
     onManage?: () => void;
-    offPlan: boolean;
-    size: ChipProps["size"];
+    offPlan?: boolean;
+    size?: ChipProps["size"];
 }
 
 const BucketChip: React.FC<BucketChipProps> = ({
