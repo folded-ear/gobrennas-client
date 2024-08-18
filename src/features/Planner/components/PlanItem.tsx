@@ -16,16 +16,37 @@ import {
     isQuestionable,
     isSection,
 } from "@/features/Planner/data/plannerUtils";
-import planStore from "@/features/Planner/data/planStore";
+import planStore, { PlanBucket } from "@/features/Planner/data/planStore";
 import CollapseIconButton from "@/global/components/CollapseIconButton";
-import PropTypes from "prop-types";
-import React from "react";
+import {
+    ChangeEvent,
+    ClipboardEvent,
+    createRef,
+    MouseEvent,
+    PureComponent,
+    ReactNode,
+    RefObject,
+} from "react";
 import LoadingIconButton from "@/views/common/LoadingIconButton";
 import PlaceholderIconButton from "@/views/common/PlaceholderIconButton";
 import IngredientItem from "@/views/IngredientItem";
 
-class PlanItem extends React.PureComponent {
-    constructor(props) {
+interface Props {
+    depth: number;
+    plan: any;
+    item: any;
+    loading: boolean;
+    active?: boolean | undefined;
+    selected?: boolean | undefined;
+    buckets: PlanBucket[];
+    ancestorDeleting?: boolean | undefined;
+    classes: any;
+}
+
+class PlanItem extends PureComponent<Props> {
+    private readonly inputRef: RefObject<HTMLInputElement>;
+
+    constructor(props: Props) {
         super(props);
         this.onChange = this.onChange.bind(this);
         this.onCopy = this.onCopy.bind(this);
@@ -33,10 +54,10 @@ class PlanItem extends React.PureComponent {
         this.onKeyDown = this.onKeyDown.bind(this);
         this.onClick = this.onClick.bind(this);
         this.onToggleExpanded = this.onToggleExpanded.bind(this);
-        this.inputRef = React.createRef();
+        this.inputRef = createRef();
     }
 
-    onChange(e) {
+    onChange(e: ChangeEvent<HTMLInputElement>) {
         const { value } = e.target;
         const { item } = this.props;
         Dispatcher.dispatch({
@@ -46,14 +67,14 @@ class PlanItem extends React.PureComponent {
         });
     }
 
-    onCopy(e) {
+    onCopy(e: ClipboardEvent) {
         if (!planStore.isMultiItemSelection()) return;
         e.preventDefault();
         const text = planStore.getSelectionAsTextBlock();
         e.clipboardData.setData("text", text);
     }
 
-    onPaste(e) {
+    onPaste(e: ClipboardEvent) {
         let text = e.clipboardData.getData("text");
         if (text == null) return;
         text = text.trim();
@@ -165,7 +186,7 @@ class PlanItem extends React.PureComponent {
         }
     }
 
-    onClick(e) {
+    onClick(e: MouseEvent) {
         const { active, item } = this.props;
         if (active) return;
         e.preventDefault();
@@ -176,7 +197,7 @@ class PlanItem extends React.PureComponent {
         });
     }
 
-    onToggleExpanded(e) {
+    onToggleExpanded(e?) {
         if (e) e.stopPropagation();
         Dispatcher.dispatch({
             type: PlanActions.TOGGLE_EXPANDED,
@@ -185,11 +206,11 @@ class PlanItem extends React.PureComponent {
     }
 
     componentDidMount() {
-        if (this.props.active) this.inputRef.current.focus();
+        if (this.props.active) this.inputRef.current?.focus();
     }
 
     componentDidUpdate() {
-        if (this.props.active) this.inputRef.current.focus();
+        if (this.props.active) this.inputRef.current?.focus();
     }
 
     render() {
@@ -214,7 +235,7 @@ class PlanItem extends React.PureComponent {
         const acquiring = item._next_status === PlanItemStatus.ACQUIRED;
         const needing = item._next_status === PlanItemStatus.NEEDED;
 
-        let addonBefore = [];
+        const addonBefore: ReactNode[] = [];
         if (parent) {
             addonBefore.push(
                 <CollapseIconButton
@@ -321,12 +342,16 @@ class PlanItem extends React.PureComponent {
                         onPaste={this.onPaste}
                         onCopy={this.onCopy}
                         onKeyDown={this.onKeyDown}
-                        onDoubleClick={parent ? this.onToggleExpanded : null}
+                        onDoubleClick={
+                            parent ? this.onToggleExpanded : undefined
+                        }
                     />
                 ) : (
                     <ListItemText
                         className={classes.text}
-                        onDoubleClick={parent ? this.onToggleExpanded : null}
+                        onDoubleClick={
+                            parent ? this.onToggleExpanded : undefined
+                        }
                     >
                         {recipeIsh || !item.ingredient || section ? (
                             item.name.length && item.name[0] === "!" ? (
@@ -348,17 +373,5 @@ class PlanItem extends React.PureComponent {
         );
     }
 }
-
-PlanItem.propTypes = {
-    depth: PropTypes.number.isRequired,
-    plan: PropTypes.object.isRequired,
-    item: PropTypes.object.isRequired,
-    loading: PropTypes.bool.isRequired,
-    active: PropTypes.bool,
-    selected: PropTypes.bool,
-    buckets: PropTypes.array, // todo: PropTypes.arrayOf(bucketType),
-    ancestorDeleting: PropTypes.bool,
-    classes: PropTypes.object.isRequired,
-};
 
 export default withItemStyles(PlanItem);
