@@ -32,6 +32,10 @@ import ResetBucketsButton from "@/features/Planner/components/ResetBucketsButton
 import useWhileOver from "@/util/useWhileOver";
 import CookButton from "@/features/Planner/components/CookButton";
 import { BfsId } from "@/global/types/identity";
+import {
+    isDoNotRecognize,
+    isSection,
+} from "@/features/Planner/data/plannerUtils";
 
 const drawerWidth = 220;
 const BUCKET_PREFIX = "bucket-";
@@ -104,7 +108,8 @@ const BodyContainer: React.FC = () => {
                 // top-level, non-recipe item
                 recipes.push({
                     ...it,
-                    canCook: false,
+                    canCook: !!it.subtaskIds?.length,
+                    planId: plan.id,
                     depth,
                 });
             }
@@ -251,7 +256,11 @@ const PlannedRecipe: React.FC<PlannedRecipeProps> = ({ item }) => {
                     variant={"body2"}
                     fontWeight={"bold"}
                 >
-                    {item.name}
+                    {isDoNotRecognize(item)
+                        ? item.name.substring(1)
+                        : isSection(item)
+                        ? item.name.substring(0, item.name.length - 1)
+                        : item.name}
                     <Box
                         component={"span"}
                         sx={(theme) => ({
