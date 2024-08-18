@@ -11,6 +11,7 @@ import withItemStyles from "@/features/Planner/components/withItemStyles";
 import PlanActions from "@/features/Planner/data/PlanActions";
 import PlanItemStatus from "@/features/Planner/data/PlanItemStatus";
 import {
+    isDoNotRecognize,
     isExpanded,
     isParent,
     isQuestionable,
@@ -354,7 +355,7 @@ class PlanItem extends PureComponent<Props> {
                         }
                     >
                         {recipeIsh || !item.ingredient || section ? (
-                            item.name.length && item.name[0] === "!" ? (
+                            isDoNotRecognize(item) ? (
                                 item.name.substring(1)
                             ) : (
                                 item.name

@@ -14,6 +14,7 @@ import StatusIconButton from "@/features/Planner/components/StatusIconButton";
 import withItemStyles from "@/features/Planner/components/withItemStyles";
 import { BaseItemProp, ItemProps, TupleProps } from "./types";
 import { ShopItemType } from "@/views/shop/ShopList";
+import { isDoNotRecognize } from "@/features/Planner/data/plannerUtils";
 
 type PlanItemProps = TupleProps & {
     depth: number;
@@ -168,7 +169,7 @@ class PlanItem extends React.PureComponent<PlanItemProps> {
                         secondary={item.path.map((p) => p.name).join(" / ")}
                     >
                         {!item.ingredient ? (
-                            item.name.length && item.name[0] === "!" ? (
+                            isDoNotRecognize(item) ? (
                                 item.name.substring(1)
                             ) : (
                                 item.name
