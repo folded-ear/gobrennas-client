@@ -6,10 +6,13 @@ import { styled } from "@mui/material/styles";
 const Drawer = styled(MuiDrawer)(({ theme }) => ({
     width: SIDEBAR_DEFAULT_WIDTH,
     flexShrink: 0,
+    whiteSpace: "nowrap",
+    boxSizing: "border-box",
     "& .MuiDrawer-paper": {
         width: SIDEBAR_DEFAULT_WIDTH,
         padding: theme.spacing(2),
         height: "100vh",
+        overflowX: "hidden",
     },
 })) as typeof MuiDrawer;
 

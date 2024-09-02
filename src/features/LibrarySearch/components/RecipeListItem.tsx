@@ -15,7 +15,6 @@ import {
     SmallHeadline,
     SmallLabel,
 } from "@/global/elements/typography.elements";
-import { FlexBox } from "@/global/components/FlexBox";
 
 type RecipeListItemProps = {
     recipe: RecipeType;

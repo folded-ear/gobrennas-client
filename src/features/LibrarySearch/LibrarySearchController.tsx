@@ -5,7 +5,6 @@ import { DisplayOptions, SearchScope } from "@/features/LibrarySearch/types";
 import { useSearchLibrary } from "@/features/RecipeLibrary/hooks/useSearchLibrary";
 import LoadingIndicator from "@/views/common/LoadingIndicator";
 import { RecipeListDisplay } from "@/features/LibrarySearch/components/RecipeListDisplay";
-import LazyInfinite from "@/views/common/LazyInfinite";
 import { RecipeGridDisplay } from "@/features/LibrarySearch/components/RecipeGridDisplay";
 import { useProfile } from "@/providers/Profile";
 import { ScalingProvider } from "@/util/ScalingContext";
@@ -30,9 +29,7 @@ export const LibrarySearchController: React.FC<
     const {
         data: recipes,
         loading,
-        fetchMore,
         isComplete,
-        endCursor,
     } = useSearchLibrary({
         scope,
         query: searchTerm,

@@ -1,9 +1,8 @@
 import React, { ReactElement } from "react";
-import { CSSObject, styled } from "@mui/material/styles";
+import { styled } from "@mui/material/styles";
 import {
     alpha,
     Box,
-    Drawer,
     List,
     ListItemText,
     ListSubheader,
@@ -38,22 +37,7 @@ import {
 } from "@/features/Planner/data/plannerUtils";
 import { SidebarDrawer } from "@/global/components/Sidebar";
 
-const drawerWidth = 220;
 const BUCKET_PREFIX = "bucket-";
-
-const openedMixin: CSSObject = {
-    width: drawerWidth,
-    overflowX: "hidden",
-};
-
-const Sidebar = styled(Drawer)({
-    width: drawerWidth,
-    flexShrink: 0,
-    whiteSpace: "nowrap",
-    boxSizing: "border-box",
-    ...openedMixin,
-    "& .MuiDrawer-paper": openedMixin,
-});
 
 const Header = styled(ListSubheader)(({ theme }) => ({
     overflow: "hidden",

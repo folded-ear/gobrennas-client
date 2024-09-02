@@ -1,11 +1,9 @@
 import { Box } from "@mui/material";
 import { RecipeListItem } from "@/features/LibrarySearch/components/RecipeListItem";
 import { UserType } from "@/global/types/identity";
-import { Recipe } from "@/global/types/types";
 import { MessagePaper } from "@/features/RecipeLibrary/components/MessagePaper";
 import React from "react";
 import { RecipeType } from "@/features/RecipeLibrary/types";
-import { FlexBox } from "@/global/components/FlexBox";
 
 type RecipeListDisplayProps = {
     recipes?: RecipeType[];
