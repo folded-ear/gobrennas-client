@@ -13,3 +13,17 @@ export interface RecipeCard {
     totalTime?: number | null;
     yield?: number | null;
 }
+
+export interface RecipeType {
+    id: string;
+    calories?: number | null;
+    directions?: string;
+    externalUrl?: string | null;
+    favorite: boolean;
+    labels?: string[] | null;
+    name: string;
+    owner: UserType;
+    photo?: Photo | null;
+    totalTime?: number | null;
+    yield?: number | null;
+}

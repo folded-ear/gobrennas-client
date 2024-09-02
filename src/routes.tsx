@@ -16,6 +16,7 @@ import { CurrentPlanSidebar } from "@/features/RecipeLibrary/components/CurrentP
 import * as React from "react";
 import { RouteComponentProps } from "react-router";
 import { LibraryController } from "@/features/RecipeLibrary/LibraryController";
+import { LibrarySearchSidebar } from "@/features/Planner/components/LibrarySearchSidebar";
 
 interface BfsRouteComponentProps extends RouteComponentProps {
     readonly authenticated: boolean;
@@ -77,8 +78,16 @@ const routes: BfsRoutes = {
         { path: "/tasks", component: () => <Redirect to="/plan" /> },
         { path: "/plan/:pid/recipe/:rid", component: PlannedRecipeController },
         { path: "/plan/:pid/bucket/:bid", component: PlannedBucketController },
-        { path: "/plan/:pid", component: Planner },
-        { path: "/plan", component: Planner },
+        {
+            path: "/plan/:pid",
+            component: Planner,
+            sidebar: LibrarySearchSidebar,
+        },
+        {
+            path: "/plan",
+            component: Planner,
+            sidebar: LibrarySearchSidebar,
+        },
         { path: "/shop", component: Shop },
         { path: "/pantry-item-admin", component: PantryItemAdmin },
     ],

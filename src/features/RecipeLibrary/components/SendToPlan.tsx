@@ -5,6 +5,7 @@ import useActivePlanner from "@/data/useActivePlanner";
 import SplitButton, { SelectOption } from "@/views/common/SplitButton";
 import { useScaleOptions } from "@/util/ScalingContext";
 import TextButton from "@/views/common/TextButton";
+import { TaskBarButton } from "@/global/elements/toolbar.elements";
 
 interface Props {
     onClick(planId: number, scale?: number | null): void;
@@ -38,13 +39,12 @@ const SendToPlan: React.FC<Props> = ({
 
     if (iconOnly) {
         return (
-            <IconButton
-                size="small"
+            <TaskBarButton
                 onClick={handleClick}
                 title={`Send to "${list.name}"`}
             >
-                <SendToPlanIcon fontSize="inherit" />
-            </IconButton>
+                <SendToPlanIcon />
+            </TaskBarButton>
         );
     }
 

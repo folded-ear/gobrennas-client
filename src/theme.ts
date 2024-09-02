@@ -135,6 +135,21 @@ export function useBfsTheme() {
                         name: "neutral",
                     }),
                 },
+                components: {
+                    MuiIconButton: {
+                        defaultProps: {
+                            size: "small",
+                            disableElevation: true,
+                        },
+                        styleOverrides: {
+                            root: {
+                                borderRadius: theme.shape.borderRadius,
+                                fontSize: "1em",
+                                color: "currentcolor",
+                            },
+                        },
+                    },
+                },
             }),
         );
     }, [preferDark]);

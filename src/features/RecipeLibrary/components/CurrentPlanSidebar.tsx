@@ -36,6 +36,7 @@ import {
     isDoNotRecognize,
     isSection,
 } from "@/features/Planner/data/plannerUtils";
+import { SidebarDrawer } from "@/global/components/Sidebar";
 
 const drawerWidth = 220;
 const BUCKET_PREFIX = "bucket-";
@@ -306,8 +307,8 @@ const PlannedRecipe: React.FC<PlannedRecipeProps> = ({ item }) => {
 
 export const CurrentPlanSidebar: React.FC = () => {
     return (
-        <Sidebar variant="permanent" anchor={"right"}>
+        <SidebarDrawer>
             <BodyContainer />
-        </Sidebar>
+        </SidebarDrawer>
     );
 };
