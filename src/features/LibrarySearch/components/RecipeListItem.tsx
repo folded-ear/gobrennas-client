@@ -10,7 +10,7 @@ import {
     NanoCardContent,
     NanoRecipeCard,
 } from "@/features/LibrarySearch/components/RecipeDisplay.elements";
-import { TaskBar, TaskBarButton } from "@/global/elements/toolbar.elements";
+import { TaskBar, TaskBarButton } from "@/global/elements/taskbar.elements";
 import {
     SmallHeadline,
     SmallLabel,
@@ -22,8 +22,7 @@ type RecipeListItemProps = {
     markAsMine: boolean;
 };
 
-// TODO: owner
-
+// TODO: add owner indicator?
 export const RecipeListItem: React.FC<RecipeListItemProps> = ({
     recipe,
     mine,
@@ -61,6 +60,7 @@ export const RecipeListItem: React.FC<RecipeListItemProps> = ({
             )}
             <NanoCardContent>
                 <TaskBar>
+                    <FavoriteIndicator type={"Recipe"} id={recipe.id} />
                     <SendToPlan iconOnly onClick={handleClick} />
                     <TaskBarButton href={`/library/recipe/${recipe.id}`}>
                         <ViewIcon />
@@ -73,10 +73,7 @@ export const RecipeListItem: React.FC<RecipeListItemProps> = ({
                         </TaskBarButton>
                     )}
                 </TaskBar>
-                <SmallHeadline>
-                    <FavoriteIndicator type={"Recipe"} id={recipe.id} />{" "}
-                    {recipe.name}
-                </SmallHeadline>
+                <SmallHeadline>{recipe.name}</SmallHeadline>
                 {labelsToDisplay && (
                     <Box my={0.5}>
                         {labelsToDisplay.map((label, idx) => (

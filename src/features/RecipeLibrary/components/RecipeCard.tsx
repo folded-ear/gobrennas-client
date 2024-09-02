@@ -24,7 +24,7 @@ import User from "@/views/user/User";
 import FavoriteIndicator from "../../Favorites/components/Indicator";
 import { Photo, User as UserType } from "@/__generated__/graphql";
 import LabelItem from "@/global/components/LabelItem";
-import { TaskBar, TaskBarButton } from "@/global/elements/toolbar.elements";
+import { TaskBar, TaskBarButton } from "@/global/elements/taskbar.elements";
 
 const useStyles = makeStyles({
     photo: {

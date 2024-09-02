@@ -6,7 +6,7 @@ import {
     useRemoveFavorite,
 } from "../data/queries";
 import { BfsId } from "@/global/types/identity";
-import { TaskBarButton } from "@/global/elements/toolbar.elements";
+import { TaskBarButton } from "@/global/elements/taskbar.elements";
 
 interface Props {
     type: string;

@@ -4,7 +4,7 @@ import useActivePlanner from "@/data/useActivePlanner";
 import SplitButton, { SelectOption } from "@/views/common/SplitButton";
 import { useScaleOptions } from "@/util/ScalingContext";
 import TextButton from "@/views/common/TextButton";
-import { TaskBarButton } from "@/global/elements/toolbar.elements";
+import { TaskBarButton } from "@/global/elements/taskbar.elements";
 
 interface Props {
     onClick(planId: number, scale?: number | null): void;
