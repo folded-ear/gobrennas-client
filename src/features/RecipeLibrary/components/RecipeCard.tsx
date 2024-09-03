@@ -5,7 +5,6 @@ import {
     CardActions,
     CardContent,
     Grid,
-    Stack,
     Typography,
 } from "@mui/material";
 import { makeStyles } from "@mui/styles";
@@ -24,8 +23,8 @@ import Source from "@/views/common/Source";
 import User from "@/views/user/User";
 import FavoriteIndicator from "../../Favorites/components/Indicator";
 import { Photo, User as UserType } from "@/__generated__/graphql";
-import { TaskIcon } from "@/global/components/TaskIcon";
 import LabelItem from "@/global/components/LabelItem";
+import { TaskBar, TaskBarButton } from "@/global/elements/taskbar.elements";
 
 const useStyles = makeStyles({
     photo: {
@@ -109,7 +108,7 @@ const RecipeCard: React.FC<Props> = ({ recipe, mine, indicateMine, me }) => {
                     <ItemImageUpload recipeId={recipe.id} disabled={!mine} />
                 )}
                 <CardContent style={{ flexGrow: 2 }}>
-                    <Grid container alignItems={"center"} wrap={"nowrap"}>
+                    <Grid container alignItems={"start"} wrap={"nowrap"}>
                         <Grid item>
                             <FavoriteIndicator type={"Recipe"} id={recipe.id} />
                         </Grid>
@@ -168,19 +167,19 @@ const RecipeCard: React.FC<Props> = ({ recipe, mine, indicateMine, me }) => {
                 </CardContent>
             </>
             <CardActions>
-                <Stack direction="row" spacing={1} sx={{ maxWidth: "100%" }}>
-                    <TaskIcon
-                        icon={<ViewIcon fontSize="inherit" />}
-                        url={`/library/recipe/${recipe.id}`}
-                    />
+                <TaskBar>
+                    <TaskBarButton href={`/library/recipe/${recipe.id}`}>
+                        <ViewIcon />
+                    </TaskBarButton>
                     {mine && (
-                        <TaskIcon
-                            icon={<EditIcon fontSize="inherit" />}
-                            url={`/library/recipe/${recipe.id}/edit`}
-                        />
+                        <TaskBarButton
+                            href={`/library/recipe/${recipe.id}/edit`}
+                        >
+                            <EditIcon fontSize="inherit" />
+                        </TaskBarButton>
                     )}
                     <SendToPlan onClick={handleClick} showScaleOptions />
-                </Stack>
+                </TaskBar>
             </CardActions>
         </Card>
     );

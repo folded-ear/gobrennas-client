@@ -7,6 +7,13 @@ import { LibrarySearchScope } from "@/__generated__/graphql";
 import { useSearchLibrary } from "@/features/RecipeLibrary/hooks/useSearchLibrary";
 import { ScalingProvider } from "@/util/ScalingContext";
 
+/**
+ * TODO
+ * Note that this Library now has duplicated "search" functionality
+ * with the LibrarySearch. This needs to get sorted eventually,
+ * by pulling in that Library Search and composing it into the
+ * Library here.
+ */
 export const LibraryController = () => {
     const me = useProfile();
     const history = useHistory();

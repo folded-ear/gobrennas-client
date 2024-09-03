@@ -1,8 +1,6 @@
 import { AddRecipeIcon } from "@/views/common/icons";
 import { Container as Content, Grid, useScrollTrigger } from "@mui/material";
-import RecipeCard, {
-    RecipeType,
-} from "@/features/RecipeLibrary/components/RecipeCard";
+import RecipeCard from "@/features/RecipeLibrary/components/RecipeCard";
 import { useIsMobile } from "@/providers/IsMobile";
 import React, { useState } from "react";
 import history from "@/util/history";
@@ -12,6 +10,7 @@ import LoadingIndicator from "@/views/common/LoadingIndicator";
 import { LibrarySearchScope } from "@/__generated__/graphql";
 import { MessagePaper } from "@/features/RecipeLibrary/components/MessagePaper";
 import { SearchRecipes } from "@/features/RecipeLibrary/components/SearchRecipes";
+import { RecipeType } from "@/features/RecipeLibrary/types";
 
 interface RecipesListProps {
     me: any; // todo

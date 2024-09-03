@@ -6,7 +6,7 @@ import {
     useRemoveFavorite,
 } from "../data/queries";
 import { BfsId } from "@/global/types/identity";
-import IconButton from "@mui/material/IconButton";
+import { TaskBarButton } from "@/global/elements/taskbar.elements";
 
 interface Props {
     type: string;
@@ -30,9 +30,9 @@ const Indicator: React.FC<Props> = ({ type, id }) => {
     }
 
     return (
-        <IconButton edge={"start"} size={"small"} onClick={handleClick}>
+        <TaskBarButton edge="start" size="small" onClick={handleClick}>
             {favorite ? <FavoriteIcon /> : <NotFavoriteIcon />}
-        </IconButton>
+        </TaskBarButton>
     );
 };
 
