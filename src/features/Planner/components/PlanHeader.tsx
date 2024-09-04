@@ -117,13 +117,15 @@ function PlanHeader({
                         title="Edit plan, buckets, and access"
                         placement="bottom-start"
                     >
-                        <IconButton
-                            onClick={onShowDrawer}
-                            disabled={!activePlan}
-                            size="medium"
-                        >
-                            <EditIcon />
-                        </IconButton>
+                        <span>
+                            <IconButton
+                                onClick={onShowDrawer}
+                                disabled={!activePlan}
+                                size="medium"
+                            >
+                                <EditIcon />
+                            </IconButton>
+                        </span>
                     </Tooltip>
                 </Stack>
             </Typography>
@@ -141,27 +143,31 @@ function PlanHeader({
                             title="Expand all collapsed items"
                             placement="bottom-start"
                         >
-                            <IconButton
-                                aria-label="expand-all"
-                                onClick={onExpandAll}
-                                disabled={!canExpand}
-                                size="large"
-                            >
-                                <ExpandAll />
-                            </IconButton>
+                            <span>
+                                <IconButton
+                                    aria-label="expand-all"
+                                    onClick={onExpandAll}
+                                    disabled={!canExpand}
+                                    size="large"
+                                >
+                                    <ExpandAll />
+                                </IconButton>
+                            </span>
                         </Tooltip>
                         <Tooltip
                             title="Collapse all expanded items"
                             placement="bottom-start"
                         >
-                            <IconButton
-                                aria-label="collapse-all"
-                                onClick={onCollapseAll}
-                                disabled={!canExpand}
-                                size="large"
-                            >
-                                <CollapseAll />
-                            </IconButton>
+                            <span>
+                                <IconButton
+                                    aria-label="collapse-all"
+                                    onClick={onCollapseAll}
+                                    disabled={!canExpand}
+                                    size="large"
+                                >
+                                    <CollapseAll />
+                                </IconButton>
+                            </span>
                         </Tooltip>
                         {hasBuckets && (
                             <>
@@ -169,13 +175,15 @@ function PlanHeader({
                                     title="Sort plan in bucket order"
                                     placement="bottom-start"
                                 >
-                                    <IconButton
-                                        aria-label="sort-by-bucket"
-                                        onClick={sortByBucket}
-                                        size="large"
-                                    >
-                                        <SortByBucketIcon />
-                                    </IconButton>
+                                    <span>
+                                        <IconButton
+                                            aria-label="sort-by-bucket"
+                                            onClick={sortByBucket}
+                                            size="large"
+                                        >
+                                            <SortByBucketIcon />
+                                        </IconButton>
+                                    </span>
                                 </Tooltip>
                                 <AddToCalendar plan={activePlan} />
                             </>

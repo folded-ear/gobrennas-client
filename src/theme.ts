@@ -139,7 +139,6 @@ export function useBfsTheme() {
                     MuiIconButton: {
                         defaultProps: {
                             size: "small",
-                            disableElevation: true,
                         },
                         styleOverrides: {
                             root: {
