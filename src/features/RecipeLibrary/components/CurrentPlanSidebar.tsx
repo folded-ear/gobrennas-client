@@ -1,8 +1,9 @@
 import React, { ReactElement } from "react";
-import { styled } from "@mui/material/styles";
+import { CSSObject, styled } from "@mui/material/styles";
 import {
     alpha,
     Box,
+    Drawer,
     List,
     ListItemText,
     ListSubheader,
@@ -35,9 +36,23 @@ import {
     isDoNotRecognize,
     isSection,
 } from "@/features/Planner/data/plannerUtils";
-import { SidebarDrawer } from "@/global/components/Sidebar";
 
+const drawerWidth = 220;
 const BUCKET_PREFIX = "bucket-";
+
+const openedMixin: CSSObject = {
+    width: drawerWidth,
+    overflowX: "hidden",
+};
+
+const Sidebar = styled(Drawer)({
+    width: drawerWidth,
+    flexShrink: 0,
+    whiteSpace: "nowrap",
+    boxSizing: "border-box",
+    ...openedMixin,
+    "& .MuiDrawer-paper": openedMixin,
+});
 
 const Header = styled(ListSubheader)(({ theme }) => ({
     overflow: "hidden",
@@ -295,8 +310,8 @@ const PlannedRecipe: React.FC<PlannedRecipeProps> = ({ item }) => {
 
 export const CurrentPlanSidebar: React.FC = () => {
     return (
-        <SidebarDrawer>
+        <Sidebar variant="permanent" anchor={"right"}>
             <BodyContainer />
-        </SidebarDrawer>
+        </Sidebar>
     );
 };
