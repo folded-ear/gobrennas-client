@@ -36,6 +36,7 @@ import {
     isSection,
 } from "@/features/Planner/data/plannerUtils";
 import { SidebarDrawer } from "@/global/components/Sidebar";
+import { SmallHeadline } from "@/global/elements/typography.elements";
 
 const BUCKET_PREFIX = "bucket-";
 
@@ -209,18 +210,22 @@ interface PlanProps {
 const Plan: React.FC<PlanProps> = ({ plan }) => {
     const { over, sensorProps } = useWhileOver();
     return (
-        <Header sx={{ position: "relative" }} {...sensorProps}>
-            {plan.name}
-            <ResetBucketsButton
-                planId={plan.id}
-                sx={{
-                    display: over ? "block" : "none",
-                    position: "absolute",
-                    right: 0,
-                    top: 7,
-                }}
-            />
-        </Header>
+        <>
+            <Typography variant="h6" sx={{ paddingLeft: "8px" }}>
+                {plan.name}
+            </Typography>
+            <Header sx={{ position: "relative" }} {...sensorProps}>
+                <ResetBucketsButton
+                    planId={plan.id}
+                    sx={{
+                        display: over ? "block" : "none",
+                        position: "absolute",
+                        right: 0,
+                        top: 7,
+                    }}
+                />
+            </Header>
+        </>
     );
 };
 
