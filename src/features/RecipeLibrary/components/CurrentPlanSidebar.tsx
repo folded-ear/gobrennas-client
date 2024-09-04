@@ -36,7 +36,6 @@ import {
     isSection,
 } from "@/features/Planner/data/plannerUtils";
 import { SidebarDrawer } from "@/global/components/Sidebar";
-import { SmallHeadline } from "@/global/elements/typography.elements";
 
 const BUCKET_PREFIX = "bucket-";
 
