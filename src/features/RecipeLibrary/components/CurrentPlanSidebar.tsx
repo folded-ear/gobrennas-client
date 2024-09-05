@@ -86,7 +86,7 @@ type PlanInfo = Pick<TPlan, "id" | "name" | "buckets"> & {
     recipes: RecipeInfo[];
 };
 
-const BodyContainer: React.FC = () => {
+export const BodyContainer: React.FC = () => {
     const plan = useFluxStore<Maybe<PlanInfo>>(() => {
         const { data: plan, loading } = planStore.getActivePlanRlo();
         if (!plan || loading) return;
@@ -225,10 +225,10 @@ const Plan: React.FC<PlanProps> = ({ plan }) => {
     const { over, sensorProps } = useWhileOver();
     return (
         <>
-            <Typography variant="h6" sx={{ paddingLeft: "8px" }}>
-                {plan.name}
-            </Typography>
             <Header sx={{ position: "relative" }} {...sensorProps}>
+                <Typography variant="h6" sx={{ padding: "8px" }}>
+                    {plan.name}
+                </Typography>
                 <ResetBucketsButton
                     planId={plan.id}
                     sx={{
