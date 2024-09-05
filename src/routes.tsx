@@ -16,7 +16,7 @@ import { CurrentPlanSidebar } from "@/features/RecipeLibrary/components/CurrentP
 import * as React from "react";
 import { RouteComponentProps } from "react-router";
 import { LibraryController } from "@/features/RecipeLibrary/LibraryController";
-import { SidebarDrawer } from "@/features/Planner/components/Sidebar";
+import { SidebarDrawer as PlannerSidebar } from "@/features/Planner/components/Sidebar";
 import { Welcome } from "@/views/Welcome";
 import { PlannerController } from "@/features/Planner/PlannerController";
 
@@ -83,12 +83,12 @@ const routes: BfsRoutes = {
         {
             path: "/plan/:pid",
             component: PlannerController,
-            sidebar: SidebarDrawer,
+            sidebar: PlannerSidebar,
         },
         {
             path: "/plan",
             component: Planner,
-            sidebar: SidebarDrawer,
+            sidebar: PlannerSidebar,
         },
         { path: "/shop", component: Shop },
         { path: "/pantry-item-admin", component: PantryItemAdmin },
