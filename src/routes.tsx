@@ -1,5 +1,5 @@
 import { Redirect, RouteProps } from "react-router-dom";
-import { PlannerController as Planner } from "@/features/Planner/PlannerController";
+import { Planner } from "@/views/Planner";
 import PlannedBucketController from "./features/RecipeDisplay/PlannedBucketController";
 import PlannedRecipeController from "./features/RecipeDisplay/PlannedRecipeController";
 import RecipeController from "./features/RecipeDisplay/RecipeController";
@@ -17,6 +17,8 @@ import * as React from "react";
 import { RouteComponentProps } from "react-router";
 import { LibraryController } from "@/features/RecipeLibrary/LibraryController";
 import { LibrarySearchSidebar } from "@/features/Planner/components/LibrarySearchSidebar";
+import { SidebarDrawer } from "@/global/components/Sidebar";
+import { Welcome } from "@/views/Welcome";
 
 interface BfsRouteComponentProps extends RouteComponentProps {
     readonly authenticated: boolean;
@@ -76,32 +78,21 @@ const routes: BfsRoutes = {
         { path: "/add", component: RecipeAddController },
         // eslint-disable-next-line react/display-name
         { path: "/tasks", component: () => <Redirect to="/plan" /> },
-        {
-            path: "/plan",
-            component: Planner,
-            sidebar: LibrarySearchSidebar,
-            exact: true,
-        },
         { path: "/plan/:pid/recipe/:rid", component: PlannedRecipeController },
         { path: "/plan/:pid/bucket/:bid", component: PlannedBucketController },
         {
             path: "/plan/:pid",
             component: Planner,
-            sidebar: LibrarySearchSidebar,
-            exact: true,
+            sidebar: SidebarDrawer,
         },
         {
-            path: "/plan/:pid/buckets",
-            component: Planner,
-            sidebar: CurrentPlanSidebar,
-        },
-        {
-            path: "/plan/:pid/library",
+            path: "/plan",
             component: Planner,
             sidebar: LibrarySearchSidebar,
         },
         { path: "/shop", component: Shop },
         { path: "/pantry-item-admin", component: PantryItemAdmin },
+        { path: "/welcome", component: Welcome },
     ],
 };
 
