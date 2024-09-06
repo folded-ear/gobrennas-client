@@ -11,6 +11,7 @@ import {
 } from "react-router-dom";
 import { BodyContainer } from "@/features/RecipeLibrary/components/CurrentPlanSidebar";
 import { LibrarySearchController } from "@/features/LibrarySearch/LibrarySearchController";
+import useIsDevMode from "@/data/useIsDevMode";
 
 const Drawer = styled(MuiDrawer)(({ theme }) => ({
     width: SIDEBAR_DEFAULT_WIDTH,
@@ -55,7 +56,9 @@ const SidebarNav = () => {
 };
 
 export const SidebarDrawer: React.FC<SidebarDrawerProps> = () => {
-    return (
+    const isDevMode = useIsDevMode();
+
+    return isDevMode ? (
         <Drawer variant="permanent" anchor="right">
             <Switch>
                 <Route path={`/plan/:pid/buckets`}>
@@ -72,5 +75,5 @@ export const SidebarDrawer: React.FC<SidebarDrawerProps> = () => {
                 </Route>
             </Switch>
         </Drawer>
-    );
+    ) : null;
 };
