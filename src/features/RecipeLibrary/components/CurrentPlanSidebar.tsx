@@ -224,22 +224,20 @@ interface PlanProps {
 const Plan: React.FC<PlanProps> = ({ plan }) => {
     const { over, sensorProps } = useWhileOver();
     return (
-        <>
-            <Header sx={{ position: "relative" }} {...sensorProps}>
-                <Typography variant="h6" sx={{ padding: "8px" }}>
-                    {plan.name}
-                </Typography>
-                <ResetBucketsButton
-                    planId={plan.id}
-                    sx={{
-                        display: over ? "block" : "none",
-                        position: "absolute",
-                        right: 0,
-                        top: 7,
-                    }}
-                />
-            </Header>
-        </>
+        <Header sx={{ position: "relative" }} {...sensorProps}>
+            <Typography variant="h6" sx={{ padding: "8px" }}>
+                {plan.name}
+            </Typography>
+            <ResetBucketsButton
+                planId={plan.id}
+                sx={{
+                    display: over ? "block" : "none",
+                    position: "absolute",
+                    right: 0,
+                    top: 7,
+                }}
+            />
+        </Header>
     );
 };
 
