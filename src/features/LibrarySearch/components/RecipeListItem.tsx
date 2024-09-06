@@ -77,10 +77,10 @@ export const RecipeListItem: React.FC<RecipeListItemProps> = ({
                 {labelsToDisplay && (
                     <Box my={0.5}>
                         {labelsToDisplay.map((label, idx) => (
-                            <>
-                                <SmallLabel key={label}>{label}</SmallLabel>
+                            <React.Fragment key={label}>
+                                <SmallLabel>{label}</SmallLabel>
                                 {idx < labelsToDisplay.length - 1 && ", "}
-                            </>
+                            </React.Fragment>
                         ))}
                     </Box>
                 )}

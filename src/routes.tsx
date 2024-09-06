@@ -1,5 +1,5 @@
 import { Redirect, RouteProps } from "react-router-dom";
-import { PlannerController as Planner } from "@/features/Planner/PlannerController";
+import { Planner } from "@/views/Planner";
 import PlannedBucketController from "./features/RecipeDisplay/PlannedBucketController";
 import PlannedRecipeController from "./features/RecipeDisplay/PlannedRecipeController";
 import RecipeController from "./features/RecipeDisplay/RecipeController";
@@ -16,7 +16,9 @@ import { CurrentPlanSidebar } from "@/features/RecipeLibrary/components/CurrentP
 import * as React from "react";
 import { RouteComponentProps } from "react-router";
 import { LibraryController } from "@/features/RecipeLibrary/LibraryController";
-import { LibrarySearchSidebar } from "@/features/Planner/components/LibrarySearchSidebar";
+import { SidebarDrawer as PlannerSidebar } from "@/features/Planner/components/Sidebar";
+import { Welcome } from "@/views/Welcome";
+import { PlannerController } from "@/features/Planner/PlannerController";
 
 interface BfsRouteComponentProps extends RouteComponentProps {
     readonly authenticated: boolean;
@@ -80,16 +82,17 @@ const routes: BfsRoutes = {
         { path: "/plan/:pid/bucket/:bid", component: PlannedBucketController },
         {
             path: "/plan/:pid",
-            component: Planner,
-            sidebar: LibrarySearchSidebar,
+            component: PlannerController,
+            sidebar: PlannerSidebar,
         },
         {
             path: "/plan",
             component: Planner,
-            sidebar: LibrarySearchSidebar,
+            sidebar: PlannerSidebar,
         },
         { path: "/shop", component: Shop },
         { path: "/pantry-item-admin", component: PantryItemAdmin },
+        { path: "/welcome", component: Welcome },
     ],
 };
 

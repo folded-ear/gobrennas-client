@@ -1,8 +1,9 @@
 import React, { ReactElement } from "react";
-import { styled } from "@mui/material/styles";
+import { CSSObject, styled } from "@mui/material/styles";
 import {
     alpha,
     Box,
+    Drawer,
     List,
     ListItemText,
     ListSubheader,
@@ -35,9 +36,23 @@ import {
     isDoNotRecognize,
     isSection,
 } from "@/features/Planner/data/plannerUtils";
-import { SidebarDrawer } from "@/global/components/Sidebar";
 
+const drawerWidth = 220;
 const BUCKET_PREFIX = "bucket-";
+
+const openedMixin: CSSObject = {
+    width: drawerWidth,
+    overflowX: "hidden",
+};
+
+const Sidebar = styled(Drawer)({
+    width: drawerWidth,
+    flexShrink: 0,
+    whiteSpace: "nowrap",
+    boxSizing: "border-box",
+    ...openedMixin,
+    "& .MuiDrawer-paper": openedMixin,
+});
 
 const Header = styled(ListSubheader)(({ theme }) => ({
     overflow: "hidden",
@@ -71,7 +86,7 @@ type PlanInfo = Pick<TPlan, "id" | "name" | "buckets"> & {
     recipes: RecipeInfo[];
 };
 
-const BodyContainer: React.FC = () => {
+export const BodyContainer: React.FC = () => {
     const plan = useFluxStore<Maybe<PlanInfo>>(() => {
         const { data: plan, loading } = planStore.getActivePlanRlo();
         if (!plan || loading) return;
@@ -210,7 +225,9 @@ const Plan: React.FC<PlanProps> = ({ plan }) => {
     const { over, sensorProps } = useWhileOver();
     return (
         <Header sx={{ position: "relative" }} {...sensorProps}>
-            {plan.name}
+            <Typography variant="h6" sx={{ padding: "8px" }}>
+                {plan.name}
+            </Typography>
             <ResetBucketsButton
                 planId={plan.id}
                 sx={{
@@ -291,8 +308,8 @@ const PlannedRecipe: React.FC<PlannedRecipeProps> = ({ item }) => {
 
 export const CurrentPlanSidebar: React.FC = () => {
     return (
-        <SidebarDrawer>
+        <Sidebar variant="permanent" anchor={"right"}>
             <BodyContainer />
-        </SidebarDrawer>
+        </Sidebar>
     );
 };
