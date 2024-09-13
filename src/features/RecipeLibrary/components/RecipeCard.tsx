@@ -168,12 +168,16 @@ const RecipeCard: React.FC<Props> = ({ recipe, mine, indicateMine, me }) => {
             </>
             <CardActions>
                 <TaskBar>
-                    <TaskBarButton href={`/library/recipe/${recipe.id}`}>
+                    <TaskBarButton
+                        component={Link}
+                        to={`/library/recipe/${recipe.id}`}
+                    >
                         <ViewIcon />
                     </TaskBarButton>
                     {mine && (
                         <TaskBarButton
-                            href={`/library/recipe/${recipe.id}/edit`}
+                            component={Link}
+                            to={`/library/recipe/${recipe.id}/edit`}
                         >
                             <EditIcon fontSize="inherit" />
                         </TaskBarButton>
