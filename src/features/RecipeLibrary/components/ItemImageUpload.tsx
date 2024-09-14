@@ -22,18 +22,17 @@ mutation setRecipePhoto($id: ID!, $photo: Upload!) {
 const useStyles = makeStyles({
     root: {
         display: "block",
-        height: 140,
-        textAlign: "center",
-        paddingTop: "30px",
+        padding: "25px 0",
     },
 });
 
 interface Props {
     recipeId: BfsId;
     disabled: boolean;
+    notOnPaper?: boolean;
 }
 
-const ItemImageUpload: React.FC<Props> = ({ recipeId, disabled }) => {
+const ItemImageUpload: React.FC<Props> = ({ recipeId, ...props }) => {
     const classes = useStyles();
     const [setRecipePhoto] = useMutation(SET_RECIPE_PHOTO);
     const handlePhoto = async (photo) => {
@@ -50,9 +49,9 @@ const ItemImageUpload: React.FC<Props> = ({ recipeId, disabled }) => {
     };
     return (
         <ImageDropZone
-            disabled={disabled}
             className={classes.root}
             onImage={handlePhoto}
+            {...props}
         />
     );
 };

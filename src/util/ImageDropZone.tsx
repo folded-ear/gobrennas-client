@@ -8,25 +8,29 @@ import buildSequence from "./buildSequence";
 
 const { next } = buildSequence();
 
-const useStyles = makeStyles(
-    ({ maxWidth, maxHeight }: { maxWidth: any; maxHeight: any }) => ({
-        label: {
-            cursor: "pointer",
-        },
-        preview: {
-            maxWidth: maxWidth || "400px",
-            maxHeight: maxHeight || "200px",
-        },
-        icon: {
-            margin: "30px 40px",
-        },
-        input: {
-            opacity: 0,
-            height: 0,
-            width: 0,
-        },
+const useStyles = makeStyles((theme) => ({
+    label: ({ notOnPaper }: StyleProps) => ({
+        textAlign: "center",
+        backgroundColor: notOnPaper
+            ? theme.palette.neutral.main
+            : theme.palette.background.default,
     }),
-);
+    active: {
+        cursor: "pointer",
+    },
+    preview: ({ maxWidth, maxHeight }: StyleProps) => ({
+        maxWidth: maxWidth || "400px",
+        maxHeight: maxHeight || "200px",
+    }),
+    icon: {
+        margin: "30px 40px",
+    },
+    input: {
+        opacity: 0,
+        height: 0,
+        width: 0,
+    },
+}));
 
 type ImageDropZoneProps = {
     onImage(f: File): void;
@@ -36,7 +40,13 @@ type ImageDropZoneProps = {
     className?: string;
     disabled?: boolean;
     style?: any;
+    notOnPaper?: boolean;
 };
+
+type StyleProps = Pick<
+    ImageDropZoneProps,
+    "maxWidth" | "maxHeight" | "notOnPaper"
+>;
 
 const ImageDropZone: React.FC<ImageDropZoneProps> = ({
     disabled = undefined,
@@ -45,15 +55,16 @@ const ImageDropZone: React.FC<ImageDropZoneProps> = ({
     maxWidth = undefined,
     maxHeight = undefined,
     className: labelClassName = undefined,
+    notOnPaper,
     ...props
 }) => {
-    const classes = useStyles({ maxWidth, maxHeight });
+    const classes = useStyles({ notOnPaper, maxWidth, maxHeight });
     const [value, setValue] = React.useState([]);
     const inputId = React.useMemo(() => `image-drop-zone-${next()}`, []);
 
     if (disabled) {
         return (
-            <label {...props} className={labelClassName}>
+            <label {...props} className={clsx(labelClassName, classes.label)}>
                 <NoPhotoIcon color="disabled" className={classes.icon} />
             </label>
         );
@@ -89,7 +100,7 @@ const ImageDropZone: React.FC<ImageDropZoneProps> = ({
         <label
             title="Drag and drop an image, or click to select one."
             {...props}
-            className={clsx(labelClassName, classes.label)}
+            className={clsx(labelClassName, classes.label, classes.active)}
             htmlFor={inputId}
             onDrop={handleDrop}
             onDragOver={handleDragOver}
