@@ -1,4 +1,4 @@
-import { Box } from "@mui/material";
+import { Stack } from "@mui/material";
 import { RecipeListItem } from "@/features/LibrarySearch/components/RecipeListItem";
 import { UserType } from "@/global/types/identity";
 import { MessagePaper } from "@/features/RecipeLibrary/components/MessagePaper";
@@ -21,7 +21,7 @@ export const RecipeListDisplay: React.FC<RecipeListDisplayProps> = ({
     }
 
     return (
-        <Box sx={{ display: "flex", gap: `8px`, flexDirection: "column" }}>
+        <Stack gap={1.5}>
             {recipes.map((recipe) => (
                 <RecipeListItem
                     key={recipe.id}
@@ -30,6 +30,6 @@ export const RecipeListDisplay: React.FC<RecipeListDisplayProps> = ({
                     markAsMine={markAsMine}
                 />
             ))}
-        </Box>
+        </Stack>
     );
 };
