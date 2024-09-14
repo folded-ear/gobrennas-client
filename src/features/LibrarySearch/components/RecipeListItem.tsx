@@ -52,7 +52,8 @@ export const RecipeListItem: React.FC<RecipeListItemProps> = ({
                 <CardMedia
                     component="img"
                     sx={{
-                        width: 50,
+                        width: "20%",
+                        order: 2,
                         overflow: "hidden",
                     }}
                     image={recipe.photo.url}

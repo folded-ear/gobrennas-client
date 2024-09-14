@@ -4,6 +4,8 @@ export const SmallHeadline = styled("span")({
     fontFamily: "'Encode Sans', sans-serif",
     fontSize: "1rem",
     fontWeight: "bold",
+    overflow: "hidden",
+    textOverflow: "ellipsis",
     padding: 0,
     margin: 0,
 });
