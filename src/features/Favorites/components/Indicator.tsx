@@ -30,7 +30,12 @@ const Indicator: React.FC<Props> = ({ type, id }) => {
     }
 
     return (
-        <TaskBarButton edge="start" size="small" onClick={handleClick}>
+        <TaskBarButton
+            edge="start"
+            size="small"
+            onClick={handleClick}
+            style={{ backgroundColor: "unset" }}
+        >
             {favorite ? <FavoriteIcon /> : <NotFavoriteIcon />}
         </TaskBarButton>
     );

@@ -15,6 +15,7 @@ import {
     SmallHeadline,
     SmallLabel,
 } from "@/global/elements/typography.elements";
+import { Link } from "react-router-dom";
 
 type RecipeListItemProps = {
     recipe: RecipeType;
@@ -62,12 +63,16 @@ export const RecipeListItem: React.FC<RecipeListItemProps> = ({
                 <TaskBar>
                     <FavoriteIndicator type={"Recipe"} id={recipe.id} />
                     <SendToPlan iconOnly onClick={handleClick} />
-                    <TaskBarButton href={`/library/recipe/${recipe.id}`}>
+                    <TaskBarButton
+                        component={Link}
+                        to={`/library/recipe/${recipe.id}`}
+                    >
                         <ViewIcon />
                     </TaskBarButton>
                     {mine && (
                         <TaskBarButton
-                            href={`/library/recipe/${recipe.id}/edit`}
+                            component={Link}
+                            to={`/library/recipe/${recipe.id}/edit`}
                         >
                             <EditIcon />
                         </TaskBarButton>
