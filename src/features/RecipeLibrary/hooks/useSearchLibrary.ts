@@ -43,9 +43,10 @@ export const useSearchLibrary = ({
             externalUrl: it.node.externalUrl || null,
             favorite: it.node.favorite,
             labels: it.node.labels || [],
-            photo: it.node.photo || null,
+            photo: it.node.photo?.url || null,
+            photoFocus: it.node.photo?.focus || null,
             totalTime: it.node.totalTime || null,
-            yield: it.node.yield || null,
+            recipeYield: it.node.yield || null,
         })) || [];
 
     return {

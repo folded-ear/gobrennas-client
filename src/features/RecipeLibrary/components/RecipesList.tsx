@@ -1,7 +1,6 @@
 import { AddRecipeIcon } from "@/views/common/icons";
 import { Container as Content, Grid, useScrollTrigger } from "@mui/material";
 import RecipeCard from "@/features/RecipeLibrary/components/RecipeCard";
-import { useIsMobile } from "@/providers/IsMobile";
 import React, { useState } from "react";
 import history from "@/util/history";
 import FoodingerFab from "@/views/common/FoodingerFab";
@@ -9,8 +8,6 @@ import LazyInfinite from "@/views/common/LazyInfinite";
 import LoadingIndicator from "@/views/common/LoadingIndicator";
 import { LibrarySearchScope } from "@/__generated__/graphql";
 import { MessagePaper } from "@/features/RecipeLibrary/components/MessagePaper";
-import { SearchRecipes } from "@/features/RecipeLibrary/components/SearchRecipes";
-import { RecipeType } from "@/features/RecipeLibrary/types";
 
 interface RecipesListProps {
     me: any; // todo
@@ -18,11 +15,12 @@ interface RecipesListProps {
     scope?: LibrarySearchScope;
     isLoading: boolean;
     isComplete: boolean;
-    recipes?: RecipeType[];
+    recipes?: RecipeCard[];
 
     onSearch(filter: string, scope: LibrarySearchScope): void;
 
     onNeedMore(): void;
+    isMobile: boolean;
 }
 
 export const RecipesList: React.FC<RecipesListProps> = ({
@@ -32,40 +30,9 @@ export const RecipesList: React.FC<RecipesListProps> = ({
     recipes,
     isLoading,
     isComplete,
-    onSearch,
     onNeedMore,
+    isMobile,
 }) => {
-    const isSearchFloating = useScrollTrigger({
-        disableHysteresis: true,
-        threshold: 15,
-    });
-    const isMobile = useIsMobile();
-    const [unsavedFilter, setUnsavedFilter] = useState(filter);
-
-    function handleSearchChange(e) {
-        setUnsavedFilter(e.target.value);
-    }
-
-    function handleClear(e) {
-        e.preventDefault();
-        e.stopPropagation();
-        setUnsavedFilter("");
-        onSearch("", scope);
-    }
-
-    function handleSearch(e) {
-        e.preventDefault();
-        e.stopPropagation();
-        onSearch(unsavedFilter, scope);
-    }
-
-    function toggleScope(e) {
-        const scope = e.target.checked
-            ? LibrarySearchScope.Everyone
-            : LibrarySearchScope.Mine;
-        onSearch(filter, scope);
-    }
-
     let body;
     if (recipes) {
         if (recipes.length > 0) {
@@ -91,7 +58,7 @@ export const RecipesList: React.FC<RecipesListProps> = ({
                                     indicateMine={
                                         scope === LibrarySearchScope.Everyone
                                     }
-                                    mine={recipe.owner.id === "" + me.id}
+                                    mine={recipe.ownerId === "" + me.id}
                                 />
                             </Grid>
                         ))}
@@ -123,24 +90,7 @@ export const RecipesList: React.FC<RecipesListProps> = ({
                 />
             );
         }
-    } else {
-        body = <LoadingIndicator />;
     }
-    body = (
-        <>
-            <SearchRecipes
-                isSearchFloating={isSearchFloating}
-                isMobile={isMobile}
-                onClear={handleClear}
-                unsavedFilter={unsavedFilter}
-                onSearchChange={handleSearchChange}
-                onSearch={handleSearch}
-                scope={scope}
-                toggleScope={toggleScope}
-            />
-            {body}
-        </>
-    );
 
     return (
         <Content disableGutters={!isMobile}>

@@ -25,6 +25,7 @@ import FavoriteIndicator from "../../Favorites/components/Indicator";
 import { Photo, User as UserType } from "@/__generated__/graphql";
 import LabelItem from "@/global/components/LabelItem";
 import { TaskBar, TaskBarButton } from "@/global/elements/taskbar.elements";
+import { RecipeCard, RecipeType } from "@/features/RecipeLibrary/types";
 
 const useStyles = makeStyles({
     photo: {
@@ -36,22 +37,8 @@ const useStyles = makeStyles({
     },
 });
 
-export interface RecipeType {
-    id: string;
-    calories?: number | null;
-    directions?: string;
-    externalUrl?: string | null;
-    favorite: boolean;
-    labels?: string[] | null;
-    name: string;
-    owner: UserType;
-    photo?: Photo | null;
-    totalTime?: number | null;
-    yield?: number | null;
-}
-
 interface Props {
-    recipe: RecipeType;
+    recipe: RecipeCard;
     mine: boolean;
     indicateMine: boolean;
     me: any; // todo
@@ -61,10 +48,10 @@ const RecipeCard: React.FC<Props> = ({ recipe, mine, indicateMine, me }) => {
     const owner = useFluxStore(
         () => {
             if (mine) return indicateMine ? me : null;
-            return FriendStore.getFriendRlo(recipe.owner.id).data;
+            return FriendStore.getFriendRlo(recipe.ownerId).data;
         },
         [FriendStore],
-        [mine, indicateMine, me, recipe.owner.id],
+        [mine, indicateMine, me, recipe.ownerId],
     );
     const classes = useStyles();
     const [raised, setRaised] = React.useState(false);
@@ -76,7 +63,8 @@ const RecipeCard: React.FC<Props> = ({ recipe, mine, indicateMine, me }) => {
     const handleClick = (planId: number, scale?: number) => {
         Dispatcher.dispatch({
             type: RecipeActions.SEND_TO_PLAN,
-            recipeId: parseInt(recipe.id),
+            recipeId:
+                typeof recipe.id === "string" ? parseInt(recipe.id) : recipe.id,
             planId,
             scale: scale ? scale : 1,
         });
@@ -99,8 +87,8 @@ const RecipeCard: React.FC<Props> = ({ recipe, mine, indicateMine, me }) => {
                     {recipe.photo ? (
                         <ItemImage
                             className={classes.photo}
-                            image={recipe.photo.url}
-                            focus={recipe.photo.focus}
+                            image={recipe.photo}
+                            focus={recipe.photoFocus}
                             alt={recipe.name}
                         />
                     ) : (
@@ -145,10 +133,10 @@ const RecipeCard: React.FC<Props> = ({ recipe, mine, indicateMine, me }) => {
                             text={<Source url={recipe.externalUrl} />}
                         />
                     )}
-                    {recipe.yield && (
+                    {recipe.recipeYield && (
                         <RecipeInfo
                             label="Yield"
-                            text={`${recipe.yield} servings`}
+                            text={`${recipe.recipeYield} servings`}
                         />
                     )}
                     {recipe.totalTime && (

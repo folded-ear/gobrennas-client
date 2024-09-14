@@ -4,14 +4,14 @@ import { SearchInput } from "@/features/LibrarySearch/components/SearchInput";
 import { DisplayOptions, SearchScope } from "@/features/LibrarySearch/types";
 import { useSearchLibrary } from "@/features/RecipeLibrary/hooks/useSearchLibrary";
 import LoadingIndicator from "@/views/common/LoadingIndicator";
-import { RecipeListDisplay } from "@/features/LibrarySearch/components/RecipeListDisplay";
-import { RecipeGridDisplay } from "@/features/LibrarySearch/components/RecipeGridDisplay";
+import { RecipeListDisplay } from "@/views/recipeCollections/RecipeListDisplay";
 import { useProfile } from "@/providers/Profile";
 import { ScalingProvider } from "@/util/ScalingContext";
-import { SearchResults } from "@/features/LibrarySearch/components/RecipeDisplay.elements";
 import { LibrarySearchScope } from "@/__generated__/graphql";
 import { Grid } from "@mui/material";
 import { MessagePaper } from "@/features/RecipeLibrary/components/MessagePaper";
+import { RecipeGrid } from "@/views/recipeCollections/RecipeGrid";
+import { SearchResults } from "@/views/recipeCollections/RecipeCollection.elements";
 
 type LibrarySearchControllerProps = {
     display?: DisplayOptions;
@@ -65,10 +65,11 @@ export const LibrarySearchController: React.FC<
                                     markAsMine={markAsMine}
                                 />
                             ) : (
-                                <RecipeGridDisplay
+                                <RecipeGrid
                                     recipes={recipes}
                                     me={me}
                                     markAsMine={markAsMine}
+                                    cardType="standard"
                                 />
                             )}
                         </>

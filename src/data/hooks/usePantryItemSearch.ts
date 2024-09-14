@@ -1,5 +1,5 @@
 import { gql } from "@/__generated__";
-import { UseQueryResult } from "@/data/types";
+import { Results, UseQueryResult } from "@/data/types";
 import {
     PageInfo,
     PantryItemConnectionEdge,
@@ -43,11 +43,6 @@ export type Result = Pick<
     firstUse: Date;
 };
 
-type Results = {
-    results: Result[];
-    pageInfo: Pick<PageInfo, "hasNextPage">;
-} | null;
-
 export interface Variables {
     query?: string;
     page?: number;
@@ -56,7 +51,7 @@ export interface Variables {
     sortDir?: SortDir;
 }
 
-function adapter(rawData: PantryItemsQuery | undefined): Results {
+function adapter(rawData: PantryItemsQuery | undefined): Results<Result> {
     if (!rawData?.pantry?.search) {
         return null;
     }
@@ -77,7 +72,7 @@ export const usePantryItemSearch = ({
     pageSize = 25,
     sortBy = "name",
     sortDir = SortDir.Asc,
-}: Variables): UseQueryResult<Results, Variables> => {
+}: Variables): UseQueryResult<Results<Result>, Variables> => {
     // DataGrid uses a numeric page model, while the GraphQL API uses cursors,
     // in the style of Relay. However! For the moment those cursors are merely
     // encoded numeric offsets, so do an end-run around tracking cursors in the

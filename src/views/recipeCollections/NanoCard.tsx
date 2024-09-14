@@ -4,12 +4,12 @@ import { Box } from "@mui/material";
 import Dispatcher from "@/data/dispatcher";
 import RecipeActions from "@/data/RecipeActions";
 import SendToPlan from "@/features/RecipeLibrary/components/SendToPlan";
-import FavoriteIndicator from "../../Favorites/components/Indicator";
-import { RecipeType } from "@/features/RecipeLibrary/types";
+import { RecipeCard } from "@/features/RecipeLibrary/types";
+import FavoriteIndicator from "@/features/Favorites/components/Indicator";
 import {
     NanoCardContent,
     NanoRecipeCard,
-} from "@/features/LibrarySearch/components/RecipeDisplay.elements";
+} from "@/views/recipeCollections/RecipeCollection.elements";
 import { TaskBar, TaskBarButton } from "@/global/elements/taskbar.elements";
 import {
     SmallHeadline,
@@ -19,16 +19,12 @@ import { Link } from "react-router-dom";
 import ItemImage from "@/features/RecipeLibrary/components/ItemImage";
 
 type RecipeListItemProps = {
-    recipe: RecipeType;
-    mine: boolean;
-    markAsMine: boolean;
+    recipe: RecipeCard;
+    isMine: boolean;
 };
 
 // TODO: add owner indicator?
-export const RecipeListItem: React.FC<RecipeListItemProps> = ({
-    recipe,
-    mine,
-}) => {
+export const NanoCard: React.FC<RecipeListItemProps> = ({ recipe, isMine }) => {
     const [raised, setRaised] = React.useState(false);
     const labelsToDisplay =
         recipe.labels &&
@@ -37,7 +33,8 @@ export const RecipeListItem: React.FC<RecipeListItemProps> = ({
     const handleClick = (planId: number, scale?: number) => {
         Dispatcher.dispatch({
             type: RecipeActions.SEND_TO_PLAN,
-            recipeId: parseInt(recipe.id),
+            recipeId:
+                typeof recipe.id === "string" ? parseInt(recipe.id) : recipe.id,
             planId,
             scale: scale ? scale : 1,
         });
@@ -49,16 +46,16 @@ export const RecipeListItem: React.FC<RecipeListItemProps> = ({
             onMouseEnter={() => setRaised(true)}
             onMouseLeave={() => setRaised(false)}
         >
-            {recipe.photo && recipe.photo.url && (
+            {recipe.photo && (
                 <ItemImage
                     sx={{
                         width: "20%",
                         order: 2,
                         overflow: "hidden",
                     }}
-                    image={recipe.photo.url}
+                    image={recipe.photo}
                     alt={recipe.name}
-                    focus={recipe.photo.focus}
+                    focus={recipe.photoFocus}
                 />
             )}
             <NanoCardContent>
@@ -71,7 +68,7 @@ export const RecipeListItem: React.FC<RecipeListItemProps> = ({
                     >
                         <ViewIcon />
                     </TaskBarButton>
-                    {mine && (
+                    {isMine && (
                         <TaskBarButton
                             component={Link}
                             to={`/library/recipe/${recipe.id}/edit`}

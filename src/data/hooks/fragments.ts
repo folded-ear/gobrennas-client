@@ -56,3 +56,23 @@ fragment librarySearchResult on RecipeConnection {
   }
 }
 `);
+
+export const RECIPE_CARD_FRAGMENT = gql(`
+    fragment recipeCard on Recipe {
+      calories
+      externalUrl
+      favorite
+      id
+      labels
+      name
+      owner {
+        id
+      }
+      photo {
+        url
+        focus
+      }
+      totalTime
+      yield
+    }
+`);

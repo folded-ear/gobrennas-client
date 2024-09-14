@@ -1,12 +1,12 @@
 import { Stack } from "@mui/material";
-import { RecipeListItem } from "@/features/LibrarySearch/components/RecipeListItem";
 import { UserType } from "@/global/types/identity";
 import { MessagePaper } from "@/features/RecipeLibrary/components/MessagePaper";
 import React from "react";
-import { RecipeType } from "@/features/RecipeLibrary/types";
+import { RecipeCard } from "@/features/RecipeLibrary/types";
+import { NanoCard } from "@/views/recipeCollections/NanoCard";
 
 type RecipeListDisplayProps = {
-    recipes?: RecipeType[];
+    recipes?: RecipeCard[];
     me: UserType;
     markAsMine: boolean;
 };
@@ -23,12 +23,7 @@ export const RecipeListDisplay: React.FC<RecipeListDisplayProps> = ({
     return (
         <Stack gap={1.5}>
             {recipes.map((recipe) => (
-                <RecipeListItem
-                    key={recipe.id}
-                    recipe={recipe}
-                    mine={recipe.owner.id === "" + me.id}
-                    markAsMine={markAsMine}
-                />
+                <NanoCard key={recipe.id} recipe={recipe} isMine={markAsMine} />
             ))}
         </Stack>
     );
