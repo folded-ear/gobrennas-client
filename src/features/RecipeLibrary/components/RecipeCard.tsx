@@ -99,9 +99,9 @@ const RecipeCard: React.FC<Props> = ({ recipe, mine, indicateMine, me }) => {
                     {recipe.photo ? (
                         <ItemImage
                             className={classes.photo}
-                            url={recipe.photo.url}
+                            image={recipe.photo.url}
                             focus={recipe.photo.focus}
-                            title={recipe.name}
+                            alt={recipe.name}
                         />
                     ) : (
                         <ItemImageUpload

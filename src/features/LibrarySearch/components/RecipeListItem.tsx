@@ -1,6 +1,6 @@
 import * as React from "react";
 import { EditIcon, ViewIcon } from "@/views/common/icons";
-import { Box, CardMedia } from "@mui/material";
+import { Box } from "@mui/material";
 import Dispatcher from "@/data/dispatcher";
 import RecipeActions from "@/data/RecipeActions";
 import SendToPlan from "@/features/RecipeLibrary/components/SendToPlan";
@@ -16,6 +16,7 @@ import {
     SmallLabel,
 } from "@/global/elements/typography.elements";
 import { Link } from "react-router-dom";
+import ItemImage from "@/features/RecipeLibrary/components/ItemImage";
 
 type RecipeListItemProps = {
     recipe: RecipeType;
@@ -49,8 +50,7 @@ export const RecipeListItem: React.FC<RecipeListItemProps> = ({
             onMouseLeave={() => setRaised(false)}
         >
             {recipe.photo && recipe.photo.url && (
-                <CardMedia
-                    component="img"
+                <ItemImage
                     sx={{
                         width: "20%",
                         order: 2,
@@ -58,6 +58,7 @@ export const RecipeListItem: React.FC<RecipeListItemProps> = ({
                     }}
                     image={recipe.photo.url}
                     alt={recipe.name}
+                    focus={recipe.photo.focus}
                 />
             )}
             <NanoCardContent>
