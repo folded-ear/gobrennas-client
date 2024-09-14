@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Box, Drawer as MuiDrawer, Paper, Tab, Tabs } from "@mui/material";
+import { Box, Drawer as MuiDrawer, Tab, Tabs } from "@mui/material";
 import { SIDEBAR_DEFAULT_WIDTH } from "@/global/constants";
 import { styled } from "@mui/material/styles";
 import {
@@ -13,18 +13,17 @@ import { BodyContainer } from "@/features/RecipeLibrary/components/CurrentPlanSi
 import { LibrarySearchController } from "@/features/LibrarySearch/LibrarySearchController";
 import useIsDevMode from "@/data/useIsDevMode";
 
-const Drawer = styled(MuiDrawer)(({ theme }) => ({
+const Drawer = styled(MuiDrawer)({
     width: SIDEBAR_DEFAULT_WIDTH,
     flexShrink: 0,
     whiteSpace: "nowrap",
     boxSizing: "border-box",
     "& .MuiDrawer-paper": {
         width: SIDEBAR_DEFAULT_WIDTH,
-        padding: theme.spacing(2),
         height: "100vh",
         overflowX: "hidden",
     },
-})) as typeof MuiDrawer;
+}) as typeof MuiDrawer;
 
 type SidebarDrawerProps = React.PropsWithChildren;
 
@@ -62,16 +61,12 @@ export const SidebarDrawer: React.FC<SidebarDrawerProps> = () => {
         <Drawer variant="permanent" anchor="right">
             <Switch>
                 <Route path={`/plan/:pid/buckets`}>
-                    <Paper>
-                        <SidebarNav />
-                        <BodyContainer />
-                    </Paper>
+                    <SidebarNav />
+                    <BodyContainer />
                 </Route>
                 <Route path={`/plan/:pid`}>
-                    <Paper>
-                        <SidebarNav />
-                        <LibrarySearchController />
-                    </Paper>
+                    <SidebarNav />
+                    <LibrarySearchController />
                 </Route>
             </Switch>
         </Drawer>

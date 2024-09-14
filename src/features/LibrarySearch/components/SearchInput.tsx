@@ -1,6 +1,6 @@
 import InputBase from "@mui/material/Input";
-import { useState } from "react";
 import * as React from "react";
+import { useState } from "react";
 import { SearchScope } from "@/features/LibrarySearch/types";
 import { IconButton, InputAdornment, Toolbar } from "@mui/material";
 import { ClearIcon, SearchIcon } from "@/views/common/icons";
@@ -47,7 +47,7 @@ export const SearchInput: React.FC<SearchInputProps> = ({
     return (
         <Toolbar>
             <InputBase
-                placeholder="Search Recipes"
+                placeholder="Search My Recipes"
                 value={searchText}
                 onChange={handleSearchChange}
                 autoFocus

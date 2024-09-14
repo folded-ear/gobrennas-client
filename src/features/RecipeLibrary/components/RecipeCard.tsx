@@ -95,18 +95,22 @@ const RecipeCard: React.FC<Props> = ({ recipe, mine, indicateMine, me }) => {
             }}
         >
             <>
-                {recipe.photo ? (
-                    <Link to={`/library/recipe/${recipe.id}`}>
+                <Link to={`/library/recipe/${recipe.id}`}>
+                    {recipe.photo ? (
                         <ItemImage
                             className={classes.photo}
-                            url={recipe.photo.url}
+                            image={recipe.photo.url}
                             focus={recipe.photo.focus}
-                            title={recipe.name}
+                            alt={recipe.name}
                         />
-                    </Link>
-                ) : (
-                    <ItemImageUpload recipeId={recipe.id} disabled={!mine} />
-                )}
+                    ) : (
+                        <ItemImageUpload
+                            recipeId={recipe.id}
+                            disabled={!mine}
+                            notOnPaper
+                        />
+                    )}
+                </Link>
                 <CardContent style={{ flexGrow: 2 }}>
                     <Grid container alignItems={"start"} wrap={"nowrap"}>
                         <Grid item>

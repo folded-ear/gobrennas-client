@@ -26,13 +26,7 @@ const useStyles = makeStyles((theme) => ({
         position: "relative",
     },
     dropZone: {
-        display: "block",
-        height: "100%",
-        width: "100%",
-        textAlign: "center",
-        paddingTop: "40px",
-        backgroundColor: theme.palette.background.default,
-        cursor: "pointer",
+        padding: "20px 0",
     },
     closeButton: {
         position: "absolute",

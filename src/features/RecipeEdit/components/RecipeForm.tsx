@@ -169,10 +169,6 @@ const RecipeForm: React.FC<Props> = ({
                             onImage={(file) => onUpdate("photoUpload", file)}
                             style={{
                                 display: "inline-block",
-                                backgroundColor:
-                                    theme.palette.background.default,
-                                textAlign: "center",
-                                cursor: "pointer",
                             }}
                         />
                     </Grid>
