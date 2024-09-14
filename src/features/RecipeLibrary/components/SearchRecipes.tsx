@@ -44,7 +44,11 @@ export const SearchRecipes: React.FC<SearchRecipesProps> = ({
                 <InputBase
                     value={unsavedFilter}
                     onChange={onSearchChange}
-                    placeholder="Search Recipes"
+                    placeholder={
+                        scope === LibrarySearchScope.Everyone
+                            ? "Search Everyone's Recipes"
+                            : "Search My Recipes"
+                    }
                     style={{ flexGrow: 2 }}
                     onKeyDown={(e) => {
                         if (e.key === "Enter") {
