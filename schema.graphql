@@ -168,6 +168,7 @@ type LibraryQuery {
         "The raw string to recognize."
         raw: String!
     ): RecognizedItem
+    suggestRecipesToCook(after: Cursor, first: NonNegativeInt! = 5): RecipeConnection!
 }
 
 type Mutation {

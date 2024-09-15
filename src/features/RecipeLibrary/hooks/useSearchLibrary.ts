@@ -1,10 +1,11 @@
-import { SEARCH_RECIPES } from "@/features/RecipeLibrary/data/queries";
+import {
+    SEARCH_RECIPES,
+    SUGGEST_RECIPES,
+} from "@/features/RecipeLibrary/data/queries";
 import { QueryResult, useQuery } from "@apollo/client";
 import type { RecipeCard } from "@/features/RecipeLibrary/types";
-import {
-    GetSearchLibraryQuery,
-    GetSearchLibraryQueryVariables,
-} from "@/__generated__/graphql";
+import useIsDevMode from "@/data/useIsDevMode";
+import { LibrarySearchScope } from "@/__generated__/graphql";
 
 interface UseSearchLibraryQueryResult
     extends Pick<
@@ -19,16 +20,18 @@ export const useSearchLibrary = ({
     scope,
     query,
 }): UseSearchLibraryQueryResult => {
-    const { data, error, loading, refetch, fetchMore } = useQuery<
-        GetSearchLibraryQuery,
-        GetSearchLibraryQueryVariables
-    >(SEARCH_RECIPES, {
-        fetchPolicy: "cache-and-network",
-        variables: {
-            query,
-            scope,
+    const devMode = useIsDevMode();
+    const suggest = !query && scope === LibrarySearchScope.Mine && devMode;
+    const { data, error, loading, refetch, fetchMore } = useQuery(
+        suggest ? SUGGEST_RECIPES : SEARCH_RECIPES,
+        {
+            fetchPolicy: "cache-and-network",
+            variables: {
+                query,
+                scope,
+            },
         },
-    });
+    );
 
     // e.node
     const recipes: RecipeCard[] =

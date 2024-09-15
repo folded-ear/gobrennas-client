@@ -36,6 +36,7 @@ export const client = new ApolloClient({
             LibraryQuery: {
                 fields: {
                     recipes: relayStylePagination(["scope", "query"]),
+                    suggestRecipesToCook: relayStylePagination(false),
                 },
             },
         },

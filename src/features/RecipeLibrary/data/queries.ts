@@ -9,33 +9,19 @@ export const SEARCH_RECIPES = gql(`
     ) {
         library {
             recipes(first: $first, query: $query, scope: $scope, after: $after) {
-                edges {
-                    cursor
-                    node {
-                        id
-                        owner {
-                            id
-                            imageUrl
-                            name
-                        }
-                        photo {
-                            url
-                            focus
-                        }
-                        name
-                        favorite
-                        labels
-                        externalUrl
-                        calories
-                        yield
-                        totalTime
-                    }
-                }
-                pageInfo {
-                    hasNextPage
-                    endCursor
-                }
+                ...librarySearchResult
             }
         }
     }
 `);
+
+export const SUGGEST_RECIPES = gql(`
+query recipeSuggestions(
+    $first: NonNegativeInt! = 9
+    $after: Cursor = null) {
+  library {
+    recipes: suggestRecipesToCook(first: $first, after: $after) {
+      ...librarySearchResult
+    }
+  }
+}`);
