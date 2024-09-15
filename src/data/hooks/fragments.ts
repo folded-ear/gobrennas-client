@@ -25,3 +25,34 @@ export const RECIPE_CORE_FRAGMENT = gql(`
         }
     }
 `);
+
+export const LIBRARY_SEARCH_RESULT_FRAGMENT = gql(`
+fragment librarySearchResult on RecipeConnection {
+  edges {
+    cursor
+    node {
+      id
+      owner {
+        id
+        imageUrl
+        name
+      }
+      photo {
+        url
+        focus
+      }
+      name
+      favorite
+      labels
+      externalUrl
+      calories
+      yield
+      totalTime
+    }
+  }
+  pageInfo {
+    hasNextPage
+    endCursor
+  }
+}
+`);
