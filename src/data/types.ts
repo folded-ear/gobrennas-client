@@ -15,5 +15,5 @@ export type UseQueryResult<T, V extends OperationVariables> = {
 
 export type Results<T> = {
     results: T[];
-    pageInfo: Pick<PageInfo, "hasNextPage" | "endCursor">;
+    pageInfo: Partial<PageInfo>;
 } | null;
