@@ -52,9 +52,7 @@ function adapter(rawData: PantryItemUsesQuery | undefined): Results {
     }));
 }
 
-export const usePantryItemUses = (
-    id: string,
-): UseQueryResult<Results, Variables> => {
+export const usePantryItemUses = (id: string) => {
     return useAdaptingQuery(PANTRY_ITEMS_USES, adapter, {
         fetchPolicy: "cache-and-network",
         variables: { id },

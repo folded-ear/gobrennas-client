@@ -120,9 +120,7 @@ function adapter(
     };
 }
 
-export const useGetFullRecipe = (
-    id: string,
-): UseQueryResult<FullRecipe | null, { id: string }> => {
+export const useGetFullRecipe = (id: string) => {
     const myId = useProfileId();
     const boundAdapter = useMemo(() => adapter.bind(undefined, myId), [myId]);
     return useAdaptingQuery(GET_FULL_RECIPE_QUERY, boundAdapter, {

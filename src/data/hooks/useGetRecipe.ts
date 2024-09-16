@@ -5,6 +5,7 @@ import { BfsId } from "@/global/types/identity";
 import { GetRecipeQuery } from "@/__generated__/graphql";
 import useAdaptingQuery from "./useAdaptingQuery";
 import objectWithType from "@/data/utils/objectWithType";
+import { QueryResult } from "@apollo/client";
 
 const GET_RECIPE_QUERY = gql(`
 query getRecipe($id: ID!) {
@@ -58,9 +59,7 @@ function adapter(data: GetRecipeQuery | undefined) {
     return recipe;
 }
 
-export const useGetRecipe = (
-    id: string,
-): UseQueryResult<Recipe, { id: string }> => {
+export const useGetRecipe = (id: string) => {
     return useAdaptingQuery(GET_RECIPE_QUERY, adapter, {
         variables: { id: id },
     });

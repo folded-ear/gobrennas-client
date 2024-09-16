@@ -41,7 +41,7 @@ export default function useAdaptingQuery<
     }, [resultAdapter, raw]);
 
     const refetch = useCallback(
-        (variables: Partial<TVariables> | undefined) =>
+        (variables?: Partial<TVariables> | undefined) =>
             raw.refetch(variables).then((refetched) => ({
                 ...refetched,
                 data: resultAdapter(refetched.data, refetched),

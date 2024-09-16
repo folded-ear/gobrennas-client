@@ -10,7 +10,7 @@ export type UseQueryResult<T, V extends OperationVariables> = {
     error?: ApolloError;
     data: T | null;
     refetch: ObservableQueryFields<T, V>["refetch"];
-    fetchMore: ObservableQueryFields<T, V>["fetchMore"];
+    fetchMore?: ObservableQueryFields<T, V>["fetchMore"];
 };
 
 export type Results<T> = {
