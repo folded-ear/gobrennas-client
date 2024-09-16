@@ -21,9 +21,9 @@ export const useSearchLibrary = ({
     query,
 }): UseSearchLibraryQueryResult => {
     const devMode = useIsDevMode();
-    const suggest = !query && scope === LibrarySearchScope.Mine && devMode;
+    // const suggest = !query && scope === LibrarySearchScope.Mine && devMode;
     const { data, error, loading, refetch, fetchMore } = useQuery(
-        suggest ? SUGGEST_RECIPES : SEARCH_RECIPES,
+        SEARCH_RECIPES,
         {
             fetchPolicy: "cache-and-network",
             variables: {

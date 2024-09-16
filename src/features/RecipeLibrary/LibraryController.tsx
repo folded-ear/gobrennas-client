@@ -17,6 +17,8 @@ import {
     SectionHeadline,
     SmallHeadline,
 } from "@/global/elements/typography.elements";
+import useIsDevMode from "@/data/useIsDevMode";
+import Button from "@mui/material/Button";
 
 /**
  * TODO: Issue-218
@@ -26,6 +28,7 @@ import {
  * Library here.
  */
 export const LibraryController = () => {
+    const devMode = useIsDevMode();
     const me = useProfile();
     const history = useHistory();
     const params = history.location.search
@@ -58,7 +61,8 @@ export const LibraryController = () => {
         query,
     });
 
-    const { data: recommended } = useRecommendedRecipes(9);
+    const { data: recommended, fetchMore: fetchMoreRecommended } =
+        useRecommendedRecipes(9);
 
     function handleSearchChange(e) {
         setUnsavedQuery(e.target.value);
@@ -108,6 +112,8 @@ export const LibraryController = () => {
 
     const markAsMine = scope === LibrarySearchScope.Everyone;
 
+    const showRecommendations = devMode && query === "" && recommended;
+
     if (loading) {
         return <LoadingIndicator />;
     }
@@ -125,7 +131,7 @@ export const LibraryController = () => {
                 toggleScope={toggleScope}
             />
             <ScalingProvider>
-                {query === "" && recommended && (
+                {showRecommendations && (
                     <>
                         <SectionHeadline>Recommended</SectionHeadline>
                         <RecipeGrid
@@ -134,6 +140,18 @@ export const LibraryController = () => {
                             markAsMine={markAsMine}
                             cardType="nano"
                         />
+                        <Button
+                            variant="text"
+                            onClick={(e) =>
+                                fetchMoreRecommended({
+                                    variables: {
+                                        after: recommended?.pageInfo?.endCursor,
+                                    },
+                                })
+                            }
+                        >
+                            Show More
+                        </Button>
                         <SectionHeadline>All Recipes</SectionHeadline>
                     </>
                 )}

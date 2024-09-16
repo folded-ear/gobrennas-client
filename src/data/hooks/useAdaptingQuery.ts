@@ -1,5 +1,6 @@
 import {
     ApolloQueryResult,
+    FetchMoreQueryOptions,
     OperationVariables,
     QueryResult,
     TypedDocumentNode,
@@ -48,9 +49,19 @@ export default function useAdaptingQuery<
         [resultAdapter, raw],
     );
 
+    const fetchMore = useCallback(
+        (fetchMoreOptions: FetchMoreQueryOptions<TVariables>) =>
+            raw.fetchMore(fetchMoreOptions).then((result) => ({
+                ...result,
+                data: resultAdapter(result.data, result),
+            })),
+        [resultAdapter, raw],
+    );
+
     return {
         ...raw,
         data,
         refetch,
+        fetchMore,
     };
 }
