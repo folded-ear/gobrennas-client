@@ -1,5 +1,4 @@
 import { gql } from "@/__generated__";
-import { UseQueryResult } from "@/data/types";
 import {
     IngredientRef,
     PantryItemUsesQuery,

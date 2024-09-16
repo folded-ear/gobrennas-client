@@ -1,12 +1,6 @@
 import { useMemo } from "react";
-import {
-    FullRecipe,
-    IngredientRef,
-    Recipe,
-    Subrecipe,
-} from "@/global/types/types";
+import { IngredientRef, Recipe, Subrecipe } from "@/global/types/types";
 import { useProfileId } from "@/providers/Profile";
-import { UseQueryResult } from "@/data/types";
 import { gql } from "@/__generated__";
 import { GetRecipeWithEverythingQuery } from "@/__generated__/graphql";
 import useAdaptingQuery from "./useAdaptingQuery";
