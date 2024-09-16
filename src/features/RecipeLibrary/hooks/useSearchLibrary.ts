@@ -1,11 +1,6 @@
-import {
-    SEARCH_RECIPES,
-    SUGGEST_RECIPES,
-} from "@/features/RecipeLibrary/data/queries";
+import { SEARCH_RECIPES } from "@/features/RecipeLibrary/data/queries";
 import { QueryResult, useQuery } from "@apollo/client";
 import type { RecipeCard } from "@/features/RecipeLibrary/types";
-import useIsDevMode from "@/data/useIsDevMode";
-import { LibrarySearchScope } from "@/__generated__/graphql";
 
 interface UseSearchLibraryQueryResult
     extends Pick<
