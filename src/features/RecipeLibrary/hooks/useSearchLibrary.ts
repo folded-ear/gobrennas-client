@@ -20,8 +20,6 @@ export const useSearchLibrary = ({
     scope,
     query,
 }): UseSearchLibraryQueryResult => {
-    const devMode = useIsDevMode();
-    // const suggest = !query && scope === LibrarySearchScope.Mine && devMode;
     const { data, error, loading, refetch, fetchMore } = useQuery(
         SEARCH_RECIPES,
         {
