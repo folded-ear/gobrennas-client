@@ -1,5 +1,5 @@
 import { gql } from "@/__generated__";
-import { Results, UseQueryResult } from "@/data/types";
+import { Results } from "@/data/types";
 import {
     PantryItemConnectionEdge,
     PantryItemsQuery,

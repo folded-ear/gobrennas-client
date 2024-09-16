@@ -13,7 +13,6 @@ type RecipeListDisplayProps = {
 
 export const RecipeListDisplay: React.FC<RecipeListDisplayProps> = ({
     recipes,
-    me,
     markAsMine,
 }) => {
     if (!recipes) {

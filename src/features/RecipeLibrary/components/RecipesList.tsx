@@ -1,7 +1,7 @@
 import { AddRecipeIcon } from "@/views/common/icons";
-import { Container as Content, Grid, useScrollTrigger } from "@mui/material";
+import { Container as Content, Grid } from "@mui/material";
 import RecipeCard from "@/features/RecipeLibrary/components/RecipeCard";
-import React, { useState } from "react";
+import React from "react";
 import history from "@/util/history";
 import FoodingerFab from "@/views/common/FoodingerFab";
 import LazyInfinite from "@/views/common/LazyInfinite";

@@ -6,17 +6,13 @@ import { useHistory } from "react-router-dom";
 import { LibrarySearchScope } from "@/__generated__/graphql";
 import { useSearchLibrary } from "@/features/RecipeLibrary/hooks/useSearchLibrary";
 import { ScalingProvider } from "@/util/ScalingContext";
-import * as React from "react";
 import LoadingIndicator from "@/views/common/LoadingIndicator";
 import { SearchRecipes } from "@/features/RecipeLibrary/components/SearchRecipes";
-import { Typography, useScrollTrigger } from "@mui/material";
+import { useScrollTrigger } from "@mui/material";
 import { useIsMobile } from "@/providers/IsMobile";
 import { useRecommendedRecipes } from "@/features/RecipeLibrary/hooks/useRecommendedRecipes";
 import { RecipeGrid } from "@/views/recipeCollections/RecipeGrid";
-import {
-    SectionHeadline,
-    SmallHeadline,
-} from "@/global/elements/typography.elements";
+import { SectionHeadline } from "@/global/elements/typography.elements";
 import useIsDevMode from "@/data/useIsDevMode";
 import Button from "@mui/material/Button";
 
@@ -142,7 +138,7 @@ export const LibraryController = () => {
                         />
                         <Button
                             variant="text"
-                            onClick={(e) =>
+                            onClick={() =>
                                 fetchMoreRecommended({
                                     variables: {
                                         after: recommended?.pageInfo?.endCursor,

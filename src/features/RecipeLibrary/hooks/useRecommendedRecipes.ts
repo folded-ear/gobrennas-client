@@ -1,6 +1,6 @@
 import { gql } from "@/__generated__";
 import useAdaptingQuery from "@/data/hooks/useAdaptingQuery";
-import { Results, UseQueryResult } from "@/data/types";
+import { Results } from "@/data/types";
 import { BfsId } from "@/global/types/identity";
 import { RecipeCard } from "@/features/RecipeLibrary/types";
 import { GetRecipeSuggestionsQuery } from "@/__generated__/graphql";
