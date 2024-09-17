@@ -11,10 +11,7 @@ import {
     NanoRecipeCard,
 } from "@/views/recipeCollections/RecipeCollection.elements";
 import { TaskBar, TaskBarButton } from "@/global/elements/taskbar.elements";
-import {
-    SmallHeadline,
-    SmallLabel,
-} from "@/global/elements/typography.elements";
+import { LinkTitle, SmallLabel } from "@/global/elements/typography.elements";
 import { Link } from "react-router-dom";
 import ItemImage from "@/features/RecipeLibrary/components/ItemImage";
 
@@ -77,7 +74,9 @@ export const NanoCard: React.FC<RecipeListItemProps> = ({ recipe, isMine }) => {
                         </TaskBarButton>
                     )}
                 </TaskBar>
-                <SmallHeadline>{recipe.name}</SmallHeadline>
+                <LinkTitle to={`/library/recipe/${recipe.id}`}>
+                    {recipe.name}
+                </LinkTitle>
                 {labelsToDisplay && (
                     <Box my={0.5}>
                         {labelsToDisplay.map((label, idx) => (
