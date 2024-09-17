@@ -1,12 +1,6 @@
 import { useMemo } from "react";
-import {
-    FullRecipe,
-    IngredientRef,
-    Recipe,
-    Subrecipe,
-} from "@/global/types/types";
+import { IngredientRef, Recipe, Subrecipe } from "@/global/types/types";
 import { useProfileId } from "@/providers/Profile";
-import { UseQueryResult } from "@/data/types";
 import { gql } from "@/__generated__";
 import { GetRecipeWithEverythingQuery } from "@/__generated__/graphql";
 import useAdaptingQuery from "./useAdaptingQuery";
@@ -120,9 +114,7 @@ function adapter(
     };
 }
 
-export const useGetFullRecipe = (
-    id: string,
-): UseQueryResult<FullRecipe | null, { id: string }> => {
+export const useGetFullRecipe = (id: string) => {
     const myId = useProfileId();
     const boundAdapter = useMemo(() => adapter.bind(undefined, myId), [myId]);
     return useAdaptingQuery(GET_FULL_RECIPE_QUERY, boundAdapter, {

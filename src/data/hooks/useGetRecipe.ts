@@ -1,5 +1,4 @@
 import { gql } from "@/__generated__";
-import { UseQueryResult } from "@/data/types";
 import { IngredientRef, Recipe } from "@/global/types/types";
 import { BfsId } from "@/global/types/identity";
 import { GetRecipeQuery } from "@/__generated__/graphql";
@@ -58,9 +57,7 @@ function adapter(data: GetRecipeQuery | undefined) {
     return recipe;
 }
 
-export const useGetRecipe = (
-    id: string,
-): UseQueryResult<Recipe, { id: string }> => {
+export const useGetRecipe = (id: string) => {
     return useAdaptingQuery(GET_RECIPE_QUERY, adapter, {
         variables: { id: id },
     });

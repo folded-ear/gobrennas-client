@@ -1,5 +1,6 @@
 import {
     ApolloQueryResult,
+    FetchMoreQueryOptions,
     OperationVariables,
     QueryResult,
     TypedDocumentNode,
@@ -40,10 +41,19 @@ export default function useAdaptingQuery<
     }, [resultAdapter, raw]);
 
     const refetch = useCallback(
-        (variables: Partial<TVariables> | undefined) =>
+        (variables?: Partial<TVariables> | undefined) =>
             raw.refetch(variables).then((refetched) => ({
                 ...refetched,
                 data: resultAdapter(refetched.data, refetched),
+            })),
+        [resultAdapter, raw],
+    );
+
+    const fetchMore = useCallback(
+        (fetchMoreOptions: FetchMoreQueryOptions<TVariables>) =>
+            raw.fetchMore(fetchMoreOptions).then((result) => ({
+                ...result,
+                data: resultAdapter(result.data, result),
             })),
         [resultAdapter, raw],
     );
@@ -52,5 +62,6 @@ export default function useAdaptingQuery<
         ...raw,
         data,
         refetch,
+        fetchMore,
     };
 }

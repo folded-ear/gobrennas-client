@@ -14,14 +14,3 @@ export const SEARCH_RECIPES = gql(`
         }
     }
 `);
-
-export const SUGGEST_RECIPES = gql(`
-query recipeSuggestions(
-    $first: NonNegativeInt! = 9
-    $after: Cursor = null) {
-  library {
-    recipes: suggestRecipesToCook(first: $first, after: $after) {
-      ...librarySearchResult
-    }
-  }
-}`);
