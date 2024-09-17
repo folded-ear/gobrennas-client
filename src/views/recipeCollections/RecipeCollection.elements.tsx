@@ -11,6 +11,8 @@ export const NanoRecipeCard = styled(Card)(({ theme }) => ({
     borderRadius: theme.shape.borderRadius,
     backgroundColor: theme.palette.background.default,
     width: "100%",
+    margin: theme.spacing(1),
+    paddingTop: theme.spacing(1),
 }));
 
 export const NanoCardContent = styled("div")(({ theme }) => ({

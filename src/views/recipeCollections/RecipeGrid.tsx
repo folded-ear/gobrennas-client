@@ -16,7 +16,7 @@ export const RecipeGrid = ({
     cardType = "standard",
 }: RecipeDisplayGridProps) => {
     return (
-        <Grid container spacing={4} alignItems="stretch">
+        <Grid container alignItems="stretch">
             {recipes.map((recipe) => (
                 <Grid
                     item

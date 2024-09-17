@@ -25,6 +25,7 @@ import Button from "@mui/material/Button";
  */
 export const LibraryController = () => {
     const devMode = useIsDevMode();
+    const isMobile = useIsMobile();
     const me = useProfile();
     const history = useHistory();
     const params = history.location.search
@@ -43,8 +44,6 @@ export const LibraryController = () => {
         threshold: 15,
     });
 
-    const isMobile = useIsMobile();
-
     const {
         data: recipes,
         loading,
@@ -58,7 +57,7 @@ export const LibraryController = () => {
     });
 
     const { data: recommended, fetchMore: fetchMoreRecommended } =
-        useRecommendedRecipes(9);
+        useRecommendedRecipes(isMobile ? 3 : 9);
 
     function handleSearchChange(e) {
         setUnsavedQuery(e.target.value);
@@ -136,18 +135,21 @@ export const LibraryController = () => {
                             markAsMine={markAsMine}
                             cardType="nano"
                         />
-                        <Button
-                            variant="text"
-                            onClick={() =>
-                                fetchMoreRecommended({
-                                    variables: {
-                                        after: recommended?.pageInfo?.endCursor,
-                                    },
-                                })
-                            }
-                        >
-                            Show More
-                        </Button>
+                        {recommended?.pageInfo?.hasNextPage && (
+                            <Button
+                                variant="text"
+                                onClick={() =>
+                                    fetchMoreRecommended({
+                                        variables: {
+                                            after: recommended?.pageInfo
+                                                ?.endCursor,
+                                        },
+                                    })
+                                }
+                            >
+                                Show More
+                            </Button>
+                        )}
                         <SectionHeadline>All Recipes</SectionHeadline>
                     </>
                 )}
