@@ -11,9 +11,11 @@ import {
     NanoRecipeCard,
 } from "@/views/recipeCollections/RecipeCollection.elements";
 import { TaskBar, TaskBarButton } from "@/global/elements/taskbar.elements";
-import { LinkTitle, SmallLabel } from "@/global/elements/typography.elements";
+import { LinkTitle } from "@/global/elements/typography.elements";
 import { Link } from "react-router-dom";
 import ItemImage from "@/features/RecipeLibrary/components/ItemImage";
+import { styled } from "@mui/material/styles";
+import { BoxProps } from "@mui/material/Box/Box";
 
 type RecipeListItemProps = {
     recipe: RecipeCard;
@@ -42,6 +44,7 @@ export const NanoCard: React.FC<RecipeListItemProps> = ({ recipe, isMine }) => {
             raised={raised}
             onMouseEnter={() => setRaised(true)}
             onMouseLeave={() => setRaised(false)}
+            title={recipe.name}
         >
             {recipe.photo && (
                 <ItemImage
@@ -77,17 +80,40 @@ export const NanoCard: React.FC<RecipeListItemProps> = ({ recipe, isMine }) => {
                 <LinkTitle to={`/library/recipe/${recipe.id}`}>
                     {recipe.name}
                 </LinkTitle>
-                {labelsToDisplay && (
-                    <Box my={0.5}>
-                        {labelsToDisplay.map((label, idx) => (
-                            <React.Fragment key={label}>
-                                <SmallLabel>{label}</SmallLabel>
-                                {idx < labelsToDisplay.length - 1 && ", "}
-                            </React.Fragment>
-                        ))}
-                    </Box>
-                )}
+                <Labels mt={0.25} labels={labelsToDisplay} />
             </NanoCardContent>
         </NanoRecipeCard>
     );
 };
+
+const Labels: React.FC<BoxProps & { labels: string[] }> = ({
+    labels,
+    ...passthrough
+}: {
+    labels: string[];
+}) => {
+    if (!labels || labels.length === 0) return null;
+    return (
+        <Lbls title={labels.join(", ")} {...passthrough}>
+            {labels.map((label) => (
+                <Lbl key={label}>{label}</Lbl>
+            ))}
+        </Lbls>
+    );
+};
+
+const Lbls = styled(Box)({
+    whiteSpace: "nowrap",
+    overflow: "hidden",
+    textOverflow: "ellipsis",
+});
+
+const Lbl = styled("span")({
+    fontSize: `12px`,
+    ":before": {
+        content: "', '",
+    },
+    ":first-of-type:before": {
+        content: "''",
+    },
+});
