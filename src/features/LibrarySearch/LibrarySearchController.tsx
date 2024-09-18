@@ -46,6 +46,9 @@ export const LibrarySearchController: React.FC<
 
     const markAsMine = scope === LibrarySearchScope.Everyone;
 
+    // if there are already recipes from cache, don't show the spinner
+    const showLoading = loading && (!recipes || recipes.length === 0);
+
     return (
         <>
             <SearchInput
@@ -54,7 +57,7 @@ export const LibrarySearchController: React.FC<
                 onSearch={onSearch}
             />
             <SearchResults>
-                {loading && <LoadingIndicator />}
+                {showLoading && <LoadingIndicator />}
                 <ScalingProvider>
                     {recipes && (
                         <>
