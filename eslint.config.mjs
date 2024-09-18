@@ -6,6 +6,7 @@ import pluginJsxRuntimeConfig from "eslint-plugin-react/configs/jsx-runtime.js";
 import pluginReactHooks_nonFlat from "eslint-plugin-react-hooks";
 
 export default [
+    { settings: { react: { version: "detect" } } },
     { files: ["**/*.{js,mjs,cjs,ts,jsx,tsx}"] },
     { languageOptions: { parserOptions: { ecmaFeatures: { jsx: true } } } },
     { languageOptions: { globals: globals.browser } },
