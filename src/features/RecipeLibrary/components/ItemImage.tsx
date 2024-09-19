@@ -1,30 +1,24 @@
 import { CardMedia, SxProps, useTheme } from "@mui/material";
 import React from "react";
 import { CommonProps } from "@mui/material/OverridableComponent";
-import { Maybe } from "graphql/jsutils/Maybe";
 import { Theme } from "@mui/material/styles";
+import { Photo } from "@/__generated__/graphql";
 
 interface Props extends CommonProps {
-    image: string;
-    focus?: Maybe<number[]>;
+    photo: Photo;
     alt: string;
     sx?: SxProps<Theme>;
 }
 
-const ItemImage: React.FC<Props> = ({
-    image,
-    focus,
-    alt,
-    sx = {},
-    ...props
-}) => {
-    const x = focus ? focus[0] * 100 : 50;
-    const y = focus ? focus[1] * 100 : 50;
+const ItemImage: React.FC<Props> = ({ photo, alt, sx = {}, ...props }) => {
     const theme = useTheme();
+    const f = photo.focus;
+    const x = f ? f[0] * 100 : 50;
+    const y = f ? f[1] * 100 : 50;
 
     return (
         <CardMedia
-            image={image}
+            image={photo.url}
             title={alt}
             {...props}
             sx={{

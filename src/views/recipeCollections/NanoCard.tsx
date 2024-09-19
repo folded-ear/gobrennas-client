@@ -58,9 +58,8 @@ export const NanoCard: React.FC<RecipeListItemProps> = ({
                         order: 2,
                         overflow: "hidden",
                     }}
-                    image={recipe.photo}
+                    photo={recipe.photo}
                     alt={recipe.name}
-                    focus={recipe.photoFocus}
                 />
             )}
             <NanoCardContent>
@@ -93,11 +92,9 @@ export const NanoCard: React.FC<RecipeListItemProps> = ({
     );
 };
 
-const Labels: React.FC<BoxProps & { labels: string[] }> = ({
+const Labels: React.FC<BoxProps & { labels: Maybe<string[]> }> = ({
     labels,
     ...passthrough
-}: {
-    labels: string[];
 }) => {
     if (!labels || labels.length === 0) return null;
     return (

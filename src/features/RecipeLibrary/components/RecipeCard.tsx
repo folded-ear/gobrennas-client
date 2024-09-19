@@ -70,22 +70,21 @@ const RecipeCard: React.FC<Props> = ({ recipe, mine, showOwner }) => {
             }}
         >
             <>
-                <Link to={`/library/recipe/${recipe.id}`}>
-                    {recipe.photo ? (
+                {recipe.photo ? (
+                    <Link to={`/library/recipe/${recipe.id}`}>
                         <ItemImage
                             className={classes.photo}
-                            image={recipe.photo}
-                            focus={recipe.photoFocus}
+                            photo={recipe.photo}
                             alt={recipe.name}
                         />
-                    ) : (
-                        <ItemImageUpload
-                            recipeId={recipe.id}
-                            disabled={!mine}
-                            notOnPaper
-                        />
-                    )}
-                </Link>
+                    </Link>
+                ) : (
+                    <ItemImageUpload
+                        recipeId={recipe.id}
+                        disabled={!mine}
+                        notOnPaper
+                    />
+                )}
                 <CardContent style={{ flexGrow: 2 }}>
                     <Grid container alignItems={"start"} wrap={"nowrap"}>
                         <Grid item>
@@ -120,10 +119,10 @@ const RecipeCard: React.FC<Props> = ({ recipe, mine, showOwner }) => {
                             text={<Source url={recipe.externalUrl} />}
                         />
                     )}
-                    {recipe.recipeYield && (
+                    {recipe.yield && (
                         <RecipeInfo
                             label="Yield"
-                            text={`${recipe.recipeYield} servings`}
+                            text={`${recipe.yield} servings`}
                         />
                     )}
                     {recipe.totalTime && (

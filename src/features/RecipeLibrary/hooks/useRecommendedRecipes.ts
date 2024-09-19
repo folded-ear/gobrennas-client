@@ -1,7 +1,6 @@
 import { gql } from "@/__generated__";
 import useAdaptingQuery from "@/data/hooks/useAdaptingQuery";
 import { Results } from "@/data/types";
-import { BfsId } from "@/global/types/identity";
 import { RecipeCard } from "@/features/RecipeLibrary/types";
 import { GetRecipeSuggestionsQuery } from "@/__generated__/graphql";
 
@@ -30,22 +29,7 @@ function adapter(
     const { edges, pageInfo } = result;
 
     return {
-        results: edges.map((it) => {
-            const recipe = it.node;
-            return {
-                calories: recipe?.calories,
-                externalUrl: recipe?.externalUrl,
-                favorite: recipe?.favorite,
-                id: recipe?.id as BfsId,
-                labels: recipe?.labels ?? [],
-                name: recipe?.name ?? "",
-                owner: recipe?.owner,
-                photo: recipe?.photo?.url ?? null,
-                photoFocus: recipe?.photo?.focus ?? [],
-                recipeYield: recipe?.yield,
-                totalTime: recipe?.totalTime,
-            };
-        }),
+        results: edges.map((it) => it.node),
         pageInfo,
     };
 }

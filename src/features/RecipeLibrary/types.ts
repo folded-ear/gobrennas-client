@@ -1,9 +1,16 @@
-import { Recipe } from "@/global/types/types";
-import { UserType } from "@/global/types/identity";
+import { Recipe, User } from "@/__generated__/graphql";
 
-export type RecipeCard = Omit<
+export type RecipeCard = Pick<
     Recipe,
-    "directions" | "ingredients" | "libraryRecipeId" | "ownerId"
+    | "id"
+    | "calories"
+    | "externalUrl"
+    | "favorite"
+    | "labels"
+    | "name"
+    | "photo"
+    | "yield"
+    | "totalTime"
 > & {
-    owner: Pick<UserType, "id" | "name" | "email" | "imageUrl">;
+    owner: Pick<User, "id" | "name" | "email" | "imageUrl">;
 };
