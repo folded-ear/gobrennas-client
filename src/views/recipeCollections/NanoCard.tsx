@@ -17,6 +17,7 @@ import ItemImage from "@/features/RecipeLibrary/components/ItemImage";
 import { styled } from "@mui/material/styles";
 import { BoxProps } from "@mui/material/Box/Box";
 import User from "@/views/user/User";
+import { Maybe } from "@/__generated__/graphql";
 
 type RecipeListItemProps = {
     recipe: RecipeCard;
@@ -37,8 +38,7 @@ export const NanoCard: React.FC<RecipeListItemProps> = ({
     const handleClick = (planId: number, scale?: number) => {
         Dispatcher.dispatch({
             type: RecipeActions.SEND_TO_PLAN,
-            recipeId:
-                typeof recipe.id === "string" ? parseInt(recipe.id) : recipe.id,
+            recipeId: recipe.id,
             planId,
             scale: scale ? scale : 1,
         });

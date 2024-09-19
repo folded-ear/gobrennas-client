@@ -51,8 +51,7 @@ const RecipeCard: React.FC<Props> = ({ recipe, mine, showOwner }) => {
     const handleClick = (planId: number, scale?: number) => {
         Dispatcher.dispatch({
             type: RecipeActions.SEND_TO_PLAN,
-            recipeId:
-                typeof recipe.id === "string" ? parseInt(recipe.id) : recipe.id,
+            recipeId: recipe.id,
             planId,
             scale: scale ? scale : 1,
         });
