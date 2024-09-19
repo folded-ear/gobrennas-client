@@ -16,14 +16,19 @@ import { Link } from "react-router-dom";
 import ItemImage from "@/features/RecipeLibrary/components/ItemImage";
 import { styled } from "@mui/material/styles";
 import { BoxProps } from "@mui/material/Box/Box";
+import User from "@/views/user/User";
 
 type RecipeListItemProps = {
     recipe: RecipeCard;
-    isMine: boolean;
+    mine: boolean;
+    showOwner: boolean;
 };
 
-// TODO: add owner indicator?
-export const NanoCard: React.FC<RecipeListItemProps> = ({ recipe, isMine }) => {
+export const NanoCard: React.FC<RecipeListItemProps> = ({
+    recipe,
+    mine,
+    showOwner,
+}) => {
     const [raised, setRaised] = React.useState(false);
     const labelsToDisplay =
         recipe.labels &&
@@ -68,13 +73,15 @@ export const NanoCard: React.FC<RecipeListItemProps> = ({ recipe, isMine }) => {
                     >
                         <ViewIcon />
                     </TaskBarButton>
-                    {isMine && (
+                    {mine ? (
                         <TaskBarButton
                             component={Link}
                             to={`/library/recipe/${recipe.id}/edit`}
                         >
                             <EditIcon />
                         </TaskBarButton>
+                    ) : (
+                        showOwner && <User {...recipe.owner} iconOnly inline />
                     )}
                 </TaskBar>
                 <LinkTitle to={`/library/recipe/${recipe.id}`}>

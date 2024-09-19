@@ -7,22 +7,31 @@ import { NanoCard } from "@/views/recipeCollections/NanoCard";
 
 type RecipeListDisplayProps = {
     recipes?: RecipeCard[];
-    me: UserType;
-    markAsMine: boolean;
+    me: Pick<UserType, "id">;
+    showOwner: boolean;
 };
 
 export const RecipeListDisplay: React.FC<RecipeListDisplayProps> = ({
     recipes,
-    markAsMine,
+    me,
+    showOwner,
 }) => {
     if (!recipes) {
         return <MessagePaper primary="Nothing matches that search." />;
     }
 
+    const myId = "" + me.id;
+    const isMine = (r) => r.owner.id === myId;
+
     return (
         <Stack gap={1.5}>
             {recipes.map((recipe) => (
-                <NanoCard key={recipe.id} recipe={recipe} isMine={markAsMine} />
+                <NanoCard
+                    key={recipe.id}
+                    recipe={recipe}
+                    mine={isMine(recipe)}
+                    showOwner={showOwner}
+                />
             ))}
         </Stack>
     );

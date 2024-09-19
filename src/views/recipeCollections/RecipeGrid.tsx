@@ -1,22 +1,30 @@
 import { Grid } from "@mui/material";
 import RecipeCard from "@/features/RecipeLibrary/components/RecipeCard";
 import { NanoCard } from "@/views/recipeCollections/NanoCard";
+import { RecipeCard as TRecipeCard } from "@/features/RecipeLibrary/types";
+import { PropsWithChildren } from "react";
+import { UserType } from "@/global/types/identity";
 
-type RecipeDisplayGridProps = {
-    recipes: RecipeCard[];
-    me: any; //todo
-    markAsMine: boolean;
+type RecipeDisplayGridProps = PropsWithChildren & {
+    recipes: TRecipeCard[];
+    me: Pick<UserType, "id">;
+    showOwner: boolean;
     cardType: "standard" | "nano";
+    spacing?: number;
 };
 
 export const RecipeGrid = ({
     recipes,
     me,
-    markAsMine,
+    showOwner,
     cardType = "standard",
+    spacing = 2,
+    children,
 }: RecipeDisplayGridProps) => {
+    const myId = "" + me.id;
+    const isMine = (r) => r.owner.id === myId;
     return (
-        <Grid container alignItems="stretch" spacing={2}>
+        <Grid container alignItems="stretch" spacing={spacing}>
             {recipes.map((recipe) => (
                 <Grid
                     item
@@ -29,15 +37,19 @@ export const RecipeGrid = ({
                     {cardType === "standard" ? (
                         <RecipeCard
                             recipe={recipe}
-                            me={me}
-                            indicateMine={markAsMine}
-                            mine={recipe.ownerId === "" + me.id}
+                            showOwner={showOwner}
+                            mine={isMine(recipe)}
                         />
                     ) : (
-                        <NanoCard recipe={recipe} isMine={markAsMine} />
+                        <NanoCard
+                            recipe={recipe}
+                            showOwner={showOwner}
+                            mine={isMine(recipe)}
+                        />
                     )}
                 </Grid>
             ))}
+            {children}
         </Grid>
     );
 };

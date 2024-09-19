@@ -10,11 +10,8 @@ import LoadingIndicator from "@/views/common/LoadingIndicator";
 import { SearchRecipes } from "@/features/RecipeLibrary/components/SearchRecipes";
 import { useScrollTrigger } from "@mui/material";
 import { useIsMobile } from "@/providers/IsMobile";
-import { useRecommendedRecipes } from "@/features/RecipeLibrary/hooks/useRecommendedRecipes";
-import { RecipeGrid } from "@/views/recipeCollections/RecipeGrid";
-import { SectionHeadline } from "@/global/elements/typography.elements";
 import useIsDevMode from "@/data/useIsDevMode";
-import Button from "@mui/material/Button";
+import Recommendations from "@/features/RecipeLibrary/components/Recommendations";
 
 /**
  * TODO: Issue-218
@@ -55,9 +52,6 @@ export const LibraryController = () => {
         scope,
         query,
     });
-
-    const { data: recommended, fetchMore: fetchMoreRecommended } =
-        useRecommendedRecipes(isMobile ? 3 : 9);
 
     function handleSearchChange(e) {
         setUnsavedQuery(e.target.value);
@@ -105,11 +99,9 @@ export const LibraryController = () => {
         });
     }
 
-    const markAsMine = scope === LibrarySearchScope.Everyone;
+    const showRecommendations = devMode && query === "";
 
-    const showRecommendations = devMode && query === "" && recommended;
-
-    if (loading) {
+    if (loading && (!recipes || recipes.length === 0)) {
         return <LoadingIndicator />;
     }
 
@@ -126,33 +118,7 @@ export const LibraryController = () => {
                 toggleScope={toggleScope}
             />
             <ScalingProvider>
-                {showRecommendations && (
-                    <>
-                        <SectionHeadline>Recommended</SectionHeadline>
-                        <RecipeGrid
-                            recipes={recommended.results}
-                            me={me}
-                            markAsMine={markAsMine}
-                            cardType="nano"
-                        />
-                        {recommended?.pageInfo?.hasNextPage && (
-                            <Button
-                                variant="text"
-                                onClick={() =>
-                                    fetchMoreRecommended({
-                                        variables: {
-                                            after: recommended?.pageInfo
-                                                ?.endCursor,
-                                        },
-                                    })
-                                }
-                            >
-                                Show More
-                            </Button>
-                        )}
-                        <SectionHeadline>All Recipes</SectionHeadline>
-                    </>
-                )}
+                {showRecommendations && <Recommendations />}
                 <RecipesList
                     me={me}
                     isMobile={isMobile}

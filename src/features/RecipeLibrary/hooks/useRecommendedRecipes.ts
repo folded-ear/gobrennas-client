@@ -39,7 +39,7 @@ function adapter(
                 id: recipe?.id as BfsId,
                 labels: recipe?.labels ?? [],
                 name: recipe?.name ?? "",
-                ownerId: recipe?.owner.id,
+                owner: recipe?.owner,
                 photo: recipe?.photo?.url ?? null,
                 photoFocus: recipe?.photo?.focus ?? [],
                 recipeYield: recipe?.yield,

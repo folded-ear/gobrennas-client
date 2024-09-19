@@ -9,9 +9,7 @@ import {
 } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import Dispatcher from "@/data/dispatcher";
-import FriendStore from "@/data/FriendStore";
 import RecipeActions from "@/data/RecipeActions";
-import useFluxStore from "@/data/useFluxStore";
 import ItemImage from "@/features/RecipeLibrary/components/ItemImage";
 import ItemImageUpload from "@/features/RecipeLibrary/components/ItemImageUpload";
 import SendToPlan from "@/features/RecipeLibrary/components/SendToPlan";
@@ -24,7 +22,7 @@ import User from "@/views/user/User";
 import FavoriteIndicator from "../../Favorites/components/Indicator";
 import LabelItem from "@/global/components/LabelItem";
 import { TaskBar, TaskBarButton } from "@/global/elements/taskbar.elements";
-import { RecipeCard } from "@/features/RecipeLibrary/types";
+import { RecipeCard as TRecipeCard } from "@/features/RecipeLibrary/types";
 
 const useStyles = makeStyles({
     photo: {
@@ -37,21 +35,12 @@ const useStyles = makeStyles({
 });
 
 interface Props {
-    recipe: RecipeCard;
+    recipe: TRecipeCard;
     mine: boolean;
-    indicateMine: boolean;
-    me: any; // todo
+    showOwner: boolean;
 }
 
-const RecipeCard: React.FC<Props> = ({ recipe, mine, indicateMine, me }) => {
-    const owner = useFluxStore(
-        () => {
-            if (mine) return indicateMine ? me : null;
-            return FriendStore.getFriendRlo(recipe.ownerId).data;
-        },
-        [FriendStore],
-        [mine, indicateMine, me, recipe.ownerId],
-    );
+const RecipeCard: React.FC<Props> = ({ recipe, mine, showOwner }) => {
     const classes = useStyles();
     const [raised, setRaised] = React.useState(false);
 
@@ -115,13 +104,13 @@ const RecipeCard: React.FC<Props> = ({ recipe, mine, indicateMine, me }) => {
                             </Typography>
                         </Grid>
                         <Grid item>
-                            {owner && (
+                            {showOwner && (
                                 <div
                                     style={{
                                         float: "right",
                                     }}
                                 >
-                                    <User {...owner} iconOnly inline />
+                                    <User {...recipe.owner} iconOnly inline />
                                 </div>
                             )}
                         </Grid>

@@ -65,13 +65,13 @@ export const LibrarySearchController: React.FC<
                                 <RecipeListDisplay
                                     recipes={recipes}
                                     me={me}
-                                    markAsMine={markAsMine}
+                                    showOwner={markAsMine}
                                 />
                             ) : (
                                 <RecipeGrid
                                     recipes={recipes}
                                     me={me}
-                                    markAsMine={markAsMine}
+                                    showOwner={markAsMine}
                                     cardType="standard"
                                 />
                             )}

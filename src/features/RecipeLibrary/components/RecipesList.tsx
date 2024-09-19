@@ -1,6 +1,5 @@
 import { AddRecipeIcon } from "@/views/common/icons";
 import { Container as Content, Grid } from "@mui/material";
-import RecipeCard from "@/features/RecipeLibrary/components/RecipeCard";
 import React from "react";
 import history from "@/util/history";
 import FoodingerFab from "@/views/common/FoodingerFab";
@@ -8,6 +7,8 @@ import LazyInfinite from "@/views/common/LazyInfinite";
 import LoadingIndicator from "@/views/common/LoadingIndicator";
 import { LibrarySearchScope } from "@/__generated__/graphql";
 import { MessagePaper } from "@/features/RecipeLibrary/components/MessagePaper";
+import { RecipeCard as TRecipeCard } from "@/features/RecipeLibrary/types";
+import { RecipeGrid } from "@/views/recipeCollections/RecipeGrid";
 
 interface RecipesListProps {
     me: any; // todo
@@ -15,7 +16,7 @@ interface RecipesListProps {
     scope?: LibrarySearchScope;
     isLoading: boolean;
     isComplete: boolean;
-    recipes?: RecipeCard[];
+    recipes?: TRecipeCard[];
 
     onSearch(filter: string, scope: LibrarySearchScope): void;
 
@@ -42,26 +43,13 @@ export const RecipesList: React.FC<RecipesListProps> = ({
                     complete={isComplete}
                     onNeedMore={onNeedMore}
                 >
-                    <Grid container spacing={4} alignItems="stretch">
-                        {recipes.map((recipe) => (
-                            <Grid
-                                item
-                                md={4}
-                                sm={6}
-                                xs={12}
-                                key={recipe.id}
-                                sx={{ display: "flex" }}
-                            >
-                                <RecipeCard
-                                    recipe={recipe}
-                                    me={me}
-                                    indicateMine={
-                                        scope === LibrarySearchScope.Everyone
-                                    }
-                                    mine={recipe.ownerId === "" + me.id}
-                                />
-                            </Grid>
-                        ))}
+                    <RecipeGrid
+                        recipes={recipes}
+                        me={me}
+                        showOwner={scope === LibrarySearchScope.Everyone}
+                        cardType={"standard"}
+                        spacing={4}
+                    >
                         {isComplete && recipes.length > 5 && (
                             <Grid item xs={12}>
                                 <MessagePaper
@@ -74,7 +62,7 @@ export const RecipesList: React.FC<RecipesListProps> = ({
                                 <LoadingIndicator primary={"Searching..."} />
                             </Grid>
                         )}
-                    </Grid>
+                    </RecipeGrid>
                 </LazyInfinite>
             );
         } else if (isLoading) {
