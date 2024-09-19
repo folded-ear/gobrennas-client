@@ -1,5 +1,5 @@
 import { CheckableActionType } from "@/util/typedAction";
-import { BfsId, UserType } from "@/global/types/identity";
+import { BfsId } from "@/global/types/identity";
 import { PlannedRecipeHistory, User } from "@/__generated__/graphql";
 
 type IngredientType = "Recipe" | "PantryItem";
@@ -94,14 +94,6 @@ export type RecipeHistory = Pick<
     owner: Pick<User, "name" | "email" | "imageUrl">;
 };
 
-export interface FullRecipe {
-    recipe: Recipe;
-    subrecipes: Subrecipe[];
-    planHistory: RecipeHistory[];
-    mine: boolean;
-    owner: Omit<UserType, "provider" | "roles">;
-}
-
 export interface SharedRecipe extends Pick<Recipe, "id"> {
     secret: string;
     slug: string;
@@ -117,14 +109,6 @@ export interface FluxAction {
     type: CheckableActionType;
 
     [k: string]: any;
-}
-
-export interface Page<E> {
-    page: number;
-    pageSize: number;
-    first: boolean;
-    last: boolean;
-    content: E[];
 }
 
 export type FormValue = string | number | number[] | string[] | File | null;
