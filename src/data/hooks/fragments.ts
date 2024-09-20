@@ -35,6 +35,7 @@ fragment librarySearchResult on RecipeConnection {
       owner {
         id
         imageUrl
+        email
         name
       }
       photo {

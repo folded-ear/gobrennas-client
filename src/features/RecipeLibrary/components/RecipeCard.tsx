@@ -9,9 +9,7 @@ import {
 } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import Dispatcher from "@/data/dispatcher";
-import FriendStore from "@/data/FriendStore";
 import RecipeActions from "@/data/RecipeActions";
-import useFluxStore from "@/data/useFluxStore";
 import ItemImage from "@/features/RecipeLibrary/components/ItemImage";
 import ItemImageUpload from "@/features/RecipeLibrary/components/ItemImageUpload";
 import SendToPlan from "@/features/RecipeLibrary/components/SendToPlan";
@@ -24,7 +22,7 @@ import User from "@/views/user/User";
 import FavoriteIndicator from "../../Favorites/components/Indicator";
 import LabelItem from "@/global/components/LabelItem";
 import { TaskBar, TaskBarButton } from "@/global/elements/taskbar.elements";
-import { RecipeCard } from "@/features/RecipeLibrary/types";
+import { RecipeCard as TRecipeCard } from "@/features/RecipeLibrary/types";
 
 const useStyles = makeStyles({
     photo: {
@@ -37,21 +35,12 @@ const useStyles = makeStyles({
 });
 
 interface Props {
-    recipe: RecipeCard;
+    recipe: TRecipeCard;
     mine: boolean;
-    indicateMine: boolean;
-    me: any; // todo
+    showOwner: boolean;
 }
 
-const RecipeCard: React.FC<Props> = ({ recipe, mine, indicateMine, me }) => {
-    const owner = useFluxStore(
-        () => {
-            if (mine) return indicateMine ? me : null;
-            return FriendStore.getFriendRlo(recipe.ownerId).data;
-        },
-        [FriendStore],
-        [mine, indicateMine, me, recipe.ownerId],
-    );
+const RecipeCard: React.FC<Props> = ({ recipe, mine, showOwner }) => {
     const classes = useStyles();
     const [raised, setRaised] = React.useState(false);
 
@@ -62,8 +51,7 @@ const RecipeCard: React.FC<Props> = ({ recipe, mine, indicateMine, me }) => {
     const handleClick = (planId: number, scale?: number) => {
         Dispatcher.dispatch({
             type: RecipeActions.SEND_TO_PLAN,
-            recipeId:
-                typeof recipe.id === "string" ? parseInt(recipe.id) : recipe.id,
+            recipeId: recipe.id,
             planId,
             scale: scale ? scale : 1,
         });
@@ -82,22 +70,21 @@ const RecipeCard: React.FC<Props> = ({ recipe, mine, indicateMine, me }) => {
             }}
         >
             <>
-                <Link to={`/library/recipe/${recipe.id}`}>
-                    {recipe.photo ? (
+                {recipe.photo ? (
+                    <Link to={`/library/recipe/${recipe.id}`}>
                         <ItemImage
                             className={classes.photo}
-                            image={recipe.photo}
-                            focus={recipe.photoFocus}
+                            photo={recipe.photo}
                             alt={recipe.name}
                         />
-                    ) : (
-                        <ItemImageUpload
-                            recipeId={recipe.id}
-                            disabled={!mine}
-                            notOnPaper
-                        />
-                    )}
-                </Link>
+                    </Link>
+                ) : (
+                    <ItemImageUpload
+                        recipeId={recipe.id}
+                        disabled={!mine}
+                        notOnPaper
+                    />
+                )}
                 <CardContent style={{ flexGrow: 2 }}>
                     <Grid container alignItems={"start"} wrap={"nowrap"}>
                         <Grid item>
@@ -115,13 +102,13 @@ const RecipeCard: React.FC<Props> = ({ recipe, mine, indicateMine, me }) => {
                             </Typography>
                         </Grid>
                         <Grid item>
-                            {owner && (
+                            {showOwner && (
                                 <div
                                     style={{
                                         float: "right",
                                     }}
                                 >
-                                    <User {...owner} iconOnly inline />
+                                    <User {...recipe.owner} iconOnly inline />
                                 </div>
                             )}
                         </Grid>
@@ -132,10 +119,10 @@ const RecipeCard: React.FC<Props> = ({ recipe, mine, indicateMine, me }) => {
                             text={<Source url={recipe.externalUrl} />}
                         />
                     )}
-                    {recipe.recipeYield && (
+                    {recipe.yield && (
                         <RecipeInfo
                             label="Yield"
-                            text={`${recipe.recipeYield} servings`}
+                            text={`${recipe.yield} servings`}
                         />
                     )}
                     {recipe.totalTime && (

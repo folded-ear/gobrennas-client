@@ -123,8 +123,7 @@ const RecipeDetail: React.FC<Props> = ({
                     {photo ? (
                         <ItemImage
                             className={classes.imageContainer}
-                            image={photo.url}
-                            focus={photo.focus}
+                            photo={photo}
                             alt={recipe.name}
                         />
                     ) : (

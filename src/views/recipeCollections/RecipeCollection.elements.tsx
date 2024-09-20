@@ -9,16 +9,13 @@ export const SearchResults = styled(Box)(({ theme }) => ({
 export const NanoRecipeCard = styled(Card)(({ theme }) => ({
     display: "flex",
     borderRadius: theme.shape.borderRadius,
-    backgroundColor: theme.palette.background.default,
+    backgroundColor: theme.palette.background.paper,
     width: "100%",
-    margin: theme.spacing(1),
-    paddingTop: theme.spacing(1),
 }));
 
 export const NanoCardContent = styled("div")(({ theme }) => ({
-    padding: theme.spacing(1),
+    padding: `0 ${theme.spacing(0.5)}`,
     display: "flex",
     width: "80%",
     flexDirection: "column",
-    backgroundColor: theme.palette.background.paper,
 }));

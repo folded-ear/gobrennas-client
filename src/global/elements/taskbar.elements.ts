@@ -4,8 +4,8 @@ import { IconButton } from "@mui/material";
 export const TaskBar = styled("div")(({ theme }) => ({
     display: "flex",
     gap: theme.spacing(0.5),
-    marginTop: theme.spacing(1),
-    marginBottom: theme.spacing(1),
+    marginTop: theme.spacing(0.5),
+    marginBottom: theme.spacing(0.5),
 }));
 
 export const TaskBarButton = styled(IconButton)(({ theme }) => ({

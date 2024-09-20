@@ -11,17 +11,25 @@ import {
     NanoRecipeCard,
 } from "@/views/recipeCollections/RecipeCollection.elements";
 import { TaskBar, TaskBarButton } from "@/global/elements/taskbar.elements";
-import { LinkTitle, SmallLabel } from "@/global/elements/typography.elements";
+import { LinkTitle } from "@/global/elements/typography.elements";
 import { Link } from "react-router-dom";
 import ItemImage from "@/features/RecipeLibrary/components/ItemImage";
+import { styled } from "@mui/material/styles";
+import { BoxProps } from "@mui/material/Box/Box";
+import User from "@/views/user/User";
+import { Maybe } from "@/__generated__/graphql";
 
 type RecipeListItemProps = {
     recipe: RecipeCard;
-    isMine: boolean;
+    mine: boolean;
+    showOwner: boolean;
 };
 
-// TODO: add owner indicator?
-export const NanoCard: React.FC<RecipeListItemProps> = ({ recipe, isMine }) => {
+export const NanoCard: React.FC<RecipeListItemProps> = ({
+    recipe,
+    mine,
+    showOwner,
+}) => {
     const [raised, setRaised] = React.useState(false);
     const labelsToDisplay =
         recipe.labels &&
@@ -30,8 +38,7 @@ export const NanoCard: React.FC<RecipeListItemProps> = ({ recipe, isMine }) => {
     const handleClick = (planId: number, scale?: number) => {
         Dispatcher.dispatch({
             type: RecipeActions.SEND_TO_PLAN,
-            recipeId:
-                typeof recipe.id === "string" ? parseInt(recipe.id) : recipe.id,
+            recipeId: recipe.id,
             planId,
             scale: scale ? scale : 1,
         });
@@ -42,6 +49,7 @@ export const NanoCard: React.FC<RecipeListItemProps> = ({ recipe, isMine }) => {
             raised={raised}
             onMouseEnter={() => setRaised(true)}
             onMouseLeave={() => setRaised(false)}
+            title={recipe.name}
         >
             {recipe.photo && (
                 <ItemImage
@@ -50,9 +58,8 @@ export const NanoCard: React.FC<RecipeListItemProps> = ({ recipe, isMine }) => {
                         order: 2,
                         overflow: "hidden",
                     }}
-                    image={recipe.photo}
+                    photo={recipe.photo}
                     alt={recipe.name}
-                    focus={recipe.photoFocus}
                 />
             )}
             <NanoCardContent>
@@ -65,29 +72,52 @@ export const NanoCard: React.FC<RecipeListItemProps> = ({ recipe, isMine }) => {
                     >
                         <ViewIcon />
                     </TaskBarButton>
-                    {isMine && (
+                    {mine ? (
                         <TaskBarButton
                             component={Link}
                             to={`/library/recipe/${recipe.id}/edit`}
                         >
                             <EditIcon />
                         </TaskBarButton>
+                    ) : (
+                        showOwner && <User {...recipe.owner} iconOnly inline />
                     )}
                 </TaskBar>
                 <LinkTitle to={`/library/recipe/${recipe.id}`}>
                     {recipe.name}
                 </LinkTitle>
-                {labelsToDisplay && (
-                    <Box my={0.5}>
-                        {labelsToDisplay.map((label, idx) => (
-                            <React.Fragment key={label}>
-                                <SmallLabel>{label}</SmallLabel>
-                                {idx < labelsToDisplay.length - 1 && ", "}
-                            </React.Fragment>
-                        ))}
-                    </Box>
-                )}
+                <Labels mt={0.25} labels={labelsToDisplay} />
             </NanoCardContent>
         </NanoRecipeCard>
     );
 };
+
+const Labels: React.FC<BoxProps & { labels: Maybe<string[]> }> = ({
+    labels,
+    ...passthrough
+}) => {
+    if (!labels || labels.length === 0) return null;
+    return (
+        <Lbls title={labels.join(", ")} {...passthrough}>
+            {labels.map((label) => (
+                <Lbl key={label}>{label}</Lbl>
+            ))}
+        </Lbls>
+    );
+};
+
+const Lbls = styled(Box)({
+    whiteSpace: "nowrap",
+    overflow: "hidden",
+    textOverflow: "ellipsis",
+});
+
+const Lbl = styled("span")({
+    fontSize: `12px`,
+    ":before": {
+        content: "', '",
+    },
+    ":first-of-type:before": {
+        content: "''",
+    },
+});

@@ -1,21 +1,16 @@
-import { Photo, User as UserType } from "@/__generated__/graphql";
-import { Recipe } from "@/global/types/types";
+import { Recipe, User } from "@/__generated__/graphql";
 
-export type RecipeCard = Omit<
+export type RecipeCard = Pick<
     Recipe,
-    "directions" | "ingredients" | "libraryRecipeId"
->;
-
-export interface RecipeType {
-    id: string;
-    calories?: number | null;
-    directions?: string;
-    externalUrl?: string | null;
-    favorite: boolean;
-    labels?: string[] | null;
-    name: string;
-    owner: UserType;
-    photo?: Photo | null;
-    totalTime?: number | null;
-    yield?: number | null;
-}
+    | "id"
+    | "calories"
+    | "externalUrl"
+    | "favorite"
+    | "labels"
+    | "name"
+    | "photo"
+    | "yield"
+    | "totalTime"
+> & {
+    owner: Pick<User, "id" | "name" | "email" | "imageUrl">;
+};
