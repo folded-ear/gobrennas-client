@@ -71,6 +71,9 @@ fi
 dkr convert -version
 echo
 
+# remove whatever is already there
+rm -f $OUT/*.png $OUT/*.ico $OUT/*.svg
+
 for x in 96 192; do
   spit $x library-${x}x$x.png $SRC/library.svg
 done
@@ -89,10 +92,9 @@ done
 
 spit 150 mstile-150x150.png $SRC/logo.svg
 
-spit 180 apple-touch-icon.png $SRC/logo.svg
-sed -e 's/fill="#F57F17"/fill="none"/' \
-    -e 's/fill="#1976d2"/fill="none"/' \
-  $SRC/logo.svg > $OUT/safari-pinned-tab.svg
+spit 180 apple-touch-icon-180x180.png $SRC/logo.svg
+## backwards compat
+cp $OUT/apple-touch-icon-180x180.png $OUT/apple-touch-icon.png
 
 for x in 16 32 48; do
   spit $x favicon-${x}x$x.png $SRC/logo.svg
@@ -100,9 +102,11 @@ for x in 16 32 48; do
 done
 dkr convert favicon-48x48.ico favicon-32x32.ico favicon-16x16.ico $OUT/favicon.ico
 rm favicon-*.ico
+# SVG too!
+cp $SRC/logo.svg $OUT/favicon.svg
 if [ -d $API ]; then
-  echo "Copying favicon.ico to the API too"
-  cp $OUT/favicon.ico $API/src/main/resources/public/favicon.ico
+  echo "Copying favicons to the API too"
+  cp $OUT/favicon.* $API/src/main/resources/public/
 fi
 
 # this will be a no-op if there wasn't a color munge
