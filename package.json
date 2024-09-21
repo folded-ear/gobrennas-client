@@ -63,8 +63,7 @@
     "lint": "eslint ./src; tsc --noEmit",
     "lint:fix": "eslint --fix ./src",
     "format:write": "prettier . --write",
-    "watch": "tsc --watch --noEmit",
-    "generate-pwa-assets": "pwa-assets-generator --preset minimal-2023 public/favicon-48x48.png"
+    "watch": "tsc --watch --noEmit"
   },
   "browserslist": {
     "production": [
@@ -88,7 +87,6 @@
     "@types/luxon": "^3.4.2",
     "@types/node": "^20.14.11",
     "@types/react-router-dom": "^5.3.3",
-    "@vite-pwa/assets-generator": "^0.2.4",
     "@vitest/coverage-v8": "^2.0.3",
     "eslint": "^8.57.0",
     "eslint-plugin-react": "^7.35.0",
