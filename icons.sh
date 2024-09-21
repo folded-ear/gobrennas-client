@@ -96,12 +96,8 @@ spit 180 apple-touch-icon-180x180.png $SRC/logo.svg
 ## backwards compat
 cp $OUT/apple-touch-icon-180x180.png $OUT/apple-touch-icon.png
 
-for x in 16 32 48; do
-  spit $x favicon-${x}x$x.png $SRC/logo.svg
-  dkr convert -colors 256 $OUT/favicon-${x}x$x.png favicon-${x}x$x.ico
-done
-dkr convert favicon-48x48.ico favicon-32x32.ico favicon-16x16.ico $OUT/favicon.ico
-rm favicon-*.ico
+spit 48 favicon-48x48.png $SRC/logo.svg
+dkr convert -colors 256 $OUT/favicon-48x48.png $OUT/favicon.ico
 # SVG too!
 cp $SRC/logo.svg $OUT/favicon.svg
 if [ -d $API ]; then

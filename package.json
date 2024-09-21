@@ -55,6 +55,7 @@
     "start": "vite",
     "prebuild": "npm run compile",
     "build": "tsc && vite build",
+    "min-xml": "minify-xml --verbose --in-place",
     "compile": "graphql-codegen",
     "test": "vitest",
     "test:coverage": "vitest run --coverage --watch=false",
@@ -63,7 +64,8 @@
     "lint": "eslint ./src; tsc --noEmit",
     "lint:fix": "eslint --fix ./src",
     "format:write": "prettier . --write",
-    "watch": "tsc --watch --noEmit"
+    "watch": "tsc --watch --noEmit",
+    "serve": "npx serve -p 3001 --no-port-switching --single --no-clipboard build"
   },
   "browserslist": {
     "production": [
@@ -93,6 +95,7 @@
     "eslint-plugin-react-hooks": "^4.6.2",
     "globals": "^15.8.0",
     "jsdom": "^24.1.0",
+    "minify-xml": "^4.5.2",
     "prettier": "3.0.3",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
