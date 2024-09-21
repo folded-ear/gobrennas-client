@@ -101,6 +101,7 @@ done
 dkr convert favicon-48x48.ico favicon-32x32.ico favicon-16x16.ico $OUT/favicon.ico
 rm favicon-*.ico
 if [ -d $API ]; then
+  echo "Copying favicon.ico to the API too"
   cp $OUT/favicon.ico $API/src/main/resources/public/favicon.ico
 fi
 
