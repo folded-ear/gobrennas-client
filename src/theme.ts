@@ -5,7 +5,6 @@ import {
 } from "@mui/material/styles";
 import { deepmerge } from "@mui/utils";
 import { grey } from "@mui/material/colors";
-import { IS_BETA } from "./constants";
 import { useMediaQuery } from "@mui/material";
 import { useMemo } from "react";
 
@@ -52,10 +51,7 @@ declare module "@mui/material/IconButton" {
 const baseTokens: ThemeOptions = {
     palette: {
         primary: {
-            light: IS_BETA ? "#90caf9" : "#F99339",
-            main: IS_BETA ? "#1976d2" : "#F57F17",
-            dark: IS_BETA ? "#0d47a1" : "#B85600",
-            contrastText: "#FFFDE7",
+            main: import.meta.env.VITE_THEME_COLOR,
         },
     },
     typography: {
