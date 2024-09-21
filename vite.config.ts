@@ -64,7 +64,7 @@ export default defineConfig({
                 start_url: "/shop",
                 display: "standalone",
                 theme_color: "#F57F17",
-                background_color: "#2d2f31",
+                background_color: "#1b1b1b",
                 shortcuts: [
                     {
                         name: "Shop",
