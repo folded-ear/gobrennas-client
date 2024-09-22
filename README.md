@@ -23,7 +23,7 @@ it's useless without an API to connect to.
 ## Run (For Development)
 
 You'll need Node 20 to run, just like above. Assuming you've got an API running
-at http://localhost:5000 (see https://github.com/folded-ear/gobrennas-api):
+at http://localhost:8080 (see https://github.com/folded-ear/gobrennas-api):
 
 ```bash
 nvm install # if needed

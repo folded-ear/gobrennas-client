@@ -55,6 +55,8 @@
     "start": "vite",
     "prebuild": "npm run compile",
     "build": "tsc && vite build",
+    "min-xml": "minify-xml --verbose --in-place",
+    "postbuild": "npm run min-xml -- --no-collapse-empty-elements build/index.html",
     "compile": "graphql-codegen",
     "test": "vitest",
     "test:coverage": "vitest run --coverage --watch=false",
@@ -64,7 +66,7 @@
     "lint:fix": "eslint --fix ./src",
     "format:write": "prettier . --write",
     "watch": "tsc --watch --noEmit",
-    "generate-pwa-assets": "pwa-assets-generator --preset minimal-2023 public/favicon-48x48.png"
+    "serve": "npx serve -p 3001 --no-port-switching --single --no-clipboard build"
   },
   "browserslist": {
     "production": [
@@ -88,13 +90,13 @@
     "@types/luxon": "^3.4.2",
     "@types/node": "^20.14.11",
     "@types/react-router-dom": "^5.3.3",
-    "@vite-pwa/assets-generator": "^0.2.4",
     "@vitest/coverage-v8": "^2.0.3",
     "eslint": "^8.57.0",
     "eslint-plugin-react": "^7.35.0",
     "eslint-plugin-react-hooks": "^4.6.2",
     "globals": "^15.8.0",
     "jsdom": "^24.1.0",
+    "minify-xml": "^4.5.2",
     "prettier": "3.0.3",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",

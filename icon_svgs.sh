@@ -7,11 +7,11 @@ OUT=icons
 mkdir -p "$OUT"
 
 echo
-echo "I rebuild the SVG icons in the $OUT directory, w/ a little interactive"
-echo "help from you to twiddle various uncommented blocks in $SRC"
+echo "I rebuild the SVG icons in the '$OUT' directory, w/ a little interactive"
+echo "help from you to twiddle various uncommented blocks in '$SRC'"
 echo
 
-echo -n "First, uncomment the 'library' block and press Enter: "
+echo -n "First, comment out the logo block, uncomment 'library', and press Enter: "
 read
 cp $SRC $OUT/library.svg
 echo
@@ -31,4 +31,9 @@ read
 cp $SRC $OUT/logo.svg
 echo
 
+for fn in $OUT/*.svg; do
+  npm run min-xml -- $fn
+done
+
+echo
 echo "To generate binaries, run 'icons.sh'"

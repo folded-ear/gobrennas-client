@@ -5,14 +5,16 @@ COPY . ./
 ENV NO_COLOR=true \
     CI=true
 ARG SERVICE_NAME
-RUN echo "Check if '$SERVICE_NAME' requires icon regen" \
+RUN MODE="production" \
+    && echo "Check if '$SERVICE_NAME' overrides mode" \
     && if echo "$SERVICE_NAME" | grep beta; then \
-      ./icons.sh --beta; \
+      MODE="beta"; \
     fi \
+    && ./icons.sh --mode $MODE \
     && npm ci \
     && npx browserslist@latest --update-db \
     && npm run test \
-    && npm run build
+    && npm run build -- --mode $MODE
 
 # server environment
 FROM nginx:alpine
