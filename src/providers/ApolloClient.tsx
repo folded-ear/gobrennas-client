@@ -10,8 +10,9 @@ import { API_BASE_URL } from "@/constants";
 import { askUserToReauth, isAuthError } from "./Profile";
 import createUploadLink from "apollo-upload-client/createUploadLink.mjs";
 
-const errorLink = onError(({ graphQLErrors }) => {
-    if (!graphQLErrors) return;
+const errorLink = onError(({ operation, graphQLErrors }) => {
+    // don't ask about reauth if requesting me; that's the profile gate
+    if (!graphQLErrors || operation.operationName === "me") return;
     graphQLErrors.forEach((error) => {
         // eslint-disable-next-line no-console
         console.error("Error in GraphQL", error);

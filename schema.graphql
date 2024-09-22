@@ -546,12 +546,13 @@ type UnitOfMeasure implements Node {
     name: String!
 }
 
-type User {
-    email: String
+type User implements Node {
+    email: String!
     id: ID!
     imageUrl: String
     name: String
-    provider: String
+    provider: String!
+    roles: [String!]!
 }
 
 enum AccessLevel {

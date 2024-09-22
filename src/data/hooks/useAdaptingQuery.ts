@@ -32,7 +32,7 @@ export default function useAdaptingQuery<
         data: TData | undefined,
         result: QueryResult<TData, TVariables> | ApolloQueryResult<TData>,
     ) => TAdaptedData,
-    options: QueryHookOptions<NoInfer<TData>, NoInfer<TVariables>>,
+    options?: QueryHookOptions<NoInfer<TData>, NoInfer<TVariables>>,
 ) {
     const raw = useQuery(query, options);
 

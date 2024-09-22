@@ -1,75 +1,54 @@
-import BaseAxios from "axios";
+import Axios from "axios";
 import React, {
     createContext,
     PropsWithChildren,
-    useCallback,
     useContext,
     useEffect,
-    useState,
 } from "react";
 import { API_BASE_URL, LOCAL_STORAGE_ACCESS_TOKEN } from "@/constants";
 import GTag from "../GTag";
 import type { UserType } from "@/global/types/identity";
 import { requiredData, RippedLO } from "@/util/ripLoadObject";
+import { gql } from "@/__generated__";
+import useAdaptingQuery from "@/data/hooks/useAdaptingQuery";
 
 // global side effect to ensure cookies are passed
-BaseAxios.defaults.withCredentials = true;
-
-const axios = BaseAxios.create({
-    baseURL: API_BASE_URL,
-});
+Axios.defaults.withCredentials = true;
 
 type Profile = RippedLO<UserType> | undefined;
 
 let globalProfile: Profile = undefined;
 
-const ProfileContext = createContext<Profile>(globalProfile);
+const GET_ME = gql(`query me {
+  getCurrentUser {
+    id
+    name
+    email
+    imageUrl
+    provider
+    roles
+  }
+}`);
+
+const ProfileContext = createContext<Profile>(undefined);
 
 type Props = PropsWithChildren<unknown>;
 
 export const ProfileProvider: React.FC<Props> = ({ children }) => {
-    const [profile, setProfile] = useState(globalProfile);
-
-    const doSetProfile = useCallback(
-        (valueOrUpdater: Profile | ((p: Profile) => Profile)) => {
-            const next =
-                typeof valueOrUpdater === "function"
-                    ? valueOrUpdater(globalProfile)
-                    : valueOrUpdater;
-            setProfile((globalProfile = next));
-        },
-        [setProfile],
+    const profile: Profile = useAdaptingQuery(
+        GET_ME,
+        (data) => data?.getCurrentUser || undefined,
     );
 
     useEffect(() => {
-        if (profile) {
-            if (profile.data) return;
-            if (profile.loading || profile.deleting) return;
-            if (profile.error) return;
-        }
-        axios
-            .get("/api/user/me")
-            .then((data) => {
-                GTag("set", {
-                    uid: data.data.id,
-                });
-                doSetProfile({
-                    data: data.data,
-                });
-            })
-            .catch((error) => {
-                if (isAuthError(error)) {
-                    doSetProfile({
-                        error: new Error(ProfileState.ERR_NO_TOKEN),
-                    });
-                } else {
-                    doSetProfile({
-                        error,
-                    });
-                }
-            });
-        doSetProfile((p) => ({ ...(p || {}), loading: true }));
-    }, [profile, doSetProfile]);
+        globalProfile = profile;
+    }, [profile]);
+
+    useEffect(() => {
+        const uid = profile.data?.id;
+        if (uid) GTag("set", { uid });
+    }, [profile.data?.id]);
+
     return (
         <ProfileContext.Provider value={profile}>
             {children}
@@ -121,7 +100,10 @@ export const useProfileState = () => {
     if (pendingProfile.data) return ProfileState.AUTHENTICATED;
     if (pendingProfile.loading) return ProfileState.PENDING;
     if (pendingProfile.error) {
-        const message = pendingProfile.error.message;
+        const error = isAuthError(pendingProfile.error)
+            ? new Error(ProfileState.ERR_NO_TOKEN)
+            : pendingProfile.error;
+        const message = error.message;
         return ProfileState.hasOwnProperty(message)
             ? message
             : ProfileState.ERROR;
