@@ -49,7 +49,7 @@ function UserContent({
     return (
         <Grid
             container
-            spacing={1}
+            spacing={0.5}
             justifyContent="space-between"
             alignItems="center"
         >
@@ -66,6 +66,8 @@ function UserContent({
                         onChange={(e) =>
                             handleGrantChange(friend.id, e.target.value)
                         }
+                        variant={undefined}
+                        size={"small"}
                     >
                         <MenuItem value={LEVEL_NO_ACCESS}>No Access</MenuItem>
                         {/*VIEW too!*/}
@@ -131,7 +133,7 @@ const PlanSidebar: React.FC<Props> = ({ open, onClose, plan }) => {
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const acl = plan.acl!;
     const grants = acl.grants || {};
-    const isMine = acl.ownerId === me.id;
+    const isMine = "" + acl.ownerId === me.id;
     const owner = isMine ? me : friendsById.get(acl.ownerId);
     const isAdministrator =
         isMine || includesLevel(grants[me.id], AccessLevel.ADMINISTER);
