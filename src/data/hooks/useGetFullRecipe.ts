@@ -13,7 +13,6 @@ query getRecipeWithEverything($id: ID!) {
   library {
     getRecipeById(id: $id) {
       ...recipeCore
-      favorite
       yield
       calories
       externalUrl
