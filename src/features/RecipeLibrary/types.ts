@@ -5,7 +5,6 @@ export type RecipeCard = Pick<
     | "id"
     | "calories"
     | "externalUrl"
-    | "favorite"
     | "labels"
     | "name"
     | "photo"

@@ -43,7 +43,6 @@ fragment librarySearchResult on RecipeConnection {
         focus
       }
       name
-      favorite
       labels
       externalUrl
       calories

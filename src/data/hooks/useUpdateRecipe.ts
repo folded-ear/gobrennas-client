@@ -9,7 +9,6 @@ mutation updateRecipe($id: ID!, $info: IngredientInfo!, $photo: Upload) {
   library {
     updateRecipe(id: $id, info: $info, photo: $photo) {
       ...recipeCore
-      favorite
       yield
       calories
       externalUrl

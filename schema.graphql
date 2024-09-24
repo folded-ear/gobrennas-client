@@ -440,7 +440,6 @@ type Recipe implements Ingredient & Node & Owned {
     calories: Int
     directions: String
     externalUrl: String
-    favorite: Boolean!
     id: ID!
     ingredients(
         "Ingredient(s) to include. Missing/empty means \"all\"."
