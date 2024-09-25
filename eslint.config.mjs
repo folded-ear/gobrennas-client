@@ -31,7 +31,14 @@ export default [
             "no-restricted-imports": [
                 "error",
                 {
-                    paths: ["@mui/icons-material"],
+                    paths: [
+                        "@mui/icons-material",
+                        {
+                            name: "@apollo/client",
+                            importNames: ["gql"],
+                            message: "Import 'gql' from '@/__generated__'",
+                        },
+                    ],
                     patterns: ["@mui/icons-material/*"],
                 },
             ],
