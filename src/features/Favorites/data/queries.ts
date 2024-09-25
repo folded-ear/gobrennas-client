@@ -1,5 +1,7 @@
-import { gql, useMutation, useQuery } from "@apollo/client";
-import { useCallback, useEffect, useState } from "react";
+import { useMutation, useQuery } from "@apollo/client";
+import { gql } from "@/__generated__";
+import { useMemo } from "react";
+import { BfsId } from "@/global/types/identity";
 
 export type IdCallback = (number) => boolean;
 
@@ -15,23 +17,17 @@ const LIST_ALL_FAVORITES = gql(`
     }
 `);
 
-export function useIsFavorite(): IdCallback {
-    const byId = useFavoritesById();
-    return useCallback((id) => byId.has("" + id), [byId]);
-}
-
-const useFavoritesById = () => {
-    const raw = useQuery(LIST_ALL_FAVORITES);
-    const [result, setResult] = useState(new Map());
-    useEffect(() => {
-        const map = new Map();
-        if (raw.data && raw.data.favorite) {
-            raw.data.favorite.all.forEach((it) => map.set(it.objectId, it));
+export function useIsFavorite(id: BfsId): boolean {
+    const { data } = useQuery(LIST_ALL_FAVORITES);
+    return useMemo(() => {
+        if (!data?.favorite?.all) return false;
+        const stringId = "" + id;
+        for (const f of data.favorite.all) {
+            if (f.objectId === stringId) return true;
         }
-        setResult(map);
-    }, [raw, raw.data]);
-    return result;
-};
+        return false;
+    }, [id, data?.favorite?.all]);
+}
 
 const MARK_FAVORITE = gql(`
     mutation markFavorite($type: String!, $id: ID!) {
