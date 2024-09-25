@@ -16,8 +16,7 @@ interface Props {
 const Indicator: React.FC<Props> = ({ type, id }) => {
     const removeFavorite = useRemoveFavorite(type);
     const markFavorite = useMarkFavorite(type);
-    const isFavorite = useIsFavorite();
-    const favorite = isFavorite(id);
+    const favorite = useIsFavorite(id);
 
     function handleClick(e) {
         e.stopPropagation();

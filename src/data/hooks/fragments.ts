@@ -1,4 +1,4 @@
-import { gql } from "@apollo/client";
+import { gql } from "@/__generated__";
 
 // Required for typed codegen, not imported directly into queries
 // noinspection JSUnusedLocalSymbols
