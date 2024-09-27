@@ -16,6 +16,8 @@ export default defineConfig(({ mode }) => {
             "import.meta.env.BUILD_TIMESTAMP": JSON.stringify(
                 new Date().toISOString(),
             ),
+            // apollo client's "dev mode"
+            "globalThis.__DEV__": JSON.stringify(mode === "development"),
         },
         envDir: ENV_DIR,
         resolve: {
