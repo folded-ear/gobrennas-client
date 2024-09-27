@@ -1,11 +1,10 @@
 import React from "react";
-import { Redirect } from "react-router-dom";
+import { Redirect, Route } from "react-router-dom";
 import {
     useIsProfileInitializing,
     useIsProfilePending,
     useProfile,
 } from "@/providers/Profile";
-import FluxRoute from "./FluxRoute";
 import LoadingIndicator from "./LoadingIndicator";
 import { Location } from "history";
 import { BfsRoute } from "@/routes";
@@ -44,7 +43,7 @@ const PrivateRoute: React.FC<Props> = ({
         return <LoadingIndicator />;
     }
     return (
-        <FluxRoute
+        <Route
             {...route}
             render={(props) => {
                 if (authenticated) {
