@@ -8,8 +8,22 @@ export interface RippedLO<T> {
 }
 
 export function ripLoadObject<T>(lo: LoadObject<T>): RippedLO<T> {
+    if (import.meta.env.DEV) {
+        if (lo.isCreating()) {
+            // eslint-disable-next-line no-console
+            console.warn(
+                "LoadObject.creating is deprecated. Use .loading (as Apollo does).",
+            );
+        }
+        if (lo.isUpdating()) {
+            // eslint-disable-next-line no-console
+            console.warn(
+                "LoadObject.updating is deprecated. Use .loading (as Apollo does).",
+            );
+        }
+    }
     return {
-        loading: lo.isLoading(),
+        loading: lo.isLoading() || lo.isCreating() || lo.isUpdating(),
         deleting: lo.isDeleting(),
         data: lo.getValue() || undefined,
         error: lo.getError(),

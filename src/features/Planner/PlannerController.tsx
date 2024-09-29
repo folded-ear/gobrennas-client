@@ -60,13 +60,14 @@ type Props = RouteComponentProps<{
 
 export const PlannerController: React.FC<Props> = ({ match }) => {
     useLoadedPlan(match.params.pid);
-    const { data: allPlans, loading } = useGetAllPlans();
-    const state = useFluxStore(() => {
+    const { data: allPlans, loading: allLoading } = useGetAllPlans();
+    const { activeLoading, ...state } = useFluxStore(() => {
         const activePlan = planStore.getActivePlanRlo();
         const activeItem = planStore.getActiveItem();
         const selectedItems = planStore.getSelectedItems();
         return {
             activePlan,
+            activeLoading: activePlan.loading,
             planDetailVisible: planStore.isPlanDetailVisible(),
             itemTuples: activePlan.data ? listTheTree(activePlan.data.id) : [],
             isItemActive: activeItem
@@ -80,5 +81,11 @@ export const PlannerController: React.FC<Props> = ({ match }) => {
                 : () => false,
         };
     }, [planStore, LibraryStore]);
-    return <Plan loading={loading} allPlans={allPlans} {...state} />;
+    return (
+        <Plan
+            loading={activeLoading || allLoading}
+            allPlans={allPlans}
+            {...state}
+        />
+    );
 };
