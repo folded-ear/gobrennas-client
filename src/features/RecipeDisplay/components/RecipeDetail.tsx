@@ -5,7 +5,6 @@ import React from "react";
 import Dispatcher from "@/data/dispatcher";
 import RecipeActions from "@/data/RecipeActions";
 import useWindowSize from "@/data/useWindowSize";
-import history from "@/util/history";
 import { formatDuration } from "@/util/time";
 import FoodingerFab from "@/views/common/FoodingerFab";
 import PageBody from "@/views/common/PageBody";
@@ -27,6 +26,7 @@ import { extractRecipePhoto } from "@/features/RecipeDisplay/utils/extractRecipe
 import { BreadcrumbLink } from "@/global/components/BreadcrumbLink";
 import useIsDevMode from "@/data/useIsDevMode";
 import RecipeHistoryGrid from "./RecipeHistoryGrid";
+import { useHistory } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
     name: {
@@ -78,6 +78,7 @@ const RecipeDetail: React.FC<Props> = ({
 }) => {
     const classes = useStyles();
     const devMode = useIsDevMode();
+    const history = useHistory();
 
     const windowSize = useWindowSize();
     const scale = useScale();

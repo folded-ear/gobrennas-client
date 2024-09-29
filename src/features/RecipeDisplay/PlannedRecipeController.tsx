@@ -8,8 +8,8 @@ import { RouteComponentProps } from "react-router";
 import { useLoadedPlan } from "@/features/RecipeDisplay/hooks/useLoadedPlan";
 import { recipeRloFromItemRlo } from "@/features/RecipeDisplay/utils/recipeRloFromItemRlo";
 import CloseButton from "@/views/common/CloseButton";
-import history from "@/util/history";
 import CookedItButton from "@/features/Planner/components/CookedItButton";
+import { useHistory } from "react-router-dom";
 
 type Props = RouteComponentProps<{
     pid: string;
@@ -23,6 +23,7 @@ const PlannedRecipeController: React.FC<Props> = ({ match }) => {
         [planStore, LibraryStore],
         [rid],
     );
+    const history = useHistory();
 
     useLoadedPlan(match.params.pid); // don't actually need the data, just need it loaded
 

@@ -5,13 +5,13 @@ import LoadingIndicator from "@/views/common/LoadingIndicator";
 import RecipeDetail from "./components/RecipeDetail";
 import { useGetFullRecipe } from "@/data/hooks/useGetFullRecipe";
 import CopyButton from "@/views/common/CopyButton";
-import history from "@/util/history";
 import ShareRecipe from "./components/ShareRecipe";
 import CloseButton from "@/views/common/CloseButton";
 import EditButton from "@/views/common/EditButton";
 import DeleteButton from "@/views/common/DeleteButton";
 import NotFound from "@/views/common/NotFound";
 import { useDeleteRecipe } from "@/data/hooks/useDeleteRecipe";
+import { useHistory } from "react-router-dom";
 
 type Props = RouteComponentProps<{
     id: string;
@@ -24,6 +24,7 @@ const RecipeController: React.FC<Props> = ({ match }) => {
         data: fullRecipe,
     } = useGetFullRecipe(match.params.id);
     const [deleteRecipe] = useDeleteRecipe();
+    const history = useHistory();
 
     if (loading) {
         return <LoadingIndicator />;
