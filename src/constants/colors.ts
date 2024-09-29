@@ -34,19 +34,15 @@ if (import.meta.env.DEV) {
     }
 }
 
+const tinyHash = (s) => {
+    // based on https://stackoverflow.com/a/52171480
+    let h = 9;
+    for (let i = 0; i < s.length; )
+        h = Math.imul(h ^ s.charCodeAt(i++), 9 ** 9);
+    return h ^ (h >>> 9);
+};
+
 export const colorHash = (id: BfsId) => {
-    let n = 0;
-    for (const codePoint of id.toString()) {
-        n *= 31;
-        n += codePoint.codePointAt(0) || 0;
-    }
-    const l = planColors.length;
-    let h = 0;
-    // This XORs all the bits of the number, instead of just the last few, which
-    // depends on the modulus being a power of two for a fair distribution.
-    while (n > 0) {
-        h ^= n % l;
-        n = Math.floor(n / l);
-    }
-    return planColors[h];
+    const h = Math.abs(tinyHash(id.toString()));
+    return planColors[h % planColors.length];
 };

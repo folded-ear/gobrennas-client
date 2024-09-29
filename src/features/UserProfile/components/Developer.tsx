@@ -81,12 +81,9 @@ const DevMode: React.FC = () => {
 
     function handleResample() {
         const samples = planColors.map(() => 0);
+        let n = 27000 + Math.floor(Math.random() * 1000);
         for (let i = planColors.length * SAMPLES_PER_SWATCH; i > 0; i--) {
-            samples[
-                planColors.indexOf(
-                    colorHash(Math.random().toString().substring(2)),
-                )
-            ] += 1;
+            samples[planColors.indexOf(colorHash("87777497" + n++))] += 1;
         }
         setSamples(samples);
     }
