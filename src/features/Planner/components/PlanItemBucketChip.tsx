@@ -75,7 +75,6 @@ const BucketChip: React.FC<BucketChipProps> = ({
         <>
             <Chip color="neutral" onClick={handleClick} {...chipProps} />
             <Menu
-                id="simple-menu"
                 anchorEl={anchorEl}
                 keepMounted
                 open={Boolean(anchorEl)}
