@@ -5,13 +5,11 @@ import {
     MainMobile,
 } from "@/features/Navigation/components/Navigation.elements";
 import { FlexBox } from "@/global/components/FlexBox";
-import useFluxStore from "@/data/useFluxStore";
 import { useIsMobile } from "@/providers/IsMobile";
 import { MobileNav } from "@/features/Navigation/components/MobileNav";
 import { DesktopNav } from "@/features/Navigation/components/DesktopNav";
-import { useHistory } from "react-router-dom";
+import { useHistory, useLocation } from "react-router-dom";
 import { useIsAuthenticated, useLogoutHandler } from "@/providers/Profile";
-import RouteStore from "@/data/RouteStore";
 import Dispatcher from "@/data/dispatcher";
 import ShoppingActions from "@/data/ShoppingActions";
 import PlanActions from "../Planner/data/PlanActions";
@@ -19,6 +17,7 @@ import useIsNavCollapsed, { setNavCollapsed } from "@/data/useIsNavCollapsed";
 import { BfsId } from "@/global/types/identity";
 import routes from "@/routes";
 import SidebarSwitch from "@/SidebarSwitch";
+import GTag from "@/GTag";
 
 export function toggleShoppingPlan(id: BfsId) {
     return Dispatcher.dispatch({
@@ -40,13 +39,15 @@ export const NavigationController = ({ children }: PropsWithChildren) => {
     const isMobile = useIsMobile();
     const history = useHistory();
     const [selected, setSelected] = useState("");
+    const path = useLocation().pathname; // e.g., /plan/123
 
-    const path = useFluxStore(() => {
-        const state = RouteStore.getState();
-        return state ? state.path : "/library";
-    }, [RouteStore]);
     useEffect(() => {
         setSelected(path.split("/")[1]);
+        // BEWARE: strict mode makes it look like the tag is sent twice, because
+        // its impure check re-invokes effects. Doesn't happen in production.
+        GTag("set", "page_path", path);
+        GTag("set", "page_title", path);
+        GTag("event", "page_view");
     }, [path]);
 
     const handleProfile = (e) => {

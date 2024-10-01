@@ -4,12 +4,12 @@ import dispatcher from "@/data/dispatcher";
 import getBucketLabel from "@/features/Planner/components/getBucketLabel";
 import PlanActions from "@/features/Planner/data/PlanActions";
 import React from "react";
-import history from "@/util/history";
 import { humanDate } from "@/util/time";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import { BfsId } from "@/global/types/identity";
 import { Maybe } from "graphql/jsutils/Maybe";
 import { PlanBucket } from "../data/planStore";
+import { useHistory } from "react-router-dom";
 
 interface BucketChipProps {
     planId: BfsId;
@@ -31,6 +31,7 @@ const BucketChip: React.FC<BucketChipProps> = ({
     size = "small",
 }) => {
     const [anchorEl, setAnchorEl] = React.useState(null);
+    const history = useHistory();
 
     if (buckets.length === 0) return null;
 

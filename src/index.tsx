@@ -4,6 +4,7 @@ import Dispatcher from "@/data/dispatcher";
 import WindowActions from "@/data/WindowActions";
 import debounce from "@/util/debounce";
 import { createRoot } from "react-dom/client";
+import { BrowserRouter } from "react-router-dom";
 
 // if (!import.meta.env.PROD) {
 //     Dispatcher.register(require("./util/logAction").default);
@@ -11,7 +12,9 @@ import { createRoot } from "react-dom/client";
 
 createRoot(document.getElementById("root")!).render(
     <StrictMode>
-        <GoBrennas />
+        <BrowserRouter>
+            <GoBrennas />
+        </BrowserRouter>
     </StrictMode>,
 );
 

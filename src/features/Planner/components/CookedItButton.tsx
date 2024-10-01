@@ -5,9 +5,9 @@ import { FromPlanItem } from "@/global/types/types";
 import dispatcher from "@/data/dispatcher";
 import PlanActions from "@/features/Planner/data/PlanActions";
 import PlanItemStatus from "@/features/Planner/data/PlanItemStatus";
-import history from "@/util/history";
 import SplitButton, { SelectOption } from "@/views/common/SplitButton";
 import { DateTime } from "luxon";
+import { useHistory } from "react-router-dom";
 
 type Props = Omit<ButtonProps, "onClick"> & {
     recipe: FromPlanItem;
@@ -15,6 +15,7 @@ type Props = Omit<ButtonProps, "onClick"> & {
 };
 
 const CookButton: React.FC<Props> = ({ recipe, stayOnPage }) => {
+    const history = useHistory();
     const pending = recipe.completing;
     const disabled =
         recipe.ancestorCompleting || recipe.deleting || recipe.ancestorDeleting;
@@ -31,7 +32,7 @@ const CookButton: React.FC<Props> = ({ recipe, stayOnPage }) => {
             });
             if (!stayOnPage) history.goBack();
         },
-        [recipe.completing, recipe.id, stayOnPage],
+        [history, recipe.completing, recipe.id, stayOnPage],
     );
 
     const handleSelect = React.useCallback(
@@ -45,7 +46,7 @@ const CookButton: React.FC<Props> = ({ recipe, stayOnPage }) => {
             });
             if (!stayOnPage) history.goBack();
         },
-        [recipe.id, stayOnPage],
+        [history, recipe.id, stayOnPage],
     );
 
     const cookedItOptions = React.useMemo(() => {

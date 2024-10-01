@@ -1,8 +1,8 @@
 import { IconButton, IconButtonProps, Tooltip } from "@mui/material";
 import { CookIcon } from "@/views/common/icons";
 import React from "react";
-import history from "@/util/history";
 import { BfsId } from "@/global/types/identity";
+import { useHistory } from "react-router-dom";
 
 interface Props extends IconButtonProps {
     planId: BfsId;
@@ -10,6 +10,7 @@ interface Props extends IconButtonProps {
 }
 
 const CookButton: React.FC<Props> = ({ planId, itemId, ...props }) => {
+    const history = useHistory();
     return (
         <Tooltip title="Cook / Kitchen View" placement="top">
             <IconButton

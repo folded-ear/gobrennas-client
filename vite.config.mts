@@ -16,6 +16,8 @@ export default defineConfig(({ mode }) => {
             "import.meta.env.BUILD_TIMESTAMP": JSON.stringify(
                 new Date().toISOString(),
             ),
+            // apollo client's "dev mode"
+            "globalThis.__DEV__": JSON.stringify(mode === "development"),
         },
         envDir: ENV_DIR,
         resolve: {
@@ -34,7 +36,23 @@ export default defineConfig(({ mode }) => {
             chunkSizeWarningLimit: 600,
         },
         plugins: [
-            react(),
+            react({
+                // This SWC plugin can nominally avoid the silliness in codegen
+                // output, where there are two non-tree-shakeable copies of each
+                // query in the prod bundle. But per SOP, there is no version
+                // compatibility matrix, and whatever we have doesn't work. Docs
+                // are: https://the-guild.dev/graphql/codegen/plugins/presets/preset-client#swc-plugin
+                // The package name: @graphql-codegen/client-preset-swc-plugin
+                // plugins: [
+                //     [
+                //         "@graphql-codegen/client-preset-swc-plugin",
+                //         {
+                //             artifactDirectory: "./src/__generated__/",
+                //             gqlTagName: "gql",
+                //         },
+                //     ],
+                // ],
+            }),
             VitePWA({
                 registerType: "prompt",
                 injectRegister: "script",

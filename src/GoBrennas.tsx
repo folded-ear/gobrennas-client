@@ -18,8 +18,6 @@ import { AuthTokenProvider } from "@/providers/AuthToken";
 import { IsMobileProvider } from "@/providers/IsMobile";
 import { QueryClientProvider } from "react-query";
 import queryClient from "@/data/queryClient";
-import { Router } from "react-router-dom";
-import history from "@/util/history";
 import PantryItemSynchronizer from "@/data/PantryItemSynchronizer";
 import PlanItemSynchronizer from "@/features/Planner/data/PlanItemSynchronizer";
 
@@ -35,20 +33,18 @@ function GoBrennas() {
                 <ProfileProvider>
                     <IsMobileProvider>
                         <QueryClientProvider client={queryClient}>
-                            <Router history={history}>
-                                <PantryItemSynchronizer />
-                                <PlanItemSynchronizer />
-                                <StyledEngineProvider injectFirst>
-                                    <ThemeProvider theme={useBfsTheme()}>
-                                        <CssBaseline />
-                                        <NavigationController>
-                                            <NewVersionPrompt />
-                                            <RoutingSwitch routes={routes} />
-                                        </NavigationController>
-                                        <SnackPack />
-                                    </ThemeProvider>
-                                </StyledEngineProvider>
-                            </Router>
+                            <PantryItemSynchronizer />
+                            <PlanItemSynchronizer />
+                            <StyledEngineProvider injectFirst>
+                                <ThemeProvider theme={useBfsTheme()}>
+                                    <CssBaseline />
+                                    <NavigationController>
+                                        <NewVersionPrompt />
+                                        <RoutingSwitch routes={routes} />
+                                    </NavigationController>
+                                    <SnackPack />
+                                </ThemeProvider>
+                            </StyledEngineProvider>
                         </QueryClientProvider>
                     </IsMobileProvider>
                 </ProfileProvider>

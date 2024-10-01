@@ -63,12 +63,12 @@ interface State {
 declare namespace TaskStore {}
 
 declare class PlanStore extends FluxReduceStore<State, FluxAction> {
-    getPlanIdsLO(): LoadObject<clientOrDatabaseIdType>;
-    getPlanIdsRlo(): RippedLO<clientOrDatabaseIdType>;
+    getPlanIdsLO(): LoadObject<BfsId[]>;
+    getPlanIdsRlo(): RippedLO<BfsId[]>;
 
     getPlansRlo(): RippedLO<Plan[]>;
 
-    getChildItemRlos(id: clientOrDatabaseIdType): RippedLO<PlanItem>[];
+    getChildItemRlos(id: BfsId): RippedLO<PlanItem>[];
 
     getNonDescendantComponents(id: number): PlanItem[];
 
@@ -77,8 +77,8 @@ declare class PlanStore extends FluxReduceStore<State, FluxAction> {
 
     getActiveItem(): PlanItem;
 
-    getItemLO(id: clientOrDatabaseIdType): LoadObject<PlanItem>;
-    getItemRlo(id: clientOrDatabaseIdType): RippedLO<PlanItem>;
+    getItemLO(id: BfsId): LoadObject<PlanItem>;
+    getItemRlo(id: BfsId): RippedLO<PlanItem>;
 
     getSelectedItems(): PlanItem[];
 

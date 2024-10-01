@@ -130,8 +130,7 @@ const PlanSidebar: React.FC<Props> = ({ open, onClose, plan }) => {
         });
     };
 
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    const acl = plan.acl!;
+    const acl = plan.acl || {};
     const grants = acl.grants || {};
     const isMine = "" + acl.ownerId === me.id;
     const owner = isMine ? me : friendsById.get(acl.ownerId);

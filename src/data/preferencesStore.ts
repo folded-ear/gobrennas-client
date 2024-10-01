@@ -75,7 +75,7 @@ class PreferencesStore extends ReduceStore<State, FluxAction> {
                 const rlo = planStore.getActivePlanRlo();
                 return rlo.data
                     ? setPref(state, PrefNames.ACTIVE_PLAN, rlo.data.id)
-                    : state;
+                    : clearPref(state, PrefNames.ACTIVE_PLAN);
             }
 
             case ShoppingActions.TOGGLE_PLAN: {

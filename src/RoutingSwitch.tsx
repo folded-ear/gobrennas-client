@@ -1,5 +1,4 @@
-import { Switch, useLocation } from "react-router-dom";
-import FluxRoute from "./views/common/FluxRoute";
+import { Route, Switch, useLocation } from "react-router-dom";
 import NotFound from "./views/common/NotFound";
 import PrivateRoute from "./views/common/PrivateRoute";
 import Login from "./views/user/Login";
@@ -17,7 +16,7 @@ const RoutingSwitch = ({ routes }: SwitchProps) => {
     return (
         <Switch>
             {routes.public.map((route) => (
-                <FluxRoute
+                <Route
                     key={route.path}
                     path={route.path}
                     render={(props) => (
@@ -38,13 +37,13 @@ const RoutingSwitch = ({ routes }: SwitchProps) => {
                     authenticated={authenticated}
                 />
             ))}
-            <FluxRoute
+            <Route
                 path="/login"
                 render={(props) => (
                     <Login authenticated={authenticated} {...props} />
                 )}
             />
-            <FluxRoute component={NotFound} />
+            <Route component={NotFound} />
         </Switch>
     );
 };

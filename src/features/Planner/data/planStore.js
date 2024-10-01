@@ -58,7 +58,6 @@ import {
     toggleExpanded,
     unnestTask,
 } from "./utils";
-import history from "@/util/history";
 
 /*
  * This store is way too muddled. But leaving it that way for the moment, to
@@ -115,31 +114,20 @@ class PlanStore extends ReduceStore {
                     lo.deleting(),
                 );
                 if (next.activeListId === action.id) {
-                    const lo = next.topLevelIds.getLoadObject();
-                    next.activeListId = lo.hasValue()
-                        ? lo.getValueEnforcing().find((id) => id !== action.id)
-                        : null;
                     next.listDetailVisible = false;
                     next.activeTaskId = null;
                     next.selectedTaskIds = null;
-                    next = selectDefaultList(next);
                 }
                 return next;
             }
 
             case PlanActions.PLAN_DELETED: {
-                // noinspection EqualityComparisonWithCoercionJS
-                const wasActive = state.activeListId == action.id; // eslint-disable-line eqeqeq
-                state = selectDefaultList({
+                return selectDefaultList({
                     ...dotProp.delete(state, ["byId", action.id]),
                     topLevelIds: state.topLevelIds.map((ids) =>
                         ids.filter((id) => id !== action.id),
                     ),
                 });
-                if (wasActive && state.activeListId) {
-                    history.push(`/plan/${state.activeListId}`);
-                }
-                return state;
             }
 
             case PlanActions.LOAD_PLANS:

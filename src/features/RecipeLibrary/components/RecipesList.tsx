@@ -1,7 +1,6 @@
 import { AddRecipeIcon } from "@/views/common/icons";
 import { Container as Content, Grid } from "@mui/material";
 import React from "react";
-import history from "@/util/history";
 import FoodingerFab from "@/views/common/FoodingerFab";
 import LazyInfinite from "@/views/common/LazyInfinite";
 import LoadingIndicator from "@/views/common/LoadingIndicator";
@@ -9,6 +8,7 @@ import { LibrarySearchScope } from "@/__generated__/graphql";
 import { MessagePaper } from "@/features/RecipeLibrary/components/MessagePaper";
 import { RecipeCard as TRecipeCard } from "@/features/RecipeLibrary/types";
 import { RecipeGrid } from "@/views/recipeCollections/RecipeGrid";
+import { useHistory } from "react-router-dom";
 
 interface RecipesListProps {
     me: any; // todo
@@ -34,6 +34,7 @@ export const RecipesList: React.FC<RecipesListProps> = ({
     onNeedMore,
     isMobile,
 }) => {
+    const history = useHistory();
     let body;
     if (recipes) {
         if (recipes.length > 0) {

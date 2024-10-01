@@ -4,13 +4,13 @@ import React from "react";
 import Dispatcher from "@/data/dispatcher";
 import PantryItemActions from "@/data/PantryItemActions";
 import PlanActions from "@/features/Planner/data/PlanActions";
-import history from "@/util/history";
 import Quantity from "@/views/common/Quantity";
 import SendToPlan from "@/features/RecipeLibrary/components/SendToPlan";
 import type { IngredientRef } from "@/global/types/types";
 import type { BfsId } from "@/global/types/identity";
 import { useScale } from "@/util/ScalingContext";
 import { LinkIcon } from "@/views/common/icons";
+import { useHistory } from "react-router-dom";
 
 const useStyles = makeStyles(() => ({
     quantity: {
@@ -52,6 +52,7 @@ const IngredientItem: React.FC<Props> = ({
     inline,
 }) => {
     const classes = useStyles();
+    const history = useHistory();
     const scale = useScale();
 
     let left, right;

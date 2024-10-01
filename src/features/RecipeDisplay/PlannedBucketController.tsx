@@ -8,8 +8,8 @@ import { RouteComponentProps } from "react-router";
 import { useLoadedPlan } from "@/features/RecipeDisplay/hooks/useLoadedPlan";
 import { recipeRloByPlanAndBucket } from "@/features/RecipeDisplay/utils/recipeRloByPlanAndBucket";
 import CloseButton from "@/views/common/CloseButton";
-import history from "@/util/history";
 import CookedItButton from "@/features/Planner/components/CookedItButton";
+import { useHistory } from "react-router-dom";
 
 type Props = RouteComponentProps<{
     pid: string;
@@ -24,6 +24,7 @@ const PlannedBucketController: React.FC<Props> = ({ match }) => {
         [planStore, LibraryStore],
         [pid, bid],
     );
+    const history = useHistory();
 
     useLoadedPlan(pid); // don't actually need the data, just need it loaded
 
