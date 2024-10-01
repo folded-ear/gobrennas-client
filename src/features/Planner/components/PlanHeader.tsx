@@ -25,7 +25,7 @@ import CollapseIconButton from "@/global/components/CollapseIconButton";
 import { useIsMobile } from "@/providers/IsMobile";
 import MobilePlanSelector from "@/views/shop/MobilePlanSelector";
 import { NavPlanItem } from "../../Navigation/components/NavPlanItem";
-import { selectPlan } from "../../Navigation/NavigationController";
+import { useHistory } from "react-router-dom";
 import { Plan } from "@/features/Planner/types";
 
 const isValidName = (name) => name != null && name.trim().length > 0;
@@ -76,6 +76,7 @@ function PlanHeader({
     const [showAdd, setShowAdd] = React.useState(false);
     const showPlanSelector = useIsMobile() && allPlans && allPlans.length >= 2;
     const [planSelectorOpen, setPlanSelectorOpen] = useState(false);
+    const history = useHistory();
 
     const onCreate = () => {
         if (!isValidName(name)) return;
@@ -133,7 +134,7 @@ function PlanHeader({
                 <MobilePlanSelector
                     open={planSelectorOpen}
                     PlanItem={NavPlanItem}
-                    onSelectPlan={selectPlan}
+                    onSelectPlan={(id) => history.push(`/plan/${id}`)}
                 />
             )}
             <Grid container justifyContent={"space-between"}>
