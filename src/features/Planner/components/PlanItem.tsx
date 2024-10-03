@@ -39,7 +39,7 @@ interface Props {
     loading: boolean;
     active?: boolean | undefined;
     selected?: boolean | undefined;
-    buckets: PlanBucket[];
+    buckets?: PlanBucket[];
     ancestorDeleting?: boolean | undefined;
     classes: any;
 }

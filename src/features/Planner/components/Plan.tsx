@@ -12,13 +12,17 @@ import PageBody from "@/views/common/PageBody";
 import DragContainer, { Horiz, Vert } from "./DragContainer";
 import { ItemTuple } from "../PlannerController";
 import { FluxAction } from "@/global/types/types";
-import { PlanItem as PlanItemType } from "@/features/Planner/data/planStore";
+import {
+    Plan as TPlan,
+    PlanItem as PlanItemType,
+} from "@/features/Planner/data/planStore";
 import { BfsId } from "@/global/types/identity";
+import { RippedLO } from "@/util/ripLoadObject";
 
 interface Props {
     allPlans: any;
     loading: boolean;
-    activePlan?: any;
+    activePlan: RippedLO<TPlan>;
     planDetailVisible: boolean;
     itemTuples: ItemTuple[];
     isItemActive: (it: ItemTuple) => boolean;

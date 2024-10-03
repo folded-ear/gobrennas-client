@@ -1,24 +1,29 @@
 import { colorHash } from "@/constants/colors";
-import Avatar from "@mui/material/Avatar";
 import { useMemo } from "react";
 import { PlanItem } from "@/features/Planner/data/planStore";
+import SizedAvatar, { SizedAvatarProps } from "@/views/SizedAvatar";
 
-interface Props {
+interface Props extends Pick<SizedAvatarProps, "inline" | "size"> {
     plan: PlanItem;
+    empty?: boolean;
 }
 
-export default function PlanAvatar({ plan }: Props) {
+export default function PlanAvatar({
+    plan,
+    empty = false,
+    ...passthrough
+}: Props) {
     const bgcolor = useMemo(() => colorHash(plan.id), [plan.id]);
     return (
-        <Avatar
-            key={plan.id}
+        <SizedAvatar
             alt={plan.name}
             title={plan.name}
             sx={{
                 bgcolor,
             }}
+            {...passthrough}
         >
-            {plan.name.substring(0, 2)}
-        </Avatar>
+            {empty ? <svg /> : plan.name.substring(0, 2)}
+        </SizedAvatar>
     );
 }

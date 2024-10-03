@@ -15,6 +15,7 @@ import React, { useState } from "react";
 import {
     AddIcon,
     CollapseAll,
+    CollapseIcon,
     EditIcon,
     ExpandAll,
     SortByBucketIcon,
@@ -26,7 +27,11 @@ import { useIsMobile } from "@/providers/IsMobile";
 import MobilePlanSelector from "@/views/shop/MobilePlanSelector";
 import { NavPlanItem } from "../../Navigation/components/NavPlanItem";
 import { useHistory } from "react-router-dom";
-import { Plan } from "@/features/Planner/types";
+import { useProfileId } from "@/providers/Profile";
+import { Plan as TPlan } from "@/features/Planner/data/planStore";
+import { colorHash } from "@/constants/colors";
+import LoadingIndicator from "@/views/common/LoadingIndicator";
+import PlanAvatar from "@/views/shop/PlanAvatar";
 
 const isValidName = (name) => name != null && name.trim().length > 0;
 
@@ -58,8 +63,8 @@ const sortByBucket = () =>
     });
 
 type PlanHeaderProps = {
-    allPlans: Plan[];
-    activePlan?: any;
+    allPlans: Pick<TPlan, "id" | "name">[];
+    activePlan?: TPlan;
     planDetailVisible?: boolean;
     hasBuckets?: boolean;
     canExpand?: boolean;
@@ -77,6 +82,7 @@ function PlanHeader({
     const showPlanSelector = useIsMobile() && allPlans && allPlans.length >= 2;
     const [planSelectorOpen, setPlanSelectorOpen] = useState(false);
     const history = useHistory();
+    const myId = useProfileId();
 
     const onCreate = () => {
         if (!isValidName(name)) return;
@@ -99,24 +105,35 @@ function PlanHeader({
         setShowAdd(false);
     };
 
+    if (!activePlan) {
+        return <LoadingIndicator />;
+    }
+
     return (
         <Box mx={showPlanSelector ? 0 : 1}>
-            <Typography variant="h2">
+            <Stack direction="row" justifyContent={"space-between"}>
                 <Stack direction="row" alignItems={"center"} spacing={1}>
-                    {showPlanSelector && (
+                    {showPlanSelector ? (
                         <CollapseIconButton
                             size={"medium"}
+                            Icon={CollapseIcon}
                             expanded={planSelectorOpen}
                             onClick={() => setPlanSelectorOpen((o) => !o)}
+                            sx={{
+                                "& svg": { color: colorHash(activePlan.id) },
+                            }}
                         />
+                    ) : (
+                        <PlanAvatar plan={activePlan} empty />
                     )}
-                    {activePlan && activePlan.acl && (
-                        <UserById id={activePlan.acl.ownerId} iconOnly />
-                    )}
-                    {activePlan && activePlan.name}
+                    <Typography variant="h2">
+                        {activePlan && activePlan.name}
+                    </Typography>
+                </Stack>
+                <Stack direction="row" alignItems={"center"} gap={1}>
                     <Tooltip
                         title="Edit plan, buckets, and access"
-                        placement="bottom-start"
+                        placement="bottom-end"
                     >
                         <span>
                             <IconButton
@@ -128,8 +145,11 @@ function PlanHeader({
                             </IconButton>
                         </span>
                     </Tooltip>
+                    {activePlan && "" + activePlan.acl.ownerId !== myId && (
+                        <UserById id={activePlan.acl.ownerId} iconOnly />
+                    )}
                 </Stack>
-            </Typography>
+            </Stack>
             {showPlanSelector && (
                 <MobilePlanSelector
                     open={planSelectorOpen}
@@ -224,9 +244,9 @@ function PlanHeader({
                                     onClick={onCreate}
                                     options={
                                         (allPlans.length > 0 &&
-                                            allPlans.map((l) => ({
-                                                label: `Duplicate "${l.name}"`,
-                                                id: l.id,
+                                            allPlans.map((p) => ({
+                                                label: `Duplicate "${p.name}"`,
+                                                id: p.id,
                                             }))) ||
                                         []
                                     }

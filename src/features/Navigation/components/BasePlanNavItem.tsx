@@ -5,12 +5,13 @@ import { BfsId } from "@/global/types/identity";
 
 export interface BasePlanNavItemProps {
     id: BfsId;
-    onIconClick: (e) => void;
-    onClick: (e) => void;
-    expanded: boolean;
+    onIconClick: (id: BfsId) => void;
+    onClick: (id: BfsId) => void;
+    expanded?: boolean;
     name: string;
     color: string;
 }
+
 interface Props extends BasePlanNavItemProps {
     active: boolean;
     activeIcon?: typeof RadioOnIcon;

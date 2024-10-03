@@ -34,7 +34,14 @@ export default function MobilePlanSelector({
                 <Divider />
                 <List
                     disablePadding
-                    sx={{ maxHeight: "30vh", overflow: "auto" }}
+                    sx={{
+                        maxHeight: "30vh",
+                        overflow: "auto",
+                        "> div": {
+                            // this is sorta silly
+                            paddingLeft: 1,
+                        },
+                    }}
                 >
                     {allPlans.map((item, i) => {
                         const elements = [
