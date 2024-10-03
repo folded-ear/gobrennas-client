@@ -19,7 +19,7 @@ export {
     CheckBoxOutlined as CheckboxOnIcon,
     Clear as ClearIcon,
     Close as CloseIcon,
-    ArrowRight as CollapseIcon,
+    ExpandCircleDown as CollapseIcon,
     MergeType as CombineIcon,
     Kitchen as CookIcon,
     SoupKitchenOutlined as CookedItIcon,

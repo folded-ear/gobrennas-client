@@ -1,24 +1,26 @@
-import { CollapseIcon } from "@/views/common/icons";
-import PropTypes from "prop-types";
+import { DropDownIcon } from "@/views/common/icons";
 import React from "react";
 import { IconButton, IconButtonProps } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
 interface Props extends IconButtonProps {
     expanded: boolean;
-    Icon?: typeof CollapseIcon;
+    Icon?: typeof DropDownIcon;
 }
 
 const TwistyIconButton = styled(IconButton)<IconButtonProps>(({ theme }) => ({
+    // since these twist, they should be round
+    borderRadius: "50%",
+    transform: "rotate(-90deg)",
     transition: theme.transitions.duration.standard + "ms",
     "&.expanded": {
-        transform: "rotate(90deg)",
+        transform: "rotate(0)",
     },
 }));
 
 const CollapseIconButton: React.FC<Props> = ({
     expanded,
-    Icon = CollapseIcon,
+    Icon = DropDownIcon,
     ...props
 }) => {
     return (
@@ -30,10 +32,6 @@ const CollapseIconButton: React.FC<Props> = ({
             <Icon />
         </TwistyIconButton>
     );
-};
-
-CollapseIconButton.propTypes = {
-    expanded: PropTypes.bool.isRequired,
 };
 
 export default CollapseIconButton;
