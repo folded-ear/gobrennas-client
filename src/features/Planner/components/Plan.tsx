@@ -63,8 +63,8 @@ function Plan({
     isItemActive,
     isItemSelected,
 }: Props) {
-    if (loading) {
-        return <LoadingIndicator primary="Loading plans..." />;
+    if (!activePlan.data) {
+        return <LoadingIndicator primary="Loading plan..." />;
     }
 
     const handleAddNew = (e) => {
@@ -112,6 +112,7 @@ function Plan({
                 planDetailVisible={planDetailVisible}
                 hasBuckets={!!buckets}
                 canExpand={canExpand}
+                loading={loading}
             />
             <DragContainer
                 onDrop={handleDrop}

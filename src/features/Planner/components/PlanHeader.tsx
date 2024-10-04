@@ -68,14 +68,16 @@ type PlanHeaderProps = {
     planDetailVisible?: boolean;
     hasBuckets?: boolean;
     canExpand?: boolean;
+    loading?: boolean;
 };
 
-function PlanHeader({
+export default function PlanHeader({
     activePlan,
     allPlans,
     planDetailVisible = false,
     hasBuckets = false,
     canExpand = true,
+    loading = false,
 }: PlanHeaderProps) {
     const [name, setName] = React.useState("");
     const [showAdd, setShowAdd] = React.useState(false);
@@ -217,7 +219,7 @@ function PlanHeader({
                     </Grid>
                 )}
                 <Grid item>
-                    {showAdd || allPlans.length === 0 ? (
+                    {showAdd || (allPlans.length === 0 && !loading) ? (
                         <Grid container>
                             <Grid item>
                                 <TextField
@@ -273,5 +275,3 @@ function PlanHeader({
         </Box>
     );
 }
-
-export default PlanHeader;
