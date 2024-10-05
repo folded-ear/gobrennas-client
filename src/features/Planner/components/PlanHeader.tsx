@@ -29,7 +29,6 @@ import { NavPlanItem } from "../../Navigation/components/NavPlanItem";
 import { useHistory } from "react-router-dom";
 import { useProfileId } from "@/providers/Profile";
 import { Plan as TPlan } from "@/features/Planner/data/planStore";
-import { colorHash } from "@/constants/colors";
 import LoadingIndicator from "@/views/common/LoadingIndicator";
 import PlanAvatar from "@/views/shop/PlanAvatar";
 
@@ -122,7 +121,7 @@ export default function PlanHeader({
                             expanded={planSelectorOpen}
                             onClick={() => setPlanSelectorOpen((o) => !o)}
                             sx={{
-                                "& svg": { color: colorHash(activePlan.id) },
+                                color: activePlan.color,
                             }}
                         />
                     ) : (

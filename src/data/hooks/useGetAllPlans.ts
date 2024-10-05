@@ -13,6 +13,7 @@ query getPlans {
     plans {
       id
       name
+      color
       owner {
         id
         name

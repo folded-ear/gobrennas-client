@@ -48,6 +48,7 @@ export interface Plan extends BasePlanItem {
         ownerId: number;
         grants: Record<string, AccessLevel>;
     };
+    color: string;
     buckets: PlanBucket[];
 }
 

@@ -1,7 +1,6 @@
 import useAllPlansRLO from "@/data/useAllPlansRLO";
 import { Box, Collapse, List, ListSubheader } from "@mui/material";
 import { NavShopItem } from "@/features/Navigation/components/NavShopItem";
-import { colorHash } from "@/constants/colors";
 import Divider from "@mui/material/Divider";
 import useFriendRlo from "@/data/useFriendRlo";
 import { BfsId } from "@/global/types/identity";
@@ -43,26 +42,26 @@ export default function MobilePlanSelector({
                         },
                     }}
                 >
-                    {allPlans.map((item, i) => {
+                    {allPlans.map((plan, i) => {
                         const elements = [
                             <PlanItem
-                                key={item.id}
+                                key={plan.id}
                                 onIconClick={onSelectPlan}
                                 onClick={onSelectPlan}
-                                id={item.id}
+                                id={plan.id}
                                 expanded
-                                name={item.name}
-                                color={colorHash(item.id)}
+                                name={plan.name}
+                                color={plan.color}
                             />,
                         ];
                         if (
                             i > 0 &&
-                            item.acl.ownerId !== allPlans[i - 1].acl.ownerId
+                            plan.acl.ownerId !== allPlans[i - 1].acl.ownerId
                         ) {
                             elements.unshift(
                                 <OwnerSubheader
-                                    key={-item.id}
-                                    id={item.acl.ownerId}
+                                    key={-plan.id}
+                                    id={plan.acl.ownerId}
                                 />,
                             );
                         }

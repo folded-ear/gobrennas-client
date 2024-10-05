@@ -9,7 +9,7 @@ import PageBody from "@/views/common/PageBody";
 import IngredientItem from "@/views/shop/IngredientItem";
 import PlanItem from "@/views/shop/PlanItem";
 import { BaseItemProp, ItemProps } from "./types";
-import { PlanItem as PlanItemType } from "@/features/Planner/data/planStore";
+import { Plan as TPlan } from "@/features/Planner/data/planStore";
 import type { Quantity } from "@/global/types/types";
 import type { BfsId } from "@/global/types/identity";
 import CollapseIconButton from "@/global/components/CollapseIconButton";
@@ -24,7 +24,6 @@ import useAllPlansRLO from "@/data/useAllPlansRLO";
 import { NavShopItem } from "@/features/Navigation/components/NavShopItem";
 import { toggleShoppingPlan } from "@/features/Navigation/NavigationController";
 import PlanAvatar from "./PlanAvatar";
-import { colorHash } from "@/constants/colors";
 
 export enum ShopItemType {
     INGREDIENT,
@@ -44,7 +43,7 @@ export interface ShopItemTuple extends ItemProps {
 }
 
 export type ShopListProps = {
-    plans: PlanItemType[];
+    plans: TPlan[];
     neededTuples: ShopItemTuple[];
     acquiredTuples: ShopItemTuple[];
     onRepartition(): void;
@@ -141,16 +140,11 @@ const ShopList: React.FC<ShopListProps> = ({
                                 expanded={planSelectorOpen}
                                 onClick={() => setPlanSelectorOpen((o) => !o)}
                                 sx={{
-                                    "& svg": {
-                                        color: colorHash(plans[0].id),
-                                    },
+                                    color: plans[0].color,
                                 }}
                             />
                         ) : (
-                            <PlanAvatar
-                                plan={plans[0]}
-                                empty={plans.length === 1}
-                            />
+                            <PlanAvatar plan={plans[0]} empty />
                         )}
                         <Typography variant="h2">{plans[0].name}</Typography>
                         {plans.slice(1).map((p) => (
