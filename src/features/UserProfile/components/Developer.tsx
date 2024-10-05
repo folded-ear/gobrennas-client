@@ -1,34 +1,14 @@
 import * as React from "react";
-import { HTMLProps, useState } from "react";
 import useIsDevMode, { setDevMode } from "@/data/useIsDevMode";
 import Dispatcher from "@/data/dispatcher";
 import UserActions from "@/data/UserActions";
 import Divider from "@mui/material/Divider";
 import Switch from "@mui/material/Switch";
 import useWindowSize from "@/data/useWindowSize";
-import {
-    Button,
-    Grid,
-    Stack,
-    ToggleButton,
-    ToggleButtonGroup,
-    Tooltip,
-} from "@mui/material";
+import { Grid, Stack, ToggleButton, ToggleButtonGroup } from "@mui/material";
 import { AutoAwesomeIcon, DesktopIcon, MobileIcon } from "@/views/common/icons";
 import useFluxStore from "@/data/useFluxStore";
 import preferencesStore from "@/data/preferencesStore";
-import { colorHash, planColors } from "@/constants/colors";
-import Input from "@mui/material/Input";
-import {
-    blue,
-    blueGrey,
-    indigo,
-    lightGreen,
-    lime,
-    purple,
-    red,
-    teal,
-} from "@mui/material/colors";
 
 interface RowProps {
     children?: React.ReactNode;
@@ -43,33 +23,12 @@ const Row = ({ label, children }: RowProps) => (
     </Grid>
 );
 
-interface SwatchProps extends HTMLProps<any> {
-    color?: string;
-}
-
-const Swatch: React.FC<SwatchProps> = ({ color, style, ...passthrough }) => (
-    <span
-        style={{
-            border: color ? undefined : "1px solid #ddd",
-            backgroundColor: color,
-            display: "inline-block",
-            minWidth: "1.5em",
-            minHeight: "1.5em",
-            ...style,
-        }}
-        {...passthrough}
-    />
-);
-
-const SAMPLES_PER_SWATCH = 100;
 const DevMode: React.FC = () => {
     const windowSize = useWindowSize();
     const layout = useFluxStore(
         () => preferencesStore.getLayout(),
         [preferencesStore],
     );
-    const [toColorHash, setToColorHash] = useState("");
-    const [samples, setSamples] = useState<number[]>([]);
 
     function handleLayoutChange(e, layout) {
         if (!layout) return;
@@ -77,15 +36,6 @@ const DevMode: React.FC = () => {
             type: UserActions.SET_LAYOUT,
             layout,
         });
-    }
-
-    function handleResample() {
-        const samples = planColors.map(() => 0);
-        let n = 27000 + Math.floor(Math.random() * 1000);
-        for (let i = planColors.length * SAMPLES_PER_SWATCH; i > 0; i--) {
-            samples[planColors.indexOf(colorHash("87777497" + n++))] += 1;
-        }
-        setSamples(samples);
     }
 
     return (
@@ -112,73 +62,6 @@ const DevMode: React.FC = () => {
                         <MobileIcon />
                     </ToggleButton>
                 </ToggleButtonGroup>
-            </Row>
-            <Row label={"Old Colors"}>
-                {[
-                    // manually lined up with nearest match from the new ones
-                    undefined,
-                    undefined,
-                    undefined,
-                    red[500],
-                    undefined,
-                    lime[500],
-                    lightGreen[900],
-                    undefined,
-                    teal[300],
-                    blue[300],
-                    indigo[900],
-                    blueGrey[500],
-                    undefined,
-                    undefined,
-                    undefined,
-                    purple[400],
-                ].map((c, i) => (
-                    <Swatch key={i} color={c} />
-                ))}
-            </Row>
-            <Row label={"New Colors"}>
-                {planColors.map((c, i) => (
-                    <Swatch
-                        key={c}
-                        color={c}
-                        style={
-                            samples[i]
-                                ? {
-                                      minHeight: `${
-                                          (1.5 / SAMPLES_PER_SWATCH) *
-                                          samples[i]
-                                      }em`,
-                                  }
-                                : undefined
-                        }
-                    />
-                ))}
-                <Tooltip
-                    title={
-                        "Color hash a bunch of random strings and display the distribution via swatch heights."
-                    }
-                >
-                    <Button
-                        variant={"contained"}
-                        color={"neutral"}
-                        size={"small"}
-                        onClick={handleResample}
-                    >
-                        Resample
-                    </Button>
-                </Tooltip>
-            </Row>
-            <Row label={"Color Hash"}>
-                <Swatch
-                    color={
-                        toColorHash === "" ? undefined : colorHash(toColorHash)
-                    }
-                />
-                <Input
-                    value={toColorHash}
-                    placeholder={"string to hash..."}
-                    onChange={(e) => setToColorHash(e.target.value)}
-                />
             </Row>
         </Stack>
     );

@@ -1,12 +1,23 @@
-import ListItem from "@mui/material/ListItem";
+import ListItem, { ListItemProps } from "@mui/material/ListItem";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemSecondaryAction from "@mui/material/ListItemSecondaryAction";
 import withStyles from "@mui/styles/withStyles";
-import PropTypes from "prop-types";
-import { useDraggable, useDroppable } from "@dnd-kit/core";
+import { UniqueIdentifier, useDraggable, useDroppable } from "@dnd-kit/core";
 import DragHandle from "./DragHandle";
 import classnames from "classnames";
 import { darken, lighten } from "@mui/material";
+import { ReactNode } from "react";
+import ClientId from "@/util/ClientId";
+
+type Props = {
+    depth?: number;
+    prefix?: ReactNode;
+    suffix?: ReactNode;
+    className?: string;
+    hideDivider?: boolean;
+    dragId?: UniqueIdentifier;
+    noDrag?: boolean;
+} & Omit<ListItemProps, "prefix">;
 
 const Item = ({
     depth = 0,
@@ -16,11 +27,12 @@ const Item = ({
     classes,
     className,
     hideDivider,
-    dragId,
+    dragId: explicitDragId,
     noDrag = false,
     ...props
-}) => {
-    const droppable = dragId != null;
+}: Props & { classes: any }) => {
+    const droppable = explicitDragId != null;
+    const dragId = droppable ? explicitDragId : ClientId.next();
     const draggable = droppable && !noDrag;
     const {
         attributes,
@@ -36,9 +48,9 @@ const Item = ({
         id: dragId,
         disabled: !droppable,
     });
-    const setNodeRef = (...args) => {
-        setDraggableRef(...args);
-        setDroppableRef(...args);
+    const setNodeRef = (el) => {
+        setDraggableRef(el);
+        setDroppableRef(el);
     };
     return (
         <ListItem
@@ -79,18 +91,6 @@ const Item = ({
             )}
         </ListItem>
     );
-};
-
-Item.propTypes = {
-    depth: PropTypes.number,
-    prefix: PropTypes.node,
-    children: PropTypes.node.isRequired,
-    suffix: PropTypes.node,
-    classes: PropTypes.object.isRequired,
-    className: PropTypes.string,
-    hideDivider: PropTypes.bool,
-    dragId: PropTypes.any,
-    noDrag: PropTypes.bool,
 };
 
 export default withStyles((theme) => ({

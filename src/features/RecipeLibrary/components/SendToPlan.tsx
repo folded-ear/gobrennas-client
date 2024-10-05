@@ -17,7 +17,7 @@ const SendToPlan: React.FC<Props> = ({
     iconOnly,
     showScaleOptions = false,
 }) => {
-    const list = useActivePlanner().data;
+    const plan = useActivePlanner().data;
     const scaleOpts = useScaleOptions();
 
     const scaleToPlanOpts = scaleOpts.map((it, idx) => ({
@@ -26,21 +26,21 @@ const SendToPlan: React.FC<Props> = ({
         value: it.value,
     }));
 
-    if (!list) return null;
+    if (!plan) return null;
     const handleClick = () =>
         // While items can exist in the store in an unsaved state, plans
         // cannot, so this type assertion is safe.
-        onClick && onClick(list.id as number);
+        onClick && onClick(plan.id as number);
 
     const handleSelect = (_, selected: SelectOption<number>) => {
-        onClick && onClick(list.id as number, selected?.value);
+        onClick && onClick(plan.id as number, selected?.value);
     };
 
     if (iconOnly) {
         return (
             <TaskBarButton
                 onClick={handleClick}
-                title={`Send to "${list.name}"`}
+                title={`Send to "${plan.name}"`}
             >
                 <SendToPlanIcon />
             </TaskBarButton>
@@ -51,7 +51,7 @@ const SendToPlan: React.FC<Props> = ({
         return (
             <SplitButton
                 disableElevation
-                primary={`To ${list.name}`}
+                primary={`To ${plan.name}`}
                 onClick={handleClick}
                 options={scaleToPlanOpts}
                 color="neutral"
@@ -68,11 +68,11 @@ const SendToPlan: React.FC<Props> = ({
             variant="contained"
             color="neutral"
             onClick={handleClick}
-            title={`Send to ${list.name}`}
+            title={`Send to ${plan.name}`}
             startIcon={<SendToPlanIcon />}
             sx={{ maxWidth: "100%" }}
         >
-            To {list.name}
+            To {plan.name}
         </TextButton>
     );
 };

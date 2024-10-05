@@ -1,24 +1,35 @@
-import { colorHash } from "@/constants/colors";
-import Avatar from "@mui/material/Avatar";
-import { useMemo } from "react";
-import { PlanItem } from "@/features/Planner/data/planStore";
+import { Plan } from "@/features/Planner/data/planStore";
+import SizedAvatar, { SizedAvatarProps } from "@/views/SizedAvatar";
+import { getContrastRatio, useTheme } from "@mui/material";
 
-interface Props {
-    plan: PlanItem;
+interface Props extends Pick<SizedAvatarProps, "inline" | "size"> {
+    plan: Plan;
+    empty?: boolean;
 }
 
-export default function PlanAvatar({ plan }: Props) {
-    const bgcolor = useMemo(() => colorHash(plan.id), [plan.id]);
+export default function PlanAvatar({
+    plan,
+    empty = false,
+    ...passthrough
+}: Props) {
+    const theme = useTheme();
     return (
-        <Avatar
-            key={plan.id}
+        <SizedAvatar
             alt={plan.name}
             title={plan.name}
             sx={{
-                bgcolor,
+                bgcolor: plan.color,
+                // This needs a helper. I have NO idea what its name is. Or if
+                // this implementation is correct. It works? Ish?
+                color:
+                    getContrastRatio(plan.color, theme.palette.text.primary) >
+                    theme.palette.contrastThreshold
+                        ? theme.palette.text.primary
+                        : theme.palette.background.default,
             }}
+            {...passthrough}
         >
-            {plan.name.substring(0, 2)}
-        </Avatar>
+            {empty ? <svg /> : plan.name.substring(0, 2)}
+        </SizedAvatar>
     );
 }

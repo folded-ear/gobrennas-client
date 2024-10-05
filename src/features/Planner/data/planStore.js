@@ -49,6 +49,7 @@ import {
     selectDelta,
     selectList,
     selectTo,
+    setPlanColor,
     taskDeleted,
     taskForId,
     taskLoaded,
@@ -138,6 +139,8 @@ class PlanStore extends ReduceStore {
                 return selectList(state, action.id);
             case PlanActions.RENAME_PLAN:
                 return renameTask(state, action.id, action.name);
+            case PlanActions.SET_PLAN_COLOR:
+                return setPlanColor(state, action.id, action.color);
 
             case PlanActions.SET_PLAN_GRANT: {
                 TaskApi.setListGrant(action.id, action.userId, action.level);

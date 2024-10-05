@@ -9,7 +9,7 @@ import PageBody from "@/views/common/PageBody";
 import IngredientItem from "@/views/shop/IngredientItem";
 import PlanItem from "@/views/shop/PlanItem";
 import { BaseItemProp, ItemProps } from "./types";
-import { PlanItem as PlanItemType } from "@/features/Planner/data/planStore";
+import { Plan as TPlan } from "@/features/Planner/data/planStore";
 import type { Quantity } from "@/global/types/types";
 import type { BfsId } from "@/global/types/identity";
 import CollapseIconButton from "@/global/components/CollapseIconButton";
@@ -17,7 +17,7 @@ import PantryItemActions from "@/data/PantryItemActions";
 import DragContainer, {
     DragContainerProps,
 } from "@/features/Planner/components/DragContainer";
-import { AddIcon, SweepIcon } from "@/views/common/icons";
+import { AddIcon, CollapseIcon, SweepIcon } from "@/views/common/icons";
 import { useIsMobile } from "@/providers/IsMobile";
 import MobilePlanSelector from "./MobilePlanSelector";
 import useAllPlansRLO from "@/data/useAllPlansRLO";
@@ -43,7 +43,7 @@ export interface ShopItemTuple extends ItemProps {
 }
 
 export type ShopListProps = {
-    plans: PlanItemType[];
+    plans: TPlan[];
     neededTuples: ShopItemTuple[];
     acquiredTuples: ShopItemTuple[];
     onRepartition(): void;
@@ -131,25 +131,32 @@ const ShopList: React.FC<ShopListProps> = ({
     return (
         <PageBody hasFab fullWidth>
             <Box mx={showPlanSelector ? 0 : 1}>
-                <Typography variant="h2">
+                <Stack direction="row" justifyContent={"space-between"}>
                     <Stack direction="row" alignItems={"center"} spacing={1}>
-                        {showPlanSelector && (
+                        {showPlanSelector ? (
                             <CollapseIconButton
                                 size={"medium"}
+                                Icon={CollapseIcon}
                                 expanded={planSelectorOpen}
                                 onClick={() => setPlanSelectorOpen((o) => !o)}
+                                sx={{
+                                    color: plans[0].color,
+                                }}
                             />
-                        )}
-                        {plans.length === 1 ? (
-                            plans[0].name
                         ) : (
-                            <Stack direction={"row"} gap={1}>
-                                <span>Shop</span>
-                                {plans.map((p) => (
-                                    <PlanAvatar key={p.id} plan={p} />
-                                ))}
-                            </Stack>
+                            <PlanAvatar plan={plans[0]} empty />
                         )}
+                        <Typography variant="h2">{plans[0].name}</Typography>
+                        {plans.slice(1).map((p) => (
+                            <PlanAvatar key={p.id} plan={p} />
+                        ))}
+                    </Stack>
+                    <Stack
+                        direction="row"
+                        alignItems={"center"}
+                        spacing={1}
+                        mr={1}
+                    >
                         <IconButton
                             title={"Sweep Acquired"}
                             onClick={() => onRepartition()}
@@ -157,7 +164,7 @@ const ShopList: React.FC<ShopListProps> = ({
                             <SweepIcon />
                         </IconButton>
                     </Stack>
-                </Typography>
+                </Stack>
                 {showPlanSelector && (
                     <MobilePlanSelector
                         open={planSelectorOpen}

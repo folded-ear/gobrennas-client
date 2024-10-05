@@ -2,14 +2,16 @@ import {
     Box,
     Drawer,
     Grid,
+    InputAdornment,
     List,
     ListItem,
     MenuItem,
     Select,
+    Stack,
     TextField,
     Typography,
 } from "@mui/material";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import AccessLevel, { includesLevel } from "@/data/AccessLevel";
 import Dispatcher from "@/data/dispatcher";
 import FriendStore from "@/data/FriendStore";
@@ -24,6 +26,7 @@ import User from "@/views/user/User";
 import { Plan } from "@/features/Planner/data/planStore";
 import { UserType } from "@/global/types/identity";
 import { mapBy } from "@/util/groupBy";
+import PlanAvatar from "@/views/shop/PlanAvatar";
 
 const LEVEL_NO_ACCESS = "NO_ACCESS";
 
@@ -38,6 +41,10 @@ interface UserContentProps {
     isAdministrator: boolean;
     grants: Record<string, AccessLevel>;
     handleGrantChange(userId, level): void;
+}
+
+function isValidColor(color: string): boolean {
+    return /^[0-9a-fA-F]{6}$/.test(color);
 }
 
 function UserContent({
@@ -97,6 +104,14 @@ const PlanSidebar: React.FC<Props> = ({ open, onClose, plan }) => {
     }, [FriendStore]);
 
     const [name, setName] = React.useState(plan.name);
+    const [color, setColor] = useState(plan.color.substring(1));
+
+    useEffect(() => {
+        if (open) {
+            setName(plan.name);
+            setColor(plan.color.substring(1));
+        }
+    }, [open, plan.color, plan.name]);
 
     const handleRename = () => {
         Dispatcher.dispatch({
@@ -104,6 +119,16 @@ const PlanSidebar: React.FC<Props> = ({ open, onClose, plan }) => {
             id: plan.id,
             name,
         });
+    };
+
+    const handleSetColor = () => {
+        if (isValidColor(color)) {
+            Dispatcher.dispatch({
+                type: PlanActions.SET_PLAN_COLOR,
+                id: plan.id,
+                color: "#" + color,
+            });
+        }
     };
 
     const handleGrantChange = (userId, level) => {
@@ -169,6 +194,44 @@ const PlanSidebar: React.FC<Props> = ({ open, onClose, plan }) => {
                             </Typography>
                         )}
                     </SidebarUnit>
+                    {isAdministrator && (
+                        <SidebarUnit>
+                            <Stack direction={"row"} gap={1}>
+                                <TextField
+                                    label="Color"
+                                    value={color}
+                                    onChange={(e) => setColor(e.target.value)}
+                                    onBlur={handleSetColor}
+                                    variant="outlined"
+                                    size={"small"}
+                                    error={!isValidColor(color)}
+                                    helperText={"An RGB color (six hex digits)"}
+                                    InputProps={{
+                                        startAdornment: (
+                                            <InputAdornment position="start">
+                                                #
+                                            </InputAdornment>
+                                        ),
+                                        sx: {
+                                            fontFamily: "monospace",
+                                            fontSize: "90%",
+                                        },
+                                    }}
+                                />
+                                <PlanAvatar
+                                    plan={{
+                                        ...plan,
+                                        color:
+                                            "#" +
+                                            color
+                                                .padEnd(6, "0")
+                                                .substring(0, 6),
+                                    }}
+                                    empty
+                                />
+                            </Stack>
+                        </SidebarUnit>
+                    )}
                     {isAdministrator && (
                         <SidebarUnit>
                             <PlanBucketManager />

@@ -37,10 +37,12 @@ export function requiredData<T>(rlo: RippedLO<T> | undefined): T {
     return rlo.data;
 }
 
-export function mapData<T, R>(rlo: RippedLO<T>, fn: (T) => R) {
-    if (!rlo.data) return rlo;
+export function mapData<T, R>(rlo: RippedLO<T>, fn: (data: T) => R) {
+    // if data is null/undefined, this cast is safe
+    if (!rlo.data) return rlo as unknown as RippedLO<R>;
     const data = fn(rlo.data);
-    if (data === rlo.data) return rlo;
+    // if data is strict-equal (i.e., fn was no-op), this cast is safe
+    if (data === rlo.data) return rlo as unknown as RippedLO<R>;
     return {
         ...rlo,
         data,

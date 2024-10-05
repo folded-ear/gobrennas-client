@@ -7,7 +7,7 @@ import {
     isSection,
 } from "@/features/Planner/data/plannerUtils";
 import PlanItemStatus from "@/features/Planner/data/PlanItemStatus";
-import planStore, { PlanItem } from "@/features/Planner/data/planStore";
+import planStore, { Plan, PlanItem } from "@/features/Planner/data/planStore";
 import useFluxStore from "@/data/useFluxStore";
 import groupBy from "@/util/groupBy";
 import ShopList, { ShopItemTuple, ShopItemType } from "@/views/shop/ShopList";
@@ -218,12 +218,12 @@ const Shop = () => {
     const activePlanIds = useActiveShoppingPlanIds();
     const [plans, itemTuples] = useFluxStore(
         () => {
-            const plans: PlanItem[] = [];
+            const plans: Plan[] = [];
             if (activePlanIds != null && activePlanIds.length > 0) {
                 const allPlanIds = planStore.getPlanIdsRlo().data;
                 for (const id of intersection(allPlanIds, activePlanIds)) {
                     const p = planStore.getItemRlo(id).data;
-                    if (p != null) plans.push(p);
+                    if (p != null) plans.push(p as Plan);
                 }
             }
             if (plans.length === 0) {

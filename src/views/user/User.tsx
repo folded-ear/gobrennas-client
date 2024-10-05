@@ -1,36 +1,24 @@
-import Avatar from "@mui/material/Avatar";
 import Box from "@mui/material/Box";
 import makeStyles from "@mui/styles/makeStyles";
 import React from "react";
 import type { UserType } from "@/global/types/identity";
+import { MakeOptional } from "@/__generated__/graphql";
+import SizedAvatar, { SizedAvatarProps } from "@/views/SizedAvatar";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles({
     root: {
         display: "inline-flex",
         alignItems: "center",
     },
-    inline: {
-        width: theme.spacing(3),
-        height: theme.spacing(3),
-        margin: 0,
-    },
-    small: {
-        width: theme.spacing(4),
-        height: theme.spacing(4),
-        margin: theme.spacing(1),
-    },
-    large: {
-        width: theme.spacing(6),
-        height: theme.spacing(6),
-        margin: theme.spacing(1),
-    },
-}));
+});
 
 export interface UserProps
-    extends Pick<UserType, "imageUrl" | "name" | "email"> {
-    size?: "small" | "large";
+    extends Pick<SizedAvatarProps, "inline" | "size">,
+        MakeOptional<
+            Pick<UserType, "imageUrl" | "name" | "email">,
+            "imageUrl" | "name"
+        > {
     iconOnly?: boolean;
-    inline?: boolean;
 }
 
 const User: React.FC<UserProps> = ({
@@ -43,21 +31,14 @@ const User: React.FC<UserProps> = ({
 }) => {
     const classes = useStyles();
     const avatar = (
-        <Avatar
+        <SizedAvatar
             src={imageUrl || undefined}
             title={name || email || undefined}
-            className={
-                classes[
-                    size && classes.hasOwnProperty(size)
-                        ? size
-                        : inline
-                        ? "inline"
-                        : "small"
-                ]
-            }
+            size={size}
+            inline={inline}
         >
             {(name || email || "U").charAt(0).toUpperCase()}
-        </Avatar>
+        </SizedAvatar>
     );
     if (inline) return avatar;
     return (

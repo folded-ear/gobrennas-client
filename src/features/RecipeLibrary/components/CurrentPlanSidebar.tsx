@@ -251,7 +251,7 @@ const PlannedRecipe: React.FC<PlannedRecipeProps> = ({ item }) => {
         item._next_status === PlanItemStatus.COMPLETED ||
         item._next_status === PlanItemStatus.DELETED;
     return (
-        <DndItem key={item.id} dragId={item.id} position={"relative"}>
+        <DndItem key={item.id} dragId={item.id}>
             <ListItemText disableTypography {...sensorProps}>
                 <Typography
                     component={goingAway ? "del" : "div"}
