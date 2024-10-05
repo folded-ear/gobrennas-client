@@ -4,9 +4,7 @@ import clsx from "clsx";
 import * as React from "react";
 import { DragEvent } from "react";
 import ImageOrPreview from "@/views/common/ImageOrPreview";
-import buildSequence from "./buildSequence";
-
-const { next } = buildSequence();
+import ClientId from "@/util/ClientId";
 
 const useStyles = makeStyles((theme) => ({
     label: ({ notOnPaper }: StyleProps) => ({
@@ -60,7 +58,7 @@ const ImageDropZone: React.FC<ImageDropZoneProps> = ({
 }) => {
     const classes = useStyles({ notOnPaper, maxWidth, maxHeight });
     const [value, setValue] = React.useState([]);
-    const inputId = React.useMemo(() => `image-drop-zone-${next()}`, []);
+    const inputId = React.useMemo(() => `drop-zone-${ClientId.next()}`, []);
 
     if (disabled) {
         return (

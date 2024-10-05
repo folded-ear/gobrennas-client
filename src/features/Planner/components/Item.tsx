@@ -7,6 +7,7 @@ import DragHandle from "./DragHandle";
 import classnames from "classnames";
 import { darken, lighten } from "@mui/material";
 import { ReactNode } from "react";
+import ClientId from "@/util/ClientId";
 
 type Props = {
     depth?: number;
@@ -31,7 +32,7 @@ const Item = ({
     ...props
 }: Props & { classes: any }) => {
     const droppable = explicitDragId != null;
-    const dragId = droppable ? explicitDragId : Math.random().toString();
+    const dragId = droppable ? explicitDragId : ClientId.next();
     const draggable = droppable && !noDrag;
     const {
         attributes,
