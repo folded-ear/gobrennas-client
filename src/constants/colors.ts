@@ -1,6 +1,6 @@
 import { BfsId } from "@/global/types/identity";
 
-export const planColors = [
+const planColors = [
     // ¡¡ Make sure this always has a size equal to a power of 2 !!
     // generated at http://medialab.github.io/iwanthue/
     "#cb4771",
