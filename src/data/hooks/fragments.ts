@@ -1,30 +1,27 @@
+// noinspection JSUnusedGlobalSymbols
+// Required for typed codegen, not imported directly into queries
+
 import { gql } from "@/__generated__";
 
-// Required for typed codegen, not imported directly into queries
-// noinspection JSUnusedLocalSymbols
 export const RECIPE_CORE_FRAGMENT = gql(`
-    fragment recipeCore on Recipe {
-        id
-        name
-        directions
-        totalTime
-        ingredients {
-            raw
-            quantity {
-                quantity
-                units {
-                    name
-                }
-            }
-            ingredient {
-                __typename
-                id
-                name
-            }
-            preparation
-        }
+fragment recipeCore on Recipe {
+  id
+  name
+  directions
+  totalTime
+  ingredients {
+    raw
+    quantity {
+      quantity
+      units { name }
     }
-`);
+    ingredient {
+      id
+      name
+    }
+    preparation
+      }
+}`);
 
 export const LIBRARY_SEARCH_RESULT_FRAGMENT = gql(`
 fragment librarySearchResult on RecipeConnection {
@@ -54,18 +51,13 @@ fragment librarySearchResult on RecipeConnection {
     hasNextPage
     endCursor
   }
-}
-`);
+}`);
 
 export const PLAN_CORE_FRAGMENT = gql(`
 fragment planCore on Plan {
   id
   name
   color
-  owner {
-    id
-  }
-  children {
-    id
-  }
+  owner { id }
+  children { id }
 }`);
