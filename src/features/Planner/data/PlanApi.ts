@@ -10,6 +10,7 @@ import {
     DELETE_BUCKETS,
     DELETE_PLAN_ITEM,
     RENAME_PLAN_ITEM,
+    SET_PLAN_COLOR,
     UPDATE_BUCKET,
 } from "./mutations";
 import type {
@@ -18,6 +19,7 @@ import type {
     DeleteBucketsMutation,
     DeletePlanItemMutation,
     RenamePlanItemMutation,
+    SetPlanColorMutation,
     UpdateBucketMutation,
 } from "@/__generated__/graphql";
 import { PlanItemStatus, SetStatusMutation } from "@/__generated__/graphql";
@@ -57,6 +59,25 @@ const PlanApi = {
                 return {
                     type: PlanActions.UPDATED,
                     data: planItem && toRestPlanItem(planItem),
+                };
+            },
+            handleErrors,
+        ),
+
+    setPlanColor: (id: number, color: string) =>
+        promiseFlux(
+            client.mutate({
+                mutation: SET_PLAN_COLOR,
+                variables: {
+                    id: id.toString(),
+                    color,
+                },
+            }),
+            (result: FetchResult<SetPlanColorMutation>) => {
+                const plan = result?.data?.planner?.setColor;
+                return {
+                    type: PlanActions.UPDATED,
+                    data: plan && { ...plan, id: ensureInt(plan.id) },
                 };
             },
             handleErrors,

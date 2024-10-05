@@ -294,6 +294,17 @@ export const renameTask = (state, id, name) =>
         }));
     });
 
+export const setPlanColor = (state, id, color) =>
+    mapTaskLO(state, id, (lo) => {
+        PlanApi.setPlanColor(id, color);
+        return lo
+            .map((t) => ({
+                ...t,
+                color,
+            }))
+            .updating();
+    });
+
 export const assignToBucket = (state, id, bucketId) => {
     if (ClientId.is(id)) return state;
     PlanApi.assignBucket(state.activeListId, id, bucketId);

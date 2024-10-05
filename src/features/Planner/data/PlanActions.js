@@ -25,6 +25,10 @@ const PlanActions = {
         id: clientOrDatabaseIdType.isRequired,
         name: PropTypes.string.isRequired,
     }),
+    SET_PLAN_COLOR: typedAction("plan/set-plan-color", {
+        id: clientOrDatabaseIdType.isRequired,
+        color: PropTypes.string.isRequired,
+    }),
     DELETE_PLAN: "plan/delete-plan",
     PLAN_DETAIL_VISIBILITY: "plan/plan-detail-visibility",
     CREATE_ITEM_AFTER: "plan/create-item-after",
