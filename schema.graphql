@@ -9,7 +9,8 @@ schema {
 directive @oneOf on INPUT_OBJECT
 
 interface AccessControlled {
-    "The ACL describing grants of access, by the other, to other users."
+    "The object's ACL, which includes its owner and any grants of access."
+    acl: Acl!
     grants: [AccessControlEntry!]!
     owner: User!
 }
@@ -46,6 +47,16 @@ type AccessControlEntry {
     user: User
 }
 
+type Acl implements Owned {
+    """
+
+    Users granted access, by the owner. This is conceptually map, so a given
+    user (the key) uniquely identifies their access level (the value).
+    """
+    grants: [AccessControlEntry!]!
+    owner: User!
+}
+
 type Deletion {
     id: ID!
     name: String
@@ -66,13 +77,13 @@ type FavoriteMutation {
     """
 
     Add the specified object to the current user's favorites, if not already
-    present, and returns the favorite.
+    present, and return the favorite.
     """
     markFavorite(objectId: ID!, objectType: String!): Favorite!
     """
 
     Remove the specified object from the current user's favorites, and return
-    whether any action was required to ensure this.
+    whether any action was taken to ensure this.
     """
     removeFavorite(objectId: ID!, objectType: String!): Boolean!
 }
@@ -295,10 +306,17 @@ type Photo {
 }
 
 type Plan implements AccessControlled & CorePlanItem & Node & Owned {
+    acl: Acl!
     bucketCount: NonNegativeInt!
     buckets: [PlanBucket!]!
     childCount: NonNegativeInt!
     children: [PlanItem!]!
+    """
+
+    The color associated with the plan, expressed as a number sign and six
+    hex digits (e.g., '#F57F17').
+    """
+    color: String!
     descendantCount: NonNegativeInt!
     descendants: [PlanItem!]!
     grants: [AccessControlEntry!]!
@@ -398,6 +416,8 @@ type PlannerMutation {
     reorderSubitems(itemIds: [ID!]!, parentId: ID!): PlanItem
     "Revokes the grant for a user w/in a plan, if one exists."
     revokeGrant(planId: ID!, userId: ID!): Plan!
+    "Set the plan's color (e.g., '#F57F17'), or reset it with a null or empty string."
+    setColor(color: String, planId: ID!): Plan!
     "Set the access level granted to a user w/in a plan."
     setGrant(accessLevel: AccessLevel, planId: ID!, userId: ID!): Plan!
     """
@@ -440,6 +460,7 @@ type Recipe implements Ingredient & Node & Owned {
     calories: Int
     directions: String
     externalUrl: String
+    favorite: Boolean!
     id: ID!
     ingredients(
         "Ingredient(s) to include. Missing/empty means \"all\"."
