@@ -8,7 +8,7 @@ import { useSearchLibrary } from "@/features/RecipeLibrary/hooks/useSearchLibrar
 import { ScalingProvider } from "@/util/ScalingContext";
 import LoadingIndicator from "@/views/common/LoadingIndicator";
 import { SearchRecipes } from "@/features/RecipeLibrary/components/SearchRecipes";
-import { useScrollTrigger } from "@mui/material";
+import { Container as Content, useScrollTrigger } from "@mui/material";
 import { useIsMobile } from "@/providers/IsMobile";
 import useIsDevMode from "@/data/useIsDevMode";
 import Recommendations from "@/features/RecipeLibrary/components/Recommendations";
@@ -108,8 +108,7 @@ export const LibraryController = () => {
     return (
         <>
             <SearchRecipes
-                isSearchFloating={isSearchFloating}
-                isMobile={isMobile}
+                isSearchFloating={isSearchFloating || isMobile}
                 onClear={handleClear}
                 unsavedFilter={unsavedQuery}
                 onSearchChange={handleSearchChange}
@@ -118,18 +117,19 @@ export const LibraryController = () => {
                 toggleScope={toggleScope}
             />
             <ScalingProvider>
-                {showRecommendations && <Recommendations />}
-                <RecipesList
-                    me={me}
-                    isMobile={isMobile}
-                    onSearch={handleSearch}
-                    scope={scope}
-                    filter={query}
-                    recipes={recipes}
-                    isLoading={loading}
-                    isComplete={isComplete}
-                    onNeedMore={handleNeedMore}
-                />
+                <Content disableGutters={!isMobile}>
+                    {showRecommendations && <Recommendations />}
+                    <RecipesList
+                        me={me}
+                        onSearch={handleSearch}
+                        scope={scope}
+                        filter={query}
+                        recipes={recipes}
+                        isLoading={loading}
+                        isComplete={isComplete}
+                        onNeedMore={handleNeedMore}
+                    />
+                </Content>
             </ScalingProvider>
         </>
     );

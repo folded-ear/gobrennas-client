@@ -1,6 +1,5 @@
 import { AddRecipeIcon } from "@/views/common/icons";
-import { Container as Content, Grid } from "@mui/material";
-import React from "react";
+import { Grid } from "@mui/material";
 import FoodingerFab from "@/views/common/FoodingerFab";
 import LazyInfinite from "@/views/common/LazyInfinite";
 import LoadingIndicator from "@/views/common/LoadingIndicator";
@@ -21,10 +20,9 @@ interface RecipesListProps {
     onSearch(filter: string, scope: LibrarySearchScope): void;
 
     onNeedMore(): void;
-    isMobile: boolean;
 }
 
-export const RecipesList: React.FC<RecipesListProps> = ({
+export const RecipesList = ({
     me,
     scope = LibrarySearchScope.Mine,
     filter = "",
@@ -32,8 +30,7 @@ export const RecipesList: React.FC<RecipesListProps> = ({
     isLoading,
     isComplete,
     onNeedMore,
-    isMobile,
-}) => {
+}: RecipesListProps) => {
     const history = useHistory();
     let body;
     if (recipes) {
@@ -82,11 +79,11 @@ export const RecipesList: React.FC<RecipesListProps> = ({
     }
 
     return (
-        <Content disableGutters={!isMobile}>
+        <>
             {body}
             <FoodingerFab onClick={() => history.push(`/add`)}>
                 <AddRecipeIcon />
             </FoodingerFab>
-        </Content>
+        </>
     );
 };

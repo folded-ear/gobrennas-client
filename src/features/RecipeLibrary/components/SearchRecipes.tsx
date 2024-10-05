@@ -15,7 +15,6 @@ import { SearchRecipesContainer } from "@/features/RecipeLibrary/components/Sear
 
 type SearchRecipesProps = {
     isSearchFloating: boolean;
-    isMobile: boolean;
     unsavedFilter: any;
     onSearchChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
     onSearch: (e: any) => void;
@@ -24,16 +23,15 @@ type SearchRecipesProps = {
     toggleScope: any;
 };
 
-export const SearchRecipes: React.FC<SearchRecipesProps> = ({
+export const SearchRecipes = ({
     isSearchFloating,
     unsavedFilter,
     onSearchChange,
     onSearch,
     onClear,
-    isMobile,
     scope,
     toggleScope,
-}) => {
+}: SearchRecipesProps) => {
     return (
         <SearchRecipesContainer
             elevation={isSearchFloating ? 4 : 1}
@@ -65,13 +63,9 @@ export const SearchRecipes: React.FC<SearchRecipesProps> = ({
                         ) : undefined
                     }
                 />
-                {isMobile || isSearchFloating ? (
-                    <IconButton
-                        color={"primary"}
-                        onClick={onSearch}
-                        size="large"
-                    >
-                        <SearchIcon />
+                {isSearchFloating ? (
+                    <IconButton onClick={onSearch} size="large">
+                        <SearchIcon color={"primary"} />
                     </IconButton>
                 ) : (
                     <Button
