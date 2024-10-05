@@ -7,9 +7,7 @@ mutation renamePlanItem($id: ID!, $name: String!) {
       id
       name
       preparation
-      ingredient {
-        id
-      }
+      ingredient { id }
       quantity {
         quantity
         units {
@@ -19,33 +17,20 @@ mutation renamePlanItem($id: ID!, $name: String!) {
       }
       status
       notes
-      parent {
-        id
-      }
-      aggregate {
-        id
-      }
-      children {
-        id
-      }
-      components {
-        id
-      }
-      bucket {
-        id
-      }
+      parent { id }
+      aggregate { id }
+      children { id }
+      components { id }
+      bucket { id }
     }
   }
-}
-`);
+}`);
 
 export const SET_PLAN_COLOR = gql(`
 mutation setPlanColor($id: ID!, $color: String!) {
   planner {
     setColor(planId: $id, color: $color) {
-      id
-      name
-      color
+      ...planCore
     }
   }
 }`);
@@ -53,26 +38,18 @@ mutation setPlanColor($id: ID!, $color: String!) {
 export const DELETE_PLAN_ITEM = gql(`
 mutation deletePlanItem($id: ID!) {
   planner {
-    deleteItem(id: $id) {
-      id
-    }
+    deleteItem(id: $id) { id }
   }
-}
-`);
+}`);
 
 export const CREATE_PLAN = gql(`
 mutation createPlan($name: String!, $sourcePlanId: ID) {
   planner {
     createPlan(name: $name, sourcePlanId: $sourcePlanId) {
-      id
-      name
-      owner {
-        id
-      }
+      ...planCore
     }
   }
-}
-`);
+}`);
 
 export const CREATE_BUCKET = gql(`
 mutation createBucket($planId: ID!, $name: String, $date: Date ) {
@@ -83,8 +60,7 @@ mutation createBucket($planId: ID!, $name: String, $date: Date ) {
      date
    }
  }
-}
-`);
+}`);
 
 export const UPDATE_BUCKET = gql(`
 mutation updateBucket($planId: ID!, $bucketId: ID!, $name: String, $date: Date) {
@@ -95,35 +71,25 @@ mutation updateBucket($planId: ID!, $bucketId: ID!, $name: String, $date: Date) 
       date
     }
   }
-}
-`);
+}`);
 
 export const DELETE_BUCKET = gql(`
 mutation deleteBucket($planId: ID!, $bucketId: ID!) {
   planner {
-    deleteBucket(planId: $planId, bucketId: $bucketId) {
-      id
-    }
+    deleteBucket(planId: $planId, bucketId: $bucketId) { id }
   }
-}
-`);
+}`);
 
 export const DELETE_BUCKETS = gql(`
 mutation deleteBuckets($planId: ID!, $bucketIds: [ID!]!) {
   planner {
-    deleteBuckets(planId: $planId, bucketIds: $bucketIds) {
-      id
-    }
+    deleteBuckets(planId: $planId, bucketIds: $bucketIds) { id }
   }
-}
-`);
+}`);
 
 export const COMPLETE_PLAN_ITEM = gql(`
 mutation setStatus($id: ID!, $status: PlanItemStatus!, $doneAt: DateTime) {
   planner {
-    setStatus(id: $id, status: $status, doneAt: $doneAt) {
-      id
-    }
+    setStatus(id: $id, status: $status, doneAt: $doneAt) { id }
   }
-}
-`);
+}`);

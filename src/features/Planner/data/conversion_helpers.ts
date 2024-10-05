@@ -2,7 +2,7 @@ import throwAnyGraphQLErrors from "@/util/throwAnyGraphQLErrors";
 import { ensureInt } from "@/global/utils";
 import { BfsId } from "@/global/types/identity";
 import type {
-    CreatePlanMutation,
+    PlanCoreFragment,
     RenamePlanItemMutation,
 } from "@/__generated__/graphql";
 
@@ -43,13 +43,12 @@ export const toRestPlanItem = (
     preparation: planItem.preparation,
 });
 
-export const toRestPlan = (
-    plan: NonNullable<CreatePlanMutation["planner"]>["createPlan"],
-) => ({
+export const toRestPlan = (plan: PlanCoreFragment) => ({
     id: ensureInt(plan.id),
     name: plan.name,
+    color: plan.color,
     acl: {
         ownerId: ensureInt(plan.owner.id),
     },
-    subtaskIds: [],
+    subtaskIds: pluckIntIds(plan.children),
 });

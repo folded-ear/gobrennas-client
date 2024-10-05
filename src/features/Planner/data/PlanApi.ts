@@ -26,6 +26,7 @@ import { PlanItemStatus, SetStatusMutation } from "@/__generated__/graphql";
 import type { FetchResult } from "@apollo/client";
 import {
     handleErrors,
+    toRestPlan,
     toRestPlanItem,
 } from "@/features/Planner/data/conversion_helpers";
 import { ensureInt } from "@/global/utils";
@@ -77,7 +78,7 @@ const PlanApi = {
                 const plan = result?.data?.planner?.setColor;
                 return {
                     type: PlanActions.UPDATED,
-                    data: plan && { ...plan, id: ensureInt(plan.id) },
+                    data: plan && toRestPlan(plan),
                 };
             },
             handleErrors,
