@@ -56,3 +56,16 @@ fragment librarySearchResult on RecipeConnection {
   }
 }
 `);
+
+export const PLAN_CORE_FRAGMENT = gql(`
+fragment planCore on Plan {
+  id
+  name
+  color
+  owner {
+    id
+  }
+  children {
+    id
+  }
+}`);

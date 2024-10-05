@@ -43,9 +43,7 @@ export const SET_PLAN_COLOR = gql(`
 mutation setPlanColor($id: ID!, $color: String!) {
   planner {
     setColor(planId: $id, color: $color) {
-      id
-      name
-      color
+      ...planCore
     }
   }
 }`);
@@ -64,11 +62,7 @@ export const CREATE_PLAN = gql(`
 mutation createPlan($name: String!, $sourcePlanId: ID) {
   planner {
     createPlan(name: $name, sourcePlanId: $sourcePlanId) {
-      id
-      name
-      owner {
-        id
-      }
+      ...planCore
     }
   }
 }
