@@ -21,7 +21,7 @@ export default [
         rules: pluginReactHooks_nonFlat.configs.recommended.rules,
     },
     {
-        ignores: ["**/__generated__/**/*"],
+        ignores: ["**/__generated__/**/*", "scripts/**/*"],
     },
     {
         rules: {
