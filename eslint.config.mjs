@@ -38,6 +38,12 @@ export default [
                             importNames: ["gql"],
                             message: "Import 'gql' from '@/__generated__'",
                         },
+                        {
+                            name: "@/__generated__/graphql",
+                            importNames: ["Maybe"],
+                            message:
+                                "Import 'Maybe' from 'graphql/jsutils/Maybe'",
+                        },
                     ],
                     patterns: ["@mui/icons-material/*"],
                 },
