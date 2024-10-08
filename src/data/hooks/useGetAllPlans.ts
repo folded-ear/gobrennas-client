@@ -1,7 +1,6 @@
 import { gql } from "@/__generated__";
 import useAdaptingQuery from "@/data/hooks/useAdaptingQuery";
 import { GetPlansQuery } from "@/__generated__/graphql";
-import { Plan } from "@/features/Planner/types";
 import { useProfileId } from "@/providers/Profile";
 import { BfsId } from "@/global/types/identity";
 import { zippedComparator } from "@/util/comparators";
@@ -23,7 +22,10 @@ query getPlans {
 }
 `);
 
-const orderComponentsById = (plans: Plan[], userId: BfsId) => {
+const orderComponentsById = (
+    plans: NonNullable<GetPlansQuery["planner"]>["plans"],
+    userId: string,
+): Record<BfsId, string[]> => {
     const byId = {};
     for (const plan of plans) {
         const ownerName =
@@ -35,16 +37,14 @@ const orderComponentsById = (plans: Plan[], userId: BfsId) => {
     return byId;
 };
 
-const adapter = (data?: GetPlansQuery): Plan[] => {
+const adapter = (data?: GetPlansQuery) => {
     if (!data?.planner?.plans) return [];
-    return data.planner.plans as Plan[];
+    return data.planner.plans;
 };
 
 export const useGetAllPlans = () => {
     const userId = useProfileId();
-    const result = useAdaptingQuery(GET_PLANS, adapter, {
-        fetchPolicy: "network-only",
-    });
+    const result = useAdaptingQuery(GET_PLANS, adapter);
     const orderedPlans = orderComponentsById(result.data, userId);
     const plans = result.data
         .slice()
@@ -52,7 +52,6 @@ export const useGetAllPlans = () => {
             zippedComparator(orderedPlans[a.id], orderedPlans[b.id]),
         )
         .map((plan) => ({ ...plan, id: ensureInt(plan.id) }));
-
     return {
         ...result,
         data: plans,
