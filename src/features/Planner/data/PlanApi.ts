@@ -1,6 +1,6 @@
 import BaseAxios from "axios";
 import { API_BASE_URL } from "@/constants";
-import promiseFlux from "@/util/promiseFlux";
+import promiseFlux, { soakUpUnauthorized } from "@/util/promiseFlux";
 import PlanActions from "./PlanActions";
 import { client } from "@/providers/ApolloClient";
 import {
@@ -9,7 +9,7 @@ import {
     DELETE_BUCKET,
     DELETE_BUCKETS,
     DELETE_PLAN_ITEM,
-    RENAME_PLAN_ITEM,
+    RENAME_PLAN_OR_ITEM,
     SET_PLAN_COLOR,
     UPDATE_BUCKET,
 } from "./mutations";
@@ -18,21 +18,23 @@ import type {
     DeleteBucketMutation,
     DeleteBucketsMutation,
     DeletePlanItemMutation,
-    RenamePlanItemMutation,
+    RenamePlanOrItemMutation,
     SetPlanColorMutation,
     UpdateBucketMutation,
+    UpdatedSinceQuery,
 } from "@/__generated__/graphql";
 import { PlanItemStatus, SetStatusMutation } from "@/__generated__/graphql";
 import type { FetchResult } from "@apollo/client";
 import {
     handleErrors,
     toRestPlan,
-    toRestPlanItem,
+    toRestPlanOrItem,
 } from "@/features/Planner/data/conversion_helpers";
 import { ensureInt } from "@/global/utils";
 import { BfsId } from "@/global/types/identity";
 import { WireBucket } from "./planStore";
 import serializeObjectOfPromiseFns from "@/util/serializeObjectOfPromiseFns";
+import { GET_UPDATED_SINCE } from "@/features/Planner/data/queries";
 
 const axios = BaseAxios.create({
     baseURL: `${API_BASE_URL}/api/plan`,
@@ -49,17 +51,17 @@ const PlanApi = {
     renameItem: (id: number, name: string) =>
         promiseFlux(
             client.mutate({
-                mutation: RENAME_PLAN_ITEM,
+                mutation: RENAME_PLAN_OR_ITEM,
                 variables: {
                     id: id.toString(),
                     name,
                 },
             }),
-            (result: FetchResult<RenamePlanItemMutation>) => {
-                const planItem = result?.data?.planner?.rename || null;
+            (result: FetchResult<RenamePlanOrItemMutation>) => {
+                const data = result?.data?.planner?.rename || null;
                 return {
                     type: PlanActions.UPDATED,
-                    data: planItem && toRestPlanItem(planItem),
+                    data: data && toRestPlanOrItem(data),
                 };
             },
             handleErrors,
@@ -160,6 +162,28 @@ const PlanApi = {
             id,
             data: r.data,
         })),
+
+    getItemsUpdatedSince: (id, cutoff) =>
+        promiseFlux(
+            client.query({
+                query: GET_UPDATED_SINCE,
+                variables: {
+                    planId: id,
+                    cutoff,
+                },
+                fetchPolicy: "network-only",
+            }),
+            ({ data }) => {
+                return {
+                    type: PlanActions.PLAN_DELTAS,
+                    id,
+                    data: (
+                        (data as UpdatedSinceQuery).planner?.updatedSince || []
+                    ).map(toRestPlanOrItem),
+                };
+            },
+            soakUpUnauthorized,
+        ),
 
     createBucket: (planId: number, bucket: WireBucket) => {
         const clientId = bucket.id;

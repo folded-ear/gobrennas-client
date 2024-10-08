@@ -91,7 +91,8 @@ export const BodyContainer: React.FC = () => {
         const { data: plan, loading } = planStore.getActivePlanRlo();
         if (!plan || loading) return;
         const recipes: RecipeInfo[] = [];
-        const dfs = (it: PlanItem, depth: number) => {
+        // DFS, expressed as mutual recursion, for simpler types
+        const search = (it: PlanItem, depth: number) => {
             if (it.ingredientId) {
                 const ing = LibraryStore.getIngredientRloById(it.ingredientId)
                     .data as Recipe;
@@ -113,11 +114,14 @@ export const BodyContainer: React.FC = () => {
                     depth,
                 });
             }
+            goDeeper(it, depth);
+        };
+        const goDeeper = (it: TPlan | PlanItem, depth: number) => {
             for (const kid of planStore.getChildItemRlos(it.id)) {
-                if (!kid.loading && kid.data) dfs(kid.data, depth + 1);
+                if (!kid.loading && kid.data) search(kid.data, depth + 1);
             }
         };
-        dfs(plan, 0);
+        goDeeper(plan, 0);
 
         if (plan.buckets) {
             const bucketsById = mapBy(plan.buckets, (b) => b.id);
