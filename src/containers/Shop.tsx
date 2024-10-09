@@ -14,7 +14,7 @@ import ShopList, { ShopItemTuple, ShopItemType } from "@/views/shop/ShopList";
 import { BaseItemProp, ItemProps } from "@/views/shop/types";
 import { Maybe } from "graphql/jsutils/Maybe";
 import { Quantity } from "@/global/types/types";
-import { BfsId } from "@/global/types/identity";
+import { BfsId, bfsIdEq } from "@/global/types/identity";
 import windowStore from "@/data/WindowStore";
 import partition from "@/util/partition";
 import { intersection } from "@/util/arrayAsSet";
@@ -155,7 +155,7 @@ function groupItems(
                 units: unitLookup.get(uomId),
             });
         }
-        const expanded = ingId === expandedId;
+        const expanded = bfsIdEq(ingId, expandedId);
         theTree.push({
             _type: ShopItemType.INGREDIENT,
             id: ingId,
@@ -196,7 +196,10 @@ function groupItems(
     );
     return activeItem
         ? theTree.map((it) => {
-              if (it.id === activeItem.id && it._type === activeItem.type) {
+              if (
+                  bfsIdEq(it.id, activeItem.id) &&
+                  it._type === activeItem.type
+              ) {
                   it = {
                       ...it,
                       active: true,

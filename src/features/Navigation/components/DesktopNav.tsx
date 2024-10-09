@@ -20,7 +20,7 @@ import { NavOwnerItem } from "./NavOwnerItem";
 import User from "@/views/user/User";
 import { useProfile } from "@/providers/Profile";
 import { NavShopItem } from "./NavShopItem";
-import { BfsId } from "@/global/types/identity";
+import { BfsId, bfsIdEq } from "@/global/types/identity";
 import { useGetAllPlans } from "@/data/hooks/useGetAllPlans";
 import useIsDevMode from "@/data/useIsDevMode";
 
@@ -93,14 +93,14 @@ export const DesktopNav: React.FC<DesktopNavProps> = ({
                         ];
                         if (idx === 0) {
                             elements.unshift(
-                                <Subheader key={-plan.id}>Plans</Subheader>,
+                                <Subheader key="mine">Plans</Subheader>,
                             );
                         } else if (
-                            plan.owner.id !== planItems[idx - 1].owner.id
+                            !bfsIdEq(plan.owner.id, planItems[idx - 1].owner.id)
                         ) {
                             elements.unshift(
                                 <NavOwnerItem
-                                    key={-plan.id}
+                                    key={"owner:" + plan.owner.id}
                                     expanded={expanded}
                                     name={plan.owner.name || "..."}
                                 />,

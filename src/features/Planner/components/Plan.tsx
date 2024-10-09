@@ -16,7 +16,7 @@ import {
     Plan as TPlan,
     PlanItem as PlanItemType,
 } from "@/features/Planner/data/planStore";
-import { BfsId } from "@/global/types/identity";
+import { BfsId, bfsIdEq } from "@/global/types/identity";
 import { RippedLO } from "@/util/ripLoadObject";
 
 interface Props {
@@ -75,7 +75,8 @@ function Plan({
     };
 
     const handleDrop = (id, targetId, vertical, horizontal) => {
-        const target = itemTuples.find((it) => it.data?.id === targetId)?.data;
+        const target = itemTuples.find((it) => bfsIdEq(it.data?.id, targetId))
+            ?.data;
         moveSubtree(id, target, horizontal, targetId);
     };
 
@@ -119,7 +120,7 @@ function Plan({
                 renderOverlay={(activeId) =>
                     renderItem(
                         itemTuples.find(
-                            (it) => it.data && it.data.id === activeId,
+                            (it) => it.data && bfsIdEq(it.data.id, activeId),
                         ),
                     )
                 }

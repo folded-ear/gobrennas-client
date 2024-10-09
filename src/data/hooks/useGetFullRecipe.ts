@@ -5,7 +5,7 @@ import { gql } from "@/__generated__";
 import { GetRecipeWithEverythingQuery } from "@/__generated__/graphql";
 import useAdaptingQuery from "./useAdaptingQuery";
 import { ApolloQueryResult, QueryResult } from "@apollo/client";
-import { BfsId } from "@/global/types/identity";
+import { BfsId, bfsIdEq } from "@/global/types/identity";
 import objectWithType from "@/data/utils/objectWithType";
 
 const GET_FULL_RECIPE_QUERY = gql(`
@@ -105,7 +105,7 @@ function adapter(
     };
 
     return {
-        mine: result.owner.id === myId.toString(),
+        mine: bfsIdEq(result.owner.id, myId),
         owner: result.owner,
         recipe,
         subrecipes,

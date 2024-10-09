@@ -15,9 +15,9 @@ import { bucketComparator } from "@/util/comparators";
 import preferencesStore from "@/data/preferencesStore";
 import { formatLocalDate, parseLocalDate } from "@/util/time";
 import { PlanBucket, WireBucket } from "./planStore";
-import { BfsId } from "@/global/types/identity";
+import { BfsId, bfsIdEq } from "@/global/types/identity";
 
-export const AT_END = Math.random();
+export const AT_END = "AT_END_" + ClientId.next();
 
 export const _newTask = (name) => ({
     id: ClientId.next(),
@@ -41,9 +41,9 @@ export const createList = (state, name, optionalPlanIdToCopy) => {
 export const idFixerFactory = (cid, id) => {
     const idFixer = (ids) => {
         if (ids == null) return null;
-        if (ids === cid) return id;
+        if (ids == cid && bfsIdEq(ids, cid)) return id;
         if (ids instanceof Array) {
-            return ids.map((v) => (v === cid ? id : v));
+            return ids.map((v) => (bfsIdEq(v, cid) ? id : v));
         }
         if (ids instanceof LoadObject) return ids.map(idFixer);
         if (ids instanceof LoadObjectState) return ids.map(idFixer);
@@ -122,7 +122,7 @@ export const listCreated = (state, clientId, id, list) => {
 };
 
 export const selectList = (state, id) => {
-    if (state.activeListId === id) return state;
+    if (bfsIdEq(state.activeListId, id)) return state;
     // flush any yet-unsaved changes
     state = flushTasksToRename(state);
     // only valid ids, please
@@ -130,7 +130,7 @@ export const selectList = (state, id) => {
         state.topLevelIds
             .getLoadObject()
             .getValueEnforcing()
-            .some((it) => it === id),
+            .some((it) => bfsIdEq(it, id)),
         `Task '${id}' is not a list.`,
     );
     const list = taskForId(state, id);
@@ -316,7 +316,7 @@ export const assignToBucket = (state, id, bucketId) => {
 
 export const focusTask = (state, id) => {
     taskForId(state, id);
-    if (state.activeTaskId === id) return state;
+    if (bfsIdEq(state.activeTaskId, id)) return state;
     return {
         ...state,
         activeTaskId: id,
@@ -331,7 +331,7 @@ export const getNeighborId = (
     crossGenerations = false,
     _searching = false,
 ) => {
-    invariant(delta === 1 || delta === -1, "Deltas must be either 1 or -1");
+    invariant(delta === 1 || delta === -1, "Delta must be either 1 or -1");
     const t = taskForId(state, id);
     if (t.parentId == null) return null;
     const siblingIds = taskForId(state, t.parentId).subtaskIds;
@@ -358,7 +358,7 @@ export const getNeighborId = (
                 ? lastDescendantIdOf(state, siblingIds[idx - 1])
                 : siblingIds[idx - 1];
         // to parent (null or not)
-        if (crossGenerations && t.parentId !== state.activeListId)
+        if (crossGenerations && !bfsIdEq(t.parentId, state.activeListId))
             return t.parentId;
         return null;
     }
@@ -382,7 +382,7 @@ export const focusDelta = (state, id, delta) => {
 
 export const selectTo = (state, id) => {
     if (state.activeTaskId == null) return focusTask(state, id);
-    if (id === state.activeTaskId) return state;
+    if (bfsIdEq(id, state.activeTaskId)) return state;
     const target = taskForId(state, id);
     const parent = taskForId(state, target.parentId);
     let i = parent.subtaskIds.indexOf(state.activeTaskId);
@@ -529,11 +529,13 @@ export const queueStatusUpdate = (state, id, status) => {
             [id]: nextLO,
         },
     };
-    if (state.activeListId === id) {
+    if (bfsIdEq(state.activeListId, id)) {
         state.activeTaskId = null;
     }
     if (state.selectedTaskIds) {
-        state.selectedTaskIds = state.selectedTaskIds.filter((it) => it !== id);
+        state.selectedTaskIds = state.selectedTaskIds.filter(
+            (it) => !bfsIdEq(it, id),
+        );
     }
     return state;
 };
@@ -586,7 +588,7 @@ export const taskDeleted = (state, id) => {
             activeTaskId: null,
         };
     }
-    if (p.id === state.activeListId && !isParent(p)) {
+    if (bfsIdEq(p.id, state.activeListId) && !isParent(p)) {
         // it was the last task on the list
         state = addTask(state, p.id, "", AT_END);
     }
@@ -670,7 +672,7 @@ export const mutateTree = (state, spec) => {
         if (spec.ids.includes(id)) return state;
     }
     // ensure we're not positioning something based on itself
-    if (spec.ids.some((id) => id === spec.afterId)) return state;
+    if (spec.ids.some((id) => bfsIdEq(id, spec.afterId))) return state;
     PlanApi.mutateTree(state.activeListId, spec);
     // do it now so the UI updates; the future delta will be a race-y no-op
     return treeMutated(state, spec);
@@ -730,7 +732,11 @@ export const treeMutated = (state, spec) => {
 
 export const nestTask = (state) => {
     const block = getOrderedBlock(state);
-    if (block.some(([t, p]) => p.subtaskIds.indexOf(t.id) === 0)) {
+    if (
+        block.some(
+            ([t, p]) => p.subtaskIds.findIndex((id) => bfsIdEq(id, t.id)) === 0,
+        )
+    ) {
         // nothing to nest under
         return state;
     }
@@ -759,7 +765,7 @@ export const setExpansion = (state, id, expanded = false) =>
 
 export const unnestTask = (state) => {
     const block = getOrderedBlock(state);
-    if (block.some(([t]) => t.parentId === state.activeListId)) {
+    if (block.some(([t]) => bfsIdEq(t.parentId, state.activeListId))) {
         // nothing to unnest from
         return state;
     }
@@ -775,7 +781,7 @@ export const toggleExpanded = (state, id) => {
     // if toggling a non-parent, that means "collapse my parent"
     const t = taskForId(state, id);
     if (!isParent(t)) {
-        if (t.parentId === state.activeListId) {
+        if (bfsIdEq(t.parentId, state.activeListId)) {
             // we don't do the plan
             return state;
         }
@@ -828,7 +834,7 @@ export const taskLoaded = (state, task) => {
             t = {
                 ...t,
                 ...task,
-                name: task.id === state.activeTaskId ? t.name : task.name,
+                name: bfsIdEq(task.id, state.activeTaskId) ? t.name : task.name,
                 subtaskIds: subtaskIds.length ? subtaskIds : null,
             };
             if (t.status === t._next_status) {
@@ -865,7 +871,7 @@ export function selectDefaultList(state) {
     if (listIds.length > 0) {
         // see if there's a preferred active plan
         let activePlanId = preferencesStore.getActivePlan();
-        if (listIds.find((id) => id === activePlanId) == null) {
+        if (listIds.find((id) => bfsIdEq(id, activePlanId)) == null) {
             // auto-select the first one
             activePlanId = listIds[0]; // todo: select MY first one, if I have any
         }
@@ -951,7 +957,7 @@ export function resetToThisWeeksBuckets<T>(state: T, planId: number): T {
 }
 
 export const doInteractiveStatusChange = (state, id, status) => {
-    if (willStatusDelete(status) && id === state.activeTaskId) {
+    if (willStatusDelete(status) && bfsIdEq(id, state.activeTaskId)) {
         state = focusDelta(state, id, 1);
     }
     return queueStatusUpdate(state, id, status);

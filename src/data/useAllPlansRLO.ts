@@ -4,6 +4,7 @@ import planStore from "@/features/Planner/data/planStore";
 import friendStore from "./FriendStore";
 import { zippedComparator } from "@/util/comparators";
 import { usePendingProfile } from "@/providers/Profile";
+import { bfsIdEq } from "@/global/types/identity";
 
 export default function useAllPlansRLO() {
     const profileRLO = usePendingProfile();
@@ -16,7 +17,7 @@ export default function useAllPlansRLO() {
                         (p.acl ? p.acl.ownerId : undefined) ||
                         Number.MAX_SAFE_INTEGER;
                     let ownerName = "";
-                    if ("" + ownerId === myId) {
+                    if (bfsIdEq(ownerId, myId)) {
                         ownerId = -1;
                     } else {
                         const rlo = friendStore.getFriendRlo(ownerId);

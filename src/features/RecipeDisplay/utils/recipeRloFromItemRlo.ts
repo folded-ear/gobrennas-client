@@ -3,6 +3,7 @@ import LibraryStore from "../../RecipeLibrary/data/LibraryStore";
 import type { Ingredient, RecipeFromPlanItem } from "@/global/types/types";
 import PlanItemStatus from "../../Planner/data/PlanItemStatus";
 import { RippedLO } from "@/util/ripLoadObject";
+import { bfsIdEq } from "@/global/types/identity";
 
 export const recipeRloFromItemRlo = (
     itemRlo: RippedLO<any>,
@@ -60,7 +61,7 @@ export const recipeRloFromItemRlo = (
                         recurse = recurse || ing.type === "Recipe";
                     }
                 }
-                if (recurse && subs.every((s) => s.id !== ref.id)) {
+                if (recurse && subs.every((s) => !bfsIdEq(s.id, ref.id))) {
                     subs.push(
                         prepRecipe(
                             ref,

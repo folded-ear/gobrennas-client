@@ -3,24 +3,23 @@ import planStore from "@/features/Planner/data/planStore";
 import React from "react";
 import Dispatcher from "@/data/dispatcher";
 import PlanActions from "@/features/Planner/data/PlanActions";
-import { BfsId } from "@/global/types/identity";
+import { BfsId, bfsIdEq } from "@/global/types/identity";
 import { ensureInt } from "@/global/utils";
 import { useHistory } from "react-router-dom";
 
 export const useLoadedPlan = (pid: BfsId | undefined) => {
     const history = useHistory();
     // ensure it's loaded
-    const allPlansRlo = useFluxStore(
+    const allPlanIds = useFluxStore(
         () => planStore.getPlanIdsRlo(),
         [planStore],
-    );
+    ).data;
     // ensure it's selected
     React.useEffect(() => {
-        if (pid != null && allPlansRlo?.data && allPlansRlo.data.length) {
-            const id = ensureInt(pid);
-            if (!allPlansRlo.data.includes(id)) {
+        if (pid != null && allPlanIds && allPlanIds.length) {
+            if (!allPlanIds.some((it) => bfsIdEq(it, pid))) {
                 // Deleted; navigate to the first still-present plan.
-                history.push(`/plan/${allPlansRlo.data[0]}`);
+                history.push(`/plan/${allPlanIds[0]}`);
             } else {
                 // The contract implies that effects trigger after the render
                 // cycle completes, but doesn't guarantee it. The setTimeout
@@ -28,11 +27,11 @@ export const useLoadedPlan = (pid: BfsId | undefined) => {
                 const t = setTimeout(() =>
                     Dispatcher.dispatch({
                         type: PlanActions.SELECT_PLAN,
-                        id,
+                        id: ensureInt(pid),
                     }),
                 );
                 return () => clearTimeout(t);
             }
         }
-    }, [history, allPlansRlo?.data, pid]);
+    }, [history, allPlanIds, pid]);
 };

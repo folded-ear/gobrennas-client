@@ -6,6 +6,7 @@ import { API_BASE_URL } from "@/constants";
 import Dispatcher from "./dispatcher";
 import FriendActions from "./FriendActions";
 import { mapData, ripLoadObject } from "@/util/ripLoadObject";
+import { bfsIdEq } from "@/global/types/identity";
 
 const axios = BaseAxios.create({
     baseURL: `${API_BASE_URL}/api/friends`,
@@ -59,7 +60,7 @@ class FriendStore extends ReduceStore {
     getFriendRlo(id) {
         const id_s = "" + id;
         return mapData(this.getFriendsRlo(), (fs) =>
-            fs.find((f) => f.id_s === id_s),
+            fs.find((f) => bfsIdEq(f.id_s, id_s)),
         );
     }
 }

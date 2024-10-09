@@ -3,6 +3,7 @@ import planStore, { Plan } from "@/features/Planner/data/planStore";
 import { recipeRloFromItemRlo as buildSingleItemRecipeLO } from "@/features/RecipeDisplay/utils/recipeRloFromItemRlo";
 import getBucketLabel from "@/features/Planner/components/getBucketLabel";
 import { mapData, RippedLO } from "@/util/ripLoadObject";
+import { bfsIdEq } from "@/global/types/identity";
 
 export const recipeRloByPlanAndBucket = (
     planId: number,
@@ -14,7 +15,7 @@ export const recipeRloByPlanAndBucket = (
         // no value means value's type is irrelevant
         return planRLO as RippedLO<any>;
     }
-    const bucket = plan.buckets.find((b) => b.id === bucketId);
+    const bucket = plan.buckets.find((b) => bfsIdEq(b.id, bucketId));
     if (!bucket) return {};
     const items = planStore.getItemsInBucket(planId, bucketId);
     if (items.length === 0) return {};

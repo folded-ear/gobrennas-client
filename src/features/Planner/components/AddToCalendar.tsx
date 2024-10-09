@@ -12,6 +12,7 @@ import {
     TextField,
 } from "@mui/material";
 import { RippedLO } from "@/util/ripLoadObject";
+import { bfsIdEq } from "@/global/types/identity";
 
 const axios = BaseAxios.create({
     baseURL: `${API_BASE_URL}/api/plan`,
@@ -30,7 +31,7 @@ interface SharedPlan {
 const Body: React.FC<Props> = ({ plan }) => {
     const [rlo, setRlo] = React.useState<RippedLO<SharedPlan>>({});
     React.useEffect(() => {
-        if (rlo.data && rlo.data.id === plan.id) {
+        if (rlo.data && bfsIdEq(rlo.data.id, plan.id)) {
             return;
         }
         setRlo({

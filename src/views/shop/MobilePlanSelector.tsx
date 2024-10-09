@@ -3,7 +3,7 @@ import { Box, Collapse, List, ListSubheader } from "@mui/material";
 import { NavShopItem } from "@/features/Navigation/components/NavShopItem";
 import Divider from "@mui/material/Divider";
 import useFriendRlo from "@/data/useFriendRlo";
-import { BfsId } from "@/global/types/identity";
+import { BfsId, bfsIdEq } from "@/global/types/identity";
 
 function OwnerSubheader({ id }: { id: BfsId }) {
     const { data: user } = useFriendRlo(id);
@@ -56,7 +56,10 @@ export default function MobilePlanSelector({
                         ];
                         if (
                             i > 0 &&
-                            plan.acl.ownerId !== allPlans[i - 1].acl.ownerId
+                            !bfsIdEq(
+                                plan.acl.ownerId,
+                                allPlans[i - 1].acl.ownerId,
+                            )
                         ) {
                             elements.unshift(
                                 <OwnerSubheader

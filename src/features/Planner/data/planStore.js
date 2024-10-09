@@ -59,6 +59,7 @@ import {
     toggleExpanded,
     unnestTask,
 } from "./utils";
+import { bfsIdEq } from "@/global/types/identity";
 
 /*
  * This store is way too muddled. But leaving it that way for the moment, to
@@ -114,7 +115,7 @@ class PlanStore extends ReduceStore {
                 let next = dotProp.set(state, ["byId", action.id], (lo) =>
                     lo.deleting(),
                 );
-                if (next.activeListId === action.id) {
+                if (bfsIdEq(next.activeListId, action.id)) {
                     next.listDetailVisible = false;
                     next.activeTaskId = null;
                     next.selectedTaskIds = null;
@@ -126,7 +127,7 @@ class PlanStore extends ReduceStore {
                 return selectDefaultList({
                     ...dotProp.delete(state, ["byId", action.id]),
                     topLevelIds: state.topLevelIds.map((ids) =>
-                        ids.filter((id) => id !== action.id),
+                        ids.filter((id) => !bfsIdEq(id, action.id)),
                     ),
                 });
             }
@@ -371,7 +372,7 @@ class PlanStore extends ReduceStore {
             case PlanActions.BUCKET_CREATED: {
                 return mapPlanBuckets(state, action.planId, (bs) =>
                     bs
-                        .filter((b) => b.id !== action.clientId)
+                        .filter((b) => !bfsIdEq(b.id, action.clientId))
                         .concat(deserializeBucket(action.data))
                         .sort(bucketComparator),
                 );
@@ -379,7 +380,7 @@ class PlanStore extends ReduceStore {
 
             case PlanActions.DELETE_BUCKET: {
                 return mapPlanBuckets(state, action.planId, (bs) => {
-                    const idx = bs.findIndex((b) => b.id === action.id);
+                    const idx = bs.findIndex((b) => bfsIdEq(b.id, action.id));
                     if (idx >= 0 && !ClientId.is(action.id)) {
                         PlanApi.deleteBucket(state.activeListId, action.id);
                     }
@@ -389,7 +390,7 @@ class PlanStore extends ReduceStore {
 
             case PlanActions.BUCKET_DELETED: {
                 return mapPlanBuckets(state, action.planId, (bs) =>
-                    bs.filter((b) => b.id !== action.id),
+                    bs.filter((b) => !bfsIdEq(b.id, action.id)),
                 );
             }
 
@@ -403,7 +404,7 @@ class PlanStore extends ReduceStore {
                 return mapPlanBuckets(state, action.planId, (bs) =>
                     bs
                         .map((b) => {
-                            if (b.id !== action.id) return b;
+                            if (!bfsIdEq(b.id, action.id)) return b;
                             b = { ...b, name: action.name };
                             saveBucket(state, b);
                             return b;
@@ -416,7 +417,7 @@ class PlanStore extends ReduceStore {
                 return mapPlanBuckets(state, action.planId, (bs) =>
                     bs
                         .map((b) => {
-                            if (b.id !== action.id) return b;
+                            if (!bfsIdEq(b.id, action.id)) return b;
                             b = { ...b, date: action.date };
                             saveBucket(state, b);
                             return b;
@@ -429,7 +430,7 @@ class PlanStore extends ReduceStore {
                 return mapPlanBuckets(state, action.planId, (bs) =>
                     bs
                         .map((b) => {
-                            if (b.id !== action.data.id) return b;
+                            if (!bfsIdEq(b.id, action.data.id)) return b;
                             return deserializeBucket(action.data);
                         })
                         .sort(bucketComparator),
@@ -459,7 +460,7 @@ class PlanStore extends ReduceStore {
                     .sort((pa, pb) => pa[1] - pb[1])
                     .map((pair) => pair[0]);
                 for (let i = 0, l = desiredIds.length; i < l; i++) {
-                    if (plan.subtaskIds[i] !== desiredIds[i]) {
+                    if (!bfsIdEq(plan.subtaskIds[i], desiredIds[i])) {
                         PlanApi.reorderSubitems(plan.id, desiredIds);
                         // update immediately; the coming delta will be a no-op
                         return mapTask(state, plan.id, (v) => ({
@@ -518,7 +519,7 @@ class PlanStore extends ReduceStore {
             let curr = comp;
             let descendant = false;
             while (curr.parentId != null) {
-                if (curr.parentId === id) {
+                if (bfsIdEq(curr.parentId, id)) {
                     descendant = true;
                     break;
                 }
@@ -586,7 +587,7 @@ class PlanStore extends ReduceStore {
             const lo = byId[stack.pop()];
             if (!lo || !lo.hasValue()) continue;
             const it = lo.getValueEnforcing();
-            if (it.bucketId === bucketId) {
+            if (bfsIdEq(it.bucketId, bucketId)) {
                 items.push(it);
                 continue;
             }
@@ -613,7 +614,8 @@ class PlanStore extends ReduceStore {
                 taskForId(s, s.activeTaskId).parentId,
             ).subtaskIds.filter(
                 (id) =>
-                    id === s.activeTaskId || s.selectedTaskIds.indexOf(id) >= 0,
+                    bfsIdEq(id, s.activeTaskId) ||
+                    s.selectedTaskIds.indexOf(id) >= 0,
             ),
         )
             .map((t) => t.name)

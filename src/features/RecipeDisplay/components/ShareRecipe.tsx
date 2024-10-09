@@ -6,6 +6,7 @@ import { API_BASE_URL, APP_BASE_URL } from "@/constants";
 import type { Recipe, SharedRecipe } from "@/global/types/types";
 import { RippedLO } from "@/util/ripLoadObject";
 import ModalButton from "@/views/ModalButton";
+import { bfsIdEq } from "@/global/types/identity";
 
 const axios = BaseAxios.create({
     baseURL: `${API_BASE_URL}/api/recipe`,
@@ -19,7 +20,7 @@ const Body: React.FC<ShareRecipeProps> = ({ recipe }) => {
     const [rlo, setRlo] = React.useState<RippedLO<SharedRecipe>>({});
     const [retry, setRetry] = React.useState(0);
     React.useEffect(() => {
-        if (rlo.data?.id === recipe.id) {
+        if (bfsIdEq(rlo.data?.id, recipe.id)) {
             return;
         }
         setRlo({

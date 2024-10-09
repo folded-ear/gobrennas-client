@@ -31,7 +31,7 @@ import { moveSubtree } from "@/features/Planner/components/Plan";
 import ResetBucketsButton from "@/features/Planner/components/ResetBucketsButton";
 import useWhileOver from "@/util/useWhileOver";
 import CookButton from "@/features/Planner/components/CookButton";
-import { BfsId } from "@/global/types/identity";
+import { BfsId, bfsIdEq } from "@/global/types/identity";
 import {
     isDoNotRecognize,
     isSection,
@@ -167,11 +167,11 @@ export const BodyContainer: React.FC = () => {
     return (
         <DragContainer
             renderOverlay={(id) => {
-                const it = plan.recipes.find((it) => it.id === id);
+                const it = plan.recipes.find((it) => bfsIdEq(it.id, id));
                 return it && renderItem(it);
             }}
             onDrop={(activeId, targetId, vertical) => {
-                const act = plan.recipes.find((r) => r.id === activeId);
+                const act = plan.recipes.find((r) => bfsIdEq(r.id, activeId));
                 if (!act) return;
                 let target: Maybe<RecipeInfo>;
                 let targetBucket: Maybe<PlanBucket>;
@@ -179,7 +179,7 @@ export const BodyContainer: React.FC = () => {
                     typeof targetId === "number" ||
                     !targetId.startsWith(BUCKET_PREFIX)
                 ) {
-                    target = plan.recipes.find((r) => r.id === targetId);
+                    target = plan.recipes.find((r) => bfsIdEq(r.id, targetId));
                     targetBucket = target?.bucket;
                 } else {
                     const bucketId = targetId.substring(BUCKET_PREFIX.length);
