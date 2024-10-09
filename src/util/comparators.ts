@@ -1,4 +1,5 @@
 import { PlanBucket } from "@/features/Planner/data/planStore";
+import { Maybe } from "graphql/jsutils/Maybe";
 
 const collator = new Intl.Collator(undefined, {
     sensitivity: "base",
@@ -12,10 +13,13 @@ const collator = new Intl.Collator(undefined, {
  * Unicode's collation rules (which use punctuation to break ties). Numeric
  * strings will be treated as numbers ("2" < "10").
  */
-export const humanStringComparator = collator.compare;
+export const humanStringComparator = collator.compare as (
+    a: Maybe<string>,
+    b: Maybe<string>,
+) => number;
 
-interface Named {
-    name: string;
+export interface Named {
+    name?: Maybe<string>;
 }
 
 /**
@@ -24,8 +28,8 @@ interface Named {
 export const byNameComparator = (a: Named, b: Named) =>
     humanStringComparator(a.name, b.name);
 
-interface Dated {
-    date?: Date;
+export interface Dated {
+    date?: Maybe<Date>;
 }
 
 export const byDateComparator = (a: Dated, b: Dated) => {
@@ -48,13 +52,13 @@ export const byDateComparator = (a: Dated, b: Dated) => {
  * sorting plan buckets.
  */
 export const bucketComparator = (a: PlanBucket, b: PlanBucket) => {
-    return byDateComparator(a, b) || humanStringComparator(a.name, b.name);
+    return byDateComparator(a, b) || byNameComparator(a, b);
 };
 
 /**
  * I compare two arrays, element by element, until there is a difference, or one
  * runs out of elements. The first pair-wise comparison that differs is the
- * result, otherwise the one that ran out of elements first, otherwise they are
+ * result, otherwise the shorter array is considered less, otherwise they are
  * considered equal.
  */
 export const zippedComparator = (

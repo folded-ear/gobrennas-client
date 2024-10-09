@@ -564,6 +564,10 @@ class PlanStore extends ReduceStore {
         return ripLoadObject(this.getItemLO(id));
     }
 
+    getPlanRlo(id) {
+        return ripLoadObject(this.getItemLO(id));
+    }
+
     getSelectedItems() {
         const s = this.getState();
         return s.selectedTaskIds == null

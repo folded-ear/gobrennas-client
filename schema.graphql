@@ -42,9 +42,9 @@ interface Owned {
 
 type AccessControlEntry {
     "The level of access the user has been granted."
-    level: AccessLevel
+    level: AccessLevel!
     "The user who has been granted access to an AccessControlled object."
-    user: User
+    user: User!
 }
 
 type Acl implements Owned {
@@ -322,10 +322,17 @@ type Plan implements AccessControlled & CorePlanItem & Node & Owned {
     grants: [AccessControlEntry!]!
     id: ID!
     name: String!
+    "The plan's owner"
     owner: User!
     "A plan's plan is always itself."
     plan: Plan!
     share: ShareInfo
+    """
+
+    Retrieve all items which have been updated since the passed cutoff
+    (expressed in milliseconds since the UNIX epoch). May include this plan!
+    """
+    updatedSince(cutoff: Long!): [CorePlanItem!]!
 }
 
 type PlanBucket {
@@ -349,7 +356,8 @@ type PlanItem implements CorePlanItem & Node {
     ingredient: Ingredient
     name: String!
     notes: String
-    parent: PlanItem
+    "This item's parent; follow enough and you'll always get to the plan."
+    parent: CorePlanItem
     plan: Plan!
     preparation: String
     quantity: Quantity
@@ -405,7 +413,7 @@ type PlannerMutation {
     """
     mutateTree(afterId: ID, itemIds: [ID!]!, parentId: ID!): PlanItem!
     "Update the name of the given plan or plan item (but not bucket)."
-    rename(id: ID!, name: String!): PlanItem!
+    rename(id: ID!, name: String!): CorePlanItem!
     """
 
     Reorder the item/plan subitems in the same order as the passed list. If
@@ -431,14 +439,16 @@ type PlannerMutation {
 }
 
 type PlannerQuery {
+    plan(id: ID!): Plan!
     planItem(id: ID!): PlanItem!
-    plans: [Plan]!
+    plans: [Plan!]!
     """
 
     Retrieve all items on the given plan which have been updated since the
-    passed cutoff (expressed in milliseconds since the UNIX epoch).
+    passed cutoff (expressed in milliseconds since the UNIX epoch). May include
+    the plan itself!
     """
-    updatedSince(cutoff: Long, planId: ID!): [PlanItem!]!
+    updatedSince(cutoff: Long!, planId: ID!): [CorePlanItem!]!
 }
 
 type Quantity {

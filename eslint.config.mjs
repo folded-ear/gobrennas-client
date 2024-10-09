@@ -21,7 +21,7 @@ export default [
         rules: pluginReactHooks_nonFlat.configs.recommended.rules,
     },
     {
-        ignores: ["**/__generated__/**/*"],
+        ignores: ["**/__generated__/**/*", "scripts/**/*"],
     },
     {
         rules: {
@@ -37,6 +37,12 @@ export default [
                             name: "@apollo/client",
                             importNames: ["gql"],
                             message: "Import 'gql' from '@/__generated__'",
+                        },
+                        {
+                            name: "@/__generated__/graphql",
+                            importNames: ["Maybe"],
+                            message:
+                                "Import 'Maybe' from 'graphql/jsutils/Maybe'",
                         },
                     ],
                     patterns: ["@mui/icons-material/*"],

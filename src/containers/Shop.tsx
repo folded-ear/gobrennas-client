@@ -28,7 +28,7 @@ interface PathedItemTuple extends ItemTuple {
     path: BaseItemProp[];
 }
 
-function gatherLeaves(item: PlanItem): PathedItemTuple[] {
+function gatherLeaves(item: Plan | PlanItem): PathedItemTuple[] {
     if (!isParent(item)) {
         if (isSection(item)) return [];
         return [
@@ -86,7 +86,7 @@ function isOrWillBeAcquired(it: PathedItemTuple) {
 }
 
 function groupItems(
-    plans: PlanItem[],
+    plans: Array<Plan | PlanItem>,
     expandedId: Maybe<number>,
     activeItem: Maybe<Item>,
 ): ShopItemTuple[] {
@@ -222,8 +222,8 @@ const Shop = () => {
             if (activePlanIds != null && activePlanIds.length > 0) {
                 const allPlanIds = planStore.getPlanIdsRlo().data;
                 for (const id of intersection(allPlanIds, activePlanIds)) {
-                    const p = planStore.getItemRlo(id).data;
-                    if (p != null) plans.push(p as Plan);
+                    const p = planStore.getPlanRlo(id).data;
+                    if (p != null) plans.push(p);
                 }
             }
             if (plans.length === 0) {

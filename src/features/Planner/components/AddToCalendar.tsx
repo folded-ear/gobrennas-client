@@ -1,6 +1,6 @@
 import React from "react";
 import { AddIcon, AddToCalendarIcon } from "@/views/common/icons";
-import type { PlanItem } from "@/features/Planner/data/planStore";
+import type { Plan } from "@/features/Planner/data/planStore";
 import ModalButton from "@/views/ModalButton";
 import { API_BASE_URL } from "@/constants";
 import BaseAxios from "axios";
@@ -18,11 +18,11 @@ const axios = BaseAxios.create({
 });
 
 interface Props {
-    plan: PlanItem;
+    plan: Plan;
 }
 
 interface SharedPlan {
-    id: PlanItem["id"];
+    id: Plan["id"];
     secret: string;
     slug: string;
 }

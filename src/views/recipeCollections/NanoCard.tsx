@@ -17,7 +17,7 @@ import ItemImage from "@/features/RecipeLibrary/components/ItemImage";
 import { styled } from "@mui/material/styles";
 import { BoxProps } from "@mui/material/Box/Box";
 import User from "@/views/user/User";
-import { Maybe } from "@/__generated__/graphql";
+import { Maybe } from "graphql/jsutils/Maybe";
 
 type RecipeListItemProps = {
     recipe: RecipeCard;

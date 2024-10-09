@@ -80,17 +80,6 @@ const TaskApi = {
             id,
             userId,
         })),
-
-    getItemsUpdatedSince: (id, cutoff) =>
-        promiseFlux(
-            axios.get(`/${id}/all-since?p=${id}&cutoff=${cutoff}`),
-            (r) => ({
-                type: PlanActions.PLAN_DELTAS,
-                id,
-                data: r.data,
-            }),
-            soakUpUnauthorized,
-        ),
 };
 
 export default serializeObjectOfPromiseFns(TaskApi);

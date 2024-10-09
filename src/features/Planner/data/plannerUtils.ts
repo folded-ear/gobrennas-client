@@ -1,39 +1,39 @@
-import { PlanItem } from "@/features/Planner/data/planStore";
+import { Plan, PlanItem } from "@/features/Planner/data/planStore";
 import { Maybe } from "graphql/jsutils/Maybe";
+import { Named } from "@/util/comparators";
 
 function testName(
-    itemOrName: Maybe<PlanItem | string>,
+    itemOrName: Maybe<Named | string>,
     test: (string) => boolean,
 ): boolean {
     if (itemOrName == null) return false;
-    let name =
-        itemOrName === "string" ? itemOrName : (itemOrName as PlanItem).name;
+    let name = typeof itemOrName === "string" ? itemOrName : itemOrName.name;
     if (name == null) return false;
     name = name.trim();
     return name.length > 0 && test(name);
 }
 
-function endsWith(itemOrName: Maybe<PlanItem | string>, suffix: string) {
+function endsWith(itemOrName: Maybe<Named | string>, suffix: string) {
     return testName(itemOrName, (name) => name.endsWith(suffix));
 }
 
-function startsWith(itemOrName: Maybe<PlanItem | string>, prefix: string) {
+function startsWith(itemOrName: Maybe<Named | string>, prefix: string) {
     return testName(itemOrName, (name) => name.startsWith(prefix));
 }
 
-export function isSection(itemOrName: PlanItem | string): boolean {
+export function isSection(itemOrName: Named | string): boolean {
     return itemOrName["fromRecipe"] || endsWith(itemOrName, ":");
 }
 
-export function isDoNotRecognize(itemOrName: PlanItem | string): boolean {
+export function isDoNotRecognize(itemOrName: Named | string): boolean {
     return startsWith(itemOrName, "!");
 }
 
-export function isQuestionable(itemOrName: PlanItem | string) {
+export function isQuestionable(itemOrName: Named | string) {
     return endsWith(itemOrName, "?");
 }
 
-export function isParent(item: PlanItem) {
+export function isParent(item: Plan | PlanItem) {
     return item.subtaskIds ? item.subtaskIds.length > 0 : false;
 }
 
