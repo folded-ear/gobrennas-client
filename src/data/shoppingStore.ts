@@ -9,7 +9,7 @@ import PlanActions from "@/features/Planner/data/PlanActions";
 import { removeDistinct, toggleDistinct } from "@/util/arrayAsSet";
 import preferencesStore from "./preferencesStore";
 import PlanApi from "@/features/Planner/data/PlanApi";
-import { bfsIdEq } from "@/global/types/identity";
+import { bfsIdEq, includesBfsId } from "@/global/types/identity";
 
 const placeFocus = (state, id, type) => ({
     ...state,
@@ -56,7 +56,7 @@ class ShoppingStore extends ReduceStore<State, FluxAction> {
                     .getValueEnforcing().id;
                 const shopIds: number[] = [];
                 for (const id of preferencesStore.getActiveShoppingPlans()) {
-                    if (!validPlanIds.includes(id)) continue;
+                    if (!includesBfsId(validPlanIds, id)) continue;
                     shopIds.push(id);
                     if (bfsIdEq(id, activePlanId)) continue;
                     // load up its items, so we can shop for them
@@ -78,7 +78,7 @@ class ShoppingStore extends ReduceStore<State, FluxAction> {
                         planStore.getActivePlanLO().getValueEnforcing().id,
                     );
                 }
-                if (activePlanIds.includes(action.id)) {
+                if (includesBfsId(activePlanIds, action.id)) {
                     // it was toggled on
                     PlanApi.getDescendantsAsList(action.id);
                 }

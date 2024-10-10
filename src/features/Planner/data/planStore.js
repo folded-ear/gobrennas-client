@@ -59,7 +59,7 @@ import {
     toggleExpanded,
     unnestTask,
 } from "./utils";
-import { bfsIdEq } from "@/global/types/identity";
+import { bfsIdEq, includesBfsId } from "@/global/types/identity";
 
 /*
  * This store is way too muddled. But leaving it that way for the moment, to
@@ -396,7 +396,7 @@ class PlanStore extends ReduceStore {
 
             case PlanActions.BUCKETS_DELETED: {
                 return mapPlanBuckets(state, action.planId, (bs) =>
-                    bs.filter((b) => !action.ids.includes(b.id)),
+                    bs.filter((b) => !includesBfsId(action.ids, b.id)),
                 );
             }
 
@@ -615,7 +615,7 @@ class PlanStore extends ReduceStore {
             ).subtaskIds.filter(
                 (id) =>
                     bfsIdEq(id, s.activeTaskId) ||
-                    s.selectedTaskIds.indexOf(id) >= 0,
+                    includesBfsId(s.selectedTaskIds, id),
             ),
         )
             .map((t) => t.name)

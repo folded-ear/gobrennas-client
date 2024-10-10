@@ -26,3 +26,11 @@ export function bfsIdEq(a: Maybe<BfsId>, b: Maybe<BfsId>): boolean {
     // stringify and test!
     return ensureString(a) === ensureString(b);
 }
+
+export function includesBfsId(ids: BfsId[], id: Maybe<BfsId>): boolean {
+    return indexOfBfsId(ids, id) >= 0;
+}
+
+export function indexOfBfsId(ids: BfsId[], id: Maybe<BfsId>): number {
+    return ids.findIndex((el) => bfsIdEq(id, el));
+}

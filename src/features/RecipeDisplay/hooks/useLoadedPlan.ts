@@ -3,7 +3,7 @@ import planStore from "@/features/Planner/data/planStore";
 import React from "react";
 import Dispatcher from "@/data/dispatcher";
 import PlanActions from "@/features/Planner/data/PlanActions";
-import { BfsId, bfsIdEq } from "@/global/types/identity";
+import { BfsId, includesBfsId } from "@/global/types/identity";
 import { ensureInt } from "@/global/utils";
 import { useHistory } from "react-router-dom";
 
@@ -17,7 +17,7 @@ export const useLoadedPlan = (pid: BfsId | undefined) => {
     // ensure it's selected
     React.useEffect(() => {
         if (pid != null && allPlanIds && allPlanIds.length) {
-            if (!allPlanIds.some((it) => bfsIdEq(it, pid))) {
+            if (!includesBfsId(allPlanIds, pid)) {
                 // Deleted; navigate to the first still-present plan.
                 history.push(`/plan/${allPlanIds[0]}`);
             } else {

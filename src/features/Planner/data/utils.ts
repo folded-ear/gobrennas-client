@@ -15,7 +15,12 @@ import { bucketComparator } from "@/util/comparators";
 import preferencesStore from "@/data/preferencesStore";
 import { formatLocalDate, parseLocalDate } from "@/util/time";
 import { PlanBucket, WireBucket } from "./planStore";
-import { BfsId, bfsIdEq } from "@/global/types/identity";
+import {
+    BfsId,
+    bfsIdEq,
+    includesBfsId,
+    indexOfBfsId,
+} from "@/global/types/identity";
 
 export const AT_END = "AT_END_" + ClientId.next();
 
@@ -127,10 +132,10 @@ export const selectList = (state, id) => {
     state = flushTasksToRename(state);
     // only valid ids, please
     invariant(
-        state.topLevelIds
-            .getLoadObject()
-            .getValueEnforcing()
-            .some((it) => bfsIdEq(it, id)),
+        includesBfsId(
+            state.topLevelIds.getLoadObject().getValueEnforcing(),
+            id,
+        ),
         `Task '${id}' is not a list.`,
     );
     const list = taskForId(state, id);
@@ -177,7 +182,7 @@ export const spliceIds = (ids, id, after = AT_END) => {
     if (after == null) {
         return [id].concat(ids);
     }
-    let idx = ids.indexOf(after);
+    let idx = indexOfBfsId(ids, after);
     if (idx < 0) return ids.concat(id);
     idx += 1; // we want to be after that guy
     return ids.slice(0, idx).concat(id, ids.slice(idx));
@@ -226,7 +231,7 @@ export const createTaskBefore = (state, id) => {
     const p = taskForId(state, t.parentId);
     let afterId = AT_END; // implied first
     if (p.subtaskIds != null) {
-        const idx = p.subtaskIds.indexOf(id);
+        const idx = indexOfBfsId(p.subtaskIds, id);
         if (idx > 0) {
             afterId = p.subtaskIds[idx - 1];
         }
@@ -251,7 +256,7 @@ export const flushTasksToRename = (state) => {
             continue;
         }
         const parent = taskForId(state, task.parentId);
-        const idx = parent.subtaskIds.indexOf(id);
+        const idx = indexOfBfsId(parent.subtaskIds, id);
         const afterId = idx === 0 ? null : parent.subtaskIds[idx - 1];
         if (ClientId.is(afterId)) {
             requeue.add(id);
@@ -335,7 +340,7 @@ export const getNeighborId = (
     const t = taskForId(state, id);
     if (t.parentId == null) return null;
     const siblingIds = taskForId(state, t.parentId).subtaskIds;
-    const idx = siblingIds.indexOf(id);
+    const idx = indexOfBfsId(siblingIds, id);
     invariant(
         idx >= 0,
         `Task '${t.id}' isn't a child of it's parent ('${t.parentId}')?`,
@@ -385,8 +390,8 @@ export const selectTo = (state, id) => {
     if (bfsIdEq(id, state.activeTaskId)) return state;
     const target = taskForId(state, id);
     const parent = taskForId(state, target.parentId);
-    let i = parent.subtaskIds.indexOf(state.activeTaskId);
-    let j = parent.subtaskIds.indexOf(id);
+    let i = indexOfBfsId(parent.subtaskIds, state.activeTaskId);
+    let j = indexOfBfsId(parent.subtaskIds, id);
     if (i > j) {
         j += 1; // active doesn't get selected
         i += 1; // inclusive upper bound
@@ -411,7 +416,7 @@ export const selectDelta = (state, id, delta) => {
             selectedTaskIds: [id],
         };
     }
-    const idx = state.selectedTaskIds.indexOf(next);
+    const idx = indexOfBfsId(state.selectedTaskIds, next);
     if (idx >= 0) {
         // contract selection
         return {
@@ -559,7 +564,7 @@ export const taskDeleted = (state, id) => {
     if (!isKnown(state, id)) return state;
     const t = taskForId(state, id);
     let p = taskForId(state, t.parentId);
-    const idx = p.subtaskIds.indexOf(id);
+    const idx = indexOfBfsId(p.subtaskIds, id);
     p = {
         ...p,
         subtaskIds: p.subtaskIds
@@ -606,7 +611,7 @@ export const getOrderedBlock = (state) => {
     return block
         .map((id) => taskForId(state, id))
         .map((t) => [t, taskForId(state, t.parentId)])
-        .map(([t, p]) => [t, p, p.subtaskIds.indexOf(t.id)])
+        .map(([t, p]) => [t, p, indexOfBfsId(p.subtaskIds, t.id)])
         .sort((a, b) => a[2] - b[2]);
 };
 
@@ -628,7 +633,7 @@ export const moveDelta = (state, delta) => {
 export const subtaskIdBefore = (state, parentId, before) => {
     const p = taskForId(state, parentId);
     if (!p.subtaskIds || p.subtaskIds.length === 0) return null;
-    const idx = p.subtaskIds.indexOf(before);
+    const idx = indexOfBfsId(p.subtaskIds, before);
     if (idx < 0) return p.subtaskIds[p.subtaskIds.length - 1];
     if (idx === 0) return null;
     return p.subtaskIds[idx - 1];
@@ -641,7 +646,10 @@ export const moveSubtree = (state, action) => {
         : action.after == null
         ? null
         : action.after;
-    if (blockIds.includes(action.parentId) || blockIds.includes(afterId)) {
+    if (
+        includesBfsId(blockIds, action.parentId) ||
+        includesBfsId(blockIds, afterId)
+    ) {
         // dragging into the selection, so unselect
         state = {
             ...state,
@@ -649,7 +657,7 @@ export const moveSubtree = (state, action) => {
         };
         blockIds = [state.activeTaskId];
     }
-    if (!blockIds.includes(action.id)) {
+    if (!includesBfsId(blockIds, action.id)) {
         blockIds = [action.id];
     }
     return mutateTree(state, {
@@ -669,10 +677,10 @@ export const mutateTree = (state, spec) => {
     if (ClientId.is(spec.afterId)) return state;
     // ensure we're not going to create a cycle
     for (let id = spec.parentId; id; id = taskForId(state, id).parentId) {
-        if (spec.ids.includes(id)) return state;
+        if (includesBfsId(spec.ids, id)) return state;
     }
     // ensure we're not positioning something based on itself
-    if (spec.ids.some((id) => bfsIdEq(id, spec.afterId))) return state;
+    if (includesBfsId(spec.ids, spec.afterId)) return state;
     PlanApi.mutateTree(state.activeListId, spec);
     // do it now so the UI updates; the future delta will be a race-y no-op
     return treeMutated(state, spec);
@@ -686,7 +694,7 @@ export const treeMutated = (state, spec) => {
         // remove the task from its old parent
         const oldPid = byId[id].getValueEnforcing().parentId;
         byId[oldPid] = byId[oldPid].map((t) => {
-            const idx = t.subtaskIds.indexOf(id);
+            const idx = indexOfBfsId(t.subtaskIds, id);
             if (idx < 0) return t;
             const subtaskIds = t.subtaskIds.slice();
             subtaskIds.splice(idx, 1);
@@ -705,8 +713,8 @@ export const treeMutated = (state, spec) => {
             let subtaskIds = t.subtaskIds;
             if (subtaskIds) {
                 const afterIdx =
-                    afterId == null ? 0 : subtaskIds.indexOf(afterId) + 1;
-                const currIdx = subtaskIds.indexOf(id);
+                    afterId == null ? 0 : indexOfBfsId(subtaskIds, afterId) + 1;
+                const currIdx = indexOfBfsId(subtaskIds, id);
                 if (currIdx < 0 || currIdx !== afterIdx + 1) {
                     subtaskIds = subtaskIds.slice();
                     if (currIdx >= 0) {
@@ -732,16 +740,12 @@ export const treeMutated = (state, spec) => {
 
 export const nestTask = (state) => {
     const block = getOrderedBlock(state);
-    if (
-        block.some(
-            ([t, p]) => p.subtaskIds.findIndex((id) => bfsIdEq(id, t.id)) === 0,
-        )
-    ) {
+    if (block.some(([t, p]) => indexOfBfsId(p.subtaskIds, t.id) === 0)) {
         // nothing to nest under
         return state;
     }
     const [t, p] = block[0];
-    const idx = p.subtaskIds.indexOf(t.id);
+    const idx = indexOfBfsId(p.subtaskIds, t.id);
     const np = taskForId(state, p.subtaskIds[idx - 1]);
     state = mutateTree(state, {
         ids: block.map(([t]) => t.id),

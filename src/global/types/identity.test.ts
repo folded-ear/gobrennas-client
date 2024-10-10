@@ -1,5 +1,11 @@
 import { describe, expect, it } from "vitest";
-import { bfsIdEq, ensureString } from "./identity";
+import {
+    BfsId,
+    bfsIdEq,
+    ensureString,
+    includesBfsId,
+    indexOfBfsId,
+} from "./identity";
 
 describe("identity", () => {
     const tooBig = 9007199254740992;
@@ -65,5 +71,29 @@ describe("identity", () => {
             expect(bfsIdEq(undefined, "abc")).toBe(false);
             expect(bfsIdEq(123, undefined)).toBe(false);
         });
+    });
+    describe("includesBfsId", () => {
+        it("should balk on a null array", () =>
+            expect(() =>
+                includesBfsId(null as unknown as BfsId[], 123),
+            ).toThrow());
+        it("should equate strings", () =>
+            expect(includesBfsId(["one", "two"], "two")).toBe(true));
+        it("should equate numbers", () =>
+            expect(includesBfsId([1, 2], 2)).toBe(true));
+        it("should equate equivalent mixed-type IDs", () =>
+            expect(includesBfsId([1, "2"], 2)).toBe(true));
+    });
+    describe("indexOfBfsId", () => {
+        it("should balk on a null array", () =>
+            expect(() =>
+                indexOfBfsId(null as unknown as BfsId[], 123),
+            ).toThrow());
+        it("should equate strings", () =>
+            expect(indexOfBfsId(["zero", "one", "two"], "two")).toBe(2));
+        it("should equate numbers", () =>
+            expect(indexOfBfsId([3, 2, 1], 2)).toBe(1));
+        it("should equate equivalent mixed-type IDs", () =>
+            expect(indexOfBfsId([1, "2", 2], 2)).toBe(1));
     });
 });
