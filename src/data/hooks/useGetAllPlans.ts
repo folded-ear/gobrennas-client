@@ -4,7 +4,6 @@ import { GetPlansQuery } from "@/__generated__/graphql";
 import { useProfileId } from "@/providers/Profile";
 import { BfsId, bfsIdEq } from "@/global/types/identity";
 import { zippedComparator } from "@/util/comparators";
-import { ensureInt } from "@/global/utils";
 
 export const GET_PLANS = gql(`
 query getPlans {
@@ -49,8 +48,7 @@ export const useGetAllPlans = () => {
         .slice()
         .sort((a, b) =>
             zippedComparator(orderedPlans[a.id], orderedPlans[b.id]),
-        )
-        .map((plan) => ({ ...plan, id: ensureInt(plan.id) }));
+        );
     return {
         ...result,
         data: plans,

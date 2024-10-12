@@ -1,4 +1,3 @@
-import PropTypes from "prop-types";
 import { createChainableTypeChecker, PropTypeError } from "./typeHelpers";
 
 const PREFIX =
@@ -26,10 +25,5 @@ const ClientId = {
         return new PropTypeError(`'${propName}' isn't a valid ClientId`);
     }),
 };
-
-export const clientOrDatabaseIdType = PropTypes.oneOfType([
-    PropTypes.number,
-    ClientId.propType,
-]);
 
 export default ClientId;

@@ -74,9 +74,7 @@ class LibraryStore extends ReduceStore {
 
             case RecipeActions.SEND_TO_PLAN: {
                 RecipeApi.sendToPlan(
-                    typeof action.recipeId === "string"
-                        ? parseInt(action.recipeId)
-                        : action.recipeId,
+                    action.recipeId,
                     action.planId,
                     action.scale,
                 );

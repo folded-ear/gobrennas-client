@@ -4,7 +4,6 @@ import React from "react";
 import Dispatcher from "@/data/dispatcher";
 import PlanActions from "@/features/Planner/data/PlanActions";
 import { BfsId, includesBfsId } from "@/global/types/identity";
-import { ensureInt } from "@/global/utils";
 import { useHistory } from "react-router-dom";
 
 export const useLoadedPlan = (pid: BfsId | undefined) => {
@@ -27,7 +26,7 @@ export const useLoadedPlan = (pid: BfsId | undefined) => {
                 const t = setTimeout(() =>
                     Dispatcher.dispatch({
                         type: PlanActions.SELECT_PLAN,
-                        id: ensureInt(pid),
+                        id: pid,
                     }),
                 );
                 return () => clearTimeout(t);

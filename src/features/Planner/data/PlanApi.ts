@@ -30,8 +30,7 @@ import {
     toRestPlan,
     toRestPlanOrItem,
 } from "@/features/Planner/data/conversion_helpers";
-import { ensureInt } from "@/global/utils";
-import { BfsId } from "@/global/types/identity";
+import { BfsId, ensureString } from "@/global/types/identity";
 import { WireBucket } from "./planStore";
 import serializeObjectOfPromiseFns from "@/util/serializeObjectOfPromiseFns";
 import { GET_UPDATED_SINCE } from "@/features/Planner/data/queries";
@@ -41,19 +40,19 @@ const axios = BaseAxios.create({
 });
 
 const PlanApi = {
-    createItem: (planId, body) =>
+    createItem: (planId: BfsId, body) =>
         promiseFlux(axios.post(`/${planId}`, body), (r) => ({
             type: PlanActions.TREE_CREATE,
             data: r.data.info,
             newIds: r.data.newIds,
         })),
 
-    renameItem: (id: number, name: string) =>
+    renameItem: (id: BfsId, name: string) =>
         promiseFlux(
             client.mutate({
                 mutation: RENAME_PLAN_OR_ITEM,
                 variables: {
-                    id: id.toString(),
+                    id: ensureString(id),
                     name,
                 },
             }),
@@ -67,12 +66,12 @@ const PlanApi = {
             handleErrors,
         ),
 
-    setPlanColor: (id: number, color: string) =>
+    setPlanColor: (id: BfsId, color: string) =>
         promiseFlux(
             client.mutate({
                 mutation: SET_PLAN_COLOR,
                 variables: {
-                    id: id.toString(),
+                    id: ensureString(id),
                     color,
                 },
             }),
@@ -86,12 +85,12 @@ const PlanApi = {
             handleErrors,
         ),
 
-    deleteItem: (id: number) =>
+    deleteItem: (id: BfsId) =>
         promiseFlux(
             client.mutate({
                 mutation: DELETE_PLAN_ITEM,
                 variables: {
-                    id: id.toString(),
+                    id: ensureString(id),
                 },
             }),
             (result: FetchResult<DeletePlanItemMutation>) => {
@@ -99,19 +98,19 @@ const PlanApi = {
                 return (
                     id && {
                         type: PlanActions.DELETED,
-                        id: ensureInt(id),
+                        id,
                     }
                 );
             },
             handleErrors,
         ),
 
-    completeItem: (id: number, doneAt: Date) =>
+    completeItem: (id: BfsId, doneAt: Date) =>
         promiseFlux(
             client.mutate({
                 mutation: COMPLETE_PLAN_ITEM,
                 variables: {
-                    id: id.toString(),
+                    id: ensureString(id),
                     status: PlanItemStatus.Completed,
                     doneAt: doneAt?.toISOString() || null,
                 },
@@ -121,14 +120,14 @@ const PlanApi = {
                 return (
                     id && {
                         type: PlanActions.PLAN_ITEM_COMPLETED,
-                        id: ensureInt(id),
+                        id,
                     }
                 );
             },
             handleErrors,
         ),
 
-    updateItemStatus: (planId, body) =>
+    updateItemStatus: (planId: BfsId, body) =>
         promiseFlux(axios.put(`/${planId}/status`, body), (r) =>
             r.data.type === "delete"
                 ? {
@@ -141,33 +140,34 @@ const PlanApi = {
                   },
         ),
 
-    mutateTree: (planId, body) => axios.post(`/${planId}/mutate-tree`, body),
+    mutateTree: (planId: BfsId, body) =>
+        axios.post(`/${planId}/mutate-tree`, body),
 
-    assignBucket: (planId, id, bucketId) =>
+    assignBucket: (planId: BfsId, id: BfsId, bucketId: BfsId) =>
         axios.post(`/${planId}/assign-bucket`, {
             id,
             bucketId,
         }),
 
-    reorderSubitems: (id, subitemIds) =>
+    reorderSubitems: (id: BfsId, subitemIds: BfsId[]) =>
         axios.post(`/${id}/reorder-subitems`, {
             id,
             subitemIds,
         }),
 
-    getDescendantsAsList: (id) =>
+    getDescendantsAsList: (id: BfsId) =>
         promiseFlux(axios.get(`/${id}/descendants`), (r) => ({
             type: PlanActions.PLAN_DATA_BOOTSTRAPPED,
             id,
             data: r.data,
         })),
 
-    getItemsUpdatedSince: (id, cutoff) =>
+    getItemsUpdatedSince: (id: BfsId, cutoff) =>
         promiseFlux(
             client.query({
                 query: GET_UPDATED_SINCE,
                 variables: {
-                    planId: id,
+                    planId: ensureString(id),
                     cutoff,
                 },
                 fetchPolicy: "network-only",
@@ -184,7 +184,7 @@ const PlanApi = {
             soakUpUnauthorized,
         ),
 
-    createBucket: (planId: number, bucket: WireBucket) => {
+    createBucket: (planId: BfsId, bucket: WireBucket) => {
         const clientId = bucket.id;
         return promiseFlux(
             client.mutate({
@@ -202,11 +202,7 @@ const PlanApi = {
                         type: PlanActions.BUCKET_CREATED,
                         planId,
                         clientId: clientId,
-                        data: {
-                            id: ensureInt(bucket.id),
-                            name: bucket.name,
-                            date: bucket.date,
-                        },
+                        data: bucket,
                     }
                 );
             },
@@ -214,13 +210,13 @@ const PlanApi = {
         );
     },
 
-    updateBucket: (planId: number, id: BfsId, bucket: WireBucket) =>
+    updateBucket: (planId: BfsId, id: BfsId, bucket: WireBucket) =>
         promiseFlux(
             client.mutate({
                 mutation: UPDATE_BUCKET,
                 variables: {
-                    planId: planId.toString(),
-                    bucketId: id.toString(),
+                    planId: ensureString(planId),
+                    bucketId: ensureString(id),
                     name: bucket.name,
                     date: bucket.date,
                 },
@@ -231,23 +227,19 @@ const PlanApi = {
                     bucket && {
                         type: PlanActions.BUCKET_UPDATED,
                         planId,
-                        data: {
-                            id: ensureInt(bucket.id),
-                            name: bucket.name,
-                            date: bucket.date,
-                        },
+                        data: bucket,
                     }
                 );
             },
         ),
 
-    deleteBucket: (planId: number, id: number) =>
+    deleteBucket: (planId: BfsId, id: BfsId) =>
         promiseFlux(
             client.mutate({
                 mutation: DELETE_BUCKET,
                 variables: {
-                    planId: planId.toString(),
-                    bucketId: id.toString(),
+                    planId: ensureString(planId),
+                    bucketId: ensureString(id),
                 },
             }),
             (result: FetchResult<DeleteBucketMutation>) => {
@@ -256,13 +248,13 @@ const PlanApi = {
                     bucket && {
                         type: PlanActions.BUCKET_DELETED,
                         planId,
-                        id: ensureInt(bucket.id),
+                        id: bucket.id,
                     }
                 );
             },
         ),
 
-    deleteBuckets: (planId: number, ids: BfsId[]) =>
+    deleteBuckets: (planId: BfsId, ids: BfsId[]) =>
         promiseFlux(
             client.mutate({
                 mutation: DELETE_BUCKETS,
@@ -276,10 +268,10 @@ const PlanApi = {
                 return {
                     type: PlanActions.BUCKETS_DELETED,
                     planId,
-                    ids: dels.map((d) => ensureInt(d.id)),
+                    ids: dels.map((d) => d.id),
                 };
             },
         ),
 };
 
-export default serializeObjectOfPromiseFns(PlanApi);
+export default serializeObjectOfPromiseFns(PlanApi) as typeof PlanApi;

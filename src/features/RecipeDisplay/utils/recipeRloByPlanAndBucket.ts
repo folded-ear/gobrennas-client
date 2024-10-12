@@ -3,11 +3,11 @@ import planStore, { Plan } from "@/features/Planner/data/planStore";
 import { recipeRloFromItemRlo as buildSingleItemRecipeLO } from "@/features/RecipeDisplay/utils/recipeRloFromItemRlo";
 import getBucketLabel from "@/features/Planner/components/getBucketLabel";
 import { mapData, RippedLO } from "@/util/ripLoadObject";
-import { bfsIdEq } from "@/global/types/identity";
+import { BfsId, bfsIdEq } from "@/global/types/identity";
 
 export const recipeRloByPlanAndBucket = (
-    planId: number,
-    bucketId: number,
+    planId: BfsId,
+    bucketId: BfsId,
 ): RippedLO<RecipeFromPlanItem> => {
     const planRLO = planStore.getItemRlo(planId);
     const plan = planRLO.data as Plan | undefined;

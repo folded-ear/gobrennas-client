@@ -1,6 +1,5 @@
 import throwAnyGraphQLErrors from "@/util/throwAnyGraphQLErrors";
-import { ensureInt } from "@/global/utils";
-import { BfsId } from "@/global/types/identity";
+import { BfsId, ensureString } from "@/global/types/identity";
 import type {
     CorePlanItemLoadFragment,
     PlanItemLoadFragment,
@@ -20,14 +19,14 @@ export const handleErrors = (error) => {
     };
 };
 
-const ensureIdIsInt = (id: BfsId | undefined) => {
+const ensureIdIsString = (id: BfsId | undefined) => {
     if (id == null) return undefined;
-    return ensureInt(id);
+    return ensureString(id);
 };
 
-const pluckIntIds = (collection: { id: BfsId }[]) => {
+const pluckStringIds = (collection: { id: BfsId }[]) => {
     if (collection == null) return undefined;
-    return collection.map((c) => ensureInt(c.id));
+    return collection.map((c) => ensureString(c.id));
 };
 
 export const toRestPlanOrItem = (it) => {
@@ -43,39 +42,39 @@ export const toRestPlanOrItem = (it) => {
 const toRestPlanItem = (
     planItem: CorePlanItemLoadFragment & PlanItemLoadFragment,
 ): TPlanItem => ({
-    id: ensureInt(planItem.id),
+    id: ensureString(planItem.id),
     name: planItem.name,
     notes: planItem.notes,
     status: planItem.status,
-    parentId: ensureIdIsInt(planItem.parent?.id),
-    aggregateId: ensureIdIsInt(planItem.aggregate?.id),
-    subtaskIds: pluckIntIds(planItem.children),
-    componentIds: pluckIntIds(planItem.components),
+    parentId: ensureIdIsString(planItem.parent?.id),
+    aggregateId: ensureIdIsString(planItem.aggregate?.id),
+    subtaskIds: pluckStringIds(planItem.children),
+    componentIds: pluckStringIds(planItem.components),
     quantity: planItem.quantity?.quantity,
     units: planItem.quantity?.units?.name || undefined,
-    uomId: ensureIdIsInt(planItem.quantity?.units?.id),
-    ingredientId: ensureIdIsInt(planItem.ingredient?.id),
-    bucketId: ensureIdIsInt(planItem.bucket?.id),
+    uomId: ensureIdIsString(planItem.quantity?.units?.id),
+    ingredientId: ensureIdIsString(planItem.ingredient?.id),
+    bucketId: ensureIdIsString(planItem.bucket?.id),
     preparation: planItem.preparation,
 });
 
 export const toRestPlan = (
     plan: CorePlanItemLoadFragment & PlanLoadFragment,
 ): TPlan => ({
-    id: ensureInt(plan.id),
+    id: ensureString(plan.id),
     name: plan.name,
     color: plan.color,
     acl: {
-        ownerId: ensureInt(plan.owner.id),
+        ownerId: ensureString(plan.owner.id),
         grants: plan.grants.reduce((agg, g) => {
             agg[g.user.id] = g.level;
             return agg;
         }, {}),
     },
-    subtaskIds: pluckIntIds(plan.children),
+    subtaskIds: pluckStringIds(plan.children),
     buckets: plan.buckets.map((b) => {
         const result: TPlanBucket = {
-            id: ensureInt(b.id),
+            id: ensureString(b.id),
             date: b.date,
         };
         if (b.name) result.name = b.name;

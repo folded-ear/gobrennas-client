@@ -45,7 +45,7 @@ export interface PlanItem extends BasePlanItem {
 
 export interface Plan extends BasePlanItem {
     acl: {
-        ownerId: number;
+        ownerId: BfsId;
         grants: Record<string, AccessLevel>;
     };
     color: string;
@@ -84,7 +84,7 @@ declare class PlanStore extends FluxReduceStore<State, FluxAction> {
 
     getSelectedItems(): PlanItem[];
 
-    getItemsInBucket(planId: number, bucketId: number): PlanItem[];
+    getItemsInBucket(planId: BfsId, bucketId: BfsId): PlanItem[];
 
     isPlanDetailVisible(): boolean;
 

@@ -72,7 +72,7 @@ function adapter(
         !result || !result.subrecipes
             ? []
             : result.subrecipes.map((recipe) => ({
-                  id: parseInt(recipe.id, 10),
+                  id: recipe.id,
                   name: recipe.name,
                   totalTime: recipe.totalTime,
                   directions: recipe.directions,
@@ -94,7 +94,7 @@ function adapter(
         calories: result.calories,
         directions: result.directions || "",
         externalUrl: result.externalUrl,
-        id: parseInt(result.id, 10),
+        id: result.id,
         ingredients,
         labels: result.labels || [],
         name: result.name || "",

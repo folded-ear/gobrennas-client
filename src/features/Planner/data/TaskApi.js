@@ -6,7 +6,6 @@ import promiseFlux, { soakUpUnauthorized } from "@/util/promiseFlux";
 import serializeObjectOfPromiseFns from "@/util/serializeObjectOfPromiseFns";
 import { CREATE_PLAN } from "./mutations";
 import { handleErrors, toRestPlan } from "./conversion_helpers";
-import { ensureInt } from "@/global/utils";
 import { GET_PLANS } from "@/data/hooks/useGetAllPlans";
 
 const axios = BaseAxios.create({
@@ -30,7 +29,7 @@ const TaskApi = {
                     plan && {
                         type: PlanActions.PLAN_CREATED,
                         clientId,
-                        id: ensureInt(plan.id),
+                        id: plan.id,
                         data: toRestPlan(plan),
                         fromId: sourcePlanId,
                     }
