@@ -36,16 +36,7 @@ class FriendStore extends ReduceStore {
             }
 
             case FriendActions.FRIEND_LIST_LOADED: {
-                return state.mapLO((lo) =>
-                    lo
-                        .setValue(
-                            action.data.map((f) => ({
-                                ...f,
-                                id_s: "" + f.id,
-                            })),
-                        )
-                        .done(),
-                );
+                return state.mapLO((lo) => lo.setValue(action.data).done());
             }
 
             default:
@@ -58,9 +49,8 @@ class FriendStore extends ReduceStore {
     }
 
     getFriendRlo(id) {
-        const id_s = "" + id;
         return mapData(this.getFriendsRlo(), (fs) =>
-            fs.find((f) => bfsIdEq(f.id_s, id_s)),
+            fs.find((f) => bfsIdEq(f.id, id)),
         );
     }
 }

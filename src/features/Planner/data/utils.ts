@@ -100,7 +100,7 @@ export const tasksCreated = (state, tasks, newIds) => {
         for (const id of Object.keys(newIds)) {
             const cid = newIds[id];
             if (!isKnown(state, cid)) continue;
-            state = fixIds(state, taskForId(state, cid), parseInt(id, 10), cid);
+            state = fixIds(state, taskForId(state, cid), id, cid);
         }
     }
     return tasksLoaded(state, tasks);

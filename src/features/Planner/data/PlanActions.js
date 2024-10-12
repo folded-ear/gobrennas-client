@@ -1,6 +1,7 @@
 import PropTypes from "prop-types";
-import ClientId, { clientOrDatabaseIdType } from "@/util/ClientId";
+import ClientId from "@/util/ClientId";
 import typedAction from "@/util/typedAction";
+import { bfsIdType } from "@/global/types/identity";
 
 const PlanActions = {
     // user actions (client-only)
@@ -8,7 +9,7 @@ const PlanActions = {
     FOCUS_NEXT: "plan/focus-next",
     FOCUS_PREVIOUS: "plan/focus-previous",
     SELECT_PLAN: typedAction("plan/select-plan", {
-        id: PropTypes.number.isRequired,
+        id: bfsIdType.isRequired,
     }),
     SELECT_NEXT: "plan/select-next",
     SELECT_PREVIOUS: "plan/select-previous",
@@ -22,11 +23,11 @@ const PlanActions = {
     CREATE_PLAN: "plan/create-plan",
     DUPLICATE_PLAN: "plan/duplicate-plan",
     RENAME_PLAN: typedAction("plan/rename-plan", {
-        id: clientOrDatabaseIdType.isRequired,
+        id: bfsIdType.isRequired,
         name: PropTypes.string.isRequired,
     }),
     SET_PLAN_COLOR: typedAction("plan/set-plan-color", {
-        id: clientOrDatabaseIdType.isRequired,
+        id: bfsIdType.isRequired,
         color: PropTypes.string.isRequired,
     }),
     DELETE_PLAN: "plan/delete-plan",
@@ -35,31 +36,31 @@ const PlanActions = {
     CREATE_ITEM_BEFORE: "plan/create-item-before",
     CREATE_ITEM_AT_END: "plan/create-item-at-end",
     SEND_TO_PLAN: typedAction("plan/send-to-plan", {
-        planId: PropTypes.number.isRequired,
+        planId: bfsIdType.isRequired,
         name: PropTypes.string.isRequired,
     }),
     DELETE_ITEM_BACKWARDS: "plan/delete-item-backwards",
     DELETE_ITEM_FORWARD: "plan/delete-item-forward",
     DELETE_SELECTED: "plan/delete-selected",
     SET_STATUS: typedAction("plan/set-status", {
-        id: clientOrDatabaseIdType.isRequired,
+        id: bfsIdType.isRequired,
         status: PropTypes.string.isRequired,
     }),
     COMPLETE_PLAN_ITEM: typedAction("plan/complete-plan-item", {
-        id: clientOrDatabaseIdType.isRequired,
+        id: bfsIdType.isRequired,
         status: PropTypes.string.isRequired,
         doneAt: PropTypes.instanceOf(Date), // can be null
     }),
     PLAN_ITEM_COMPLETED: "plan/plan-item-completed",
     BULK_SET_STATUS: typedAction("plan/bulk-set-status", {
-        ids: PropTypes.arrayOf(clientOrDatabaseIdType).isRequired,
+        ids: PropTypes.arrayOf(bfsIdType).isRequired,
         status: PropTypes.string.isRequired,
     }),
     UNDO_SET_STATUS: "plan/undo-set-status",
     MOVE_NEXT: "plan/move-next",
     MOVE_PREVIOUS: "plan/move-previous",
     RENAME_ITEM: typedAction("plan/rename-item", {
-        id: clientOrDatabaseIdType.isRequired,
+        id: bfsIdType.isRequired,
         name: PropTypes.string.isRequired,
     }),
     SET_PLAN_GRANT: "plan/set-plan-grant",
@@ -68,48 +69,48 @@ const PlanActions = {
     UNNEST: "plan/unnest",
     MOVE_SUBTREE: "plan/move-subtree",
     CREATE_BUCKET: typedAction("plan/create-bucket", {
-        planId: clientOrDatabaseIdType.isRequired,
+        planId: bfsIdType.isRequired,
     }),
     RESET_TO_THIS_WEEKS_BUCKETS: typedAction(
         "plan/reset-to-this-weeks-buckets",
         {
-            planId: clientOrDatabaseIdType.isRequired,
+            planId: bfsIdType.isRequired,
         },
     ),
     RENAME_BUCKET: typedAction("plan/rename-bucket", {
-        planId: clientOrDatabaseIdType.isRequired,
-        id: clientOrDatabaseIdType.isRequired,
+        planId: bfsIdType.isRequired,
+        id: bfsIdType.isRequired,
         name: PropTypes.string.isRequired,
     }),
     SET_BUCKET_DATE: typedAction("plan/set-bucket-date", {
-        planId: clientOrDatabaseIdType.isRequired,
-        id: clientOrDatabaseIdType.isRequired,
+        planId: bfsIdType.isRequired,
+        id: bfsIdType.isRequired,
         date: PropTypes.instanceOf(Date), // can be null
     }),
     DELETE_BUCKET: typedAction("plan/delete-bucket", {
-        planId: clientOrDatabaseIdType.isRequired,
-        id: clientOrDatabaseIdType.isRequired,
+        planId: bfsIdType.isRequired,
+        id: bfsIdType.isRequired,
     }),
     BUCKET_CREATED: typedAction("plan/bucket-created", {
-        planId: PropTypes.number.isRequired,
+        planId: bfsIdType.isRequired,
         clientId: ClientId.propType.isRequired,
         data: PropTypes.object.isRequired,
     }),
     BUCKET_UPDATED: typedAction("plan/bucket-updated", {
-        planId: PropTypes.number.isRequired,
+        planId: bfsIdType.isRequired,
         data: PropTypes.object.isRequired,
     }),
     BUCKET_DELETED: typedAction("plan/bucket-deleted", {
-        planId: PropTypes.number.isRequired,
+        planId: bfsIdType.isRequired,
         id: PropTypes.number.isRequired,
     }),
     BUCKETS_DELETED: typedAction("plan/bucket-deleted", {
-        planId: PropTypes.number.isRequired,
-        ids: PropTypes.arrayOf(PropTypes.number).isRequired,
+        planId: bfsIdType.isRequired,
+        ids: PropTypes.arrayOf(bfsIdType).isRequired,
     }),
     ASSIGN_ITEM_TO_BUCKET: typedAction("plan/assign-item-to-bucket", {
-        id: PropTypes.number.isRequired,
-        bucketId: PropTypes.number,
+        id: bfsIdType.isRequired,
+        bucketId: bfsIdType, // can be null (to clear)
     }),
     // ajax actions
     LOAD_PLANS: "plan/load-plans",
