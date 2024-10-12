@@ -94,7 +94,7 @@ const ProfileState = {
     ERROR: "ERROR",
 };
 
-export const useProfileState = () => {
+const useProfileState = () => {
     const pendingProfile = useContext(ProfileContext);
     if (!pendingProfile) return ProfileState.INITIALIZING;
     if (pendingProfile.data) return ProfileState.AUTHENTICATED;

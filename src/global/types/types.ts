@@ -28,10 +28,6 @@ export interface Recipe extends Ingredient {
     ownerId?: BfsId;
 }
 
-export interface PantryItem extends Ingredient {
-    storeOrder: number;
-}
-
 export interface IngredientRef {
     id?: BfsId;
     raw?: string;

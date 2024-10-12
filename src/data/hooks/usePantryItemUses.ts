@@ -30,16 +30,12 @@ query pantryItemUses($id: ID!) {
 }
 `);
 
-export type Result = Pick<Recipe, "id" | "name"> & {
+type Result = Pick<Recipe, "id" | "name"> & {
     owner: Pick<User, "name" | "email" | "imageUrl">;
     uses: IngredientRef["raw"][];
 };
 
-export type Results = Result[] | null;
-
-export interface Variables {
-    id: string;
-}
+type Results = Result[] | null;
 
 function adapter(rawData: PantryItemUsesQuery | undefined): Results {
     if (!rawData?.library?.recipes?.edges) {

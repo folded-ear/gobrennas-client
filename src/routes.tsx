@@ -1,5 +1,5 @@
 import { Redirect, RouteProps } from "react-router-dom";
-import { Planner } from "@/views/Planner";
+import Planner from "@/views/Planner";
 import PlannedBucketController from "./features/RecipeDisplay/PlannedBucketController";
 import PlannedRecipeController from "./features/RecipeDisplay/PlannedRecipeController";
 import RecipeController from "./features/RecipeDisplay/RecipeController";

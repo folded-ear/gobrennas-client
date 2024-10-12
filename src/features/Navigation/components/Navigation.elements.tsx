@@ -11,7 +11,7 @@ import {
 import ListItemIcon from "@mui/material/ListItemIcon";
 import * as React from "react";
 
-export const TOP_MARGIN = 20;
+const TOP_MARGIN = 20;
 const drawerWidth = 240;
 
 export const Header = styled(AppBar)(({ theme }) => ({

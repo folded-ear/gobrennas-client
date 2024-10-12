@@ -42,7 +42,7 @@ export interface ShopItemTuple extends ItemProps {
     path: BaseItemProp[];
 }
 
-export type ShopListProps = {
+type ShopListProps = {
     plans: TPlan[];
     neededTuples: ShopItemTuple[];
     acquiredTuples: ShopItemTuple[];

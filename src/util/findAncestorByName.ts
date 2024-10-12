@@ -11,5 +11,3 @@ function findAncestorByName(
 }
 
 export const findSvg = findAncestorByName.bind(undefined, "svg");
-
-export default findAncestorByName;
