@@ -10,7 +10,7 @@ type PageBodyProps = {
 } & ContainerProps;
 
 const PageBody = (props: PageBodyProps) => {
-    const { fullWidth, hasFab, className, ...rest } = props;
+    const { ...rest } = props;
     return (
         <Container
             sx={(theme) => ({
