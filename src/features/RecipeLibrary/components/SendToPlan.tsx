@@ -3,14 +3,22 @@ import React from "react";
 import useActivePlanner from "@/data/useActivePlanner";
 import SplitButton, { SelectOption } from "@/views/common/SplitButton";
 import { useScaleOptions } from "@/util/ScalingContext";
-import TextButton from "@/views/common/TextButton";
 import { TaskBarButton } from "@/global/elements/taskbar.elements";
+import Button from "@mui/material/Button";
+import { styled } from "@mui/material/styles";
 
 interface Props {
     onClick(planId: number, scale?: number | null): void;
     iconOnly?: boolean;
     showScaleOptions?: boolean;
 }
+
+const SendToPlanWrapper = styled("div")({
+    width: "100%",
+    whiteSpace: "nowrap",
+    overflow: "hidden",
+    textOverflow: "ellipsis",
+});
 
 const SendToPlan: React.FC<Props> = ({
     onClick,
@@ -63,17 +71,19 @@ const SendToPlan: React.FC<Props> = ({
     }
 
     return (
-        <TextButton
+        <Button
             disableElevation
             variant="contained"
             color="neutral"
             onClick={handleClick}
             title={`Send to ${plan.name}`}
             startIcon={<SendToPlanIcon />}
-            sx={{ maxWidth: "100%" }}
+            sx={{
+                maxWidth: "100%",
+            }}
         >
-            To {plan.name}
-        </TextButton>
+            <SendToPlanWrapper>To {plan.name}</SendToPlanWrapper>
+        </Button>
     );
 };
 

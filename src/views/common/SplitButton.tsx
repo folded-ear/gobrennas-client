@@ -5,17 +5,10 @@ import Grow from "@mui/material/Grow";
 import MenuItem from "@mui/material/MenuItem";
 import MenuList from "@mui/material/MenuList";
 import Popper from "@mui/material/Popper";
-import { makeStyles } from "@mui/styles";
 import { DropDownIcon } from "@/views/common/icons";
 import React, { MouseEventHandler, ReactNode } from "react";
 import { BfsId } from "@/global/types/identity";
 import { Paper } from "@mui/material";
-
-const useStyles = makeStyles({
-    popper: {
-        zIndex: 1100,
-    },
-});
 
 export type SelectOption<TOption> = {
     id: BfsId;
@@ -45,7 +38,6 @@ const SplitButton = <TOption,>({
     startIcon,
     disableElevation,
 }: Props<TOption>) => {
-    const classes = useStyles();
     const [open, setOpen] = React.useState(false);
     const anchorRef = React.useRef<HTMLDivElement>(null);
     const [selectedOption, setSelectedOption] = React.useState(null);
@@ -116,8 +108,12 @@ const SplitButton = <TOption,>({
                 role={undefined}
                 transition
                 disablePortal
-                className={classes.popper}
                 placement={"bottom-end"}
+                sx={{
+                    popper: {
+                        zIndex: 1100,
+                    },
+                }}
             >
                 {({ TransitionProps, placement }) => (
                     <Grow

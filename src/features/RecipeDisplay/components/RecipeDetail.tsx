@@ -1,5 +1,4 @@
 import { Box, Grid, Toolbar, Typography } from "@mui/material";
-import makeStyles from "@mui/styles/makeStyles";
 import { AddRecipeIcon } from "@/views/common/icons";
 import React from "react";
 import Dispatcher from "@/data/dispatcher";
@@ -28,28 +27,6 @@ import useIsDevMode from "@/data/useIsDevMode";
 import RecipeHistoryGrid from "./RecipeHistoryGrid";
 import { useHistory } from "react-router-dom";
 
-const useStyles = makeStyles((theme) => ({
-    name: {
-        flexGrow: 1,
-        [theme.breakpoints.down("sm")]: {
-            width: "100%",
-        },
-    },
-    imageContainer: {
-        height: "250px",
-        overflow: "hidden",
-        marginBottom: theme.spacing(4),
-        marginRight: theme.spacing(4),
-    },
-    toolbar: {
-        [theme.breakpoints.down("sm")]: {
-            flexWrap: "wrap-reverse",
-        },
-        backgroundColor: theme.palette.background.paper,
-        padding: 0,
-    },
-}));
-
 interface Props {
     recipe: Recipe;
     subrecipes: Subrecipe[];
@@ -76,7 +53,6 @@ const RecipeDetail: React.FC<Props> = ({
     nav,
     showFab = false,
 }) => {
-    const classes = useStyles();
     const devMode = useIsDevMode();
     const history = useHistory();
 
@@ -99,11 +75,27 @@ const RecipeDetail: React.FC<Props> = ({
     return (
         <PageBody hasFab={hasFab} id="toolbar">
             <SubHeader>
-                <Toolbar className={classes.toolbar}>
+                <Toolbar
+                    sx={(theme) => ({
+                        flexWrap: {
+                            sm: "wrap-reverse",
+                        },
+                        backgroundColor: theme.palette.background.paper,
+                        padding: 0,
+                    })}
+                >
                     {canFavorite && (
                         <FavoriteIndicator type={"Recipe"} id={recipe.id} />
                     )}
-                    <Typography className={classes.name} variant="h2">
+                    <Typography
+                        variant="h2"
+                        sx={{
+                            flexGrow: 1,
+                            width: {
+                                sm: "100%",
+                            },
+                        }}
+                    >
                         {recipe.name}
                         {/*{recipeLO.isLoading() && <Box display="inline" ml={2}>*/}
                         {/*    <CircularProgress size={20} />*/}
@@ -123,9 +115,14 @@ const RecipeDetail: React.FC<Props> = ({
                 <Grid item xs={5}>
                     {photo ? (
                         <ItemImage
-                            className={classes.imageContainer}
                             photo={photo}
                             alt={recipe.name}
+                            sx={{
+                                height: "250px",
+                                overflow: "hidden",
+                                marginBottom: 4,
+                                marginRight: 4,
+                            }}
                         />
                     ) : (
                         <ItemImageUpload

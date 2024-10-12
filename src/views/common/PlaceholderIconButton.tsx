@@ -1,17 +1,14 @@
-import { makeStyles } from "@mui/styles";
 import IconButton from "@mui/material/IconButton";
 import { Blank } from "./icons";
 
-const useStyles = makeStyles({
-    root: {
-        visibility: "hidden",
-    },
-});
-
 const PlaceholderIconButton = (props) => {
-    const classes = useStyles();
     return (
-        <IconButton className={classes.root} disabled size="small" {...props}>
+        <IconButton
+            disabled
+            size="small"
+            {...props}
+            sx={{ visibility: "hidden" }}
+        >
             <Blank />
         </IconButton>
     );

@@ -7,7 +7,6 @@ import {
     Grid,
     Typography,
 } from "@mui/material";
-import { makeStyles } from "@mui/styles";
 import Dispatcher from "@/data/dispatcher";
 import RecipeActions from "@/data/RecipeActions";
 import ItemImage from "@/features/RecipeLibrary/components/ItemImage";
@@ -24,16 +23,6 @@ import LabelItem from "@/global/components/LabelItem";
 import { TaskBar, TaskBarButton } from "@/global/elements/taskbar.elements";
 import { RecipeCard as TRecipeCard } from "@/features/RecipeLibrary/types";
 
-const useStyles = makeStyles({
-    photo: {
-        height: 140,
-    },
-    title: {
-        textDecoration: "none",
-        color: "inherit",
-    },
-});
-
 interface Props {
     recipe: TRecipeCard;
     mine: boolean;
@@ -41,7 +30,6 @@ interface Props {
 }
 
 const RecipeCard: React.FC<Props> = ({ recipe, mine, showOwner }) => {
-    const classes = useStyles();
     const [raised, setRaised] = React.useState(false);
 
     const labelsToDisplay =
@@ -73,9 +61,9 @@ const RecipeCard: React.FC<Props> = ({ recipe, mine, showOwner }) => {
                 {recipe.photo ? (
                     <Link to={`/library/recipe/${recipe.id}`}>
                         <ItemImage
-                            className={classes.photo}
                             photo={recipe.photo}
                             alt={recipe.name}
+                            sx={{ height: 140 }}
                         />
                     </Link>
                 ) : (
@@ -96,7 +84,10 @@ const RecipeCard: React.FC<Props> = ({ recipe, mine, showOwner }) => {
                                 variant="h5"
                                 component={Link}
                                 to={`/library/recipe/${recipe.id}`}
-                                className={classes.title}
+                                sx={{
+                                    textDecoration: "none",
+                                    color: "inherit",
+                                }}
                             >
                                 {recipe.name}
                             </Typography>
