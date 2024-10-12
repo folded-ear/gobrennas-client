@@ -26,7 +26,7 @@ export function toggleShoppingPlan(id: BfsId) {
     });
 }
 
-export function selectPlan(id: BfsId) {
+function selectPlan(id: BfsId) {
     return Dispatcher.dispatch({
         type: PlanActions.SELECT_PLAN,
         id,

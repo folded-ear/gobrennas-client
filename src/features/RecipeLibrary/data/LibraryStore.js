@@ -14,7 +14,7 @@ import LibraryActions from "./LibraryActions";
 import { ripLoadObject } from "@/util/ripLoadObject";
 import { bfsIdType, ensureString } from "@/global/types/identity";
 
-export const adaptTime = (recipe) => {
+const adaptTime = (recipe) => {
     if (!recipe.totalTime) return recipe;
     return {
         ...recipe,

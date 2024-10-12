@@ -22,9 +22,9 @@ import {
     indexOfBfsId,
 } from "@/global/types/identity";
 
-export const AT_END = "AT_END_" + ClientId.next();
+const AT_END = "AT_END_" + ClientId.next();
 
-export const _newTask = (name) => ({
+const _newTask = (name) => ({
     id: ClientId.next(),
     name,
     status: PlanItemStatus.NEEDED,
@@ -43,7 +43,7 @@ export const createList = (state, name, optionalPlanIdToCopy) => {
     };
 };
 
-export const idFixerFactory = (cid, id) => {
+const idFixerFactory = (cid, id) => {
     const idFixer = (ids) => {
         if (ids == null) return null;
         if (ids == cid && bfsIdEq(ids, cid)) return id;
@@ -59,7 +59,7 @@ export const idFixerFactory = (cid, id) => {
     return idFixer;
 };
 
-export const fixIds = (state, task, id, clientId) => {
+const fixIds = (state, task, id, clientId) => {
     const idFixer = idFixerFactory(clientId, id);
     const byId = {
         ...state.byId,
@@ -174,7 +174,7 @@ export const losForIds = (state, ids) =>
     ids == null ? [] : ids.map((id) => loForId(state, id));
 
 // after can be `null`, an id, or the magic `AT_END` value
-export const spliceIds = (ids, id, after = AT_END) => {
+const spliceIds = (ids, id, after = AT_END) => {
     if (ids == null) return [id];
     if (ids.length === 0 || after === AT_END) {
         return ids.concat(id);
@@ -274,7 +274,7 @@ export const flushTasksToRename = (state) => {
     return state;
 };
 
-export const mapTaskLO = (state, id, work) =>
+const mapTaskLO = (state, id, work) =>
     dotProp.set(state, ["byId", id], (lo) => {
         // dotProp will give us an anonymous object literal on a missing key...
         if (!(lo instanceof LoadObject)) {
@@ -329,7 +329,7 @@ export const focusTask = (state, id) => {
     };
 };
 
-export const getNeighborId = (
+const getNeighborId = (
     state,
     id,
     delta = 1,
@@ -369,7 +369,7 @@ export const getNeighborId = (
     }
 };
 
-export const lastDescendantIdOf = (state, id) => {
+const lastDescendantIdOf = (state, id) => {
     while (id != null) {
         const desc = taskForId(state, id);
         if (!isExpanded(desc)) return desc.id;
@@ -437,18 +437,18 @@ export const selectDelta = (state, id, delta) => {
 
 const statusUpdatesToFlush = new Map();
 
-export const unqueueTaskId = (id) => {
+const unqueueTaskId = (id) => {
     tasksToRename.delete(id);
     statusUpdatesToFlush.delete(id);
 };
 
-export const doTaskDelete = (state, id: number) => {
+const doTaskDelete = (state, id: number) => {
     unqueueTaskId(id);
     PlanApi.deleteItem(id);
     return state;
 };
 
-export const setTaskStatus = (state, id, status) => {
+const setTaskStatus = (state, id, status) => {
     if (willStatusDelete(status)) {
         unqueueTaskId(id);
     }
@@ -475,7 +475,7 @@ export const queueDelete = (state, id) => {
     return queueStatusUpdate(state, id, PlanItemStatus.DELETED);
 };
 
-export function isEmpty(taskOrString) {
+function isEmpty(taskOrString) {
     if (taskOrString == null) return true;
     const str =
         typeof taskOrString === "string" ? taskOrString : taskOrString.name;
@@ -630,7 +630,7 @@ export const moveDelta = (state, delta) => {
     });
 };
 
-export const subtaskIdBefore = (state, parentId, before) => {
+const subtaskIdBefore = (state, parentId, before) => {
     const p = taskForId(state, parentId);
     if (!p.subtaskIds || p.subtaskIds.length === 0) return null;
     const idx = indexOfBfsId(p.subtaskIds, before);
@@ -667,7 +667,7 @@ export const moveSubtree = (state, action) => {
     });
 };
 
-export const mutateTree = (state, spec) => {
+const mutateTree = (state, spec) => {
     /*
   Spec is {ids, parentId, afterId}
    */
@@ -686,7 +686,7 @@ export const mutateTree = (state, spec) => {
     return treeMutated(state, spec);
 };
 
-export const treeMutated = (state, spec) => {
+const treeMutated = (state, spec) => {
     // Woo! GO GO GO!
     const byId = { ...state.byId };
     spec.ids.reduce((afterId, id) => {
@@ -759,7 +759,7 @@ export const nestTask = (state) => {
 };
 
 // if expanded is null, it means "toggle it"
-export const setExpansion = (state, id, expanded = false) =>
+const setExpansion = (state, id, expanded = false) =>
     dotProp.set(state, ["byId", id], (lo) =>
         lo.map((t) => ({
             ...t,
@@ -795,7 +795,7 @@ export const toggleExpanded = (state, id) => {
     return setExpansion(state, id);
 };
 
-export const forceExpansionBuilder = (expanded) => {
+const forceExpansionBuilder = (expanded) => {
     const work = (state, id) => {
         const lo = loForId(state, id);
         if (!lo.hasValue()) return state;
@@ -853,7 +853,7 @@ export const taskLoaded = (state, task) => {
     return dotProp.set(state, ["byId", task.id], lo.done());
 };
 
-export const taskLoading = (state, id) => {
+const taskLoading = (state, id) => {
     return dotProp.set(state, ["byId", id], (lo) =>
         lo instanceof LoadObject ? lo.loading() : LoadObject.loading(),
     );
@@ -907,7 +907,7 @@ export function deserializeBucket(b: WireBucket): PlanBucket {
     return { ...b, date: parseLocalDate(b.date) };
 }
 
-export function serializeBucket(b: PlanBucket): WireBucket {
+function serializeBucket(b: PlanBucket): WireBucket {
     return { ...b, date: formatLocalDate(b.date) };
 }
 

@@ -30,18 +30,6 @@ export {
     red as deleteColor,
 } from "@mui/material/colors";
 
-export const coloredIconNoOp = (palette) =>
-    withStyles({
-        root: {
-            color: palette[600],
-            cursor: "not-allowed",
-            "&:hover": {
-                color: palette[600],
-                backgroundColor: "transparent",
-            },
-        },
-    })(IconButton);
-
 export const coloredIconButton = (
     palette: MuiColorFamily,
     restingPalette = palette,
