@@ -1,7 +1,7 @@
 import { makeStyles } from "@mui/styles";
 import React from "react";
 import ImageDropZone from "@/util/ImageDropZone";
-import { BfsId } from "@/global/types/identity";
+import { BfsId, ensureString } from "@/global/types/identity";
 import { gql } from "@/__generated__";
 import { useMutation } from "@apollo/client";
 import promiseWellSizedFile from "@/util/promiseWellSizedFile";
@@ -42,7 +42,7 @@ const ItemImageUpload: React.FC<Props> = ({ recipeId, ...props }) => {
         photo = await promiseWellSizedFile(photo);
         setRecipePhoto({
             variables: {
-                id: "" + recipeId,
+                id: ensureString(recipeId),
                 photo,
             },
         });
