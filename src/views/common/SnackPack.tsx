@@ -7,12 +7,7 @@ import snackBarStore from "@/data/snackBarStore";
 import UiActions from "@/data/UiActions";
 import useFluxStore from "@/data/useFluxStore";
 
-const useStyles = makeStyles((theme) => ({
-    snackbar: {
-        [theme.breakpoints.down("sm")]: {
-            bottom: 90,
-        },
-    },
+const useStyles = makeStyles(() => ({
     close: {
         fontWeight: "normal",
     },
@@ -103,7 +98,11 @@ function SnackPack() {
             autoHideDuration={messageInfo.hideDelay || 5000}
             onClose={handleClose}
             message={message}
-            className={fabVisible ? classes.snackbar : undefined}
+            sx={{
+                bottom: {
+                    sm: fabVisible ? 90 : 0,
+                },
+            }}
             action={
                 <>
                     {messageInfo.renderAction
