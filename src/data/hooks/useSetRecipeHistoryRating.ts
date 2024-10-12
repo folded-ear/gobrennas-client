@@ -5,7 +5,7 @@ import {
     SetRecipeHistoryRatingMutation,
 } from "@/__generated__/graphql";
 import { useCallback } from "react";
-import { BfsId } from "@/global/types/identity";
+import { BfsId, ensureString } from "@/global/types/identity";
 
 const SET_RECIPE_HISTORY_RATING = gql(`
 mutation setRecipeHistoryRating($recipeId: ID!, $id: ID!, $rating: PositiveInt!) {
@@ -34,8 +34,8 @@ export const useSetRecipeHistoryRating = (): [
         (recipeId: BfsId, id: BfsId, rating: number) =>
             mutateFunction({
                 variables: {
-                    recipeId: "" + recipeId,
-                    id: "" + id,
+                    recipeId: ensureString(recipeId),
+                    id: ensureString(id),
                     rating,
                 },
             }).then(({ data, errors }) => {

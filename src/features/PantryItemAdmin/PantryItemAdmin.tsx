@@ -20,6 +20,7 @@ import ConfirmDialog, { DialogProps } from "./components/ConfirmDialog";
 import ViewUses from "./components/ViewUses";
 import { useSetPantryItemLabels } from "@/data/hooks/useSetPantryItemLabels";
 import { useSetPantryItemSynonyms } from "@/data/hooks/useSetPantryItemSynonyms";
+import { ensureString } from "@/global/types/identity";
 
 const DUPLICATE_PREFIX = "duplicates:";
 
@@ -183,7 +184,7 @@ export default function PantryItemAdmin() {
         }
         const confirmMsg = `Irrevocably combine these ${selectionModel.length} selected items?`;
         if (!window.confirm(confirmMsg)) return;
-        combineItems(selectionModel.map((id) => id.toString()))
+        combineItems(selectionModel.map(ensureString))
             .then(() => {
                 refetch();
                 setSelectionModel([]);

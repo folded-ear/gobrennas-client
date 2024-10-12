@@ -28,7 +28,7 @@ export const LibraryController = () => {
     const params = history.location.search
         ? qs.parse(history.location.search.substring(1))
         : {};
-    const [query, setQuery] = useState(params.q ? "" + params.q : "");
+    const [query, setQuery] = useState(params.q ?? "");
     const [unsavedQuery, setUnsavedQuery] = useState(query);
     const [scope, setScope] = useState(
         params.s === LibrarySearchScope.Everyone
