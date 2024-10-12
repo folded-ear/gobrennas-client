@@ -1,9 +1,8 @@
 import FluxReduceStore from "flux/lib/FluxReduceStore";
-import { FluxAction } from "@/global/types/types";
+import { FluxAction, Ingredient } from "@/global/types/types";
 import LoadObject from "@/util/LoadObject";
 import LoadObjectMap from "@/util/LoadObjectMap";
 import { BfsId } from "@/global/types/identity";
-import { Ingredient } from "@/global/types/types";
 import { RippedLO } from "@/util/ripLoadObject";
 
 interface State {
@@ -13,10 +12,10 @@ interface State {
 declare namespace LibraryStore {}
 
 declare class LibraryStore extends FluxReduceStore<State, FluxAction> {
-    getIngredientById(id: number): LoadObject<Ingredient>;
-    getIngredientRloById(id: number): RippedLO<Ingredient>;
+    getIngredientById(id: string): LoadObject<Ingredient>;
+    getIngredientRloById(id: string): RippedLO<Ingredient>;
 
-    getRecipeRloById(id: number): RippedLO<Recipe>;
+    getRecipeRloById(id: string): RippedLO<Recipe>;
 }
 
 const libraryStore: LibraryStore;

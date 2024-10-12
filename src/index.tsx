@@ -6,8 +6,9 @@ import debounce from "@/util/debounce";
 import { createRoot } from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
 
-// if (!import.meta.env.PROD) {
-//     Dispatcher.register(require("./util/logAction").default);
+// import logAction from "./util/logAction";
+// if (import.meta.env.DEV) {
+//     Dispatcher.register(logAction);
 // }
 
 createRoot(document.getElementById("root")!).render(

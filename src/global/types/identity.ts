@@ -1,5 +1,6 @@
 import { User } from "@/__generated__/graphql";
 import { Maybe } from "graphql/jsutils/Maybe";
+import PropTypes from "prop-types";
 
 export type BfsId = string | number;
 
@@ -10,12 +11,17 @@ export type UserType = Pick<
 
 export function ensureString(id: BfsId): string {
     if (typeof id === "string") return id;
-    if (id < 0) throw new TypeError("Ids must be non-negative.");
-    if (id > Number.MAX_SAFE_INTEGER)
+    if (id < 0) {
+        throw new TypeError(`Ids must be non-negative, but '${id}' isn't.`);
+    }
+    if (id > Number.MAX_SAFE_INTEGER) {
         throw new TypeError(
-            "Ids must not be so large they lose precision to floating point representation.",
+            `Ids must not be so large they lose precision to floating point representation, but '${id}' isn't.`,
         );
-    if (id != Math.floor(id)) throw new TypeError("Ids must be integers");
+    }
+    if (id != Math.floor(id)) {
+        throw new TypeError(`Ids must be integers, but '${id}' isn't.`);
+    }
     return id.toString();
 }
 
@@ -34,3 +40,8 @@ export function includesBfsId(ids: BfsId[], id: Maybe<BfsId>): boolean {
 export function indexOfBfsId(ids: BfsId[], id: Maybe<BfsId>): number {
     return ids.findIndex((el) => bfsIdEq(id, el));
 }
+
+export const bfsIdType = PropTypes.oneOfType([
+    PropTypes.number,
+    PropTypes.string,
+]);
