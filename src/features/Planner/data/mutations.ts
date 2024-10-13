@@ -1,27 +1,12 @@
 import { gql } from "@/__generated__";
 
-export const RENAME_PLAN_ITEM = gql(`
-mutation renamePlanItem($id: ID!, $name: String!) {
+export const RENAME_PLAN_OR_ITEM = gql(`
+mutation renamePlanOrItem($id: ID!, $name: String!) {
   planner {
     rename(id: $id, name: $name) {
-      id
-      name
-      preparation
-      ingredient { id }
-      quantity {
-        quantity
-        units {
-          name
-          id
-        }
-      }
-      status
-      notes
-      parent { id }
-      aggregate { id }
-      children { id }
-      components { id }
-      bucket { id }
+      ...corePlanItemLoad
+      ...planLoad
+      ...planItemLoad
     }
   }
 }`);
@@ -30,7 +15,8 @@ export const SET_PLAN_COLOR = gql(`
 mutation setPlanColor($id: ID!, $color: String!) {
   planner {
     setColor(planId: $id, color: $color) {
-      ...planCore
+      ...corePlanItemLoad
+      ...planLoad
     }
   }
 }`);
@@ -46,7 +32,8 @@ export const CREATE_PLAN = gql(`
 mutation createPlan($name: String!, $sourcePlanId: ID) {
   planner {
     createPlan(name: $name, sourcePlanId: $sourcePlanId) {
-      ...planCore
+      ...corePlanItemLoad
+      ...planLoad
     }
   }
 }`);
@@ -90,6 +77,9 @@ mutation deleteBuckets($planId: ID!, $bucketIds: [ID!]!) {
 export const COMPLETE_PLAN_ITEM = gql(`
 mutation setStatus($id: ID!, $status: PlanItemStatus!, $doneAt: DateTime) {
   planner {
-    setStatus(id: $id, status: $status, doneAt: $doneAt) { id }
+    setStatus(id: $id, status: $status, doneAt: $doneAt) {
+      id
+      status
+    }
   }
 }`);

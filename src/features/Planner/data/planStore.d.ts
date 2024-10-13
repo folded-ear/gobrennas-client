@@ -23,24 +23,24 @@ export interface BasePlanItem {
     //  core
     id: BfsId;
     name: string;
-    notes?: string;
-    status: string;
-    parentId?: number;
+    notes?: Maybe<string>;
+    parentId?: Maybe<number>;
     subtaskIds?: BfsId[];
-    aggregateId?: number;
-    componentIds?: number[];
-    bucketId?: BfsId;
+    aggregateId?: Maybe<number>;
+    componentIds?: Maybe<number[]>;
+    bucketId?: Maybe<BfsId>;
     // client-side
-    _expanded?: boolean;
-    _next_status?: PlanItemStatus;
+    _expanded?: Maybe<boolean>;
+    _next_status?: Maybe<PlanItemStatus>;
 }
 
 export interface PlanItem extends BasePlanItem {
-    quantity?: number;
-    uomId?: number;
-    units?: string;
-    ingredientId?: number;
-    preparation?: string;
+    status: string;
+    quantity?: Maybe<number>;
+    uomId?: Maybe<number>;
+    units?: Maybe<string>;
+    ingredientId?: Maybe<number>;
+    preparation?: Maybe<string>;
 }
 
 export interface Plan extends BasePlanItem {
@@ -80,6 +80,7 @@ declare class PlanStore extends FluxReduceStore<State, FluxAction> {
 
     getItemLO(id: BfsId): LoadObject<PlanItem>;
     getItemRlo(id: BfsId): RippedLO<PlanItem>;
+    getPlanRlo(id: BfsId): RippedLO<Plan>;
 
     getSelectedItems(): PlanItem[];
 

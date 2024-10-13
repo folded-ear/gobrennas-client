@@ -9,6 +9,7 @@ import { relayStylePagination } from "@apollo/client/utilities";
 import { API_BASE_URL } from "@/constants";
 import { askUserToReauth, isAuthError } from "./Profile";
 import createUploadLink from "apollo-upload-client/createUploadLink.mjs";
+import possibleTypes from "./apolloPossibleTypes";
 
 const errorLink = onError(({ operation, graphQLErrors }) => {
     // don't ask about reauth if requesting me; that's the profile gate
@@ -24,6 +25,7 @@ const errorLink = onError(({ operation, graphQLErrors }) => {
 
 export const client = new ApolloClient({
     cache: new InMemoryCache({
+        possibleTypes,
         typePolicies: {
             Query: {
                 fields: {
