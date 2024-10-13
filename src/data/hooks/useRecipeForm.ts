@@ -18,7 +18,7 @@ type UseRecipeFormReturn = {
     onMultilinePasteIngredientRefs: (idx: number, text: string) => void;
 };
 
-const buildDraft = (recipe: Recipe) => {
+const buildDraft = (recipe: Recipe): DraftRecipe => {
     return {
         ...recipe,
         ingredients: recipe.ingredients.map((ing) => ({
@@ -40,7 +40,7 @@ const buildNewIngredient = (raw?: string) => ({
 });
 
 export function useRecipeForm(recipe: Recipe): UseRecipeFormReturn {
-    const [draft, setDraft] = React.useState<DraftRecipe>(buildDraft(recipe));
+    const [draft, setDraft] = React.useState(buildDraft(recipe));
 
     const onUpdate = (key: string, value: FormValue) => {
         setDraft((draft) => dotProp.set(draft, key, value));

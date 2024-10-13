@@ -139,7 +139,7 @@ function groupItems(
             !allAcquiring && items.some(isOrWillBeAcquired)
                 ? items.filter((it) => !isOrWillBeAcquired(it))
                 : items.filter((it) => !isZeroQuantity(it));
-        const unitLookup = new Map();
+        const unitLookup = new Map<string, any>();
         const byUnit = groupBy(toAgg, (it) => {
             const uomId = it.uomId ? ensureString(it.uomId) : undefined;
             if (uomId) {
@@ -155,7 +155,7 @@ function groupItems(
                     .get(uomId)!
                     .reduce((q, it) => q + (it.quantity || 0), 0),
                 uomId,
-                units: unitLookup.get(uomId),
+                units: uomId ? unitLookup.get(uomId) : undefined,
             });
         }
         const expanded = bfsIdEq(ingId, expandedId);
@@ -265,12 +265,14 @@ const Shop = () => {
     useEffect(() => {
         handleRepartition();
     }, [handleRepartition, activePlanIds]);
-    const [acquiredIds, setAcquiredIds] = useState<Set<BfsId>>(new Set());
+    const [acquiredIds, setAcquiredIds] = useState(new Set<BfsId>());
     useEffect(
         () => {
             setAcquiredIds(
-                new Set(
-                    itemTuples.filter((it) => it.acquiring).map((it) => it.id),
+                new Set<string>(
+                    itemTuples
+                        .filter((it) => it.acquiring)
+                        .map((it) => ensureString(it.id)),
                 ),
             );
         },
@@ -284,7 +286,7 @@ const Shop = () => {
         setPartitionedTuples(
             partition(
                 itemTuples,
-                (it) => !acquiredIds.has(it.blockId || it.id),
+                (it) => !acquiredIds.has(ensureString(it.blockId || it.id)),
             ),
         );
     }, [itemTuples, acquiredIds]);

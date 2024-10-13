@@ -1,6 +1,7 @@
 import LibraryStore from "@/features/RecipeLibrary/data/LibraryStore";
 import type { Recipe } from "@/global/types/types";
 import { RippedLO } from "@/util/ripLoadObject";
+import { ensureString } from "@/global/types/identity";
 
 export function recipeRloById(
     id: string,
@@ -8,7 +9,7 @@ export function recipeRloById(
     const rlo = LibraryStore.getRecipeRloById(id);
     if (!rlo.data) return rlo;
 
-    const subIds = new Set();
+    const subIds = new Set<string>();
     const subs: Recipe[] = [];
     let loading = false;
     const prepRecipe = (recipe) => ({
@@ -26,8 +27,9 @@ export function recipeRloById(
                 ingredient: ing,
             };
             if (ing.type !== "Recipe") return ref;
-            if (subIds.has(ing.id)) return ref;
-            subIds.add(ing.id);
+            const stringIngId = ensureString(ing.id);
+            if (subIds.has(stringIngId)) return ref;
+            subIds.add(stringIngId);
             subs.push(prepRecipe(ing));
             return ref;
         }),

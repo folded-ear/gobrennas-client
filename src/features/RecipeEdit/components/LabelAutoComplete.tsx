@@ -3,7 +3,7 @@ import { Stack } from "@mui/material";
 import { ChipPicker } from "@/global/components/ChipPicker";
 
 interface LabelAutoCompleteProps {
-    recipeLabels: string[];
+    recipeLabels?: string[];
     labelList: string[];
 
     onLabelChange(e, labels: string[], reason): void;

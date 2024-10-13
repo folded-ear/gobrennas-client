@@ -99,7 +99,9 @@ const PlanSidebar: React.FC<Props> = ({ open, onClose, plan }) => {
         return [
             loading,
             loading ? [] : friendList,
-            loading ? new Map() : mapBy(friendList, (f) => ensureString(f.id)),
+            loading
+                ? new Map<string, UserType>()
+                : mapBy(friendList, (f) => ensureString(f.id)),
         ];
     }, [FriendStore]);
 
