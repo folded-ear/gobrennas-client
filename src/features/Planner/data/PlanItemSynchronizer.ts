@@ -3,11 +3,12 @@ import useActiveShoppingPlanIds from "@/data/useActiveShoppingPlanIds";
 import { useSynchronizers } from "@/util/useSynchronizer";
 import PlanApi from "@/features/Planner/data/PlanApi";
 import ClientId from "@/util/ClientId";
+import { includesBfsId } from "@/global/types/identity";
 
 export default function PlanItemSynchronizer() {
     let planIds = useActiveShoppingPlanIds();
     const plan = useActivePlanner().data;
-    if (plan?.id != null && !planIds.includes(plan.id)) {
+    if (plan?.id != null && !includesBfsId(planIds, plan.id)) {
         planIds = planIds.concat(plan.id);
     }
     useSynchronizers(

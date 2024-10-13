@@ -4,9 +4,7 @@ import RecipeActions from "@/data/RecipeActions";
 import RecipeApi from "@/data/RecipeApi";
 import LibraryApi from "@/features/RecipeLibrary/data/LibraryApi";
 import { ReduceStore } from "flux/utils";
-import invariant from "invariant";
 import PropTypes from "prop-types";
-import { clientOrDatabaseIdType } from "@/util/ClientId";
 import LoadObject from "@/util/LoadObject";
 import LoadObjectMap from "@/util/LoadObjectMap";
 import { loadObjectMapOf } from "@/util/loadObjectTypes";
@@ -14,8 +12,9 @@ import { fromMilliseconds } from "@/util/time";
 import typedStore from "@/util/typedStore";
 import LibraryActions from "./LibraryActions";
 import { ripLoadObject } from "@/util/ripLoadObject";
+import { bfsIdType, ensureString } from "@/global/types/identity";
 
-export const adaptTime = (recipe) => {
+const adaptTime = (recipe) => {
     if (!recipe.totalTime) return recipe;
     return {
         ...recipe,
@@ -27,12 +26,16 @@ class LibraryStore extends ReduceStore {
     getInitialState() {
         return {
             // the real goodies
-            byId: new LoadObjectMap((ids) =>
+            byId: new LoadObjectMap((ids) => {
+                const stringIdArray = [];
+                for (const id of ids) {
+                    stringIdArray.push(ensureString(id));
+                }
                 Dispatcher.dispatch({
                     type: LibraryActions.LOAD_INGREDIENTS,
-                    ids: [...ids],
-                }),
-            ), // LoadObjectMap<ID, Ingredient>
+                    ids: stringIdArray,
+                });
+            }), // LoadObjectMap<ID, Ingredient>
         };
     }
 
@@ -52,21 +55,6 @@ class LibraryStore extends ReduceStore {
                 };
             }
 
-            case LibraryActions.INGREDIENT_LOADED: {
-                if (action.background && !state.byId.has(action.id)) {
-                    // background update to something we don't have info about,
-                    // so just ignore it.
-                    return state;
-                }
-                return {
-                    ...state,
-                    byId: state.byId.set(
-                        action.id,
-                        LoadObject.withValue(adaptTime(action.data)),
-                    ),
-                };
-            }
-
             case LibraryActions.INGREDIENTS_LOADED: {
                 if (action.data.length === 0) {
                     return state;
@@ -76,7 +64,7 @@ class LibraryStore extends ReduceStore {
                     byId: action.data.reduce(
                         (byId, it) =>
                             byId.set(
-                                it.id,
+                                ensureString(it.id),
                                 LoadObject.withValue(adaptTime(it)),
                             ),
                         state.byId,
@@ -86,9 +74,7 @@ class LibraryStore extends ReduceStore {
 
             case RecipeActions.SEND_TO_PLAN: {
                 RecipeApi.sendToPlan(
-                    typeof action.recipeId === "string"
-                        ? parseInt(action.recipeId)
-                        : action.recipeId,
+                    action.recipeId,
                     action.planId,
                     action.scale,
                 );
@@ -125,7 +111,7 @@ class LibraryStore extends ReduceStore {
 
     getIngredientById(id) {
         const LOMap = this.getState().byId;
-        let lo = LOMap.get(id);
+        let lo = LOMap.get(ensureString(id));
         if (lo.isEmpty()) {
             lo = lo.loading();
         }
@@ -137,21 +123,20 @@ class LibraryStore extends ReduceStore {
     }
 
     getRecipeRloById(id) {
-        invariant(typeof id === "number", "That is not a valid integer");
         return ripLoadObject(this.getIngredientById(id));
     }
 }
 
 LibraryStore.stateTypes = {
     byId: loadObjectMapOf(
-        clientOrDatabaseIdType,
+        bfsIdType,
         PropTypes.shape({
             // all
-            id: clientOrDatabaseIdType.isRequired,
+            id: bfsIdType.isRequired,
             type: PropTypes.string.isRequired,
             name: PropTypes.string.isRequired,
             // recipe
-            ownerId: clientOrDatabaseIdType,
+            ownerId: bfsIdType,
             externalUrl: PropTypes.string,
             ingredients: PropTypes.arrayOf(
                 PropTypes.shape({
@@ -160,7 +145,7 @@ LibraryStore.stateTypes = {
                     units: PropTypes.string,
                     uomId: PropTypes.number,
                     ingredient: PropTypes.string,
-                    ingredientId: PropTypes.number,
+                    ingredientId: bfsIdType,
                     preparation: PropTypes.string,
                 }),
             ),

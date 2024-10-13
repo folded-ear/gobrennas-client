@@ -6,7 +6,7 @@ import {
     DragOverlay,
     rectIntersection,
 } from "@dnd-kit/core";
-import { BfsId } from "@/global/types/identity";
+import { BfsId, bfsIdEq } from "@/global/types/identity";
 import { Box, darken, lighten, useTheme } from "@mui/material";
 
 export type Vert = "above" | "below";
@@ -65,7 +65,7 @@ const DragContainer: React.FC<Props> = ({
         if (!event.over) return;
         const id = event.active.id;
         const targetId = event.over.id;
-        if (id === targetId) return;
+        if (bfsIdEq(id, targetId)) return;
         const finalRect = event.active.rect.current.translated;
         const overRect = event.over.rect;
         let vertical: Vert = "below";

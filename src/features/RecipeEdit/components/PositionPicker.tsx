@@ -3,6 +3,7 @@ import React from "react";
 import { findSvg } from "@/util/findAncestorByName";
 import getPositionWithin from "@/util/getPositionWithin";
 import ImageOrPreview from "@/views/common/ImageOrPreview";
+import { Maybe } from "graphql/jsutils/Maybe";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -24,11 +25,11 @@ const useStyles = makeStyles((theme) => ({
 const CENTER = [0.5, 0.5];
 
 interface Props {
-    image:
+    image: Maybe<
         | string // actual URL
         | Blob // including File
-        | null;
-    value: number[] | null;
+    >;
+    value: Maybe<number[]>;
 
     onChange(v: number[]): void;
 }

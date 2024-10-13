@@ -10,6 +10,7 @@ import { useLoadedPlan } from "../RecipeDisplay/hooks/useLoadedPlan";
 import { useGetAllPlans } from "@/data/hooks/useGetAllPlans";
 import { PlanItem } from "./data/planStore";
 import { Ingredient } from "@/global/types/types";
+import { bfsIdEq } from "@/global/types/identity";
 
 interface ItemData extends PlanItem {
     ingredient?: Ingredient;
@@ -71,12 +72,12 @@ export const PlannerController: React.FC<Props> = ({ match }) => {
             planDetailVisible: planStore.isPlanDetailVisible(),
             itemTuples: activePlan.data ? listTheTree(activePlan.data.id) : [],
             isItemActive: activeItem
-                ? (itemOrId) => (itemOrId.id || itemOrId) === activeItem.id
+                ? (itemOrId) => bfsIdEq(itemOrId.id || itemOrId, activeItem.id)
                 : () => false,
             isItemSelected: selectedItems
                 ? (itemOrId) =>
-                      selectedItems.some(
-                          (t) => (itemOrId.id || itemOrId) === t.id,
+                      selectedItems.some((t) =>
+                          bfsIdEq(itemOrId.id || itemOrId, t.id),
                       )
                 : () => false,
         };

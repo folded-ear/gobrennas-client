@@ -9,7 +9,7 @@ import DeleteButton from "@/views/common/DeleteButton";
 import { Alert, CircularProgress } from "@mui/material";
 import { useUpdateRecipe } from "@/data/hooks/useUpdateRecipe";
 import { useCreateRecipeFrom } from "@/data/hooks/useCreateRecipeFrom";
-import type { BfsId } from "@/global/types/identity";
+import { BfsId, bfsIdEq } from "@/global/types/identity";
 import type { DraftRecipe } from "@/global/types/types";
 import { useDeleteRecipe } from "@/data/hooks/useDeleteRecipe";
 import { useProfileId } from "@/providers/Profile";
@@ -36,10 +36,7 @@ const RecipeEditController: React.FC<Props> = ({ match }) => {
 
     const shouldCreateCopy = match.path.split("/").includes("make-copy");
 
-    const isMine =
-        myProfileId &&
-        recipe.ownerId &&
-        myProfileId.toString() === recipe.ownerId.toString();
+    const isMine = myProfileId && bfsIdEq(myProfileId, recipe.ownerId);
     if (!isMine && !shouldCreateCopy) {
         return (
             <Alert severity={"error"}>

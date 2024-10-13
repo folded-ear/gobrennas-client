@@ -1,7 +1,7 @@
 import { useMutation, useQuery } from "@apollo/client";
 import { gql } from "@/__generated__";
 import { useMemo } from "react";
-import { BfsId } from "@/global/types/identity";
+import { BfsId, bfsIdEq } from "@/global/types/identity";
 
 export type IdCallback = (number) => boolean;
 
@@ -21,9 +21,8 @@ export function useIsFavorite(id: BfsId): boolean {
     const { data } = useQuery(LIST_ALL_FAVORITES);
     return useMemo(() => {
         if (!data?.favorite?.all) return false;
-        const stringId = "" + id;
         for (const f of data.favorite.all) {
-            if (f.objectId === stringId) return true;
+            if (bfsIdEq(f.objectId, id)) return true;
         }
         return false;
     }, [id, data?.favorite?.all]);

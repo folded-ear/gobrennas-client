@@ -30,6 +30,7 @@ import Item from "@/features/Planner/components/Item";
 import DragHandle from "@/features/Planner/components/DragHandle";
 import { TextractForm } from "@/features/RecipeEdit/components/TextractForm";
 import { useRecipeForm } from "@/data/hooks/useRecipeForm";
+import { bfsIdEq } from "@/global/types/identity";
 
 const useStyles = makeStyles((theme) => ({
     button: {
@@ -179,8 +180,8 @@ const RecipeForm: React.FC<Props> = ({
                 renderOverlay={(id) => (
                     <Box px={2} py={1}>
                         <DragHandle />
-                        {draft.ingredients.find((it) => it.id === id)?.raw ||
-                            ""}
+                        {draft.ingredients.find((it) => bfsIdEq(it.id, id))
+                            ?.raw || ""}
                     </Box>
                 )}
             >

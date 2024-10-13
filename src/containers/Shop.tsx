@@ -14,7 +14,7 @@ import ShopList, { ShopItemTuple, ShopItemType } from "@/views/shop/ShopList";
 import { BaseItemProp, ItemProps } from "@/views/shop/types";
 import { Maybe } from "graphql/jsutils/Maybe";
 import { Quantity } from "@/global/types/types";
-import { BfsId } from "@/global/types/identity";
+import { BfsId, bfsIdEq, ensureString } from "@/global/types/identity";
 import windowStore from "@/data/WindowStore";
 import partition from "@/util/partition";
 import { intersection } from "@/util/arrayAsSet";
@@ -67,7 +67,7 @@ interface Ingredient {
 }
 
 interface OrderableIngredient {
-    id: number;
+    id: BfsId;
     items: PathedItemTuple[];
     data?: Ingredient;
     loading?: boolean;
@@ -98,7 +98,9 @@ function groupItems(
             l.path.splice(l.path.length - 1, 1);
         }
     }
-    const byIngredient = groupBy(leaves, (it) => it.ingredientId);
+    const byIngredient = groupBy(leaves, (it) =>
+        it.ingredientId ? ensureString(it.ingredientId) : undefined,
+    );
     const unparsed: PathedItemTuple[] = [];
     if (byIngredient.has(undefined)) {
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -137,12 +139,13 @@ function groupItems(
             !allAcquiring && items.some(isOrWillBeAcquired)
                 ? items.filter((it) => !isOrWillBeAcquired(it))
                 : items.filter((it) => !isZeroQuantity(it));
-        const unitLookup = new Map();
+        const unitLookup = new Map<string, any>();
         const byUnit = groupBy(toAgg, (it) => {
-            if (it.uomId) {
-                unitLookup.set(it.uomId, it.units);
+            const uomId = it.uomId ? ensureString(it.uomId) : undefined;
+            if (uomId) {
+                unitLookup.set(uomId, it.units);
             }
-            return it.uomId;
+            return uomId;
         });
         const quantities: Quantity[] = [];
         for (const uomId of byUnit.keys()) {
@@ -152,10 +155,10 @@ function groupItems(
                     .get(uomId)!
                     .reduce((q, it) => q + (it.quantity || 0), 0),
                 uomId,
-                units: unitLookup.get(uomId),
+                units: uomId ? unitLookup.get(uomId) : undefined,
             });
         }
-        const expanded = ingId === expandedId;
+        const expanded = bfsIdEq(ingId, expandedId);
         theTree.push({
             _type: ShopItemType.INGREDIENT,
             id: ingId,
@@ -196,7 +199,10 @@ function groupItems(
     );
     return activeItem
         ? theTree.map((it) => {
-              if (it.id === activeItem.id && it._type === activeItem.type) {
+              if (
+                  bfsIdEq(it.id, activeItem.id) &&
+                  it._type === activeItem.type
+              ) {
                   it = {
                       ...it,
                       active: true,
@@ -259,12 +265,14 @@ const Shop = () => {
     useEffect(() => {
         handleRepartition();
     }, [handleRepartition, activePlanIds]);
-    const [acquiredIds, setAcquiredIds] = useState<Set<BfsId>>(new Set());
+    const [acquiredIds, setAcquiredIds] = useState(new Set<BfsId>());
     useEffect(
         () => {
             setAcquiredIds(
-                new Set(
-                    itemTuples.filter((it) => it.acquiring).map((it) => it.id),
+                new Set<string>(
+                    itemTuples
+                        .filter((it) => it.acquiring)
+                        .map((it) => ensureString(it.id)),
                 ),
             );
         },
@@ -278,7 +286,7 @@ const Shop = () => {
         setPartitionedTuples(
             partition(
                 itemTuples,
-                (it) => !acquiredIds.has(it.blockId || it.id),
+                (it) => !acquiredIds.has(ensureString(it.blockId || it.id)),
             ),
         );
     }, [itemTuples, acquiredIds]);

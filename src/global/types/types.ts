@@ -1,6 +1,7 @@
 import { CheckableActionType } from "@/util/typedAction";
 import { BfsId } from "@/global/types/identity";
 import { PlannedRecipeHistory, User } from "@/__generated__/graphql";
+import { Maybe } from "graphql/jsutils/Maybe";
 
 type IngredientType = "Recipe" | "PantryItem";
 
@@ -11,25 +12,21 @@ export interface Ingredient {
 }
 
 export interface Recipe extends Ingredient {
-    calories: number | null;
-    directions: string | null;
-    externalUrl: string | null;
+    calories?: Maybe<number>;
+    directions?: Maybe<string>;
+    externalUrl?: Maybe<string>;
     ingredients: IngredientRef[];
-    labels: string[];
-    photo: string | null;
-    photoFocus: number[] | null;
-    totalTime: number | null;
-    recipeYield: number | null;
+    labels?: string[];
+    photo?: Maybe<string>;
+    photoFocus?: Maybe<number[]>;
+    totalTime?: Maybe<number>;
+    recipeYield?: Maybe<number>;
     /**
      * For synthetic recipes, this points back to the real/library recipe it
      * is based upon.
      */
     libraryRecipeId?: BfsId;
     ownerId?: BfsId;
-}
-
-export interface PantryItem extends Ingredient {
-    storeOrder: number;
 }
 
 export interface IngredientRef {
@@ -39,7 +36,7 @@ export interface IngredientRef {
     preparation?: string | null;
     units?: string | null;
     uomId?: BfsId;
-    ingredient?: (Ingredient & { type: IngredientType }) | string | null;
+    ingredient?: Ingredient | string | null;
     ingredientId?: BfsId;
 
     /**
@@ -51,7 +48,7 @@ export interface IngredientRef {
 export interface Quantity {
     quantity: number;
     units?: string;
-    uomId?: number;
+    uomId?: BfsId;
 }
 
 export interface FromPlanItem {
@@ -63,8 +60,8 @@ export interface FromPlanItem {
 }
 
 export interface RecipeFromPlanItem extends Recipe, FromPlanItem {
-    subtaskIds: number[];
-    subrecipes: RecipeFromPlanItem[];
+    subtaskIds?: BfsId[];
+    subrecipes?: RecipeFromPlanItem[];
 }
 
 export type Subrecipe = Pick<
@@ -99,9 +96,9 @@ export interface SharedRecipe extends Pick<Recipe, "id"> {
 }
 
 export interface DraftRecipe extends Omit<Recipe, "photo"> {
-    photoUrl: string | null;
-    photoUpload: File | null;
-    sourceId: string | null;
+    photoUrl: Maybe<string>;
+    photoUpload: Maybe<File>;
+    sourceId: Maybe<string>;
 }
 
 export interface FluxAction {

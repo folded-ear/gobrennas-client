@@ -11,7 +11,7 @@ import TextractEditor, {
     RenderActionsForLines,
 } from "@/features/RecipeEdit/components/TextractEditor";
 import { RippedLO } from "@/util/ripLoadObject";
-import { BfsId } from "@/global/types/identity";
+import { BfsId, bfsIdEq } from "@/global/types/identity";
 
 export interface PendingJob {
     id: string;
@@ -81,7 +81,7 @@ const TextractFormAugment: React.FC<Props> = ({ renderActions }) => {
                                 queryClient.invalidateQueries("textract-jobs");
                                 setCreating((curr) =>
                                     curr.filter((p) => {
-                                        if (p.id === id) {
+                                        if (bfsIdEq(p.id, id)) {
                                             URL.revokeObjectURL(p.url);
                                             return false;
                                         }
@@ -96,7 +96,9 @@ const TextractFormAugment: React.FC<Props> = ({ renderActions }) => {
                         setDeleting((curr) => curr.concat(id));
                         return TextractApi.promiseJobDelete(id).finally(() => {
                             queryClient.invalidateQueries("textract-jobs");
-                            setDeleting((curr) => curr.filter((i) => i !== id));
+                            setDeleting((curr) =>
+                                curr.filter((i) => !bfsIdEq(i, id)),
+                            );
                         });
                     }}
                 />

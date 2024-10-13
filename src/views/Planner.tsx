@@ -1,4 +1,3 @@
-import React from "react";
 import { Redirect } from "react-router-dom";
 import { RouteComponentProps } from "react-router";
 import useActivePlanner from "@/data/useActivePlanner";
@@ -8,7 +7,7 @@ type Props = RouteComponentProps<{
     pid?: string;
 }>;
 
-export const Planner: React.FC<Props> = ({ match }) => {
+const Planner = ({ match }: Props) => {
     const { data: plan, loading } = useActivePlanner();
     const planId = plan?.id ?? match.params.pid;
 

@@ -14,7 +14,7 @@ import ImageDropZone from "@/util/ImageDropZone";
 import { useQuery } from "react-query";
 import TextractApi from "@/data/TextractApi";
 import { PendingJob } from "@/features/RecipeEdit/components/TextractFormAugment";
-import { BfsId } from "@/global/types/identity";
+import { BfsId, indexOfBfsId } from "@/global/types/identity";
 
 const useStyles = makeStyles((theme) => ({
     drawer: {
@@ -77,7 +77,7 @@ const Ui: React.FC<UiProps> = ({
             persistent.map((j) => ({
                 ...j,
                 state:
-                    deleting.indexOf(j.id) >= 0
+                    indexOfBfsId(deleting, j.id) >= 0
                         ? "deleting"
                         : j.ready
                         ? "ready"

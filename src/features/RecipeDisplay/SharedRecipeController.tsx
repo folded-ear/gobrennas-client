@@ -44,7 +44,7 @@ const DoTheDance: React.FC<MatchParams> = ({ slug, secret, id }) => {
     if (!owner) {
         return <LoadingIndicator />;
     }
-    const recipe = recipeRloById(parseInt(id)).data;
+    const recipe = recipeRloById(id).data;
     if (!recipe) {
         return <LoadingIndicator />;
     }
@@ -63,7 +63,7 @@ interface Props {
     match: match<MatchParams>;
 }
 
-export const SharedRecipeController: React.FC<Props> = (props) => {
+export const SharedRecipeController = (props: Props) => {
     const {
         authenticated,
         match: {

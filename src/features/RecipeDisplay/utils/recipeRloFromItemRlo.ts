@@ -1,22 +1,33 @@
-import planStore from "@/features/Planner/data/planStore";
+import planStore, {
+    PlanItem as TPlanItem,
+} from "@/features/Planner/data/planStore";
 import LibraryStore from "../../RecipeLibrary/data/LibraryStore";
-import type { Ingredient, RecipeFromPlanItem } from "@/global/types/types";
-import PlanItemStatus from "../../Planner/data/PlanItemStatus";
+import type {
+    Ingredient,
+    IngredientRef,
+    RecipeFromPlanItem,
+} from "@/global/types/types";
 import { RippedLO } from "@/util/ripLoadObject";
+import { bfsIdEq, ensureString } from "@/global/types/identity";
+import { PlanItemStatus } from "@/__generated__/graphql";
 
 export const recipeRloFromItemRlo = (
-    itemRlo: RippedLO<any>,
+    itemRlo: RippedLO<TPlanItem>,
 ): RippedLO<RecipeFromPlanItem> => {
-    if (!itemRlo.data) return itemRlo;
+    // if data is nullish, this cast is fine.
+    if (!itemRlo.data)
+        return itemRlo as unknown as RippedLO<RecipeFromPlanItem>;
 
     const subs: any[] = [];
     let loading = false;
-    const computeKids = (item) => {
+    const computeKids = (item: TPlanItem): TPlanItem[] => {
         const subIds = item.subtaskIds || [];
-        const subIdLookup = new Set(subIds);
+        const subIdLookup = new Set<string>(subIds.map(ensureString));
         return subIds
             .concat(
-                (item.componentIds || []).filter((id) => !subIdLookup.has(id)),
+                (item.componentIds || []).filter(
+                    (id) => !subIdLookup.has(ensureString(id)),
+                ),
             )
             .map((id) => planStore.getItemRlo(id))
             .filter((rlo) => {
@@ -26,31 +37,35 @@ export const recipeRloFromItemRlo = (
                 }
                 return true;
             })
-            .map((rlo) => rlo.data);
+            .map((rlo) => rlo.data!);
     };
     const prepRecipe = (
-        item,
+        planItem: TPlanItem,
         rLO?: RippedLO<any>,
         ancestorCompleting = false,
         ancestorDeleting = false,
     ): RecipeFromPlanItem => {
-        const completing = item._next_status === PlanItemStatus.COMPLETED;
-        const deleting = item._next_status === PlanItemStatus.DELETED;
-        item = {
-            ...item,
+        const completing = planItem._next_status === PlanItemStatus.Completed;
+        const deleting = planItem._next_status === PlanItemStatus.Deleted;
+        const recipe: RecipeFromPlanItem = {
+            ...planItem,
+            type: "Recipe",
             completing,
             deleting,
             ancestorCompleting,
             ancestorDeleting,
-            ingredients: computeKids(item).map((ref) => {
-                ref = {
-                    ...ref,
-                    raw: ref.name,
+            ingredients: computeKids(planItem).map((kid) => {
+                const ref: IngredientRef = {
+                    ...kid,
+                    raw: kid.name,
                 };
-                let recurse = ref.subtaskIds && ref.subtaskIds.length;
+                let recurse =
+                    kid.subtaskIds != null && kid.subtaskIds.length > 0;
                 let iRlo: RippedLO<Ingredient> | undefined;
                 if (ref.ingredientId) {
-                    iRlo = LibraryStore.getIngredientRloById(ref.ingredientId);
+                    iRlo = LibraryStore.getIngredientRloById(
+                        ensureString(ref.ingredientId),
+                    );
                     if (iRlo.loading) {
                         loading = true;
                     }
@@ -60,10 +75,10 @@ export const recipeRloFromItemRlo = (
                         recurse = recurse || ing.type === "Recipe";
                     }
                 }
-                if (recurse && subs.every((s) => s.id !== ref.id)) {
+                if (recurse && subs.every((s) => !bfsIdEq(s.id, ref.id))) {
                     subs.push(
                         prepRecipe(
-                            ref,
+                            kid,
                             iRlo,
                             completing || ancestorCompleting,
                             deleting || ancestorDeleting,
@@ -73,22 +88,22 @@ export const recipeRloFromItemRlo = (
                 return ref;
             }),
         };
-        if (item.notes) {
+        if (planItem.notes) {
             // replace the recipe's directions
-            item.directions = item.notes;
+            recipe.directions = planItem.notes;
         }
-        if (!item.ingredientId) return item;
-        rLO = rLO || LibraryStore.getIngredientRloById(item.ingredientId);
+        if (!planItem.ingredientId) return recipe;
+        rLO = rLO || LibraryStore.getIngredientRloById(planItem.ingredientId);
         if (rLO.loading) {
             loading = true;
         }
         const r = rLO.data;
-        if (!r) return item;
+        if (!r) return recipe;
         Object.keys(r)
-            .filter((k) => !item.hasOwnProperty(k))
-            .forEach((k) => (item[k] = r[k]));
-        item.libraryRecipeId = item.ingredientId || undefined;
-        return item;
+            .filter((k) => !recipe.hasOwnProperty(k))
+            .forEach((k) => (recipe[k] = r[k]));
+        recipe.libraryRecipeId = planItem.ingredientId || undefined;
+        return recipe;
     };
     const recipe = prepRecipe(itemRlo.data);
     recipe.subrecipes = subs;

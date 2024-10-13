@@ -20,6 +20,7 @@ import ConfirmDialog, { DialogProps } from "./components/ConfirmDialog";
 import ViewUses from "./components/ViewUses";
 import { useSetPantryItemLabels } from "@/data/hooks/useSetPantryItemLabels";
 import { useSetPantryItemSynonyms } from "@/data/hooks/useSetPantryItemSynonyms";
+import { ensureString } from "@/global/types/identity";
 
 const DUPLICATE_PREFIX = "duplicates:";
 
@@ -139,15 +140,16 @@ export default function PantryItemAdmin() {
                 synonyms: setSynonyms,
             };
             for (const key in stringSetUpdaters) {
-                const oldSet = new Set(oldRow[key]);
-                const newSet = new Set(newRow[key]);
+                const oldSet = new Set<string>(oldRow[key]);
+                const newSet = new Set<string>(newRow[key]);
                 if (
                     oldSet.size !== newSet.size ||
                     [...oldSet].some((l) => !newSet.has(l))
                 ) {
-                    const saved = await stringSetUpdaters[key](newRow.id, [
-                        ...newSet,
-                    ]);
+                    const saved: Result = await stringSetUpdaters[key](
+                        newRow.id,
+                        [...newSet],
+                    );
                     return {
                         ...newRow,
                         [key]: saved[key],
@@ -183,7 +185,7 @@ export default function PantryItemAdmin() {
         }
         const confirmMsg = `Irrevocably combine these ${selectionModel.length} selected items?`;
         if (!window.confirm(confirmMsg)) return;
-        combineItems(selectionModel.map((id) => id.toString()))
+        combineItems(selectionModel.map(ensureString))
             .then(() => {
                 refetch();
                 setSelectionModel([]);

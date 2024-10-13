@@ -9,6 +9,7 @@ import PlanActions from "@/features/Planner/data/PlanActions";
 import { removeDistinct, toggleDistinct } from "@/util/arrayAsSet";
 import preferencesStore from "./preferencesStore";
 import PlanApi from "@/features/Planner/data/PlanApi";
+import { bfsIdEq, includesBfsId } from "@/global/types/identity";
 
 const placeFocus = (state, id, type) => ({
     ...state,
@@ -55,9 +56,9 @@ class ShoppingStore extends ReduceStore<State, FluxAction> {
                     .getValueEnforcing().id;
                 const shopIds: number[] = [];
                 for (const id of preferencesStore.getActiveShoppingPlans()) {
-                    if (!validPlanIds.includes(id)) continue;
+                    if (!includesBfsId(validPlanIds, id)) continue;
                     shopIds.push(id);
-                    if (id === activePlanId) continue;
+                    if (bfsIdEq(id, activePlanId)) continue;
                     // load up its items, so we can shop for them
                     PlanApi.getDescendantsAsList(id);
                 }
@@ -77,7 +78,7 @@ class ShoppingStore extends ReduceStore<State, FluxAction> {
                         planStore.getActivePlanLO().getValueEnforcing().id,
                     );
                 }
-                if (activePlanIds.includes(action.id)) {
+                if (includesBfsId(activePlanIds, action.id)) {
                     // it was toggled on
                     PlanApi.getDescendantsAsList(action.id);
                 }
@@ -104,8 +105,9 @@ class ShoppingStore extends ReduceStore<State, FluxAction> {
             case ShoppingActions.FOCUS: {
                 state = placeFocus(state, action.id, action.itemType);
                 if (action.itemType === ShopItemType.INGREDIENT) {
-                    state.expandedId =
-                        state.expandedId === action.id ? undefined : action.id;
+                    state.expandedId = bfsIdEq(state.expandedId, action.id)
+                        ? undefined
+                        : action.id;
                 }
                 return state;
             }
@@ -123,18 +125,18 @@ class ShoppingStore extends ReduceStore<State, FluxAction> {
             case ShoppingActions.TOGGLE_EXPANDED: {
                 return {
                     ...state,
-                    expandedId:
-                        state.expandedId === action.id ? undefined : action.id,
+                    expandedId: bfsIdEq(state.expandedId, action.id)
+                        ? undefined
+                        : action.id,
                 };
             }
 
             case ShoppingActions.SET_INGREDIENT_STATUS: {
                 return {
                     ...state,
-                    expandedId:
-                        state.expandedId === action.id
-                            ? undefined
-                            : state.expandedId,
+                    expandedId: bfsIdEq(state.expandedId, action.id)
+                        ? undefined
+                        : state.expandedId,
                 };
             }
 

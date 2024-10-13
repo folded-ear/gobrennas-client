@@ -17,7 +17,7 @@ const numberFormat = new Intl.NumberFormat(undefined, {
     maximumFractionDigits: 3,
 });
 
-export function toNumericString(quantity: number): string {
+function toNumericString(quantity: number): string {
     if (quantity < 0) {
         return "-" + toNumericString(Math.abs(quantity));
     }

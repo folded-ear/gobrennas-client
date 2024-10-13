@@ -6,7 +6,7 @@ import PlanActions from "@/features/Planner/data/PlanActions";
 import React from "react";
 import { humanDate } from "@/util/time";
 import ListItemIcon from "@mui/material/ListItemIcon";
-import { BfsId } from "@/global/types/identity";
+import { BfsId, bfsIdEq } from "@/global/types/identity";
 import { Maybe } from "graphql/jsutils/Maybe";
 import { PlanBucket } from "../data/planStore";
 import { useHistory } from "react-router-dom";
@@ -54,7 +54,7 @@ const BucketChip: React.FC<BucketChipProps> = ({
     };
 
     const chipProps: ChipProps = { size };
-    const bucket = buckets.find((b) => b.id === bucketId);
+    const bucket = buckets.find((b) => bfsIdEq(b.id, bucketId));
     if (bucket) {
         const label = getBucketLabel(bucket);
         let title = label;

@@ -2,6 +2,7 @@ import * as React from "react";
 import ClientId from "@/util/ClientId";
 import { DraftRecipe, FormValue, Recipe } from "@/global/types/types";
 import dotProp from "dot-prop-immutable";
+import { bfsIdEq } from "@/global/types/identity";
 
 type UseRecipeFormReturn = {
     draft: DraftRecipe;
@@ -17,7 +18,7 @@ type UseRecipeFormReturn = {
     onMultilinePasteIngredientRefs: (idx: number, text: string) => void;
 };
 
-const buildDraft = (recipe: Recipe) => {
+const buildDraft = (recipe: Recipe): DraftRecipe => {
     return {
         ...recipe,
         ingredients: recipe.ingredients.map((ing) => ({
@@ -39,7 +40,7 @@ const buildNewIngredient = (raw?: string) => ({
 });
 
 export function useRecipeForm(recipe: Recipe): UseRecipeFormReturn {
-    const [draft, setDraft] = React.useState<DraftRecipe>(buildDraft(recipe));
+    const [draft, setDraft] = React.useState(buildDraft(recipe));
 
     const onUpdate = (key: string, value: FormValue) => {
         setDraft((draft) => dotProp.set(draft, key, value));
@@ -82,10 +83,10 @@ export function useRecipeForm(recipe: Recipe): UseRecipeFormReturn {
     const onMoveIngredientRef = (activeId, targetId, above) => {
         const ings =
             draft.ingredients == null ? [] : draft.ingredients.slice(0);
-        const idxActive = ings.findIndex((it) => it.id === activeId);
+        const idxActive = ings.findIndex((it) => bfsIdEq(it.id, activeId));
         if (idxActive > 0) {
             const removed = ings.splice(idxActive, 1);
-            const idxTarget = ings.findIndex((it) => it.id === targetId);
+            const idxTarget = ings.findIndex((it) => bfsIdEq(it.id, targetId));
             if (idxTarget > 0) {
                 ings.splice(above ? idxTarget : idxTarget + 1, 0, ...removed);
             }

@@ -23,6 +23,6 @@ export function recipeToIngredientInfo(recipe: DraftRecipe): IngredientInfo {
         yield: recipe.recipeYield ? recipe.recipeYield : null,
         calories: recipe.calories ? recipe.calories : null,
         totalTime: recipe.totalTime ? toMilliseconds(recipe.totalTime) : null,
-        photoFocus: recipe.photoFocus,
+        photoFocus: recipe.photoFocus ?? null,
     };
 }

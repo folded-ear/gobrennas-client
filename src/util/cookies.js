@@ -1,4 +1,4 @@
-export const readCookies = () =>
+const readCookies = () =>
     document.cookie
         .split(";")
         .map((s) => s.trim().split("="))

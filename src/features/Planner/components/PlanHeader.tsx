@@ -31,6 +31,7 @@ import { useProfileId } from "@/providers/Profile";
 import { Plan as TPlan } from "@/features/Planner/data/planStore";
 import LoadingIndicator from "@/views/common/LoadingIndicator";
 import PlanAvatar from "@/views/shop/PlanAvatar";
+import { bfsIdEq } from "@/global/types/identity";
 
 const isValidName = (name) => name != null && name.trim().length > 0;
 
@@ -146,7 +147,7 @@ export default function PlanHeader({
                             </IconButton>
                         </span>
                     </Tooltip>
-                    {activePlan && "" + activePlan.acl.ownerId !== myId && (
+                    {activePlan && !bfsIdEq(activePlan.acl.ownerId, myId) && (
                         <UserById id={activePlan.acl.ownerId} iconOnly />
                     )}
                 </Stack>

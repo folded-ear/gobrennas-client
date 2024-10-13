@@ -4,6 +4,7 @@ import { gql } from "@/__generated__";
 import { GetSearchLibraryDocument } from "@/__generated__/graphql";
 import promiseWellSizedFile from "@/util/promiseWellSizedFile";
 import { recipeToIngredientInfo } from "@/data/utils/graphql";
+import { ensureString } from "@/global/types/identity";
 
 const CREATE_RECIPE_FROM_MUTATION = gql(`
 mutation createRecipeFrom($sourceRecipeId: ID!
@@ -36,7 +37,7 @@ export const useCreateRecipeFrom = () => {
 
         return mutateFunction({
             variables: {
-                sourceRecipeId: recipe.id.toString(),
+                sourceRecipeId: ensureString(recipe.id),
                 info: recipeToIngredientInfo(recipe),
                 photo: typeof sizedUpload !== "string" ? sizedUpload : null,
             },

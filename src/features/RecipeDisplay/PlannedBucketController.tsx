@@ -17,8 +17,8 @@ type Props = RouteComponentProps<{
 }>;
 
 const PlannedBucketController: React.FC<Props> = ({ match }) => {
-    const pid = parseInt(match.params.pid, 10);
-    const bid = parseInt(match.params.bid, 10);
+    const pid = match.params.pid;
+    const bid = match.params.bid;
     const recipe = useFluxStore(
         () => recipeRloByPlanAndBucket(pid, bid).data,
         [planStore, LibraryStore],

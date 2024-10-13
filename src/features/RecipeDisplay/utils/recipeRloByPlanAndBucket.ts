@@ -3,10 +3,12 @@ import planStore, { Plan } from "@/features/Planner/data/planStore";
 import { recipeRloFromItemRlo as buildSingleItemRecipeLO } from "@/features/RecipeDisplay/utils/recipeRloFromItemRlo";
 import getBucketLabel from "@/features/Planner/components/getBucketLabel";
 import { mapData, RippedLO } from "@/util/ripLoadObject";
+import { BfsId, bfsIdEq, ensureString } from "@/global/types/identity";
+import { PlanItemStatus } from "@/__generated__/graphql";
 
 export const recipeRloByPlanAndBucket = (
-    planId: number,
-    bucketId: number,
+    planId: BfsId,
+    bucketId: BfsId,
 ): RippedLO<RecipeFromPlanItem> => {
     const planRLO = planStore.getItemRlo(planId);
     const plan = planRLO.data as Plan | undefined;
@@ -14,7 +16,7 @@ export const recipeRloByPlanAndBucket = (
         // no value means value's type is irrelevant
         return planRLO as RippedLO<any>;
     }
-    const bucket = plan.buckets.find((b) => b.id === bucketId);
+    const bucket = plan.buckets.find((b) => bfsIdEq(b.id, bucketId));
     if (!bucket) return {};
     const items = planStore.getItemsInBucket(planId, bucketId);
     if (items.length === 0) return {};
@@ -27,25 +29,27 @@ export const recipeRloByPlanAndBucket = (
     return mapData(
         buildSingleItemRecipeLO({
             data: {
+                id: bucket.id,
+                status: PlanItemStatus.Needed,
                 name: getBucketLabel(bucket),
                 componentIds: items.map((it) => it.id),
             },
         }),
         (r) => {
-            const idToIdx = new Map();
-            items.forEach((it, i) => idToIdx.set(it.id, i));
-            const itToSubIdx = new Map();
+            const idToIdx = new Map<string, number>();
+            items.forEach((it, i) => idToIdx.set(ensureString(it.id), i));
+            const itToSubIdx = new Map<RecipeFromPlanItem, number>();
+            if (!r.subrecipes) {
+                throw new Error("No subrecipes?!");
+            }
             r.subrecipes.forEach((it) =>
-                itToSubIdx.set(
-                    it,
-                    idToIdx.has(it.id) ? idToIdx.get(it.id) : -1,
-                ),
+                itToSubIdx.set(it, idToIdx.get(ensureString(it.id)) ?? -1),
             );
             const recipeWithPhoto = r.subrecipes
                 .slice()
                 .sort((a, b) => {
-                    const ai = itToSubIdx.get(a);
-                    const bi = itToSubIdx.get(b);
+                    const ai = itToSubIdx.get(a)!;
+                    const bi = itToSubIdx.get(b)!;
                     if (ai >= 0 && bi < 0) return -1;
                     if (ai < 0 && bi >= 0) return +1;
                     return 0;

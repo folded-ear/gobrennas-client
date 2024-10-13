@@ -1,5 +1,5 @@
 import { Stack } from "@mui/material";
-import { UserType } from "@/global/types/identity";
+import { bfsIdEq, UserType } from "@/global/types/identity";
 import { MessagePaper } from "@/features/RecipeLibrary/components/MessagePaper";
 import React from "react";
 import { RecipeCard } from "@/features/RecipeLibrary/types";
@@ -20,8 +20,7 @@ export const RecipeListDisplay: React.FC<RecipeListDisplayProps> = ({
         return <MessagePaper primary="Nothing matches that search." />;
     }
 
-    const myId = "" + me.id;
-    const isMine = (r) => r.owner.id === myId;
+    const isMine = (r) => bfsIdEq(r.owner.id, me.id);
 
     return (
         <Stack gap={1.5}>

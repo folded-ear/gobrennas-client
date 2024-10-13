@@ -39,20 +39,20 @@ export interface PlanItem extends BasePlanItem {
     quantity?: Maybe<number>;
     uomId?: Maybe<number>;
     units?: Maybe<string>;
-    ingredientId?: Maybe<number>;
+    ingredientId?: Maybe<BfsId>;
     preparation?: Maybe<string>;
 }
 
 export interface Plan extends BasePlanItem {
     acl: {
-        ownerId: number;
+        ownerId: BfsId;
         grants: Record<string, AccessLevel>;
     };
     color: string;
     buckets: PlanBucket[];
 }
 
-interface State {
+export interface State {
     activeListId?: BfsId;
     listDetailVisible: boolean;
     activeTaskId?: BfsId;
@@ -84,7 +84,7 @@ declare class PlanStore extends FluxReduceStore<State, FluxAction> {
 
     getSelectedItems(): PlanItem[];
 
-    getItemsInBucket(planId: number, bucketId: number): PlanItem[];
+    getItemsInBucket(planId: BfsId, bucketId: BfsId): PlanItem[];
 
     isPlanDetailVisible(): boolean;
 

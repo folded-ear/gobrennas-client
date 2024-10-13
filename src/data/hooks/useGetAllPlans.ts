@@ -2,9 +2,8 @@ import { gql } from "@/__generated__";
 import useAdaptingQuery from "@/data/hooks/useAdaptingQuery";
 import { GetPlansQuery } from "@/__generated__/graphql";
 import { useProfileId } from "@/providers/Profile";
-import { BfsId } from "@/global/types/identity";
+import { BfsId, bfsIdEq } from "@/global/types/identity";
 import { zippedComparator } from "@/util/comparators";
-import { ensureInt } from "@/global/utils";
 
 export const GET_PLANS = gql(`
 query getPlans {
@@ -28,10 +27,9 @@ const orderComponentsById = (
 ): Record<BfsId, string[]> => {
     const byId = {};
     for (const plan of plans) {
-        const ownerName =
-            plan.owner.id.toString() === userId.toString()
-                ? "" // me first!
-                : plan.owner.name || "\u7fff";
+        const ownerName = bfsIdEq(plan.owner.id, userId)
+            ? "" // me first!
+            : plan.owner.name || "\u7fff";
         byId[plan.id] = [ownerName, plan.name];
     }
     return byId;
@@ -50,8 +48,7 @@ export const useGetAllPlans = () => {
         .slice()
         .sort((a, b) =>
             zippedComparator(orderedPlans[a.id], orderedPlans[b.id]),
-        )
-        .map((plan) => ({ ...plan, id: ensureInt(plan.id) }));
+        );
     return {
         ...result,
         data: plans,

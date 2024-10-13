@@ -1,9 +1,10 @@
 import PropTypes from "prop-types";
 import typedAction from "@/util/typedAction";
+import { bfsIdType } from "@/global/types/identity";
 
 const sendToPlanShape = {
-    recipeId: PropTypes.number.isRequired,
-    planId: PropTypes.number.isRequired,
+    recipeId: bfsIdType.isRequired,
+    planId: bfsIdType.isRequired,
     scale: PropTypes.number,
 };
 

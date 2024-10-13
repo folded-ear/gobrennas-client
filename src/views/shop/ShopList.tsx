@@ -11,7 +11,7 @@ import PlanItem from "@/views/shop/PlanItem";
 import { BaseItemProp, ItemProps } from "./types";
 import { Plan as TPlan } from "@/features/Planner/data/planStore";
 import type { Quantity } from "@/global/types/types";
-import type { BfsId } from "@/global/types/identity";
+import { BfsId, bfsIdEq } from "@/global/types/identity";
 import CollapseIconButton from "@/global/components/CollapseIconButton";
 import PantryItemActions from "@/data/PantryItemActions";
 import DragContainer, {
@@ -42,7 +42,7 @@ export interface ShopItemTuple extends ItemProps {
     path: BaseItemProp[];
 }
 
-export type ShopListProps = {
+type ShopListProps = {
     plans: TPlan[];
     neededTuples: ShopItemTuple[];
     acquiredTuples: ShopItemTuple[];
@@ -93,7 +93,7 @@ const TupleList: React.FC<TupleListProps> = ({ tuples }) => {
         <DragContainer
             onDrop={handleDrop}
             renderOverlay={(id) =>
-                renderItem(tuples.find((it) => it.id === id))
+                renderItem(tuples.find((it) => bfsIdEq(it.id, id)))
             }
         >
             <List>{tuples.map(renderItem)}</List>

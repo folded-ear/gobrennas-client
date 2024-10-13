@@ -96,7 +96,7 @@ class ElEdit extends React.PureComponent<ElEditProps, ElEditState> {
         const { name, value, onChange } = this.props;
         if (!doRecog(value.raw)) return;
         const cursor = this.getCursorPosition();
-        ItemApi.recognizeItem(value.raw, cursor).then(
+        ItemApi.recognizeItem(value.raw!, cursor).then(
             (recog: RecognitionResult) => {
                 if (!this._mounted) return;
                 if (recog.raw !== this.props.value.raw) return;

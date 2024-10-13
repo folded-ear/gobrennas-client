@@ -26,10 +26,11 @@ import { BreadcrumbLink } from "@/global/components/BreadcrumbLink";
 import useIsDevMode from "@/data/useIsDevMode";
 import RecipeHistoryGrid from "./RecipeHistoryGrid";
 import { useHistory } from "react-router-dom";
+import { Maybe } from "graphql/jsutils/Maybe";
 
 interface Props {
     recipe: Recipe;
-    subrecipes: Subrecipe[];
+    subrecipes: Maybe<Subrecipe[]>;
     planHistory?: RecipeHistory[];
     anonymous?: boolean;
     mine?: boolean;
