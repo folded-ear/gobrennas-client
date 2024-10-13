@@ -47,7 +47,7 @@ export interface IngredientRef {
 export interface Quantity {
     quantity: number;
     units?: string;
-    uomId?: number;
+    uomId?: BfsId;
 }
 
 export interface FromPlanItem {

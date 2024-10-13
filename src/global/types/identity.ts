@@ -3,13 +3,14 @@ import { Maybe } from "graphql/jsutils/Maybe";
 import PropTypes from "prop-types";
 
 export type BfsId = string | number;
+export type BfsStringId = string;
 
 export type UserType = Pick<
     User,
     "id" | "name" | "provider" | "email" | "imageUrl" | "roles"
 >;
 
-export function ensureString(id: BfsId): string {
+export function ensureString(id: BfsId): BfsStringId {
     if (typeof id === "string") return id;
     if (id < 0) {
         throw new TypeError(`Ids must be non-negative, but '${id}' isn't.`);
