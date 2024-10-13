@@ -52,7 +52,7 @@ export interface Plan extends BasePlanItem {
     buckets: PlanBucket[];
 }
 
-interface State {
+export interface State {
     activeListId?: BfsId;
     listDetailVisible: boolean;
     activeTaskId?: BfsId;

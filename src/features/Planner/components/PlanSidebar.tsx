@@ -24,7 +24,7 @@ import PlanBucketManager from "@/features/Planner/components/PlanBucketManager";
 import SidebarUnit from "@/features/Planner/components/SidebarUnit";
 import User from "@/views/user/User";
 import { Plan } from "@/features/Planner/data/planStore";
-import { bfsIdEq, UserType } from "@/global/types/identity";
+import { bfsIdEq, ensureString, UserType } from "@/global/types/identity";
 import { mapBy } from "@/util/groupBy";
 import PlanAvatar from "@/views/shop/PlanAvatar";
 
@@ -99,7 +99,7 @@ const PlanSidebar: React.FC<Props> = ({ open, onClose, plan }) => {
         return [
             loading,
             loading ? [] : friendList,
-            loading ? new Map() : mapBy(friendList, (f) => f.id),
+            loading ? new Map() : mapBy(friendList, (f) => ensureString(f.id)),
         ];
     }, [FriendStore]);
 
@@ -158,7 +158,7 @@ const PlanSidebar: React.FC<Props> = ({ open, onClose, plan }) => {
     const acl = plan.acl || {};
     const grants = acl.grants || {};
     const isMine = bfsIdEq(acl.ownerId, me.id);
-    const owner = isMine ? me : friendsById.get(acl.ownerId);
+    const owner = isMine ? me : friendsById.get(ensureString(acl.ownerId));
     const isAdministrator =
         isMine || includesLevel(grants[me.id], AccessLevel.ADMINISTER);
 

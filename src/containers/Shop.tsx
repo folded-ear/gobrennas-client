@@ -14,7 +14,7 @@ import ShopList, { ShopItemTuple, ShopItemType } from "@/views/shop/ShopList";
 import { BaseItemProp, ItemProps } from "@/views/shop/types";
 import { Maybe } from "graphql/jsutils/Maybe";
 import { Quantity } from "@/global/types/types";
-import { BfsId, bfsIdEq } from "@/global/types/identity";
+import { BfsId, bfsIdEq, ensureString } from "@/global/types/identity";
 import windowStore from "@/data/WindowStore";
 import partition from "@/util/partition";
 import { intersection } from "@/util/arrayAsSet";
@@ -67,7 +67,7 @@ interface Ingredient {
 }
 
 interface OrderableIngredient {
-    id: number;
+    id: BfsId;
     items: PathedItemTuple[];
     data?: Ingredient;
     loading?: boolean;
@@ -98,7 +98,9 @@ function groupItems(
             l.path.splice(l.path.length - 1, 1);
         }
     }
-    const byIngredient = groupBy(leaves, (it) => it.ingredientId);
+    const byIngredient = groupBy(leaves, (it) =>
+        it.ingredientId ? ensureString(it.ingredientId) : undefined,
+    );
     const unparsed: PathedItemTuple[] = [];
     if (byIngredient.has(undefined)) {
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -139,10 +141,11 @@ function groupItems(
                 : items.filter((it) => !isZeroQuantity(it));
         const unitLookup = new Map();
         const byUnit = groupBy(toAgg, (it) => {
-            if (it.uomId) {
-                unitLookup.set(it.uomId, it.units);
+            const uomId = it.uomId ? ensureString(it.uomId) : undefined;
+            if (uomId) {
+                unitLookup.set(uomId, it.units);
             }
-            return it.uomId;
+            return uomId;
         });
         const quantities: Quantity[] = [];
         for (const uomId of byUnit.keys()) {

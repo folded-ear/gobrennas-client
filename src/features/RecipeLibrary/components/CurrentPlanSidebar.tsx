@@ -31,7 +31,7 @@ import { moveSubtree } from "@/features/Planner/components/Plan";
 import ResetBucketsButton from "@/features/Planner/components/ResetBucketsButton";
 import useWhileOver from "@/util/useWhileOver";
 import CookButton from "@/features/Planner/components/CookButton";
-import { BfsId, bfsIdEq } from "@/global/types/identity";
+import { BfsId, bfsIdEq, ensureString } from "@/global/types/identity";
 import {
     isDoNotRecognize,
     isSection,
@@ -124,11 +124,11 @@ export const BodyContainer: React.FC = () => {
         goDeeper(plan, 0);
 
         if (plan.buckets) {
-            const bucketsById = mapBy(plan.buckets, (b) => b.id);
+            const bucketsById = mapBy(plan.buckets, (b) => ensureString(b.id));
             recipes.forEach(
                 (it) =>
                     (it.bucket = it.bucketId
-                        ? bucketsById.get(it.bucketId)
+                        ? bucketsById.get(ensureString(it.bucketId))
                         : undefined),
             );
         }
@@ -153,10 +153,12 @@ export const BodyContainer: React.FC = () => {
             plan.recipes.forEach((item) => children.push(renderItem(item)));
         }
     } else {
-        const byBucket = groupBy(plan.recipes, (item) => item.bucketId);
+        const byBucket = groupBy(plan.recipes, (item) =>
+            item.bucketId ? ensureString(item.bucketId) : undefined,
+        );
         plan.buckets.forEach((b) => {
             children.push(<Bucket key={b.id} bucket={b} />);
-            const rs = byBucket.get(b.id);
+            const rs = byBucket.get(ensureString(b.id));
             if (rs) rs.forEach((item) => children.push(renderItem(item)));
         });
         children.push(<Bucket key={"none"} />);
