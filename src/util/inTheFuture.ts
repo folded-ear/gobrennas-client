@@ -1,6 +1,8 @@
 import Dispatcher from "@/data/dispatcher";
+import { CheckableActionType } from "@/util/typedAction";
 
-const timeoutRegistry = new Map();
+type TimeoutId = number;
+const timeoutRegistry = new Map<CheckableActionType, TimeoutId>();
 
 const flushPending = () => {
     // to avoid jacking your data on hot reload, disable the unload flush in dev
@@ -11,7 +13,7 @@ const flushPending = () => {
     }
 };
 
-const doFutureWork = (type) => {
+const doFutureWork = (type: CheckableActionType) => {
     Dispatcher.dispatch({ type });
     timeoutRegistry.delete(type);
     if (timeoutRegistry.size === 0) {
@@ -29,7 +31,7 @@ const doFutureWork = (type) => {
  * @param type The action type to queue up for future dispatch.
  * @param delay The number of seconds to wait before dispatching.
  */
-const inTheFuture = (type, delay = 2) => {
+const inTheFuture = (type: CheckableActionType, delay: number = 2) => {
     if (timeoutRegistry.size === 0) {
         window.addEventListener("beforeunload", flushPending);
     }
@@ -38,7 +40,7 @@ const inTheFuture = (type, delay = 2) => {
     }
     timeoutRegistry.set(
         type,
-        setTimeout(doFutureWork.bind(null, type), delay * 1000),
+        window.setTimeout(doFutureWork.bind(null, type), delay * 1000),
     );
 };
 
