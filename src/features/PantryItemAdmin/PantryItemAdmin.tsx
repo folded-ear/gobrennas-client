@@ -140,15 +140,16 @@ export default function PantryItemAdmin() {
                 synonyms: setSynonyms,
             };
             for (const key in stringSetUpdaters) {
-                const oldSet = new Set(oldRow[key]);
-                const newSet = new Set(newRow[key]);
+                const oldSet = new Set<string>(oldRow[key]);
+                const newSet = new Set<string>(newRow[key]);
                 if (
                     oldSet.size !== newSet.size ||
                     [...oldSet].some((l) => !newSet.has(l))
                 ) {
-                    const saved = await stringSetUpdaters[key](newRow.id, [
-                        ...newSet,
-                    ]);
+                    const saved: Result = await stringSetUpdaters[key](
+                        newRow.id,
+                        [...newSet],
+                    );
                     return {
                         ...newRow,
                         [key]: saved[key],

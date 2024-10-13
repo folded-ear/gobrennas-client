@@ -27,6 +27,7 @@ import { BreadcrumbLink } from "@/global/components/BreadcrumbLink";
 import useIsDevMode from "@/data/useIsDevMode";
 import RecipeHistoryGrid from "./RecipeHistoryGrid";
 import { useHistory } from "react-router-dom";
+import { Maybe } from "graphql/jsutils/Maybe";
 
 const useStyles = makeStyles((theme) => ({
     name: {
@@ -52,7 +53,7 @@ const useStyles = makeStyles((theme) => ({
 
 interface Props {
     recipe: Recipe;
-    subrecipes: Subrecipe[];
+    subrecipes: Maybe<Subrecipe[]>;
     planHistory?: RecipeHistory[];
     anonymous?: boolean;
     mine?: boolean;

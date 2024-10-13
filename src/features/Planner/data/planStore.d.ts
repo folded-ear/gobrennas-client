@@ -39,7 +39,7 @@ export interface PlanItem extends BasePlanItem {
     quantity?: Maybe<number>;
     uomId?: Maybe<number>;
     units?: Maybe<string>;
-    ingredientId?: Maybe<number>;
+    ingredientId?: Maybe<BfsId>;
     preparation?: Maybe<string>;
 }
 
