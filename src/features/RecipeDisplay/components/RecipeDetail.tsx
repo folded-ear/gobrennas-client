@@ -78,9 +78,7 @@ const RecipeDetail: React.FC<Props> = ({
             <SubHeader>
                 <Toolbar
                     sx={(theme) => ({
-                        flexWrap: {
-                            sm: "wrap-reverse",
-                        },
+                        flexWrap: ["wrap-reverse", "unset"],
                         backgroundColor: theme.palette.background.paper,
                         padding: 0,
                     })}
@@ -92,9 +90,7 @@ const RecipeDetail: React.FC<Props> = ({
                         variant="h2"
                         sx={{
                             flexGrow: 1,
-                            width: {
-                                sm: "100%",
-                            },
+                            width: ["100%", "unset"],
                         }}
                     >
                         {recipe.name}
