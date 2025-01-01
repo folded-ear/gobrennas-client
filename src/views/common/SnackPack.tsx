@@ -98,11 +98,7 @@ function SnackPack() {
             autoHideDuration={messageInfo.hideDelay || 5000}
             onClose={handleClose}
             message={message}
-            sx={{
-                bottom: {
-                    sm: fabVisible ? 90 : 0,
-                },
-            }}
+            sx={fabVisible ? { bottom: [90, 0] } : undefined}
             action={
                 <>
                     {messageInfo.renderAction
