@@ -7,6 +7,7 @@ import processRecognizedItem from "@/util/processRecognizedItem";
 import type { IngredientRef } from "@/global/types/types";
 import { BfsId } from "@/global/types/identity";
 import LoadingIconButton from "./common/LoadingIconButton";
+import { Maybe } from "graphql/jsutils/Maybe";
 
 const doRecog = (raw) => raw != null && raw.trim().length >= 2;
 
@@ -41,11 +42,11 @@ interface Suggestion {
 interface ElEditState {
     recog?: RecognitionResult;
     suggestions?: Suggestion[];
-    quantity?: number;
+    quantity?: Maybe<string>;
     quantityValue?: number;
-    unit?: string;
+    unit?: Maybe<string>;
     unitValue?: BfsId;
-    ingredientName?: string;
+    ingredientName?: Maybe<string>;
     nameValue?: BfsId;
     preparation?: string;
 }

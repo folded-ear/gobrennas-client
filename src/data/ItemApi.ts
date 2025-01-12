@@ -19,7 +19,7 @@ export enum RecognitionRangeType {
     NEW_ITEM = "NEW_ITEM",
 }
 
-interface RecognitionRange {
+export interface RecognitionRange {
     start: number;
     end: number;
     type: RecognitionRangeType;
