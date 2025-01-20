@@ -22,7 +22,7 @@ import GTag from "@/GTag";
 export function toggleShoppingPlan(id: BfsId) {
     return Dispatcher.dispatch({
         type: ShoppingActions.TOGGLE_PLAN,
-        id,
+        id: typeof id === "string" ? parseInt(id) : id,
     });
 }
 
