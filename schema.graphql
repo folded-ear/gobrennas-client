@@ -27,7 +27,6 @@ interface CorePlanItem {
 
 interface Ingredient {
     id: ID!
-    labels: [String!]
     name: String!
 }
 
@@ -298,6 +297,7 @@ type PantryQuery {
         "Direction to sort the result, ascending by default."
         sortDir: SortDir = ASC
     ): PantryItemConnection!
+    updatedSince(cutoff: Long!): [PantryItem!]!
 }
 
 type Photo {

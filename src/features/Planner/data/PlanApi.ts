@@ -18,10 +18,10 @@ import type {
     DeleteBucketMutation,
     DeleteBucketsMutation,
     DeletePlanItemMutation,
+    PlanItemsUpdatedSinceQuery,
     RenamePlanOrItemMutation,
     SetPlanColorMutation,
     UpdateBucketMutation,
-    UpdatedSinceQuery,
 } from "@/__generated__/graphql";
 import { PlanItemStatus, SetStatusMutation } from "@/__generated__/graphql";
 import type { FetchResult } from "@apollo/client";
@@ -172,13 +172,13 @@ const PlanApi = {
                 },
                 fetchPolicy: "network-only",
             }),
-            ({ data }) => {
+            ({ data }: { data: PlanItemsUpdatedSinceQuery }) => {
                 return {
                     type: PlanActions.PLAN_DELTAS,
                     id,
-                    data: (
-                        (data as UpdatedSinceQuery).planner?.updatedSince || []
-                    ).map(toRestPlanOrItem),
+                    data: (data.planner?.updatedSince || []).map(
+                        toRestPlanOrItem,
+                    ),
                 };
             },
             soakUpUnauthorized,
