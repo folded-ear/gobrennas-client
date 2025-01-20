@@ -1,16 +1,26 @@
-import BaseAxios from "axios";
 import { ReduceStore } from "flux/utils";
 import LoadObjectState from "@/util/LoadObjectState";
 import promiseFlux from "@/util/promiseFlux";
-import { API_BASE_URL } from "@/constants";
 import Dispatcher from "./dispatcher";
 import FriendActions from "./FriendActions";
 import { mapData, ripLoadObject } from "@/util/ripLoadObject";
 import { bfsIdEq } from "@/global/types/identity";
+import { client } from "@/providers/ApolloClient";
+import { gql } from "@/__generated__";
 
-const axios = BaseAxios.create({
-    baseURL: `${API_BASE_URL}/api/friends`,
-});
+const GET_FRIENDS = gql(`
+query getFriends {
+  profile {
+    friends {
+      id
+      name
+      provider
+      email
+      imageUrl
+      roles
+    }
+  }
+}`);
 
 class FriendStore extends ReduceStore {
     constructor() {
@@ -28,10 +38,15 @@ class FriendStore extends ReduceStore {
     reduce(state, action) {
         switch (action.type) {
             case FriendActions.LOAD_FRIEND_LIST: {
-                promiseFlux(axios.get(``), (data) => ({
-                    type: FriendActions.FRIEND_LIST_LOADED,
-                    data: data.data,
-                }));
+                promiseFlux(
+                    client.query({ query: GET_FRIENDS }),
+                    ({ data }) => {
+                        return {
+                            type: FriendActions.FRIEND_LIST_LOADED,
+                            data: data.profile.friends,
+                        };
+                    },
+                );
                 return state.mapLO((lo) => lo.loading());
             }
 

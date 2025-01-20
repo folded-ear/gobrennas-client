@@ -451,6 +451,10 @@ type PlannerQuery {
     updatedSince(cutoff: Long!, planId: ID!): [CorePlanItem!]!
 }
 
+type ProfileQuery {
+    friends: [User!]!
+}
+
 type Quantity {
     quantity: Float!
     units: UnitOfMeasure
@@ -464,6 +468,7 @@ type Query {
     node(id: ID!): Node
     pantry: PantryQuery
     planner: PlannerQuery
+    profile: ProfileQuery
 }
 
 type Recipe implements Ingredient & Node & Owned {
