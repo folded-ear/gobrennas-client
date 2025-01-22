@@ -194,8 +194,8 @@ const PlanApi = {
                 mutation: CREATE_BUCKET,
                 variables: {
                     planId: planId.toString(),
-                    name: bucket.name,
-                    date: bucket.date,
+                    name: bucket.name ?? null,
+                    date: bucket.date ?? null,
                 },
             }),
             (result: FetchResult<CreateBucketMutation>) => {
@@ -220,8 +220,8 @@ const PlanApi = {
                 variables: {
                     planId: ensureString(planId),
                     bucketId: ensureString(id),
-                    name: bucket.name,
-                    date: bucket.date,
+                    name: bucket.name ?? null,
+                    date: bucket.date ?? null,
                 },
             }),
             (result: FetchResult<UpdateBucketMutation>) => {

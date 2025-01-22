@@ -1,7 +1,7 @@
 import BaseAxios from "axios";
 import { API_BASE_URL } from "@/constants";
 import serializeObjectOfPromiseFns from "@/util/serializeObjectOfPromiseFns";
-import { BfsId } from "@/global/types/identity";
+import { BfsStringId } from "@/global/types/identity";
 
 const axios = BaseAxios.create({
     baseURL: `${API_BASE_URL}/api`,
@@ -26,7 +26,7 @@ export interface RecognitionRange {
     // for QUANTITY ranges, the numeric quantity
     quantity: number;
     // for UNIT and ITEM ranges, the object's ID
-    id: BfsId;
+    id: BfsStringId;
     // @deprecated - prefer quantity or id, based on type
     value: number;
 }

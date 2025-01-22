@@ -14,7 +14,7 @@ export const recipeRloByPlanAndBucket = (
     const plan = planRLO.data as Plan | undefined;
     if (!plan) {
         // no value means value's type is irrelevant
-        return planRLO as RippedLO<any>;
+        return planRLO as unknown as RippedLO<RecipeFromPlanItem>;
     }
     const bucket = plan.buckets.find((b) => bfsIdEq(b.id, bucketId));
     if (!bucket) return {};

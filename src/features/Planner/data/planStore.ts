@@ -4,14 +4,14 @@ import ShoppingActions from "@/data/ShoppingActions";
 import dotProp from "dot-prop-immutable";
 import PlanActions from "@/features/Planner/data/PlanActions";
 import TaskApi from "@/features/Planner/data/TaskApi";
-import { ReduceStore } from "flux/utils";
+import FluxReduceStore from "flux/lib/FluxReduceStore";
 import { removeAtIndex } from "@/util/arrayAsSet";
 import ClientId from "@/util/ClientId";
 import { bucketComparator } from "@/util/comparators";
 import LoadObject from "@/util/LoadObject";
 import LoadObjectState from "@/util/LoadObjectState";
 import PlanApi from "./PlanApi";
-import { mapData, ripLoadObject } from "@/util/ripLoadObject";
+import { mapData, ripLoadObject, RippedLO } from "@/util/ripLoadObject";
 import {
     addTask,
     addTaskAndFlush,
@@ -59,7 +59,16 @@ import {
     toggleExpanded,
     unnestTask,
 } from "./utils";
-import { bfsIdEq, includesBfsId } from "@/global/types/identity";
+import {
+    BfsId,
+    bfsIdEq,
+    BfsStringId,
+    includesBfsId,
+} from "@/global/types/identity";
+import AccessLevel from "@/data/AccessLevel";
+import { Maybe } from "graphql/jsutils/Maybe";
+import PlanItemStatus from "@/features/Planner/data/PlanItemStatus";
+import { FluxAction } from "@/global/types/types";
 
 /*
  * This store is way too muddled. But leaving it that way for the moment, to
@@ -67,14 +76,68 @@ import { bfsIdEq, includesBfsId } from "@/global/types/identity";
  * up in the future.
  */
 
-class PlanStore extends ReduceStore {
+export interface PlanBucket {
+    id: BfsId;
+    name?: Maybe<string>;
+    date: Maybe<Date>;
+}
+
+export interface WireBucket {
+    id: BfsId;
+    name?: Maybe<string>;
+    date: Maybe<string>;
+}
+
+export interface BasePlanItem {
+    //  core
+    id: BfsId;
+    name: string;
+    notes?: Maybe<string>;
+    subtaskIds?: BfsId[];
+    aggregateId?: Maybe<BfsId>;
+    componentIds?: Maybe<BfsId[]>;
+    bucketId?: Maybe<BfsId>;
+}
+
+export interface PlanItem extends BasePlanItem {
+    parentId: BfsId;
+    status: PlanItemStatus;
+    quantity?: Maybe<number>;
+    uomId?: Maybe<BfsStringId>;
+    units?: Maybe<string>;
+    ingredientId?: Maybe<BfsStringId>;
+    preparation?: Maybe<string>;
+    // client-side
+    _expanded?: Maybe<boolean>;
+    _next_status?: Maybe<PlanItemStatus>;
+}
+
+export interface Plan extends BasePlanItem {
+    acl: {
+        ownerId: BfsId;
+        grants: Record<string, AccessLevel>;
+    };
+    color: string;
+    buckets: PlanBucket[];
+}
+
+export interface State {
+    activeListId: Maybe<BfsId>;
+    listDetailVisible: boolean;
+    activeTaskId: Maybe<BfsId>;
+    selectedTaskIds: Maybe<BfsId[]>;
+    topLevelIds: LoadObjectState<BfsId[]>;
+    byId: Record<BfsId, LoadObject<PlanItem>>;
+}
+
+class PlanStore extends FluxReduceStore<State, FluxAction> {
     getInitialState() {
         return {
             activeListId: null, // ID
             listDetailVisible: false, // boolean
             activeTaskId: null, // ID
             selectedTaskIds: null, // Array<ID>
-            topLevelIds: new LoadObjectState(() =>
+            topLevelIds: new LoadObjectState<BfsId[]>(() =>
                 Dispatcher.dispatch({
                     type: PlanActions.LOAD_PLANS,
                 }),
@@ -83,7 +146,7 @@ class PlanStore extends ReduceStore {
         };
     }
 
-    reduce(state, action) {
+    reduce(state: State, action: FluxAction): State {
         switch (action.type) {
             case PlanActions.CREATE_PLAN: {
                 return createList(state, action.name);
@@ -112,8 +175,10 @@ class PlanStore extends ReduceStore {
 
             case PlanActions.DELETE_PLAN: {
                 TaskApi.deleteList(action.id);
-                let next = dotProp.set(state, ["byId", action.id], (lo) =>
-                    lo.deleting(),
+                const next: State = dotProp.set(
+                    state,
+                    ["byId", action.id],
+                    (lo) => lo.deleting(),
                 );
                 if (bfsIdEq(next.activeListId, action.id)) {
                     next.listDetailVisible = false;
@@ -382,7 +447,8 @@ class PlanStore extends ReduceStore {
                 return mapPlanBuckets(state, action.planId, (bs) => {
                     const idx = bs.findIndex((b) => bfsIdEq(b.id, action.id));
                     if (idx >= 0 && !ClientId.is(action.id)) {
-                        PlanApi.deleteBucket(state.activeListId, action.id);
+                        // eslint-disable-next-line @typescript-eslint/no-extra-non-null-assertion
+                        PlanApi.deleteBucket(state.activeListId!!, action.id);
                     }
                     return removeAtIndex(bs, idx);
                 });
@@ -442,8 +508,11 @@ class PlanStore extends ReduceStore {
             }
 
             case PlanActions.SORT_BY_BUCKET: {
-                let plan = taskForId(state, state.activeListId);
-                if (!plan.buckets) return state;
+                const plan = taskForId(
+                    state,
+                    state.activeListId,
+                ) as unknown as Plan;
+                if (!plan.buckets || !plan.subtaskIds) return state;
                 const bucketIdOrder = plan.buckets.reduce(
                     (index, b, i) => ({
                         ...index,
@@ -482,15 +551,15 @@ class PlanStore extends ReduceStore {
         }
     }
 
-    getPlanIdsLO() {
+    getPlanIdsLO(): LoadObject<BfsId[]> {
         return this.getState().topLevelIds.getLoadObject();
     }
 
-    getPlanIdsRlo() {
+    getPlanIdsRlo(): RippedLO<BfsId[]> {
         return ripLoadObject(this.getPlanIdsLO());
     }
 
-    getPlansRlo() {
+    getPlansRlo(): RippedLO<Plan[]> {
         const s = this.getState();
         return mapData(this.getPlanIdsRlo(), (ids) =>
             losForIds(s, ids)
@@ -499,20 +568,21 @@ class PlanStore extends ReduceStore {
         );
     }
 
-    getChildItemRlos(id) {
+    getChildItemRlos(id: BfsId): RippedLO<PlanItem>[] {
         const s = this.getState();
         const t = taskForId(s, id);
         return losForIds(s, t.subtaskIds).map(ripLoadObject);
     }
 
-    getNonDescendantComponents(id) {
+    getNonDescendantComponents(id: BfsId): PlanItem[] {
         const state = this.getState();
         const t = taskForId(state, id);
         if (!t.componentIds) return [];
         const queue = t.componentIds.slice();
-        const result = [];
+        const result: PlanItem[] = [];
         while (queue.length) {
-            const lo = loForId(state, queue.shift());
+            // eslint-disable-next-line @typescript-eslint/no-extra-non-null-assertion
+            const lo = loForId(state, queue.shift()!!);
             if (!lo.hasValue()) continue;
             const comp = lo.getValueEnforcing();
             // walk upward and see if it's within the tree...
@@ -535,56 +605,57 @@ class PlanStore extends ReduceStore {
         return result;
     }
 
-    getActivePlanLO() {
+    getActivePlanLO(): LoadObject<Plan> {
         const lo = this.getPlanIdsLO();
-        if (!lo.hasValue()) return lo;
+        if (!lo.hasValue()) return LoadObject.empty();
         const s = this.getState();
         return s.activeListId == null
             ? LoadObject.empty()
-            : loForId(s, s.activeListId);
+            : (loForId(s, s.activeListId) as unknown as LoadObject<Plan>);
     }
 
-    getActivePlanRlo() {
+    getActivePlanRlo(): RippedLO<Plan> {
         return ripLoadObject(this.getActivePlanLO());
     }
 
-    getActiveItem() {
+    getActiveItem(): Maybe<PlanItem> {
         const s = this.getState();
         if (s.activeTaskId == null) return null;
         const lo = loForId(s, s.activeTaskId);
         return lo.hasValue() ? lo.getValueEnforcing() : null;
     }
 
-    getItemLO(id) {
+    getItemLO(id: BfsId): LoadObject<PlanItem> {
         if (id == null) throw new Error("No task has the null ID");
         const s = this.getState();
         return isKnown(s, id) ? loForId(s, id) : LoadObject.empty();
     }
 
-    getItemRlo(id) {
+    getItemRlo(id: BfsId): RippedLO<PlanItem> {
         return ripLoadObject(this.getItemLO(id));
     }
 
-    getPlanRlo(id) {
-        return ripLoadObject(this.getItemLO(id));
+    getPlanRlo(id: BfsId): RippedLO<Plan> {
+        return ripLoadObject(this.getItemLO(id)) as unknown as RippedLO<Plan>;
     }
 
-    getSelectedItems() {
+    getSelectedItems(): PlanItem[] {
         const s = this.getState();
         return s.selectedTaskIds == null
             ? null
             : tasksForIds(s, s.selectedTaskIds);
     }
 
-    getItemsInBucket(planId, bucketId) {
+    getItemsInBucket(planId: BfsId, bucketId: BfsId): PlanItem[] {
         /* todo: This is TERRIBLE form. Bucket membership should be tracked like
             any other data, not scanned for across the entire plan.
          */
         const byId = this.getState().byId;
-        const items = [];
+        const items: PlanItem[] = [];
         const stack = [planId];
         while (stack.length) {
-            const lo = byId[stack.pop()];
+            // eslint-disable-next-line @typescript-eslint/no-extra-non-null-assertion
+            const lo = byId[stack.pop()!!];
             if (!lo || !lo.hasValue()) continue;
             const it = lo.getValueEnforcing();
             if (bfsIdEq(it.bucketId, bucketId)) {
@@ -596,26 +667,26 @@ class PlanStore extends ReduceStore {
         return items;
     }
 
-    isPlanDetailVisible() {
+    isPlanDetailVisible(): boolean {
         return this.getState().listDetailVisible;
     }
 
-    isMultiItemSelection() {
+    isMultiItemSelection(): boolean {
         const s = this.getState();
         return s.activeTaskId != null && s.selectedTaskIds != null;
     }
 
-    getSelectionAsTextBlock() {
+    getSelectionAsTextBlock(): string {
         const s = this.getState();
         return tasksForIds(
             s,
             taskForId(
                 s,
                 taskForId(s, s.activeTaskId).parentId,
-            ).subtaskIds.filter(
+            ).subtaskIds?.filter(
                 (id) =>
                     bfsIdEq(id, s.activeTaskId) ||
-                    includesBfsId(s.selectedTaskIds, id),
+                    (s.selectedTaskIds && includesBfsId(s.selectedTaskIds, id)),
             ),
         )
             .map((t) => t.name)

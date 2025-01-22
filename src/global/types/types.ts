@@ -1,5 +1,5 @@
 import { CheckableActionType } from "@/util/typedAction";
-import { BfsId } from "@/global/types/identity";
+import { BfsId, BfsStringId } from "@/global/types/identity";
 import { PlannedRecipeHistory, User } from "@/__generated__/graphql";
 import { Maybe } from "graphql/jsutils/Maybe";
 
@@ -35,9 +35,9 @@ export interface IngredientRef {
     quantity?: number | null;
     preparation?: string | null;
     units?: string | null;
-    uomId?: BfsId;
+    uomId?: Maybe<BfsStringId>;
     ingredient?: Ingredient | string | null;
-    ingredientId?: BfsId;
+    ingredientId?: Maybe<BfsStringId>;
 
     /**
      * On the shopping list, napalm entries will only have name, not raw.

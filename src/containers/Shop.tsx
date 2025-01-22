@@ -21,7 +21,7 @@ import { intersection } from "@/util/arrayAsSet";
 import useActiveShoppingPlanIds from "@/data/useActiveShoppingPlanIds";
 
 interface ItemTuple extends PlanItem, ItemProps {
-    status: string;
+    status: PlanItemStatus;
 }
 
 interface PathedItemTuple extends ItemTuple {

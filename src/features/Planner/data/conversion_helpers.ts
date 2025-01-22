@@ -46,7 +46,8 @@ const toRestPlanItem = (
     name: planItem.name,
     notes: planItem.notes,
     status: planItem.status,
-    parentId: ensureIdIsString(planItem.parent?.id),
+    // eslint-disable-next-line @typescript-eslint/no-extra-non-null-assertion
+    parentId: ensureIdIsString(planItem.parent?.id)!!,
     aggregateId: ensureIdIsString(planItem.aggregate?.id),
     subtaskIds: pluckStringIds(planItem.children),
     componentIds: pluckStringIds(planItem.components),
@@ -75,7 +76,7 @@ export const toRestPlan = (
     buckets: plan.buckets.map((b) => {
         const result: TPlanBucket = {
             id: ensureString(b.id),
-            date: b.date,
+            date: b.date ? new Date(b.date) : null,
         };
         if (b.name) result.name = b.name;
         return result;

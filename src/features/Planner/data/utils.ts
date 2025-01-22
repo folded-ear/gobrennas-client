@@ -33,7 +33,11 @@ const _newTask = (name) => ({
     status: PlanItemStatus.Needed,
 });
 
-export const createList = (state: State, name, optionalPlanIdToCopy) => {
+export const createList = (
+    state: State,
+    name: string,
+    optionalPlanIdToCopy?: BfsId,
+) => {
     const task = _newTask(name);
     TaskApi.createList(name, task.id, optionalPlanIdToCopy);
     return {
@@ -857,6 +861,9 @@ export const taskLoaded = (state: State, task) => {
         };
     }
     let lo = state.byId[task.id] || LoadObject.empty();
+    if (task.ingredientId != null) {
+        task.ingredientId = ensureString(task.ingredientId);
+    }
     if (lo.hasValue()) {
         lo = lo.map((t) => {
             const subtaskIds = task.subtaskIds ? task.subtaskIds.slice() : [];

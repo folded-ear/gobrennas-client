@@ -96,7 +96,8 @@ class ShoppingStore extends ReduceStore<State, FluxAction> {
                 this.__dispatcher.waitFor([planStore.getDispatchToken()]);
                 state = placeFocus(
                     state,
-                    planStore.getActiveItem().id,
+                    // eslint-disable-next-line @typescript-eslint/no-extra-non-null-assertion
+                    planStore.getActiveItem()!!.id,
                     ShopItemType.PLAN_ITEM,
                 );
                 return state;
