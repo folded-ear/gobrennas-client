@@ -99,15 +99,15 @@ class IngredientItem extends React.PureComponent<IngredientItemProps> {
             addonBefore.push(<LoadingIconButton key="acquire" />);
         } else {
             const next = acquiring
-                ? PlanItemStatus.NEEDED
-                : PlanItemStatus.ACQUIRED;
+                ? PlanItemStatus.Needed
+                : PlanItemStatus.Acquired;
             addonBefore.push(
                 <StatusIconButton
                     key="acquire"
                     current={
                         acquiring
-                            ? PlanItemStatus.ACQUIRED
-                            : PlanItemStatus.NEEDED
+                            ? PlanItemStatus.Acquired
+                            : PlanItemStatus.Needed
                     }
                     next={next}
                     onClick={(e) => this.onSetStatus(next, e)}
@@ -117,7 +117,7 @@ class IngredientItem extends React.PureComponent<IngredientItemProps> {
         const addonAfter = deleting ? (
             <DontChangeStatusButton
                 key="delete"
-                next={PlanItemStatus.DELETED}
+                next={PlanItemStatus.Deleted}
                 onClick={(e) => this.onUndoSetStatus(e)}
             />
         ) : null;

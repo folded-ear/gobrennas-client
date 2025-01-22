@@ -254,8 +254,8 @@ interface PlannedRecipeProps {
 const PlannedRecipe: React.FC<PlannedRecipeProps> = ({ item }) => {
     const { over: buttonVisible, sensorProps } = useWhileOver();
     const goingAway =
-        item._next_status === PlanItemStatus.COMPLETED ||
-        item._next_status === PlanItemStatus.DELETED;
+        item._next_status === PlanItemStatus.Completed ||
+        item._next_status === PlanItemStatus.Deleted;
     return (
         <DndItem key={item.id} dragId={item.id}>
             <ListItemText disableTypography {...sensorProps}>
@@ -302,7 +302,7 @@ const PlannedRecipe: React.FC<PlannedRecipeProps> = ({ item }) => {
                             <StatusIconButton
                                 key="delete"
                                 id={item.id}
-                                next={PlanItemStatus.DELETED}
+                                next={PlanItemStatus.Deleted}
                             />
                         )}
                     </Box>

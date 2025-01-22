@@ -30,7 +30,7 @@ const AT_END = ("AT_END_" + ClientId.next()) as BfsId;
 const _newTask = (name) => ({
     id: ClientId.next(),
     name,
-    status: PlanItemStatus.NEEDED,
+    status: PlanItemStatus.Needed,
 });
 
 export const createList = (state: State, name, optionalPlanIdToCopy) => {
@@ -490,7 +490,7 @@ export const flushStatusUpdates = (state: State) => {
 
 export const queueDelete = (state: State, id) => {
     if (!isKnown(state, id)) return state; // already gone...
-    return queueStatusUpdate(state, id, PlanItemStatus.DELETED);
+    return queueStatusUpdate(state, id, PlanItemStatus.Deleted);
 };
 
 function isEmpty(taskOrString) {
