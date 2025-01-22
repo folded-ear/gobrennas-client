@@ -453,20 +453,24 @@ export const selectDelta = (state: State, id, delta) => {
     }
 };
 
-const statusUpdatesToFlush = new Map<BfsStringId, string>();
+const statusUpdatesToFlush = new Map<BfsStringId, PlanItemStatus>();
 
 const unqueueTaskId = (id) => {
     tasksToRename.delete(id);
     statusUpdatesToFlush.delete(id);
 };
 
-const doTaskDelete = (state: State, id: number) => {
+const doTaskDelete = (state: State, id: BfsStringId) => {
     unqueueTaskId(id);
     PlanApi.deleteItem(id);
     return state;
 };
 
-const setTaskStatus = (state: State, id, status) => {
+const setTaskStatus = (
+    state: State,
+    id: BfsStringId,
+    status: PlanItemStatus,
+) => {
     if (willStatusDelete(status)) {
         unqueueTaskId(id);
     }
@@ -479,7 +483,9 @@ const setTaskStatus = (state: State, id, status) => {
 
 export const flushStatusUpdates = (state: State) => {
     if (statusUpdatesToFlush.size === 0) return state;
-    const [id, status] = statusUpdatesToFlush.entries().next().value; // the next value of the iterator, not the value of the entry!
+    const [id, status]: [BfsStringId, PlanItemStatus] = statusUpdatesToFlush
+        .entries()
+        .next().value; // the next value of the iterator, not the value of the entry!
     state = setTaskStatus(state, id, status);
     statusUpdatesToFlush.delete(id);
     if (statusUpdatesToFlush.size > 0) {
@@ -500,7 +506,11 @@ function isEmpty(taskOrString) {
     return str == null || str.trim() === "";
 }
 
-export const queueStatusUpdate = (state: State, id, status) => {
+export const queueStatusUpdate = (
+    state: State,
+    id: BfsStringId,
+    status: PlanItemStatus,
+) => {
     const lo = loForId(state, id);
     const t = lo.getValueEnforcing();
     invariant(

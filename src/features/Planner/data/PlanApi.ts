@@ -23,7 +23,10 @@ import type {
     SetPlanColorMutation,
     UpdateBucketMutation,
 } from "@/__generated__/graphql";
-import { PlanItemStatus, SetStatusMutation } from "@/__generated__/graphql";
+import {
+    CompletePlanItemMutation,
+    PlanItemStatus,
+} from "@/__generated__/graphql";
 import type { FetchResult } from "@apollo/client";
 import {
     handleErrors,
@@ -115,7 +118,7 @@ const PlanApi = {
                     doneAt: doneAt?.toISOString() || null,
                 },
             }),
-            (result: FetchResult<SetStatusMutation>) => {
+            (result: FetchResult<CompletePlanItemMutation>) => {
                 const id = result?.data?.planner?.setStatus?.id || null;
                 return (
                     id && {

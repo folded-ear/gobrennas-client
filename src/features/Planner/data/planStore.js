@@ -255,11 +255,11 @@ class PlanStore extends ReduceStore {
             }
 
             case PlanActions.COMPLETE_PLAN_ITEM: {
+                // TODO: This is not going through the queue...YET! Will be addressed in future work
                 PlanApi.completeItem(action.id, action.doneAt);
                 return state;
             }
 
-            // TODO: This is not going through the queue...YET! Will be addressed in future work
             case PlanActions.PLAN_ITEM_COMPLETED: {
                 return taskDeleted(state, action.id);
             }
