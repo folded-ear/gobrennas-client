@@ -7,6 +7,7 @@ import serializeObjectOfPromiseFns from "@/util/serializeObjectOfPromiseFns";
 import { CREATE_PLAN } from "./mutations";
 import { handleErrors, toRestPlan } from "./conversion_helpers";
 import { GET_PLANS } from "@/data/hooks/useGetAllPlans";
+import { LOAD_PLANS } from "@/features/Planner/data/queries";
 
 const axios = BaseAxios.create({
     baseURL: `${API_BASE_URL}/api/tasks`,
@@ -40,10 +41,10 @@ const TaskApi = {
 
     loadLists: () =>
         promiseFlux(
-            axios.get(`/`),
+            client.query({ query: LOAD_PLANS }),
             ({ data }) => ({
                 type: PlanActions.PLANS_LOADED,
-                data,
+                data: data.planner?.plans.map(toRestPlan),
             }),
             soakUpUnauthorized,
         ),
