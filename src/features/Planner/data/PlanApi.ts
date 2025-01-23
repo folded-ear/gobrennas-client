@@ -17,12 +17,16 @@ import { PlanItemStatus } from "@/__generated__/graphql";
 import {
     handleErrors,
     toRestPlan,
+    toRestPlanItem,
     toRestPlanOrItem,
 } from "@/features/Planner/data/conversion_helpers";
 import { BfsId, ensureString } from "@/global/types/identity";
 import { WireBucket } from "./planStore";
 import serializeObjectOfPromiseFns from "@/util/serializeObjectOfPromiseFns";
-import { GET_UPDATED_SINCE } from "@/features/Planner/data/queries";
+import {
+    GET_UPDATED_SINCE,
+    LOAD_DESCENDANTS,
+} from "@/features/Planner/data/queries";
 
 const axios = BaseAxios.create({
     baseURL: `${API_BASE_URL}/api/plan`,
@@ -145,11 +149,21 @@ const PlanApi = {
         }),
 
     getDescendantsAsList: (id: BfsId) =>
-        promiseFlux(axios.get(`/${id}/descendants`), (r) => ({
-            type: PlanActions.PLAN_DATA_BOOTSTRAPPED,
-            id,
-            data: r.data,
-        })),
+        promiseFlux(
+            client.query({
+                query: LOAD_DESCENDANTS,
+                variables: {
+                    id: ensureString(id),
+                },
+            }),
+            ({ data }) => ({
+                type: PlanActions.PLAN_DATA_BOOTSTRAPPED,
+                id,
+                data: [toRestPlanOrItem(data.planner.planOrItem)].concat(
+                    data.planner.planOrItem.descendants.map(toRestPlanItem),
+                ),
+            }),
+        ),
 
     getItemsUpdatedSince: (id: BfsId, cutoff) =>
         promiseFlux(

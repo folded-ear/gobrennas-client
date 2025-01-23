@@ -441,6 +441,7 @@ type PlannerMutation {
 type PlannerQuery {
     plan(id: ID!): Plan!
     planItem(id: ID!): PlanItem!
+    planOrItem(id: ID!): CorePlanItem!
     plans: [Plan!]!
     """
 

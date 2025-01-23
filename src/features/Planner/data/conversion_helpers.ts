@@ -39,7 +39,7 @@ export const toRestPlanOrItem = (it) => {
     }
 };
 
-const toRestPlanItem = (
+export const toRestPlanItem = (
     planItem: CorePlanItemLoadFragment & PlanItemLoadFragment,
 ): TPlanItem => ({
     id: ensureString(planItem.id),

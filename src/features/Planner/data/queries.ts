@@ -10,6 +10,21 @@ query loadPlans {
   }
 }`);
 
+export const LOAD_DESCENDANTS = gql(`
+query loadPlanItemAndDescendants($id: ID!) {
+  planner {
+    planOrItem(id: $id) {
+      ...corePlanItemLoad
+      ...planLoad
+      ...planItemLoad
+      descendants {
+        ...corePlanItemLoad
+        ...planItemLoad
+      }
+    }
+  }
+}`);
+
 export const GET_UPDATED_SINCE = gql(`
 query planItemsUpdatedSince(
   $planId: ID!,
