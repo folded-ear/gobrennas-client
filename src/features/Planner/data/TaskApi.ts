@@ -44,7 +44,7 @@ const TaskApi = {
             client.query({ query: LOAD_PLANS }),
             ({ data }) => ({
                 type: PlanActions.PLANS_LOADED,
-                data: data.planner?.plans.map(toRestPlan),
+                data: data.planner.plans.map(toRestPlan),
             }),
             soakUpUnauthorized,
         ),

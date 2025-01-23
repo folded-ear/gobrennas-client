@@ -165,7 +165,7 @@ const PlanApi = {
                 return {
                     type: PlanActions.PLAN_DELTAS,
                     id,
-                    data: (data.planner?.updatedSince || []).map(
+                    data: (data.planner.updatedSince || []).map(
                         toRestPlanOrItem,
                     ),
                 };

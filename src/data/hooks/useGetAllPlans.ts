@@ -22,7 +22,7 @@ query getPlans {
 `);
 
 const orderComponentsById = (
-    plans: NonNullable<GetPlansQuery["planner"]>["plans"],
+    plans: GetPlansQuery["planner"]["plans"],
     userId: string,
 ): Record<BfsId, string[]> => {
     const byId = {};
@@ -36,8 +36,7 @@ const orderComponentsById = (
 };
 
 const adapter = (data?: GetPlansQuery) => {
-    if (!data?.planner?.plans) return [];
-    return data.planner.plans;
+    return data?.planner?.plans ?? [];
 };
 
 export const useGetAllPlans = () => {

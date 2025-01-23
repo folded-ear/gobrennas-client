@@ -182,10 +182,10 @@ type LibraryQuery {
 }
 
 type Mutation {
-    favorite: FavoriteMutation
-    library: LibraryMutation
-    pantry: PantryMutation
-    planner: PlannerMutation
+    favorite: FavoriteMutation!
+    library: LibraryMutation!
+    pantry: PantryMutation!
+    planner: PlannerMutation!
 }
 
 type PageInfo {
@@ -461,14 +461,14 @@ type Quantity {
 }
 
 type Query {
-    favorite: FavoriteQuery
+    favorite: FavoriteQuery!
     getCurrentUser: User
-    labels: LabelsQuery
-    library: LibraryQuery
+    labels: LabelsQuery!
+    library: LibraryQuery!
     node(id: ID!): Node
-    pantry: PantryQuery
-    planner: PlannerQuery
-    profile: ProfileQuery
+    pantry: PantryQuery!
+    planner: PlannerQuery!
+    profile: ProfileQuery!
 }
 
 type Recipe implements Ingredient & Node & Owned {
