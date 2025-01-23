@@ -23,8 +23,8 @@ const TaskApi = {
                 },
                 refetchQueries: [GET_PLANS],
             }),
-            (result) => {
-                const plan = result?.data?.planner.createPlan || null;
+            ({ data }) => {
+                const plan = data?.planner?.createPlan || null;
                 return (
                     plan && {
                         type: PlanActions.PLAN_CREATED,
