@@ -117,11 +117,12 @@ const PlanSidebar: React.FC<Props> = ({ open, onClose, plan }) => {
     };
 
     const handleSetColor = () => {
-        if (isValidColor(color)) {
+        const isBlank = color === "";
+        if (isBlank || isValidColor(color)) {
             Dispatcher.dispatch({
                 type: PlanActions.SET_PLAN_COLOR,
                 id: plan.id,
-                color: "#" + color,
+                color: isBlank ? "" : "#" + color,
             });
         }
     };
