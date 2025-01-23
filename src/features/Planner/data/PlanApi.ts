@@ -13,21 +13,7 @@ import {
     SET_PLAN_COLOR,
     UPDATE_BUCKET,
 } from "./mutations";
-import type {
-    CreateBucketMutation,
-    DeleteBucketMutation,
-    DeleteBucketsMutation,
-    DeletePlanItemMutation,
-    PlanItemsUpdatedSinceQuery,
-    RenamePlanOrItemMutation,
-    SetPlanColorMutation,
-    UpdateBucketMutation,
-} from "@/__generated__/graphql";
-import {
-    CompletePlanItemMutation,
-    PlanItemStatus,
-} from "@/__generated__/graphql";
-import type { FetchResult } from "@apollo/client";
+import { PlanItemStatus } from "@/__generated__/graphql";
 import {
     handleErrors,
     toRestPlan,
@@ -59,11 +45,11 @@ const PlanApi = {
                     name,
                 },
             }),
-            (result: FetchResult<RenamePlanOrItemMutation>) => {
-                const data = result?.data?.planner?.rename || null;
+            ({ data }) => {
+                const poi = data?.planner?.rename || null;
                 return {
                     type: PlanActions.UPDATED,
-                    data: data && toRestPlanOrItem(data),
+                    data: poi && toRestPlanOrItem(poi),
                 };
             },
             handleErrors,
@@ -78,8 +64,8 @@ const PlanApi = {
                     color,
                 },
             }),
-            (result: FetchResult<SetPlanColorMutation>) => {
-                const plan = result?.data?.planner?.setColor;
+            ({ data }) => {
+                const plan = data?.planner?.setColor;
                 return {
                     type: PlanActions.UPDATED,
                     data: plan && toRestPlan(plan),
@@ -96,8 +82,8 @@ const PlanApi = {
                     id: ensureString(id),
                 },
             }),
-            (result: FetchResult<DeletePlanItemMutation>) => {
-                const id = result?.data?.planner?.deleteItem?.id || null;
+            ({ data }) => {
+                const id = data?.planner?.deleteItem?.id || null;
                 return (
                     id && {
                         type: PlanActions.DELETED,
@@ -118,8 +104,8 @@ const PlanApi = {
                     doneAt: doneAt?.toISOString() || null,
                 },
             }),
-            (result: FetchResult<CompletePlanItemMutation>) => {
-                const id = result?.data?.planner?.setStatus?.id || null;
+            ({ data }) => {
+                const id = data?.planner?.setStatus?.id || null;
                 return (
                     id && {
                         type: PlanActions.PLAN_ITEM_COMPLETED,
@@ -175,7 +161,7 @@ const PlanApi = {
                 },
                 fetchPolicy: "network-only",
             }),
-            ({ data }: { data: PlanItemsUpdatedSinceQuery }) => {
+            ({ data }) => {
                 return {
                     type: PlanActions.PLAN_DELTAS,
                     id,
@@ -198,8 +184,8 @@ const PlanApi = {
                     date: bucket.date ?? null,
                 },
             }),
-            (result: FetchResult<CreateBucketMutation>) => {
-                const bucket = result?.data?.planner?.createBucket || null;
+            ({ data }) => {
+                const bucket = data?.planner?.createBucket || null;
                 return (
                     bucket && {
                         type: PlanActions.BUCKET_CREATED,
@@ -224,8 +210,8 @@ const PlanApi = {
                     date: bucket.date ?? null,
                 },
             }),
-            (result: FetchResult<UpdateBucketMutation>) => {
-                const bucket = result?.data?.planner?.updateBucket || null;
+            ({ data }) => {
+                const bucket = data?.planner?.updateBucket || null;
                 return (
                     bucket && {
                         type: PlanActions.BUCKET_UPDATED,
@@ -245,8 +231,8 @@ const PlanApi = {
                     bucketId: ensureString(id),
                 },
             }),
-            (result: FetchResult<DeleteBucketMutation>) => {
-                const bucket = result?.data?.planner?.deleteBucket || null;
+            ({ data }) => {
+                const bucket = data?.planner?.deleteBucket || null;
                 return (
                     bucket && {
                         type: PlanActions.BUCKET_DELETED,
@@ -266,8 +252,8 @@ const PlanApi = {
                     bucketIds: ids.map((id) => id.toString()),
                 },
             }),
-            (result: FetchResult<DeleteBucketsMutation>) => {
-                const dels = result?.data?.planner?.deleteBuckets || [];
+            ({ data }) => {
+                const dels = data?.planner?.deleteBuckets || [];
                 return {
                     type: PlanActions.BUCKETS_DELETED,
                     planId,
