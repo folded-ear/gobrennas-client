@@ -46,8 +46,7 @@ export const toRestPlanItem = (
     name: planItem.name,
     notes: planItem.notes,
     status: planItem.status,
-    // eslint-disable-next-line @typescript-eslint/no-extra-non-null-assertion
-    parentId: ensureString(planItem.parent!!.id),
+    parentId: ensureString(planItem.parent!.id),
     aggregateId: ensureIdIsString(planItem.aggregate?.id),
     subtaskIds: pluckStringIds(planItem.children),
     componentIds: pluckStringIds(planItem.components),

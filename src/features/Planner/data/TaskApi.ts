@@ -25,16 +25,14 @@ const TaskApi = {
                 refetchQueries: [GET_PLANS],
             }),
             ({ data }) => {
-                const plan = data?.planner?.createPlan || null;
-                return (
-                    plan && {
-                        type: PlanActions.PLAN_CREATED,
-                        clientId,
-                        id: plan.id,
-                        data: toRestPlan(plan),
-                        fromId: sourcePlanId,
-                    }
-                );
+                const plan = data!.planner.createPlan || null;
+                return {
+                    type: PlanActions.PLAN_CREATED,
+                    clientId,
+                    id: plan.id,
+                    data: toRestPlan(plan),
+                    fromId: sourcePlanId,
+                };
             },
             handleErrors,
         ),

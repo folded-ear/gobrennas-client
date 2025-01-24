@@ -320,21 +320,16 @@ class PlanStore extends FluxReduceStore<State, FluxAction> {
             }
 
             case PlanActions.COMPLETE_PLAN_ITEM: {
-                // TODO: This is not going through the queue...YET! Will be addressed in future work
-                PlanApi.completeItem(action.id, action.doneAt);
-                return state;
-            }
-
-            case PlanActions.PLAN_ITEM_COMPLETED: {
-                return taskDeleted(state, action.id);
+                return doInteractiveStatusChange(state, action.id, {
+                    status: PlanItemStatus.Completed,
+                    doneAt: action.doneAt,
+                });
             }
 
             case PlanActions.SET_STATUS: {
-                return doInteractiveStatusChange(
-                    state,
-                    action.id,
-                    action.status,
-                );
+                return doInteractiveStatusChange(state, action.id, {
+                    status: action.status,
+                });
             }
 
             case PlanActions.BULK_SET_STATUS: {
@@ -447,8 +442,7 @@ class PlanStore extends FluxReduceStore<State, FluxAction> {
                 return mapPlanBuckets(state, action.planId, (bs) => {
                     const idx = bs.findIndex((b) => bfsIdEq(b.id, action.id));
                     if (idx >= 0 && !ClientId.is(action.id)) {
-                        // eslint-disable-next-line @typescript-eslint/no-extra-non-null-assertion
-                        PlanApi.deleteBucket(state.activeListId!!, action.id);
+                        PlanApi.deleteBucket(state.activeListId!, action.id);
                     }
                     return removeAtIndex(bs, idx);
                 });
@@ -581,8 +575,7 @@ class PlanStore extends FluxReduceStore<State, FluxAction> {
         const queue = t.componentIds.slice();
         const result: PlanItem[] = [];
         while (queue.length) {
-            // eslint-disable-next-line @typescript-eslint/no-extra-non-null-assertion
-            const lo = loForId(state, queue.shift()!!);
+            const lo = loForId(state, queue.shift()!);
             if (!lo.hasValue()) continue;
             const comp = lo.getValueEnforcing();
             // walk upward and see if it's within the tree...
@@ -654,8 +647,7 @@ class PlanStore extends FluxReduceStore<State, FluxAction> {
         const items: PlanItem[] = [];
         const stack = [planId];
         while (stack.length) {
-            // eslint-disable-next-line @typescript-eslint/no-extra-non-null-assertion
-            const lo = byId[stack.pop()!!];
+            const lo = byId[stack.pop()!];
             if (!lo || !lo.hasValue()) continue;
             const it = lo.getValueEnforcing();
             if (bfsIdEq(it.bucketId, bucketId)) {

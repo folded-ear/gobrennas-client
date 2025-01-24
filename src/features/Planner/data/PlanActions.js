@@ -51,7 +51,6 @@ const PlanActions = {
         status: PropTypes.string.isRequired,
         doneAt: PropTypes.instanceOf(Date), // can be null
     }),
-    PLAN_ITEM_COMPLETED: "plan/plan-item-completed",
     BULK_SET_STATUS: typedAction("plan/bulk-set-status", {
         ids: PropTypes.arrayOf(bfsIdType).isRequired,
         status: PropTypes.string.isRequired,

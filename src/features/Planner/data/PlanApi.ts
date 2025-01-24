@@ -4,16 +4,15 @@ import promiseFlux, { soakUpUnauthorized } from "@/util/promiseFlux";
 import PlanActions from "./PlanActions";
 import { client } from "@/providers/ApolloClient";
 import {
-    COMPLETE_PLAN_ITEM,
     CREATE_BUCKET,
     DELETE_BUCKET,
     DELETE_BUCKETS,
     DELETE_PLAN_ITEM,
     RENAME_PLAN_OR_ITEM,
     SET_PLAN_COLOR,
+    SET_PLAN_ITEM_STATUS,
     UPDATE_BUCKET,
-} from "./mutations";
-import { PlanItemStatus } from "@/__generated__/graphql";
+} from "@/features/Planner/data/mutations";
 import {
     handleErrors,
     toRestPlan,
@@ -27,6 +26,8 @@ import {
     GET_UPDATED_SINCE,
     LOAD_DESCENDANTS,
 } from "@/features/Planner/data/queries";
+import { willStatusDelete } from "@/features/Planner/data/PlanItemStatus";
+import { StatusChange } from "@/features/Planner/data/utils";
 
 const axios = BaseAxios.create({
     baseURL: `${API_BASE_URL}/api/plan`,
@@ -78,6 +79,7 @@ const PlanApi = {
             handleErrors,
         ),
 
+    // used for immediate deletion of a blank item, bypassing the status queue
     deleteItem: (id: BfsId) =>
         promiseFlux(
             client.mutate({
@@ -87,51 +89,39 @@ const PlanApi = {
                 },
             }),
             ({ data }) => {
-                const id = data?.planner?.deleteItem?.id || null;
-                return (
-                    id && {
-                        type: PlanActions.DELETED,
-                        id,
-                    }
-                );
+                const id = data!.planner.deleteItem.id;
+                return {
+                    type: PlanActions.DELETED,
+                    id,
+                };
             },
             handleErrors,
         ),
 
-    completeItem: (id: BfsId, doneAt: Date) =>
-        promiseFlux(
+    updateItemStatus: (id: BfsId, { status, doneAt }: StatusChange) => {
+        return promiseFlux(
             client.mutate({
-                mutation: COMPLETE_PLAN_ITEM,
+                mutation: SET_PLAN_ITEM_STATUS,
                 variables: {
                     id: ensureString(id),
-                    status: PlanItemStatus.Completed,
+                    status,
                     doneAt: doneAt?.toISOString() || null,
                 },
             }),
             ({ data }) => {
-                const id = data?.planner?.setStatus?.id || null;
-                return (
-                    id && {
-                        type: PlanActions.PLAN_ITEM_COMPLETED,
-                        id,
-                    }
-                );
+                const info = data!.planner.setStatus;
+                return willStatusDelete(info.status)
+                    ? {
+                          type: PlanActions.DELETED,
+                          id: info?.id,
+                      }
+                    : {
+                          type: PlanActions.UPDATED,
+                          data: toRestPlanItem(info!),
+                      };
             },
-            handleErrors,
-        ),
-
-    updateItemStatus: (planId: BfsId, body) =>
-        promiseFlux(axios.put(`/${planId}/status`, body), (r) =>
-            r.data.type === "delete"
-                ? {
-                      type: PlanActions.DELETED,
-                      id: r.data.id,
-                  }
-                : {
-                      type: PlanActions.UPDATED,
-                      data: r.data.info,
-                  },
-        ),
+        );
+    },
 
     mutateTree: (planId: BfsId, body) =>
         axios.post(`/${planId}/mutate-tree`, body),
@@ -199,15 +189,13 @@ const PlanApi = {
                 },
             }),
             ({ data }) => {
-                const bucket = data?.planner?.createBucket || null;
-                return (
-                    bucket && {
-                        type: PlanActions.BUCKET_CREATED,
-                        planId,
-                        clientId: clientId,
-                        data: bucket,
-                    }
-                );
+                const bucket = data!.planner.createBucket;
+                return {
+                    type: PlanActions.BUCKET_CREATED,
+                    planId,
+                    clientId: clientId,
+                    data: bucket,
+                };
             },
             handleErrors,
         );
@@ -225,14 +213,12 @@ const PlanApi = {
                 },
             }),
             ({ data }) => {
-                const bucket = data?.planner?.updateBucket || null;
-                return (
-                    bucket && {
-                        type: PlanActions.BUCKET_UPDATED,
-                        planId,
-                        data: bucket,
-                    }
-                );
+                const bucket = data!.planner.updateBucket;
+                return {
+                    type: PlanActions.BUCKET_UPDATED,
+                    planId,
+                    data: bucket,
+                };
             },
         ),
 
@@ -246,14 +232,12 @@ const PlanApi = {
                 },
             }),
             ({ data }) => {
-                const bucket = data?.planner?.deleteBucket || null;
-                return (
-                    bucket && {
-                        type: PlanActions.BUCKET_DELETED,
-                        planId,
-                        id: bucket.id,
-                    }
-                );
+                const bucket = data!.planner.deleteBucket;
+                return {
+                    type: PlanActions.BUCKET_DELETED,
+                    planId,
+                    id: bucket.id,
+                };
             },
         ),
 

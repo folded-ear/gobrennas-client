@@ -24,8 +24,14 @@ import {
     indexOfBfsId,
 } from "@/global/types/identity";
 import { PlanItem, State } from "@/features/Planner/data/planStore";
+import { Maybe } from "graphql/jsutils/Maybe";
 
 const AT_END = ("AT_END_" + ClientId.next()) as BfsId;
+
+export interface StatusChange {
+    status: PlanItemStatus;
+    doneAt?: Maybe<Date>;
+}
 
 const _newTask = (name) => ({
     id: ClientId.next(),
@@ -457,7 +463,7 @@ export const selectDelta = (state: State, id, delta) => {
     }
 };
 
-const statusUpdatesToFlush = new Map<BfsStringId, PlanItemStatus>();
+const statusUpdatesToFlush = new Map<BfsStringId, StatusChange>();
 
 const unqueueTaskId = (id) => {
     tasksToRename.delete(id);
@@ -470,37 +476,28 @@ const doTaskDelete = (state: State, id: BfsStringId) => {
     return state;
 };
 
-const setTaskStatus = (
-    state: State,
-    id: BfsStringId,
-    status: PlanItemStatus,
-) => {
-    if (willStatusDelete(status)) {
-        unqueueTaskId(id);
-    }
-    PlanApi.updateItemStatus(state.activeListId!, {
-        id,
-        status,
-    });
-    return state;
-};
-
 export const flushStatusUpdates = (state: State) => {
     if (statusUpdatesToFlush.size === 0) return state;
-    const [id, status]: [BfsStringId, PlanItemStatus] = statusUpdatesToFlush
-        .entries()
-        .next().value; // the next value of the iterator, not the value of the entry!
-    state = setTaskStatus(state, id, status);
-    statusUpdatesToFlush.delete(id);
+    // I cannot figure out how to get the first entry of a Map in a type-safe
+    // way w/out a non-looping "loop" like this.
+    // noinspection LoopStatementThatDoesntLoopJS
+    for (const [id, change] of statusUpdatesToFlush.entries()) {
+        if (willStatusDelete(change.status)) {
+            unqueueTaskId(id);
+        }
+        PlanApi.updateItemStatus(id, change);
+        statusUpdatesToFlush.delete(id);
+        break;
+    }
     if (statusUpdatesToFlush.size > 0) {
-        inTheFuture(PlanActions.FLUSH_STATUS_UPDATES, 1);
+        inTheFuture(PlanActions.FLUSH_STATUS_UPDATES, 0.5);
     }
     return state;
 };
 
 export const queueDelete = (state: State, id) => {
     if (!isKnown(state, id)) return state; // already gone...
-    return queueStatusUpdate(state, id, PlanItemStatus.Deleted);
+    return queueStatusUpdate(state, id, { status: PlanItemStatus.Deleted });
 };
 
 function isEmpty(taskOrString) {
@@ -513,16 +510,12 @@ function isEmpty(taskOrString) {
 export const queueStatusUpdate = (
     state: State,
     id: BfsStringId,
-    status: PlanItemStatus,
+    change: StatusChange,
 ) => {
+    const { status } = change;
     const lo = loForId(state, id);
     const t = lo.getValueEnforcing();
-    invariant(
-        t.parentId != null,
-        "Can't change root-level task '%s' to %s",
-        id,
-        status,
-    );
+    invariant(t.parentId != null, "Can't change plan '%s' to %s", id, status);
     if (t._next_status === status) return state; // we're golden
     const isDelete = willStatusDelete(status);
     if (isDelete && ClientId.is(id)) {
@@ -546,7 +539,7 @@ export const queueStatusUpdate = (
             })
             .done();
     } else {
-        statusUpdatesToFlush.set(id, status);
+        statusUpdatesToFlush.set(id, change);
         inTheFuture(PlanActions.FLUSH_STATUS_UPDATES, 4);
         nextLO = lo.map((t) => ({
             ...t,
@@ -1000,9 +993,13 @@ export function resetToThisWeeksBuckets(state: State, planId: number): State {
     });
 }
 
-export const doInteractiveStatusChange = (state: State, id, status) => {
-    if (willStatusDelete(status) && bfsIdEq(id, state.activeTaskId)) {
+export const doInteractiveStatusChange = (
+    state: State,
+    id: BfsStringId,
+    change: StatusChange,
+) => {
+    if (willStatusDelete(change.status) && bfsIdEq(id, state.activeTaskId)) {
         state = focusDelta(state, id, 1);
     }
-    return queueStatusUpdate(state, id, status);
+    return queueStatusUpdate(state, id, change);
 };

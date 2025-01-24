@@ -1,10 +1,11 @@
 import Dispatcher from "@/data/dispatcher";
 import { askUserToReauth, isAuthError } from "@/providers/Profile";
+import { FluxAction } from "@/global/types/types";
 
 type TypeTemplateOrCallback<Data> =
     | string
-    | Record<string, any>
-    | ((data: Data) => Record<string, any>);
+    | FluxAction
+    | ((data: Data) => FluxAction);
 
 let helper = <Data>(
     settleKey: string,
