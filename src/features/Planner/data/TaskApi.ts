@@ -4,10 +4,12 @@ import { API_BASE_URL } from "@/constants";
 import PlanActions from "@/features/Planner/data/PlanActions";
 import promiseFlux, { soakUpUnauthorized } from "@/util/promiseFlux";
 import serializeObjectOfPromiseFns from "@/util/serializeObjectOfPromiseFns";
-import { CREATE_PLAN } from "./mutations";
+import { CREATE_PLAN, REVOKE_PLAN_GRANT, SET_PLAN_GRANT } from "./mutations";
 import { handleErrors, toRestPlan } from "./conversion_helpers";
 import { GET_PLANS } from "@/data/hooks/useGetAllPlans";
 import { LOAD_PLANS } from "@/features/Planner/data/queries";
+import { BfsId, BfsStringId, ensureString } from "@/global/types/identity";
+import AccessLevel from "@/data/AccessLevel";
 
 const axios = BaseAxios.create({
     baseURL: `${API_BASE_URL}/api/tasks`,
@@ -58,12 +60,15 @@ const TaskApi = {
         });
     },
 
-    setListGrant: (id, userId, level) =>
-        // i was not thinking when i designed this endpoint. :)
+    setPlanGrant: (id: BfsStringId, userId: BfsId, accessLevel: AccessLevel) =>
         promiseFlux(
-            axios.post(`/${id}/acl/grants`, {
-                userId,
-                accessLevel: level,
+            client.mutate({
+                mutation: SET_PLAN_GRANT,
+                variables: {
+                    planId: id,
+                    userId: ensureString(userId),
+                    accessLevel,
+                },
             }),
             () => ({
                 type: PlanActions.PLAN_GRANT_SET,
@@ -72,12 +77,21 @@ const TaskApi = {
             }),
         ),
 
-    clearListGrant: (id, userId) =>
-        promiseFlux(axios.delete(`/${id}/acl/grants/${userId}`), () => ({
-            type: PlanActions.PLAN_GRANT_CLEARED,
-            id,
-            userId,
-        })),
+    clearPlanGrant: (id: BfsStringId, userId: BfsId) =>
+        promiseFlux(
+            client.mutate({
+                mutation: REVOKE_PLAN_GRANT,
+                variables: {
+                    planId: id,
+                    userId: ensureString(userId),
+                },
+            }),
+            () => ({
+                type: PlanActions.PLAN_GRANT_CLEARED,
+                id,
+                userId,
+            }),
+        ),
 };
 
 export default serializeObjectOfPromiseFns(TaskApi);

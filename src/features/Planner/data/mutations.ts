@@ -83,3 +83,21 @@ mutation setPlanItemStatus($id: ID!, $status: PlanItemStatus!, $doneAt: DateTime
     }
   }
 }`);
+
+export const SET_PLAN_GRANT = gql(`
+mutation setPlanGrant($planId: ID!, $userId: ID!, $accessLevel: AccessLevel!) {
+  planner {
+    setGrant(planId: $planId, userId: $userId, accessLevel: $accessLevel) {
+      id
+    }
+  }
+}`);
+
+export const REVOKE_PLAN_GRANT = gql(`
+mutation revokePlanGrant($planId: ID!, $userId: ID!) {
+  planner {
+    revokeGrant(planId: $planId, userId: $userId) {
+      id
+    }
+  }
+}`);

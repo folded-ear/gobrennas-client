@@ -209,7 +209,7 @@ class PlanStore extends FluxReduceStore<State, FluxAction> {
                 return setPlanColor(state, action.id, action.color);
 
             case PlanActions.SET_PLAN_GRANT: {
-                TaskApi.setListGrant(action.id, action.userId, action.level);
+                TaskApi.setPlanGrant(action.id, action.userId, action.level);
                 return dotProp.set(state, ["byId", action.id], (lo) =>
                     lo
                         .map((l) =>
@@ -224,7 +224,7 @@ class PlanStore extends FluxReduceStore<State, FluxAction> {
             }
 
             case PlanActions.CLEAR_PLAN_GRANT: {
-                TaskApi.clearListGrant(action.id, action.userId);
+                TaskApi.clearPlanGrant(action.id, action.userId);
                 return dotProp.set(state, ["byId", action.id], (lo) =>
                     lo
                         .map((l) =>
