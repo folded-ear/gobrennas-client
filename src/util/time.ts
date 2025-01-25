@@ -42,13 +42,14 @@ export const formatTimer = (seconds?: number) => {
 
 const TEN_YEARS_FROM_NOW_THIS_CENTURY = (new Date().getFullYear() % 100) + 10;
 
-export function parseLocalDate(date: Maybe<string>): Maybe<Date> {
+export function parseLocalDate(date: Maybe<string>): Date | null {
     if (!date) return null;
     if (!/^\d+-\d+-\d+(\D|$)/.test(date)) return null;
     const parts = date
         .split(/\D/)
         .slice(0, 3)
         .map((p) => parseInt(p, 10)) as [number, number, number];
+    if (parts.length !== 3) return null;
     if (parts.some((p) => isNaN(p))) return null;
     let year = parts.shift() as number; // parts is non-empty
     if (year < 0) return null;
@@ -70,7 +71,8 @@ function pad(number: number): string {
     return "" + number;
 }
 
-export function formatLocalDate(date: Maybe<Date>): Maybe<string> {
+// don't use Maybe for the return type, as GraphQL params can't be undefined.
+export function formatLocalDate(date: Maybe<Date>): string | null {
     if (!date) return null;
     return (
         date.getFullYear() +

@@ -101,7 +101,7 @@ const PlanActions = {
     }),
     BUCKET_DELETED: typedAction("plan/bucket-deleted", {
         planId: bfsIdType.isRequired,
-        id: PropTypes.number.isRequired,
+        id: bfsIdType.isRequired,
     }),
     BUCKETS_DELETED: typedAction("plan/bucket-deleted", {
         planId: bfsIdType.isRequired,

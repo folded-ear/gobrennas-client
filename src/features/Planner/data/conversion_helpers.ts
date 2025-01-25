@@ -10,6 +10,7 @@ import {
     PlanBucket as TPlanBucket,
     PlanItem as TPlanItem,
 } from "@/features/Planner/data/planStore";
+import { parseLocalDate } from "@/util/time";
 
 export const handleErrors = (error) => {
     throwAnyGraphQLErrors(error);
@@ -75,7 +76,7 @@ export const toRestPlan = (
     buckets: plan.buckets.map((b) => {
         const result: TPlanBucket = {
             id: ensureString(b.id),
-            date: b.date ? new Date(b.date) : null,
+            date: parseLocalDate(b.date),
         };
         if (b.name) result.name = b.name;
         return result;

@@ -14,7 +14,7 @@ import dotProp from "dot-prop-immutable";
 import { bucketComparator } from "@/util/comparators";
 import preferencesStore from "@/data/preferencesStore";
 import { formatLocalDate, parseLocalDate } from "@/util/time";
-import { PlanBucket, WireBucket } from "./planStore";
+import { PlanBucket } from "./planStore";
 import {
     BfsId,
     bfsIdEq,
@@ -852,9 +852,7 @@ export const taskLoaded = (state: State, task) => {
     if (task.acl) {
         task = {
             ...task,
-            buckets: task.buckets
-                ? task.buckets.map(deserializeBucket).sort(bucketComparator)
-                : [],
+            buckets: task.buckets ? task.buckets.sort(bucketComparator) : [],
         };
     }
     let lo = state.byId[task.id] || LoadObject.empty();
@@ -933,7 +931,11 @@ export const listsLoaded = (state: State, lists) => {
     return state;
 };
 
-export const mapPlanBuckets = (state: State, planId, work) =>
+export const mapPlanBuckets = (
+    state: State,
+    planId: BfsId,
+    work: (buckets: PlanBucket[]) => PlanBucket[],
+): State =>
     dotProp.set(state, ["byId", planId], (lo) =>
         lo.map((t) => ({
             ...t,
@@ -941,25 +943,15 @@ export const mapPlanBuckets = (state: State, planId, work) =>
         })),
     );
 
-export function deserializeBucket(b: WireBucket): PlanBucket {
-    return { ...b, date: parseLocalDate(b.date) };
-}
-
-function serializeBucket(b: PlanBucket): WireBucket {
-    return { ...b, date: formatLocalDate(b.date) };
-}
-
 export const saveBucket = (state: State, bucket: PlanBucket) => {
-    const wireBucket = serializeBucket(bucket);
     ClientId.is(bucket.id)
-        ? PlanApi.createBucket(state.activeListId!, wireBucket)
-        : PlanApi.updateBucket(state.activeListId!, bucket.id, wireBucket);
+        ? PlanApi.createBucket(state.activeListId!, bucket)
+        : PlanApi.updateBucket(state.activeListId!, bucket.id, bucket);
 };
 
-export function resetToThisWeeksBuckets(state: State, planId: number): State {
-    return mapPlanBuckets(state, planId, (buckets: PlanBucket[]) => {
+export function resetToThisWeeksBuckets(state: State, planId: BfsId): State {
+    return mapPlanBuckets(state, planId, (buckets) => {
         const result: PlanBucket[] = [];
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         const today = parseLocalDate(formatLocalDate(new Date()))!.valueOf();
         const desiredDates = new Set<number>();
         for (let i = 0; i < 7; i++) {

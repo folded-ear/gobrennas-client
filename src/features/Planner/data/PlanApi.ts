@@ -21,15 +21,25 @@ import {
     toRestPlanOrItem,
 } from "@/features/Planner/data/conversion_helpers";
 import { BfsId, ensureString } from "@/global/types/identity";
-import { WireBucket } from "./planStore";
+import { PlanBucket } from "./planStore";
 import serializeObjectOfPromiseFns from "@/util/serializeObjectOfPromiseFns";
 import { LOAD_DESCENDANTS } from "@/features/Planner/data/queries";
 import { willStatusDelete } from "@/features/Planner/data/PlanItemStatus";
 import { StatusChange } from "@/features/Planner/data/utils";
+import { formatLocalDate, parseLocalDate } from "@/util/time";
+import { Maybe } from "graphql/jsutils/Maybe";
 
 const axios = BaseAxios.create({
     baseURL: `${API_BASE_URL}/api/plan`,
 });
+
+interface WireBucket extends Omit<PlanBucket, "date"> {
+    date: Maybe<string>;
+}
+
+function deserializeBucket(b: WireBucket): PlanBucket {
+    return { ...b, date: parseLocalDate(b.date) };
+}
 
 const PlanApi = {
     createItem: (planId: BfsId, body) =>
@@ -156,15 +166,15 @@ const PlanApi = {
             }),
         ),
 
-    createBucket: (planId: BfsId, bucket: WireBucket) => {
+    createBucket: (planId: BfsId, bucket: PlanBucket) => {
         const clientId = bucket.id;
         return promiseFlux(
             client.mutate({
                 mutation: CREATE_BUCKET,
                 variables: {
-                    planId: planId.toString(),
+                    planId: ensureString(planId),
                     name: bucket.name ?? null,
-                    date: bucket.date ?? null,
+                    date: formatLocalDate(bucket.date),
                 },
             }),
             ({ data }) => {
@@ -173,14 +183,14 @@ const PlanApi = {
                     type: PlanActions.BUCKET_CREATED,
                     planId,
                     clientId: clientId,
-                    data: bucket,
+                    data: deserializeBucket(bucket),
                 };
             },
             handleErrors,
         );
     },
 
-    updateBucket: (planId: BfsId, id: BfsId, bucket: WireBucket) =>
+    updateBucket: (planId: BfsId, id: BfsId, bucket: PlanBucket) =>
         promiseFlux(
             client.mutate({
                 mutation: UPDATE_BUCKET,
@@ -188,7 +198,7 @@ const PlanApi = {
                     planId: ensureString(planId),
                     bucketId: ensureString(id),
                     name: bucket.name ?? null,
-                    date: bucket.date ?? null,
+                    date: formatLocalDate(bucket.date),
                 },
             }),
             ({ data }) => {
@@ -196,7 +206,7 @@ const PlanApi = {
                 return {
                     type: PlanActions.BUCKET_UPDATED,
                     planId,
-                    data: bucket,
+                    data: deserializeBucket(bucket),
                 };
             },
         ),
@@ -225,8 +235,8 @@ const PlanApi = {
             client.mutate({
                 mutation: DELETE_BUCKETS,
                 variables: {
-                    planId: planId.toString(),
-                    bucketIds: ids.map((id) => id.toString()),
+                    planId: ensureString(planId),
+                    bucketIds: ids.map((id) => ensureString(id)),
                 },
             }),
             ({ data }) => {

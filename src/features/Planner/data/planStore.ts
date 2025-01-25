@@ -21,7 +21,6 @@ import {
     createList,
     createTaskAfter,
     createTaskBefore,
-    deserializeBucket,
     doInteractiveStatusChange,
     expandAll,
     flushStatusUpdates,
@@ -79,13 +78,7 @@ import { FluxAction } from "@/global/types/types";
 export interface PlanBucket {
     id: BfsId;
     name?: Maybe<string>;
-    date: Maybe<Date>;
-}
-
-export interface WireBucket {
-    id: BfsId;
-    name?: Maybe<string>;
-    date: Maybe<string>;
+    date?: Maybe<Date>;
 }
 
 export interface BasePlanItem {
@@ -420,9 +413,10 @@ class PlanStore extends FluxReduceStore<State, FluxAction> {
             }
 
             case PlanActions.CREATE_BUCKET: {
-                return mapPlanBuckets(state, action.planId, (bs) =>
-                    [{ id: ClientId.next() }].concat(bs),
-                );
+                return mapPlanBuckets(state, action.planId, (bs) => [
+                    { id: ClientId.next() },
+                    ...bs,
+                ]);
             }
 
             case PlanActions.RESET_TO_THIS_WEEKS_BUCKETS: {
@@ -433,7 +427,7 @@ class PlanStore extends FluxReduceStore<State, FluxAction> {
                 return mapPlanBuckets(state, action.planId, (bs) =>
                     bs
                         .filter((b) => !bfsIdEq(b.id, action.clientId))
-                        .concat(deserializeBucket(action.data))
+                        .concat(action.data)
                         .sort(bucketComparator),
                 );
             }
@@ -491,7 +485,7 @@ class PlanStore extends FluxReduceStore<State, FluxAction> {
                     bs
                         .map((b) => {
                             if (!bfsIdEq(b.id, action.data.id)) return b;
-                            return deserializeBucket(action.data);
+                            return action.data;
                         })
                         .sort(bucketComparator),
                 );
