@@ -129,7 +129,7 @@ const ShopList: React.FC<ShopListProps> = ({
     }
 
     return (
-        <PageBody hasFab fullWidth>
+        <PageBody>
             <Box mx={showPlanSelector ? 0 : 1}>
                 <Stack direction="row" justifyContent={"space-between"}>
                     <Stack direction="row" alignItems={"center"} spacing={1}>
