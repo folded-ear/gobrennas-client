@@ -338,9 +338,13 @@ export const setPlanColor = (state: State, id, color) =>
             .updating();
     });
 
-export const assignToBucket = (state: State, id: BfsId, bucketId: BfsId) => {
+export const assignToBucket = (
+    state: State,
+    id: BfsId,
+    bucketId: BfsId | null,
+) => {
     if (ClientId.is(id)) return state;
-    PlanApi.assignBucket(state.activeListId!, id, bucketId);
+    PlanApi.assignBucket(id, bucketId);
     return mapTask(state, id, (t) => ({
         ...t,
         bucketId,

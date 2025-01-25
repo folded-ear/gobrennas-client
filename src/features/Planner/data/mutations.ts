@@ -101,3 +101,19 @@ mutation revokePlanGrant($planId: ID!, $userId: ID!) {
     }
   }
 }`);
+
+export const ASSIGN_BUCKET = gql(`
+mutation assignBucket($id: ID!, $bucketId: ID) {
+  planner {
+    assignBucket(id: $id, bucketId: $bucketId) {
+      id
+      name
+      status
+      bucket {
+        id
+        name
+        date
+      }
+    }
+  }
+}`);

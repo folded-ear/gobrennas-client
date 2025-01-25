@@ -4,6 +4,7 @@ import promiseFlux, { soakUpUnauthorized } from "@/util/promiseFlux";
 import PlanActions from "./PlanActions";
 import { client } from "@/providers/ApolloClient";
 import {
+    ASSIGN_BUCKET,
     CREATE_BUCKET,
     DELETE_BUCKET,
     DELETE_BUCKETS,
@@ -126,10 +127,13 @@ const PlanApi = {
     mutateTree: (planId: BfsId, body) =>
         axios.post(`/${planId}/mutate-tree`, body),
 
-    assignBucket: (planId: BfsId, id: BfsId, bucketId: BfsId) =>
-        axios.post(`/${planId}/assign-bucket`, {
-            id,
-            bucketId,
+    assignBucket: (id: BfsId, bucketId: BfsId | null) =>
+        client.mutate({
+            mutation: ASSIGN_BUCKET,
+            variables: {
+                id: ensureString(id),
+                bucketId: bucketId == null ? null : ensureString(bucketId),
+            },
         }),
 
     reorderSubitems: (id: BfsId, subitemIds: BfsId[]) =>
