@@ -24,17 +24,3 @@ query loadPlanItemAndDescendants($id: ID!) {
     }
   }
 }`);
-
-export const GET_UPDATED_SINCE = gql(`
-query planItemsUpdatedSince(
-  $planId: ID!,
-  $cutoff: Long!
-) {
-  planner {
-    updatedSince(planId: $planId, cutoff: $cutoff) {
-      ...corePlanItemLoad
-      ...planLoad
-      ...planItemLoad
-    }
-  }
-}`);

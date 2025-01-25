@@ -1,6 +1,6 @@
 import BaseAxios from "axios";
 import { API_BASE_URL } from "@/constants";
-import promiseFlux, { soakUpUnauthorized } from "@/util/promiseFlux";
+import promiseFlux from "@/util/promiseFlux";
 import PlanActions from "./PlanActions";
 import { client } from "@/providers/ApolloClient";
 import {
@@ -23,10 +23,7 @@ import {
 import { BfsId, ensureString } from "@/global/types/identity";
 import { WireBucket } from "./planStore";
 import serializeObjectOfPromiseFns from "@/util/serializeObjectOfPromiseFns";
-import {
-    GET_UPDATED_SINCE,
-    LOAD_DESCENDANTS,
-} from "@/features/Planner/data/queries";
+import { LOAD_DESCENDANTS } from "@/features/Planner/data/queries";
 import { willStatusDelete } from "@/features/Planner/data/PlanItemStatus";
 import { StatusChange } from "@/features/Planner/data/utils";
 
@@ -157,28 +154,6 @@ const PlanApi = {
                     data.planner.planOrItem.descendants.map(toRestPlanItem),
                 ),
             }),
-        ),
-
-    getItemsUpdatedSince: (id: BfsId, cutoff) =>
-        promiseFlux(
-            client.query({
-                query: GET_UPDATED_SINCE,
-                variables: {
-                    planId: ensureString(id),
-                    cutoff,
-                },
-                fetchPolicy: "network-only",
-            }),
-            ({ data }) => {
-                return {
-                    type: PlanActions.PLAN_DELTAS,
-                    id,
-                    data: (data.planner.updatedSince || []).map(
-                        toRestPlanOrItem,
-                    ),
-                };
-            },
-            soakUpUnauthorized,
         ),
 
     createBucket: (planId: BfsId, bucket: WireBucket) => {

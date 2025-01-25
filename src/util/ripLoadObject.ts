@@ -14,12 +14,14 @@ export function ripLoadObject<T>(lo: LoadObject<T>): RippedLO<T> {
             // eslint-disable-next-line no-console
             console.warn(
                 "LoadObject.creating is deprecated. Use .loading (as Apollo does).",
+                lo,
             );
         }
         if (lo.isUpdating()) {
             // eslint-disable-next-line no-console
             console.warn(
                 "LoadObject.updating is deprecated. Use .loading (as Apollo does).",
+                lo,
             );
         }
     }

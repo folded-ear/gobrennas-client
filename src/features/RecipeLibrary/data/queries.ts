@@ -13,17 +13,3 @@ query getSearchLibrary(
     }
   }
 }`);
-
-export const GET_UPDATED_SINCE = gql(`
-query pantryItemsUpdatedSince(
-  $cutoff: Long!
-) {
-  pantry {
-    updatedSince(cutoff: $cutoff) {
-      id
-      type: __typename
-      name
-      storeOrder
-    }
-  }
-}`);
