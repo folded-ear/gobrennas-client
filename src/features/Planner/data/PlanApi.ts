@@ -1,17 +1,17 @@
 import BaseAxios from "axios";
 import { API_BASE_URL } from "@/constants";
-import promiseFlux from "@/util/promiseFlux";
+import promiseFlux, { defaultErrorHandler } from "@/util/promiseFlux";
 import PlanActions from "./PlanActions";
 import { client } from "@/providers/ApolloClient";
 import {
     ASSIGN_BUCKET,
     CREATE_BUCKET,
     DELETE_BUCKET,
-    DELETE_BUCKETS,
     DELETE_PLAN_ITEM,
     RENAME_PLAN_OR_ITEM,
     SET_PLAN_COLOR,
     SET_PLAN_ITEM_STATUS,
+    SPLICE_BUCKETS,
     UPDATE_BUCKET,
 } from "@/features/Planner/data/mutations";
 import {
@@ -28,6 +28,7 @@ import { willStatusDelete } from "@/features/Planner/data/PlanItemStatus";
 import { StatusChange } from "@/features/Planner/data/utils";
 import { formatLocalDate, parseLocalDate } from "@/util/time";
 import { Maybe } from "graphql/jsutils/Maybe";
+import dispatcher from "@/data/dispatcher";
 
 const axios = BaseAxios.create({
     baseURL: `${API_BASE_URL}/api/plan`,
@@ -230,24 +231,44 @@ const PlanApi = {
             },
         ),
 
-    deleteBuckets: (planId: BfsId, ids: BfsId[]) =>
-        promiseFlux(
-            client.mutate({
-                mutation: DELETE_BUCKETS,
+    spliceBuckets: (
+        planId: BfsId,
+        idsToDelete: BfsId[],
+        toCreate: PlanBucket[],
+    ) =>
+        client
+            .mutate({
+                mutation: SPLICE_BUCKETS,
                 variables: {
                     planId: ensureString(planId),
-                    bucketIds: ids.map((id) => ensureString(id)),
+                    idsToDelete: idsToDelete.map((id) => ensureString(id)),
+                    toCreate: toCreate.map((b) => ({
+                        name: b.name ?? null,
+                        date: formatLocalDate(b.date),
+                    })),
                 },
-            }),
-            ({ data }) => {
-                const dels = data?.planner?.deleteBuckets || [];
-                return {
-                    type: PlanActions.BUCKETS_DELETED,
-                    planId,
-                    ids: dels.map((d) => d.id),
-                };
-            },
-        ),
+            })
+            .then(({ data }) => {
+                if (idsToDelete.length) {
+                    dispatcher.dispatch({
+                        type: PlanActions.BUCKETS_DELETED,
+                        planId,
+                        ids: data!.planner.deleteBuckets.map((d) => d.id),
+                    });
+                }
+                if (toCreate.length) {
+                    // This is sort silly, but the remoting is the important
+                    // part to do in bulk.
+                    data!.planner.createBuckets.forEach((b, i) => {
+                        dispatcher.dispatch({
+                            type: PlanActions.BUCKET_CREATED,
+                            planId,
+                            clientId: toCreate[i].id,
+                            data: deserializeBucket(b),
+                        });
+                    });
+                }
+            }, defaultErrorHandler),
 };
 
 export default serializeObjectOfPromiseFns(PlanApi);

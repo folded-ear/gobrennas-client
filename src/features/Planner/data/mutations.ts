@@ -67,10 +67,17 @@ mutation deleteBucket($planId: ID!, $bucketId: ID!) {
   }
 }`);
 
-export const DELETE_BUCKETS = gql(`
-mutation deleteBuckets($planId: ID!, $bucketIds: [ID!]!) {
+export const SPLICE_BUCKETS = gql(`
+mutation spliceBuckets($planId: ID!, $idsToDelete: [ID!]!, $toCreate: [UnsavedBucket!]!) {
   planner {
-    deleteBuckets(planId: $planId, bucketIds: $bucketIds) { id }
+    deleteBuckets(planId: $planId, bucketIds: $idsToDelete) {
+      id
+    }
+    createBuckets(planId: $planId, buckets: $toCreate) {
+      id
+      name
+      date
+    }
   }
 }`);
 

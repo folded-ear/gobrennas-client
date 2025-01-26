@@ -387,6 +387,8 @@ type PlannerMutation {
     assignBucket(bucketId: ID, id: ID!): PlanItem!
     "Create a new bucket w/in a plan, with an optional name and date."
     createBucket(date: Date, name: String, planId: ID!): PlanBucket!
+    "Create multiple new buckets w/in a plan."
+    createBuckets(buckets: [UnsavedBucket!]!, planId: ID!): [PlanBucket!]!
     """
 
     Create a new item under the specified parent (which may be a plan, for
@@ -684,4 +686,9 @@ input IngredientRefInfo {
     raw: String!
     units: String
     uomId: Long
+}
+
+input UnsavedBucket {
+    date: Date
+    name: String
 }

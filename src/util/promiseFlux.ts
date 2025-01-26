@@ -75,6 +75,15 @@ const informUserOfPromiseError = () => {
     }
 };
 
+export const defaultErrorHandler = (error) => {
+    // eslint-disable-next-line no-console
+    console.error("Error in Promise", error);
+    if (!isAuthError(error) || !askUserToReauth()) {
+        informUserOfPromiseError();
+    }
+    return fallthrough(error);
+};
+
 /**
  * I adapt Promises (which are gross) to Flux actions (which are sexy). The
  * resolve and reject params define what to do when the Promise settles, and can
@@ -99,14 +108,7 @@ const informUserOfPromiseError = () => {
 function promiseFlux<Data>(
     promise: Promise<Data>,
     resolver: TypeTemplateOrCallback<Data>,
-    rejector: TypeTemplateOrCallback<unknown> = (error) => {
-        // eslint-disable-next-line no-console
-        console.error("Error in Promise", error);
-        if (!isAuthError(error) || !askUserToReauth()) {
-            informUserOfPromiseError();
-        }
-        return fallthrough(error);
-    },
+    rejector: TypeTemplateOrCallback<unknown> = defaultErrorHandler,
 ) {
     return promise.then(helper("data", resolver), helper("error", rejector));
 }
