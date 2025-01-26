@@ -94,9 +94,7 @@ class SnackBarStore extends ReduceStore {
 
             case PlanActions.SEND_TO_PLAN:
             case PantryItemActions.SEND_TO_PLAN: {
-                const plan = planStore
-                    .getItemLO(action.planId)
-                    .getValueEnforcing();
+                const plan = planStore.getPlanRlo(action.planId).data;
                 return enqueue(state, {
                     message: `Added ${action.name} to ${plan.name}`,
                     severity: "success",
@@ -104,9 +102,7 @@ class SnackBarStore extends ReduceStore {
             }
 
             case RecipeActions.SENT_TO_PLAN: {
-                const plan = planStore
-                    .getItemLO(action.planId)
-                    .getValueEnforcing();
+                const plan = planStore.getPlanRlo(action.planId).data;
                 // if came from the library, the store might not have it...
                 const recipe = LibraryStore.getIngredientById(
                     action.recipeId,
@@ -120,9 +116,7 @@ class SnackBarStore extends ReduceStore {
             }
 
             case RecipeActions.ERROR_SENDING_TO_PLAN: {
-                const plan = planStore
-                    .getItemLO(action.planId)
-                    .getValueEnforcing();
+                const plan = planStore.getPlanRlo(action.planId).data;
                 const recipe = LibraryStore.getIngredientById(
                     action.recipeId,
                 ).getValueEnforcing();
