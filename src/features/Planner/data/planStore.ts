@@ -66,6 +66,8 @@ import AccessLevel from "@/data/AccessLevel";
 import { Maybe } from "graphql/jsutils/Maybe";
 import PlanItemStatus from "@/features/Planner/data/PlanItemStatus";
 import { FluxAction } from "@/global/types/types";
+import RecipeActions from "@/data/RecipeActions";
+import queryClient from "@/data/queryClient";
 
 /*
  * This store is way too muddled. But leaving it that way for the moment, to
@@ -296,6 +298,11 @@ class PlanStore extends FluxReduceStore<State, FluxAction> {
                     name = `"${name}"`;
                 }
                 return addTaskAndFlush(state, action.planId, name);
+            }
+
+            case RecipeActions.SENT_TO_PLAN: {
+                queryClient.refetchQueries(["poll-for-updates"]);
+                return state;
             }
 
             case PlanActions.DELETE_ITEM_FORWARD:
