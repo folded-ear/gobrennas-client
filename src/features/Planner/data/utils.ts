@@ -139,24 +139,27 @@ export const listCreated = (state: State, clientId, id, list) => {
     return state;
 };
 
-export const selectList = (state: State, id: BfsId) => {
+export const selectList = (state: State, id: Maybe<BfsId>): State => {
     if (bfsIdEq(state.activeListId, id)) return state;
     // flush any yet-unsaved changes
     state = flushTasksToRename(state);
     // only valid ids, please
     invariant(
-        includesBfsId(
-            state.topLevelIds.getLoadObject().getValueEnforcing(),
-            id,
-        ),
+        id == null ||
+            includesBfsId(
+                state.topLevelIds.getLoadObject().getValueEnforcing(),
+                id,
+            ),
         `Task '${id}' is not a list.`,
     );
-    const list = taskForId(state, id);
     state = {
         ...state,
         activeListId: id,
         listDetailVisible: false,
     };
+    // clearing it, I guess?
+    if (id == null) return state;
+    const list = taskForId(state, id);
     if (list.subtaskIds && list.subtaskIds.length) {
         state = list.subtaskIds.reduce(taskLoading, {
             ...state,
@@ -906,14 +909,14 @@ export const loadLists = (state: State) => {
 export const tasksLoaded = (state: State, tasks) =>
     tasks.reduce((s, t) => taskLoaded(s, t), state);
 
-export function selectDefaultList(state) {
+export function selectDefaultList(state: State): State {
     const listIds = state.topLevelIds.getLoadObject().getValueEnforcing();
     if (listIds.length > 0) {
         // see if there's a preferred active plan
         let activePlanId = preferencesStore.getActivePlan();
         if (listIds.find((id) => bfsIdEq(id, activePlanId)) == null) {
-            // auto-select the first one
-            activePlanId = listIds[0]; // todo: select MY first one, if I have any
+            // auto-select the first one, if there is one
+            activePlanId = listIds[0];
         }
         state = selectList(state, activePlanId);
     }
