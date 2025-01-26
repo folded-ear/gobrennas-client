@@ -1,9 +1,6 @@
-interface Action extends Record<string, unknown> {
-    // eslint-disable-next-line @typescript-eslint/ban-types
-    type: String;
-}
+import { FluxAction } from "@/global/types/types";
 
-const logAction = (action: Action) => {
+const logAction = (action: FluxAction) => {
     const temp: Record<string, unknown> = { ...action };
     delete temp.type;
     const keys = Object.keys(temp);

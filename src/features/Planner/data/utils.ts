@@ -49,13 +49,11 @@ export const createList = (
     optionalPlanIdToCopy?: BfsId,
 ) => {
     const task = _newTask(name);
-    PlanApi.createList(name, task.id, optionalPlanIdToCopy);
+    PlanApi.createPlan(name, task.id, optionalPlanIdToCopy);
     return {
         ...mapTaskLO(state, task.id, () =>
             LoadObject.withValue(task).creating(),
         ),
-        activeListId: task.id,
-        activeTaskId: null,
         topLevelIds: state.topLevelIds.map((ids) => ids.concat(task.id)),
     };
 };
@@ -135,7 +133,7 @@ export const listCreated = (
         [id]: LoadObject.withValue(plan),
     };
     delete byId[clientId];
-    state = addTask(
+    return addTask(
         {
             ...state,
             topLevelIds: idFixer(state.topLevelIds),
@@ -144,8 +142,6 @@ export const listCreated = (
         id,
         "",
     );
-    state = selectList(state, id);
-    return state;
 };
 
 export const selectList = (state: State, id: Maybe<BfsId>): State => {

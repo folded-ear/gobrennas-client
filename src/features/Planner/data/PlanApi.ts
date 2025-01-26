@@ -51,7 +51,7 @@ function deserializeBucket(b: WireBucket): PlanBucket {
 }
 
 const PlanApi = {
-    createList: (name, clientId, sourcePlanId) =>
+    createPlan: (name, clientId, sourcePlanId) =>
         promiseFlux(
             client.mutate({
                 mutation: CREATE_PLAN,
