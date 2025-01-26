@@ -40,7 +40,6 @@ import {
     moveSubtree,
     nestTask,
     queueDelete,
-    queueStatusUpdate,
     renameTask,
     resetToThisWeeksBuckets,
     saveBucket,
@@ -334,7 +333,7 @@ class PlanStore extends FluxReduceStore<State, FluxAction> {
 
             case ShoppingActions.SET_INGREDIENT_STATUS: {
                 return action.itemIds.reduce(
-                    (s, id) => queueStatusUpdate(s, id, action.status),
+                    (s, id) => doInteractiveStatusChange(s, id, action.status),
                     state,
                 );
             }
