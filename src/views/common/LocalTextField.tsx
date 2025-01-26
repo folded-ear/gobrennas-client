@@ -1,9 +1,10 @@
-import TextField from "@mui/material/TextField";
 import React, { ChangeEventHandler } from "react";
 import { TextFieldProps } from "@mui/material/TextField/TextField";
+import { Maybe } from "graphql/jsutils/Maybe";
+import { TextField } from "@mui/material";
 
 interface Props {
-    value?: string;
+    value: Maybe<string>;
     onChange?: ChangeEventHandler;
 }
 

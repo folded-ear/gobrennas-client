@@ -231,10 +231,10 @@ class PlanItem extends PureComponent<Props> {
         const expanded = isExpanded(item);
         const recipeIsh = parent || item.fromRecipe;
         const question = isQuestionable(item);
-        const completing = item._next_status === PlanItemStatus.COMPLETED;
-        const deleting = item._next_status === PlanItemStatus.DELETED;
-        const acquiring = item._next_status === PlanItemStatus.ACQUIRED;
-        const needing = item._next_status === PlanItemStatus.NEEDED;
+        const completing = item._next_status === PlanItemStatus.Completed;
+        const deleting = item._next_status === PlanItemStatus.Deleted;
+        const acquiring = item._next_status === PlanItemStatus.Acquired;
+        const needing = item._next_status === PlanItemStatus.Needed;
 
         const addonBefore: ReactNode[] = [];
         if (parent) {
@@ -264,9 +264,9 @@ class PlanItem extends PureComponent<Props> {
                     id={item.id}
                     current={curr}
                     next={
-                        curr === PlanItemStatus.ACQUIRED
-                            ? PlanItemStatus.NEEDED
-                            : PlanItemStatus.ACQUIRED
+                        curr === PlanItemStatus.Acquired
+                            ? PlanItemStatus.Needed
+                            : PlanItemStatus.Acquired
                     }
                 />,
             );
@@ -283,9 +283,9 @@ class PlanItem extends PureComponent<Props> {
                     key="delete"
                     id={item.id}
                     next={
-                        curr === PlanItemStatus.DELETED
-                            ? PlanItemStatus.NEEDED
-                            : PlanItemStatus.DELETED
+                        curr === PlanItemStatus.Deleted
+                            ? PlanItemStatus.Needed
+                            : PlanItemStatus.Deleted
                     }
                     disabled={ancestorDeleting}
                 />

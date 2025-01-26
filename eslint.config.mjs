@@ -59,7 +59,6 @@ export default [
             "react/prop-types": 1,
             semi: ["warn", "always"],
             "@typescript-eslint/no-explicit-any": 0,
-            "@typescript-eslint/no-unsafe-assignment": 0,
             "react/no-unescaped-entities": 1,
             "react/no-deprecated": 1,
         },

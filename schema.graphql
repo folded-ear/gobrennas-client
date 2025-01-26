@@ -27,7 +27,6 @@ interface CorePlanItem {
 
 interface Ingredient {
     id: ID!
-    labels: [String!]
     name: String!
 }
 
@@ -183,10 +182,10 @@ type LibraryQuery {
 }
 
 type Mutation {
-    favorite: FavoriteMutation
-    library: LibraryMutation
-    pantry: PantryMutation
-    planner: PlannerMutation
+    favorite: FavoriteMutation!
+    library: LibraryMutation!
+    pantry: PantryMutation!
+    planner: PlannerMutation!
 }
 
 type PageInfo {
@@ -298,6 +297,7 @@ type PantryQuery {
         "Direction to sort the result, ascending by default."
         sortDir: SortDir = ASC
     ): PantryItemConnection!
+    updatedSince(cutoff: Long!): [PantryItem!]!
 }
 
 type Photo {
@@ -383,8 +383,8 @@ type PlannedRecipeHistory implements Node {
 }
 
 type PlannerMutation {
-    "Assign a plan item to a bucket (in the same plan)."
-    assignBucket(bucketId: ID!, id: ID!): PlanItem!
+    "Assign a plan item to a bucket (in the same plan), or clear an item's bucket."
+    assignBucket(bucketId: ID, id: ID!): PlanItem!
     "Create a new bucket w/in a plan, with an optional name and date."
     createBucket(date: Date, name: String, planId: ID!): PlanBucket!
     """
@@ -427,7 +427,7 @@ type PlannerMutation {
     "Set the plan's color (e.g., '#F57F17'), or reset it with a null or empty string."
     setColor(color: String, planId: ID!): Plan!
     "Set the access level granted to a user w/in a plan."
-    setGrant(accessLevel: AccessLevel, planId: ID!, userId: ID!): Plan!
+    setGrant(accessLevel: AccessLevel!, planId: ID!, userId: ID!): Plan!
     """
 
     Sets the status of the given item. This will always return the updated
@@ -441,6 +441,7 @@ type PlannerMutation {
 type PlannerQuery {
     plan(id: ID!): Plan!
     planItem(id: ID!): PlanItem!
+    planOrItem(id: ID!): CorePlanItem!
     plans: [Plan!]!
     """
 
@@ -451,19 +452,24 @@ type PlannerQuery {
     updatedSince(cutoff: Long!, planId: ID!): [CorePlanItem!]!
 }
 
+type ProfileQuery {
+    friends: [User!]!
+}
+
 type Quantity {
     quantity: Float!
     units: UnitOfMeasure
 }
 
 type Query {
-    favorite: FavoriteQuery
+    favorite: FavoriteQuery!
     getCurrentUser: User
-    labels: LabelsQuery
-    library: LibraryQuery
+    labels: LabelsQuery!
+    library: LibraryQuery!
     node(id: ID!): Node
-    pantry: PantryQuery
-    planner: PlannerQuery
+    pantry: PantryQuery!
+    planner: PlannerQuery!
+    profile: ProfileQuery!
 }
 
 type Recipe implements Ingredient & Node & Owned {

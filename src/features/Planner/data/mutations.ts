@@ -74,12 +74,46 @@ mutation deleteBuckets($planId: ID!, $bucketIds: [ID!]!) {
   }
 }`);
 
-export const COMPLETE_PLAN_ITEM = gql(`
-mutation setStatus($id: ID!, $status: PlanItemStatus!, $doneAt: DateTime) {
+export const SET_PLAN_ITEM_STATUS = gql(`
+mutation setPlanItemStatus($id: ID!, $status: PlanItemStatus!, $doneAt: DateTime = null) {
   planner {
     setStatus(id: $id, status: $status, doneAt: $doneAt) {
+      ...corePlanItemLoad
+      ...planItemLoad
+    }
+  }
+}`);
+
+export const SET_PLAN_GRANT = gql(`
+mutation setPlanGrant($planId: ID!, $userId: ID!, $accessLevel: AccessLevel!) {
+  planner {
+    setGrant(planId: $planId, userId: $userId, accessLevel: $accessLevel) {
       id
+    }
+  }
+}`);
+
+export const REVOKE_PLAN_GRANT = gql(`
+mutation revokePlanGrant($planId: ID!, $userId: ID!) {
+  planner {
+    revokeGrant(planId: $planId, userId: $userId) {
+      id
+    }
+  }
+}`);
+
+export const ASSIGN_BUCKET = gql(`
+mutation assignBucket($id: ID!, $bucketId: ID) {
+  planner {
+    assignBucket(id: $id, bucketId: $bucketId) {
+      id
+      name
       status
+      bucket {
+        id
+        name
+        date
+      }
     }
   }
 }`);

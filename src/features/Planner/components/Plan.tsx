@@ -106,7 +106,7 @@ function Plan({
     }
 
     return (
-        <PageBody hasFab fullWidth>
+        <PageBody>
             <PlanHeader
                 allPlans={allPlans}
                 activePlan={plan}

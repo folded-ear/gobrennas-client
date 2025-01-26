@@ -10,6 +10,7 @@ import {
     PlanBucket as TPlanBucket,
     PlanItem as TPlanItem,
 } from "@/features/Planner/data/planStore";
+import { parseLocalDate } from "@/util/time";
 
 export const handleErrors = (error) => {
     throwAnyGraphQLErrors(error);
@@ -39,14 +40,14 @@ export const toRestPlanOrItem = (it) => {
     }
 };
 
-const toRestPlanItem = (
+export const toRestPlanItem = (
     planItem: CorePlanItemLoadFragment & PlanItemLoadFragment,
 ): TPlanItem => ({
     id: ensureString(planItem.id),
     name: planItem.name,
     notes: planItem.notes,
     status: planItem.status,
-    parentId: ensureIdIsString(planItem.parent?.id),
+    parentId: ensureString(planItem.parent!.id),
     aggregateId: ensureIdIsString(planItem.aggregate?.id),
     subtaskIds: pluckStringIds(planItem.children),
     componentIds: pluckStringIds(planItem.components),
@@ -75,7 +76,7 @@ export const toRestPlan = (
     buckets: plan.buckets.map((b) => {
         const result: TPlanBucket = {
             id: ensureString(b.id),
-            date: b.date,
+            date: parseLocalDate(b.date),
         };
         if (b.name) result.name = b.name;
         return result;

@@ -66,7 +66,6 @@ const RecipeDetail: React.FC<Props> = ({
         console.warn("Viewer is anonymous, but thinks they own the recipe?!");
         mine = false;
     }
-    const hasFab = loggedIn && showFab;
 
     const photo = extractRecipePhoto(recipe);
 
@@ -74,7 +73,7 @@ const RecipeDetail: React.FC<Props> = ({
         recipe.labels &&
         recipe.labels.filter((label) => label.indexOf("--") !== 0);
     return (
-        <PageBody hasFab={hasFab} id="toolbar">
+        <PageBody id="toolbar">
             <SubHeader>
                 <Toolbar
                     sx={(theme) => ({
@@ -205,7 +204,7 @@ const RecipeDetail: React.FC<Props> = ({
                     />
                 )}
             </Grid>
-            {hasFab && (
+            {loggedIn && showFab && (
                 <FoodingerFab onClick={() => history.push(`/add`)}>
                     <AddRecipeIcon />
                 </FoodingerFab>

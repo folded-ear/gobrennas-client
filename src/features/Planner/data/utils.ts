@@ -14,7 +14,7 @@ import dotProp from "dot-prop-immutable";
 import { bucketComparator } from "@/util/comparators";
 import preferencesStore from "@/data/preferencesStore";
 import { formatLocalDate, parseLocalDate } from "@/util/time";
-import { PlanBucket, WireBucket } from "./planStore";
+import { PlanBucket } from "./planStore";
 import {
     BfsId,
     bfsIdEq,
@@ -24,16 +24,26 @@ import {
     indexOfBfsId,
 } from "@/global/types/identity";
 import { PlanItem, State } from "@/features/Planner/data/planStore";
+import { Maybe } from "graphql/jsutils/Maybe";
 
 const AT_END = ("AT_END_" + ClientId.next()) as BfsId;
+
+export interface StatusChange {
+    status: PlanItemStatus;
+    doneAt?: Maybe<Date>;
+}
 
 const _newTask = (name) => ({
     id: ClientId.next(),
     name,
-    status: PlanItemStatus.NEEDED,
+    status: PlanItemStatus.Needed,
 });
 
-export const createList = (state: State, name, optionalPlanIdToCopy) => {
+export const createList = (
+    state: State,
+    name: string,
+    optionalPlanIdToCopy?: BfsId,
+) => {
     const task = _newTask(name);
     TaskApi.createList(name, task.id, optionalPlanIdToCopy);
     return {
@@ -129,24 +139,27 @@ export const listCreated = (state: State, clientId, id, list) => {
     return state;
 };
 
-export const selectList = (state: State, id: BfsId) => {
+export const selectList = (state: State, id: Maybe<BfsId>): State => {
     if (bfsIdEq(state.activeListId, id)) return state;
     // flush any yet-unsaved changes
     state = flushTasksToRename(state);
     // only valid ids, please
     invariant(
-        includesBfsId(
-            state.topLevelIds.getLoadObject().getValueEnforcing(),
-            id,
-        ),
+        id == null ||
+            includesBfsId(
+                state.topLevelIds.getLoadObject().getValueEnforcing(),
+                id,
+            ),
         `Task '${id}' is not a list.`,
     );
-    const list = taskForId(state, id);
     state = {
         ...state,
         activeListId: id,
         listDetailVisible: false,
     };
+    // clearing it, I guess?
+    if (id == null) return state;
+    const list = taskForId(state, id);
     if (list.subtaskIds && list.subtaskIds.length) {
         state = list.subtaskIds.reduce(taskLoading, {
             ...state,
@@ -328,9 +341,13 @@ export const setPlanColor = (state: State, id, color) =>
             .updating();
     });
 
-export const assignToBucket = (state: State, id: BfsId, bucketId: BfsId) => {
+export const assignToBucket = (
+    state: State,
+    id: BfsId,
+    bucketId: BfsId | null,
+) => {
     if (ClientId.is(id)) return state;
-    PlanApi.assignBucket(state.activeListId!, id, bucketId);
+    PlanApi.assignBucket(id, bucketId);
     return mapTask(state, id, (t) => ({
         ...t,
         bucketId,
@@ -453,44 +470,41 @@ export const selectDelta = (state: State, id, delta) => {
     }
 };
 
-const statusUpdatesToFlush = new Map<BfsStringId, string>();
+const statusUpdatesToFlush = new Map<BfsStringId, StatusChange>();
 
 const unqueueTaskId = (id) => {
     tasksToRename.delete(id);
     statusUpdatesToFlush.delete(id);
 };
 
-const doTaskDelete = (state: State, id: number) => {
+const doTaskDelete = (state: State, id: BfsStringId) => {
     unqueueTaskId(id);
     PlanApi.deleteItem(id);
     return state;
 };
 
-const setTaskStatus = (state: State, id, status) => {
-    if (willStatusDelete(status)) {
-        unqueueTaskId(id);
-    }
-    PlanApi.updateItemStatus(state.activeListId!, {
-        id,
-        status,
-    });
-    return state;
-};
-
 export const flushStatusUpdates = (state: State) => {
     if (statusUpdatesToFlush.size === 0) return state;
-    const [id, status] = statusUpdatesToFlush.entries().next().value; // the next value of the iterator, not the value of the entry!
-    state = setTaskStatus(state, id, status);
-    statusUpdatesToFlush.delete(id);
+    // I cannot figure out how to get the first entry of a Map in a type-safe
+    // way w/out a non-looping "loop" like this.
+    // noinspection LoopStatementThatDoesntLoopJS
+    for (const [id, change] of statusUpdatesToFlush.entries()) {
+        if (willStatusDelete(change.status)) {
+            unqueueTaskId(id);
+        }
+        PlanApi.updateItemStatus(id, change);
+        statusUpdatesToFlush.delete(id);
+        break;
+    }
     if (statusUpdatesToFlush.size > 0) {
-        inTheFuture(PlanActions.FLUSH_STATUS_UPDATES, 1);
+        inTheFuture(PlanActions.FLUSH_STATUS_UPDATES, 0.5);
     }
     return state;
 };
 
 export const queueDelete = (state: State, id) => {
     if (!isKnown(state, id)) return state; // already gone...
-    return queueStatusUpdate(state, id, PlanItemStatus.DELETED);
+    return queueStatusUpdate(state, id, { status: PlanItemStatus.Deleted });
 };
 
 function isEmpty(taskOrString) {
@@ -500,15 +514,15 @@ function isEmpty(taskOrString) {
     return str == null || str.trim() === "";
 }
 
-export const queueStatusUpdate = (state: State, id, status) => {
+export const queueStatusUpdate = (
+    state: State,
+    id: BfsStringId,
+    change: StatusChange,
+) => {
+    const { status } = change;
     const lo = loForId(state, id);
     const t = lo.getValueEnforcing();
-    invariant(
-        t.parentId != null,
-        "Can't change root-level task '%s' to %s",
-        id,
-        status,
-    );
+    invariant(t.parentId != null, "Can't change plan '%s' to %s", id, status);
     if (t._next_status === status) return state; // we're golden
     const isDelete = willStatusDelete(status);
     if (isDelete && ClientId.is(id)) {
@@ -532,7 +546,7 @@ export const queueStatusUpdate = (state: State, id, status) => {
             })
             .done();
     } else {
-        statusUpdatesToFlush.set(id, status);
+        statusUpdatesToFlush.set(id, change);
         inTheFuture(PlanActions.FLUSH_STATUS_UPDATES, 4);
         nextLO = lo.map((t) => ({
             ...t,
@@ -841,12 +855,13 @@ export const taskLoaded = (state: State, task) => {
     if (task.acl) {
         task = {
             ...task,
-            buckets: task.buckets
-                ? task.buckets.map(deserializeBucket).sort(bucketComparator)
-                : [],
+            buckets: task.buckets ? task.buckets.sort(bucketComparator) : [],
         };
     }
     let lo = state.byId[task.id] || LoadObject.empty();
+    if (task.ingredientId != null) {
+        task.ingredientId = ensureString(task.ingredientId);
+    }
     if (lo.hasValue()) {
         lo = lo.map((t) => {
             const subtaskIds = task.subtaskIds ? task.subtaskIds.slice() : [];
@@ -894,14 +909,14 @@ export const loadLists = (state: State) => {
 export const tasksLoaded = (state: State, tasks) =>
     tasks.reduce((s, t) => taskLoaded(s, t), state);
 
-export function selectDefaultList(state) {
+export function selectDefaultList(state: State): State {
     const listIds = state.topLevelIds.getLoadObject().getValueEnforcing();
     if (listIds.length > 0) {
         // see if there's a preferred active plan
         let activePlanId = preferencesStore.getActivePlan();
         if (listIds.find((id) => bfsIdEq(id, activePlanId)) == null) {
-            // auto-select the first one
-            activePlanId = listIds[0]; // todo: select MY first one, if I have any
+            // auto-select the first one, if there is one
+            activePlanId = listIds[0];
         }
         state = selectList(state, activePlanId);
     }
@@ -919,7 +934,11 @@ export const listsLoaded = (state: State, lists) => {
     return state;
 };
 
-export const mapPlanBuckets = (state: State, planId, work) =>
+export const mapPlanBuckets = (
+    state: State,
+    planId: BfsId,
+    work: (buckets: PlanBucket[]) => PlanBucket[],
+): State =>
     dotProp.set(state, ["byId", planId], (lo) =>
         lo.map((t) => ({
             ...t,
@@ -927,25 +946,15 @@ export const mapPlanBuckets = (state: State, planId, work) =>
         })),
     );
 
-export function deserializeBucket(b: WireBucket): PlanBucket {
-    return { ...b, date: parseLocalDate(b.date) };
-}
-
-function serializeBucket(b: PlanBucket): WireBucket {
-    return { ...b, date: formatLocalDate(b.date) };
-}
-
 export const saveBucket = (state: State, bucket: PlanBucket) => {
-    const wireBucket = serializeBucket(bucket);
     ClientId.is(bucket.id)
-        ? PlanApi.createBucket(state.activeListId!, wireBucket)
-        : PlanApi.updateBucket(state.activeListId!, bucket.id, wireBucket);
+        ? PlanApi.createBucket(state.activeListId!, bucket)
+        : PlanApi.updateBucket(state.activeListId!, bucket.id, bucket);
 };
 
-export function resetToThisWeeksBuckets(state: State, planId: number): State {
-    return mapPlanBuckets(state, planId, (buckets: PlanBucket[]) => {
+export function resetToThisWeeksBuckets(state: State, planId: BfsId): State {
+    return mapPlanBuckets(state, planId, (buckets) => {
         const result: PlanBucket[] = [];
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         const today = parseLocalDate(formatLocalDate(new Date()))!.valueOf();
         const desiredDates = new Set<number>();
         for (let i = 0; i < 7; i++) {
@@ -983,9 +992,13 @@ export function resetToThisWeeksBuckets(state: State, planId: number): State {
     });
 }
 
-export const doInteractiveStatusChange = (state: State, id, status) => {
-    if (willStatusDelete(status) && bfsIdEq(id, state.activeTaskId)) {
+export const doInteractiveStatusChange = (
+    state: State,
+    id: BfsStringId,
+    change: StatusChange,
+) => {
+    if (willStatusDelete(change.status) && bfsIdEq(id, state.activeTaskId)) {
         state = focusDelta(state, id, 1);
     }
-    return queueStatusUpdate(state, id, status);
+    return queueStatusUpdate(state, id, change);
 };

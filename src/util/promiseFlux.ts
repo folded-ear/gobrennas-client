@@ -1,25 +1,36 @@
 import Dispatcher from "@/data/dispatcher";
 import { askUserToReauth, isAuthError } from "@/providers/Profile";
+import { FluxAction } from "@/global/types/types";
 
-let helper = (settleKey, typeTemplateOrCallback) => (data) => {
-    if (!typeTemplateOrCallback) {
-        if (!import.meta.env.PROD) {
-            // eslint-disable-next-line no-console
-            console.error(
-                "Null 'typeTemplateOrCallback' for in 'promiseFlux' w/ key '" +
-                    settleKey +
-                    "'",
-            );
+type TypeTemplateOrCallback<Data> =
+    | string
+    | FluxAction
+    | ((data: Data) => FluxAction);
+
+let helper = <Data>(
+    settleKey: string,
+    typeTemplateOrCallback: TypeTemplateOrCallback<Data>,
+) => {
+    return (data: Data) => {
+        if (!typeTemplateOrCallback) {
+            if (!import.meta.env.PROD) {
+                // eslint-disable-next-line no-console
+                console.error(
+                    "False-y 'typeTemplateOrCallback' for in 'promiseFlux' w/ key '" +
+                        settleKey +
+                        "'",
+                );
+            }
+            return;
         }
-        return;
-    }
-    Dispatcher.dispatch(
-        typeof typeTemplateOrCallback === "function"
-            ? typeTemplateOrCallback(data)
-            : typeof typeTemplateOrCallback === "string"
-            ? { [settleKey]: data, type: typeTemplateOrCallback }
-            : { [settleKey]: data, ...typeTemplateOrCallback },
-    );
+        Dispatcher.dispatch(
+            typeof typeTemplateOrCallback === "function"
+                ? typeTemplateOrCallback(data)
+                : typeof typeTemplateOrCallback === "string"
+                ? { [settleKey]: data, type: typeTemplateOrCallback }
+                : { [settleKey]: data, ...typeTemplateOrCallback },
+        );
+    };
 };
 
 if (!import.meta.env.PROD) {
@@ -27,23 +38,23 @@ if (!import.meta.env.PROD) {
     const ARTIFICIAL_SETTLEMENT_DELAY = 150;
     if (ARTIFICIAL_SETTLEMENT_DELAY > 0) {
         const oldHelper = helper;
-        helper = (k, ttc) => {
+        helper = <Data>(k, ttc) => {
             const fast = oldHelper(k, ttc);
-            return (data) => {
+            return (data: Data) => {
                 const delay =
                     ARTIFICIAL_SETTLEMENT_DELAY * (0.5 + Math.random());
-                return setTimeout(() => fast(data), delay);
+                setTimeout(() => fast(data), delay);
             };
         };
     }
 }
 
-const fallthrough = (error) => ({
+const fallthrough = (error: unknown) => ({
     type: "promise-flux/error-fallthrough",
     error,
 });
 
-export const soakUpUnauthorized = (error) => {
+export const soakUpUnauthorized = (error: unknown) => {
     if (isAuthError(error)) {
         // eslint-disable-next-line no-console
         console.warn("Unauthorized", error);
@@ -85,10 +96,10 @@ const informUserOfPromiseError = () => {
  * @param resolver
  * @param rejector
  */
-const promiseFlux = (
-    promise,
-    resolver,
-    rejector = (error) => {
+function promiseFlux<Data>(
+    promise: Promise<Data>,
+    resolver: TypeTemplateOrCallback<Data>,
+    rejector: TypeTemplateOrCallback<unknown> = (error) => {
         // eslint-disable-next-line no-console
         console.error("Error in Promise", error);
         if (!isAuthError(error) || !askUserToReauth()) {
@@ -96,6 +107,8 @@ const promiseFlux = (
         }
         return fallthrough(error);
     },
-) => promise.then(helper("data", resolver), helper("error", rejector));
+) {
+    return promise.then(helper("data", resolver), helper("error", rejector));
+}
 
 export default promiseFlux;

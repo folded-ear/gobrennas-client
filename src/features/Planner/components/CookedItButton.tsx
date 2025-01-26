@@ -27,7 +27,7 @@ const CookButton: React.FC<Props> = ({ recipe, stayOnPage }) => {
                     ? PlanActions.UNDO_SET_STATUS
                     : PlanActions.COMPLETE_PLAN_ITEM,
                 id: recipe.id,
-                status: PlanItemStatus.COMPLETED,
+                status: PlanItemStatus.Completed,
                 doneAt: new Date(),
             });
             if (!stayOnPage) history.goBack();
@@ -41,7 +41,7 @@ const CookButton: React.FC<Props> = ({ recipe, stayOnPage }) => {
             dispatcher.dispatch({
                 type: PlanActions.COMPLETE_PLAN_ITEM,
                 id: recipe.id,
-                status: PlanItemStatus.COMPLETED,
+                status: PlanItemStatus.Completed,
                 doneAt: option.value,
             });
             if (!stayOnPage) history.goBack();

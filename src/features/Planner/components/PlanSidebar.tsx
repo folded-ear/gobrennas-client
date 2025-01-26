@@ -24,8 +24,7 @@ import PlanBucketManager from "@/features/Planner/components/PlanBucketManager";
 import SidebarUnit from "@/features/Planner/components/SidebarUnit";
 import User from "@/views/user/User";
 import { Plan } from "@/features/Planner/data/planStore";
-import { bfsIdEq, ensureString, UserType } from "@/global/types/identity";
-import { mapBy } from "@/util/groupBy";
+import { bfsIdEq, UserType } from "@/global/types/identity";
 import PlanAvatar from "@/views/shop/PlanAvatar";
 
 const LEVEL_NO_ACCESS = "NO_ACCESS";
@@ -78,8 +77,8 @@ function UserContent({
                     >
                         <MenuItem value={LEVEL_NO_ACCESS}>No Access</MenuItem>
                         {/*VIEW too!*/}
-                        <MenuItem value={AccessLevel.CHANGE}>Modify</MenuItem>
-                        <MenuItem value={AccessLevel.ADMINISTER}>
+                        <MenuItem value={AccessLevel.Change}>Modify</MenuItem>
+                        <MenuItem value={AccessLevel.Administer}>
                             Administer
                         </MenuItem>
                     </Select>
@@ -93,16 +92,10 @@ function UserContent({
 
 const PlanSidebar: React.FC<Props> = ({ open, onClose, plan }) => {
     const me = useProfile();
-    const [friendsLoading, friendList, friendsById] = useFluxStore(() => {
+    const [friendsLoading, friendList] = useFluxStore(() => {
         const { data: friendList } = FriendStore.getFriendsRlo();
         const loading = friendList == null;
-        return [
-            loading,
-            loading ? [] : friendList,
-            loading
-                ? new Map<string, UserType>()
-                : mapBy(friendList, (f) => ensureString(f.id)),
-        ];
+        return [loading, loading ? [] : friendList];
     }, [FriendStore]);
 
     const [name, setName] = React.useState(plan.name);
@@ -124,11 +117,12 @@ const PlanSidebar: React.FC<Props> = ({ open, onClose, plan }) => {
     };
 
     const handleSetColor = () => {
-        if (isValidColor(color)) {
+        const isBlank = color === "";
+        if (isBlank || isValidColor(color)) {
             Dispatcher.dispatch({
                 type: PlanActions.SET_PLAN_COLOR,
                 id: plan.id,
-                color: "#" + color,
+                color: isBlank ? "" : "#" + color,
             });
         }
     };
@@ -160,9 +154,11 @@ const PlanSidebar: React.FC<Props> = ({ open, onClose, plan }) => {
     const acl = plan.acl || {};
     const grants = acl.grants || {};
     const isMine = bfsIdEq(acl.ownerId, me.id);
-    const owner = isMine ? me : friendsById.get(ensureString(acl.ownerId));
+    const owner = isMine
+        ? me
+        : friendList?.find((it) => bfsIdEq(it.id, acl.ownerId));
     const isAdministrator =
-        isMine || includesLevel(grants[me.id], AccessLevel.ADMINISTER);
+        isMine || includesLevel(grants[me.id], AccessLevel.Administer);
 
     return (
         <Drawer open={open} anchor="right" onClose={onClose}>

@@ -11,16 +11,18 @@ import { RippedLO } from "@/util/ripLoadObject";
 import { bfsIdEq, ensureString } from "@/global/types/identity";
 import { PlanItemStatus } from "@/__generated__/graphql";
 
+type OrphanPlanItem = Omit<TPlanItem, "parentId">;
+
 export const recipeRloFromItemRlo = (
-    itemRlo: RippedLO<TPlanItem>,
+    itemRlo: RippedLO<OrphanPlanItem>,
 ): RippedLO<RecipeFromPlanItem> => {
     // if data is nullish, this cast is fine.
-    if (!itemRlo.data)
+    if (itemRlo.data == null)
         return itemRlo as unknown as RippedLO<RecipeFromPlanItem>;
 
-    const subs: any[] = [];
+    const subs: RecipeFromPlanItem[] = [];
     let loading = false;
-    const computeKids = (item: TPlanItem): TPlanItem[] => {
+    const computeKids = (item: OrphanPlanItem): TPlanItem[] => {
         const subIds = item.subtaskIds || [];
         const subIdLookup = new Set<string>(subIds.map(ensureString));
         return subIds
@@ -40,8 +42,8 @@ export const recipeRloFromItemRlo = (
             .map((rlo) => rlo.data!);
     };
     const prepRecipe = (
-        planItem: TPlanItem,
-        rLO?: RippedLO<any>,
+        planItem: OrphanPlanItem,
+        rLO?: RippedLO<TPlanItem | Ingredient>,
         ancestorCompleting = false,
         ancestorDeleting = false,
     ): RecipeFromPlanItem => {

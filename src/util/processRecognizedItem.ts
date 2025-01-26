@@ -35,11 +35,11 @@ function processRecognizedItem(recog: RecognitionResult) {
         return s.substring(1, s.length - 1);
     };
     const q = textFromRange(qr);
-    const qv = qr && (qr.quantity != null ? qr.quantity : qr.value); // value is deprecated
+    const qv = qr && qr.quantity;
     const u = textFromRange(ur);
-    const uv = ur && (ur.id || ur.value); // value is deprecated
+    const uv = ur && ur.id;
     const n = textFromRange(nr);
-    const nv = nr && (nr.id || nr.value); // value is deprecated
+    const nv = nr && nr.id;
     const p = [qr, ur, nr]
         .filter((it) => it != null)
         .sort(

@@ -82,8 +82,7 @@ function adapter(
                       quantity: item.quantity?.quantity,
                       units: item.quantity?.units?.name || null,
                       ingredient: objectWithType(item.ingredient),
-                      ingredientId: 0,
-                      uomId: "",
+                      ingredientId: item.ingredient ? item.ingredient.id : null,
                   })),
               }));
 

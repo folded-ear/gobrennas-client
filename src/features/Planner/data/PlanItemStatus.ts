@@ -7,22 +7,16 @@ import {
     MuiColorFamily,
     neededColor,
 } from "@/views/common/colors";
-
-enum PlanItemStatus {
-    NEEDED = "NEEDED",
-    ACQUIRED = "ACQUIRED",
-    COMPLETED = "COMPLETED",
-    DELETED = "DELETED",
-}
+import { PlanItemStatus } from "@/__generated__/graphql";
 
 export const willStatusDelete = (status) =>
-    status === PlanItemStatus.COMPLETED || status === PlanItemStatus.DELETED;
+    status === PlanItemStatus.Completed || status === PlanItemStatus.Deleted;
 
 const colorByStatus: Record<PlanItemStatus, MuiColorFamily> = {
-    [PlanItemStatus.NEEDED]: neededColor,
-    [PlanItemStatus.ACQUIRED]: acquiredColor,
-    [PlanItemStatus.COMPLETED]: completeColor,
-    [PlanItemStatus.DELETED]: deleteColor,
+    [PlanItemStatus.Needed]: neededColor,
+    [PlanItemStatus.Acquired]: acquiredColor,
+    [PlanItemStatus.Completed]: completeColor,
+    [PlanItemStatus.Deleted]: deleteColor,
 };
 
 export function getColorForStatus(status: PlanItemStatus): MuiColorFamily {
@@ -30,10 +24,10 @@ export function getColorForStatus(status: PlanItemStatus): MuiColorFamily {
 }
 
 const iconByStatus: Record<PlanItemStatus, typeof CheckIcon> = {
-    [PlanItemStatus.NEEDED]: CheckIcon,
-    [PlanItemStatus.ACQUIRED]: CheckIcon,
-    [PlanItemStatus.COMPLETED]: CheckIcon,
-    [PlanItemStatus.DELETED]: DeleteIcon,
+    [PlanItemStatus.Needed]: CheckIcon,
+    [PlanItemStatus.Acquired]: CheckIcon,
+    [PlanItemStatus.Completed]: CheckIcon,
+    [PlanItemStatus.Deleted]: DeleteIcon,
 };
 export const getIconForStatus = (status: PlanItemStatus) =>
     iconByStatus[status] || SumthinsFuckyIcon;

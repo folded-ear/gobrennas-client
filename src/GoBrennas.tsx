@@ -18,8 +18,7 @@ import { AuthTokenProvider } from "@/providers/AuthToken";
 import { IsMobileProvider } from "@/providers/IsMobile";
 import { QueryClientProvider } from "react-query";
 import queryClient from "@/data/queryClient";
-import PantryItemSynchronizer from "@/data/PantryItemSynchronizer";
-import PlanItemSynchronizer from "@/features/Planner/data/PlanItemSynchronizer";
+import PollingSynchronizer from "@/data/PollingSynchronizer";
 
 declare module "@mui/styles/defaultTheme" {
     // eslint-disable-next-line @typescript-eslint/no-empty-interface
@@ -33,8 +32,7 @@ function GoBrennas() {
                 <ProfileProvider>
                     <IsMobileProvider>
                         <QueryClientProvider client={queryClient}>
-                            <PantryItemSynchronizer />
-                            <PlanItemSynchronizer />
+                            <PollingSynchronizer />
                             <StyledEngineProvider injectFirst>
                                 <ThemeProvider theme={useBfsTheme()}>
                                     <CssBaseline />
