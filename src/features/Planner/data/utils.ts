@@ -2,7 +2,6 @@ import ClientId from "@/util/ClientId";
 import PlanItemStatus, {
     willStatusDelete,
 } from "@/features/Planner/data/PlanItemStatus";
-import TaskApi from "@/features/Planner/data/TaskApi";
 import LoadObject from "@/util/LoadObject";
 import LoadObjectState from "@/util/LoadObjectState";
 import { isExpanded, isParent } from "@/features/Planner/data/plannerUtils";
@@ -50,7 +49,7 @@ export const createList = (
     optionalPlanIdToCopy?: BfsId,
 ) => {
     const task = _newTask(name);
-    TaskApi.createList(name, task.id, optionalPlanIdToCopy);
+    PlanApi.createList(name, task.id, optionalPlanIdToCopy);
     return {
         ...mapTaskLO(state, task.id, () =>
             LoadObject.withValue(task).creating(),
@@ -923,7 +922,7 @@ const taskLoading = (state: State, id) => {
 };
 
 export const loadLists = (state: State) => {
-    TaskApi.loadLists();
+    PlanApi.loadLists();
     return {
         ...state,
         topLevelIds: state.topLevelIds.mapLO((lo) => lo.loading()),
