@@ -87,15 +87,22 @@ function buildSyncer(planIds: BfsId[]): Syncer {
 function useSynchronizer(queryKey: unknown[], queryFn: Syncer) {
     const [cutoff, setCutoff] = React.useState(Date.now());
     const authenticated = useIsAuthenticated();
-    useQuery(queryKey, () => {
-        if (!authenticated) return Promise.reject();
-        const nextTs = Date.now();
-        return queryFn(cutoff).then((data) => {
-            // this may double-retrieve changes, but won't MISS any.
-            setCutoff((ts) => (ts < Date.now() ? nextTs : ts));
-            return data;
-        });
-    });
+    useQuery(
+        queryKey,
+        () => {
+            if (!authenticated) return Promise.reject();
+            const nextTs = Date.now();
+            return queryFn(cutoff).then((data) => {
+                // this may double-retrieve changes, but won't MISS any.
+                setCutoff((ts) => (ts < Date.now() ? nextTs : ts));
+                return data;
+            });
+        },
+        {
+            refetchInterval: 15_000,
+            refetchIntervalInBackground: false,
+        },
+    );
 }
 
 function PollingSynchronizer() {
