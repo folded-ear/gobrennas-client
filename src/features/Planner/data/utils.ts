@@ -1001,16 +1001,16 @@ export function resetToThisWeeksBuckets(state: State, planId: BfsId): State {
             }
             result.push(b);
         }
-        if (toDelete.length > 0) {
-            PlanApi.deleteBuckets(planId, toDelete);
-        }
+        const toCreate: PlanBucket[] = [];
         for (const d of desiredDates) {
-            const b = {
+            toCreate.push({
                 id: ClientId.next(),
                 date: new Date(d),
-            };
-            saveBucket(state, b);
-            result.push(b);
+            });
+        }
+        if (toDelete.length > 0 || toCreate.length > 0) {
+            PlanApi.spliceBuckets(planId, toDelete, toCreate);
+            result.push(...toCreate);
         }
         return result.sort(bucketComparator);
     });

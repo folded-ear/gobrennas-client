@@ -54,7 +54,7 @@
     "prestart": "npm run compile",
     "start": "vite",
     "prebuild": "npm run compile",
-    "build": "tsc && vite build",
+    "build": "tsc --noEmit && vite build",
     "min-xml": "minify-xml --verbose --in-place",
     "postbuild": "npm run min-xml -- --no-collapse-empty-elements build/index.html",
     "compile": "graphql-codegen",
