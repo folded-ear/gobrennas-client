@@ -119,7 +119,7 @@ export interface State {
     activeTaskId: Maybe<BfsId>;
     selectedTaskIds: Maybe<BfsId[]>;
     topLevelIds: LoadObjectState<BfsId[]>;
-    byId: Record<BfsId, LoadObject<PlanItem>>;
+    byId: Record<BfsId, LoadObject<Plan | PlanItem>>;
 }
 
 class PlanStore extends FluxReduceStore<State, FluxAction> {
@@ -570,7 +570,7 @@ class PlanStore extends FluxReduceStore<State, FluxAction> {
         while (queue.length) {
             const lo = loForId(state, queue.shift()!);
             if (!lo.hasValue()) continue;
-            const comp = lo.getValueEnforcing();
+            const comp = lo.getValueEnforcing() as PlanItem;
             // walk upward and see if it's within the tree...
             let curr = comp;
             let descendant = false;
@@ -579,7 +579,7 @@ class PlanStore extends FluxReduceStore<State, FluxAction> {
                     descendant = true;
                     break;
                 }
-                curr = taskForId(state, curr.parentId);
+                curr = taskForId(state, curr.parentId) as PlanItem;
             }
             // process the component...
             if (descendant) {
@@ -608,13 +608,15 @@ class PlanStore extends FluxReduceStore<State, FluxAction> {
         const s = this.getState();
         if (s.activeTaskId == null) return null;
         const lo = loForId(s, s.activeTaskId);
-        return lo.hasValue() ? lo.getValueEnforcing() : null;
+        return lo.hasValue() ? (lo.getValueEnforcing() as PlanItem) : null;
     }
 
     getItemLO(id: BfsId): LoadObject<PlanItem> {
         if (id == null) throw new Error("No task has the null ID");
         const s = this.getState();
-        return isKnown(s, id) ? loForId(s, id) : LoadObject.empty();
+        return isKnown(s, id)
+            ? (loForId(s, id) as LoadObject<PlanItem>)
+            : LoadObject.empty();
     }
 
     getItemRlo(id: BfsId): RippedLO<PlanItem> {
@@ -642,7 +644,7 @@ class PlanStore extends FluxReduceStore<State, FluxAction> {
         while (stack.length) {
             const lo = byId[stack.pop()!];
             if (!lo || !lo.hasValue()) continue;
-            const it = lo.getValueEnforcing();
+            const it = lo.getValueEnforcing() as PlanItem;
             if (bfsIdEq(it.bucketId, bucketId)) {
                 items.push(it);
                 continue;
@@ -667,7 +669,7 @@ class PlanStore extends FluxReduceStore<State, FluxAction> {
             s,
             taskForId(
                 s,
-                taskForId(s, s.activeTaskId).parentId,
+                (taskForId(s, s.activeTaskId) as PlanItem).parentId,
             ).subtaskIds?.filter(
                 (id) =>
                     bfsIdEq(id, s.activeTaskId) ||
