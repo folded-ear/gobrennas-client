@@ -11,6 +11,7 @@ import {
     CREATE_BUCKET,
     CREATE_PLAN,
     DELETE_BUCKET,
+    DELETE_PLAN,
     DELETE_PLAN_ITEM,
     RENAME_PLAN_OR_ITEM,
     REVOKE_PLAN_GRANT,
@@ -74,7 +75,7 @@ const PlanApi = {
             handleErrors,
         ),
 
-    loadLists: () =>
+    loadPlans: () =>
         promiseFlux(
             client.query({ query: LOAD_PLANS }),
             ({ data }) => ({
@@ -84,16 +85,21 @@ const PlanApi = {
             soakUpUnauthorized,
         ),
 
-    deleteList: (id) => {
-        client.cache.evict({ id });
-        return promiseFlux(axios.delete(`/${id}`), () => {
-            client.refetchQueries({ include: [GET_PLANS] });
-            return {
+    deletePlan: (id: BfsId) =>
+        promiseFlux(
+            client.mutate({
+                mutation: DELETE_PLAN,
+                variables: {
+                    id: ensureString(id),
+                },
+            }),
+            ({ data }) => ({
                 type: PlanActions.PLAN_DELETED,
-                id,
-            };
-        });
-    },
+                id: data?.planner.deletePlan.id,
+            }),
+        ).then(() => {
+            client.refetchQueries({ include: [GET_PLANS] });
+        }),
 
     setPlanGrant: (id: BfsStringId, userId: BfsId, accessLevel: AccessLevel) =>
         promiseFlux(
@@ -297,8 +303,9 @@ const PlanApi = {
             },
         ),
 
-    deleteBucket: (planId: BfsId, id: BfsId) =>
-        promiseFlux(
+    deleteBucket: (planId: BfsId, id: BfsId) => {
+        client.cache.evict({ id: ensureString(id) });
+        return promiseFlux(
             client.mutate({
                 mutation: DELETE_BUCKET,
                 variables: {
@@ -314,7 +321,8 @@ const PlanApi = {
                     id: bucket.id,
                 };
             },
-        ),
+        );
+    },
 
     spliceBuckets: (
         planId: BfsId,

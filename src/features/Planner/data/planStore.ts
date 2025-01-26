@@ -167,7 +167,7 @@ class PlanStore extends FluxReduceStore<State, FluxAction> {
             }
 
             case PlanActions.DELETE_PLAN: {
-                PlanApi.deleteList(action.id);
+                PlanApi.deletePlan(action.id);
                 const next: State = dotProp.set(
                     state,
                     ["byId", action.id],

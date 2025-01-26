@@ -28,6 +28,13 @@ mutation deletePlanItem($id: ID!) {
   }
 }`);
 
+export const DELETE_PLAN = gql(`
+mutation deletePlan($id: ID!) {
+  planner {
+    deletePlan(id: $id) { id }
+  }
+}`);
+
 export const CREATE_PLAN = gql(`
 mutation createPlan($name: String!, $sourcePlanId: ID) {
   planner {

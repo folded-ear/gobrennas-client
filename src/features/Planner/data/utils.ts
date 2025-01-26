@@ -918,7 +918,7 @@ const taskLoading = (state: State, id) => {
 };
 
 export const loadLists = (state: State) => {
-    PlanApi.loadLists();
+    PlanApi.loadPlans();
     return {
         ...state,
         topLevelIds: state.topLevelIds.mapLO((lo) => lo.loading()),
