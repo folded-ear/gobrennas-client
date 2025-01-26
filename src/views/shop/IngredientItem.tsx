@@ -40,7 +40,7 @@ class IngredientItem extends React.PureComponent<IngredientItemProps> {
         this.onClick = this.onClick.bind(this);
     }
 
-    onSetStatus(status, e) {
+    onSetStatus(status: PlanItemStatus, e) {
         if (e) e.stopPropagation();
         const {
             item: { id, itemIds },

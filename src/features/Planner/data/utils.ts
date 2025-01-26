@@ -514,7 +514,7 @@ function isEmpty(taskOrString) {
     return str == null || str.trim() === "";
 }
 
-export const queueStatusUpdate = (
+const queueStatusUpdate = (
     state: State,
     id: BfsStringId,
     change: StatusChange,
@@ -995,8 +995,11 @@ export function resetToThisWeeksBuckets(state: State, planId: BfsId): State {
 export const doInteractiveStatusChange = (
     state: State,
     id: BfsStringId,
-    change: StatusChange,
+    change: PlanItemStatus | StatusChange,
 ) => {
+    if (typeof change === "string") {
+        change = { status: change };
+    }
     if (willStatusDelete(change.status) && bfsIdEq(id, state.activeTaskId)) {
         state = focusDelta(state, id, 1);
     }
