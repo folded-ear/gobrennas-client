@@ -14,7 +14,7 @@ import Dispatcher from "@/data/dispatcher";
 import ShoppingActions from "@/data/ShoppingActions";
 import PlanActions from "../Planner/data/PlanActions";
 import useIsNavCollapsed, { setNavCollapsed } from "@/data/useIsNavCollapsed";
-import { BfsId } from "@/global/types/identity";
+import { BfsId, ensureString } from "@/global/types/identity";
 import routes from "@/routes";
 import SidebarSwitch from "@/SidebarSwitch";
 import GTag from "@/GTag";
@@ -22,7 +22,7 @@ import GTag from "@/GTag";
 export function toggleShoppingPlan(id: BfsId) {
     return Dispatcher.dispatch({
         type: ShoppingActions.TOGGLE_PLAN,
-        id: typeof id === "string" ? parseInt(id) : id,
+        id: ensureString(id),
     });
 }
 

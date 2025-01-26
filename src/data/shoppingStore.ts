@@ -9,26 +9,26 @@ import PlanActions from "@/features/Planner/data/PlanActions";
 import { removeDistinct, toggleDistinct } from "@/util/arrayAsSet";
 import preferencesStore from "./preferencesStore";
 import PlanApi from "@/features/Planner/data/PlanApi";
-import { bfsIdEq, includesBfsId } from "@/global/types/identity";
+import { BfsId, bfsIdEq, includesBfsId } from "@/global/types/identity";
 
-const placeFocus = (state, id, type) => ({
+export interface Item {
+    id: BfsId;
+    type: ShopItemType;
+}
+
+interface State {
+    activePlanIds?: BfsId[];
+    activeItem?: Item;
+    expandedId?: BfsId;
+}
+
+const placeFocus = (state: State, id: BfsId, type): State => ({
     ...state,
     activeItem: {
         id,
         type,
     },
 });
-
-export interface Item {
-    id: number;
-    type: ShopItemType;
-}
-
-interface State {
-    activePlanIds?: number[];
-    activeItem?: Item;
-    expandedId?: number;
-}
 
 class ShoppingStore extends ReduceStore<State, FluxAction> {
     getInitialState(): State {
@@ -54,7 +54,7 @@ class ShoppingStore extends ReduceStore<State, FluxAction> {
                 const activePlanId = planStore
                     .getActivePlanLO()
                     .getValueEnforcing().id;
-                const shopIds: number[] = [];
+                const shopIds: BfsId[] = [];
                 for (const id of preferencesStore.getActiveShoppingPlans()) {
                     if (!includesBfsId(validPlanIds, id)) continue;
                     shopIds.push(id);

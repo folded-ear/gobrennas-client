@@ -1,10 +1,10 @@
 import PlanActions from "@/features/Planner/data/PlanActions";
 import typedAction from "@/util/typedAction";
-import PropTypes from "prop-types";
+import { bfsIdType } from "@/global/types/identity";
 
 const ShoppingActions = {
     TOGGLE_PLAN: typedAction("shopping/toggle-plan", {
-        id: PropTypes.number.isRequired,
+        id: bfsIdType.isRequired,
     }),
     RENAME_ITEM: PlanActions.RENAME_ITEM,
     FOCUS: "shopping/focus",

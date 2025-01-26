@@ -10,17 +10,19 @@ import UserActions from "./UserActions";
 import { FluxAction } from "@/global/types/types";
 import ShoppingActions from "./ShoppingActions";
 import shoppingStore from "./shoppingStore";
+import { Maybe } from "graphql/jsutils/Maybe";
+import { BfsId, ensureString } from "@/global/types/identity";
 
-const PrefNames = {
-    ACTIVE_TASK_LIST: "activeTaskList",
-    ACTIVE_PLAN: "activePlan",
-    ACTIVE_SHOPPING_PLANS: "activeShoppingPlans",
-    DEV_MODE: "devMode",
-    LAYOUT: "layout",
-    NAV_COLLAPSED: "navCollapsed",
-};
+enum PrefNames {
+    ACTIVE_TASK_LIST = "activeTaskList",
+    ACTIVE_PLAN = "activePlan",
+    ACTIVE_SHOPPING_PLANS = "activeShoppingPlans",
+    DEV_MODE = "devMode",
+    LAYOUT = "layout",
+    NAV_COLLAPSED = "navCollapsed",
+}
 
-type State = Map<string, any>;
+type State = Map<string, unknown>;
 type IsMigrationNeeded = (p: State) => boolean;
 type DoMigration = (p: State) => State;
 type Migration = [IsMigrationNeeded, DoMigration];
@@ -40,7 +42,7 @@ const migrations: Migration[] = [
     ],
 ];
 
-const setPref = (state: State, key: string, value: any): State => {
+const setPref = (state: State, key: string, value: unknown): State => {
     state = state.set(key, value);
     setJsonItem(LOCAL_STORAGE_PREFERENCES, state);
     return state;
@@ -111,14 +113,19 @@ class PreferencesStore extends ReduceStore<State, FluxAction> {
         }
     }
 
-    getActivePlan() {
-        return this.getState().get(PrefNames.ACTIVE_PLAN);
+    getActivePlan(): Maybe<BfsId> {
+        return <BfsId>this.getState().get(PrefNames.ACTIVE_PLAN);
     }
 
-    getActiveShoppingPlans() {
-        let plans = this.getState().get(PrefNames.ACTIVE_SHOPPING_PLANS);
-        if (plans == null || plans.length === 0) {
-            plans = [this.getActivePlan()];
+    getActiveShoppingPlans(): BfsId[] {
+        let plans = <Maybe<Array<any> | string>>(
+            this.getState().get(PrefNames.ACTIVE_SHOPPING_PLANS)
+        );
+        if (plans == null || typeof plans === "string" || plans.length === 0) {
+            const activePlanId = this.getActivePlan();
+            plans = activePlanId != null ? [activePlanId] : [];
+        } else {
+            plans = plans.map(ensureString);
         }
         return plans;
     }
@@ -127,8 +134,8 @@ class PreferencesStore extends ReduceStore<State, FluxAction> {
         return !!this.getState().get(PrefNames.DEV_MODE);
     }
 
-    getLayout() {
-        return this.getState().get(PrefNames.LAYOUT) || "auto";
+    getLayout(): string {
+        return <string>this.getState().get(PrefNames.LAYOUT) || "auto";
     }
 
     isNavCollapsed() {

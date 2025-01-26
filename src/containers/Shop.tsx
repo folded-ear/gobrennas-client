@@ -87,7 +87,7 @@ function isOrWillBeAcquired(it: PathedItemTuple) {
 
 function groupItems(
     plans: Array<Plan | PlanItem>,
-    expandedId: Maybe<number>,
+    expandedId: Maybe<BfsId>,
     activeItem: Maybe<Item>,
 ): ShopItemTuple[] {
     if (plans.length === 0) return [];
