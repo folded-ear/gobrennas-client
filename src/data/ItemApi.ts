@@ -57,4 +57,4 @@ const ItemApi = {
     },
 };
 
-export default serializeObjectOfPromiseFns(ItemApi) as typeof ItemApi;
+export default serializeObjectOfPromiseFns(ItemApi);

@@ -13,9 +13,9 @@
  *  passed object, which will queue up invocations to the wrapped object's
  *  functions.
  */
-const serializeObjectOfPromiseFns = (obj) => {
+const serializeObjectOfPromiseFns = <T extends object>(obj: T): T => {
     let queue = Promise.resolve();
-    const result = {};
+    const result = {} as T;
     const enqueue = (fn, args) => {
         queue = queue
             .catch((error) =>

@@ -250,4 +250,4 @@ const PlanApi = {
         ),
 };
 
-export default serializeObjectOfPromiseFns(PlanApi) as typeof PlanApi;
+export default serializeObjectOfPromiseFns(PlanApi);
