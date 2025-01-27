@@ -1,5 +1,5 @@
 import React from "react";
-import { match, Redirect } from "react-router-dom";
+import { match, Redirect, useHistory } from "react-router-dom";
 import Dispatcher from "@/data/dispatcher";
 import LoadingIndicator from "@/views/common/LoadingIndicator";
 import RecipeDetail from "@/features/RecipeDisplay/components/RecipeDetail";
@@ -12,6 +12,7 @@ import { ShareInfo } from "@/global/types/types";
 
 const DoTheDance: React.FC<ShareInfo> = ({ slug, secret, id }) => {
     const [owner, setOwner] = React.useState<Maybe<UserType>>(null);
+    const history = useHistory();
     React.useEffect(() => {
         RecipeApi.promiseSharedRecipe(slug, secret, id).then(
             ([owner, ingredients]) => {
@@ -23,9 +24,12 @@ const DoTheDance: React.FC<ShareInfo> = ({ slug, secret, id }) => {
                 });
                 setOwner(owner);
             },
-            () => alert("This recipe no longer exists. Sorry."),
+            () => {
+                alert("This recipe no longer exists. Sorry.");
+                history.push("/");
+            },
         );
-    }, [slug, secret, id]);
+    }, [history, slug, secret, id]);
     if (!owner) {
         return <LoadingIndicator />;
     }
