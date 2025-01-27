@@ -1008,6 +1008,35 @@ export function resetToThisWeeksBuckets(state: State, planId: BfsId): State {
     });
 }
 
+export function sortActivePlanByBucket(state: State): State {
+    const plan = taskForId(state, state.activeListId) as Plan;
+    if (!plan.buckets || !plan.subtaskIds) return state;
+    // Sort mutates directly, but it should be a no-op (i.e., the buckets are
+    // already correctly ordered). If it's not, it should result in some items
+    // moving around. If not, things are just as screwy as before. :)
+    plan.buckets.sort(bucketComparator);
+    const bucketIdOrder = plan.buckets.reduce((index, b, i) => {
+        index[b.id] = i;
+        return index;
+    }, {});
+    const desiredIds = plan.subtaskIds
+        .map((id) => taskForId(state, id))
+        .map((t) => [t.id, t.bucketId ? bucketIdOrder[t.bucketId] : -1])
+        .sort((pa, pb) => pa[1] - pb[1])
+        .map((pair) => pair[0]);
+    for (let i = 0, l = desiredIds.length; i < l; i++) {
+        if (!bfsIdEq(plan.subtaskIds[i], desiredIds[i])) {
+            PlanApi.reorderSubitems(plan.id, desiredIds);
+            // update immediately; the coming delta will be a no-op
+            return mapTask(state, plan.id, (v) => ({
+                ...v,
+                subtaskIds: desiredIds,
+            }));
+        }
+    }
+    return state; // no-op
+}
+
 export const doInteractiveStatusChange = (
     state: State,
     id: BfsStringId,
