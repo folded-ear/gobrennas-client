@@ -2,9 +2,9 @@ import BaseAxios from "axios";
 import promiseFlux from "@/util/promiseFlux";
 import { API_BASE_URL } from "@/constants";
 import RecipeActions from "./RecipeActions";
-import { BfsId } from "@/global/types/identity";
+import { BfsId, UserType } from "@/global/types/identity";
 import { Maybe } from "graphql/jsutils/Maybe";
-import { ShareInfo } from "@/global/types/types";
+import { Ingredient, ShareInfo } from "@/global/types/types";
 
 const axios = BaseAxios.create({
     baseURL: `${API_BASE_URL}/api/recipe`,
@@ -31,6 +31,18 @@ const RecipeApi = {
 
     promiseShareInfo: (id: BfsId) =>
         axios.get(`/${id}/share`).then(({ data }) => data as ShareInfo),
+
+    promiseSharedRecipe: (
+        slug: ShareInfo["slug"],
+        secret: ShareInfo["secret"],
+        id: ShareInfo["id"],
+    ) =>
+        BaseAxios.get(
+            `${API_BASE_URL}/shared/recipe/${slug}/${secret}/${id}.json`,
+        ).then(
+            ({ data }) =>
+                [data.owner, data.ingredients] as [UserType, Ingredient[]],
+        ),
 };
 
 export default RecipeApi;
