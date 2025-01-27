@@ -10,6 +10,7 @@ import {
     ASSIGN_BUCKET,
     CREATE_BUCKET,
     CREATE_PLAN,
+    CREATE_PLAN_ITEM,
     DELETE_BUCKET,
     DELETE_PLAN,
     DELETE_PLAN_ITEM,
@@ -134,12 +135,33 @@ const PlanApi = {
             }),
         ),
 
-    createItem: (planId: BfsId, body) =>
-        promiseFlux(axios.post(`/${planId}`, body), (r) => ({
-            type: PlanActions.TREE_CREATE,
-            data: r.data.info,
-            newIds: r.data.newIds,
-        })),
+    createItem: (
+        id: BfsId,
+        parentId: BfsId,
+        afterId: Maybe<BfsId>,
+        name: string,
+    ) =>
+        promiseFlux(
+            client.mutate({
+                mutation: CREATE_PLAN_ITEM,
+                variables: {
+                    parentId: ensureString(parentId),
+                    afterId: afterId ? ensureString(afterId) : null,
+                    name,
+                },
+            }),
+            ({ data }) => {
+                const item = data!.planner.createItem;
+                return {
+                    type: PlanActions.TREE_CREATE,
+                    data: [
+                        toRestPlanItem(item),
+                        toRestPlanOrItem(item.fullParent!),
+                    ],
+                    newIds: { [item.id]: id },
+                };
+            },
+        ),
 
     renameItem: (id: BfsId, name: string) =>
         promiseFlux(

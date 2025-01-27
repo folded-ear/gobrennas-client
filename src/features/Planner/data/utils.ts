@@ -110,10 +110,13 @@ const fixIds = (state: State, task, id: BfsId, clientId: string) => {
     });
 };
 
-export const tasksCreated = (state: State, tasks, newIds) => {
+export const tasksCreated = (
+    state: State,
+    tasks: Array<Plan | PlanItem>,
+    newIds: Record<BfsId, string>,
+) => {
     if (newIds != null) {
-        for (const id of Object.keys(newIds)) {
-            const cid = newIds[id];
+        for (const [id, cid] of Object.entries(newIds)) {
             if (!isKnown(state, cid)) continue;
             state = fixIds(state, taskForId(state, cid), id, cid);
         }
@@ -298,15 +301,10 @@ export const flushTasksToRename = (state: State) => {
             requeue.add(id);
             continue;
         }
-        PlanApi.createItem(state.activeListId!, {
-            id,
-            parentId: task.parentId,
-            afterId,
-            name: task.name,
-        });
+        PlanApi.createItem(id, task.parentId, afterId, task.name);
     }
     tasksToRename = requeue;
-    if (requeue.size > 0) inTheFuture(PlanActions.FLUSH_RENAMES);
+    if (requeue.size > 0) inTheFuture(PlanActions.FLUSH_RENAMES, 0.5);
     return state;
 };
 
@@ -867,9 +865,8 @@ const forceExpansionBuilder = (expanded) => {
 export const expandAll = forceExpansionBuilder(true);
 export const collapseAll = forceExpansionBuilder(false);
 
-export function taskLoaded(state: State, task: Plan): State;
-export function taskLoaded(state: State, task: PlanItem): State;
-export function taskLoaded(state: State, task) {
+export function taskLoaded(state: State, task: Plan | PlanItem): State;
+export function taskLoaded(state: State, task): State {
     if (task.acl) {
         task = {
             ...task,
@@ -925,7 +922,7 @@ export const loadLists = (state: State) => {
     };
 };
 
-export const tasksLoaded = (state: State, tasks) =>
+export const tasksLoaded = (state: State, tasks: Array<Plan | PlanItem>) =>
     tasks.reduce((s, t) => taskLoaded(s, t), state);
 
 export function selectDefaultList(state: State): State {
