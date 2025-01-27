@@ -3,7 +3,6 @@ import PantryItemActions from "@/data/PantryItemActions";
 import ShoppingActions from "@/data/ShoppingActions";
 import dotProp from "dot-prop-immutable";
 import PlanActions from "@/features/Planner/data/PlanActions";
-import TaskApi from "@/features/Planner/data/TaskApi";
 import FluxReduceStore from "flux/lib/FluxReduceStore";
 import { removeAtIndex } from "@/util/arrayAsSet";
 import ClientId from "@/util/ClientId";
@@ -67,6 +66,8 @@ import AccessLevel from "@/data/AccessLevel";
 import { Maybe } from "graphql/jsutils/Maybe";
 import PlanItemStatus from "@/features/Planner/data/PlanItemStatus";
 import { FluxAction } from "@/global/types/types";
+import RecipeActions from "@/data/RecipeActions";
+import queryClient from "@/data/queryClient";
 
 /*
  * This store is way too muddled. But leaving it that way for the moment, to
@@ -166,7 +167,7 @@ class PlanStore extends FluxReduceStore<State, FluxAction> {
             }
 
             case PlanActions.DELETE_PLAN: {
-                TaskApi.deleteList(action.id);
+                PlanApi.deletePlan(action.id);
                 const next: State = dotProp.set(
                     state,
                     ["byId", action.id],
@@ -201,7 +202,7 @@ class PlanStore extends FluxReduceStore<State, FluxAction> {
                 return setPlanColor(state, action.id, action.color);
 
             case PlanActions.SET_PLAN_GRANT: {
-                TaskApi.setPlanGrant(action.id, action.userId, action.level);
+                PlanApi.setPlanGrant(action.id, action.userId, action.level);
                 return dotProp.set(state, ["byId", action.id], (lo) =>
                     lo
                         .map((l) =>
@@ -216,7 +217,7 @@ class PlanStore extends FluxReduceStore<State, FluxAction> {
             }
 
             case PlanActions.CLEAR_PLAN_GRANT: {
-                TaskApi.clearPlanGrant(action.id, action.userId);
+                PlanApi.clearPlanGrant(action.id, action.userId);
                 return dotProp.set(state, ["byId", action.id], (lo) =>
                     lo
                         .map((l) =>
@@ -297,6 +298,11 @@ class PlanStore extends FluxReduceStore<State, FluxAction> {
                     name = `"${name}"`;
                 }
                 return addTaskAndFlush(state, action.planId, name);
+            }
+
+            case RecipeActions.SENT_TO_PLAN: {
+                queryClient.refetchQueries(["poll-for-updates"]);
+                return state;
             }
 
             case PlanActions.DELETE_ITEM_FORWARD:

@@ -1,5 +1,20 @@
 import { gql } from "@/__generated__";
 
+export const CREATE_PLAN_ITEM = gql(`
+mutation createPlanItem($parentId: ID!, $afterId: ID, $name: String!) {
+  planner {
+    createItem(parentId: $parentId, afterId: $afterId, name: $name) {
+      ...corePlanItemLoad
+      ...planItemLoad
+      fullParent: parent {
+        ...corePlanItemLoad
+        ...planLoad
+        ...planItemLoad
+      }
+    }
+  }
+}`);
+
 export const RENAME_PLAN_OR_ITEM = gql(`
 mutation renamePlanOrItem($id: ID!, $name: String!) {
   planner {
@@ -25,6 +40,13 @@ export const DELETE_PLAN_ITEM = gql(`
 mutation deletePlanItem($id: ID!) {
   planner {
     deleteItem(id: $id) { id }
+  }
+}`);
+
+export const DELETE_PLAN = gql(`
+mutation deletePlan($id: ID!) {
+  planner {
+    deletePlan(id: $id) { id }
   }
 }`);
 

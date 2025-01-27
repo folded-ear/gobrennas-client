@@ -19,6 +19,7 @@ import { IsMobileProvider } from "@/providers/IsMobile";
 import { QueryClientProvider } from "react-query";
 import queryClient from "@/data/queryClient";
 import PollingSynchronizer from "@/data/PollingSynchronizer";
+import ImperativeFlux from "@/util/ImperativeFlux";
 
 declare module "@mui/styles/defaultTheme" {
     // eslint-disable-next-line @typescript-eslint/no-empty-interface
@@ -33,6 +34,7 @@ function GoBrennas() {
                     <IsMobileProvider>
                         <QueryClientProvider client={queryClient}>
                             <PollingSynchronizer />
+                            <ImperativeFlux />
                             <StyledEngineProvider injectFirst>
                                 <ThemeProvider theme={useBfsTheme()}>
                                     <CssBaseline />

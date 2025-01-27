@@ -2,7 +2,6 @@ import ClientId from "@/util/ClientId";
 import PlanItemStatus, {
     willStatusDelete,
 } from "@/features/Planner/data/PlanItemStatus";
-import TaskApi from "@/features/Planner/data/TaskApi";
 import LoadObject from "@/util/LoadObject";
 import LoadObjectState from "@/util/LoadObjectState";
 import { isExpanded, isParent } from "@/features/Planner/data/plannerUtils";
@@ -50,13 +49,11 @@ export const createList = (
     optionalPlanIdToCopy?: BfsId,
 ) => {
     const task = _newTask(name);
-    TaskApi.createList(name, task.id, optionalPlanIdToCopy);
+    PlanApi.createPlan(name, task.id, optionalPlanIdToCopy);
     return {
         ...mapTaskLO(state, task.id, () =>
             LoadObject.withValue(task).creating(),
         ),
-        activeListId: task.id,
-        activeTaskId: null,
         topLevelIds: state.topLevelIds.map((ids) => ids.concat(task.id)),
     };
 };
@@ -113,10 +110,13 @@ const fixIds = (state: State, task, id: BfsId, clientId: string) => {
     });
 };
 
-export const tasksCreated = (state: State, tasks, newIds) => {
+export const tasksCreated = (
+    state: State,
+    tasks: Array<Plan | PlanItem>,
+    newIds: Record<BfsId, string>,
+) => {
     if (newIds != null) {
-        for (const id of Object.keys(newIds)) {
-            const cid = newIds[id];
+        for (const [id, cid] of Object.entries(newIds)) {
             if (!isKnown(state, cid)) continue;
             state = fixIds(state, taskForId(state, cid), id, cid);
         }
@@ -136,7 +136,7 @@ export const listCreated = (
         [id]: LoadObject.withValue(plan),
     };
     delete byId[clientId];
-    state = addTask(
+    return addTask(
         {
             ...state,
             topLevelIds: idFixer(state.topLevelIds),
@@ -145,8 +145,6 @@ export const listCreated = (
         id,
         "",
     );
-    state = selectList(state, id);
-    return state;
 };
 
 export const selectList = (state: State, id: Maybe<BfsId>): State => {
@@ -303,15 +301,10 @@ export const flushTasksToRename = (state: State) => {
             requeue.add(id);
             continue;
         }
-        PlanApi.createItem(state.activeListId!, {
-            id,
-            parentId: task.parentId,
-            afterId,
-            name: task.name,
-        });
+        PlanApi.createItem(id, task.parentId, afterId, task.name);
     }
     tasksToRename = requeue;
-    if (requeue.size > 0) inTheFuture(PlanActions.FLUSH_RENAMES);
+    if (requeue.size > 0) inTheFuture(PlanActions.FLUSH_RENAMES, 0.5);
     return state;
 };
 
@@ -872,9 +865,8 @@ const forceExpansionBuilder = (expanded) => {
 export const expandAll = forceExpansionBuilder(true);
 export const collapseAll = forceExpansionBuilder(false);
 
-export function taskLoaded(state: State, task: Plan): State;
-export function taskLoaded(state: State, task: PlanItem): State;
-export function taskLoaded(state: State, task) {
+export function taskLoaded(state: State, task: Plan | PlanItem): State;
+export function taskLoaded(state: State, task): State {
     if (task.acl) {
         task = {
             ...task,
@@ -923,14 +915,14 @@ const taskLoading = (state: State, id) => {
 };
 
 export const loadLists = (state: State) => {
-    TaskApi.loadLists();
+    PlanApi.loadPlans();
     return {
         ...state,
         topLevelIds: state.topLevelIds.mapLO((lo) => lo.loading()),
     };
 };
 
-export const tasksLoaded = (state: State, tasks) =>
+export const tasksLoaded = (state: State, tasks: Array<Plan | PlanItem>) =>
     tasks.reduce((s, t) => taskLoaded(s, t), state);
 
 export function selectDefaultList(state: State): State {

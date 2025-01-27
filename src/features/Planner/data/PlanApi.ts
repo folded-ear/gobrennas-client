@@ -1,15 +1,23 @@
 import BaseAxios from "axios";
 import { API_BASE_URL } from "@/constants";
-import promiseFlux, { defaultErrorHandler } from "@/util/promiseFlux";
+import promiseFlux, {
+    defaultErrorHandler,
+    soakUpUnauthorized,
+} from "@/util/promiseFlux";
 import PlanActions from "./PlanActions";
 import { client } from "@/providers/ApolloClient";
 import {
     ASSIGN_BUCKET,
     CREATE_BUCKET,
+    CREATE_PLAN,
+    CREATE_PLAN_ITEM,
     DELETE_BUCKET,
+    DELETE_PLAN,
     DELETE_PLAN_ITEM,
     RENAME_PLAN_OR_ITEM,
+    REVOKE_PLAN_GRANT,
     SET_PLAN_COLOR,
+    SET_PLAN_GRANT,
     SET_PLAN_ITEM_STATUS,
     SPLICE_BUCKETS,
     UPDATE_BUCKET,
@@ -20,15 +28,17 @@ import {
     toRestPlanItem,
     toRestPlanOrItem,
 } from "@/features/Planner/data/conversion_helpers";
-import { BfsId, ensureString } from "@/global/types/identity";
+import { BfsId, BfsStringId, ensureString } from "@/global/types/identity";
 import { PlanBucket } from "./planStore";
 import serializeObjectOfPromiseFns from "@/util/serializeObjectOfPromiseFns";
-import { LOAD_DESCENDANTS } from "@/features/Planner/data/queries";
+import { LOAD_DESCENDANTS, LOAD_PLANS } from "@/features/Planner/data/queries";
 import { willStatusDelete } from "@/features/Planner/data/PlanItemStatus";
 import { StatusChange } from "@/features/Planner/data/utils";
 import { formatLocalDate, parseLocalDate } from "@/util/time";
 import { Maybe } from "graphql/jsutils/Maybe";
 import dispatcher from "@/data/dispatcher";
+import { GET_PLANS } from "@/data/hooks/useGetAllPlans";
+import AccessLevel from "@/data/AccessLevel";
 
 const axios = BaseAxios.create({
     baseURL: `${API_BASE_URL}/api/plan`,
@@ -43,12 +53,115 @@ function deserializeBucket(b: WireBucket): PlanBucket {
 }
 
 const PlanApi = {
-    createItem: (planId: BfsId, body) =>
-        promiseFlux(axios.post(`/${planId}`, body), (r) => ({
-            type: PlanActions.TREE_CREATE,
-            data: r.data.info,
-            newIds: r.data.newIds,
-        })),
+    createPlan: (name, clientId, sourcePlanId) =>
+        promiseFlux(
+            client.mutate({
+                mutation: CREATE_PLAN,
+                variables: {
+                    name,
+                    sourcePlanId,
+                },
+                refetchQueries: [GET_PLANS],
+            }),
+            ({ data }) => {
+                const plan = data!.planner.createPlan || null;
+                return {
+                    type: PlanActions.PLAN_CREATED,
+                    clientId,
+                    id: plan.id,
+                    data: toRestPlan(plan),
+                    fromId: sourcePlanId,
+                };
+            },
+            handleErrors,
+        ),
+
+    loadPlans: () =>
+        promiseFlux(
+            client.query({ query: LOAD_PLANS }),
+            ({ data }) => ({
+                type: PlanActions.PLANS_LOADED,
+                data: data.planner.plans.map(toRestPlan),
+            }),
+            soakUpUnauthorized,
+        ),
+
+    deletePlan: (id: BfsId) =>
+        promiseFlux(
+            client.mutate({
+                mutation: DELETE_PLAN,
+                variables: {
+                    id: ensureString(id),
+                },
+            }),
+            ({ data }) => ({
+                type: PlanActions.PLAN_DELETED,
+                id: data?.planner.deletePlan.id,
+            }),
+        ).then(() => {
+            client.refetchQueries({ include: [GET_PLANS] });
+        }),
+
+    setPlanGrant: (id: BfsStringId, userId: BfsId, accessLevel: AccessLevel) =>
+        promiseFlux(
+            client.mutate({
+                mutation: SET_PLAN_GRANT,
+                variables: {
+                    planId: id,
+                    userId: ensureString(userId),
+                    accessLevel,
+                },
+            }),
+            () => ({
+                type: PlanActions.PLAN_GRANT_SET,
+                id,
+                userId,
+            }),
+        ),
+
+    clearPlanGrant: (id: BfsStringId, userId: BfsId) =>
+        promiseFlux(
+            client.mutate({
+                mutation: REVOKE_PLAN_GRANT,
+                variables: {
+                    planId: id,
+                    userId: ensureString(userId),
+                },
+            }),
+            () => ({
+                type: PlanActions.PLAN_GRANT_CLEARED,
+                id,
+                userId,
+            }),
+        ),
+
+    createItem: (
+        id: BfsId,
+        parentId: BfsId,
+        afterId: Maybe<BfsId>,
+        name: string,
+    ) =>
+        promiseFlux(
+            client.mutate({
+                mutation: CREATE_PLAN_ITEM,
+                variables: {
+                    parentId: ensureString(parentId),
+                    afterId: afterId ? ensureString(afterId) : null,
+                    name,
+                },
+            }),
+            ({ data }) => {
+                const item = data!.planner.createItem;
+                return {
+                    type: PlanActions.TREE_CREATE,
+                    data: [
+                        toRestPlanItem(item),
+                        toRestPlanOrItem(item.fullParent!),
+                    ],
+                    newIds: { [item.id]: id },
+                };
+            },
+        ),
 
     renameItem: (id: BfsId, name: string) =>
         promiseFlux(
@@ -212,8 +325,9 @@ const PlanApi = {
             },
         ),
 
-    deleteBucket: (planId: BfsId, id: BfsId) =>
-        promiseFlux(
+    deleteBucket: (planId: BfsId, id: BfsId) => {
+        client.cache.evict({ id: ensureString(id) });
+        return promiseFlux(
             client.mutate({
                 mutation: DELETE_BUCKET,
                 variables: {
@@ -229,7 +343,8 @@ const PlanApi = {
                     id: bucket.id,
                 };
             },
-        ),
+        );
+    },
 
     spliceBuckets: (
         planId: BfsId,
