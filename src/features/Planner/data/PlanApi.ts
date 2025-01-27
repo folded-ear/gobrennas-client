@@ -39,6 +39,7 @@ import { Maybe } from "graphql/jsutils/Maybe";
 import dispatcher from "@/data/dispatcher";
 import { GET_PLANS } from "@/data/hooks/useGetAllPlans";
 import AccessLevel from "@/data/AccessLevel";
+import { ShareInfo } from "@/global/types/types";
 
 const axios = BaseAxios.create({
     baseURL: `${API_BASE_URL}/api/plan`,
@@ -262,6 +263,9 @@ const PlanApi = {
             id,
             subitemIds,
         }),
+
+    promiseShareInfo: (id: BfsId) =>
+        axios.get(`/${id}/share`).then(({ data }) => data as ShareInfo),
 
     getDescendantsAsList: (id: BfsId) =>
         promiseFlux(

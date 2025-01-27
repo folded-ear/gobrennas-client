@@ -1,23 +1,19 @@
 import { Box, Button, CircularProgress, TextField } from "@mui/material";
 import { ShareIcon } from "@/views/common/icons";
-import BaseAxios from "axios";
 import React from "react";
-import { API_BASE_URL, APP_BASE_URL } from "@/constants";
-import type { Recipe, SharedRecipe } from "@/global/types/types";
+import { APP_BASE_URL } from "@/constants";
+import type { Recipe, ShareInfo } from "@/global/types/types";
 import { RippedLO } from "@/util/ripLoadObject";
 import ModalButton from "@/views/ModalButton";
 import { bfsIdEq } from "@/global/types/identity";
-
-const axios = BaseAxios.create({
-    baseURL: `${API_BASE_URL}/api/recipe`,
-});
+import RecipeApi from "@/data/RecipeApi";
 
 type ShareRecipeProps = {
     recipe: Recipe;
 };
 
 const Body: React.FC<ShareRecipeProps> = ({ recipe }) => {
-    const [rlo, setRlo] = React.useState<RippedLO<SharedRecipe>>({});
+    const [rlo, setRlo] = React.useState<RippedLO<ShareInfo>>({});
     const [retry, setRetry] = React.useState(0);
     React.useEffect(() => {
         if (bfsIdEq(rlo.data?.id, recipe.id)) {
@@ -26,10 +22,10 @@ const Body: React.FC<ShareRecipeProps> = ({ recipe }) => {
         setRlo({
             loading: true,
         });
-        axios.get(`/${recipe.id}/share`).then(
+        RecipeApi.promiseShareInfo(recipe.id).then(
             (data) =>
                 setRlo({
-                    data: data.data,
+                    data,
                 }),
             (error) =>
                 setRlo({

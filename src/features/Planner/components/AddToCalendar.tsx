@@ -3,7 +3,6 @@ import { AddIcon, AddToCalendarIcon } from "@/views/common/icons";
 import type { Plan } from "@/features/Planner/data/planStore";
 import ModalButton from "@/views/ModalButton";
 import { API_BASE_URL } from "@/constants";
-import BaseAxios from "axios";
 import {
     Box,
     Button,
@@ -12,24 +11,16 @@ import {
     TextField,
 } from "@mui/material";
 import { RippedLO } from "@/util/ripLoadObject";
-import { bfsIdEq } from "@/global/types/identity";
-
-const axios = BaseAxios.create({
-    baseURL: `${API_BASE_URL}/api/plan`,
-});
+import { bfsIdEq, ensureString } from "@/global/types/identity";
+import PlanApi from "@/features/Planner/data/PlanApi";
+import { ShareInfo } from "@/global/types/types";
 
 interface Props {
     plan: Plan;
 }
 
-interface SharedPlan {
-    id: Plan["id"];
-    secret: string;
-    slug: string;
-}
-
 const Body: React.FC<Props> = ({ plan }) => {
-    const [rlo, setRlo] = React.useState<RippedLO<SharedPlan>>({});
+    const [rlo, setRlo] = React.useState<RippedLO<ShareInfo>>({});
     React.useEffect(() => {
         if (rlo.data && bfsIdEq(rlo.data.id, plan.id)) {
             return;
@@ -37,15 +28,15 @@ const Body: React.FC<Props> = ({ plan }) => {
         setRlo({
             loading: true,
             data: {
-                id: plan.id,
+                id: ensureString(plan.id),
                 slug: "",
                 secret: "",
             },
         });
-        axios.get(`/${plan.id}/share`).then(
+        PlanApi.promiseShareInfo(plan.id).then(
             (data) =>
                 setRlo({
-                    data: data.data,
+                    data,
                 }),
             (error) =>
                 setRlo({

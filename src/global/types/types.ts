@@ -90,9 +90,10 @@ export type RecipeHistory = Pick<
     owner: Pick<User, "name" | "email" | "imageUrl">;
 };
 
-export interface SharedRecipe extends Pick<Recipe, "id"> {
-    secret: string;
+export interface ShareInfo {
+    id: string;
     slug: string;
+    secret: string;
 }
 
 export interface DraftRecipe extends Omit<Recipe, "photo"> {
