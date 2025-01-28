@@ -116,6 +116,6 @@ export const useGetFullRecipe = (id: string) => {
     const myId = useProfileId();
     const boundAdapter = useMemo(() => adapter.bind(undefined, myId), [myId]);
     return useAdaptingQuery(GET_FULL_RECIPE_QUERY, boundAdapter, {
-        variables: { id: id },
+        variables: { id },
     });
 };

@@ -136,7 +136,7 @@ type LibraryMutation {
 }
 
 type LibraryQuery {
-    getRecipeById(id: ID!): Recipe
+    getRecipeById(id: ID!): Recipe!
     "Search the recipe library."
     recipes(
         """
@@ -326,7 +326,7 @@ type Plan implements AccessControlled & CorePlanItem & Node & Owned {
     owner: User!
     "A plan's plan is always itself."
     plan: Plan!
-    share: ShareInfo
+    share: ShareInfo!
     """
 
     Retrieve all items which have been updated since the passed cutoff
@@ -501,7 +501,7 @@ type Recipe implements Ingredient & Node & Owned {
     sense). By default, only the five most recent records will be returned.
     """
     plannedHistory(last: NonNegativeInt = 5, status: PlanItemStatus): [PlannedRecipeHistory!]!
-    share: ShareInfo
+    share: ShareInfo!
     """
 
     All subrecipes. Multiple layers of nested recipes are flattened, and the
