@@ -34,7 +34,6 @@ import {
     loForId,
     losForIds,
     mapPlanBuckets,
-    mapTask,
     moveDelta,
     moveSubtree,
     nestTask,
@@ -47,6 +46,7 @@ import {
     selectList,
     selectTo,
     setPlanColor,
+    sortActivePlanByBucket,
     taskDeleted,
     taskForId,
     taskLoaded,
@@ -141,13 +141,11 @@ class PlanStore extends FluxReduceStore<State, FluxAction> {
 
     reduce(state: State, action: FluxAction): State {
         switch (action.type) {
-            case PlanActions.CREATE_PLAN: {
+            case PlanActions.CREATE_PLAN:
                 return createList(state, action.name);
-            }
 
-            case PlanActions.DUPLICATE_PLAN: {
+            case PlanActions.DUPLICATE_PLAN:
                 return createList(state, action.name, action.fromId);
-            }
 
             case PlanActions.PLAN_CREATED: {
                 return listCreated(
@@ -235,33 +233,28 @@ class PlanStore extends FluxReduceStore<State, FluxAction> {
             }
 
             case PlanActions.PLAN_DATA_BOOTSTRAPPED:
-            case PlanActions.PLAN_DELTAS: {
+            case PlanActions.PLAN_DELTAS:
                 return tasksLoaded(state, action.data);
-            }
 
-            case PlanActions.TREE_CREATE: {
+            case PlanActions.TREE_CREATE:
                 return tasksCreated(state, action.data, action.newIds);
-            }
 
             case PlanActions.RENAME_ITEM:
                 return renameTask(state, action.id, action.name);
 
-            case PlanActions.UPDATED: {
+            case PlanActions.UPDATED:
                 return taskLoaded(state, action.data);
-            }
 
-            case PlanActions.DELETED: {
+            case PlanActions.DELETED:
                 return taskDeleted(state, action.id);
-            }
 
             case PlanActions.FOCUS: {
                 state = focusTask(state, action.id);
                 return flushTasksToRename(state);
             }
 
-            case ShoppingActions.FOCUS: {
+            case ShoppingActions.FOCUS:
                 return flushTasksToRename(state);
-            }
 
             case PlanActions.FOCUS_NEXT:
                 state = focusDelta(state, state.activeTaskId, 1);
@@ -350,9 +343,8 @@ class PlanStore extends FluxReduceStore<State, FluxAction> {
                 return focusDelta(state, tasks[0].id, -1);
             }
 
-            case PlanActions.UNDO_SET_STATUS: {
+            case PlanActions.UNDO_SET_STATUS:
                 return cancelStatusUpdate(state, action.id);
-            }
 
             case ShoppingActions.UNDO_SET_INGREDIENT_STATUS: {
                 return action.itemIds.reduce(
@@ -368,37 +360,29 @@ class PlanStore extends FluxReduceStore<State, FluxAction> {
             case PlanActions.SELECT_TO:
                 return selectTo(state, action.id);
 
-            case PlanActions.MOVE_NEXT: {
+            case PlanActions.MOVE_NEXT:
                 return moveDelta(state, 1);
-            }
 
-            case PlanActions.MOVE_PREVIOUS: {
+            case PlanActions.MOVE_PREVIOUS:
                 return moveDelta(state, -1);
-            }
 
-            case PlanActions.NEST: {
+            case PlanActions.NEST:
                 return nestTask(state);
-            }
 
-            case PlanActions.UNNEST: {
+            case PlanActions.UNNEST:
                 return unnestTask(state);
-            }
 
-            case PlanActions.MOVE_SUBTREE: {
+            case PlanActions.MOVE_SUBTREE:
                 return moveSubtree(state, action);
-            }
 
-            case PlanActions.TOGGLE_EXPANDED: {
+            case PlanActions.TOGGLE_EXPANDED:
                 return toggleExpanded(state, action.id);
-            }
 
-            case PlanActions.EXPAND_ALL: {
+            case PlanActions.EXPAND_ALL:
                 return expandAll(state);
-            }
 
-            case PlanActions.COLLAPSE_ALL: {
+            case PlanActions.COLLAPSE_ALL:
                 return collapseAll(state);
-            }
 
             case PlanActions.MULTI_LINE_PASTE: {
                 const lines = action.text
@@ -424,9 +408,8 @@ class PlanStore extends FluxReduceStore<State, FluxAction> {
                 ]);
             }
 
-            case PlanActions.RESET_TO_THIS_WEEKS_BUCKETS: {
+            case PlanActions.RESET_TO_THIS_WEEKS_BUCKETS:
                 return resetToThisWeeksBuckets(state, action.planId);
-            }
 
             case PlanActions.BUCKET_CREATED: {
                 return mapPlanBuckets(state, action.planId, (bs) =>
@@ -496,43 +479,11 @@ class PlanStore extends FluxReduceStore<State, FluxAction> {
                 );
             }
 
-            case PlanActions.ASSIGN_ITEM_TO_BUCKET: {
+            case PlanActions.ASSIGN_ITEM_TO_BUCKET:
                 return assignToBucket(state, action.id, action.bucketId);
-            }
 
-            case PlanActions.SORT_BY_BUCKET: {
-                const plan = taskForId(
-                    state,
-                    state.activeListId,
-                ) as unknown as Plan;
-                if (!plan.buckets || !plan.subtaskIds) return state;
-                const bucketIdOrder = plan.buckets.reduce(
-                    (index, b, i) => ({
-                        ...index,
-                        [b.id]: i,
-                    }),
-                    {},
-                );
-                const desiredIds = plan.subtaskIds
-                    .map((id) => taskForId(state, id))
-                    .map((t) => [
-                        t.id,
-                        t.bucketId ? bucketIdOrder[t.bucketId] : -1,
-                    ])
-                    .sort((pa, pb) => pa[1] - pb[1])
-                    .map((pair) => pair[0]);
-                for (let i = 0, l = desiredIds.length; i < l; i++) {
-                    if (!bfsIdEq(plan.subtaskIds[i], desiredIds[i])) {
-                        PlanApi.reorderSubitems(plan.id, desiredIds);
-                        // update immediately; the coming delta will be a no-op
-                        return mapTask(state, plan.id, (v) => ({
-                            ...v,
-                            subtaskIds: desiredIds,
-                        }));
-                    }
-                }
-                return state; // no-op
-            }
+            case PlanActions.SORT_BY_BUCKET:
+                return sortActivePlanByBucket(state);
 
             case PlanActions.FLUSH_RENAMES:
                 return flushTasksToRename(state);

@@ -1,7 +1,5 @@
-import BaseAxios from "axios";
 import React from "react";
-import { match, Redirect } from "react-router-dom";
-import { API_BASE_URL } from "@/constants";
+import { match, Redirect, useHistory } from "react-router-dom";
 import Dispatcher from "@/data/dispatcher";
 import LoadingIndicator from "@/views/common/LoadingIndicator";
 import RecipeDetail from "@/features/RecipeDisplay/components/RecipeDetail";
@@ -9,27 +7,15 @@ import LibraryActions from "@/features/RecipeLibrary/data/LibraryActions";
 import { UserType } from "@/global/types/identity";
 import { Maybe } from "graphql/jsutils/Maybe";
 import { recipeRloById } from "@/features/RecipeDisplay/utils/recipeRloById";
+import RecipeApi from "@/data/RecipeApi";
+import { ShareInfo } from "@/global/types/types";
 
-const axios = BaseAxios.create({
-    baseURL: `${API_BASE_URL}/shared/recipe`,
-});
-
-interface MatchParams {
-    slug: string;
-    secret: string;
-    id: string;
-}
-
-const DoTheDance: React.FC<MatchParams> = ({ slug, secret, id }) => {
-    const [owner, setOwner] = React.useState<Maybe<UserType>>(undefined);
+const DoTheDance: React.FC<ShareInfo> = ({ slug, secret, id }) => {
+    const [owner, setOwner] = React.useState<Maybe<UserType>>(null);
+    const history = useHistory();
     React.useEffect(() => {
-        axios.get(`/${slug}/${secret}/${id}.json`).then(
-            ({
-                data: {
-                    ingredients, // includes the recipe itself
-                    owner,
-                },
-            }) => {
+        RecipeApi.promiseSharedRecipe(slug, secret, id).then(
+            ([owner, ingredients]) => {
                 Dispatcher.dispatch({
                     type: LibraryActions.INGREDIENTS_LOADED,
                     ids: ingredients.map((i) => i.id),
@@ -38,9 +24,12 @@ const DoTheDance: React.FC<MatchParams> = ({ slug, secret, id }) => {
                 });
                 setOwner(owner);
             },
-            () => alert("This recipe no longer exists. Sorry."),
+            () => {
+                alert("This recipe no longer exists. Sorry.");
+                history.push("/");
+            },
         );
-    }, [slug, secret, id]);
+    }, [history, slug, secret, id]);
     if (!owner) {
         return <LoadingIndicator />;
     }
@@ -60,7 +49,7 @@ const DoTheDance: React.FC<MatchParams> = ({ slug, secret, id }) => {
 
 interface Props {
     authenticated: boolean;
-    match: match<MatchParams>;
+    match: match<ShareInfo>;
 }
 
 export const SharedRecipeController = (props: Props) => {

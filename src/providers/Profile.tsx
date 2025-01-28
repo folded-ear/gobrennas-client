@@ -56,11 +56,12 @@ export const ProfileProvider: React.FC<Props> = ({ children }) => {
     );
 };
 
-export const isAuthError = (error) =>
-    error &&
-    ((error.response && error.response.status === 401) ||
-        (error.extensions &&
-            error.extensions.type === "NoUserPrincipalException"));
+export const isAuthError = (error): boolean => {
+    if (!error) return false;
+    if (error.response && error.response.status === 401) return true;
+    if (error.extensions?.type === "NoUserPrincipalException") return true;
+    return error.graphQLErrors?.some(isAuthError);
+};
 
 let lastReauthPrompt = 0;
 const promptForReauthFrequency = 10 * 60 * 1000;

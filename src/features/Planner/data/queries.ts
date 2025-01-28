@@ -24,3 +24,16 @@ query loadPlanItemAndDescendants($id: ID!) {
     }
   }
 }`);
+
+export const GET_PLAN_SHARE_INFO = gql(`
+query getPlanShareInfo($id: ID!) {
+  planner {
+    plan(id: $id) {
+      share {
+        id
+        slug
+        secret
+      }
+    }
+  }
+}`);

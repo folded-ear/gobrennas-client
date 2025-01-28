@@ -31,7 +31,11 @@ import {
 import { BfsId, BfsStringId, ensureString } from "@/global/types/identity";
 import { PlanBucket } from "./planStore";
 import serializeObjectOfPromiseFns from "@/util/serializeObjectOfPromiseFns";
-import { LOAD_DESCENDANTS, LOAD_PLANS } from "@/features/Planner/data/queries";
+import {
+    GET_PLAN_SHARE_INFO,
+    LOAD_DESCENDANTS,
+    LOAD_PLANS,
+} from "@/features/Planner/data/queries";
 import { willStatusDelete } from "@/features/Planner/data/PlanItemStatus";
 import { StatusChange } from "@/features/Planner/data/utils";
 import { formatLocalDate, parseLocalDate } from "@/util/time";
@@ -39,6 +43,7 @@ import { Maybe } from "graphql/jsutils/Maybe";
 import dispatcher from "@/data/dispatcher";
 import { GET_PLANS } from "@/data/hooks/useGetAllPlans";
 import AccessLevel from "@/data/AccessLevel";
+import { ShareInfo } from "@/global/types/types";
 
 const axios = BaseAxios.create({
     baseURL: `${API_BASE_URL}/api/plan`,
@@ -262,6 +267,16 @@ const PlanApi = {
             id,
             subitemIds,
         }),
+
+    promiseShareInfo: (id: BfsId) =>
+        client
+            .query({
+                query: GET_PLAN_SHARE_INFO,
+                variables: {
+                    id: ensureString(id),
+                },
+            })
+            .then(({ data }) => data.planner.plan.share as ShareInfo),
 
     getDescendantsAsList: (id: BfsId) =>
         promiseFlux(
