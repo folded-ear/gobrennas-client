@@ -123,4 +123,6 @@ function PollingSynchronizer() {
     return null;
 }
 
-export default PollingSynchronizer;
+export default function PollingSynchronizerAuthCheck() {
+    return useIsAuthenticated() ? <PollingSynchronizer /> : null;
+}
