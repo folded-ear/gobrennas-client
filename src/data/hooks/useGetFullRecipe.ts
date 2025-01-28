@@ -1,17 +1,15 @@
-import { useMemo } from "react";
 import { IngredientRef, Recipe, Subrecipe } from "@/global/types/types";
-import { useProfileId } from "@/providers/Profile";
 import { gql } from "@/__generated__";
 import { GetRecipeWithEverythingQuery } from "@/__generated__/graphql";
 import useAdaptingQuery from "./useAdaptingQuery";
 import { ApolloQueryResult, QueryResult } from "@apollo/client";
-import { BfsId, bfsIdEq } from "@/global/types/identity";
+import { BfsStringId } from "@/global/types/identity";
 import objectWithType from "@/data/utils/objectWithType";
 
 const GET_FULL_RECIPE_QUERY = gql(`
-query getRecipeWithEverything($id: ID!) {
+query getRecipeWithEverything($id: ID!, $secret: String) {
   library {
-    getRecipeById(id: $id) {
+    getRecipeById(id: $id, secret: $secret) {
       ...recipeCore
       yield
       calories
@@ -49,7 +47,6 @@ query getRecipeWithEverything($id: ID!) {
 `);
 
 function adapter(
-    myId: BfsId,
     data: GetRecipeWithEverythingQuery | undefined,
     { loading }: QueryResult | ApolloQueryResult<any>,
 ) {
@@ -104,7 +101,6 @@ function adapter(
     };
 
     return {
-        mine: bfsIdEq(result.owner.id, myId),
         owner: result.owner,
         recipe,
         subrecipes,
@@ -112,10 +108,8 @@ function adapter(
     };
 }
 
-export const useGetFullRecipe = (id: string) => {
-    const myId = useProfileId();
-    const boundAdapter = useMemo(() => adapter.bind(undefined, myId), [myId]);
-    return useAdaptingQuery(GET_FULL_RECIPE_QUERY, boundAdapter, {
-        variables: { id },
+export const useGetFullRecipe = (id: BfsStringId, secret?: string) => {
+    return useAdaptingQuery(GET_FULL_RECIPE_QUERY, adapter, {
+        variables: { id, secret: secret ?? null },
     });
 };

@@ -136,7 +136,12 @@ type LibraryMutation {
 }
 
 type LibraryQuery {
-    getRecipeById(id: ID!): Recipe!
+    """
+
+    Retrieve a single recipe by its ID. Authenticated users can request any
+    recipe. Anonymous users must supply the recipe's secret.
+    """
+    getRecipeById(id: ID!, secret: String): Recipe!
     "Search the recipe library."
     recipes(
         """

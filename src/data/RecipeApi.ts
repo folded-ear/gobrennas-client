@@ -2,9 +2,9 @@ import BaseAxios from "axios";
 import promiseFlux from "@/util/promiseFlux";
 import { API_BASE_URL } from "@/constants";
 import RecipeActions from "./RecipeActions";
-import { BfsId, ensureString, UserType } from "@/global/types/identity";
+import { BfsId, ensureString } from "@/global/types/identity";
 import { Maybe } from "graphql/jsutils/Maybe";
-import { Ingredient, ShareInfo } from "@/global/types/types";
+import { ShareInfo } from "@/global/types/types";
 import { client } from "@/providers/ApolloClient";
 import { GET_RECIPE_SHARE_INFO } from "@/data/queries";
 
@@ -39,18 +39,6 @@ const RecipeApi = {
                 },
             })
             .then(({ data }) => data.library.getRecipeById.share as ShareInfo),
-
-    promiseSharedRecipe: (
-        slug: ShareInfo["slug"],
-        secret: ShareInfo["secret"],
-        id: ShareInfo["id"],
-    ) =>
-        BaseAxios.get(
-            `${API_BASE_URL}/shared/recipe/${slug}/${secret}/${id}.json`,
-        ).then(
-            ({ data }) =>
-                [data.owner, data.ingredients] as [UserType, Ingredient[]],
-        ),
 };
 
 export default RecipeApi;
