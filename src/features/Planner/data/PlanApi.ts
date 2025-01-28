@@ -31,7 +31,11 @@ import {
 import { BfsId, BfsStringId, ensureString } from "@/global/types/identity";
 import { PlanBucket } from "./planStore";
 import serializeObjectOfPromiseFns from "@/util/serializeObjectOfPromiseFns";
-import { LOAD_DESCENDANTS, LOAD_PLANS } from "@/features/Planner/data/queries";
+import {
+    GET_PLAN_SHARE_INFO,
+    LOAD_DESCENDANTS,
+    LOAD_PLANS,
+} from "@/features/Planner/data/queries";
 import { willStatusDelete } from "@/features/Planner/data/PlanItemStatus";
 import { StatusChange } from "@/features/Planner/data/utils";
 import { formatLocalDate, parseLocalDate } from "@/util/time";
@@ -265,7 +269,14 @@ const PlanApi = {
         }),
 
     promiseShareInfo: (id: BfsId) =>
-        axios.get(`/${id}/share`).then(({ data }) => data as ShareInfo),
+        client
+            .query({
+                query: GET_PLAN_SHARE_INFO,
+                variables: {
+                    id: ensureString(id),
+                },
+            })
+            .then(({ data }) => data.planner.plan.share as ShareInfo),
 
     getDescendantsAsList: (id: BfsId) =>
         promiseFlux(
