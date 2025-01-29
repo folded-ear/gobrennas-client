@@ -182,7 +182,7 @@ type LibraryQuery {
         cursor: NonNegativeInt,
         "The raw string to recognize."
         raw: String!
-    ): RecognizedItem
+    ): RecognizedItem!
     suggestRecipesToCook(after: Cursor, first: NonNegativeInt! = 5): RecipeConnection!
 }
 

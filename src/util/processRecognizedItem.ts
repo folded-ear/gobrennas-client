@@ -1,26 +1,21 @@
 // This is "duplicated" as RawIngredientDissection.fromRecognizedItem
-import {
-    RecognitionRange,
-    RecognitionRangeType,
-    RecognitionResult,
-} from "@/data/ItemApi";
+import { RecognitionRange, RecognitionResult } from "@/data/ItemApi";
 import { Maybe } from "graphql/jsutils/Maybe";
+import { RecognizedRangeType } from "@/__generated__/graphql";
 
 function processRecognizedItem(recog: RecognitionResult) {
     const qr = recog.ranges.find(
-        (r) =>
-            r.type === RecognitionRangeType.QUANTITY ||
-            r.type === RecognitionRangeType.AMOUNT, // AMOUNT is deprecated
+        (r) => r.type === RecognizedRangeType.QUANTITY,
     );
     const ur = recog.ranges.find(
         (r) =>
-            r.type === RecognitionRangeType.UNIT ||
-            r.type === RecognitionRangeType.NEW_UNIT,
+            r.type === RecognizedRangeType.UNIT ||
+            r.type === RecognizedRangeType.NEW_UNIT,
     );
     const nr = recog.ranges.find(
         (r) =>
-            r.type === RecognitionRangeType.ITEM ||
-            r.type === RecognitionRangeType.NEW_ITEM,
+            r.type === RecognizedRangeType.ITEM ||
+            r.type === RecognizedRangeType.NEW_ITEM,
     );
     const textFromRange = (r: Maybe<RecognitionRange>): Maybe<string> =>
         r && recog.raw.substring(r.start, r.end);

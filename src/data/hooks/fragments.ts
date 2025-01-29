@@ -93,3 +93,11 @@ fragment planItemLoad on PlanItem {
   components { id }
   bucket { id }
 }`);
+
+export const RECOGNITION_RANGE_FRAGMENT = gql(`
+fragment recogRange on RecognizedRange {
+  start
+  end
+  type
+  id
+}`);

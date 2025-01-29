@@ -12,3 +12,23 @@ query getRecipeShareInfo($id: ID!) {
     }
   }
 }`);
+
+export const GET_RECOGNIZED_ITEM = gql(`
+query recognizeItem($raw: String!, $cursor: NonNegativeInt) {
+  library {
+    recognizeItem(raw: $raw, cursor: $cursor) {
+      raw
+      cursor
+      ranges {
+        ...recogRange
+        quantity
+      }
+      suggestions {
+        name
+        target {
+          ...recogRange
+        }
+      }
+    }
+  }
+}`);
