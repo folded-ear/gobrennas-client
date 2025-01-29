@@ -12,6 +12,8 @@ import DeleteButton from "@/views/common/DeleteButton";
 import NotFound from "@/views/common/NotFound";
 import { useDeleteRecipe } from "@/data/hooks/useDeleteRecipe";
 import { useHistory } from "react-router-dom";
+import { useProfileId } from "@/providers/Profile";
+import { bfsIdEq } from "@/global/types/identity";
 
 type Props = RouteComponentProps<{
     id: string;
@@ -23,6 +25,7 @@ const RecipeController: React.FC<Props> = ({ match }) => {
         error,
         data: fullRecipe,
     } = useGetFullRecipe(match.params.id);
+    const myId = useProfileId();
     const [deleteRecipe] = useDeleteRecipe();
     const history = useHistory();
 
@@ -33,6 +36,7 @@ const RecipeController: React.FC<Props> = ({ match }) => {
     if (error) {
         return <NotFound />;
     }
+    const mine = !!fullRecipe && bfsIdEq(fullRecipe.owner.id, myId);
 
     const handleDelete = () =>
         fullRecipe?.recipe &&
@@ -48,16 +52,14 @@ const RecipeController: React.FC<Props> = ({ match }) => {
                     recipe={fullRecipe.recipe}
                     subrecipes={fullRecipe.subrecipes}
                     planHistory={fullRecipe.planHistory}
-                    mine={fullRecipe.mine}
+                    mine={mine}
                     owner={fullRecipe.owner}
                     showFab
                     nav={
                         <>
                             <CopyButton
                                 title={
-                                    fullRecipe.mine
-                                        ? "Duplicate"
-                                        : "Copy to My Library"
+                                    mine ? "Duplicate" : "Copy to My Library"
                                 }
                                 onClick={() =>
                                     history.push(
@@ -66,7 +68,7 @@ const RecipeController: React.FC<Props> = ({ match }) => {
                                 }
                             />
                             <ShareRecipe recipe={fullRecipe.recipe} />
-                            {fullRecipe.mine && (
+                            {mine && (
                                 <EditButton
                                     onClick={() =>
                                         history.push(
@@ -75,7 +77,7 @@ const RecipeController: React.FC<Props> = ({ match }) => {
                                     }
                                 />
                             )}
-                            {fullRecipe.mine && (
+                            {mine && (
                                 <DeleteButton
                                     forType="recipe"
                                     onConfirm={handleDelete}

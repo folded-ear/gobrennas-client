@@ -1,48 +1,30 @@
 import React from "react";
-import { match, Redirect, useHistory } from "react-router-dom";
-import Dispatcher from "@/data/dispatcher";
+import { match, Redirect } from "react-router-dom";
 import LoadingIndicator from "@/views/common/LoadingIndicator";
 import RecipeDetail from "@/features/RecipeDisplay/components/RecipeDetail";
-import LibraryActions from "@/features/RecipeLibrary/data/LibraryActions";
-import { UserType } from "@/global/types/identity";
-import { Maybe } from "graphql/jsutils/Maybe";
-import { recipeRloById } from "@/features/RecipeDisplay/utils/recipeRloById";
-import RecipeApi from "@/data/RecipeApi";
 import { ShareInfo } from "@/global/types/types";
+import { useGetFullRecipe } from "@/data/hooks/useGetFullRecipe";
+import NotFound from "@/views/common/NotFound";
+import Login from "@/views/user/Login";
 
-const DoTheDance: React.FC<ShareInfo> = ({ slug, secret, id }) => {
-    const [owner, setOwner] = React.useState<Maybe<UserType>>(null);
-    const history = useHistory();
-    React.useEffect(() => {
-        RecipeApi.promiseSharedRecipe(slug, secret, id).then(
-            ([owner, ingredients]) => {
-                Dispatcher.dispatch({
-                    type: LibraryActions.INGREDIENTS_LOADED,
-                    ids: ingredients.map((i) => i.id),
-                    data: ingredients,
-                    oneOff: true,
-                });
-                setOwner(owner);
-            },
-            () => {
-                alert("This recipe no longer exists. Sorry.");
-                history.push("/");
-            },
-        );
-    }, [history, slug, secret, id]);
-    if (!owner) {
+const DoTheDance: React.FC<ShareInfo> = ({ secret, id }) => {
+    const { loading, error, data: fullRecipe } = useGetFullRecipe(id, secret);
+    if (loading) {
         return <LoadingIndicator />;
     }
-    const recipe = recipeRloById(id).data;
-    if (!recipe) {
-        return <LoadingIndicator />;
+    if (error || !fullRecipe) {
+        return (
+            <NotFound>
+                <Login authenticated={false} location={"/"} />
+            </NotFound>
+        );
     }
     return (
         <RecipeDetail
             anonymous
-            recipe={recipe}
-            subrecipes={recipe.subrecipes}
-            owner={owner}
+            recipe={fullRecipe.recipe}
+            subrecipes={fullRecipe.subrecipes}
+            owner={fullRecipe.owner}
         />
     );
 };
