@@ -30,7 +30,7 @@ export const recipeRloByPlanAndBucket = (
         buildSingleItemRecipeLO({
             data: {
                 id: bucket.id,
-                status: PlanItemStatus.Needed,
+                status: PlanItemStatus.NEEDED,
                 name: getBucketLabel(bucket),
                 componentIds: items.map((it) => it.id),
             },

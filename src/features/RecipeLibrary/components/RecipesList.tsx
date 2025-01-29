@@ -24,7 +24,7 @@ interface RecipesListProps {
 
 export const RecipesList = ({
     me,
-    scope = LibrarySearchScope.Mine,
+    scope = LibrarySearchScope.MINE,
     filter = "",
     recipes,
     isLoading,
@@ -44,7 +44,7 @@ export const RecipesList = ({
                     <RecipeGrid
                         recipes={recipes}
                         me={me}
-                        showOwner={scope === LibrarySearchScope.Everyone}
+                        showOwner={scope === LibrarySearchScope.EVERYONE}
                         cardType={"standard"}
                         spacing={4}
                     >

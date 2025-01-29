@@ -48,10 +48,10 @@ function gatherLeaves(item: Plan | PlanItem): PathedItemTuple[] {
                 ...item,
                 question: isQuestionable(item),
                 loading: rippedLO.loading,
-                deleting: item._next_status === PlanItemStatus.Deleted,
-                completing: item._next_status === PlanItemStatus.Completed,
-                acquiring: item._next_status === PlanItemStatus.Acquired,
-                needing: item._next_status === PlanItemStatus.Needed,
+                deleting: item._next_status === PlanItemStatus.DELETED,
+                completing: item._next_status === PlanItemStatus.COMPLETED,
+                acquiring: item._next_status === PlanItemStatus.ACQUIRED,
+                needing: item._next_status === PlanItemStatus.NEEDED,
             };
         })
         .flatMap(gatherLeaves)
@@ -80,7 +80,7 @@ function isZeroQuantity(it: PathedItemTuple) {
 function isOrWillBeAcquired(it: PathedItemTuple) {
     return (
         it.acquiring ||
-        (it.status === PlanItemStatus.Acquired && !it.needing) ||
+        (it.status === PlanItemStatus.ACQUIRED && !it.needing) ||
         isZeroQuantity(it)
     );
 }
@@ -170,7 +170,7 @@ function groupItems(
             loading: loading || items.some((it) => it.loading),
             acquiring: allAcquiring,
             deleting: items.every(
-                (it) => it.deleting || it.status === PlanItemStatus.Deleted,
+                (it) => it.deleting || it.status === PlanItemStatus.DELETED,
             ),
             depth: 0,
             path: [],

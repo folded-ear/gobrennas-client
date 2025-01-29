@@ -43,11 +43,11 @@ interface ElEditState {
     recog?: RecognitionResult;
     suggestions?: Suggestion[];
     quantity?: Maybe<string>;
-    quantityValue?: number;
+    quantityValue?: Maybe<number>;
     unit?: Maybe<string>;
-    unitValue?: BfsId;
+    unitValue?: Maybe<BfsId>;
     ingredientName?: Maybe<string>;
-    nameValue?: BfsId;
+    nameValue?: Maybe<BfsId>;
     preparation?: string;
 }
 
@@ -97,68 +97,66 @@ class ElEdit extends React.PureComponent<ElEditProps, ElEditState> {
         const { name, value, onChange } = this.props;
         if (!doRecog(value.raw)) return;
         const cursor = this.getCursorPosition();
-        ItemApi.recognizeItem(value.raw!, cursor).then(
-            (recog: RecognitionResult) => {
-                if (!this._mounted) return;
-                if (recog.raw !== this.props.value.raw) return;
-                // if (recog.cursor !== this.getCursorPosition()) return;
-                const {
-                    raw,
-                    quantity: qv,
-                    quantity_raw: q,
-                    uomId: uv,
-                    units,
-                    units_raw: u,
-                    ingredientId: nv,
-                    ingredient,
-                    ingredient_raw: n,
-                    preparation: p,
-                } = processRecognizedItem(recog);
-                onChange({
-                    target: {
-                        name,
-                        value: {
-                            id: value.id,
-                            raw,
-                            quantity: qv,
-                            uomId: uv,
-                            units,
-                            ingredientId: nv,
-                            ingredient,
-                            preparation: p,
-                        },
+        ItemApi.promiseRecognizedItem(value.raw!, cursor).then((recog) => {
+            if (!this._mounted) return;
+            if (recog.raw !== this.props.value.raw) return;
+            // if (recog.cursor !== this.getCursorPosition()) return;
+            const {
+                raw,
+                quantity: qv,
+                quantity_raw: q,
+                uomId: uv,
+                units,
+                units_raw: u,
+                ingredientId: nv,
+                ingredient,
+                ingredient_raw: n,
+                preparation: p,
+            } = processRecognizedItem(recog);
+            onChange({
+                target: {
+                    name,
+                    value: {
+                        id: value.id,
+                        raw,
+                        quantity: qv,
+                        uomId: uv,
+                        units,
+                        ingredientId: nv,
+                        ingredient,
+                        preparation: p,
                     },
-                });
-                const suggestions: Suggestion[] = recog.suggestions
-                    .map((s) => {
-                        const prefix = recog.raw.substring(0, s.target.start);
-                        const suffix = recog.raw.substring(s.target.end);
-                        const quote =
-                            s.name.indexOf(" ") >= 0 ||
-                            recog.raw.charAt(s.target.start) === '"' ||
-                            recog.raw.charAt(s.target.end - 1) === '"';
-                        const value = quote ? `"${s.name}"` : s.name;
-                        return {
-                            prefix,
-                            value,
-                            suffix,
-                            result: prefix + value + suffix,
-                        };
-                    })
-                    .filter((s) => s.result !== recog.raw);
-                this.setState({
-                    recog,
-                    quantity: q,
-                    quantityValue: qv,
-                    unit: u,
-                    unitValue: uv,
-                    ingredientName: n,
-                    nameValue: nv,
-                    preparation: p,
-                    suggestions,
-                });
-            },
-        );
+                },
+            });
+            const suggestions: Suggestion[] = recog.suggestions
+                .map((s) => {
+                    const prefix = recog.raw.substring(0, s.target.start);
+                    const suffix = recog.raw.substring(s.target.end);
+                    const quote =
+                        s.name.indexOf(" ") >= 0 ||
+                        recog.raw.charAt(s.target.start) === '"' ||
+                        recog.raw.charAt(s.target.end - 1) === '"';
+                    const value = quote ? `"${s.name}"` : s.name;
+                    return {
+                        prefix,
+                        value,
+                        suffix,
+                        result: prefix + value + suffix,
+                    };
+                })
+                .filter((s) => s.result !== recog.raw);
+            this.setState({
+                recog,
+                quantity: q,
+                quantityValue: qv,
+                unit: u,
+                unitValue: uv,
+                ingredientName: n,
+                nameValue: nv,
+                preparation: p,
+                suggestions,
+            });
+        });
     }
 
     handleChange(e, val) {

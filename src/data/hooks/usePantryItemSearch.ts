@@ -70,7 +70,7 @@ export const usePantryItemSearch = ({
     page = 0,
     pageSize = 25,
     sortBy = "name",
-    sortDir = SortDir.Asc,
+    sortDir = SortDir.ASC,
 }: Variables) => {
     // DataGrid uses a numeric page model, while the GraphQL API uses cursors,
     // in the style of Relay. However! For the moment those cursors are merely

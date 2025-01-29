@@ -31,9 +31,9 @@ export const LibraryController = () => {
     const [query, setQuery] = useState(params.q ?? "");
     const [unsavedQuery, setUnsavedQuery] = useState(query);
     const [scope, setScope] = useState(
-        params.s === LibrarySearchScope.Everyone
-            ? LibrarySearchScope.Everyone
-            : LibrarySearchScope.Mine,
+        params.s === LibrarySearchScope.EVERYONE
+            ? LibrarySearchScope.EVERYONE
+            : LibrarySearchScope.MINE,
     );
 
     const isSearchFloating = useScrollTrigger({
@@ -72,8 +72,8 @@ export const LibraryController = () => {
 
     function toggleScope(e) {
         const scope = e.target.checked
-            ? LibrarySearchScope.Everyone
-            : LibrarySearchScope.Mine;
+            ? LibrarySearchScope.EVERYONE
+            : LibrarySearchScope.MINE;
         handleSearch(query, scope);
     }
 

@@ -1,34 +1,18 @@
-import BaseAxios from "axios";
-import { API_BASE_URL } from "@/constants";
 import serializeObjectOfPromiseFns from "@/util/serializeObjectOfPromiseFns";
+import { client } from "@/providers/ApolloClient";
+import { GET_RECOGNIZED_ITEM } from "@/data/queries";
 import { BfsStringId } from "@/global/types/identity";
-
-const axios = BaseAxios.create({
-    baseURL: `${API_BASE_URL}/api`,
-});
-
-export enum RecognitionRangeType {
-    // noinspection JSUnusedGlobalSymbols
-    UNKNOWN = "UNKNOWN",
-    QUANTITY = "QUANTITY",
-    // @deprecated - prefer QUANTITY
-    AMOUNT = "AMOUNT",
-    UNIT = "UNIT",
-    NEW_UNIT = "NEW_UNIT",
-    ITEM = "ITEM",
-    NEW_ITEM = "NEW_ITEM",
-}
+import { RecognizedRangeType } from "@/__generated__/graphql";
+import { Maybe } from "graphql/jsutils/Maybe";
 
 export interface RecognitionRange {
     start: number;
     end: number;
-    type: RecognitionRangeType;
+    type: RecognizedRangeType;
     // for QUANTITY ranges, the numeric quantity
-    quantity: number;
+    quantity?: Maybe<number>;
     // for UNIT and ITEM ranges, the object's ID
-    id: BfsStringId;
-    // @deprecated - prefer quantity or id, based on type
-    value: number;
+    id?: Maybe<BfsStringId>;
 }
 
 interface RecognitionSuggestion {
@@ -44,16 +28,18 @@ export interface RecognitionResult {
 }
 
 const ItemApi = {
-    recognizeItem(
+    promiseRecognizedItem(
         raw: string,
-        cursor = raw.length,
+        cursor: number = raw.length,
     ): Promise<RecognitionResult> {
-        return axios
-            .post(`/item/recognize`, {
-                raw,
-                cursor,
+        return client
+            .query({
+                query: GET_RECOGNIZED_ITEM,
+                variables: { raw, cursor },
+                // always hit the server, and don't cache the results
+                fetchPolicy: "no-cache",
             })
-            .then((r) => r.data);
+            .then(({ data }) => data!.library.recognizeItem);
     },
 };
 

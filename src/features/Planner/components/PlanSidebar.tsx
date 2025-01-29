@@ -77,8 +77,8 @@ function UserContent({
                     >
                         <MenuItem value={LEVEL_NO_ACCESS}>No Access</MenuItem>
                         {/*VIEW too!*/}
-                        <MenuItem value={AccessLevel.Change}>Modify</MenuItem>
-                        <MenuItem value={AccessLevel.Administer}>
+                        <MenuItem value={AccessLevel.CHANGE}>Modify</MenuItem>
+                        <MenuItem value={AccessLevel.ADMINISTER}>
                             Administer
                         </MenuItem>
                     </Select>
@@ -158,7 +158,7 @@ const PlanSidebar: React.FC<Props> = ({ open, onClose, plan }) => {
         ? me
         : friendList?.find((it) => bfsIdEq(it.id, acl.ownerId));
     const isAdministrator =
-        isMine || includesLevel(grants[me.id], AccessLevel.Administer);
+        isMine || includesLevel(grants[me.id], AccessLevel.ADMINISTER);
 
     return (
         <Drawer open={open} anchor="right" onClose={onClose}>

@@ -22,6 +22,9 @@ const config: CodegenConfig = {
                     PositiveInt: "number",
                     Upload: "File",
                 },
+                namingConvention: {
+                    enumValues: "keep",
+                },
                 avoidOptionals: true,
                 dedupeFragments: true,
                 immutableTypes: true,
