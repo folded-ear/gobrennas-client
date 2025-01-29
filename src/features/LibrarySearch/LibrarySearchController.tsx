@@ -44,7 +44,7 @@ export const LibrarySearchController: React.FC<
         [history],
     );
 
-    const markAsMine = scope === LibrarySearchScope.Everyone;
+    const markAsMine = scope === LibrarySearchScope.EVERYONE;
 
     // if there are already recipes from cache, don't show the spinner
     const showLoading = loading && (!recipes || recipes.length === 0);

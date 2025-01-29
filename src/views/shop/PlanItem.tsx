@@ -126,9 +126,9 @@ class PlanItem extends React.PureComponent<PlanItemProps> {
                     id={item.id}
                     current={curr}
                     next={
-                        curr === PlanItemStatus.Acquired
-                            ? PlanItemStatus.Needed
-                            : PlanItemStatus.Acquired
+                        curr === PlanItemStatus.ACQUIRED
+                            ? PlanItemStatus.NEEDED
+                            : PlanItemStatus.ACQUIRED
                     }
                 />,
             );

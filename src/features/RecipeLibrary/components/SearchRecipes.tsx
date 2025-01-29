@@ -43,7 +43,7 @@ export const SearchRecipes = ({
                     value={unsavedFilter}
                     onChange={onSearchChange}
                     placeholder={
-                        scope === LibrarySearchScope.Everyone
+                        scope === LibrarySearchScope.EVERYONE
                             ? "Search Everyone's Recipes"
                             : "Search My Recipes"
                     }
@@ -83,7 +83,7 @@ export const SearchRecipes = ({
                 <FormControlLabel
                     control={
                         <Switch
-                            checked={scope === LibrarySearchScope.Everyone}
+                            checked={scope === LibrarySearchScope.EVERYONE}
                             name="scope"
                             onChange={toggleScope}
                             color="primary"

@@ -65,7 +65,7 @@ export default function PantryItemAdmin() {
         setQueryOptions((opts) => ({
             ...opts,
             sortBy: sortModel[0]?.field,
-            sortDir: sortModel[0]?.sort === "desc" ? SortDir.Desc : SortDir.Asc,
+            sortDir: sortModel[0]?.sort === "desc" ? SortDir.DESC : SortDir.ASC,
         }));
     }, [sortModel]);
 

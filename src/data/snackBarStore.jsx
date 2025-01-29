@@ -51,7 +51,7 @@ const forPlanItemStatusChanges = (state, ids, status) => {
                         });
                     }}
                 >
-                    {status === PlanItemStatus.Completed
+                    {status === PlanItemStatus.COMPLETED
                         ? "I Cooked"
                         : "Delete"}{" "}
                     {comps.length === 1 ? "It" : "Them"}

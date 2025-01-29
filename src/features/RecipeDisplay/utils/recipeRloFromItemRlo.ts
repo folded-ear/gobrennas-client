@@ -47,8 +47,8 @@ export const recipeRloFromItemRlo = (
         ancestorCompleting = false,
         ancestorDeleting = false,
     ): RecipeFromPlanItem => {
-        const completing = planItem._next_status === PlanItemStatus.Completed;
-        const deleting = planItem._next_status === PlanItemStatus.Deleted;
+        const completing = planItem._next_status === PlanItemStatus.COMPLETED;
+        const deleting = planItem._next_status === PlanItemStatus.DELETED;
         const recipe: RecipeFromPlanItem = {
             ...planItem,
             type: "Recipe",

@@ -162,7 +162,7 @@ export default function RecipeHistoryGrid({ recipeId, history }: Props) {
                         return (
                             <TableRow key={h.id}>
                                 <TableCell>
-                                    {PlanItemStatus.Completed === h.status ? (
+                                    {PlanItemStatus.COMPLETED === h.status ? (
                                         <CookedItIcon />
                                     ) : (
                                         <DeleteIcon />

@@ -312,7 +312,7 @@ class PlanStore extends FluxReduceStore<State, FluxAction> {
 
             case PlanActions.COMPLETE_PLAN_ITEM: {
                 return doInteractiveStatusChange(state, action.id, {
-                    status: PlanItemStatus.Completed,
+                    status: PlanItemStatus.COMPLETED,
                     doneAt: action.doneAt,
                 });
             }

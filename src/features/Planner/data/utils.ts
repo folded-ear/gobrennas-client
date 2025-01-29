@@ -40,7 +40,7 @@ export interface StatusChange {
 const _newTask = (name) => ({
     id: ClientId.next(),
     name,
-    status: PlanItemStatus.Needed,
+    status: PlanItemStatus.NEEDED,
 });
 
 export const createList = (
@@ -507,7 +507,7 @@ export const flushStatusUpdates = (state: State) => {
 
 export const queueDelete = (state: State, id) => {
     if (!isKnown(state, id)) return state; // already gone...
-    return queueStatusUpdate(state, id, { status: PlanItemStatus.Deleted });
+    return queueStatusUpdate(state, id, { status: PlanItemStatus.DELETED });
 };
 
 function isEmpty(taskOrString) {

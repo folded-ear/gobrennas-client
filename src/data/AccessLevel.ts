@@ -3,7 +3,7 @@ import { Maybe } from "graphql/jsutils/Maybe";
 import { AccessLevel } from "@/__generated__/graphql";
 
 // ORDER MATTERS! Later levels imply earlier ones.
-const levels = [AccessLevel.View, AccessLevel.Change, AccessLevel.Administer];
+const levels = [AccessLevel.VIEW, AccessLevel.CHANGE, AccessLevel.ADMINISTER];
 
 export function includesLevel(
     levelGranted: Maybe<AccessLevel>,
