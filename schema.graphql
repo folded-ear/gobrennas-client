@@ -127,6 +127,12 @@ type LibraryMutation {
     history(recipeId: ID!): RecipeHistoryMutation
     """
 
+    I add the specified recipe to the specified plan, and return the new
+    PlanItem corresponding to the recipe itself.
+    """
+    sendRecipeToPlan(id: ID!, planId: ID!, scale: Float = 1.0): PlanItem!
+    """
+
     Set the photo for a recipe in your library, without changing any other
     info about the recipe. A photo may be set during create and/or update.
     """
@@ -362,7 +368,7 @@ type PlanItem implements CorePlanItem & Node {
     name: String!
     notes: String
     "This item's parent; follow enough and you'll always get to the plan."
-    parent: CorePlanItem
+    parent: CorePlanItem!
     plan: Plan!
     preparation: String
     quantity: Quantity
