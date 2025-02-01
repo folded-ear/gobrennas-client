@@ -262,21 +262,28 @@ type PantryItemConnectionEdge {
 }
 
 type PantryMutation {
-    addLabel(id: ID!, label: String!): PantryItem
-    addSynonym(id: ID!, synonym: String!): PantryItem
+    addLabel(id: ID!, label: String!): PantryItem!
+    addSynonym(id: ID!, synonym: String!): PantryItem!
     """
 
     Combine two or more pantry items, and return the result, after unifying
     synonyms, labels, and references.
     """
-    combineItems(ids: [ID!]!): PantryItem
+    combineItems(ids: [ID!]!): PantryItem!
     "Delete a pantry item, which MUST be unreferenced."
     deleteItem(id: ID!): Deletion!
-    removeLabel(id: ID!, label: String!): PantryItem
-    removeSynonym(id: ID!, synonym: String!): PantryItem
-    renameItem(id: ID!, name: String!): PantryItem
-    setLabels(id: ID!, labels: [String!]!): PantryItem
-    setSynonyms(id: ID!, synonyms: [String!]!): PantryItem
+    """
+
+    Orders one PantryItem relative to another, and returns it. Note that
+    there will almost certainly be other PantryItems affected by the operation.
+    A follow-on 'updatedSince' query can get the whole shebang, if you care.
+    """
+    orderForStore(after: Boolean = true, id: ID!, targetId: ID!): PantryItem!
+    removeLabel(id: ID!, label: String!): PantryItem!
+    removeSynonym(id: ID!, synonym: String!): PantryItem!
+    renameItem(id: ID!, name: String!): PantryItem!
+    setLabels(id: ID!, labels: [String!]!): PantryItem!
+    setSynonyms(id: ID!, synonyms: [String!]!): PantryItem!
 }
 
 type PantryQuery {
