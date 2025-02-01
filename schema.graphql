@@ -431,7 +431,7 @@ type PlannerMutation {
     Move the given items under the given parent, in order, optionally after a
     specific item already under that parent. The parent's info is returned.
     """
-    mutateTree(afterId: ID, itemIds: [ID!]!, parentId: ID!): PlanItem!
+    mutateTree(spec: MutatePlanTree!): PlanItem!
     "Update the name of the given plan or plan item (but not bucket)."
     rename(id: ID!, name: String!): CorePlanItem!
     """
@@ -705,6 +705,12 @@ input IngredientRefInfo {
     raw: String!
     units: String
     uomId: Long
+}
+
+input MutatePlanTree {
+    afterId: ID
+    ids: [ID!]!
+    parentId: ID!
 }
 
 input UnsavedBucket {
