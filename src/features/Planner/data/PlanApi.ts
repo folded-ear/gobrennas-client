@@ -1,5 +1,3 @@
-import BaseAxios from "axios";
-import { API_BASE_URL } from "@/constants";
 import promiseFlux, {
     defaultErrorHandler,
     soakUpUnauthorized,
@@ -14,7 +12,9 @@ import {
     DELETE_BUCKET,
     DELETE_PLAN,
     DELETE_PLAN_ITEM,
+    MUTATE_PLAN_TREE,
     RENAME_PLAN_OR_ITEM,
+    REORDER_PLAN_ITEMS,
     REVOKE_PLAN_GRANT,
     SET_PLAN_COLOR,
     SET_PLAN_GRANT,
@@ -37,17 +37,13 @@ import {
     LOAD_PLANS,
 } from "@/features/Planner/data/queries";
 import { willStatusDelete } from "@/features/Planner/data/PlanItemStatus";
-import { StatusChange } from "@/features/Planner/data/utils";
+import { StatusChange, TreeMutationSpec } from "@/features/Planner/data/utils";
 import { formatLocalDate, parseLocalDate } from "@/util/time";
 import { Maybe } from "graphql/jsutils/Maybe";
 import dispatcher from "@/data/dispatcher";
 import { GET_PLANS } from "@/data/hooks/useGetAllPlans";
 import AccessLevel from "@/data/AccessLevel";
 import { ShareInfo } from "@/global/types/types";
-
-const axios = BaseAxios.create({
-    baseURL: `${API_BASE_URL}/api/plan`,
-});
 
 interface WireBucket extends Omit<PlanBucket, "date"> {
     date: Maybe<string>;
@@ -58,13 +54,16 @@ function deserializeBucket(b: WireBucket): PlanBucket {
 }
 
 const PlanApi = {
-    createPlan: (name, clientId, sourcePlanId) =>
+    createPlan: (name: string, clientId: BfsId, sourcePlanId?: BfsId) =>
         promiseFlux(
             client.mutate({
                 mutation: CREATE_PLAN,
                 variables: {
                     name,
-                    sourcePlanId,
+                    sourcePlanId:
+                        sourcePlanId == null
+                            ? null
+                            : ensureString(sourcePlanId),
                 },
                 refetchQueries: [GET_PLANS],
             }),
@@ -250,8 +249,20 @@ const PlanApi = {
         );
     },
 
-    mutateTree: (planId: BfsId, body) =>
-        axios.post(`/${planId}/mutate-tree`, body),
+    mutateTree: (spec: TreeMutationSpec) =>
+        client.mutate({
+            mutation: MUTATE_PLAN_TREE,
+            variables: {
+                spec: {
+                    ids: spec.ids.map(ensureString),
+                    parentId: ensureString(spec.parentId),
+                    afterId:
+                        spec.afterId == null
+                            ? null
+                            : ensureString(spec.afterId),
+                },
+            },
+        }),
 
     assignBucket: (id: BfsId, bucketId: BfsId | null) =>
         client.mutate({
@@ -263,9 +274,12 @@ const PlanApi = {
         }),
 
     reorderSubitems: (id: BfsId, subitemIds: BfsId[]) =>
-        axios.post(`/${id}/reorder-subitems`, {
-            id,
-            subitemIds,
+        client.mutate({
+            mutation: REORDER_PLAN_ITEMS,
+            variables: {
+                parentId: ensureString(id),
+                itemIds: subitemIds.map(ensureString),
+            },
         }),
 
     promiseShareInfo: (id: BfsId) =>

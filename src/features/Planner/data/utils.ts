@@ -709,7 +709,7 @@ export const moveSubtree = (state: State, action) => {
     });
 };
 
-interface TreeMutationSpec {
+export interface TreeMutationSpec {
     ids: BfsId[];
     parentId: BfsId;
     afterId: Maybe<BfsId>;
@@ -730,7 +730,7 @@ const mutateTree = (state: State, spec: TreeMutationSpec): State => {
     }
     // ensure we're not positioning something based on itself
     if (includesBfsId(spec.ids, spec.afterId)) return state;
-    PlanApi.mutateTree(state.activeListId!, spec);
+    PlanApi.mutateTree(spec);
     // do it now so the UI updates; the future delta will be a race-y no-op
     return treeMutated(state, spec);
 };

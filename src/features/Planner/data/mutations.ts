@@ -146,3 +146,31 @@ mutation assignBucket($id: ID!, $bucketId: ID) {
     }
   }
 }`);
+
+export const MUTATE_PLAN_TREE = gql(`
+mutation mutatePlanTree($spec: MutatePlanTree!) {
+  planner {
+    mutateTree(spec: $spec) {
+      id
+      name
+      children {
+        id
+        name
+      }
+    }
+  }
+}`);
+
+export const REORDER_PLAN_ITEMS = gql(`
+mutation reorderPlanItems($parentId: ID!, $itemIds: [ID!]!) {
+  planner {
+    reorderSubitems(parentId: $parentId, itemIds: $itemIds) {
+      id
+      name
+      children {
+        id
+        name
+      }
+    }
+  }
+}`);
