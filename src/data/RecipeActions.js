@@ -9,12 +9,12 @@ const sendToPlanShape = {
 };
 
 const RecipeActions = {
-    SEND_TO_PLAN: typedAction("recipe/send-to-plan", {
+    SEND_TO_PLAN: typedAction("recipe/send-to-plan", sendToPlanShape),
+    SENT_TO_PLAN: typedAction("recipe/sent-to-plan", {
         ...sendToPlanShape,
-        recipeId: PropTypes.oneOfType([PropTypes.number, PropTypes.string])
-            .isRequired,
+        // all the new PlanItems, just like PLAN_DELTAS
+        data: PropTypes.array.isRequired,
     }),
-    SENT_TO_PLAN: typedAction("recipe/sent-to-plan", sendToPlanShape),
     ERROR_SENDING_TO_PLAN: typedAction(
         "recipe/error-sending-to-plan",
         sendToPlanShape,
