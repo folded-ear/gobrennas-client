@@ -1,6 +1,8 @@
 import BaseAxios from "axios";
 import { API_BASE_URL } from "@/constants";
-import { BfsId } from "@/global/types/identity";
+import { BfsId, ensureString } from "@/global/types/identity";
+import { client } from "@/providers/ApolloClient";
+import { LIST_TEXTRACT_JOBS, LOAD_TEXTRACT_JOB } from "@/data/queries";
 
 const axios = BaseAxios.create({
     baseURL: `${API_BASE_URL}/api/textract`,
@@ -26,31 +28,34 @@ export interface Line {
 export interface BoundingBox {
     top: number;
     left: number;
-    width?: number;
-    height?: number;
+    width: number;
+    height: number;
 }
 
 const TextractApi = {
-    promiseJobList: () =>
-        axios.get(`/`).then((d): PendingJob[] =>
-            d.data.map(
-                (job) =>
-                    ({
-                        id: job.id,
-                        url: job.photo.url,
-                        name: job.photo.filename,
-                        ready: job.ready,
-                    }) as PendingJob,
-            ),
+    promiseJobList: (): Promise<PendingJob[]> =>
+        client.query({ query: LIST_TEXTRACT_JOBS }).then(
+            ({ data }) =>
+                data?.textract.listJobs.map((job) => ({
+                    id: job.id,
+                    url: job.photo.url,
+                    name: job.photo.filename,
+                    ready: job.ready,
+                })),
         ),
-    promiseJob: (id: BfsId) =>
-        axios.get(`/${id}`).then(
-            (data) =>
-                ({
-                    image: data.data.photo.url,
-                    textract: data.data.lines || [],
-                }) as Job,
-        ),
+    promiseJob: (id: BfsId): Promise<Job> =>
+        client
+            .query({
+                query: LOAD_TEXTRACT_JOB,
+                variables: { id: ensureString(id) },
+            })
+            .then(({ data }) => {
+                const job = data!.textract.jobById;
+                return {
+                    image: job.photo.url,
+                    textract: job.lines ?? [],
+                };
+            }),
     promiseNewJob: (photo) => {
         const payload = new FormData();
         payload.append("photo", photo);

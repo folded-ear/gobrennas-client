@@ -32,3 +32,37 @@ query recognizeItem($raw: String!, $cursor: NonNegativeInt) {
     }
   }
 }`);
+
+export const LIST_TEXTRACT_JOBS = gql(`
+query listTextractJobs {
+  textract {
+    listJobs {
+      id
+      photo {
+        url
+        filename
+      }
+      ready
+    }
+  }
+}`);
+
+export const LOAD_TEXTRACT_JOB = gql(`
+query loadTextractJob($id: ID!) {
+  textract {
+    jobById(id: $id) {
+      photo {
+        url
+      }
+      lines {
+        text
+        box {
+          top
+          left
+          width
+          height
+        }
+      }
+    }
+  }
+}`);

@@ -179,13 +179,14 @@ const TextractEditor: React.FC<Props> = ({
             y2: y,
         };
         setDrawnRect(b);
-        const sel: BoundingBox = {
-            top: Math.min(b.y1, b.y2) / scaledHeight,
-            left: Math.min(b.x1, b.x2) / scaledWidth,
-        };
-        sel.height = Math.max(b.y1, b.y2) / scaledHeight - sel.top;
-        sel.width = Math.max(b.x1, b.x2) / scaledWidth - sel.left;
-        setSelectedRegion(sel);
+        const top = Math.min(b.y1, b.y2) / scaledHeight;
+        const left = Math.min(b.x1, b.x2) / scaledWidth;
+        setSelectedRegion({
+            top,
+            left,
+            height: Math.max(b.y1, b.y2) / scaledHeight - top,
+            width: Math.max(b.x1, b.x2) / scaledWidth - left,
+        });
     };
     const endBoxDraw = (e) => {
         if (!drawnRect) throw new TypeError("Can't end a null box");
@@ -200,9 +201,9 @@ const TextractEditor: React.FC<Props> = ({
         }
         setDrawnRect(null);
     };
-    const rect = (box) => (
+    const rect = (box: BoundingBox, key?: React.Key) => (
         <rect
-            key={box.top}
+            key={key}
             x={box.left * width}
             y={box.top * height}
             width={box.width * width}
@@ -270,13 +271,13 @@ const TextractEditor: React.FC<Props> = ({
                         >
                             <g stroke="#ff0000">
                                 <g fill="none">
-                                    {partitionedLines[0].map((t) =>
-                                        rect(t.box),
+                                    {partitionedLines[0].map((t, i) =>
+                                        rect(t.box, i),
                                     )}
                                 </g>
                                 <g fill="#99ffff" fillOpacity={0.4}>
-                                    {partitionedLines[1].map((t) =>
-                                        rect(t.box),
+                                    {partitionedLines[1].map((t, i) =>
+                                        rect(t.box, i),
                                     )}
                                 </g>
                             </g>
