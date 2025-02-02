@@ -1,5 +1,4 @@
 import throwAnyGraphQLErrors from "@/util/throwAnyGraphQLErrors";
-import { BfsId, ensureString } from "@/global/types/identity";
 import type {
     CorePlanItemLoadFragment,
     PlanItemLoadFragment,
@@ -20,14 +19,9 @@ export const handleErrors = (error) => {
     };
 };
 
-const ensureIdIsString = (id: BfsId | undefined) => {
-    if (id == null) return undefined;
-    return ensureString(id);
-};
-
-const pluckStringIds = (collection: { id: BfsId }[]) => {
+const pluckIds = (collection: { id: string }[]) => {
     if (collection == null) return undefined;
-    return collection.map((c) => ensureString(c.id));
+    return collection.map((c) => c.id);
 };
 
 export const toRestPlanOrItem = (it) => {
@@ -43,39 +37,39 @@ export const toRestPlanOrItem = (it) => {
 export const toRestPlanItem = (
     planItem: CorePlanItemLoadFragment & PlanItemLoadFragment,
 ): TPlanItem => ({
-    id: ensureString(planItem.id),
+    id: planItem.id,
     name: planItem.name,
     notes: planItem.notes,
     status: planItem.status,
-    parentId: ensureString(planItem.parent!.id),
-    aggregateId: ensureIdIsString(planItem.aggregate?.id),
-    subtaskIds: pluckStringIds(planItem.children),
-    componentIds: pluckStringIds(planItem.components),
+    parentId: planItem.parent!.id,
+    aggregateId: planItem.aggregate?.id,
+    subtaskIds: pluckIds(planItem.children),
+    componentIds: pluckIds(planItem.components),
     quantity: planItem.quantity?.quantity,
     units: planItem.quantity?.units?.name || undefined,
-    uomId: ensureIdIsString(planItem.quantity?.units?.id),
-    ingredientId: ensureIdIsString(planItem.ingredient?.id),
-    bucketId: ensureIdIsString(planItem.bucket?.id),
+    uomId: planItem.quantity?.units?.id,
+    ingredientId: planItem.ingredient?.id,
+    bucketId: planItem.bucket?.id,
     preparation: planItem.preparation,
 });
 
 export const toRestPlan = (
     plan: CorePlanItemLoadFragment & PlanLoadFragment,
 ): TPlan => ({
-    id: ensureString(plan.id),
+    id: plan.id,
     name: plan.name,
     color: plan.color,
     acl: {
-        ownerId: ensureString(plan.owner.id),
+        ownerId: plan.owner.id,
         grants: plan.grants.reduce((agg, g) => {
             agg[g.user.id] = g.level;
             return agg;
         }, {}),
     },
-    subtaskIds: pluckStringIds(plan.children),
+    subtaskIds: pluckIds(plan.children),
     buckets: plan.buckets.map((b) => {
         const result: TPlanBucket = {
-            id: ensureString(b.id),
+            id: b.id,
             date: parseLocalDate(b.date),
         };
         if (b.name) result.name = b.name;

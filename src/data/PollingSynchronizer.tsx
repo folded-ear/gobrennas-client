@@ -23,10 +23,8 @@ import { toRestPlanOrItem } from "@/features/Planner/data/conversion_helpers";
 
 const PANTRY_ITEM_TEMPLATE = `
 updatedSince(cutoff: $cutoff) {
-  id
-  type: __typename
-  name
-  storeOrder
+  ...ingredientLoad
+  ...pantryItemLoad
 }`;
 
 const PLAN_PREFIX = `updatedSince(planId: `;

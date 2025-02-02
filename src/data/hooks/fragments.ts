@@ -101,3 +101,47 @@ fragment recogRange on RecognizedRange {
   type
   id
 }`);
+
+export const INGREDIENT_LOAD_FRAGMENT = gql(`
+fragment ingredientLoad on Ingredient {
+  id
+  type: __typename
+  name
+}`);
+
+export const PANTRY_ITEM_LOAD_FRAGMENT = gql(`
+fragment pantryItemLoad on PantryItem {
+  storeOrder
+}`);
+
+export const RECIPE_LOAD_FRAGMENT = gql(`
+fragment recipeLoad on Recipe {
+  externalUrl
+  directions
+  ingredients {
+    raw
+    quantity {
+      quantity
+      units {
+        id
+        name
+      }
+    }
+    ingredient {
+      id
+      name
+    }
+    preparation
+  }
+  labels
+  owner {
+    id
+  }
+  yield
+  calories
+  totalTime
+  photo {
+    url
+    focus
+  }
+}`);

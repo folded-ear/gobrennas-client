@@ -13,3 +13,14 @@ query getSearchLibrary(
     }
   }
 }`);
+
+export const BULK_INGREDIENTS = gql(`
+query bulkIngredients($ids: [ID!]!){
+  library {
+    bulkIngredients(ids: $ids) {
+      ...ingredientLoad
+      ...pantryItemLoad
+      ...recipeLoad
+    }
+  }
+}`);

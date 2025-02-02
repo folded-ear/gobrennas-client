@@ -1,21 +1,27 @@
-import BaseAxios from "axios";
-import { API_BASE_URL } from "@/constants";
 import LibraryActions from "@/features/RecipeLibrary/data/LibraryActions";
 import promiseFlux from "@/util/promiseFlux";
 import { client } from "@/providers/ApolloClient";
 import { ORDER_FOR_STORE } from "@/features/RecipeLibrary/data/mutations";
 import { BfsId, ensureString } from "@/global/types/identity";
-
-const recipeAxios = BaseAxios.create({
-    baseURL: `${API_BASE_URL}/api/recipe`,
-});
+import { BULK_INGREDIENTS } from "@/features/RecipeLibrary/data/queries";
+import { toRestIngredient } from "@/features/RecipeLibrary/data/conversion_helpers";
 
 const LibraryApi = {
     getIngredientInBulk: (ids) =>
-        promiseFlux(recipeAxios.get(`/bulk-ingredients/${ids}`), (data) => ({
-            type: LibraryActions.INGREDIENTS_LOADED,
-            data: data.data,
-        })),
+        promiseFlux(
+            client.query({
+                query: BULK_INGREDIENTS,
+                variables: {
+                    ids,
+                },
+            }),
+            ({ data }) => {
+                return {
+                    type: LibraryActions.INGREDIENTS_LOADED,
+                    data: data.library.bulkIngredients.map(toRestIngredient),
+                };
+            },
+        ),
 
     orderForStore: (id: BfsId, targetId: BfsId, after?: boolean) =>
         client.mutate({

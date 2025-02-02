@@ -143,7 +143,7 @@ LibraryStore.stateTypes = {
                     raw: PropTypes.string.isRequired,
                     quantity: PropTypes.number,
                     units: PropTypes.string,
-                    uomId: PropTypes.number,
+                    uomId: bfsIdType,
                     ingredient: PropTypes.string,
                     ingredientId: bfsIdType,
                     preparation: PropTypes.string,

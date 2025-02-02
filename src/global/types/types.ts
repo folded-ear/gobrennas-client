@@ -11,12 +11,16 @@ export interface Ingredient {
     type?: IngredientType;
 }
 
+export interface PantryItem extends Ingredient {
+    storeOrder?: Maybe<number>;
+}
+
 export interface Recipe extends Ingredient {
     calories?: Maybe<number>;
     directions?: Maybe<string>;
     externalUrl?: Maybe<string>;
     ingredients: IngredientRef[];
-    labels?: string[];
+    labels?: Maybe<string[]>;
     photo?: Maybe<string>;
     photoFocus?: Maybe<number[]>;
     totalTime?: Maybe<number>;
