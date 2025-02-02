@@ -144,6 +144,14 @@ type LibraryMutation {
 type LibraryQuery {
     """
 
+    Retrieve ingredients in bulk, regardless of type. Invalid IDs will be
+    silently ignored, and no result returned for them. Duplicate IDs will only
+    have a single result returned. The order of results is unspecified.
+    Identical to the query of the same name in 'pantry'.
+    """
+    bulkIngredients(ids: [ID!]): [Ingredient!]!
+    """
+
     Retrieve a single recipe by its ID. Authenticated users can request any
     recipe. Anonymous users must supply the recipe's secret.
     """
@@ -287,6 +295,14 @@ type PantryMutation {
 }
 
 type PantryQuery {
+    """
+
+    Retrieve ingredients in bulk, regardless of type. Invalid IDs will be
+    silently ignored, and no result returned for them. Duplicate IDs will only
+    have a single result returned. The order of results is unspecified.
+    Identical to the query of the same name in 'pantry'.
+    """
+    bulkIngredients(ids: [ID!]): [Ingredient!]!
     "Search available pantry items."
     search(
         """

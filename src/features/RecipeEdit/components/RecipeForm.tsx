@@ -300,7 +300,7 @@ const RecipeForm: React.FC<Props> = ({
             <Box my={MARGIN}>
                 <LabelAutoComplete
                     labelList={labelList || []}
-                    recipeLabels={draft.labels}
+                    recipeLabels={draft.labels ?? undefined}
                     onLabelChange={handleLabelChange}
                 />
             </Box>

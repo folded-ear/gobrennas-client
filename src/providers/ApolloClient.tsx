@@ -13,6 +13,8 @@ import possibleTypes from "./apolloPossibleTypes";
 import { createFragmentRegistry } from "@apollo/client/cache";
 import {
     CORE_PLAN_ITEM_LOAD_FRAGMENT,
+    INGREDIENT_LOAD_FRAGMENT,
+    PANTRY_ITEM_LOAD_FRAGMENT,
     PLAN_ITEM_LOAD_FRAGMENT,
     PLAN_LOAD_FRAGMENT,
 } from "@/data/hooks/fragments";
@@ -43,6 +45,8 @@ export const client = new ApolloClient({
         // GraphQL queries are static, so that voodoo happens via codegen, but
         // dynamically constructed queries can't leverage that.
         fragments: createFragmentRegistry(
+            INGREDIENT_LOAD_FRAGMENT,
+            PANTRY_ITEM_LOAD_FRAGMENT,
             CORE_PLAN_ITEM_LOAD_FRAGMENT,
             PLAN_ITEM_LOAD_FRAGMENT,
             PLAN_LOAD_FRAGMENT,

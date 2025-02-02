@@ -185,9 +185,9 @@ export const BodyContainer: React.FC = () => {
                     targetBucket = target?.bucket;
                 } else {
                     const bucketId = targetId.substring(BUCKET_PREFIX.length);
-                    // triple equals won't equate 123 and "123", but BfsId allows either
-                    // eslint-disable-next-line eqeqeq
-                    targetBucket = plan?.buckets.find((b) => b.id == bucketId);
+                    targetBucket = plan?.buckets.find((b) =>
+                        bfsIdEq(b.id, bucketId),
+                    );
                 }
                 // triple equals doesn't equate null and undefined, but Maybe allows either
                 // eslint-disable-next-line eqeqeq
