@@ -148,8 +148,9 @@ const TextractQueueBrowser: React.FC<PassthroughProps> = (props) => {
         () => TextractApi.promiseJobList(),
         {
             refetchInterval: (jobs: any[] | undefined) => {
-                return !jobs || jobs.some((j) => !j.ready) ? 5000 : 15000;
+                return !jobs || jobs.some((j) => !j.ready) ? 5_000 : 15_000;
             },
+            refetchIntervalInBackground: false,
         },
     );
     return <Ui queue={queue} {...props} />;

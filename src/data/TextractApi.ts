@@ -1,12 +1,7 @@
-import BaseAxios from "axios";
-import { API_BASE_URL } from "@/constants";
 import { BfsId, ensureString } from "@/global/types/identity";
 import { client } from "@/providers/ApolloClient";
 import { LIST_TEXTRACT_JOBS, LOAD_TEXTRACT_JOB } from "@/data/queries";
-
-const axios = BaseAxios.create({
-    baseURL: `${API_BASE_URL}/api/textract`,
-});
+import { CREATE_TEXTRACT_JOB, DELETE_TEXTRACT_JOB } from "@/data/mutations";
 
 export interface PendingJob {
     id: string;
@@ -34,20 +29,23 @@ export interface BoundingBox {
 
 const TextractApi = {
     promiseJobList: (): Promise<PendingJob[]> =>
-        client.query({ query: LIST_TEXTRACT_JOBS }).then(
-            ({ data }) =>
-                data?.textract.listJobs.map((job) => ({
-                    id: job.id,
-                    url: job.photo.url,
-                    name: job.photo.filename,
-                    ready: job.ready,
-                })),
-        ),
+        client
+            .query({ query: LIST_TEXTRACT_JOBS, fetchPolicy: "no-cache" })
+            .then(
+                ({ data }) =>
+                    data?.textract.listJobs.map((job) => ({
+                        id: job.id,
+                        url: job.photo.url,
+                        name: job.photo.filename,
+                        ready: job.ready,
+                    })),
+            ),
     promiseJob: (id: BfsId): Promise<Job> =>
         client
             .query({
                 query: LOAD_TEXTRACT_JOB,
                 variables: { id: ensureString(id) },
+                fetchPolicy: "no-cache",
             })
             .then(({ data }) => {
                 const job = data!.textract.jobById;
@@ -56,12 +54,16 @@ const TextractApi = {
                     textract: job.lines ?? [],
                 };
             }),
-    promiseNewJob: (photo) => {
-        const payload = new FormData();
-        payload.append("photo", photo);
-        return axios.post(`/`, payload);
-    },
-    promiseJobDelete: (id: BfsId) => axios.delete(`/${id}`),
+    promiseNewJob: (photo) =>
+        client.mutate({
+            mutation: CREATE_TEXTRACT_JOB,
+            variables: { photo },
+        }),
+    promiseJobDelete: (id: BfsId) =>
+        client.mutate({
+            mutation: DELETE_TEXTRACT_JOB,
+            variables: { id: ensureString(id) },
+        }),
 };
 
 export default TextractApi;
