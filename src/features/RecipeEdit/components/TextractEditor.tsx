@@ -10,6 +10,7 @@ import useFluxStore from "@/data/useFluxStore";
 import WindowStore from "@/data/WindowStore";
 import { findSvg } from "@/util/findAncestorByName";
 import getPositionWithin from "@/util/getPositionWithin";
+import { BoundingBox, Line } from "@/data/TextractApi";
 
 const useStyles = makeStyles({
     rotateRight: {
@@ -37,23 +38,14 @@ const overlaps = (a, b) =>
     a.top + a.height >= b.top &&
     a.top <= b.top + b.height;
 
+/**
+ * A rectangular selection drawn by the user.
+ */
 interface Rect {
     x1: number;
     y1: number;
     x2?: number;
     y2?: number;
-}
-
-interface Selection {
-    top: number;
-    left: number;
-    width?: number;
-    height?: number;
-}
-
-export interface Line {
-    text: string;
-    box: Selection;
 }
 
 export type RenderActionsForLines = (lines: string[]) => ReactNode;
@@ -79,12 +71,12 @@ const TextractEditor: React.FC<Props> = ({
     const [[width, height, maxWidth], setSize] = React.useState([
         100, 100, 100,
     ]);
-    const scaleFactor = maxWidth / (rotation % 180 === 0 ? width : height);
+    const scaleFactor = maxWidth / Math.max(width, height);
     const scaledWidth = width * scaleFactor;
     const scaledHeight = height * scaleFactor;
-    const [drawnBox, setDrawnBox] = React.useState<Rect | null>(null);
+    const [drawnRect, setDrawnRect] = React.useState<Rect | null>(null);
     const [selectedRegion, setSelectedRegion] =
-        React.useState<Selection | null>(null);
+        React.useState<BoundingBox | null>(null);
     const [partitionedLines, setPartitionedLines] = React.useState([
         textract,
         [],
@@ -172,22 +164,22 @@ const TextractEditor: React.FC<Props> = ({
     };
     const startBoxDraw = (e) => {
         const [x, y] = getXY(e);
-        setDrawnBox({
+        setDrawnRect({
             x1: x,
             y1: y,
         });
         setSelectedRegion(null);
     };
     const updateBoxDraw = (e) => {
-        if (!drawnBox) throw new TypeError("Can't update a null box");
+        if (!drawnRect) throw new TypeError("Can't update a null box");
         const [x, y] = getXY(e);
         const b = {
-            ...drawnBox,
+            ...drawnRect,
             x2: x,
             y2: y,
         };
-        setDrawnBox(b);
-        const sel: Selection = {
+        setDrawnRect(b);
+        const sel: BoundingBox = {
             top: Math.min(b.y1, b.y2) / scaledHeight,
             left: Math.min(b.x1, b.x2) / scaledWidth,
         };
@@ -196,9 +188,9 @@ const TextractEditor: React.FC<Props> = ({
         setSelectedRegion(sel);
     };
     const endBoxDraw = (e) => {
-        if (!drawnBox) throw new TypeError("Can't end a null box");
+        if (!drawnRect) throw new TypeError("Can't end a null box");
         const [x, y] = getXY(e);
-        if (drawnBox.x1 === x && drawnBox.y1 === y) {
+        if (drawnRect.x1 === x && drawnRect.y1 === y) {
             setSelectedRegion({
                 top: y / scaledHeight,
                 left: x / scaledWidth,
@@ -206,7 +198,7 @@ const TextractEditor: React.FC<Props> = ({
                 width: 0,
             });
         }
-        setDrawnBox(null);
+        setDrawnRect(null);
     };
     const rect = (box) => (
         <rect
@@ -268,8 +260,10 @@ const TextractEditor: React.FC<Props> = ({
                             height={scaledHeight}
                             preserveAspectRatio="none"
                             onPointerDown={startBoxDraw}
-                            onPointerMove={drawnBox ? updateBoxDraw : undefined}
-                            onPointerUp={drawnBox ? endBoxDraw : undefined}
+                            onPointerMove={
+                                drawnRect ? updateBoxDraw : undefined
+                            }
+                            onPointerUp={drawnRect ? endBoxDraw : undefined}
                             strokeWidth={1}
                             className={classes.svg}
                             style={rotationStyles}

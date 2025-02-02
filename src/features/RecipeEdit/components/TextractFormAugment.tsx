@@ -4,26 +4,13 @@ import ClientId from "@/util/ClientId";
 import promiseWellSizedFile from "@/util/promiseWellSizedFile";
 import TextractButton from "@/features/RecipeEdit/components/TextractButton";
 import TextractQueueBrowser from "@/features/RecipeEdit/components/TextractQueueBrowser";
-import TextractApi from "@/data/TextractApi";
+import TextractApi, { Job, PendingJob } from "@/data/TextractApi";
 import { useQueryClient } from "react-query";
 import TextractEditor, {
-    Line,
     RenderActionsForLines,
 } from "@/features/RecipeEdit/components/TextractEditor";
 import { RippedLO } from "@/util/ripLoadObject";
 import { BfsId, bfsIdEq } from "@/global/types/identity";
-
-export interface PendingJob {
-    id: string;
-    url: string;
-    name: string;
-    ready: boolean;
-}
-
-interface Job {
-    image: string;
-    textract: Line[];
-}
 
 interface Props {
     renderActions: RenderActionsForLines;
@@ -53,12 +40,9 @@ const TextractFormAugment: React.FC<Props> = ({ renderActions }) => {
                         setJobLO({
                             loading: true,
                         });
-                        TextractApi.promiseJob(id).then((data) =>
+                        TextractApi.promiseJob(id).then((data: Job) =>
                             setJobLO({
-                                data: {
-                                    image: data.data.photo.url,
-                                    textract: data.data.lines || [],
-                                },
+                                data,
                             }),
                         );
                         setBrowserOpen(false);

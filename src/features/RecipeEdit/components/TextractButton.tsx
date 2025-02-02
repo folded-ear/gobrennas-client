@@ -8,7 +8,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     trigger: {
         position: "absolute",
         right: 0,
-        zIndex: theme.zIndex.fab,
+        zIndex: theme.zIndex.drawer - 1,
         backgroundColor: theme.palette.background.paper,
         transformOrigin: "bottom right",
         transform: `rotate(90deg) translateY(100%) translateX(50%)`,

@@ -12,8 +12,7 @@ import React, { MouseEventHandler } from "react";
 import DeleteButton from "@/views/common/DeleteButton";
 import ImageDropZone from "@/util/ImageDropZone";
 import { useQuery } from "react-query";
-import TextractApi from "@/data/TextractApi";
-import { PendingJob } from "@/features/RecipeEdit/components/TextractFormAugment";
+import TextractApi, { PendingJob } from "@/data/TextractApi";
 import { BfsId, indexOfBfsId } from "@/global/types/identity";
 
 const useStyles = makeStyles((theme) => ({
@@ -95,7 +94,7 @@ const Ui: React.FC<UiProps> = ({
                     <CloseIcon />
                 </IconButton>
                 <Typography variant="h3">Select Photo</Typography>
-                <ImageList>
+                <ImageList cols={2} rowHeight={200}>
                     <ImageListItem>
                         <ImageDropZone
                             className={classes.dropZone}
@@ -115,9 +114,12 @@ const Ui: React.FC<UiProps> = ({
                                     ? classes.ready
                                     : classes.inactive
                             }
-                            title={j.ready ? "Use this photo" : undefined}
                         >
-                            <img src={j.url} alt={j.name} />
+                            <img
+                                src={j.url}
+                                alt={j.name}
+                                title={j.ready ? "Use this photo" : undefined}
+                            />
                             <ImageListItemBar
                                 title={j.name}
                                 subtitle={j.ready ? null : j.state + "..."}
@@ -143,17 +145,11 @@ const Ui: React.FC<UiProps> = ({
 const TextractQueueBrowser: React.FC<PassthroughProps> = (props) => {
     const { data: queue = [] } = useQuery(
         "textract-jobs",
-        () =>
-            TextractApi.promiseJobList().then((d) =>
-                d.data.map((job) => ({
-                    id: job.id,
-                    url: job.photo.url,
-                    name: job.photo.filename,
-                    ready: job.ready,
-                })),
-            ),
+        () => TextractApi.promiseJobList(),
         {
-            refetchInterval: 5000,
+            refetchInterval: (jobs: any[] | undefined) => {
+                return !jobs || jobs.some((j) => !j.ready) ? 5000 : 15000;
+            },
         },
     );
     return <Ui queue={queue} {...props} />;
