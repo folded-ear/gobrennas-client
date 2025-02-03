@@ -1,6 +1,6 @@
 import { Chip, Grid, IconButton } from "@mui/material";
 import makeStyles from "@mui/styles/makeStyles";
-import React from "react";
+import React, { ReactNode } from "react";
 import Dispatcher from "@/data/dispatcher";
 import PantryItemActions from "@/data/PantryItemActions";
 import PlanActions from "@/features/Planner/data/PlanActions";
@@ -55,7 +55,7 @@ const IngredientItem: React.FC<Props> = ({
     const history = useHistory();
     const scale = useScale();
 
-    let left, right;
+    let left: ReactNode, right: ReactNode;
     if (ref.quantity === 0) {
         left = <Chip label="NO" size={"small"} color={"error"} />;
     } else if (ref.quantity != null) {
@@ -63,14 +63,8 @@ const IngredientItem: React.FC<Props> = ({
     }
 
     if (ref.ingredient == null || typeof ref.ingredient === "string") {
-        if (ref.ingredientId != null) {
-            // still loading...
-            left = null;
-            right = ref.raw || ref.name;
-        } else {
-            right =
-                ref.quantity == null ? ref.raw || ref.name : ref.preparation;
-        }
+        left = null;
+        right = ref.raw || ref.name;
         if (!hideSendToPlan) {
             right = (
                 <>
