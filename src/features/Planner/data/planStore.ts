@@ -36,6 +36,7 @@ import {
     mapPlanBuckets,
     moveDelta,
     moveSubtree,
+    MoveSubtreeAction,
     nestTask,
     queueDelete,
     renameTask,
@@ -125,16 +126,16 @@ export interface State {
 class PlanStore extends FluxReduceStore<State, FluxAction> {
     getInitialState() {
         return {
-            activeListId: null, // ID
-            listDetailVisible: false, // boolean
-            activeTaskId: null, // ID
-            selectedTaskIds: null, // Array<ID>
+            activeListId: null,
+            listDetailVisible: false,
+            activeTaskId: null,
+            selectedTaskIds: null,
             topLevelIds: new LoadObjectState<BfsId[]>(() =>
                 Dispatcher.dispatch({
                     type: PlanActions.LOAD_PLANS,
                 }),
-            ), // LoadObjectState<Array<ID>>
-            byId: {}, // Map<ID, LoadObject<Task>>
+            ),
+            byId: {},
         };
     }
 
@@ -257,9 +258,11 @@ class PlanStore extends FluxReduceStore<State, FluxAction> {
                 return flushTasksToRename(state);
 
             case PlanActions.FOCUS_NEXT:
+                if (state.activeTaskId == null) return state;
                 state = focusDelta(state, state.activeTaskId, 1);
                 return flushTasksToRename(state);
             case PlanActions.FOCUS_PREVIOUS:
+                if (state.activeTaskId == null) return state;
                 state = focusDelta(state, state.activeTaskId, -1);
                 return flushTasksToRename(state);
 
@@ -277,6 +280,7 @@ class PlanStore extends FluxReduceStore<State, FluxAction> {
 
             case PlanActions.CREATE_ITEM_AT_END:
             case ShoppingActions.CREATE_ITEM_AT_END: {
+                if (state.activeListId == null) return state;
                 state = addTask(state, state.activeListId, "");
                 return state;
             }
@@ -349,8 +353,10 @@ class PlanStore extends FluxReduceStore<State, FluxAction> {
             }
 
             case PlanActions.SELECT_NEXT:
+                if (state.activeTaskId == null) return state;
                 return selectDelta(state, state.activeTaskId, 1);
             case PlanActions.SELECT_PREVIOUS:
+                if (state.activeTaskId == null) return state;
                 return selectDelta(state, state.activeTaskId, -1);
             case PlanActions.SELECT_TO:
                 return selectTo(state, action.id);
@@ -368,7 +374,10 @@ class PlanStore extends FluxReduceStore<State, FluxAction> {
                 return unnestTask(state);
 
             case PlanActions.MOVE_SUBTREE:
-                return moveSubtree(state, action);
+                return moveSubtree(
+                    state,
+                    action as unknown as MoveSubtreeAction,
+                );
 
             case PlanActions.TOGGLE_EXPANDED:
                 return toggleExpanded(state, action.id);
@@ -380,6 +389,7 @@ class PlanStore extends FluxReduceStore<State, FluxAction> {
                 return collapseAll(state);
 
             case PlanActions.MULTI_LINE_PASTE: {
+                if (state.activeTaskId == null) return state;
                 const lines = action.text
                     .split("\n")
                     .map((l) => l.trim())
@@ -501,7 +511,7 @@ class PlanStore extends FluxReduceStore<State, FluxAction> {
     getPlansRlo(): RippedLO<Plan[]> {
         const s = this.getState();
         return mapData(this.getPlanIdsRlo(), (ids) =>
-            losForIds(s, ids)
+            (losForIds(s, ids) as LoadObject<Plan>[])
                 .filter((lo) => lo.isDone())
                 .map((lo) => lo.getValueEnforcing()),
         );
@@ -510,7 +520,9 @@ class PlanStore extends FluxReduceStore<State, FluxAction> {
     getChildItemRlos(id: BfsId): RippedLO<PlanItem>[] {
         const s = this.getState();
         const t = taskForId(s, id);
-        return losForIds(s, t.subtaskIds).map(ripLoadObject);
+        return (losForIds(s, t.subtaskIds) as LoadObject<PlanItem>[]).map(
+            ripLoadObject,
+        );
     }
 
     getNonDescendantComponents(id: BfsId): PlanItem[] {
@@ -579,11 +591,11 @@ class PlanStore extends FluxReduceStore<State, FluxAction> {
         return ripLoadObject(this.getItemLO(id)) as unknown as RippedLO<Plan>;
     }
 
-    getSelectedItems(): PlanItem[] {
+    getSelectedItems(): Maybe<PlanItem[]> {
         const s = this.getState();
         return s.selectedTaskIds == null
             ? null
-            : tasksForIds(s, s.selectedTaskIds);
+            : (tasksForIds(s, s.selectedTaskIds) as PlanItem[]);
     }
 
     getItemsInBucket(planId: BfsId, bucketId: BfsId): PlanItem[] {
@@ -617,6 +629,7 @@ class PlanStore extends FluxReduceStore<State, FluxAction> {
 
     getSelectionAsTextBlock(): string {
         const s = this.getState();
+        if (s.activeTaskId == null) return "";
         return tasksForIds(
             s,
             taskForId(

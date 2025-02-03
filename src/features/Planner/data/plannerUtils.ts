@@ -13,11 +13,14 @@ function testName(
     return name.length > 0 && test(name);
 }
 
-function endsWith(itemOrName: Maybe<Named | string>, suffix: string) {
+function endsWith(itemOrName: Maybe<Named | string>, suffix: string): boolean {
     return testName(itemOrName, (name) => name.endsWith(suffix));
 }
 
-function startsWith(itemOrName: Maybe<Named | string>, prefix: string) {
+function startsWith(
+    itemOrName: Maybe<Named | string>,
+    prefix: string,
+): boolean {
     return testName(itemOrName, (name) => name.startsWith(prefix));
 }
 
@@ -29,14 +32,14 @@ export function isDoNotRecognize(itemOrName: Named | string): boolean {
     return startsWith(itemOrName, "!");
 }
 
-export function isQuestionable(itemOrName: Named | string) {
+export function isQuestionable(itemOrName: Named | string): boolean {
     return endsWith(itemOrName, "?");
 }
 
-export function isParent(item: Plan | PlanItem) {
+export function isParent(item: Plan | PlanItem): boolean {
     return item.subtaskIds ? item.subtaskIds.length > 0 : false;
 }
 
-export function isExpanded(item: PlanItem) {
+export function isExpanded(item: PlanItem): boolean {
     return isParent(item) && !!item._expanded;
 }
