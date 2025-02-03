@@ -7,7 +7,7 @@ import React, {
 import { COOKIE_AUTH_TOKEN } from "@/constants";
 import { getCookie } from "@/util/cookies";
 
-const AuthTokenContext = createContext(true);
+const AuthTokenContext = createContext("");
 
 type Props = PropsWithChildren<unknown>;
 
