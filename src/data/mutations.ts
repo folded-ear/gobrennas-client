@@ -18,3 +18,24 @@ mutation sendRecipeToPlan($id: ID!, $planId: ID!, $scale: Float = 1) {
     }
   }
 }`);
+
+export const CREATE_TEXTRACT_JOB = gql(`
+mutation createTextractJob($photo: Upload!) {
+  textract {
+    createJob(photo: $photo) {
+      id
+      photo {
+        url
+        filename
+      }
+      ready
+    }
+  }
+}`);
+
+export const DELETE_TEXTRACT_JOB = gql(`
+mutation deleteTextractJob($id: ID!) {
+  textract {
+    deleteJob(id: $id) { id }
+  }
+}`);

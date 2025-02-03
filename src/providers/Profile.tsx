@@ -1,4 +1,3 @@
-import Axios from "axios";
 import React, {
     createContext,
     PropsWithChildren,
@@ -11,9 +10,6 @@ import type { UserType } from "@/global/types/identity";
 import { requiredData, RippedLO } from "@/util/ripLoadObject";
 import { gql } from "@/__generated__";
 import useAdaptingQuery from "@/data/hooks/useAdaptingQuery";
-
-// global side effect to ensure cookies are passed
-Axios.defaults.withCredentials = true;
 
 type Profile = RippedLO<UserType> | undefined;
 

@@ -96,6 +96,13 @@ type FavoriteQuery {
     byType(objectType: String!): [Favorite!]!
 }
 
+type FileInfo {
+    contentType: String!
+    filename: String!
+    size: NonNegativeInt!
+    url: String!
+}
+
 type IngredientRef {
     ingredient: Ingredient
     preparation: String
@@ -205,6 +212,7 @@ type Mutation {
     library: LibraryMutation!
     pantry: PantryMutation!
     planner: PlannerMutation!
+    textract: TextractMutation!
 }
 
 type PageInfo {
@@ -506,6 +514,7 @@ type Query {
     pantry: PantryQuery!
     planner: PlannerQuery!
     profile: ProfileQuery!
+    textract: TextractQuery!
 }
 
 type Recipe implements Ingredient & Node & Owned {
@@ -612,6 +621,36 @@ type ShareInfo {
     id: ID!
     secret: String!
     slug: String!
+}
+
+type TextractBox {
+    height: NonNegativeFloat!
+    left: NonNegativeFloat!
+    top: NonNegativeFloat!
+    width: NonNegativeFloat!
+}
+
+type TextractJob {
+    id: ID!
+    "Lines of extracted text. Will only have data if 'ready' is true."
+    lines: [TextractLine!]
+    photo: FileInfo!
+    ready: Boolean!
+}
+
+type TextractLine {
+    box: TextractBox!
+    text: String!
+}
+
+type TextractMutation {
+    createJob(photo: Upload!): TextractJob!
+    deleteJob(id: ID!): Deletion!
+}
+
+type TextractQuery {
+    jobById(id: ID!): TextractJob!
+    listJobs: [TextractJob!]!
 }
 
 type UnitOfMeasure implements Node {
