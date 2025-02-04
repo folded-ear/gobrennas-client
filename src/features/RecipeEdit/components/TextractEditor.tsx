@@ -151,7 +151,7 @@ const TextractEditor: React.FC<Props> = ({
     const getXY = (e) => {
         const svgNode = findSvg(e.target);
         if (!svgNode) throw new TypeError("No SVG parent found?!");
-        const [x, y] = getPositionWithin(svgNode.parentNode, e);
+        const [x, y] = getPositionWithin(svgNode.parentNode as HTMLElement, e);
         if (rotation === 90) {
             return [y, scaledHeight - x];
         } else if (rotation === 180) {

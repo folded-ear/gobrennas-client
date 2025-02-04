@@ -68,7 +68,7 @@ const PositionPicker: React.FC<Props> = ({ image, value, onChange }) => {
                     className={classes.svg}
                     fill={"none"}
                     strokeWidth={1.5}
-                    onClick={(e) => {
+                    onPointerDown={(e) => {
                         const svg = findSvg(e.target as Element);
                         if (svg == null) {
                             // eslint-disable-next-line no-console
@@ -77,7 +77,10 @@ const PositionPicker: React.FC<Props> = ({ image, value, onChange }) => {
                             );
                             return;
                         }
-                        const [x, y] = getPositionWithin(svg.parentNode, e);
+                        const [x, y] = getPositionWithin(
+                            svg.parentNode as HTMLElement,
+                            e,
+                        );
                         const val = [x / width, y / height];
                         setOffset(val);
                         onChange && onChange(val);
