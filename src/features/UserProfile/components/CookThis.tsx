@@ -41,6 +41,7 @@ export const CookThis = () => {
                     href="#"
                     variant={import.meta.env.PROD ? "contained" : "outlined"}
                     color="primary"
+                    disabled={!token}
                 >
                     {import.meta.env.PROD ? "Cook This!" : "DEV Cook This!"}
                 </Button>

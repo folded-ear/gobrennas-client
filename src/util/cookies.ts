@@ -1,4 +1,4 @@
-const readCookies = () =>
+const readCookies = (): Record<string, string> =>
     document.cookie
         .split(";")
         .map((s) => s.trim().split("="))
@@ -11,4 +11,4 @@ const readCookies = () =>
             {},
         );
 
-export const getCookie = (name) => readCookies()[name];
+export const getCookie = (name: string) => readCookies()[name];
