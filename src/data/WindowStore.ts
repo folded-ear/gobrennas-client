@@ -1,13 +1,25 @@
 import { ReduceStore } from "flux/utils";
 import Dispatcher from "./dispatcher";
 import WindowActions from "./WindowActions";
+import { FluxAction } from "@/global/types/types";
 
-class WindowStore extends ReduceStore {
+interface WindowSize {
+    width: number;
+    height: number;
+}
+
+interface State {
+    size: WindowSize;
+    focused: boolean;
+    visible: boolean;
+}
+
+class WindowStore extends ReduceStore<State, FluxAction> {
     constructor() {
         super(Dispatcher);
     }
 
-    getInitialState() {
+    getInitialState(): State {
         return {
             size: {
                 width: window.innerWidth,
@@ -15,16 +27,10 @@ class WindowStore extends ReduceStore {
             },
             focused: true,
             visible: true,
-            newVersion: {
-                available: false,
-                ignored: false,
-                waitingWorker: null,
-            },
         };
     }
 
-    reduce(state, action) {
-        // noinspection JSRedundantSwitchStatement
+    reduce(state: State, action): State {
         switch (action.type) {
             case WindowActions.RESIZE:
                 return {
@@ -46,26 +52,16 @@ class WindowStore extends ReduceStore {
         }
     }
 
-    getSize() {
+    getSize(): WindowSize {
         return this.getState().size;
     }
 
-    isVisible() {
+    isVisible(): boolean {
         return this.getState().visible;
     }
 
-    isFocused() {
+    isFocused(): boolean {
         return this.getState().focused;
-    }
-
-    isActive() {
-        const s = this.getState();
-        return s.visible && s.focused;
-    }
-
-    isNewVersionAvailable() {
-        const s = this.getState().newVersion;
-        return s.available && !s.ignored;
     }
 }
 
