@@ -1,7 +1,15 @@
 import invariant from "invariant";
 import PropTypes from "prop-types";
+import { ReduceStore } from "flux/utils";
 
-const builder = (self, method, typesKey, initial) => {
+type Store<S> = ReduceStore<S, unknown>;
+
+function builder<S>(
+    self: Store<S>,
+    method: Store<S>["reduce"],
+    typesKey: string,
+    initial: S,
+): Store<S>["reduce"] {
     const name = self.constructor.name;
     method = method.bind(self);
     let typeSpecs = self.constructor[typesKey];
@@ -31,9 +39,9 @@ const builder = (self, method, typesKey, initial) => {
         if (!self.areEqual(curr, next)) check(next);
         return next;
     };
-};
+}
 
-const typedStore = (self) => {
+function typedStore<S extends Store<unknown>>(self: S): S {
     if (!import.meta.env.PROD) {
         invariant(self.reduce, "No 'reduce' method found on store.");
         self.reduce = builder(
@@ -44,6 +52,6 @@ const typedStore = (self) => {
         );
     }
     return self;
-};
+}
 
 export default typedStore;
