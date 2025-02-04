@@ -22,7 +22,7 @@ export default function useAllPlansRLO() {
                     } else {
                         const rlo = friendStore.getFriendRlo(ownerId);
                         if (rlo.data) {
-                            ownerName = rlo.data.name;
+                            ownerName = rlo.data.name ?? "";
                         }
                     }
                     byId[p.id] = [ownerId, ownerName, p.name];

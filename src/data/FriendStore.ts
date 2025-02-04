@@ -1,12 +1,13 @@
 import { ReduceStore } from "flux/utils";
 import LoadObjectState from "@/util/LoadObjectState";
 import promiseFlux from "@/util/promiseFlux";
-import Dispatcher from "./dispatcher";
+import dispatcher from "./dispatcher";
 import FriendActions from "./FriendActions";
-import { mapData, ripLoadObject } from "@/util/ripLoadObject";
-import { bfsIdEq } from "@/global/types/identity";
+import { mapData, ripLoadObject, RippedLO } from "@/util/ripLoadObject";
+import { BfsId, bfsIdEq, UserType } from "@/global/types/identity";
 import { client } from "@/providers/ApolloClient";
 import { gql } from "@/__generated__";
+import { FluxAction } from "@/global/types/types";
 
 const GET_FRIENDS = gql(`
 query getFriends {
@@ -22,20 +23,18 @@ query getFriends {
   }
 }`);
 
-class FriendStore extends ReduceStore {
-    constructor() {
-        super(Dispatcher);
-    }
+type State = LoadObjectState<UserType[]>;
 
-    getInitialState() {
-        return new LoadObjectState(() =>
-            Dispatcher.dispatch({
+class FriendStore extends ReduceStore<State, FluxAction> {
+    getInitialState(): State {
+        return new LoadObjectState<UserType[]>(() =>
+            this.__dispatcher.dispatch({
                 type: FriendActions.LOAD_FRIEND_LIST,
             }),
         );
     }
 
-    reduce(state, action) {
+    reduce(state: State, action: FluxAction): State {
         switch (action.type) {
             case FriendActions.LOAD_FRIEND_LIST: {
                 promiseFlux(
@@ -59,15 +58,15 @@ class FriendStore extends ReduceStore {
         }
     }
 
-    getFriendsRlo() {
+    getFriendsRlo(): RippedLO<UserType[]> {
         return ripLoadObject(this.getState().getLoadObject());
     }
 
-    getFriendRlo(id) {
+    getFriendRlo(id: BfsId): RippedLO<UserType> {
         return mapData(this.getFriendsRlo(), (fs) =>
             fs.find((f) => bfsIdEq(f.id, id)),
         );
     }
 }
 
-export default new FriendStore();
+export default new FriendStore(dispatcher);
