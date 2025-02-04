@@ -19,7 +19,7 @@ export const toRestRecipe = (
     r: IngredientLoadFragment & RecipeLoadFragment,
 ): Recipe => ({
     id: r.id,
-    type: r.type,
+    type: "Recipe",
     name: r.name,
     externalUrl: r.externalUrl,
     directions: r.directions,
@@ -45,7 +45,7 @@ export const toRestPantryItem = (
     pi: IngredientLoadFragment & PantryItemLoadFragment,
 ): PantryItem => ({
     id: pi.id,
-    type: pi.type,
+    type: "PantryItem",
     name: pi.name,
     storeOrder: pi.storeOrder,
 });
