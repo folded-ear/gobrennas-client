@@ -3,11 +3,14 @@ import type { Recipe } from "@/global/types/types";
 import { RippedLO } from "@/util/ripLoadObject";
 import { ensureString } from "@/global/types/identity";
 
-export function recipeRloById(
-    id: string,
-): RippedLO<Recipe & { subrecipes: Recipe[] }> {
+type RecipeWithSubs = Recipe & { subrecipes: Recipe[] };
+
+export function recipeRloById(id: string): RippedLO<RecipeWithSubs> {
     const rlo = LibraryStore.getRecipeRloById(id);
-    if (!rlo.data) return rlo;
+    if (!rlo.data) {
+        // with no data, this cast is safe
+        return rlo as RippedLO<RecipeWithSubs>;
+    }
 
     const subIds = new Set<string>();
     const subs: Recipe[] = [];

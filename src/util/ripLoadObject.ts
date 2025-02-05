@@ -40,7 +40,10 @@ export function requiredData<T>(rlo: RippedLO<T> | undefined): T {
     return rlo.data;
 }
 
-export function mapData<T, R>(rlo: RippedLO<T>, fn: (data: T) => R) {
+export function mapData<T, R>(
+    rlo: RippedLO<T>,
+    fn: (data: T) => R | undefined,
+) {
     // if data is null/undefined, this cast is safe
     if (!rlo.data) return rlo as unknown as RippedLO<R>;
     const data = fn(rlo.data);

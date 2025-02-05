@@ -5,17 +5,19 @@ import { Maybe } from "graphql/jsutils/Maybe";
 
 type IngredientType = "Recipe" | "PantryItem";
 
-export interface Ingredient {
+interface IIngredient {
     id: BfsId;
     name: string;
     type?: IngredientType;
 }
 
-export interface PantryItem extends Ingredient {
-    storeOrder?: Maybe<number>;
+export interface PantryItem extends IIngredient {
+    type?: "PantryItem";
+    storeOrder: number;
 }
 
-export interface Recipe extends Ingredient {
+export interface Recipe extends IIngredient {
+    type?: "Recipe";
     calories?: Maybe<number>;
     directions?: Maybe<string>;
     externalUrl?: Maybe<string>;
@@ -32,6 +34,8 @@ export interface Recipe extends Ingredient {
     libraryRecipeId?: BfsId;
     ownerId?: BfsId;
 }
+
+export type Ingredient = PantryItem | Recipe;
 
 export interface IngredientRef {
     id?: BfsId;

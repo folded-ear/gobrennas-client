@@ -6,11 +6,10 @@ import {
     RotateCounterClockwiseIcon,
 } from "@/views/common/icons";
 import React, { MouseEventHandler, ReactNode } from "react";
-import useFluxStore from "@/data/useFluxStore";
-import WindowStore from "@/data/WindowStore";
 import { findSvg } from "@/util/findAncestorByName";
 import getPositionWithin from "@/util/getPositionWithin";
 import { BoundingBox, Line } from "@/data/TextractApi";
+import useWindowSize from "@/data/useWindowSize";
 
 const useStyles = makeStyles({
     rotateRight: {
@@ -66,7 +65,7 @@ const TextractEditor: React.FC<Props> = ({
 }) => {
     if (!textract) textract = [];
     const classes = useStyles();
-    const windowSize = useFluxStore(() => WindowStore.getSize(), [WindowStore]);
+    const windowSize = useWindowSize();
     const [rotation, setRotation] = React.useState(0);
     const [[width, height, maxWidth], setSize] = React.useState([
         100, 100, 100,
@@ -151,7 +150,7 @@ const TextractEditor: React.FC<Props> = ({
     const getXY = (e) => {
         const svgNode = findSvg(e.target);
         if (!svgNode) throw new TypeError("No SVG parent found?!");
-        const [x, y] = getPositionWithin(svgNode.parentNode, e);
+        const [x, y] = getPositionWithin(svgNode.parentNode as HTMLElement, e);
         if (rotation === 90) {
             return [y, scaledHeight - x];
         } else if (rotation === 180) {
