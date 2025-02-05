@@ -1,4 +1,4 @@
-import Dispatcher from "@/data/dispatcher";
+import dispatcher from "@/data/dispatcher";
 import { askUserToReauth, isAuthError } from "@/providers/Profile";
 import { FluxAction } from "@/global/types/types";
 
@@ -23,7 +23,7 @@ let helper = <Data>(
             }
             return;
         }
-        Dispatcher.dispatch(
+        dispatcher.dispatch(
             typeof typeTemplateOrCallback === "function"
                 ? typeTemplateOrCallback(data)
                 : typeof typeTemplateOrCallback === "string"

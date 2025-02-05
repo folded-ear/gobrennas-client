@@ -1,7 +1,7 @@
 import { Chip, Grid, IconButton } from "@mui/material";
 import makeStyles from "@mui/styles/makeStyles";
 import React, { ReactNode } from "react";
-import Dispatcher from "@/data/dispatcher";
+import dispatcher from "@/data/dispatcher";
 import PantryItemActions from "@/data/PantryItemActions";
 import PlanActions from "@/features/Planner/data/PlanActions";
 import Quantity from "@/views/common/Quantity";
@@ -71,7 +71,7 @@ const IngredientItem: React.FC<Props> = ({
                     {right}{" "}
                     <SendToPlan
                         onClick={(planId) =>
-                            Dispatcher.dispatch({
+                            dispatcher.dispatch({
                                 type: PlanActions.SEND_TO_PLAN,
                                 planId,
                                 name: ref.raw,
@@ -109,7 +109,7 @@ const IngredientItem: React.FC<Props> = ({
                         {" "}
                         <SendToPlan
                             onClick={(planId) =>
-                                Dispatcher.dispatch({
+                                dispatcher.dispatch({
                                     type: PantryItemActions.SEND_TO_PLAN,
                                     planId,
                                     id: ingredient.id,

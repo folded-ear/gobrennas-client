@@ -2,7 +2,7 @@ import { ListItemText } from "@mui/material";
 import Input from "@mui/material/Input";
 import classnames from "classnames";
 import React from "react";
-import Dispatcher from "@/data/dispatcher";
+import dispatcher from "@/data/dispatcher";
 import ShoppingActions from "@/data/ShoppingActions";
 import PlanItemStatus from "@/features/Planner/data/PlanItemStatus";
 import LoadingIconButton from "../common/LoadingIconButton";
@@ -41,7 +41,7 @@ class PlanItem extends React.PureComponent<PlanItemProps> {
     onChange(e) {
         const { value } = e.target;
         const { item } = this.props;
-        Dispatcher.dispatch({
+        dispatcher.dispatch({
             type: ShoppingActions.RENAME_ITEM,
             id: item.id,
             name: value,
@@ -54,7 +54,7 @@ class PlanItem extends React.PureComponent<PlanItemProps> {
         e.preventDefault();
         e.stopPropagation();
         if (e.shiftKey) return;
-        Dispatcher.dispatch({
+        dispatcher.dispatch({
             type: ShoppingActions.FOCUS,
             id: item.id,
             itemType: ShopItemType.PLAN_ITEM,
@@ -69,7 +69,7 @@ class PlanItem extends React.PureComponent<PlanItemProps> {
             case "Enter":
                 if (value.length === 0) break;
                 // add a new item, before if the cursor is at the beginning, after otherwise
-                Dispatcher.dispatch({
+                dispatcher.dispatch({
                     type:
                         selectionStart === 0
                             ? ShoppingActions.CREATE_ITEM_BEFORE
@@ -81,7 +81,7 @@ class PlanItem extends React.PureComponent<PlanItemProps> {
                 // if the value is empty, delete the item and focus previous
                 if (value.length === 0) {
                     e.preventDefault();
-                    Dispatcher.dispatch({
+                    dispatcher.dispatch({
                         type: ShoppingActions.DELETE_ITEM_BACKWARDS,
                         id: this.props.item.id,
                     });
@@ -91,7 +91,7 @@ class PlanItem extends React.PureComponent<PlanItemProps> {
                 // if the value is empty, delete the item and focus next
                 if (value.length === 0) {
                     e.preventDefault();
-                    Dispatcher.dispatch({
+                    dispatcher.dispatch({
                         type: ShoppingActions.DELETE_ITEM_FORWARD,
                         id: this.props.item.id,
                     });

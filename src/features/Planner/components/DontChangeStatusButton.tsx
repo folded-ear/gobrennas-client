@@ -1,5 +1,5 @@
 import React from "react";
-import Dispatcher from "@/data/dispatcher";
+import dispatcher from "@/data/dispatcher";
 import PlanActions from "@/features/Planner/data/PlanActions";
 import PlanItemStatus, {
     getColorForStatus,
@@ -30,7 +30,7 @@ const DontChangeStatusButton: React.FC<Props> = ({ id, next, ...props }) => {
             size="small"
             onClick={(e) => {
                 e.stopPropagation();
-                Dispatcher.dispatch({
+                dispatcher.dispatch({
                     type: PlanActions.UNDO_SET_STATUS,
                     id,
                 });

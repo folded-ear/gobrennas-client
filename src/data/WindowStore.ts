@@ -1,5 +1,5 @@
 import { ReduceStore } from "flux/utils";
-import Dispatcher from "./dispatcher";
+import dispatcher from "./dispatcher";
 import WindowActions from "./WindowActions";
 import { FluxAction } from "@/global/types/types";
 
@@ -15,10 +15,6 @@ interface State {
 }
 
 class WindowStore extends ReduceStore<State, FluxAction> {
-    constructor() {
-        super(Dispatcher);
-    }
-
     getInitialState(): State {
         return {
             size: {
@@ -65,4 +61,4 @@ class WindowStore extends ReduceStore<State, FluxAction> {
     }
 }
 
-export default new WindowStore();
+export default new WindowStore(dispatcher);

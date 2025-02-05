@@ -1,6 +1,6 @@
 import { AddIcon } from "@/views/common/icons";
 import { List } from "@mui/material";
-import Dispatcher from "@/data/dispatcher";
+import dispatcher from "@/data/dispatcher";
 import LoadingItem from "@/features/Planner/components/LoadingItem";
 import PlanHeader from "@/features/Planner/components/PlanHeader";
 import PlanItem from "@/features/Planner/components/PlanItem";
@@ -51,7 +51,7 @@ export function moveSubtree(
             action.after = target.id;
         }
     }
-    Dispatcher.dispatch(action);
+    dispatcher.dispatch(action);
 }
 
 function Plan({
@@ -69,7 +69,7 @@ function Plan({
 
     const handleAddNew = (e) => {
         e.preventDefault();
-        Dispatcher.dispatch({
+        dispatcher.dispatch({
             type: PlanActions.CREATE_ITEM_AT_END,
         });
     };

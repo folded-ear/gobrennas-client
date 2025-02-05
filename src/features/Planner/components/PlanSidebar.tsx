@@ -13,7 +13,7 @@ import {
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import AccessLevel, { includesLevel } from "@/data/AccessLevel";
-import Dispatcher from "@/data/dispatcher";
+import dispatcher from "@/data/dispatcher";
 import FriendStore from "@/data/FriendStore";
 import PlanActions from "@/features/Planner/data/PlanActions";
 import useFluxStore from "@/data/useFluxStore";
@@ -109,7 +109,7 @@ const PlanSidebar: React.FC<Props> = ({ open, onClose, plan }) => {
     }, [open, plan.color, plan.name]);
 
     const handleRename = () => {
-        Dispatcher.dispatch({
+        dispatcher.dispatch({
             type: PlanActions.RENAME_PLAN,
             id: plan.id,
             name,
@@ -119,7 +119,7 @@ const PlanSidebar: React.FC<Props> = ({ open, onClose, plan }) => {
     const handleSetColor = () => {
         const isBlank = color === "";
         if (isBlank || isValidColor(color)) {
-            Dispatcher.dispatch({
+            dispatcher.dispatch({
                 type: PlanActions.SET_PLAN_COLOR,
                 id: plan.id,
                 color: isBlank ? "" : "#" + color,
@@ -129,13 +129,13 @@ const PlanSidebar: React.FC<Props> = ({ open, onClose, plan }) => {
 
     const handleGrantChange = (userId, level) => {
         if (level === LEVEL_NO_ACCESS) {
-            Dispatcher.dispatch({
+            dispatcher.dispatch({
                 type: PlanActions.CLEAR_PLAN_GRANT,
                 id: plan.id,
                 userId,
             });
         } else {
-            Dispatcher.dispatch({
+            dispatcher.dispatch({
                 type: PlanActions.SET_PLAN_GRANT,
                 id: plan.id,
                 userId,
@@ -145,7 +145,7 @@ const PlanSidebar: React.FC<Props> = ({ open, onClose, plan }) => {
     };
 
     const handleDelete = () => {
-        Dispatcher.dispatch({
+        dispatcher.dispatch({
             type: PlanActions.DELETE_PLAN,
             id: plan.id,
         });

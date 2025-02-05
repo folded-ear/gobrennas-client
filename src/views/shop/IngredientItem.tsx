@@ -1,7 +1,7 @@
 import { ListItemText } from "@mui/material";
 import classnames from "classnames";
 import React from "react";
-import Dispatcher from "@/data/dispatcher";
+import dispatcher from "@/data/dispatcher";
 import ShoppingActions from "@/data/ShoppingActions";
 import PlanItemStatus from "@/features/Planner/data/PlanItemStatus";
 import LoadingIconButton from "../common/LoadingIconButton";
@@ -45,7 +45,7 @@ class IngredientItem extends React.PureComponent<IngredientItemProps> {
         const {
             item: { id, itemIds },
         } = this.props;
-        Dispatcher.dispatch({
+        dispatcher.dispatch({
             type: ShoppingActions.SET_INGREDIENT_STATUS,
             id,
             itemIds,
@@ -58,7 +58,7 @@ class IngredientItem extends React.PureComponent<IngredientItemProps> {
         const {
             item: { id, itemIds },
         } = this.props;
-        Dispatcher.dispatch({
+        dispatcher.dispatch({
             type: ShoppingActions.UNDO_SET_INGREDIENT_STATUS,
             id,
             itemIds,
@@ -67,7 +67,7 @@ class IngredientItem extends React.PureComponent<IngredientItemProps> {
 
     onToggleExpanded(e) {
         if (e) e.stopPropagation();
-        Dispatcher.dispatch({
+        dispatcher.dispatch({
             type: ShoppingActions.TOGGLE_EXPANDED,
             id: this.props.item.id,
         });
@@ -78,7 +78,7 @@ class IngredientItem extends React.PureComponent<IngredientItemProps> {
         e.preventDefault();
         e.stopPropagation();
         if (e.shiftKey) return;
-        Dispatcher.dispatch({
+        dispatcher.dispatch({
             type: ShoppingActions.FOCUS,
             id: item.id,
             itemType: ShopItemType.INGREDIENT,

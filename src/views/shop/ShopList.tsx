@@ -1,7 +1,7 @@
 import { Box, IconButton, Stack, Typography } from "@mui/material";
 import List from "@mui/material/List";
 import React, { useCallback, useState } from "react";
-import Dispatcher from "@/data/dispatcher";
+import dispatcher from "@/data/dispatcher";
 import ShoppingActions from "@/data/ShoppingActions";
 import FoodingerFab from "@/views/common/FoodingerFab";
 import LoadingIndicator from "@/views/common/LoadingIndicator";
@@ -81,7 +81,7 @@ const TupleList: React.FC<TupleListProps> = ({ tuples }) => {
         targetId,
         vertical,
     ) => {
-        Dispatcher.dispatch({
+        dispatcher.dispatch({
             type: PantryItemActions.ORDER_FOR_STORE,
             id,
             targetId,
@@ -114,7 +114,7 @@ const ShopList: React.FC<ShopListProps> = ({
 
     const handleAddNew = useCallback((e) => {
         e.preventDefault();
-        Dispatcher.dispatch({
+        dispatcher.dispatch({
             type: ShoppingActions.CREATE_ITEM_AT_END,
         });
     }, []);

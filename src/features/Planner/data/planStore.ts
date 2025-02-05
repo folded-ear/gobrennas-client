@@ -1,4 +1,3 @@
-import Dispatcher from "@/data/dispatcher";
 import PantryItemActions from "@/data/PantryItemActions";
 import ShoppingActions from "@/data/ShoppingActions";
 import dotProp from "dot-prop-immutable";
@@ -68,6 +67,7 @@ import { Maybe } from "graphql/jsutils/Maybe";
 import PlanItemStatus from "@/features/Planner/data/PlanItemStatus";
 import { FluxAction } from "@/global/types/types";
 import RecipeActions from "@/data/RecipeActions";
+import dispatcher from "@/data/dispatcher";
 
 /*
  * This store is way too muddled. But leaving it that way for the moment, to
@@ -131,7 +131,7 @@ class PlanStore extends FluxReduceStore<State, FluxAction> {
             activeTaskId: null,
             selectedTaskIds: null,
             topLevelIds: new LoadObjectState<BfsId[]>(() =>
-                Dispatcher.dispatch({
+                this.__dispatcher.dispatch({
                     type: PlanActions.LOAD_PLANS,
                 }),
             ),
@@ -646,4 +646,4 @@ class PlanStore extends FluxReduceStore<State, FluxAction> {
     }
 }
 
-export default new PlanStore(Dispatcher);
+export default new PlanStore(dispatcher);

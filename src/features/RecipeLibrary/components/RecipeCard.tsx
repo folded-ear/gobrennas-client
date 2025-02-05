@@ -7,7 +7,7 @@ import {
     Grid,
     Typography,
 } from "@mui/material";
-import Dispatcher from "@/data/dispatcher";
+import dispatcher from "@/data/dispatcher";
 import RecipeActions from "@/data/RecipeActions";
 import ItemImage from "@/features/RecipeLibrary/components/ItemImage";
 import ItemImageUpload from "@/features/RecipeLibrary/components/ItemImageUpload";
@@ -37,7 +37,7 @@ const RecipeCard: React.FC<Props> = ({ recipe, mine, showOwner }) => {
         recipe.labels.filter((label) => label.indexOf("--") !== 0);
 
     const handleClick = (planId: number, scale?: number) => {
-        Dispatcher.dispatch({
+        dispatcher.dispatch({
             type: RecipeActions.SEND_TO_PLAN,
             recipeId: recipe.id,
             planId,

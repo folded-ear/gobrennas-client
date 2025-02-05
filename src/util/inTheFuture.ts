@@ -1,4 +1,4 @@
-import Dispatcher from "@/data/dispatcher";
+import dispatcher from "@/data/dispatcher";
 import { CheckableActionType } from "@/util/typedAction";
 
 type TimeoutId = number;
@@ -14,7 +14,7 @@ const flushPending = () => {
 };
 
 const doFutureWork = (type: CheckableActionType) => {
-    Dispatcher.dispatch({ type });
+    dispatcher.dispatch({ type });
     timeoutRegistry.delete(type);
     if (timeoutRegistry.size === 0) {
         window.removeEventListener("beforeunload", flushPending);

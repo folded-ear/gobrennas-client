@@ -1,4 +1,4 @@
-import Dispatcher from "@/data/dispatcher";
+import dispatcher from "@/data/dispatcher";
 import PantryItemActions from "@/data/PantryItemActions";
 import RecipeActions from "@/data/RecipeActions";
 import RecipeApi from "@/data/RecipeApi";
@@ -36,7 +36,7 @@ class LibraryStore extends ReduceStore<State, FluxAction> {
                 for (const id of ids) {
                     stringIdArray.push(ensureString(id));
                 }
-                Dispatcher.dispatch({
+                dispatcher.dispatch({
                     type: LibraryActions.LOAD_INGREDIENTS,
                     ids: stringIdArray,
                 });
@@ -175,4 +175,4 @@ LibraryStore["stateTypes"] = {
     ),
 };
 
-export default typedStore(new LibraryStore(Dispatcher));
+export default typedStore(new LibraryStore(dispatcher));

@@ -1,7 +1,7 @@
 import planStore from "@/features/Planner/data/planStore";
 import { ReduceStore } from "flux/utils";
 import { ShopItemType } from "@/views/shop/ShopList";
-import Dispatcher from "./dispatcher";
+import dispatcher from "./dispatcher";
 import PantryItemActions from "./PantryItemActions";
 import ShoppingActions from "./ShoppingActions";
 import { FluxAction } from "@/global/types/types";
@@ -158,4 +158,4 @@ class ShoppingStore extends ReduceStore<State, FluxAction> {
     }
 }
 
-export default new ShoppingStore(Dispatcher);
+export default new ShoppingStore(dispatcher);

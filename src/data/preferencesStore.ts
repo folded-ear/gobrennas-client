@@ -5,7 +5,7 @@ import { Map } from "immutable";
 import { getJsonItem, setJsonItem } from "@/util/storage";
 // noinspection ES6PreferShortImport
 import { LOCAL_STORAGE_PREFERENCES } from "@/constants/index";
-import Dispatcher from "./dispatcher";
+import dispatcher from "./dispatcher";
 import UserActions from "./UserActions";
 import { FluxAction } from "@/global/types/types";
 import ShoppingActions from "./ShoppingActions";
@@ -143,4 +143,4 @@ class PreferencesStore extends ReduceStore<State, FluxAction> {
     }
 }
 
-export default new PreferencesStore(Dispatcher);
+export default new PreferencesStore(dispatcher);

@@ -1,5 +1,5 @@
 import { IconButton, IconButtonProps, Tooltip } from "@mui/material";
-import Dispatcher from "@/data/dispatcher";
+import dispatcher from "@/data/dispatcher";
 import PlanActions from "@/features/Planner/data/PlanActions";
 import PlanItemStatus, {
     getColorForStatus,
@@ -47,7 +47,7 @@ const StatusIconButton = ({ next, current, id, ...props }: Props) => {
                 size="small"
                 onClick={(e) => {
                     e.stopPropagation();
-                    Dispatcher.dispatch({
+                    dispatcher.dispatch({
                         type: PlanActions.SET_STATUS,
                         id: id,
                         status: next,

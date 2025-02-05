@@ -1,6 +1,6 @@
 import { StrictMode } from "react";
 import GoBrennas from "./GoBrennas";
-import Dispatcher from "@/data/dispatcher";
+import dispatcher from "@/data/dispatcher";
 import WindowActions from "@/data/WindowActions";
 import debounce from "@/util/debounce";
 import { createRoot } from "react-dom/client";
@@ -8,7 +8,7 @@ import { BrowserRouter } from "react-router-dom";
 
 // import logAction from "./util/logAction";
 // if (import.meta.env.DEV) {
-//     Dispatcher.register(logAction);
+//     dispatcher.register(logAction);
 // }
 
 createRoot(document.getElementById("root")!).render(
@@ -27,7 +27,7 @@ window.addEventListener(
     "resize",
     debounce(
         () =>
-            Dispatcher.dispatch({
+            dispatcher.dispatch({
                 type: WindowActions.RESIZE,
                 size: {
                     width: window.innerWidth,
@@ -39,26 +39,26 @@ window.addEventListener(
 );
 
 window.addEventListener("focus", () => {
-    if (Dispatcher.isDispatching()) {
+    if (dispatcher.isDispatching()) {
         // eslint-disable-next-line no-console
         console.warn("reentrant focus dispatch");
         return;
     }
-    Dispatcher.dispatch({
+    dispatcher.dispatch({
         type: WindowActions.FOCUS_CHANGE,
         focused: true,
     });
 });
 
 window.addEventListener("blur", () =>
-    Dispatcher.dispatch({
+    dispatcher.dispatch({
         type: WindowActions.FOCUS_CHANGE,
         focused: false,
     }),
 );
 
 document.addEventListener("visibilitychange", () =>
-    Dispatcher.dispatch({
+    dispatcher.dispatch({
         type: WindowActions.VISIBILITY_CHANGE,
         visible: !document.hidden,
     }),

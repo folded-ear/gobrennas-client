@@ -1,7 +1,7 @@
 import useFluxStore from "@/data/useFluxStore";
 import planStore from "@/features/Planner/data/planStore";
 import React from "react";
-import Dispatcher from "@/data/dispatcher";
+import dispatcher from "@/data/dispatcher";
 import PlanActions from "@/features/Planner/data/PlanActions";
 import { BfsId, includesBfsId } from "@/global/types/identity";
 import { useHistory } from "react-router-dom";
@@ -24,7 +24,7 @@ export const useLoadedPlan = (pid: BfsId | undefined) => {
                 // cycle completes, but doesn't guarantee it. The setTimeout
                 // avoids a reentrant dispatch if the effect isn't deferred.
                 const t = setTimeout(() =>
-                    Dispatcher.dispatch({
+                    dispatcher.dispatch({
                         type: PlanActions.SELECT_PLAN,
                         id: pid,
                     }),
