@@ -578,9 +578,11 @@ class PlanStore extends FluxReduceStore<State, FluxAction> {
     getItemLO(id: BfsId): LoadObject<PlanItem> {
         if (id == null) throw new Error("No task has the null ID");
         const s = this.getState();
-        return isKnown(s, id)
-            ? (loForId(s, id) as LoadObject<PlanItem>)
-            : LoadObject.empty();
+        if (isKnown(s, id)) return loForId(s, id) as LoadObject<PlanItem>;
+        const planIdsLO = this.getPlanIdsLO();
+        if (planIdsLO.isLoading() || !planIdsLO.hasValue())
+            return LoadObject.loading();
+        return LoadObject.withError(new Error("uh, no?"));
     }
 
     getItemRlo(id: BfsId): RippedLO<PlanItem> {

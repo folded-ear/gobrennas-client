@@ -9,7 +9,8 @@ import { useLoadedPlan } from "@/features/RecipeDisplay/hooks/useLoadedPlan";
 import { recipeRloFromItemRlo } from "@/features/RecipeDisplay/utils/recipeRloFromItemRlo";
 import CloseButton from "@/views/common/CloseButton";
 import CookedItButton from "@/features/Planner/components/CookedItButton";
-import { useHistory } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
+import NotFound from "@/views/common/NotFound";
 
 type Props = RouteComponentProps<{
     pid: string;
@@ -18,8 +19,8 @@ type Props = RouteComponentProps<{
 
 const PlannedRecipeController: React.FC<Props> = ({ match }) => {
     const rid = match.params.rid;
-    const recipe = useFluxStore(
-        () => recipeRloFromItemRlo(planStore.getItemRlo(rid)).data,
+    const recipeRLO = useFluxStore(
+        () => recipeRloFromItemRlo(planStore.getItemRlo(rid)),
         [planStore, LibraryStore],
         [rid],
     );
@@ -27,6 +28,15 @@ const PlannedRecipeController: React.FC<Props> = ({ match }) => {
 
     useLoadedPlan(match.params.pid); // don't actually need the data, just need it loaded
 
+    if (recipeRLO.error) {
+        return (
+            <NotFound>
+                <Link to={`/plan/${match.params.pid}`}>Back to Plan</Link>
+            </NotFound>
+        );
+    }
+
+    const recipe = recipeRLO.data;
     if (!recipe) {
         return <LoadingIndicator />;
     }
