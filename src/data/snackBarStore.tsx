@@ -1,9 +1,9 @@
-import { Button } from "@mui/material";
+import { AlertColor, Button } from "@mui/material";
 import PlanActions from "@/features/Planner/data/PlanActions";
 import PlanItemStatus, {
     willStatusDelete,
 } from "@/features/Planner/data/PlanItemStatus";
-import planStore from "@/features/Planner/data/planStore";
+import planStore, { PlanItem } from "@/features/Planner/data/planStore";
 import LibraryStore from "@/features/RecipeLibrary/data/LibraryStore";
 import { ReduceStore } from "flux/utils";
 import PropTypes from "prop-types";
@@ -12,23 +12,51 @@ import dispatcher from "./dispatcher";
 import PantryItemActions from "./PantryItemActions";
 import RecipeActions from "./RecipeActions";
 import UiActions from "./UiActions";
+import { FluxAction } from "@/global/types/types";
+import { Maybe } from "graphql/jsutils/Maybe";
+import * as React from "react";
+import { SnackbarCloseReason } from "@mui/material/Snackbar/Snackbar";
+import { BfsId } from "@/global/types/identity";
 
-const enqueue = (state, item) => {
+export interface Snack {
+    key: number | string;
+    message: string;
+    severity?: AlertColor;
+    renderAction?: Maybe<
+        (dismiss: (e: React.SyntheticEvent | Event) => void) => React.ReactNode
+    >;
+    onClose?: (
+        event?: React.SyntheticEvent | Event,
+        reason?: SnackbarCloseReason,
+    ) => void;
+    hideDelay?: Maybe<number>;
+}
+
+interface State {
+    fabVisible: boolean;
+    queue: Snack[];
+}
+
+const enqueue = (state: State, item: Omit<Snack, "key">): State => {
     return {
         ...state,
         queue: state.queue.concat({
-            key: (Date.now() % 100000) + Math.random(),
             ...item,
+            key: (Date.now() % 100000) + Math.random(),
         }),
     };
 };
 
-const forPlanItemStatusChanges = (state, ids, status) => {
+function forPlanItemStatusChanges(
+    state: State,
+    ids: BfsId[],
+    status: PlanItemStatus,
+): State {
     if (!ids || ids.length === 0) return state;
     if (!willStatusDelete(status)) return state;
     const comps = ids.reduce(
         (arr, id) => arr.concat(planStore.getNonDescendantComponents(id)),
-        [],
+        [] as PlanItem[],
     );
     if (comps.length === 0) return state;
     const label =
@@ -59,17 +87,17 @@ const forPlanItemStatusChanges = (state, ids, status) => {
             );
         },
     });
-};
+}
 
-class SnackBarStore extends ReduceStore {
-    getInitialState() {
+class SnackBarStore extends ReduceStore<State, FluxAction> {
+    getInitialState(): State {
         return {
             fabVisible: false,
             queue: [],
         };
     }
 
-    reduce(state, action) {
+    reduce(state: State, action: FluxAction): State {
         switch (action.type) {
             case UiActions.SHOW_FAB: {
                 return {
@@ -94,7 +122,7 @@ class SnackBarStore extends ReduceStore {
 
             case PlanActions.SEND_TO_PLAN:
             case PantryItemActions.SEND_TO_PLAN: {
-                const plan = planStore.getPlanRlo(action.planId).data;
+                const plan = planStore.getPlanRlo(action.planId).data!;
                 return enqueue(state, {
                     message: `Added ${action.name} to ${plan.name}`,
                     severity: "success",
@@ -102,7 +130,7 @@ class SnackBarStore extends ReduceStore {
             }
 
             case RecipeActions.SENT_TO_PLAN: {
-                const plan = planStore.getPlanRlo(action.planId).data;
+                const plan = planStore.getPlanRlo(action.planId).data!;
                 // if came from the library, the store might not have it...
                 const recipe = LibraryStore.getIngredientById(
                     action.recipeId,
@@ -116,7 +144,7 @@ class SnackBarStore extends ReduceStore {
             }
 
             case RecipeActions.ERROR_SENDING_TO_PLAN: {
-                const plan = planStore.getPlanRlo(action.planId).data;
+                const plan = planStore.getPlanRlo(action.planId).data!;
                 const recipe = LibraryStore.getIngredientById(
                     action.recipeId,
                 ).getValueEnforcing();
@@ -148,7 +176,7 @@ class SnackBarStore extends ReduceStore {
     }
 }
 
-SnackBarStore.stateTypes = {
+SnackBarStore["stateTypes"] = {
     fabVisible: PropTypes.bool.isRequired,
     queue: PropTypes.arrayOf(
         PropTypes.shape({

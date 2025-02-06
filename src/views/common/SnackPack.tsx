@@ -1,28 +1,18 @@
 import * as React from "react";
-import { Alert, AlertColor, IconButton, Snackbar } from "@mui/material";
+import { Alert, IconButton, Snackbar } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import { CloseIcon } from "@/views/common/icons";
 import dispatcher from "@/data/dispatcher";
-import snackBarStore from "@/data/snackBarStore";
+import snackBarStore, { Snack } from "@/data/snackBarStore";
 import UiActions from "@/data/UiActions";
 import useFluxStore from "@/data/useFluxStore";
+import { SnackbarCloseReason } from "@mui/material/Snackbar/Snackbar";
 
 const useStyles = makeStyles(() => ({
     close: {
         fontWeight: "normal",
     },
 }));
-
-type MessageInfo =
-    | {
-          renderAction: any;
-          key: string;
-          message: string;
-          onClose(event?: React.SyntheticEvent | Event, reason?: string): void;
-          severity: AlertColor;
-          hideDelay?: number;
-      }
-    | undefined;
 
 function SnackPack() {
     const classes = useStyles();
@@ -34,8 +24,7 @@ function SnackPack() {
     React.useEffect(() => setSnackPack(queue), [queue]);
 
     const [open, setOpen] = React.useState(false);
-    const [messageInfo, setMessageInfo] =
-        React.useState<MessageInfo>(undefined);
+    const [messageInfo, setMessageInfo] = React.useState<Snack | undefined>();
 
     React.useEffect(() => {
         if (snackPack.length && !messageInfo) {
@@ -53,7 +42,7 @@ function SnackPack() {
 
     const handleClose = (
         event?: React.SyntheticEvent | Event,
-        reason?: string,
+        reason?: SnackbarCloseReason,
     ) => {
         setOpen(false);
         messageInfo.onClose &&
@@ -83,7 +72,7 @@ function SnackPack() {
         children = (
             <Alert severity={messageInfo.severity}>{messageInfo.message}</Alert>
         );
-    } /*if (messageInfo)*/ else {
+    } else {
         message = messageInfo.message;
     }
 
