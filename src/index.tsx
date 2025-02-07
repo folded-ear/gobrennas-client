@@ -1,65 +1,167 @@
-import { StrictMode } from "react";
-import GoBrennas from "./GoBrennas";
-import Dispatcher from "@/data/dispatcher";
-import WindowActions from "@/data/WindowActions";
-import debounce from "@/util/debounce";
+import { useEffect, useMemo, useState } from "react";
 import { createRoot } from "react-dom/client";
-import { BrowserRouter } from "react-router-dom";
+import { useTreeData } from "react-stately";
+import {
+    Button,
+    defaultTheme,
+    Item,
+    ListBox,
+    Provider,
+    Section,
+    Text,
+} from "@adobe/react-spectrum";
+import { hash } from "ohash";
 
-// import logAction from "./util/logAction";
-// if (import.meta.env.DEV) {
-//     Dispatcher.register(logAction);
-// }
+type Database = Record<string, string | null>;
 
-createRoot(document.getElementById("root")!).render(
-    <StrictMode>
-        <BrowserRouter>
-            <GoBrennas />
-        </BrowserRouter>
-    </StrictMode>,
-);
+interface ItemValue {
+    name: string;
+    kids?: Array<ItemValue>;
+}
 
-/*
- * From here on down, we're wiring up the environment as an actor on the system.
- */
+const INITIAL_ITEMS: Database = {
+    People: null,
+    David: "People",
+    Sam: "People",
+    Jane: "People",
+    Animals: null,
+    Aardvark: "Animals",
+    Kangaroo: "Animals",
+    Snake: "Animals",
+};
+const STORAGE_KEY = "my-nifty-tree";
 
-window.addEventListener(
-    "resize",
-    debounce(
-        () =>
-            Dispatcher.dispatch({
-                type: WindowActions.RESIZE,
-                size: {
-                    width: window.innerWidth,
-                    height: window.innerHeight,
-                },
-            }),
-        250,
-    ),
-);
-
-window.addEventListener("focus", () => {
-    if (Dispatcher.isDispatching()) {
-        // eslint-disable-next-line no-console
-        console.warn("reentrant focus dispatch");
-        return;
+function select(): Database {
+    const json = localStorage.getItem(STORAGE_KEY);
+    try {
+        if (json) return JSON.parse(json);
+    } catch (e) {
+        console.error("Failed to parse", json);
     }
-    Dispatcher.dispatch({
-        type: WindowActions.FOCUS_CHANGE,
-        focused: true,
+    return INITIAL_ITEMS;
+}
+
+function update(value: Database) {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(value));
+}
+
+function useDb(label): [Database, (v: Database) => void] {
+    const [db, setDb] = useState(select);
+    useEffect(() => {
+        // poll for updates
+        const interval = setInterval(() => {
+            const next = select();
+            console.log(label, "hash check", hash(next), hash(db));
+            if (hash(next) !== hash(db)) {
+                setDb(next);
+            }
+        }, 1000);
+        return () => clearInterval(interval);
+    }, [label, db]);
+    return [db, update];
+}
+
+function Tree({ label }) {
+    const [db, setDb] = useDb(label);
+    const dbhash = useMemo(() => hash(db), [db]);
+    console.log(label, "db", dbhash);
+    const [roots, index] = useMemo(() => {
+        const roots: ItemValue[] = [];
+        const index = new Map<string, ItemValue>();
+        for (const key in db) {
+            const item = { name: key, kids: [] };
+            index.set(key, item);
+            const parent = db[key];
+            if (parent) {
+                index.get(parent)!.kids!.push(item);
+            } else {
+                roots.push(item);
+            }
+        }
+        return [roots, index];
+    }, [dbhash]);
+
+    console.log(label, "db", db);
+    console.log(label, "roots", roots);
+
+    const tree = useTreeData<ItemValue>({
+        initialItems: roots,
+        getKey: (item) => item.name,
+        getChildren: (item) => item.kids ?? [],
     });
-});
 
-window.addEventListener("blur", () =>
-    Dispatcher.dispatch({
-        type: WindowActions.FOCUS_CHANGE,
-        focused: false,
-    }),
-);
+    const handleAdd = (key) => {
+        const name = prompt("Name?");
+        if (name) {
+            tree.insertAfter(key, { name });
+            setDb({
+                ...db,
+                [name]: db[key],
+            });
+        }
+    };
 
-document.addEventListener("visibilitychange", () =>
-    Dispatcher.dispatch({
-        type: WindowActions.VISIBILITY_CHANGE,
-        visible: !document.hidden,
-    }),
-);
+    return (
+        <>
+            <h1>{label}</h1>
+            <ListBox aria-label="List organisms" items={tree.items}>
+                {(node) => {
+                    console.log("render", node.key);
+                    return (
+                        <Section title={node.value.name} items={node.children}>
+                            {(node) => {
+                                console.log("render", node.key);
+                                return (
+                                    <Item>
+                                        <div
+                                            style={{
+                                                display: "flex",
+                                            }}
+                                        >
+                                            {node.value.name}
+                                            <Button
+                                                variant="primary"
+                                                onPress={() =>
+                                                    handleAdd(node.key)
+                                                }
+                                            >
+                                                <Text>Add</Text>
+                                            </Button>
+                                        </div>
+                                    </Item>
+                                );
+                            }}
+                        </Section>
+                    );
+                }}
+            </ListBox>
+        </>
+    );
+}
+
+function Trees() {
+    console.log("TREES");
+
+    return (
+        <Provider theme={defaultTheme}>
+            <div style={{ display: "flex" }}>
+                <div
+                    style={{
+                        flex: 1,
+                    }}
+                >
+                    <Tree label={"Left"} />
+                </div>
+                <div
+                    style={{
+                        flex: 1,
+                    }}
+                >
+                    <Tree label={"Right"} />
+                </div>
+            </div>
+        </Provider>
+    );
+}
+
+createRoot(document.getElementById("root")!).render(<Trees />);
