@@ -11,7 +11,6 @@ import {
 import { soakUpUnauthorized } from "@/util/promiseFlux";
 import dispatcher from "@/data/dispatcher";
 import LibraryActions from "@/features/RecipeLibrary/data/LibraryActions";
-import PlanActions from "@/features/Planner/data/PlanActions";
 import { toRestPlanOrItem } from "@/features/Planner/data/conversion_helpers";
 
 /*
@@ -73,7 +72,7 @@ function buildSyncer(planIds: BfsId[]): Syncer {
                     const updates = data.planner[`p${id}`];
                     if (updates.length) {
                         dispatcher.dispatch({
-                            type: PlanActions.PLAN_DELTAS,
+                            type: "plan/plan-deltas",
                             id,
                             data: updates.map(toRestPlanOrItem),
                         });

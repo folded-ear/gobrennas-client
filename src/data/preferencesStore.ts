@@ -1,4 +1,3 @@
-import PlanActions from "@/features/Planner/data/PlanActions";
 import planStore from "@/features/Planner/data/planStore";
 import { ReduceStore } from "flux/utils";
 import { Map } from "immutable";
@@ -68,10 +67,10 @@ class PreferencesStore extends ReduceStore<State, FluxAction> {
             }
 
             case "plan/select-plan":
-            case PlanActions.PLAN_CREATED:
+            case "plan/plan-created":
             case "plan/delete-plan":
-            case PlanActions.PLAN_DELETED:
-            case PlanActions.PLANS_LOADED: {
+            case "plan/plan-deleted":
+            case "plan/plans-loaded": {
                 this.__dispatcher.waitFor([planStore.getDispatchToken()]);
                 const rlo = planStore.getActivePlanRlo();
                 return rlo.data

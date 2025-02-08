@@ -39,8 +39,27 @@ export type FluxAction =
     | { type: "plan/expand-all" }
     | { type: "plan/flush-renames" }
     | { type: "plan/flush-status-updates" }
+    | { type: "plan/load-plans" }
+    | {
+          type: "plan/plan-created";
+          id: BfsId;
+          clientId: string;
+          data: Plan;
+          fromId: Maybe<BfsId>;
+      }
+    | {
+          type: "plan/plan-data-bootstrapped";
+          id: BfsId;
+          data: Array<Plan | PlanItem>;
+      }
+    | { type: "plan/plan-deleted"; id: BfsId }
+    | { type: "plan/plan-deltas"; id: BfsId; data: Array<Plan | PlanItem> }
     | { type: "plan/plan-detail-visibility"; visible: boolean }
+    | { type: "plan/plan-grant-cleared"; id: BfsId; userId: BfsId }
+    | { type: "plan/plan-grant-set"; id: BfsId; userId: BfsId }
+    | { type: "plan/plans-loaded"; data: Plan[] }
     | { type: "plan/rename-plan"; id: BfsId; name: string }
+    | { type: "plan/select-plan"; id: BfsId }
     | { type: "plan/set-plan-color"; id: BfsId; color: string }
     | {
           type: "plan/set-plan-grant";
@@ -79,12 +98,13 @@ export type FluxAction =
           doneAt: Maybe<Date>;
       }
     | { type: "plan/bulk-set-status"; ids: BfsId[]; status: PlanItemStatus }
+    | { type: "plan/deleted"; id: BfsId }
     | { type: "plan/focus"; id: BfsId }
     | { type: "plan/focus-next" }
     | { type: "plan/focus-previous" }
     | { type: "plan/rename-item"; id: BfsId; name: string }
     | { type: "plan/select-next" }
-    | { type: "plan/select-plan"; id: BfsId }
+    | { type: "plan/updated"; data: Plan | PlanItem }
     | { type: "plan/select-previous" }
     | { type: "plan/select-to"; id: BfsId }
     | { type: "plan/send-to-plan"; planId: BfsId; name: string }
@@ -97,6 +117,11 @@ export type FluxAction =
     | { type: "plan/delete-item-backwards"; id: BfsId }
     | { type: "plan/delete-item-forward"; id: BfsId }
     | { type: "plan/delete-selected" }
+    | {
+          type: "plan/item-created";
+          data: Array<Plan | PlanItem>;
+          newIds: Record<BfsId, string>;
+      }
     | { type: "plan/move-next" }
     | { type: "plan/move-previous" }
     | ({ type: "plan/move-subtree" } & MoveSubtreeAction)

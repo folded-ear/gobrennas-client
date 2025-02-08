@@ -15,7 +15,6 @@ import React, { useEffect, useState } from "react";
 import AccessLevel, { includesLevel } from "@/data/AccessLevel";
 import dispatcher from "@/data/dispatcher";
 import FriendStore from "@/data/FriendStore";
-import PlanActions from "@/features/Planner/data/PlanActions";
 import useFluxStore from "@/data/useFluxStore";
 import { useProfile } from "@/providers/Profile";
 import DeleteButton from "@/views/common/DeleteButton";
@@ -130,7 +129,7 @@ const PlanSidebar: React.FC<Props> = ({ open, onClose, plan }) => {
     const handleGrantChange = (userId, level) => {
         if (level === LEVEL_NO_ACCESS) {
             dispatcher.dispatch({
-                type: PlanActions.CLEAR_PLAN_GRANT,
+                type: "plan/clear-plan-grant",
                 id: plan.id,
                 userId,
             });

@@ -2,7 +2,6 @@ import planStore from "@/features/Planner/data/planStore";
 import { ReduceStore } from "flux/utils";
 import { ShopItemType } from "@/views/shop/ShopList";
 import dispatcher, { FluxAction } from "./dispatcher";
-import PlanActions from "@/features/Planner/data/PlanActions";
 import { removeDistinct, toggleDistinct } from "@/util/arrayAsSet";
 import preferencesStore from "./preferencesStore";
 import PlanApi from "@/features/Planner/data/PlanApi";
@@ -34,7 +33,7 @@ class ShoppingStore extends ReduceStore<State, FluxAction> {
 
     reduce(state: State, action: FluxAction): State {
         switch (action.type) {
-            case PlanActions.PLAN_DELETED:
+            case "plan/plan-deleted":
                 return {
                     ...state,
                     activePlanIds: removeDistinct(
@@ -43,7 +42,7 @@ class ShoppingStore extends ReduceStore<State, FluxAction> {
                     ),
                 };
 
-            case PlanActions.PLANS_LOADED: {
+            case "plan/plans-loaded": {
                 this.getDispatcher().waitFor([planStore.getDispatchToken()]);
                 const validPlanIds = planStore
                     .getPlanIdsLO()

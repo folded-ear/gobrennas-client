@@ -1,5 +1,4 @@
 import dotProp from "dot-prop-immutable";
-import PlanActions from "@/features/Planner/data/PlanActions";
 import FluxReduceStore from "flux/lib/FluxReduceStore";
 import { removeAtIndex } from "@/util/arrayAsSet";
 import ClientId from "@/util/ClientId";
@@ -132,7 +131,7 @@ class PlanStore extends FluxReduceStore<State, FluxAction> {
             selectedTaskIds: null,
             topLevelIds: new LoadObjectState<BfsId[]>(() =>
                 this.__dispatcher.dispatch({
-                    type: PlanActions.LOAD_PLANS,
+                    type: "plan/load-plans",
                 }),
             ),
             byId: {},
@@ -147,7 +146,7 @@ class PlanStore extends FluxReduceStore<State, FluxAction> {
             case "plan/duplicate-plan":
                 return createList(state, action.name, action.fromId);
 
-            case PlanActions.PLAN_CREATED: {
+            case "plan/plan-created": {
                 return listCreated(
                     state,
                     action.clientId,
@@ -179,7 +178,7 @@ class PlanStore extends FluxReduceStore<State, FluxAction> {
                 return next;
             }
 
-            case PlanActions.PLAN_DELETED: {
+            case "plan/plan-deleted": {
                 return selectDefaultList({
                     ...dotProp.delete(state, ["byId", action.id]),
                     topLevelIds: state.topLevelIds.map((ids) =>
@@ -188,9 +187,9 @@ class PlanStore extends FluxReduceStore<State, FluxAction> {
                 });
             }
 
-            case PlanActions.LOAD_PLANS:
+            case "plan/load-plans":
                 return loadLists(state);
-            case PlanActions.PLANS_LOADED:
+            case "plan/plans-loaded":
                 return listsLoaded(state, action.data);
             case "plan/select-plan":
                 return selectList(state, action.id);
@@ -218,8 +217,8 @@ class PlanStore extends FluxReduceStore<State, FluxAction> {
                 );
             }
 
-            case PlanActions.CLEAR_PLAN_GRANT: {
-                PlanApi.clearPlanGrant(action.id, action.userId);
+            case "plan/clear-plan-grant": {
+                PlanApi.clearPlanGrant(ensureString(action.id), action.userId);
                 return dotProp.set(state, ["byId", action.id], (lo) =>
                     lo
                         .map((l) =>
@@ -229,28 +228,28 @@ class PlanStore extends FluxReduceStore<State, FluxAction> {
                 );
             }
 
-            case PlanActions.PLAN_GRANT_SET:
-            case PlanActions.PLAN_GRANT_CLEARED: {
+            case "plan/plan-grant-set":
+            case "plan/plan-grant-cleared": {
                 return dotProp.set(state, ["byId", action.id], (lo) =>
                     lo.done(),
                 );
             }
 
-            case PlanActions.PLAN_DATA_BOOTSTRAPPED:
-            case PlanActions.PLAN_DELTAS:
+            case "plan/plan-data-bootstrapped":
+            case "plan/plan-deltas":
             case "recipe/sent-to-plan":
                 return tasksLoaded(state, action.data);
 
-            case PlanActions.TREE_CREATE:
+            case "plan/item-created":
                 return tasksCreated(state, action.data, action.newIds);
 
             case "plan/rename-item":
                 return renameTask(state, action.id, action.name);
 
-            case PlanActions.UPDATED:
+            case "plan/updated":
                 return taskLoaded(state, action.data);
 
-            case PlanActions.DELETED:
+            case "plan/deleted":
                 return taskDeleted(state, action.id);
 
             case "plan/focus": {
