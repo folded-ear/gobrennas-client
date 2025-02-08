@@ -409,17 +409,17 @@ class PlanStore extends FluxReduceStore<State, FluxAction> {
                 return flushTasksToRename(state);
             }
 
-            case PlanActions.CREATE_BUCKET: {
+            case "plan/create-bucket": {
                 return mapPlanBuckets(state, action.planId, (bs) => [
                     { id: ClientId.next() },
                     ...bs,
                 ]);
             }
 
-            case PlanActions.RESET_TO_THIS_WEEKS_BUCKETS:
+            case "plan/reset-to-this-weeks-buckets":
                 return resetToThisWeeksBuckets(state, action.planId);
 
-            case PlanActions.BUCKET_CREATED: {
+            case "plan/bucket-created": {
                 return mapPlanBuckets(state, action.planId, (bs) =>
                     bs
                         .filter((b) => !bfsIdEq(b.id, action.clientId))
@@ -428,7 +428,7 @@ class PlanStore extends FluxReduceStore<State, FluxAction> {
                 );
             }
 
-            case PlanActions.DELETE_BUCKET: {
+            case "plan/delete-bucket": {
                 return mapPlanBuckets(state, action.planId, (bs) => {
                     const idx = bs.findIndex((b) => bfsIdEq(b.id, action.id));
                     if (idx >= 0 && !ClientId.is(action.id)) {
@@ -438,19 +438,19 @@ class PlanStore extends FluxReduceStore<State, FluxAction> {
                 });
             }
 
-            case PlanActions.BUCKET_DELETED: {
+            case "plan/bucket-deleted": {
                 return mapPlanBuckets(state, action.planId, (bs) =>
                     bs.filter((b) => !bfsIdEq(b.id, action.id)),
                 );
             }
 
-            case PlanActions.BUCKETS_DELETED: {
+            case "plan/buckets-deleted": {
                 return mapPlanBuckets(state, action.planId, (bs) =>
                     bs.filter((b) => !includesBfsId(action.ids, b.id)),
                 );
             }
 
-            case PlanActions.RENAME_BUCKET: {
+            case "plan/rename-bucket": {
                 return mapPlanBuckets(state, action.planId, (bs) =>
                     bs
                         .map((b) => {
@@ -463,7 +463,7 @@ class PlanStore extends FluxReduceStore<State, FluxAction> {
                 );
             }
 
-            case PlanActions.SET_BUCKET_DATE: {
+            case "plan/set-bucket-date": {
                 return mapPlanBuckets(state, action.planId, (bs) =>
                     bs
                         .map((b) => {
@@ -476,7 +476,7 @@ class PlanStore extends FluxReduceStore<State, FluxAction> {
                 );
             }
 
-            case PlanActions.BUCKET_UPDATED: {
+            case "plan/bucket-updated": {
                 return mapPlanBuckets(state, action.planId, (bs) =>
                     bs
                         .map((b) => {
@@ -487,7 +487,7 @@ class PlanStore extends FluxReduceStore<State, FluxAction> {
                 );
             }
 
-            case PlanActions.ASSIGN_ITEM_TO_BUCKET:
+            case "plan/assign-item-to-bucket":
                 return assignToBucket(state, action.id, action.bucketId);
 
             case "plan/sort-by-bucket":

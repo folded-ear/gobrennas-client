@@ -10,8 +10,9 @@ import {
     PlanItem as TPlanItem,
 } from "@/features/Planner/data/planStore";
 import { parseLocalDate } from "@/util/time";
+import { FluxAction } from "@/data/dispatcher";
 
-export const handleErrors = (error) => {
+export const handleErrors = (error): FluxAction => {
     throwAnyGraphQLErrors(error);
     return {
         type: "promise-flux/error-fallthrough",

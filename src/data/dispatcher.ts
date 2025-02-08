@@ -5,11 +5,12 @@ import { WindowSize } from "@/data/WindowStore";
 import { Snack } from "@/data/snackBarStore";
 import { BfsId, BfsStringId, UserType } from "@/global/types/identity";
 import { SendToPlanPayload } from "@/features/RecipeLibrary/data/LibraryStore";
-import { Plan, PlanItem } from "@/features/Planner/data/planStore";
+import { Plan, PlanBucket, PlanItem } from "@/features/Planner/data/planStore";
 import { ShopItemType } from "@/views/shop/ShopList";
 import PlanItemStatus from "@/features/Planner/data/PlanItemStatus";
 import AccessLevel from "@/data/AccessLevel";
 import { MoveSubtreeAction } from "@/features/Planner/data/utils";
+import { Maybe } from "graphql/jsutils/Maybe";
 
 export type FluxAction =
     // friend
@@ -67,6 +68,27 @@ export type FluxAction =
     | { type: "plan/sort-by-bucket" }
     | { type: "plan/toggle-expanded"; id: BfsId }
     | { type: "plan/unnest" }
+    // plan buckets
+    | { type: "plan/assign-item-to-bucket"; id: BfsId; bucketId: Maybe<BfsId> }
+    | {
+          type: "plan/bucket-created";
+          planId: BfsId;
+          clientId: string;
+          data: PlanBucket;
+      }
+    | { type: "plan/bucket-deleted"; planId: BfsId; id: BfsId }
+    | { type: "plan/bucket-updated"; planId: BfsId; data: PlanBucket }
+    | { type: "plan/buckets-deleted"; planId: BfsId; ids: BfsId[] }
+    | { type: "plan/create-bucket"; planId: BfsId }
+    | { type: "plan/delete-bucket"; planId: BfsId; id: BfsId }
+    | { type: "plan/rename-bucket"; planId: BfsId; id: BfsId; name: string }
+    | { type: "plan/reset-to-this-weeks-buckets"; planId: BfsId }
+    | {
+          type: "plan/set-bucket-date";
+          planId: BfsId;
+          id: BfsId;
+          date: Maybe<Date>;
+      }
     // promise
     | { type: "promise-flux/error-fallthrough"; error: unknown }
     // recipe

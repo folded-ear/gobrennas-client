@@ -5,7 +5,7 @@ import { TextField } from "@mui/material";
 
 interface Props {
     value: Maybe<string>;
-    onChange?: ChangeEventHandler;
+    onChange?: ChangeEventHandler<HTMLInputElement>;
 }
 
 const LocalTextField: React.FC<Props & TextFieldProps> = ({

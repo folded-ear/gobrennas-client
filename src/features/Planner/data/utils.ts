@@ -405,7 +405,7 @@ export function setPlanColor(state: State, id: BfsId, color: string): State {
 export function assignToBucket(
     state: State,
     id: BfsId,
-    bucketId: BfsId | null,
+    bucketId: Maybe<BfsId>,
 ): State {
     if (ClientId.is(id)) return state;
     PlanApi.assignBucket(id, bucketId);

@@ -264,7 +264,7 @@ const PlanApi = {
             },
         }),
 
-    assignBucket: (id: BfsId, bucketId: BfsId | null) =>
+    assignBucket: (id: BfsId, bucketId: Maybe<BfsId>) =>
         client.mutate({
             mutation: ASSIGN_BUCKET,
             variables: {
@@ -310,7 +310,7 @@ const PlanApi = {
         ),
 
     createBucket: (planId: BfsId, bucket: PlanBucket) => {
-        const clientId = bucket.id;
+        const clientId = ensureString(bucket.id);
         return promiseFlux(
             client.mutate({
                 mutation: CREATE_BUCKET,
@@ -323,7 +323,7 @@ const PlanApi = {
             ({ data }) => {
                 const bucket = data!.planner.createBucket;
                 return {
-                    type: PlanActions.BUCKET_CREATED,
+                    type: "plan/bucket-created",
                     planId,
                     clientId: clientId,
                     data: deserializeBucket(bucket),
@@ -347,7 +347,7 @@ const PlanApi = {
             ({ data }) => {
                 const bucket = data!.planner.updateBucket;
                 return {
-                    type: PlanActions.BUCKET_UPDATED,
+                    type: "plan/bucket-updated",
                     planId,
                     data: deserializeBucket(bucket),
                 };
@@ -367,7 +367,7 @@ const PlanApi = {
             ({ data }) => {
                 const bucket = data!.planner.deleteBucket;
                 return {
-                    type: PlanActions.BUCKET_DELETED,
+                    type: "plan/bucket-deleted",
                     planId,
                     id: bucket.id,
                 };
@@ -395,7 +395,7 @@ const PlanApi = {
             .then(({ data }) => {
                 if (idsToDelete.length) {
                     dispatcher.dispatch({
-                        type: PlanActions.BUCKETS_DELETED,
+                        type: "plan/buckets-deleted",
                         planId,
                         ids: data!.planner.deleteBuckets.map((d) => d.id),
                     });
@@ -405,9 +405,9 @@ const PlanApi = {
                     // part to do in bulk.
                     data!.planner.createBuckets.forEach((b, i) => {
                         dispatcher.dispatch({
-                            type: PlanActions.BUCKET_CREATED,
+                            type: "plan/bucket-created",
                             planId,
-                            clientId: toCreate[i].id,
+                            clientId: ensureString(toCreate[i].id),
                             data: deserializeBucket(b),
                         });
                     });
