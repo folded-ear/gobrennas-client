@@ -1,4 +1,3 @@
-import { createChainableTypeChecker, PropTypeError } from "./typeHelpers";
 import { BfsStringId } from "@/global/types/identity";
 
 const PREFIX =
@@ -22,15 +21,6 @@ const ClientId = {
             id.startsWith(PREFIX)
         );
     },
-
-    propType: createChainableTypeChecker(
-        (props: Record<string, unknown>, propName: string) => {
-            if (ClientId.is(props[propName])) {
-                return;
-            }
-            return new PropTypeError(`'${propName}' isn't a valid ClientId`);
-        },
-    ),
 };
 
 export default ClientId;
