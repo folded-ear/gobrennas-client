@@ -31,8 +31,14 @@ export type FluxAction =
     // plan
     | { type: "plan/clear-plan-grant"; id: BfsId; userId: BfsId }
     | { type: "plan/collapse-all" }
+    | { type: "plan/create-item-after"; id: BfsId }
+    | { type: "plan/create-item-at-end" }
+    | { type: "plan/create-item-before"; id: BfsId }
     | { type: "plan/create-plan"; name: string }
+    | { type: "plan/delete-item-backwards"; id: BfsId }
+    | { type: "plan/delete-item-forward"; id: BfsId }
     | { type: "plan/delete-plan"; id: BfsId }
+    | { type: "plan/delete-selected" }
     | { type: "plan/duplicate-plan"; fromId: BfsId; name: string }
     | { type: "plan/expand-all" }
     | { type: "plan/focus"; id: BfsId }
@@ -45,6 +51,7 @@ export type FluxAction =
     | { type: "plan/select-plan"; id: BfsId }
     | { type: "plan/select-previous" }
     | { type: "plan/select-to"; id: BfsId }
+    | { type: "plan/send-to-plan"; planId: BfsId; name: string }
     | { type: "plan/set-plan-color"; id: BfsId; color: string }
     | {
           type: "plan/set-plan-grant";

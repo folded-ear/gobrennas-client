@@ -4,16 +4,6 @@ import typedAction from "@/util/typedAction";
 import { bfsIdType } from "@/global/types/identity";
 
 const PlanActions = {
-    CREATE_ITEM_AFTER: "plan/create-item-after",
-    CREATE_ITEM_BEFORE: "plan/create-item-before",
-    CREATE_ITEM_AT_END: "plan/create-item-at-end",
-    SEND_TO_PLAN: typedAction("plan/send-to-plan", {
-        planId: bfsIdType.isRequired,
-        name: PropTypes.string.isRequired,
-    }),
-    DELETE_ITEM_BACKWARDS: "plan/delete-item-backwards",
-    DELETE_ITEM_FORWARD: "plan/delete-item-forward",
-    DELETE_SELECTED: "plan/delete-selected",
     SET_STATUS: typedAction("plan/set-status", {
         id: bfsIdType.isRequired,
         status: PropTypes.string.isRequired,

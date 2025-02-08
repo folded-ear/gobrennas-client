@@ -99,8 +99,8 @@ class PlanItem extends PureComponent<Props> {
                 dispatcher.dispatch({
                     type:
                         selectionStart === 0
-                            ? PlanActions.CREATE_ITEM_BEFORE
-                            : PlanActions.CREATE_ITEM_AFTER,
+                            ? "plan/create-item-before"
+                            : "plan/create-item-after",
                     id: this.props.item.id,
                 });
                 break;
@@ -109,13 +109,13 @@ class PlanItem extends PureComponent<Props> {
                 if (value.length === 0) {
                     e.preventDefault();
                     dispatcher.dispatch({
-                        type: PlanActions.DELETE_ITEM_BACKWARDS,
+                        type: "plan/delete-item-backwards",
                         id: this.props.item.id,
                     });
                 } else if (shiftKey) {
                     e.preventDefault();
                     dispatcher.dispatch({
-                        type: PlanActions.DELETE_SELECTED,
+                        type: "plan/delete-selected",
                     });
                 }
                 break;
@@ -124,13 +124,13 @@ class PlanItem extends PureComponent<Props> {
                 if (value.length === 0) {
                     e.preventDefault();
                     dispatcher.dispatch({
-                        type: PlanActions.DELETE_ITEM_FORWARD,
+                        type: "plan/delete-item-forward",
                         id: this.props.item.id,
                     });
                 } else if (shiftKey) {
                     e.preventDefault();
                     dispatcher.dispatch({
-                        type: PlanActions.DELETE_SELECTED,
+                        type: "plan/delete-selected",
                     });
                 }
                 break;

@@ -271,26 +271,26 @@ class PlanStore extends FluxReduceStore<State, FluxAction> {
                 state = focusDelta(state, state.activeTaskId, -1);
                 return flushTasksToRename(state);
 
-            case PlanActions.CREATE_ITEM_AFTER:
+            case "plan/create-item-after":
             case "shopping/create-item-after": {
                 state = createTaskAfter(state, action.id);
                 return flushTasksToRename(state);
             }
 
-            case PlanActions.CREATE_ITEM_BEFORE:
+            case "plan/create-item-before":
             case "shopping/create-item-before": {
                 state = createTaskBefore(state, action.id);
                 return flushTasksToRename(state);
             }
 
-            case PlanActions.CREATE_ITEM_AT_END:
+            case "plan/create-item-at-end":
             case "shopping/create-item-at-end": {
                 if (state.activeListId == null) return state;
                 state = addTask(state, state.activeListId, "");
                 return state;
             }
 
-            case PlanActions.SEND_TO_PLAN: {
+            case "plan/send-to-plan": {
                 return addTaskAndFlush(state, action.planId, action.name);
             }
 
@@ -302,13 +302,13 @@ class PlanStore extends FluxReduceStore<State, FluxAction> {
                 return addTaskAndFlush(state, action.planId, name);
             }
 
-            case PlanActions.DELETE_ITEM_FORWARD:
+            case "plan/delete-item-forward":
             case "shopping/delete-item-forward": {
                 state = focusDelta(state, action.id, 1);
                 return queueDelete(state, action.id);
             }
 
-            case PlanActions.DELETE_ITEM_BACKWARDS:
+            case "plan/delete-item-backwards":
             case "shopping/delete-item-backward": {
                 state = focusDelta(state, action.id, -1);
                 return queueDelete(state, action.id);
@@ -341,7 +341,7 @@ class PlanStore extends FluxReduceStore<State, FluxAction> {
                 );
             }
 
-            case PlanActions.DELETE_SELECTED: {
+            case "plan/delete-selected": {
                 const tasks = getOrderedBlock(state).map(([t]) => t);
                 state = tasks.reduce((s, t) => queueDelete(s, t.id), state);
                 return focusDelta(state, tasks[0].id, -1);

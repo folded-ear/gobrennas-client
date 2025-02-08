@@ -116,7 +116,7 @@ class SnackBarStore extends ReduceStore<State, FluxAction> {
                 };
             }
 
-            case PlanActions.SEND_TO_PLAN:
+            case "plan/send-to-plan":
             case "pantry-item/send-to-plan": {
                 const plan = planStore.getPlanRlo(action.planId).data!;
                 return enqueue(state, {

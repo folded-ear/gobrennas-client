@@ -69,7 +69,7 @@ function Plan({
     const handleAddNew = (e) => {
         e.preventDefault();
         dispatcher.dispatch({
-            type: PlanActions.CREATE_ITEM_AT_END,
+            type: "plan/create-item-at-end",
         });
     };
 

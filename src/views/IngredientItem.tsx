@@ -2,7 +2,6 @@ import { Chip, Grid, IconButton } from "@mui/material";
 import makeStyles from "@mui/styles/makeStyles";
 import React, { ReactNode } from "react";
 import dispatcher from "@/data/dispatcher";
-import PlanActions from "@/features/Planner/data/PlanActions";
 import Quantity from "@/views/common/Quantity";
 import SendToPlan from "@/features/RecipeLibrary/components/SendToPlan";
 import type { IngredientRef } from "@/global/types/types";
@@ -71,7 +70,7 @@ const IngredientItem: React.FC<Props> = ({
                     <SendToPlan
                         onClick={(planId) =>
                             dispatcher.dispatch({
-                                type: PlanActions.SEND_TO_PLAN,
+                                type: "plan/send-to-plan",
                                 planId,
                                 name: ref.raw,
                             })
