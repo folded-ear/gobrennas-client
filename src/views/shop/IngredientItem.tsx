@@ -2,7 +2,6 @@ import { ListItemText } from "@mui/material";
 import classnames from "classnames";
 import React from "react";
 import dispatcher from "@/data/dispatcher";
-import ShoppingActions from "@/data/ShoppingActions";
 import PlanItemStatus from "@/features/Planner/data/PlanItemStatus";
 import LoadingIconButton from "../common/LoadingIconButton";
 import OxfordList from "../common/OxfordList";
@@ -46,7 +45,7 @@ class IngredientItem extends React.PureComponent<IngredientItemProps> {
             item: { id, itemIds },
         } = this.props;
         dispatcher.dispatch({
-            type: ShoppingActions.SET_INGREDIENT_STATUS,
+            type: "shopping/set-ingredient-status",
             id,
             itemIds,
             status,
@@ -59,7 +58,7 @@ class IngredientItem extends React.PureComponent<IngredientItemProps> {
             item: { id, itemIds },
         } = this.props;
         dispatcher.dispatch({
-            type: ShoppingActions.UNDO_SET_INGREDIENT_STATUS,
+            type: "shopping/undo-set-ingredient-status",
             id,
             itemIds,
         });
@@ -68,7 +67,7 @@ class IngredientItem extends React.PureComponent<IngredientItemProps> {
     onToggleExpanded(e) {
         if (e) e.stopPropagation();
         dispatcher.dispatch({
-            type: ShoppingActions.TOGGLE_EXPANDED,
+            type: "shopping/toggle-expanded",
             id: this.props.item.id,
         });
     }
@@ -79,7 +78,7 @@ class IngredientItem extends React.PureComponent<IngredientItemProps> {
         e.stopPropagation();
         if (e.shiftKey) return;
         dispatcher.dispatch({
-            type: ShoppingActions.FOCUS,
+            type: "shopping/focus-item",
             id: item.id,
             itemType: ShopItemType.INGREDIENT,
         });

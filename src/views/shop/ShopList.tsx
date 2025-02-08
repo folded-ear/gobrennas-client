@@ -2,7 +2,6 @@ import { Box, IconButton, Stack, Typography } from "@mui/material";
 import List from "@mui/material/List";
 import React, { useCallback, useState } from "react";
 import dispatcher from "@/data/dispatcher";
-import ShoppingActions from "@/data/ShoppingActions";
 import FoodingerFab from "@/views/common/FoodingerFab";
 import LoadingIndicator from "@/views/common/LoadingIndicator";
 import PageBody from "@/views/common/PageBody";
@@ -114,7 +113,7 @@ const ShopList: React.FC<ShopListProps> = ({
     const handleAddNew = useCallback((e) => {
         e.preventDefault();
         dispatcher.dispatch({
-            type: ShoppingActions.CREATE_ITEM_AT_END,
+            type: "shopping/create-item-at-end",
         });
     }, []);
 

@@ -11,7 +11,6 @@ import { DesktopNav } from "@/features/Navigation/components/DesktopNav";
 import { useHistory, useLocation } from "react-router-dom";
 import { useIsAuthenticated, useLogoutHandler } from "@/providers/Profile";
 import dispatcher from "@/data/dispatcher";
-import ShoppingActions from "@/data/ShoppingActions";
 import PlanActions from "../Planner/data/PlanActions";
 import useIsNavCollapsed, { setNavCollapsed } from "@/data/useIsNavCollapsed";
 import { BfsId, ensureString } from "@/global/types/identity";
@@ -21,7 +20,7 @@ import GTag from "@/GTag";
 
 export function toggleShoppingPlan(id: BfsId) {
     return dispatcher.dispatch({
-        type: ShoppingActions.TOGGLE_PLAN,
+        type: "shopping/toggle-plan",
         id: ensureString(id),
     });
 }

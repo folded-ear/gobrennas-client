@@ -6,7 +6,6 @@ import { getJsonItem, setJsonItem } from "@/util/storage";
 // noinspection ES6PreferShortImport
 import { LOCAL_STORAGE_PREFERENCES } from "@/constants/index";
 import dispatcher, { FluxAction } from "./dispatcher";
-import ShoppingActions from "./ShoppingActions";
 import shoppingStore from "./shoppingStore";
 import { Maybe } from "graphql/jsutils/Maybe";
 import { BfsId, ensureString } from "@/global/types/identity";
@@ -80,7 +79,7 @@ class PreferencesStore extends ReduceStore<State, FluxAction> {
                     : clearPref(state, PrefNames.ACTIVE_PLAN);
             }
 
-            case ShoppingActions.TOGGLE_PLAN: {
+            case "shopping/toggle-plan": {
                 this.__dispatcher.waitFor([shoppingStore.getDispatchToken()]);
                 return setPref(
                     state,

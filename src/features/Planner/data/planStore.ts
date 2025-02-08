@@ -1,4 +1,3 @@
-import ShoppingActions from "@/data/ShoppingActions";
 import dotProp from "dot-prop-immutable";
 import PlanActions from "@/features/Planner/data/PlanActions";
 import FluxReduceStore from "flux/lib/FluxReduceStore";
@@ -251,7 +250,7 @@ class PlanStore extends FluxReduceStore<State, FluxAction> {
                 return flushTasksToRename(state);
             }
 
-            case ShoppingActions.FOCUS:
+            case "shopping/focus-item":
                 return flushTasksToRename(state);
 
             case PlanActions.FOCUS_NEXT:
@@ -264,19 +263,19 @@ class PlanStore extends FluxReduceStore<State, FluxAction> {
                 return flushTasksToRename(state);
 
             case PlanActions.CREATE_ITEM_AFTER:
-            case ShoppingActions.CREATE_ITEM_AFTER: {
+            case "shopping/create-item-after": {
                 state = createTaskAfter(state, action.id);
                 return flushTasksToRename(state);
             }
 
             case PlanActions.CREATE_ITEM_BEFORE:
-            case ShoppingActions.CREATE_ITEM_BEFORE: {
+            case "shopping/create-item-before": {
                 state = createTaskBefore(state, action.id);
                 return flushTasksToRename(state);
             }
 
             case PlanActions.CREATE_ITEM_AT_END:
-            case ShoppingActions.CREATE_ITEM_AT_END: {
+            case "shopping/create-item-at-end": {
                 if (state.activeListId == null) return state;
                 state = addTask(state, state.activeListId, "");
                 return state;
@@ -295,13 +294,13 @@ class PlanStore extends FluxReduceStore<State, FluxAction> {
             }
 
             case PlanActions.DELETE_ITEM_FORWARD:
-            case ShoppingActions.DELETE_ITEM_FORWARD: {
+            case "shopping/delete-item-forward": {
                 state = focusDelta(state, action.id, 1);
                 return queueDelete(state, action.id);
             }
 
             case PlanActions.DELETE_ITEM_BACKWARDS:
-            case ShoppingActions.DELETE_ITEM_BACKWARDS: {
+            case "shopping/delete-item-backward": {
                 state = focusDelta(state, action.id, -1);
                 return queueDelete(state, action.id);
             }
@@ -326,7 +325,7 @@ class PlanStore extends FluxReduceStore<State, FluxAction> {
                 );
             }
 
-            case ShoppingActions.SET_INGREDIENT_STATUS: {
+            case "shopping/set-ingredient-status": {
                 return action.itemIds.reduce(
                     (s, id) => doInteractiveStatusChange(s, id, action.status),
                     state,
@@ -342,7 +341,7 @@ class PlanStore extends FluxReduceStore<State, FluxAction> {
             case PlanActions.UNDO_SET_STATUS:
                 return cancelStatusUpdate(state, action.id);
 
-            case ShoppingActions.UNDO_SET_INGREDIENT_STATUS: {
+            case "shopping/undo-set-ingredient-status": {
                 return action.itemIds.reduce(
                     (s, id) => cancelStatusUpdate(s, id),
                     state,
