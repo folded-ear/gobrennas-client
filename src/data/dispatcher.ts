@@ -1,5 +1,4 @@
 import { Dispatcher } from "flux";
-import ValidatingDispatcher from "@/data/ValidatingDispatcher";
 import { Layout } from "@/data/preferencesStore";
 import { WindowSize } from "@/data/WindowStore";
 import { Snack } from "@/data/snackBarStore";
@@ -175,6 +174,4 @@ export type FluxAction =
     | { type: "window/resize"; size: WindowSize }
     | { type: "window/visibility-change"; visible: boolean };
 
-export default import.meta.env.PROD
-    ? new Dispatcher<FluxAction>()
-    : new ValidatingDispatcher();
+export default new Dispatcher<FluxAction>();
