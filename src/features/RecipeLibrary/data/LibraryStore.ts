@@ -1,5 +1,4 @@
 import dispatcher, { FluxAction } from "@/data/dispatcher";
-import RecipeActions from "@/data/RecipeActions";
 import RecipeApi from "@/data/RecipeApi";
 import LibraryApi from "@/features/RecipeLibrary/data/LibraryApi";
 import { ReduceStore } from "flux/utils";
@@ -13,6 +12,12 @@ import LibraryActions from "./LibraryActions";
 import { ripLoadObject, RippedLO } from "@/util/ripLoadObject";
 import { BfsId, bfsIdType, ensureString } from "@/global/types/identity";
 import { Ingredient, Recipe } from "@/global/types/types";
+
+export interface SendToPlanPayload {
+    recipeId: BfsId;
+    planId: BfsId;
+    scale?: number;
+}
 
 interface State {
     byId: LoadObjectMap<BfsId, Ingredient>;
@@ -75,7 +80,7 @@ class LibraryStore extends ReduceStore<State, FluxAction> {
                 };
             }
 
-            case RecipeActions.SEND_TO_PLAN: {
+            case "recipe/send-to-plan": {
                 RecipeApi.sendToPlan(
                     action.recipeId,
                     action.planId,

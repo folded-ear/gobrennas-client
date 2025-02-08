@@ -64,7 +64,6 @@ import {
 import AccessLevel from "@/data/AccessLevel";
 import { Maybe } from "graphql/jsutils/Maybe";
 import PlanItemStatus from "@/features/Planner/data/PlanItemStatus";
-import RecipeActions from "@/data/RecipeActions";
 import dispatcher, { FluxAction } from "@/data/dispatcher";
 
 /*
@@ -232,7 +231,7 @@ class PlanStore extends FluxReduceStore<State, FluxAction> {
 
             case PlanActions.PLAN_DATA_BOOTSTRAPPED:
             case PlanActions.PLAN_DELTAS:
-            case RecipeActions.SENT_TO_PLAN:
+            case "recipe/sent-to-plan":
                 return tasksLoaded(state, action.data);
 
             case PlanActions.TREE_CREATE:

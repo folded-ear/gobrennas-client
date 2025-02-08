@@ -9,7 +9,6 @@ import { ReduceStore } from "flux/utils";
 import PropTypes from "prop-types";
 import typedStore from "@/util/typedStore";
 import dispatcher, { FluxAction } from "./dispatcher";
-import RecipeActions from "./RecipeActions";
 import { Maybe } from "graphql/jsutils/Maybe";
 import * as React from "react";
 import { SnackbarCloseReason } from "@mui/material/Snackbar/Snackbar";
@@ -126,7 +125,7 @@ class SnackBarStore extends ReduceStore<State, FluxAction> {
                 });
             }
 
-            case RecipeActions.SENT_TO_PLAN: {
+            case "recipe/sent-to-plan": {
                 const plan = planStore.getPlanRlo(action.planId).data!;
                 // if came from the library, the store might not have it...
                 const recipe = LibraryStore.getIngredientById(
@@ -140,7 +139,7 @@ class SnackBarStore extends ReduceStore<State, FluxAction> {
                 });
             }
 
-            case RecipeActions.ERROR_SENDING_TO_PLAN: {
+            case "recipe/error-sending-to-plan": {
                 const plan = planStore.getPlanRlo(action.planId).data!;
                 const recipe = LibraryStore.getIngredientById(
                     action.recipeId,

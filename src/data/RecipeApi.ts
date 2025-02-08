@@ -1,5 +1,4 @@
 import promiseFlux from "@/util/promiseFlux";
-import RecipeActions from "./RecipeActions";
 import { BfsId, ensureString } from "@/global/types/identity";
 import { Maybe } from "graphql/jsutils/Maybe";
 import { ShareInfo } from "@/global/types/types";
@@ -25,7 +24,7 @@ const RecipeApi = {
             ({ data }) => {
                 const result = data!.library.sendRecipeToPlan;
                 return {
-                    type: RecipeActions.SENT_TO_PLAN,
+                    type: "recipe/sent-to-plan",
                     recipeId,
                     planId,
                     data: [
@@ -35,7 +34,7 @@ const RecipeApi = {
                 };
             },
             () => ({
-                type: RecipeActions.ERROR_SENDING_TO_PLAN,
+                type: "recipe/error-sending-to-plan",
                 recipeId,
                 planId,
             }),
