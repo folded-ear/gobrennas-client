@@ -2,14 +2,11 @@ import dispatcher, { FluxAction } from "@/data/dispatcher";
 import RecipeApi from "@/data/RecipeApi";
 import LibraryApi from "@/features/RecipeLibrary/data/LibraryApi";
 import { ReduceStore } from "flux/utils";
-import PropTypes from "prop-types";
 import LoadObject from "@/util/LoadObject";
 import LoadObjectMap from "@/util/LoadObjectMap";
-import { loadObjectMapOf } from "@/util/loadObjectTypes";
 import { fromMilliseconds } from "@/util/time";
-import typedStore from "@/util/typedStore";
 import { ripLoadObject, RippedLO } from "@/util/ripLoadObject";
-import { BfsId, bfsIdType, ensureString } from "@/global/types/identity";
+import { BfsId, ensureString } from "@/global/types/identity";
 import { Ingredient, Recipe } from "@/global/types/types";
 
 export interface SendToPlanPayload {
@@ -144,37 +141,4 @@ class LibraryStore extends ReduceStore<State, FluxAction> {
     }
 }
 
-LibraryStore["stateTypes"] = {
-    byId: loadObjectMapOf(
-        bfsIdType,
-        PropTypes.shape({
-            // all
-            id: bfsIdType.isRequired,
-            type: PropTypes.string.isRequired,
-            name: PropTypes.string.isRequired,
-            // recipe
-            ownerId: bfsIdType,
-            externalUrl: PropTypes.string,
-            ingredients: PropTypes.arrayOf(
-                PropTypes.shape({
-                    raw: PropTypes.string.isRequired,
-                    quantity: PropTypes.number,
-                    units: PropTypes.string,
-                    uomId: bfsIdType,
-                    ingredient: PropTypes.string,
-                    ingredientId: bfsIdType,
-                    preparation: PropTypes.string,
-                }),
-            ),
-            directions: PropTypes.string,
-            calories: PropTypes.number,
-            recipeYield: PropTypes.number,
-            totalTime: PropTypes.number,
-            labels: PropTypes.arrayOf(PropTypes.string),
-            // pantry item
-            storeOrder: PropTypes.number,
-        }),
-    ),
-};
-
-export default typedStore(new LibraryStore(dispatcher));
+export default new LibraryStore(dispatcher);

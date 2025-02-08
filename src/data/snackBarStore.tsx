@@ -5,8 +5,6 @@ import PlanItemStatus, {
 import planStore, { PlanItem } from "@/features/Planner/data/planStore";
 import LibraryStore from "@/features/RecipeLibrary/data/LibraryStore";
 import { ReduceStore } from "flux/utils";
-import PropTypes from "prop-types";
-import typedStore from "@/util/typedStore";
 import dispatcher, { FluxAction } from "./dispatcher";
 import { Maybe } from "graphql/jsutils/Maybe";
 import * as React from "react";
@@ -14,7 +12,8 @@ import { SnackbarCloseReason } from "@mui/material/Snackbar/Snackbar";
 import { BfsId } from "@/global/types/identity";
 
 export interface Snack {
-    key: number | string; // not a BfsId!
+    // Think `React.Key`, but not _only_ for React to use.
+    key: string;
     message: string;
     severity?: AlertColor;
     renderAction?: Maybe<
@@ -37,7 +36,7 @@ const enqueue = (state: State, item: Omit<Snack, "key">): State => {
         ...state,
         queue: state.queue.concat({
             ...item,
-            key: (Date.now() % 100000) + Math.random(),
+            key: "" + (Date.now() % 100000) + Math.random(),
         }),
     };
 };
@@ -171,18 +170,4 @@ class SnackBarStore extends ReduceStore<State, FluxAction> {
     }
 }
 
-SnackBarStore["stateTypes"] = {
-    fabVisible: PropTypes.bool.isRequired,
-    queue: PropTypes.arrayOf(
-        PropTypes.shape({
-            key: PropTypes.number.isRequired,
-            message: PropTypes.string.isRequired,
-            severity: PropTypes.string,
-            renderAction: PropTypes.func,
-            onClose: PropTypes.func,
-            hideDelay: PropTypes.number,
-        }),
-    ).isRequired,
-};
-
-export default typedStore(new SnackBarStore(dispatcher));
+export default new SnackBarStore(dispatcher);
