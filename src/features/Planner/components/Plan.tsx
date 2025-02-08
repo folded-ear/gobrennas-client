@@ -1,6 +1,6 @@
 import { AddIcon } from "@/views/common/icons";
 import { List } from "@mui/material";
-import dispatcher from "@/data/dispatcher";
+import dispatcher, { FluxAction } from "@/data/dispatcher";
 import LoadingItem from "@/features/Planner/components/LoadingItem";
 import PlanHeader from "@/features/Planner/components/PlanHeader";
 import PlanItem from "@/features/Planner/components/PlanItem";
@@ -11,7 +11,6 @@ import LoadingIndicator from "@/views/common/LoadingIndicator";
 import PageBody from "@/views/common/PageBody";
 import DragContainer, { Horiz, Vert } from "./DragContainer";
 import { ItemTuple } from "../PlannerController";
-import { FluxAction } from "@/global/types/types";
 import {
     Plan as TPlan,
     PlanItem as PlanItemType,

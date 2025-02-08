@@ -1,9 +1,8 @@
-import dispatcher from "@/data/dispatcher";
+import dispatcher, { FluxAction } from "@/data/dispatcher";
 import { askUserToReauth, isAuthError } from "@/providers/Profile";
-import { FluxAction } from "@/global/types/types";
 
 type TypeTemplateOrCallback<Data> =
-    | string
+    | FluxAction["type"]
     | FluxAction
     | ((data: Data) => FluxAction);
 
@@ -23,13 +22,18 @@ let helper = <Data>(
             }
             return;
         }
-        dispatcher.dispatch(
-            typeof typeTemplateOrCallback === "function"
-                ? typeTemplateOrCallback(data)
-                : typeof typeTemplateOrCallback === "string"
-                ? { [settleKey]: data, type: typeTemplateOrCallback }
-                : { [settleKey]: data, ...typeTemplateOrCallback },
-        );
+        let payload: FluxAction;
+        if (typeof typeTemplateOrCallback === "function") {
+            payload = typeTemplateOrCallback(data);
+        } else if (typeof typeTemplateOrCallback === "string") {
+            payload = {
+                [settleKey]: data,
+                type: typeTemplateOrCallback,
+            } as unknown as FluxAction;
+        } else {
+            payload = { [settleKey]: data, ...typeTemplateOrCallback };
+        }
+        dispatcher.dispatch(payload);
     };
 };
 
@@ -49,7 +53,7 @@ if (!import.meta.env.PROD) {
     }
 }
 
-const fallthrough = (error: unknown) => ({
+const fallthrough = (error: unknown): FluxAction => ({
     type: "promise-flux/error-fallthrough",
     error,
 });
@@ -75,7 +79,7 @@ const informUserOfPromiseError = () => {
     }
 };
 
-export const defaultErrorHandler = (error) => {
+export const defaultErrorHandler = (error: unknown) => {
     // eslint-disable-next-line no-console
     console.error("Error in Promise", error);
     if (!isAuthError(error) || !askUserToReauth()) {

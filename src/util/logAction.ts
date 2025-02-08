@@ -1,4 +1,4 @@
-import { FluxAction } from "@/global/types/types";
+import { FluxAction } from "@/data/dispatcher";
 
 const logAction = (action: FluxAction) => {
     const temp: Record<string, unknown> = { ...action };

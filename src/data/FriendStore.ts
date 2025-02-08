@@ -1,13 +1,12 @@
 import { ReduceStore } from "flux/utils";
 import LoadObjectState from "@/util/LoadObjectState";
 import promiseFlux from "@/util/promiseFlux";
-import dispatcher from "./dispatcher";
+import dispatcher, { FluxAction } from "./dispatcher";
 import FriendActions from "./FriendActions";
 import { mapData, ripLoadObject, RippedLO } from "@/util/ripLoadObject";
 import { BfsId, bfsIdEq, UserType } from "@/global/types/identity";
 import { client } from "@/providers/ApolloClient";
 import { gql } from "@/__generated__";
-import { FluxAction } from "@/global/types/types";
 
 const GET_FRIENDS = gql(`
 query getFriends {

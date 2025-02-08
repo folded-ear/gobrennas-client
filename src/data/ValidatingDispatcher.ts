@@ -2,9 +2,9 @@ import { Dispatcher } from "flux";
 import invariant from "invariant";
 import PropTypes from "prop-types";
 import { CONTAINER_KEY } from "@/util/typedAction";
-import { FluxAction } from "@/global/types/types";
+import { FluxAction } from "@/data/dispatcher";
 
-const checkPayload = (payload: FluxAction) => {
+const checkPayload = (payload: any) => {
     invariant(payload.type != null, "Actions must have a 'type' key");
     // noinspection SuspiciousTypeOfGuard
     if (payload.type instanceof String && payload.type.actionTypes) {

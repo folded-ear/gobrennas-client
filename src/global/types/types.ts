@@ -1,4 +1,3 @@
-import { CheckableActionType } from "@/util/typedAction";
 import { BfsId, BfsStringId } from "@/global/types/identity";
 import { PlannedRecipeHistory, User } from "@/__generated__/graphql";
 import { Maybe } from "graphql/jsutils/Maybe";
@@ -108,12 +107,6 @@ export interface DraftRecipe extends Omit<Recipe, "photo"> {
     photoUrl: Maybe<string>;
     photoUpload: Maybe<File>;
     sourceId: Maybe<string>;
-}
-
-export interface FluxAction {
-    type: CheckableActionType;
-
-    [k: string]: any;
 }
 
 export type FormValue = string | number | number[] | string[] | File | null;

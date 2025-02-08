@@ -65,9 +65,8 @@ import {
 import AccessLevel from "@/data/AccessLevel";
 import { Maybe } from "graphql/jsutils/Maybe";
 import PlanItemStatus from "@/features/Planner/data/PlanItemStatus";
-import { FluxAction } from "@/global/types/types";
 import RecipeActions from "@/data/RecipeActions";
-import dispatcher from "@/data/dispatcher";
+import dispatcher, { FluxAction } from "@/data/dispatcher";
 
 /*
  * This store is way too muddled. But leaving it that way for the moment, to

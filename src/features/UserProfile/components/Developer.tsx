@@ -1,14 +1,13 @@
 import * as React from "react";
 import useIsDevMode, { setDevMode } from "@/data/useIsDevMode";
 import dispatcher from "@/data/dispatcher";
-import UserActions from "@/data/UserActions";
 import Divider from "@mui/material/Divider";
-import Switch from "@mui/material/Switch";
+import Switch, { SwitchProps } from "@mui/material/Switch";
 import useWindowSize from "@/data/useWindowSize";
 import { Grid, Stack, ToggleButton, ToggleButtonGroup } from "@mui/material";
 import { AutoAwesomeIcon, DesktopIcon, MobileIcon } from "@/views/common/icons";
 import useFluxStore from "@/data/useFluxStore";
-import preferencesStore from "@/data/preferencesStore";
+import preferencesStore, { Layout } from "@/data/preferencesStore";
 
 interface RowProps {
     children?: React.ReactNode;
@@ -30,10 +29,10 @@ const DevMode: React.FC = () => {
         [preferencesStore],
     );
 
-    function handleLayoutChange(e, layout) {
+    function handleLayoutChange(e, layout: Layout) {
         if (!layout) return;
         dispatcher.dispatch({
-            type: UserActions.SET_LAYOUT,
+            type: "user/set-layout",
             layout,
         });
     }
@@ -52,13 +51,22 @@ const DevMode: React.FC = () => {
                     value={layout}
                     onChange={handleLayoutChange}
                 >
-                    <ToggleButton value={"auto"} title={"auto / responsive"}>
+                    <ToggleButton
+                        value={"auto" satisfies Layout}
+                        title={"auto / responsive"}
+                    >
                         <AutoAwesomeIcon />
                     </ToggleButton>
-                    <ToggleButton value={"desktop"} title={"desktop"}>
+                    <ToggleButton
+                        value={"desktop" satisfies Layout}
+                        title={"desktop"}
+                    >
                         <DesktopIcon />
                     </ToggleButton>
-                    <ToggleButton value={"mobile"} title={"mobile"}>
+                    <ToggleButton
+                        value={"mobile" satisfies Layout}
+                        title={"mobile"}
+                    >
                         <MobileIcon />
                     </ToggleButton>
                 </ToggleButtonGroup>
@@ -70,7 +78,8 @@ const DevMode: React.FC = () => {
 export const Developer: React.FC = () => {
     const devMode = useIsDevMode();
 
-    const handleDevModeChange = (e) => setDevMode(e.target.checked);
+    const handleDevModeChange: SwitchProps["onChange"] = (e) =>
+        setDevMode(e.target.checked);
 
     return (
         <>

@@ -5,13 +5,13 @@ import { Map } from "immutable";
 import { getJsonItem, setJsonItem } from "@/util/storage";
 // noinspection ES6PreferShortImport
 import { LOCAL_STORAGE_PREFERENCES } from "@/constants/index";
-import dispatcher from "./dispatcher";
-import UserActions from "./UserActions";
-import { FluxAction } from "@/global/types/types";
+import dispatcher, { FluxAction } from "./dispatcher";
 import ShoppingActions from "./ShoppingActions";
 import shoppingStore from "./shoppingStore";
 import { Maybe } from "graphql/jsutils/Maybe";
 import { BfsId, ensureString } from "@/global/types/identity";
+
+export type Layout = "desktop" | "mobile" | "auto";
 
 enum PrefNames {
     ACTIVE_TASK_LIST = "activeTaskList",
@@ -64,7 +64,7 @@ class PreferencesStore extends ReduceStore<State, FluxAction> {
 
     reduce(state: State, action: FluxAction): State {
         switch (action.type) {
-            case UserActions.RESTORE_PREFERENCES: {
+            case "user/restore-preferences": {
                 return Map(action.preferences);
             }
 
@@ -89,18 +89,20 @@ class PreferencesStore extends ReduceStore<State, FluxAction> {
                 );
             }
 
-            case UserActions.SET_DEV_MODE: {
+            case "user/set-dev-mode": {
                 if (!action.enabled) {
                     state = clearPref(state, PrefNames.LAYOUT);
                 }
+                // noinspection PointlessBooleanExpressionJS
                 return setPref(state, PrefNames.DEV_MODE, !!action.enabled);
             }
 
-            case UserActions.SET_LAYOUT: {
+            case "user/set-layout": {
                 return setPref(state, PrefNames.LAYOUT, action.layout);
             }
 
-            case UserActions.SET_NAV_COLLAPSED: {
+            case "user/set-nav-collapsed": {
+                // noinspection PointlessBooleanExpressionJS
                 return setPref(
                     state,
                     PrefNames.NAV_COLLAPSED,
@@ -134,8 +136,8 @@ class PreferencesStore extends ReduceStore<State, FluxAction> {
         return !!this.getState().get(PrefNames.DEV_MODE);
     }
 
-    getLayout(): string {
-        return <string>this.getState().get(PrefNames.LAYOUT) || "auto";
+    getLayout(): Layout {
+        return <Layout>this.getState().get(PrefNames.LAYOUT) ?? "auto";
     }
 
     isNavCollapsed() {

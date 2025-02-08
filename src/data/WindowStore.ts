@@ -1,7 +1,6 @@
 import { ReduceStore } from "flux/utils";
-import dispatcher from "./dispatcher";
+import dispatcher, { FluxAction } from "./dispatcher";
 import WindowActions from "./WindowActions";
-import { FluxAction } from "@/global/types/types";
 
 interface WindowSize {
     width: number;

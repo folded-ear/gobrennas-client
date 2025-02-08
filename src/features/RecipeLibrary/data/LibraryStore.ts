@@ -1,4 +1,4 @@
-import dispatcher from "@/data/dispatcher";
+import dispatcher, { FluxAction } from "@/data/dispatcher";
 import PantryItemActions from "@/data/PantryItemActions";
 import RecipeActions from "@/data/RecipeActions";
 import RecipeApi from "@/data/RecipeApi";
@@ -13,8 +13,7 @@ import typedStore from "@/util/typedStore";
 import LibraryActions from "./LibraryActions";
 import { ripLoadObject, RippedLO } from "@/util/ripLoadObject";
 import { BfsId, bfsIdType, ensureString } from "@/global/types/identity";
-
-import { FluxAction, Ingredient, Recipe } from "@/global/types/types";
+import { Ingredient, Recipe } from "@/global/types/types";
 
 interface State {
     byId: LoadObjectMap<BfsId, Ingredient>;
