@@ -8,6 +8,7 @@ import { SendToPlanPayload } from "@/features/RecipeLibrary/data/LibraryStore";
 import { Plan, PlanItem } from "@/features/Planner/data/planStore";
 import { ShopItemType } from "@/views/shop/ShopList";
 import PlanItemStatus from "@/features/Planner/data/PlanItemStatus";
+import AccessLevel from "@/data/AccessLevel";
 
 export type FluxAction =
     // friend
@@ -28,16 +29,29 @@ export type FluxAction =
           name: string;
       }
     // plan
+    | { type: "plan/clear-plan-grant"; id: BfsId; userId: BfsId }
     | { type: "plan/collapse-all" }
+    | { type: "plan/create-plan"; name: string }
+    | { type: "plan/delete-plan"; id: BfsId }
+    | { type: "plan/duplicate-plan"; fromId: BfsId; name: string }
     | { type: "plan/expand-all" }
     | { type: "plan/focus"; id: BfsId }
     | { type: "plan/focus-next" }
     | { type: "plan/focus-previous" }
     | { type: "plan/multi-line-paste"; text: string }
+    | { type: "plan/plan-detail-visibility"; visible: boolean }
+    | { type: "plan/rename-plan"; id: BfsId; name: string }
     | { type: "plan/select-next" }
     | { type: "plan/select-plan"; id: BfsId }
     | { type: "plan/select-previous" }
     | { type: "plan/select-to"; id: BfsId }
+    | { type: "plan/set-plan-color"; id: BfsId; color: string }
+    | {
+          type: "plan/set-plan-grant";
+          id: BfsId;
+          userId: BfsId;
+          level: AccessLevel;
+      }
     | { type: "plan/sort-by-bucket" }
     | { type: "plan/toggle-expanded"; id: BfsId }
     // promise

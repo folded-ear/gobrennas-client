@@ -69,7 +69,7 @@ class PreferencesStore extends ReduceStore<State, FluxAction> {
 
             case "plan/select-plan":
             case PlanActions.PLAN_CREATED:
-            case PlanActions.DELETE_PLAN:
+            case "plan/delete-plan":
             case PlanActions.PLAN_DELETED:
             case PlanActions.PLANS_LOADED: {
                 this.__dispatcher.waitFor([planStore.getDispatchToken()]);

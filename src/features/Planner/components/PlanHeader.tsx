@@ -10,7 +10,6 @@ import {
 import dispatcher from "@/data/dispatcher";
 import PlanSidebar from "@/features/Planner/components/PlanSidebar";
 import UserById from "@/features/Planner/components/UserById";
-import PlanActions from "@/features/Planner/data/PlanActions";
 import React, { useState } from "react";
 import {
     AddIcon,
@@ -33,17 +32,17 @@ import LoadingIndicator from "@/views/common/LoadingIndicator";
 import PlanAvatar from "@/views/shop/PlanAvatar";
 import { bfsIdEq } from "@/global/types/identity";
 
-const isValidName = (name) => name != null && name.trim().length > 0;
+const isValidName = (name: string) => name != null && name.trim().length > 0;
 
 const onShowDrawer = () =>
     dispatcher.dispatch({
-        type: PlanActions.PLAN_DETAIL_VISIBILITY,
+        type: "plan/plan-detail-visibility",
         visible: true,
     });
 
 const onCloseDrawer = () =>
     dispatcher.dispatch({
-        type: PlanActions.PLAN_DETAIL_VISIBILITY,
+        type: "plan/plan-detail-visibility",
         visible: false,
     });
 
@@ -89,7 +88,7 @@ export default function PlanHeader({
     const onCreate = () => {
         if (!isValidName(name)) return;
         dispatcher.dispatch({
-            type: PlanActions.CREATE_PLAN,
+            type: "plan/create-plan",
             name: name.trim(),
         });
         setName("");
@@ -99,7 +98,7 @@ export default function PlanHeader({
     const onDuplicate = (_, plan: SelectOption<never>) => {
         if (!isValidName(name)) return;
         dispatcher.dispatch({
-            type: PlanActions.DUPLICATE_PLAN,
+            type: "plan/duplicate-plan",
             name: name.trim(),
             fromId: plan.id,
         });

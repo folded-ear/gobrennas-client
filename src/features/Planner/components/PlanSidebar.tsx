@@ -110,7 +110,7 @@ const PlanSidebar: React.FC<Props> = ({ open, onClose, plan }) => {
 
     const handleRename = () => {
         dispatcher.dispatch({
-            type: PlanActions.RENAME_PLAN,
+            type: "plan/rename-plan",
             id: plan.id,
             name,
         });
@@ -120,7 +120,7 @@ const PlanSidebar: React.FC<Props> = ({ open, onClose, plan }) => {
         const isBlank = color === "";
         if (isBlank || isValidColor(color)) {
             dispatcher.dispatch({
-                type: PlanActions.SET_PLAN_COLOR,
+                type: "plan/set-plan-color",
                 id: plan.id,
                 color: isBlank ? "" : "#" + color,
             });
@@ -136,7 +136,7 @@ const PlanSidebar: React.FC<Props> = ({ open, onClose, plan }) => {
             });
         } else {
             dispatcher.dispatch({
-                type: PlanActions.SET_PLAN_GRANT,
+                type: "plan/set-plan-grant",
                 id: plan.id,
                 userId,
                 level,
@@ -146,7 +146,7 @@ const PlanSidebar: React.FC<Props> = ({ open, onClose, plan }) => {
 
     const handleDelete = () => {
         dispatcher.dispatch({
-            type: PlanActions.DELETE_PLAN,
+            type: "plan/delete-plan",
             id: plan.id,
         });
     };

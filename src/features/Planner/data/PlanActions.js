@@ -4,19 +4,6 @@ import typedAction from "@/util/typedAction";
 import { bfsIdType } from "@/global/types/identity";
 
 const PlanActions = {
-    // user actions (with persistence)
-    CREATE_PLAN: "plan/create-plan",
-    DUPLICATE_PLAN: "plan/duplicate-plan",
-    RENAME_PLAN: typedAction("plan/rename-plan", {
-        id: bfsIdType.isRequired,
-        name: PropTypes.string.isRequired,
-    }),
-    SET_PLAN_COLOR: typedAction("plan/set-plan-color", {
-        id: bfsIdType.isRequired,
-        color: PropTypes.string.isRequired,
-    }),
-    DELETE_PLAN: "plan/delete-plan",
-    PLAN_DETAIL_VISIBILITY: "plan/plan-detail-visibility",
     CREATE_ITEM_AFTER: "plan/create-item-after",
     CREATE_ITEM_BEFORE: "plan/create-item-before",
     CREATE_ITEM_AT_END: "plan/create-item-at-end",
@@ -47,8 +34,6 @@ const PlanActions = {
         id: bfsIdType.isRequired,
         name: PropTypes.string.isRequired,
     }),
-    SET_PLAN_GRANT: "plan/set-plan-grant",
-    CLEAR_PLAN_GRANT: "plan/clear-plan-grant",
     NEST: "plan/nest",
     UNNEST: "plan/unnest",
     MOVE_SUBTREE: "plan/move-subtree",

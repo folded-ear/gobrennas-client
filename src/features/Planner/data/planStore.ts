@@ -58,6 +58,7 @@ import {
     BfsId,
     bfsIdEq,
     BfsStringId,
+    ensureString,
     includesBfsId,
 } from "@/global/types/identity";
 import AccessLevel from "@/data/AccessLevel";
@@ -141,10 +142,10 @@ class PlanStore extends FluxReduceStore<State, FluxAction> {
 
     reduce(state: State, action: FluxAction): State {
         switch (action.type) {
-            case PlanActions.CREATE_PLAN:
+            case "plan/create-plan":
                 return createList(state, action.name);
 
-            case PlanActions.DUPLICATE_PLAN:
+            case "plan/duplicate-plan":
                 return createList(state, action.name, action.fromId);
 
             case PlanActions.PLAN_CREATED: {
@@ -156,7 +157,7 @@ class PlanStore extends FluxReduceStore<State, FluxAction> {
                 );
             }
 
-            case PlanActions.PLAN_DETAIL_VISIBILITY: {
+            case "plan/plan-detail-visibility": {
                 if (state.listDetailVisible === action.visible) return state;
                 return {
                     ...state,
@@ -164,7 +165,7 @@ class PlanStore extends FluxReduceStore<State, FluxAction> {
                 };
             }
 
-            case PlanActions.DELETE_PLAN: {
+            case "plan/delete-plan": {
                 PlanApi.deletePlan(action.id);
                 const next: State = dotProp.set(
                     state,
@@ -194,13 +195,17 @@ class PlanStore extends FluxReduceStore<State, FluxAction> {
                 return listsLoaded(state, action.data);
             case "plan/select-plan":
                 return selectList(state, action.id);
-            case PlanActions.RENAME_PLAN:
+            case "plan/rename-plan":
                 return renameTask(state, action.id, action.name);
-            case PlanActions.SET_PLAN_COLOR:
+            case "plan/set-plan-color":
                 return setPlanColor(state, action.id, action.color);
 
-            case PlanActions.SET_PLAN_GRANT: {
-                PlanApi.setPlanGrant(action.id, action.userId, action.level);
+            case "plan/set-plan-grant": {
+                PlanApi.setPlanGrant(
+                    ensureString(action.id),
+                    action.userId,
+                    action.level,
+                );
                 return dotProp.set(state, ["byId", action.id], (lo) =>
                     lo
                         .map((l) =>

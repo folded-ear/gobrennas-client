@@ -155,7 +155,7 @@ const PlanItemBucketChip: React.FC<PlanItemBucketChipProps> = ({
         onSelect={(bucketId) => assignItemToBucket(itemId, bucketId)}
         onManage={() =>
             dispatcher.dispatch({
-                type: PlanActions.PLAN_DETAIL_VISIBILITY,
+                type: "plan/plan-detail-visibility",
                 visible: true,
             })
         }
