@@ -3,12 +3,16 @@ import ValidatingDispatcher from "@/data/ValidatingDispatcher";
 import { Layout } from "@/data/preferencesStore";
 import { WindowSize } from "@/data/WindowStore";
 import { Snack } from "@/data/snackBarStore";
-import { UserType } from "@/global/types/identity";
+import { BfsId, UserType } from "@/global/types/identity";
 
 export type FluxAction =
     | { type: "friend/friend-list-load-error" }
     | { type: "friend/friend-list-loaded"; data: UserType[] }
     | { type: "friend/load-friend-list" }
+    // prettier-ignore
+    | { type: "pantry-item/order-for-store"; id: BfsId; targetId: BfsId; after: boolean; }
+    // prettier-ignore
+    | { type: "pantry-item/send-to-plan"; planId: BfsId; id: BfsId; name: string; }
     | { type: "promise-flux/error-fallthrough"; error: unknown }
     | { type: "ui/dismiss-snackbar"; key: Snack["key"] }
     | { type: "ui/hide-fab" }

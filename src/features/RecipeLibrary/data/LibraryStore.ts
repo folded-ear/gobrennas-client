@@ -1,5 +1,4 @@
 import dispatcher, { FluxAction } from "@/data/dispatcher";
-import PantryItemActions from "@/data/PantryItemActions";
 import RecipeActions from "@/data/RecipeActions";
 import RecipeApi from "@/data/RecipeApi";
 import LibraryApi from "@/features/RecipeLibrary/data/LibraryApi";
@@ -85,7 +84,7 @@ class LibraryStore extends ReduceStore<State, FluxAction> {
                 return state;
             }
 
-            case PantryItemActions.ORDER_FOR_STORE: {
+            case "pantry-item/order-for-store": {
                 const target = state.byId.get(action.targetId);
                 if (!target || !target.hasValue()) return state;
                 const tgt = target.getValueEnforcing();

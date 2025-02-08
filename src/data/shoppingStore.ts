@@ -2,7 +2,6 @@ import planStore from "@/features/Planner/data/planStore";
 import { ReduceStore } from "flux/utils";
 import { ShopItemType } from "@/views/shop/ShopList";
 import dispatcher, { FluxAction } from "./dispatcher";
-import PantryItemActions from "./PantryItemActions";
 import ShoppingActions from "./ShoppingActions";
 import PlanActions from "@/features/Planner/data/PlanActions";
 import { removeDistinct, toggleDistinct } from "@/util/arrayAsSet";
@@ -111,7 +110,7 @@ class ShoppingStore extends ReduceStore<State, FluxAction> {
                 return state;
             }
 
-            case PantryItemActions.ORDER_FOR_STORE: {
+            case "pantry-item/order-for-store": {
                 return {
                     ...state,
                     activeItem: {

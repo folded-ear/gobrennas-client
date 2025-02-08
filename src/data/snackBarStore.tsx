@@ -9,7 +9,6 @@ import { ReduceStore } from "flux/utils";
 import PropTypes from "prop-types";
 import typedStore from "@/util/typedStore";
 import dispatcher, { FluxAction } from "./dispatcher";
-import PantryItemActions from "./PantryItemActions";
 import RecipeActions from "./RecipeActions";
 import { Maybe } from "graphql/jsutils/Maybe";
 import * as React from "react";
@@ -119,7 +118,7 @@ class SnackBarStore extends ReduceStore<State, FluxAction> {
             }
 
             case PlanActions.SEND_TO_PLAN:
-            case PantryItemActions.SEND_TO_PLAN: {
+            case "pantry-item/send-to-plan": {
                 const plan = planStore.getPlanRlo(action.planId).data!;
                 return enqueue(state, {
                     message: `Added ${action.name} to ${plan.name}`,

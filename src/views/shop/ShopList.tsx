@@ -13,7 +13,6 @@ import { Plan as TPlan } from "@/features/Planner/data/planStore";
 import type { Quantity } from "@/global/types/types";
 import { BfsId, bfsIdEq } from "@/global/types/identity";
 import CollapseIconButton from "@/global/components/CollapseIconButton";
-import PantryItemActions from "@/data/PantryItemActions";
 import DragContainer, {
     DragContainerProps,
 } from "@/features/Planner/components/DragContainer";
@@ -82,7 +81,7 @@ const TupleList: React.FC<TupleListProps> = ({ tuples }) => {
         vertical,
     ) => {
         dispatcher.dispatch({
-            type: PantryItemActions.ORDER_FOR_STORE,
+            type: "pantry-item/order-for-store",
             id,
             targetId,
             after: vertical === "below",

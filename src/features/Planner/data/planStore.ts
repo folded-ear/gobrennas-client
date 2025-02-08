@@ -1,4 +1,3 @@
-import PantryItemActions from "@/data/PantryItemActions";
 import ShoppingActions from "@/data/ShoppingActions";
 import dotProp from "dot-prop-immutable";
 import PlanActions from "@/features/Planner/data/PlanActions";
@@ -288,7 +287,7 @@ class PlanStore extends FluxReduceStore<State, FluxAction> {
                 return addTaskAndFlush(state, action.planId, action.name);
             }
 
-            case PantryItemActions.SEND_TO_PLAN: {
+            case "pantry-item/send-to-plan": {
                 let name = action.name.trim();
                 if (name.indexOf(" ") > 0) {
                     name = `"${name}"`;
