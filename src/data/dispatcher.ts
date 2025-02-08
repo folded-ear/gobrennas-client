@@ -3,8 +3,12 @@ import ValidatingDispatcher from "@/data/ValidatingDispatcher";
 import { Layout } from "@/data/preferencesStore";
 import { WindowSize } from "@/data/WindowStore";
 import { Snack } from "@/data/snackBarStore";
+import { UserType } from "@/global/types/identity";
 
 export type FluxAction =
+    | { type: "friend/friend-list-load-error" }
+    | { type: "friend/friend-list-loaded"; data: UserType[] }
+    | { type: "friend/load-friend-list" }
     | { type: "promise-flux/error-fallthrough"; error: unknown }
     | { type: "ui/dismiss-snackbar"; key: Snack["key"] }
     | { type: "ui/hide-fab" }
