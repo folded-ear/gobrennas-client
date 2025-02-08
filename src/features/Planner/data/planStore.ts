@@ -119,6 +119,10 @@ export interface State {
     byId: Record<BfsId, LoadObject<Plan | PlanItem>>;
 }
 
+export interface StateWithActiveTask extends State {
+    activeTaskId: BfsId;
+}
+
 class PlanStore extends FluxReduceStore<State, FluxAction> {
     getInitialState() {
         return {
@@ -188,7 +192,7 @@ class PlanStore extends FluxReduceStore<State, FluxAction> {
                 return loadLists(state);
             case PlanActions.PLANS_LOADED:
                 return listsLoaded(state, action.data);
-            case PlanActions.SELECT_PLAN:
+            case "plan/select-plan":
                 return selectList(state, action.id);
             case PlanActions.RENAME_PLAN:
                 return renameTask(state, action.id, action.name);
@@ -245,7 +249,7 @@ class PlanStore extends FluxReduceStore<State, FluxAction> {
             case PlanActions.DELETED:
                 return taskDeleted(state, action.id);
 
-            case PlanActions.FOCUS: {
+            case "plan/focus": {
                 state = focusTask(state, action.id);
                 return flushTasksToRename(state);
             }
@@ -253,11 +257,11 @@ class PlanStore extends FluxReduceStore<State, FluxAction> {
             case "shopping/focus-item":
                 return flushTasksToRename(state);
 
-            case PlanActions.FOCUS_NEXT:
+            case "plan/focus-next":
                 if (state.activeTaskId == null) return state;
                 state = focusDelta(state, state.activeTaskId, 1);
                 return flushTasksToRename(state);
-            case PlanActions.FOCUS_PREVIOUS:
+            case "plan/focus-previous":
                 if (state.activeTaskId == null) return state;
                 state = focusDelta(state, state.activeTaskId, -1);
                 return flushTasksToRename(state);
@@ -348,13 +352,13 @@ class PlanStore extends FluxReduceStore<State, FluxAction> {
                 );
             }
 
-            case PlanActions.SELECT_NEXT:
+            case "plan/select-next":
                 if (state.activeTaskId == null) return state;
                 return selectDelta(state, state.activeTaskId, 1);
-            case PlanActions.SELECT_PREVIOUS:
+            case "plan/select-previous":
                 if (state.activeTaskId == null) return state;
                 return selectDelta(state, state.activeTaskId, -1);
-            case PlanActions.SELECT_TO:
+            case "plan/select-to":
                 return selectTo(state, action.id);
 
             case PlanActions.MOVE_NEXT:
@@ -375,30 +379,32 @@ class PlanStore extends FluxReduceStore<State, FluxAction> {
                     action as unknown as MoveSubtreeAction,
                 );
 
-            case PlanActions.TOGGLE_EXPANDED:
+            case "plan/toggle-expanded":
                 return toggleExpanded(state, action.id);
 
-            case PlanActions.EXPAND_ALL:
+            case "plan/expand-all":
                 return expandAll(state);
 
-            case PlanActions.COLLAPSE_ALL:
+            case "plan/collapse-all":
                 return collapseAll(state);
 
-            case PlanActions.MULTI_LINE_PASTE: {
+            case "plan/multi-line-paste": {
                 if (state.activeTaskId == null) return state;
                 const lines = action.text
                     .split("\n")
                     .map((l) => l.trim())
                     .filter((l) => l.length > 0);
+                if (lines.length === 0) return state;
                 const active = taskForId(state, state.activeTaskId);
                 if (active.name == null || active.name.trim().length === 0) {
-                    state = renameTask(state, active.id, lines.shift());
+                    // can't get here with zero lines
+                    state = renameTask(state, active.id, lines.shift()!);
                 }
                 state = lines.reduce((s, l) => {
                     s = createTaskAfter(s, s.activeTaskId);
                     s = renameTask(s, s.activeTaskId, l);
                     return s;
-                }, state);
+                }, state as StateWithActiveTask);
                 return flushTasksToRename(state);
             }
 
@@ -483,7 +489,7 @@ class PlanStore extends FluxReduceStore<State, FluxAction> {
             case PlanActions.ASSIGN_ITEM_TO_BUCKET:
                 return assignToBucket(state, action.id, action.bucketId);
 
-            case PlanActions.SORT_BY_BUCKET:
+            case "plan/sort-by-bucket":
                 return sortActivePlanByBucket(state);
 
             case PlanActions.FLUSH_RENAMES:

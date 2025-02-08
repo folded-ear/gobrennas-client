@@ -4,21 +4,6 @@ import typedAction from "@/util/typedAction";
 import { bfsIdType } from "@/global/types/identity";
 
 const PlanActions = {
-    // user actions (client-only)
-    FOCUS: "plan/focus",
-    FOCUS_NEXT: "plan/focus-next",
-    FOCUS_PREVIOUS: "plan/focus-previous",
-    SELECT_PLAN: typedAction("plan/select-plan", {
-        id: bfsIdType.isRequired,
-    }),
-    SELECT_NEXT: "plan/select-next",
-    SELECT_PREVIOUS: "plan/select-previous",
-    SELECT_TO: "plan/select-to",
-    MULTI_LINE_PASTE: "plan/multi-line-paste",
-    TOGGLE_EXPANDED: "plan/toggle-expanded",
-    EXPAND_ALL: "plan/expand-all",
-    COLLAPSE_ALL: "plan/collapse-all",
-    SORT_BY_BUCKET: "plan/sort-by-bucket",
     // user actions (with persistence)
     CREATE_PLAN: "plan/create-plan",
     DUPLICATE_PLAN: "plan/duplicate-plan",

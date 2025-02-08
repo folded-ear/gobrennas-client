@@ -27,6 +27,7 @@ import {
     PlanBucket,
     PlanItem,
     State,
+    StateWithActiveTask,
 } from "@/features/Planner/data/planStore";
 import { Maybe } from "graphql/jsutils/Maybe";
 
@@ -261,7 +262,7 @@ export function addTask(
     parentId: BfsId,
     name: string,
     after: BfsId = AT_END,
-): State {
+): StateWithActiveTask {
     const task = _newTask(name);
     state = mapTask<Plan | PlanItem>(state, parentId, (p) => ({
         ...p,
@@ -290,14 +291,13 @@ export function addTaskAndFlush(
     return flushTasksToRename(state);
 }
 
-export function createTaskAfter(state: State, id: BfsId): State {
+export function createTaskAfter(state: State, id: BfsId): StateWithActiveTask {
     const t = taskForId(state, id) as PlanItem;
     invariant(
         t.parentId != null,
         `Can't create a task after root-level '${id}'`,
     );
-    state = addTask(state, t.parentId, "", id);
-    return state;
+    return addTask(state, t.parentId, "", id);
 }
 
 export function createTaskBefore(state: State, id: BfsId): State {
@@ -370,6 +370,12 @@ export function mapTask<T>(state: State, id: BfsId, work: (it: T) => T): State {
     return mapTaskLO<T>(state, id, (lo) => lo.map(work));
 }
 
+export function renameTask(
+    state: StateWithActiveTask,
+    id: BfsId,
+    name: string,
+): StateWithActiveTask;
+export function renameTask(state: State, id: BfsId, name: string): State;
 export function renameTask(state: State, id: BfsId, name: string): State {
     return mapTaskLO<Plan | PlanItem>(state, id, (lo) => {
         if (lo.isDone()) {

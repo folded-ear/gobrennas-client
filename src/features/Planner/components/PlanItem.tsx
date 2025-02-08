@@ -83,7 +83,7 @@ class PlanItem extends PureComponent<Props> {
         // it's multi-line!
         e.preventDefault();
         dispatcher.dispatch({
-            type: PlanActions.MULTI_LINE_PASTE,
+            type: "plan/multi-line-paste",
             text,
         });
     }
@@ -147,7 +147,7 @@ class PlanItem extends PureComponent<Props> {
                 if (shiftKey) {
                     // select this item and the previous one
                     dispatcher.dispatch({
-                        type: PlanActions.SELECT_PREVIOUS,
+                        type: "plan/select-previous",
                     });
                 } else if (ctrlKey) {
                     // move all selected items up one (if a predecessor exists)
@@ -156,7 +156,7 @@ class PlanItem extends PureComponent<Props> {
                     });
                 } else {
                     dispatcher.dispatch({
-                        type: PlanActions.FOCUS_PREVIOUS,
+                        type: "plan/focus-previous",
                     });
                 }
                 break;
@@ -166,7 +166,7 @@ class PlanItem extends PureComponent<Props> {
                 if (shiftKey) {
                     // select this item and the next one
                     dispatcher.dispatch({
-                        type: PlanActions.SELECT_NEXT,
+                        type: "plan/select-next",
                     });
                 } else if (ctrlKey) {
                     // move all selected items down one (if a follower exists)
@@ -175,7 +175,7 @@ class PlanItem extends PureComponent<Props> {
                     });
                 } else {
                     dispatcher.dispatch({
-                        type: PlanActions.FOCUS_NEXT,
+                        type: "plan/focus-next",
                     });
                 }
                 break;
@@ -193,7 +193,7 @@ class PlanItem extends PureComponent<Props> {
         e.preventDefault();
         e.stopPropagation();
         dispatcher.dispatch({
-            type: e.shiftKey ? PlanActions.SELECT_TO : PlanActions.FOCUS,
+            type: e.shiftKey ? "plan/select-to" : "plan/focus",
             id: item.id,
         });
     }
@@ -201,7 +201,7 @@ class PlanItem extends PureComponent<Props> {
     onToggleExpanded(e?) {
         if (e) e.stopPropagation();
         dispatcher.dispatch({
-            type: PlanActions.TOGGLE_EXPANDED,
+            type: "plan/toggle-expanded",
             id: this.props.item.id,
         });
     }

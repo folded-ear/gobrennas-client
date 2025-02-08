@@ -67,7 +67,7 @@ class PreferencesStore extends ReduceStore<State, FluxAction> {
                 return Map(action.preferences);
             }
 
-            case PlanActions.SELECT_PLAN:
+            case "plan/select-plan":
             case PlanActions.PLAN_CREATED:
             case PlanActions.DELETE_PLAN:
             case PlanActions.PLAN_DELETED:

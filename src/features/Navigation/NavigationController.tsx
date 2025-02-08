@@ -11,7 +11,6 @@ import { DesktopNav } from "@/features/Navigation/components/DesktopNav";
 import { useHistory, useLocation } from "react-router-dom";
 import { useIsAuthenticated, useLogoutHandler } from "@/providers/Profile";
 import dispatcher from "@/data/dispatcher";
-import PlanActions from "../Planner/data/PlanActions";
 import useIsNavCollapsed, { setNavCollapsed } from "@/data/useIsNavCollapsed";
 import { BfsId, ensureString } from "@/global/types/identity";
 import routes from "@/routes";
@@ -27,7 +26,7 @@ export function toggleShoppingPlan(id: BfsId) {
 
 function selectPlan(id: BfsId) {
     return dispatcher.dispatch({
-        type: PlanActions.SELECT_PLAN,
+        type: "plan/select-plan",
         id,
     });
 }

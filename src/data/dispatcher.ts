@@ -27,6 +27,19 @@ export type FluxAction =
           id: BfsId;
           name: string;
       }
+    // plan
+    | { type: "plan/collapse-all" }
+    | { type: "plan/expand-all" }
+    | { type: "plan/focus"; id: BfsId }
+    | { type: "plan/focus-next" }
+    | { type: "plan/focus-previous" }
+    | { type: "plan/multi-line-paste"; text: string }
+    | { type: "plan/select-next" }
+    | { type: "plan/select-plan"; id: BfsId }
+    | { type: "plan/select-previous" }
+    | { type: "plan/select-to"; id: BfsId }
+    | { type: "plan/sort-by-bucket" }
+    | { type: "plan/toggle-expanded"; id: BfsId }
     // promise
     | { type: "promise-flux/error-fallthrough"; error: unknown }
     // recipe

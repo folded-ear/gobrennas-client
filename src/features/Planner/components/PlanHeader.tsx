@@ -49,17 +49,17 @@ const onCloseDrawer = () =>
 
 const onExpandAll = () =>
     dispatcher.dispatch({
-        type: PlanActions.EXPAND_ALL,
+        type: "plan/expand-all",
     });
 
 const onCollapseAll = () =>
     dispatcher.dispatch({
-        type: PlanActions.COLLAPSE_ALL,
+        type: "plan/collapse-all",
     });
 
 const sortByBucket = () =>
     dispatcher.dispatch({
-        type: PlanActions.SORT_BY_BUCKET,
+        type: "plan/sort-by-bucket",
     });
 
 type PlanHeaderProps = {
