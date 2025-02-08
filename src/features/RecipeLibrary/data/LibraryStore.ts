@@ -8,7 +8,6 @@ import LoadObjectMap from "@/util/LoadObjectMap";
 import { loadObjectMapOf } from "@/util/loadObjectTypes";
 import { fromMilliseconds } from "@/util/time";
 import typedStore from "@/util/typedStore";
-import LibraryActions from "./LibraryActions";
 import { ripLoadObject, RippedLO } from "@/util/ripLoadObject";
 import { BfsId, bfsIdType, ensureString } from "@/global/types/identity";
 import { Ingredient, Recipe } from "@/global/types/types";
@@ -40,7 +39,7 @@ class LibraryStore extends ReduceStore<State, FluxAction> {
                     stringIdArray.push(ensureString(id));
                 }
                 dispatcher.dispatch({
-                    type: LibraryActions.LOAD_INGREDIENTS,
+                    type: "library/load-ingredients",
                     ids: stringIdArray,
                 });
             }),
@@ -49,7 +48,7 @@ class LibraryStore extends ReduceStore<State, FluxAction> {
 
     reduce(state: State, action: FluxAction): State {
         switch (action.type) {
-            case LibraryActions.LOAD_INGREDIENTS: {
+            case "library/load-ingredients": {
                 if (action.ids.length === 0) {
                     return state;
                 }
@@ -63,7 +62,7 @@ class LibraryStore extends ReduceStore<State, FluxAction> {
                 };
             }
 
-            case LibraryActions.INGREDIENTS_LOADED: {
+            case "library/ingredients-loaded": {
                 if (action.data.length === 0) {
                     return state;
                 }

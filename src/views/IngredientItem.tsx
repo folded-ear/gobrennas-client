@@ -62,8 +62,9 @@ const IngredientItem: React.FC<Props> = ({
 
     if (ref.ingredient == null || typeof ref.ingredient === "string") {
         left = null;
-        right = ref.raw || ref.name;
-        if (!hideSendToPlan) {
+        const name = ref.raw || ref.name;
+        right = name;
+        if (name && !hideSendToPlan) {
             right = (
                 <>
                     {right}{" "}
@@ -72,7 +73,7 @@ const IngredientItem: React.FC<Props> = ({
                             dispatcher.dispatch({
                                 type: "plan/send-to-plan",
                                 planId,
-                                name: ref.raw,
+                                name,
                             })
                         }
                         iconOnly

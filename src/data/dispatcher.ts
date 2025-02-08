@@ -11,12 +11,16 @@ import PlanItemStatus from "@/features/Planner/data/PlanItemStatus";
 import AccessLevel from "@/data/AccessLevel";
 import { MoveSubtreeAction } from "@/features/Planner/data/utils";
 import { Maybe } from "graphql/jsutils/Maybe";
+import { PantryItem, Recipe } from "@/global/types/types";
 
 export type FluxAction =
     // friend
     | { type: "friend/load-friend-list" }
     | { type: "friend/friend-list-loaded"; data: UserType[] }
     | { type: "friend/friend-list-load-error" }
+    // library
+    | { type: "library/ingredients-loaded"; data: Array<PantryItem | Recipe> }
+    | { type: "library/load-ingredients"; ids: BfsStringId[] }
     // pantry-item
     | {
           type: "pantry-item/order-for-store";

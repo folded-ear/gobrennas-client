@@ -10,8 +10,8 @@ import {
 } from "@/providers/ApolloClient";
 import { soakUpUnauthorized } from "@/util/promiseFlux";
 import dispatcher from "@/data/dispatcher";
-import LibraryActions from "@/features/RecipeLibrary/data/LibraryActions";
 import { toRestPlanOrItem } from "@/features/Planner/data/conversion_helpers";
+import { toRestPantryItem } from "@/features/RecipeLibrary/data/conversion_helpers";
 
 /*
  * Unlike every other BFS query, this one is dynamically constructed at runtime
@@ -64,8 +64,8 @@ function buildSyncer(planIds: BfsId[]): Syncer {
                 const updates = data.pantry.updatedSince;
                 if (updates.length) {
                     dispatcher.dispatch({
-                        type: LibraryActions.INGREDIENTS_LOADED,
-                        data: updates,
+                        type: "library/ingredients-loaded",
+                        data: updates.map(toRestPantryItem),
                     });
                 }
                 for (const id of planIds) {
