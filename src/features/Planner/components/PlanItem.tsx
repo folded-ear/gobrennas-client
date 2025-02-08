@@ -137,7 +137,7 @@ class PlanItem extends PureComponent<Props> {
             case "Tab":
                 e.preventDefault();
                 dispatcher.dispatch({
-                    type: shiftKey ? PlanActions.UNNEST : PlanActions.NEST,
+                    type: shiftKey ? "plan/unnest" : "plan/nest",
                     id: this.props.item.id,
                 });
                 break;
@@ -152,7 +152,7 @@ class PlanItem extends PureComponent<Props> {
                 } else if (ctrlKey) {
                     // move all selected items up one (if a predecessor exists)
                     dispatcher.dispatch({
-                        type: PlanActions.MOVE_PREVIOUS,
+                        type: "plan/move-previous",
                     });
                 } else {
                     dispatcher.dispatch({
@@ -171,7 +171,7 @@ class PlanItem extends PureComponent<Props> {
                 } else if (ctrlKey) {
                     // move all selected items down one (if a follower exists)
                     dispatcher.dispatch({
-                        type: PlanActions.MOVE_NEXT,
+                        type: "plan/move-next",
                     });
                 } else {
                     dispatcher.dispatch({

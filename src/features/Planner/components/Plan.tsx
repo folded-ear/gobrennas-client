@@ -1,10 +1,9 @@
 import { AddIcon } from "@/views/common/icons";
 import { List } from "@mui/material";
-import dispatcher, { FluxAction } from "@/data/dispatcher";
+import dispatcher from "@/data/dispatcher";
 import LoadingItem from "@/features/Planner/components/LoadingItem";
 import PlanHeader from "@/features/Planner/components/PlanHeader";
 import PlanItem from "@/features/Planner/components/PlanItem";
-import PlanActions from "@/features/Planner/data/PlanActions";
 import { isParent } from "@/features/Planner/data/plannerUtils";
 import FoodingerFab from "@/views/common/FoodingerFab";
 import LoadingIndicator from "@/views/common/LoadingIndicator";
@@ -28,6 +27,21 @@ interface Props {
     isItemSelected: (it: ItemTuple) => boolean;
 }
 
+function moveSubtreeInternal(
+    id: BfsId,
+    parentId: BfsId,
+    before?: BfsId,
+    after?: BfsId,
+) {
+    dispatcher.dispatch({
+        type: "plan/move-subtree",
+        id,
+        parentId,
+        before,
+        after,
+    });
+}
+
 export function moveSubtree(
     id: BfsId,
     target: PlanItemType | undefined,
@@ -35,22 +49,13 @@ export function moveSubtree(
     vertical: Vert,
 ) {
     if (!target) return;
-    const action: FluxAction = {
-        type: PlanActions.MOVE_SUBTREE,
-        id,
-    };
     if (horizontal === "right") {
-        action.parentId = target.id;
-        action.before = null; // last
+        moveSubtreeInternal(id, target.id); // as last child
+    } else if (vertical === "above") {
+        moveSubtreeInternal(id, target.parentId, target.id);
     } else {
-        action.parentId = target.parentId;
-        if (vertical === "above") {
-            action.before = target.id;
-        } else {
-            action.after = target.id;
-        }
+        moveSubtreeInternal(id, target.parentId, undefined, target.id);
     }
-    dispatcher.dispatch(action);
 }
 
 function Plan({
@@ -73,10 +78,17 @@ function Plan({
         });
     };
 
-    const handleDrop = (id, targetId, vertical, horizontal) => {
-        const target = itemTuples.find((it) => bfsIdEq(it.data?.id, targetId))
-            ?.data;
-        moveSubtree(id, target, horizontal, targetId);
+    const handleDrop = (
+        id: BfsId,
+        targetId: BfsId,
+        vertical: Vert,
+        horizontal: Horiz,
+    ) => {
+        // nice linear scan...
+        const target = itemTuples.find(
+            (it) => it.data && bfsIdEq(it.data.id, targetId),
+        )?.data;
+        moveSubtree(id, target, horizontal, vertical);
     };
 
     const plan = activePlan.data;

@@ -18,15 +18,10 @@ const PlanActions = {
         status: PropTypes.string.isRequired,
     }),
     UNDO_SET_STATUS: "plan/undo-set-status",
-    MOVE_NEXT: "plan/move-next",
-    MOVE_PREVIOUS: "plan/move-previous",
     RENAME_ITEM: typedAction("plan/rename-item", {
         id: bfsIdType.isRequired,
         name: PropTypes.string.isRequired,
     }),
-    NEST: "plan/nest",
-    UNNEST: "plan/unnest",
-    MOVE_SUBTREE: "plan/move-subtree",
     CREATE_BUCKET: typedAction("plan/create-bucket", {
         planId: bfsIdType.isRequired,
     }),

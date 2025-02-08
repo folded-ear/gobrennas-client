@@ -9,6 +9,7 @@ import { Plan, PlanItem } from "@/features/Planner/data/planStore";
 import { ShopItemType } from "@/views/shop/ShopList";
 import PlanItemStatus from "@/features/Planner/data/PlanItemStatus";
 import AccessLevel from "@/data/AccessLevel";
+import { MoveSubtreeAction } from "@/features/Planner/data/utils";
 
 export type FluxAction =
     // friend
@@ -44,7 +45,11 @@ export type FluxAction =
     | { type: "plan/focus"; id: BfsId }
     | { type: "plan/focus-next" }
     | { type: "plan/focus-previous" }
+    | { type: "plan/move-next" }
+    | { type: "plan/move-previous" }
+    | ({ type: "plan/move-subtree" } & MoveSubtreeAction)
     | { type: "plan/multi-line-paste"; text: string }
+    | { type: "plan/nest" }
     | { type: "plan/plan-detail-visibility"; visible: boolean }
     | { type: "plan/rename-plan"; id: BfsId; name: string }
     | { type: "plan/select-next" }
@@ -61,6 +66,7 @@ export type FluxAction =
       }
     | { type: "plan/sort-by-bucket" }
     | { type: "plan/toggle-expanded"; id: BfsId }
+    | { type: "plan/unnest" }
     // promise
     | { type: "promise-flux/error-fallthrough"; error: unknown }
     // recipe

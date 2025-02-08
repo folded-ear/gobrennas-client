@@ -50,8 +50,8 @@ export interface TreeMutationSpec {
 export interface MoveSubtreeAction {
     id: BfsId;
     parentId: BfsId;
-    before: BfsId | null;
-    after?: BfsId;
+    before?: Maybe<BfsId>;
+    after?: Maybe<BfsId>;
 }
 
 function _newTask(name: string) {
@@ -747,9 +747,9 @@ function subtaskIdBefore(
 
 export function moveSubtree(state: State, action: MoveSubtreeAction): State {
     let blockIds = getOrderedBlock(state).map(([t]) => t.id);
-    const afterId = action.hasOwnProperty("before")
+    const afterId = action.before
         ? subtaskIdBefore(state, action.parentId, action.before)
-        : action.after ?? null;
+        : action.after;
     if (
         includesBfsId(blockIds, action.parentId) ||
         includesBfsId(blockIds, afterId)

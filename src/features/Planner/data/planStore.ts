@@ -33,7 +33,6 @@ import {
     mapPlanBuckets,
     moveDelta,
     moveSubtree,
-    MoveSubtreeAction,
     nestTask,
     queueDelete,
     renameTask,
@@ -366,23 +365,20 @@ class PlanStore extends FluxReduceStore<State, FluxAction> {
             case "plan/select-to":
                 return selectTo(state, action.id);
 
-            case PlanActions.MOVE_NEXT:
+            case "plan/move-next":
                 return moveDelta(state, 1);
 
-            case PlanActions.MOVE_PREVIOUS:
+            case "plan/move-previous":
                 return moveDelta(state, -1);
 
-            case PlanActions.NEST:
+            case "plan/nest":
                 return nestTask(state);
 
-            case PlanActions.UNNEST:
+            case "plan/unnest":
                 return unnestTask(state);
 
-            case PlanActions.MOVE_SUBTREE:
-                return moveSubtree(
-                    state,
-                    action as unknown as MoveSubtreeAction,
-                );
+            case "plan/move-subtree":
+                return moveSubtree(state, action);
 
             case "plan/toggle-expanded":
                 return toggleExpanded(state, action.id);
