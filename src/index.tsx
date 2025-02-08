@@ -1,7 +1,6 @@
 import { StrictMode } from "react";
 import GoBrennas from "./GoBrennas";
 import dispatcher from "@/data/dispatcher";
-import WindowActions from "@/data/WindowActions";
 import debounce from "@/util/debounce";
 import { createRoot } from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
@@ -28,7 +27,7 @@ window.addEventListener(
     debounce(
         () =>
             dispatcher.dispatch({
-                type: WindowActions.RESIZE,
+                type: "window/resize",
                 size: {
                     width: window.innerWidth,
                     height: window.innerHeight,
@@ -45,21 +44,21 @@ window.addEventListener("focus", () => {
         return;
     }
     dispatcher.dispatch({
-        type: WindowActions.FOCUS_CHANGE,
+        type: "window/focus-change",
         focused: true,
     });
 });
 
 window.addEventListener("blur", () =>
     dispatcher.dispatch({
-        type: WindowActions.FOCUS_CHANGE,
+        type: "window/focus-change",
         focused: false,
     }),
 );
 
 document.addEventListener("visibilitychange", () =>
     dispatcher.dispatch({
-        type: WindowActions.VISIBILITY_CHANGE,
+        type: "window/visibility-change",
         visible: !document.hidden,
     }),
 );

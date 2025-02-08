@@ -1,8 +1,7 @@
 import { ReduceStore } from "flux/utils";
 import dispatcher, { FluxAction } from "./dispatcher";
-import WindowActions from "./WindowActions";
 
-interface WindowSize {
+export interface WindowSize {
     width: number;
     height: number;
 }
@@ -25,19 +24,19 @@ class WindowStore extends ReduceStore<State, FluxAction> {
         };
     }
 
-    reduce(state: State, action): State {
+    reduce(state: State, action: FluxAction): State {
         switch (action.type) {
-            case WindowActions.RESIZE:
+            case "window/resize":
                 return {
                     ...state,
                     size: action.size,
                 };
-            case WindowActions.VISIBILITY_CHANGE:
+            case "window/visibility-change":
                 return {
                     ...state,
                     visible: action.visible,
                 };
-            case WindowActions.FOCUS_CHANGE:
+            case "window/focus-change":
                 return {
                     ...state,
                     focused: action.focused,
