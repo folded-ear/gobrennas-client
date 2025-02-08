@@ -8,7 +8,6 @@ import { isExpanded, isParent } from "@/features/Planner/data/plannerUtils";
 import invariant from "invariant/invariant";
 import PlanApi from "@/features/Planner/data/PlanApi";
 import inTheFuture from "@/util/inTheFuture";
-import PlanActions from "@/features/Planner/data/PlanActions";
 import dotProp from "dot-prop-immutable";
 import { bucketComparator, Named } from "@/util/comparators";
 import preferencesStore from "@/data/preferencesStore";
@@ -348,7 +347,7 @@ export function flushTasksToRename(state: State): State {
         PlanApi.createItem(id, task.parentId, afterId, task.name);
     }
     tasksToRename = requeue;
-    if (requeue.size > 0) inTheFuture(PlanActions.FLUSH_RENAMES, 0.5);
+    if (requeue.size > 0) inTheFuture("plan/flush-renames", 0.5);
     return state;
 }
 
@@ -382,7 +381,7 @@ export function renameTask(state: State, id: BfsId, name: string): State {
             lo = ClientId.is(id) ? lo.creating() : lo.updating();
         }
         tasksToRename.add(ensureString(id));
-        inTheFuture(PlanActions.FLUSH_RENAMES);
+        inTheFuture("plan/flush-renames");
         return lo.map((t) => ({
             ...t,
             name,
@@ -556,7 +555,7 @@ export function flushStatusUpdates(state: State): State {
         break;
     }
     if (statusUpdatesToFlush.size > 0) {
-        inTheFuture(PlanActions.FLUSH_STATUS_UPDATES, 0.5);
+        inTheFuture("plan/flush-status-updates", 0.5);
     }
     return state;
 }
@@ -608,7 +607,7 @@ function queueStatusUpdate(
             .done();
     } else {
         statusUpdatesToFlush.set(id, change);
-        inTheFuture(PlanActions.FLUSH_STATUS_UPDATES, 4);
+        inTheFuture("plan/flush-status-updates", 4);
         nextLO = lo.map((t) => ({
             ...t,
             _next_status: status,

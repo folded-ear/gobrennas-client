@@ -504,9 +504,9 @@ class PlanStore extends FluxReduceStore<State, FluxAction> {
             case "plan/sort-by-bucket":
                 return sortActivePlanByBucket(state);
 
-            case PlanActions.FLUSH_RENAMES:
+            case "plan/flush-renames":
                 return flushTasksToRename(state);
-            case PlanActions.FLUSH_STATUS_UPDATES:
+            case "plan/flush-status-updates":
                 return flushStatusUpdates(state);
 
             default:

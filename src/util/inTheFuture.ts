@@ -1,8 +1,7 @@
-import dispatcher from "@/data/dispatcher";
-import { CheckableActionType } from "@/util/typedAction";
+import dispatcher, { FluxAction } from "@/data/dispatcher";
 
 type TimeoutId = number;
-const timeoutRegistry = new Map<CheckableActionType, TimeoutId>();
+const timeoutRegistry = new Map<FluxAction["type"], TimeoutId>();
 
 const flushPending = () => {
     // to avoid jacking your data on hot reload, disable the unload flush in dev
@@ -13,8 +12,11 @@ const flushPending = () => {
     }
 };
 
-const doFutureWork = (type: CheckableActionType) => {
-    dispatcher.dispatch({ type });
+const doFutureWork = (type: FluxAction["type"]) => {
+    // Future work is a sufficiently advanced use case that trusting the
+    // caller to have read the docs, and only specify a type with a bare
+    // action is enough to justify this cast. Hopefully. 🤞
+    dispatcher.dispatch({ type } as FluxAction);
     timeoutRegistry.delete(type);
     if (timeoutRegistry.size === 0) {
         window.removeEventListener("beforeunload", flushPending);
@@ -31,7 +33,7 @@ const doFutureWork = (type: CheckableActionType) => {
  * @param type The action type to queue up for future dispatch.
  * @param delay The number of seconds to wait before dispatching.
  */
-const inTheFuture = (type: CheckableActionType, delay: number = 2) => {
+const inTheFuture = (type: FluxAction["type"], delay: number = 2) => {
     if (timeoutRegistry.size === 0) {
         window.addEventListener("beforeunload", flushPending);
     }

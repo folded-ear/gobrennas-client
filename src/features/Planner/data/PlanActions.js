@@ -12,9 +12,6 @@ const PlanActions = {
     DELETED: "plan/deleted",
     // socket actions
     PLAN_DATA_BOOTSTRAPPED: "plan/plan-data-bootstrapped",
-    // deferred actions
-    FLUSH_RENAMES: "plan/flush-renames",
-    FLUSH_STATUS_UPDATES: "plan/flush-status-updates",
 };
 
 export default PlanActions;

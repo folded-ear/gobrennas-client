@@ -37,6 +37,8 @@ export type FluxAction =
     | { type: "plan/delete-plan"; id: BfsId }
     | { type: "plan/duplicate-plan"; fromId: BfsId; name: string }
     | { type: "plan/expand-all" }
+    | { type: "plan/flush-renames" }
+    | { type: "plan/flush-status-updates" }
     | { type: "plan/plan-detail-visibility"; visible: boolean }
     | { type: "plan/rename-plan"; id: BfsId; name: string }
     | { type: "plan/set-plan-color"; id: BfsId; color: string }
