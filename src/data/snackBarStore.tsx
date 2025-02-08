@@ -1,5 +1,4 @@
 import { AlertColor, Button } from "@mui/material";
-import PlanActions from "@/features/Planner/data/PlanActions";
 import PlanItemStatus, {
     willStatusDelete,
 } from "@/features/Planner/data/PlanItemStatus";
@@ -69,7 +68,7 @@ function forPlanItemStatusChanges(
                     onClick={(e) => {
                         dismiss(e);
                         dispatcher.dispatch({
-                            type: PlanActions.BULK_SET_STATUS,
+                            type: "plan/bulk-set-status",
                             status: status,
                             ids: comps.map((c) => c.id),
                         });
@@ -150,7 +149,7 @@ class SnackBarStore extends ReduceStore<State, FluxAction> {
                 });
             }
 
-            case PlanActions.SET_STATUS: {
+            case "plan/set-status": {
                 return forPlanItemStatusChanges(
                     state,
                     [action.id],
@@ -158,7 +157,7 @@ class SnackBarStore extends ReduceStore<State, FluxAction> {
                 );
             }
 
-            case PlanActions.BULK_SET_STATUS: {
+            case "plan/bulk-set-status": {
                 return forPlanItemStatusChanges(
                     state,
                     action.ids,

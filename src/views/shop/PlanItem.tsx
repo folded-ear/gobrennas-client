@@ -14,7 +14,6 @@ import withItemStyles from "@/features/Planner/components/withItemStyles";
 import { BaseItemProp, ItemProps, TupleProps } from "./types";
 import { ShopItemType } from "@/views/shop/ShopList";
 import { isDoNotRecognize } from "@/features/Planner/data/plannerUtils";
-import PlanActions from "@/features/Planner/data/PlanActions";
 
 type PlanItemProps = TupleProps & {
     depth: number;
@@ -42,7 +41,7 @@ class PlanItem extends React.PureComponent<PlanItemProps> {
         const { value } = e.target;
         const { item } = this.props;
         dispatcher.dispatch({
-            type: PlanActions.RENAME_ITEM,
+            type: "plan/rename-item",
             id: item.id,
             name: value,
         });

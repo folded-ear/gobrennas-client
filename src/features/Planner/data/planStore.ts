@@ -244,7 +244,7 @@ class PlanStore extends FluxReduceStore<State, FluxAction> {
             case PlanActions.TREE_CREATE:
                 return tasksCreated(state, action.data, action.newIds);
 
-            case PlanActions.RENAME_ITEM:
+            case "plan/rename-item":
                 return renameTask(state, action.id, action.name);
 
             case PlanActions.UPDATED:
@@ -313,22 +313,33 @@ class PlanStore extends FluxReduceStore<State, FluxAction> {
                 return queueDelete(state, action.id);
             }
 
-            case PlanActions.COMPLETE_PLAN_ITEM: {
-                return doInteractiveStatusChange(state, action.id, {
-                    status: PlanItemStatus.COMPLETED,
-                    doneAt: action.doneAt,
-                });
+            case "plan/complete-plan-item": {
+                return doInteractiveStatusChange(
+                    state,
+                    ensureString(action.id),
+                    {
+                        status: PlanItemStatus.COMPLETED,
+                        doneAt: action.doneAt,
+                    },
+                );
             }
 
-            case PlanActions.SET_STATUS: {
-                return doInteractiveStatusChange(state, action.id, {
-                    status: action.status,
-                });
+            case "plan/set-status": {
+                return doInteractiveStatusChange(
+                    state,
+                    ensureString(action.id),
+                    action.status,
+                );
             }
 
-            case PlanActions.BULK_SET_STATUS: {
+            case "plan/bulk-set-status": {
                 return action.ids.reduce(
-                    (s, id) => doInteractiveStatusChange(s, id, action.status),
+                    (s, id) =>
+                        doInteractiveStatusChange(
+                            s,
+                            ensureString(id),
+                            action.status,
+                        ),
                     state,
                 );
             }
@@ -346,7 +357,7 @@ class PlanStore extends FluxReduceStore<State, FluxAction> {
                 return focusDelta(state, tasks[0].id, -1);
             }
 
-            case PlanActions.UNDO_SET_STATUS:
+            case "plan/undo-set-status":
                 return cancelStatusUpdate(state, action.id);
 
             case "shopping/undo-set-ingredient-status": {

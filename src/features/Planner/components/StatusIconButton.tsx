@@ -1,6 +1,5 @@
 import { IconButton, IconButtonProps, Tooltip } from "@mui/material";
 import dispatcher from "@/data/dispatcher";
-import PlanActions from "@/features/Planner/data/PlanActions";
 import PlanItemStatus, {
     getColorForStatus,
     getIconForStatus,
@@ -45,14 +44,18 @@ const StatusIconButton = ({ next, current, id, ...props }: Props) => {
             <Btn
                 aria-label={next.toLowerCase()}
                 size="small"
-                onClick={(e) => {
-                    e.stopPropagation();
-                    dispatcher.dispatch({
-                        type: PlanActions.SET_STATUS,
-                        id: id,
-                        status: next,
-                    });
-                }}
+                onClick={
+                    id && !props.onClick
+                        ? (e) => {
+                              e.stopPropagation();
+                              dispatcher.dispatch({
+                                  type: "plan/set-status",
+                                  id,
+                                  status: next,
+                              });
+                          }
+                        : undefined
+                }
                 {...props}
             >
                 <Icn />

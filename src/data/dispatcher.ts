@@ -30,34 +30,15 @@ export type FluxAction =
           id: BfsId;
           name: string;
       }
-    // plan
+    // plans
     | { type: "plan/clear-plan-grant"; id: BfsId; userId: BfsId }
     | { type: "plan/collapse-all" }
-    | { type: "plan/create-item-after"; id: BfsId }
-    | { type: "plan/create-item-at-end" }
-    | { type: "plan/create-item-before"; id: BfsId }
     | { type: "plan/create-plan"; name: string }
-    | { type: "plan/delete-item-backwards"; id: BfsId }
-    | { type: "plan/delete-item-forward"; id: BfsId }
     | { type: "plan/delete-plan"; id: BfsId }
-    | { type: "plan/delete-selected" }
     | { type: "plan/duplicate-plan"; fromId: BfsId; name: string }
     | { type: "plan/expand-all" }
-    | { type: "plan/focus"; id: BfsId }
-    | { type: "plan/focus-next" }
-    | { type: "plan/focus-previous" }
-    | { type: "plan/move-next" }
-    | { type: "plan/move-previous" }
-    | ({ type: "plan/move-subtree" } & MoveSubtreeAction)
-    | { type: "plan/multi-line-paste"; text: string }
-    | { type: "plan/nest" }
     | { type: "plan/plan-detail-visibility"; visible: boolean }
     | { type: "plan/rename-plan"; id: BfsId; name: string }
-    | { type: "plan/select-next" }
-    | { type: "plan/select-plan"; id: BfsId }
-    | { type: "plan/select-previous" }
-    | { type: "plan/select-to"; id: BfsId }
-    | { type: "plan/send-to-plan"; planId: BfsId; name: string }
     | { type: "plan/set-plan-color"; id: BfsId; color: string }
     | {
           type: "plan/set-plan-grant";
@@ -67,7 +48,6 @@ export type FluxAction =
       }
     | { type: "plan/sort-by-bucket" }
     | { type: "plan/toggle-expanded"; id: BfsId }
-    | { type: "plan/unnest" }
     // plan buckets
     | { type: "plan/assign-item-to-bucket"; id: BfsId; bucketId: Maybe<BfsId> }
     | {
@@ -89,6 +69,38 @@ export type FluxAction =
           id: BfsId;
           date: Maybe<Date>;
       }
+    // plan items
+    | {
+          type: "plan/complete-plan-item";
+          id: BfsId;
+          status: PlanItemStatus;
+          doneAt: Maybe<Date>;
+      }
+    | { type: "plan/bulk-set-status"; ids: BfsId[]; status: PlanItemStatus }
+    | { type: "plan/focus"; id: BfsId }
+    | { type: "plan/focus-next" }
+    | { type: "plan/focus-previous" }
+    | { type: "plan/rename-item"; id: BfsId; name: string }
+    | { type: "plan/select-next" }
+    | { type: "plan/select-plan"; id: BfsId }
+    | { type: "plan/select-previous" }
+    | { type: "plan/select-to"; id: BfsId }
+    | { type: "plan/send-to-plan"; planId: BfsId; name: string }
+    | { type: "plan/set-status"; id: BfsId; status: PlanItemStatus }
+    | { type: "plan/undo-set-status"; id: BfsId }
+    // plan tree
+    | { type: "plan/create-item-after"; id: BfsId }
+    | { type: "plan/create-item-at-end" }
+    | { type: "plan/create-item-before"; id: BfsId }
+    | { type: "plan/delete-item-backwards"; id: BfsId }
+    | { type: "plan/delete-item-forward"; id: BfsId }
+    | { type: "plan/delete-selected" }
+    | { type: "plan/move-next" }
+    | { type: "plan/move-previous" }
+    | ({ type: "plan/move-subtree" } & MoveSubtreeAction)
+    | { type: "plan/multi-line-paste"; text: string }
+    | { type: "plan/nest" }
+    | { type: "plan/unnest" }
     // promise
     | { type: "promise-flux/error-fallthrough"; error: unknown }
     // recipe

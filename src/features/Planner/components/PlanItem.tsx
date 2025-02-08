@@ -8,7 +8,6 @@ import Item from "@/features/Planner/components/Item";
 import PlanItemBucketChip from "@/features/Planner/components/PlanItemBucketChip";
 import StatusIconButton from "@/features/Planner/components/StatusIconButton";
 import withItemStyles from "@/features/Planner/components/withItemStyles";
-import PlanActions from "@/features/Planner/data/PlanActions";
 import PlanItemStatus from "@/features/Planner/data/PlanItemStatus";
 import {
     isDoNotRecognize,
@@ -62,7 +61,7 @@ class PlanItem extends PureComponent<Props> {
         const { value } = e.target;
         const { item } = this.props;
         dispatcher.dispatch({
-            type: PlanActions.RENAME_ITEM,
+            type: "plan/rename-item",
             id: item.id,
             name: value,
         });

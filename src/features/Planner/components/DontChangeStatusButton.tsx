@@ -1,6 +1,5 @@
 import React from "react";
 import dispatcher from "@/data/dispatcher";
-import PlanActions from "@/features/Planner/data/PlanActions";
 import PlanItemStatus, {
     getColorForStatus,
 } from "@/features/Planner/data/PlanItemStatus";
@@ -28,13 +27,17 @@ const DontChangeStatusButton: React.FC<Props> = ({ id, next, ...props }) => {
             variant="contained"
             aria-label="wait-no"
             size="small"
-            onClick={(e) => {
-                e.stopPropagation();
-                dispatcher.dispatch({
-                    type: PlanActions.UNDO_SET_STATUS,
-                    id,
-                });
-            }}
+            onClick={
+                id && !props.onClick
+                    ? (e) => {
+                          e.stopPropagation();
+                          dispatcher.dispatch({
+                              type: "plan/undo-set-status",
+                              id,
+                          });
+                      }
+                    : undefined
+            }
             {...props}
         >
             WAIT, NO!
