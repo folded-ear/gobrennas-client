@@ -2,9 +2,13 @@ import { Dispatcher } from "flux";
 import ValidatingDispatcher from "@/data/ValidatingDispatcher";
 import { Layout } from "@/data/preferencesStore";
 import { WindowSize } from "@/data/WindowStore";
+import { Snack } from "@/data/snackBarStore";
 
 export type FluxAction =
     | { type: "promise-flux/error-fallthrough"; error: unknown }
+    | { type: "ui/dismiss-snackbar"; key: Snack["key"] }
+    | { type: "ui/hide-fab" }
+    | { type: "ui/show-fab" }
     | { type: "user/restore-preferences"; preferences: [string, unknown][] }
     | { type: "user/set-dev-mode"; enabled: boolean }
     | { type: "user/set-layout"; layout: Layout }

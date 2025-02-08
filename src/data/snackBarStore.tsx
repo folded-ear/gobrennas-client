@@ -11,14 +11,13 @@ import typedStore from "@/util/typedStore";
 import dispatcher, { FluxAction } from "./dispatcher";
 import PantryItemActions from "./PantryItemActions";
 import RecipeActions from "./RecipeActions";
-import UiActions from "./UiActions";
 import { Maybe } from "graphql/jsutils/Maybe";
 import * as React from "react";
 import { SnackbarCloseReason } from "@mui/material/Snackbar/Snackbar";
 import { BfsId } from "@/global/types/identity";
 
 export interface Snack {
-    key: number | string;
+    key: number | string; // not a BfsId!
     message: string;
     severity?: AlertColor;
     renderAction?: Maybe<
@@ -98,21 +97,21 @@ class SnackBarStore extends ReduceStore<State, FluxAction> {
 
     reduce(state: State, action: FluxAction): State {
         switch (action.type) {
-            case UiActions.SHOW_FAB: {
+            case "ui/show-fab": {
                 return {
                     ...state,
                     fabVisible: true,
                 };
             }
 
-            case UiActions.HIDE_FAB: {
+            case "ui/hide-fab": {
                 return {
                     ...state,
                     fabVisible: false,
                 };
             }
 
-            case UiActions.DISMISS_SNACKBAR: {
+            case "ui/dismiss-snackbar": {
                 return {
                     ...state,
                     queue: state.queue.slice(1),

@@ -4,7 +4,6 @@ import { makeStyles } from "@mui/styles";
 import { CloseIcon } from "@/views/common/icons";
 import dispatcher from "@/data/dispatcher";
 import snackBarStore, { Snack } from "@/data/snackBarStore";
-import UiActions from "@/data/UiActions";
 import useFluxStore from "@/data/useFluxStore";
 import { SnackbarCloseReason } from "@mui/material/Snackbar/Snackbar";
 
@@ -48,7 +47,7 @@ function SnackPack() {
         messageInfo.onClose &&
             messageInfo.onClose.call(undefined, event, reason);
         dispatcher.dispatch({
-            type: UiActions.DISMISS_SNACKBAR,
+            type: "ui/dismiss-snackbar",
             key: messageInfo.key,
         });
     };
@@ -58,7 +57,7 @@ function SnackPack() {
         messageInfo.onClose &&
             messageInfo.onClose.call(undefined, event, "clickaway");
         dispatcher.dispatch({
-            type: UiActions.DISMISS_SNACKBAR,
+            type: "ui/dismiss-snackbar",
             key: messageInfo.key,
         });
     };

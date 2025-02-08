@@ -1,7 +1,6 @@
 import Fab from "@mui/material/Fab";
 import React, { PropsWithChildren } from "react";
 import dispatcher from "@/data/dispatcher";
-import UiActions from "@/data/UiActions";
 import { styled } from "@mui/material/styles";
 import { useIsMobile } from "@/providers/IsMobile";
 
@@ -24,13 +23,13 @@ const FoodingerFab: React.FC<Props> = ({ children, ...props }) => {
     React.useEffect(() => {
         setTimeout(() =>
             dispatcher.dispatch({
-                type: UiActions.SHOW_FAB,
+                type: "ui/show-fab",
             }),
         );
         return () => {
             setTimeout(() =>
                 dispatcher.dispatch({
-                    type: UiActions.HIDE_FAB,
+                    type: "ui/hide-fab",
                 }),
             );
         };
