@@ -2,8 +2,7 @@ import { ListItemText } from "@mui/material";
 import Input from "@mui/material/Input";
 import classnames from "classnames";
 import React from "react";
-import Dispatcher from "@/data/dispatcher";
-import ShoppingActions from "@/data/ShoppingActions";
+import dispatcher, { ActionType } from "@/data/dispatcher";
 import PlanItemStatus from "@/features/Planner/data/PlanItemStatus";
 import LoadingIconButton from "../common/LoadingIconButton";
 import PlaceholderIconButton from "../common/PlaceholderIconButton";
@@ -41,8 +40,8 @@ class PlanItem extends React.PureComponent<PlanItemProps> {
     onChange(e) {
         const { value } = e.target;
         const { item } = this.props;
-        Dispatcher.dispatch({
-            type: ShoppingActions.RENAME_ITEM,
+        dispatcher.dispatch({
+            type: ActionType.PLAN__RENAME_ITEM,
             id: item.id,
             name: value,
         });
@@ -54,8 +53,8 @@ class PlanItem extends React.PureComponent<PlanItemProps> {
         e.preventDefault();
         e.stopPropagation();
         if (e.shiftKey) return;
-        Dispatcher.dispatch({
-            type: ShoppingActions.FOCUS,
+        dispatcher.dispatch({
+            type: ActionType.SHOPPING__FOCUS_ITEM,
             id: item.id,
             itemType: ShopItemType.PLAN_ITEM,
         });
@@ -69,11 +68,11 @@ class PlanItem extends React.PureComponent<PlanItemProps> {
             case "Enter":
                 if (value.length === 0) break;
                 // add a new item, before if the cursor is at the beginning, after otherwise
-                Dispatcher.dispatch({
+                dispatcher.dispatch({
                     type:
                         selectionStart === 0
-                            ? ShoppingActions.CREATE_ITEM_BEFORE
-                            : ShoppingActions.CREATE_ITEM_AFTER,
+                            ? ActionType.SHOPPING__CREATE_ITEM_BEFORE
+                            : ActionType.SHOPPING__CREATE_ITEM_AFTER,
                     id: this.props.item.id,
                 });
                 break;
@@ -81,8 +80,8 @@ class PlanItem extends React.PureComponent<PlanItemProps> {
                 // if the value is empty, delete the item and focus previous
                 if (value.length === 0) {
                     e.preventDefault();
-                    Dispatcher.dispatch({
-                        type: ShoppingActions.DELETE_ITEM_BACKWARDS,
+                    dispatcher.dispatch({
+                        type: ActionType.SHOPPING__DELETE_ITEM_BACKWARD,
                         id: this.props.item.id,
                     });
                 }
@@ -91,8 +90,8 @@ class PlanItem extends React.PureComponent<PlanItemProps> {
                 // if the value is empty, delete the item and focus next
                 if (value.length === 0) {
                     e.preventDefault();
-                    Dispatcher.dispatch({
-                        type: ShoppingActions.DELETE_ITEM_FORWARD,
+                    dispatcher.dispatch({
+                        type: ActionType.SHOPPING__DELETE_ITEM_FORWARD,
                         id: this.props.item.id,
                     });
                 }

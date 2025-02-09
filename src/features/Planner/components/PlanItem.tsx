@@ -1,14 +1,13 @@
 import { ListItemText } from "@mui/material";
 import Input from "@mui/material/Input";
 import classnames from "classnames";
-import Dispatcher from "@/data/dispatcher";
+import dispatcher, { ActionType } from "@/data/dispatcher";
 import CookButton from "@/features/Planner/components/CookButton";
 import DontChangeStatusButton from "@/features/Planner/components/DontChangeStatusButton";
 import Item from "@/features/Planner/components/Item";
 import PlanItemBucketChip from "@/features/Planner/components/PlanItemBucketChip";
 import StatusIconButton from "@/features/Planner/components/StatusIconButton";
 import withItemStyles from "@/features/Planner/components/withItemStyles";
-import PlanActions from "@/features/Planner/data/PlanActions";
 import PlanItemStatus from "@/features/Planner/data/PlanItemStatus";
 import {
     isDoNotRecognize,
@@ -61,8 +60,8 @@ class PlanItem extends PureComponent<Props> {
     onChange(e: ChangeEvent<HTMLInputElement>) {
         const { value } = e.target;
         const { item } = this.props;
-        Dispatcher.dispatch({
-            type: PlanActions.RENAME_ITEM,
+        dispatcher.dispatch({
+            type: ActionType.PLAN__RENAME_ITEM,
             id: item.id,
             name: value,
         });
@@ -82,8 +81,8 @@ class PlanItem extends PureComponent<Props> {
         if (text.indexOf("\n") < 0) return;
         // it's multi-line!
         e.preventDefault();
-        Dispatcher.dispatch({
-            type: PlanActions.MULTI_LINE_PASTE,
+        dispatcher.dispatch({
+            type: ActionType.PLAN__MULTI_LINE_PASTE,
             text,
         });
     }
@@ -96,11 +95,11 @@ class PlanItem extends PureComponent<Props> {
             case "Enter":
                 if (value.length === 0) break;
                 // add a new item, before if the cursor is at the beginning, after otherwise
-                Dispatcher.dispatch({
+                dispatcher.dispatch({
                     type:
                         selectionStart === 0
-                            ? PlanActions.CREATE_ITEM_BEFORE
-                            : PlanActions.CREATE_ITEM_AFTER,
+                            ? ActionType.PLAN__CREATE_ITEM_BEFORE
+                            : ActionType.PLAN__CREATE_ITEM_AFTER,
                     id: this.props.item.id,
                 });
                 break;
@@ -108,14 +107,14 @@ class PlanItem extends PureComponent<Props> {
                 // if the value is empty, delete the item and focus previous
                 if (value.length === 0) {
                     e.preventDefault();
-                    Dispatcher.dispatch({
-                        type: PlanActions.DELETE_ITEM_BACKWARDS,
+                    dispatcher.dispatch({
+                        type: ActionType.PLAN__DELETE_ITEM_BACKWARDS,
                         id: this.props.item.id,
                     });
                 } else if (shiftKey) {
                     e.preventDefault();
-                    Dispatcher.dispatch({
-                        type: PlanActions.DELETE_SELECTED,
+                    dispatcher.dispatch({
+                        type: ActionType.PLAN__DELETE_SELECTED,
                     });
                 }
                 break;
@@ -123,21 +122,23 @@ class PlanItem extends PureComponent<Props> {
                 // if the value is empty, delete the item and focus next
                 if (value.length === 0) {
                     e.preventDefault();
-                    Dispatcher.dispatch({
-                        type: PlanActions.DELETE_ITEM_FORWARD,
+                    dispatcher.dispatch({
+                        type: ActionType.PLAN__DELETE_ITEM_FORWARD,
                         id: this.props.item.id,
                     });
                 } else if (shiftKey) {
                     e.preventDefault();
-                    Dispatcher.dispatch({
-                        type: PlanActions.DELETE_SELECTED,
+                    dispatcher.dispatch({
+                        type: ActionType.PLAN__DELETE_SELECTED,
                     });
                 }
                 break;
             case "Tab":
                 e.preventDefault();
-                Dispatcher.dispatch({
-                    type: shiftKey ? PlanActions.UNNEST : PlanActions.NEST,
+                dispatcher.dispatch({
+                    type: shiftKey
+                        ? ActionType.PLAN__UNNEST
+                        : ActionType.PLAN__NEST,
                     id: this.props.item.id,
                 });
                 break;
@@ -146,17 +147,17 @@ class PlanItem extends PureComponent<Props> {
                 if (shiftKey && ctrlKey) break;
                 if (shiftKey) {
                     // select this item and the previous one
-                    Dispatcher.dispatch({
-                        type: PlanActions.SELECT_PREVIOUS,
+                    dispatcher.dispatch({
+                        type: ActionType.PLAN__SELECT_PREVIOUS,
                     });
                 } else if (ctrlKey) {
                     // move all selected items up one (if a predecessor exists)
-                    Dispatcher.dispatch({
-                        type: PlanActions.MOVE_PREVIOUS,
+                    dispatcher.dispatch({
+                        type: ActionType.PLAN__MOVE_PREVIOUS,
                     });
                 } else {
-                    Dispatcher.dispatch({
-                        type: PlanActions.FOCUS_PREVIOUS,
+                    dispatcher.dispatch({
+                        type: ActionType.PLAN__FOCUS_PREVIOUS,
                     });
                 }
                 break;
@@ -165,17 +166,17 @@ class PlanItem extends PureComponent<Props> {
                 if (shiftKey && ctrlKey) break;
                 if (shiftKey) {
                     // select this item and the next one
-                    Dispatcher.dispatch({
-                        type: PlanActions.SELECT_NEXT,
+                    dispatcher.dispatch({
+                        type: ActionType.PLAN__SELECT_NEXT,
                     });
                 } else if (ctrlKey) {
                     // move all selected items down one (if a follower exists)
-                    Dispatcher.dispatch({
-                        type: PlanActions.MOVE_NEXT,
+                    dispatcher.dispatch({
+                        type: ActionType.PLAN__MOVE_NEXT,
                     });
                 } else {
-                    Dispatcher.dispatch({
-                        type: PlanActions.FOCUS_NEXT,
+                    dispatcher.dispatch({
+                        type: ActionType.PLAN__FOCUS_NEXT,
                     });
                 }
                 break;
@@ -192,16 +193,18 @@ class PlanItem extends PureComponent<Props> {
         if (active) return;
         e.preventDefault();
         e.stopPropagation();
-        Dispatcher.dispatch({
-            type: e.shiftKey ? PlanActions.SELECT_TO : PlanActions.FOCUS,
+        dispatcher.dispatch({
+            type: e.shiftKey
+                ? ActionType.PLAN__SELECT_TO
+                : ActionType.PLAN__FOCUS,
             id: item.id,
         });
     }
 
     onToggleExpanded(e?) {
         if (e) e.stopPropagation();
-        Dispatcher.dispatch({
-            type: PlanActions.TOGGLE_EXPANDED,
+        dispatcher.dispatch({
+            type: ActionType.PLAN__TOGGLE_EXPANDED,
             id: this.props.item.id,
         });
     }

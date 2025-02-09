@@ -9,14 +9,15 @@ import IconButton from "@mui/material/IconButton";
 import TableCell from "@mui/material/TableCell";
 import Tooltip from "@mui/material/Tooltip";
 import { AddIcon, DeleteIcon } from "@/views/common/icons";
-import dispatcher from "@/data/dispatcher";
-import PlanActions from "@/features/Planner/data/PlanActions";
+import dispatcher, { ActionType } from "@/data/dispatcher";
 import planStore from "@/features/Planner/data/planStore";
 import useFluxStore from "@/data/useFluxStore";
 import { formatLocalDate, parseLocalDate } from "@/util/time";
 import LocalTextField from "@/views/common/LocalTextField";
 import getBucketLabel from "@/features/Planner/components/getBucketLabel";
 import ResetBucketsButton from "./ResetBucketsButton";
+import { BfsId } from "@/global/types/identity";
+import { Maybe } from "graphql/jsutils/Maybe";
 
 const BucketManager = () => {
     const {
@@ -34,26 +35,26 @@ const BucketManager = () => {
             buckets: plan.buckets || [],
             onBucketCreate: () =>
                 dispatcher.dispatch({
-                    type: PlanActions.CREATE_BUCKET,
+                    type: ActionType.PLAN__CREATE_BUCKET,
                     planId: plan.id,
                 }),
-            onBucketNameChange: (id, value) =>
+            onBucketNameChange: (id: BfsId, name: string) =>
                 dispatcher.dispatch({
-                    type: PlanActions.RENAME_BUCKET,
-                    planId: plan.id,
-                    id,
-                    name: value,
-                }),
-            onBucketDateChange: (id, value) =>
-                dispatcher.dispatch({
-                    type: PlanActions.SET_BUCKET_DATE,
+                    type: ActionType.PLAN__RENAME_BUCKET,
                     planId: plan.id,
                     id,
-                    date: value,
+                    name,
                 }),
-            onBucketDelete: (id) =>
+            onBucketDateChange: (id: BfsId, date: Maybe<Date>) =>
                 dispatcher.dispatch({
-                    type: PlanActions.DELETE_BUCKET,
+                    type: ActionType.PLAN__SET_BUCKET_DATE,
+                    planId: plan.id,
+                    id,
+                    date,
+                }),
+            onBucketDelete: (id: BfsId) =>
+                dispatcher.dispatch({
+                    type: ActionType.PLAN__DELETE_BUCKET,
                     planId: plan.id,
                     id,
                 }),

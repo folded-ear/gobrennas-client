@@ -13,9 +13,8 @@ import {
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import AccessLevel, { includesLevel } from "@/data/AccessLevel";
-import Dispatcher from "@/data/dispatcher";
+import dispatcher, { ActionType } from "@/data/dispatcher";
 import FriendStore from "@/data/FriendStore";
-import PlanActions from "@/features/Planner/data/PlanActions";
 import useFluxStore from "@/data/useFluxStore";
 import { useProfile } from "@/providers/Profile";
 import DeleteButton from "@/views/common/DeleteButton";
@@ -109,8 +108,8 @@ const PlanSidebar: React.FC<Props> = ({ open, onClose, plan }) => {
     }, [open, plan.color, plan.name]);
 
     const handleRename = () => {
-        Dispatcher.dispatch({
-            type: PlanActions.RENAME_PLAN,
+        dispatcher.dispatch({
+            type: ActionType.PLAN__RENAME_PLAN,
             id: plan.id,
             name,
         });
@@ -119,8 +118,8 @@ const PlanSidebar: React.FC<Props> = ({ open, onClose, plan }) => {
     const handleSetColor = () => {
         const isBlank = color === "";
         if (isBlank || isValidColor(color)) {
-            Dispatcher.dispatch({
-                type: PlanActions.SET_PLAN_COLOR,
+            dispatcher.dispatch({
+                type: ActionType.PLAN__SET_PLAN_COLOR,
                 id: plan.id,
                 color: isBlank ? "" : "#" + color,
             });
@@ -129,14 +128,14 @@ const PlanSidebar: React.FC<Props> = ({ open, onClose, plan }) => {
 
     const handleGrantChange = (userId, level) => {
         if (level === LEVEL_NO_ACCESS) {
-            Dispatcher.dispatch({
-                type: PlanActions.CLEAR_PLAN_GRANT,
+            dispatcher.dispatch({
+                type: ActionType.PLAN__CLEAR_PLAN_GRANT,
                 id: plan.id,
                 userId,
             });
         } else {
-            Dispatcher.dispatch({
-                type: PlanActions.SET_PLAN_GRANT,
+            dispatcher.dispatch({
+                type: ActionType.PLAN__SET_PLAN_GRANT,
                 id: plan.id,
                 userId,
                 level,
@@ -145,8 +144,8 @@ const PlanSidebar: React.FC<Props> = ({ open, onClose, plan }) => {
     };
 
     const handleDelete = () => {
-        Dispatcher.dispatch({
-            type: PlanActions.DELETE_PLAN,
+        dispatcher.dispatch({
+            type: ActionType.PLAN__DELETE_PLAN,
             id: plan.id,
         });
     };

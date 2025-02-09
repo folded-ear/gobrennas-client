@@ -1,8 +1,7 @@
 import * as React from "react";
 import { EditIcon, ViewIcon } from "@/views/common/icons";
 import { Box } from "@mui/material";
-import Dispatcher from "@/data/dispatcher";
-import RecipeActions from "@/data/RecipeActions";
+import dispatcher, { ActionType } from "@/data/dispatcher";
 import SendToPlan from "@/features/RecipeLibrary/components/SendToPlan";
 import { RecipeCard } from "@/features/RecipeLibrary/types";
 import FavoriteIndicator from "@/features/Favorites/components/Indicator";
@@ -36,11 +35,11 @@ export const NanoCard: React.FC<RecipeListItemProps> = ({
         recipe.labels.filter((label) => label.indexOf("--") !== 0);
 
     const handleClick = (planId: number, scale?: number) => {
-        Dispatcher.dispatch({
-            type: RecipeActions.SEND_TO_PLAN,
+        dispatcher.dispatch({
+            type: ActionType.RECIPE__SEND_TO_PLAN,
             recipeId: recipe.id,
             planId,
-            scale: scale ? scale : 1,
+            scale,
         });
     };
 

@@ -1,13 +1,13 @@
-import LibraryActions from "@/features/RecipeLibrary/data/LibraryActions";
 import promiseFlux from "@/util/promiseFlux";
 import { client } from "@/providers/ApolloClient";
 import { ORDER_FOR_STORE } from "@/features/RecipeLibrary/data/mutations";
-import { BfsId, ensureString } from "@/global/types/identity";
+import { BfsId, BfsStringId, ensureString } from "@/global/types/identity";
 import { BULK_INGREDIENTS } from "@/features/RecipeLibrary/data/queries";
 import { toRestIngredient } from "@/features/RecipeLibrary/data/conversion_helpers";
+import { ActionType, FluxAction } from "@/data/dispatcher";
 
 const LibraryApi = {
-    getIngredientInBulk: (ids) =>
+    getIngredientInBulk: (ids: BfsStringId[]) =>
         promiseFlux(
             client.query({
                 query: BULK_INGREDIENTS,
@@ -15,9 +15,9 @@ const LibraryApi = {
                     ids,
                 },
             }),
-            ({ data }) => {
+            ({ data }): FluxAction => {
                 return {
-                    type: LibraryActions.INGREDIENTS_LOADED,
+                    type: ActionType.LIBRARY__INGREDIENTS_LOADED,
                     data: data.library.bulkIngredients.map(toRestIngredient),
                 };
             },

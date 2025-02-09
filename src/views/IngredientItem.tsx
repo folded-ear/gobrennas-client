@@ -1,9 +1,7 @@
 import { Chip, Grid, IconButton } from "@mui/material";
 import makeStyles from "@mui/styles/makeStyles";
 import React, { ReactNode } from "react";
-import Dispatcher from "@/data/dispatcher";
-import PantryItemActions from "@/data/PantryItemActions";
-import PlanActions from "@/features/Planner/data/PlanActions";
+import dispatcher, { ActionType } from "@/data/dispatcher";
 import Quantity from "@/views/common/Quantity";
 import SendToPlan from "@/features/RecipeLibrary/components/SendToPlan";
 import type { IngredientRef } from "@/global/types/types";
@@ -64,17 +62,18 @@ const IngredientItem: React.FC<Props> = ({
 
     if (ref.ingredient == null || typeof ref.ingredient === "string") {
         left = null;
-        right = ref.raw || ref.name;
-        if (!hideSendToPlan) {
+        const name = ref.raw || ref.name;
+        right = name;
+        if (name && !hideSendToPlan) {
             right = (
                 <>
                     {right}{" "}
                     <SendToPlan
                         onClick={(planId) =>
-                            Dispatcher.dispatch({
-                                type: PlanActions.SEND_TO_PLAN,
+                            dispatcher.dispatch({
+                                type: ActionType.PLAN__SEND_TO_PLAN,
                                 planId,
-                                name: ref.raw,
+                                name,
                             })
                         }
                         iconOnly
@@ -109,8 +108,8 @@ const IngredientItem: React.FC<Props> = ({
                         {" "}
                         <SendToPlan
                             onClick={(planId) =>
-                                Dispatcher.dispatch({
-                                    type: PantryItemActions.SEND_TO_PLAN,
+                                dispatcher.dispatch({
+                                    type: ActionType.PANTRY_ITEM__SEND_TO_PLAN,
                                     planId,
                                     id: ingredient.id,
                                     name: ingredient.name,

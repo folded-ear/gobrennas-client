@@ -1,8 +1,7 @@
 import { ClearIcon, CookIcon } from "@/views/common/icons";
 import { Chip, ChipProps, Divider, Menu, MenuItem } from "@mui/material";
-import dispatcher from "@/data/dispatcher";
+import dispatcher, { ActionType } from "@/data/dispatcher";
 import getBucketLabel from "@/features/Planner/components/getBucketLabel";
-import PlanActions from "@/features/Planner/data/PlanActions";
 import React from "react";
 import { humanDate } from "@/util/time";
 import ListItemIcon from "@mui/material/ListItemIcon";
@@ -136,7 +135,7 @@ const BucketChip: React.FC<BucketChipProps> = ({
 
 export function assignItemToBucket(itemId: BfsId, bucketId: Maybe<BfsId>) {
     dispatcher.dispatch({
-        type: PlanActions.ASSIGN_ITEM_TO_BUCKET,
+        type: ActionType.PLAN__ASSIGN_ITEM_TO_BUCKET,
         id: itemId,
         bucketId,
     });
@@ -155,7 +154,7 @@ const PlanItemBucketChip: React.FC<PlanItemBucketChipProps> = ({
         onSelect={(bucketId) => assignItemToBucket(itemId, bucketId)}
         onManage={() =>
             dispatcher.dispatch({
-                type: PlanActions.PLAN_DETAIL_VISIBILITY,
+                type: ActionType.PLAN__PLAN_DETAIL_VISIBILITY,
                 visible: true,
             })
         }

@@ -8,7 +8,6 @@ import { isExpanded, isParent } from "@/features/Planner/data/plannerUtils";
 import invariant from "invariant/invariant";
 import PlanApi from "@/features/Planner/data/PlanApi";
 import inTheFuture from "@/util/inTheFuture";
-import PlanActions from "@/features/Planner/data/PlanActions";
 import dotProp from "dot-prop-immutable";
 import { bucketComparator, Named } from "@/util/comparators";
 import preferencesStore from "@/data/preferencesStore";
@@ -27,8 +26,10 @@ import {
     PlanBucket,
     PlanItem,
     State,
+    StateWithActiveTask,
 } from "@/features/Planner/data/planStore";
 import { Maybe } from "graphql/jsutils/Maybe";
+import { ActionType } from "@/data/dispatcher";
 
 const AT_END = ("AT_END_" + ClientId.next()) as BfsStringId;
 
@@ -49,8 +50,8 @@ export interface TreeMutationSpec {
 export interface MoveSubtreeAction {
     id: BfsId;
     parentId: BfsId;
-    before: BfsId | null;
-    after?: BfsId;
+    before?: Maybe<BfsId>;
+    after?: Maybe<BfsId>;
 }
 
 function _newTask(name: string) {
@@ -261,7 +262,7 @@ export function addTask(
     parentId: BfsId,
     name: string,
     after: BfsId = AT_END,
-): State {
+): StateWithActiveTask {
     const task = _newTask(name);
     state = mapTask<Plan | PlanItem>(state, parentId, (p) => ({
         ...p,
@@ -290,14 +291,13 @@ export function addTaskAndFlush(
     return flushTasksToRename(state);
 }
 
-export function createTaskAfter(state: State, id: BfsId): State {
+export function createTaskAfter(state: State, id: BfsId): StateWithActiveTask {
     const t = taskForId(state, id) as PlanItem;
     invariant(
         t.parentId != null,
         `Can't create a task after root-level '${id}'`,
     );
-    state = addTask(state, t.parentId, "", id);
-    return state;
+    return addTask(state, t.parentId, "", id);
 }
 
 export function createTaskBefore(state: State, id: BfsId): State {
@@ -348,7 +348,7 @@ export function flushTasksToRename(state: State): State {
         PlanApi.createItem(id, task.parentId, afterId, task.name);
     }
     tasksToRename = requeue;
-    if (requeue.size > 0) inTheFuture(PlanActions.FLUSH_RENAMES, 0.5);
+    if (requeue.size > 0) inTheFuture(ActionType.PLAN__FLUSH_RENAMES, 0.5);
     return state;
 }
 
@@ -370,13 +370,19 @@ export function mapTask<T>(state: State, id: BfsId, work: (it: T) => T): State {
     return mapTaskLO<T>(state, id, (lo) => lo.map(work));
 }
 
+export function renameTask(
+    state: StateWithActiveTask,
+    id: BfsId,
+    name: string,
+): StateWithActiveTask;
+export function renameTask(state: State, id: BfsId, name: string): State;
 export function renameTask(state: State, id: BfsId, name: string): State {
     return mapTaskLO<Plan | PlanItem>(state, id, (lo) => {
         if (lo.isDone()) {
             lo = ClientId.is(id) ? lo.creating() : lo.updating();
         }
         tasksToRename.add(ensureString(id));
-        inTheFuture(PlanActions.FLUSH_RENAMES);
+        inTheFuture(ActionType.PLAN__FLUSH_RENAMES);
         return lo.map((t) => ({
             ...t,
             name,
@@ -399,7 +405,7 @@ export function setPlanColor(state: State, id: BfsId, color: string): State {
 export function assignToBucket(
     state: State,
     id: BfsId,
-    bucketId: BfsId | null,
+    bucketId: Maybe<BfsId>,
 ): State {
     if (ClientId.is(id)) return state;
     PlanApi.assignBucket(id, bucketId);
@@ -550,7 +556,7 @@ export function flushStatusUpdates(state: State): State {
         break;
     }
     if (statusUpdatesToFlush.size > 0) {
-        inTheFuture(PlanActions.FLUSH_STATUS_UPDATES, 0.5);
+        inTheFuture(ActionType.PLAN__FLUSH_STATUS_UPDATES, 0.5);
     }
     return state;
 }
@@ -602,7 +608,7 @@ function queueStatusUpdate(
             .done();
     } else {
         statusUpdatesToFlush.set(id, change);
-        inTheFuture(PlanActions.FLUSH_STATUS_UPDATES, 4);
+        inTheFuture(ActionType.PLAN__FLUSH_STATUS_UPDATES, 4);
         nextLO = lo.map((t) => ({
             ...t,
             _next_status: status,
@@ -741,9 +747,9 @@ function subtaskIdBefore(
 
 export function moveSubtree(state: State, action: MoveSubtreeAction): State {
     let blockIds = getOrderedBlock(state).map(([t]) => t.id);
-    const afterId = action.hasOwnProperty("before")
+    const afterId = action.before
         ? subtaskIdBefore(state, action.parentId, action.before)
-        : action.after ?? null;
+        : action.after;
     if (
         includesBfsId(blockIds, action.parentId) ||
         includesBfsId(blockIds, afterId)

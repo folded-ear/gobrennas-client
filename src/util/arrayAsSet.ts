@@ -54,6 +54,9 @@ function verifySingleType(...args) {
             allTypes.add(typeof it);
         }
     }
-    if (allTypes.size > 1)
+    if (allTypes.size > 1) {
+        // eslint-disable-next-line no-console
+        console.log("multiple types", allTypes, args);
         throw new TypeError("Found multiple types: " + [...allTypes]);
+    }
 }

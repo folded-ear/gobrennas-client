@@ -1,8 +1,7 @@
 import { ListItemText } from "@mui/material";
 import classnames from "classnames";
 import React from "react";
-import Dispatcher from "@/data/dispatcher";
-import ShoppingActions from "@/data/ShoppingActions";
+import dispatcher, { ActionType } from "@/data/dispatcher";
 import PlanItemStatus from "@/features/Planner/data/PlanItemStatus";
 import LoadingIconButton from "../common/LoadingIconButton";
 import OxfordList from "../common/OxfordList";
@@ -45,8 +44,8 @@ class IngredientItem extends React.PureComponent<IngredientItemProps> {
         const {
             item: { id, itemIds },
         } = this.props;
-        Dispatcher.dispatch({
-            type: ShoppingActions.SET_INGREDIENT_STATUS,
+        dispatcher.dispatch({
+            type: ActionType.SHOPPING__SET_INGREDIENT_STATUS,
             id,
             itemIds,
             status,
@@ -58,8 +57,8 @@ class IngredientItem extends React.PureComponent<IngredientItemProps> {
         const {
             item: { id, itemIds },
         } = this.props;
-        Dispatcher.dispatch({
-            type: ShoppingActions.UNDO_SET_INGREDIENT_STATUS,
+        dispatcher.dispatch({
+            type: ActionType.SHOPPING__UNDO_SET_INGREDIENT_STATUS,
             id,
             itemIds,
         });
@@ -67,8 +66,8 @@ class IngredientItem extends React.PureComponent<IngredientItemProps> {
 
     onToggleExpanded(e) {
         if (e) e.stopPropagation();
-        Dispatcher.dispatch({
-            type: ShoppingActions.TOGGLE_EXPANDED,
+        dispatcher.dispatch({
+            type: ActionType.SHOPPING__TOGGLE_EXPANDED,
             id: this.props.item.id,
         });
     }
@@ -78,8 +77,8 @@ class IngredientItem extends React.PureComponent<IngredientItemProps> {
         e.preventDefault();
         e.stopPropagation();
         if (e.shiftKey) return;
-        Dispatcher.dispatch({
-            type: ShoppingActions.FOCUS,
+        dispatcher.dispatch({
+            type: ActionType.SHOPPING__FOCUS_ITEM,
             id: item.id,
             itemType: ShopItemType.INGREDIENT,
         });

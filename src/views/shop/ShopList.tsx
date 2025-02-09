@@ -1,8 +1,7 @@
 import { Box, IconButton, Stack, Typography } from "@mui/material";
 import List from "@mui/material/List";
 import React, { useCallback, useState } from "react";
-import Dispatcher from "@/data/dispatcher";
-import ShoppingActions from "@/data/ShoppingActions";
+import dispatcher, { ActionType } from "@/data/dispatcher";
 import FoodingerFab from "@/views/common/FoodingerFab";
 import LoadingIndicator from "@/views/common/LoadingIndicator";
 import PageBody from "@/views/common/PageBody";
@@ -13,7 +12,6 @@ import { Plan as TPlan } from "@/features/Planner/data/planStore";
 import type { Quantity } from "@/global/types/types";
 import { BfsId, bfsIdEq } from "@/global/types/identity";
 import CollapseIconButton from "@/global/components/CollapseIconButton";
-import PantryItemActions from "@/data/PantryItemActions";
 import DragContainer, {
     DragContainerProps,
 } from "@/features/Planner/components/DragContainer";
@@ -81,8 +79,8 @@ const TupleList: React.FC<TupleListProps> = ({ tuples }) => {
         targetId,
         vertical,
     ) => {
-        Dispatcher.dispatch({
-            type: PantryItemActions.ORDER_FOR_STORE,
+        dispatcher.dispatch({
+            type: ActionType.PANTRY_ITEM__ORDER_FOR_STORE,
             id,
             targetId,
             after: vertical === "below",
@@ -114,8 +112,8 @@ const ShopList: React.FC<ShopListProps> = ({
 
     const handleAddNew = useCallback((e) => {
         e.preventDefault();
-        Dispatcher.dispatch({
-            type: ShoppingActions.CREATE_ITEM_AT_END,
+        dispatcher.dispatch({
+            type: ActionType.SHOPPING__CREATE_ITEM_AT_END,
         });
     }, []);
 

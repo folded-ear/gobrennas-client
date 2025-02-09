@@ -10,9 +10,7 @@ import { MobileNav } from "@/features/Navigation/components/MobileNav";
 import { DesktopNav } from "@/features/Navigation/components/DesktopNav";
 import { useHistory, useLocation } from "react-router-dom";
 import { useIsAuthenticated, useLogoutHandler } from "@/providers/Profile";
-import Dispatcher from "@/data/dispatcher";
-import ShoppingActions from "@/data/ShoppingActions";
-import PlanActions from "../Planner/data/PlanActions";
+import dispatcher, { ActionType } from "@/data/dispatcher";
 import useIsNavCollapsed, { setNavCollapsed } from "@/data/useIsNavCollapsed";
 import { BfsId, ensureString } from "@/global/types/identity";
 import routes from "@/routes";
@@ -20,15 +18,15 @@ import SidebarSwitch from "@/SidebarSwitch";
 import GTag from "@/GTag";
 
 export function toggleShoppingPlan(id: BfsId) {
-    return Dispatcher.dispatch({
-        type: ShoppingActions.TOGGLE_PLAN,
+    return dispatcher.dispatch({
+        type: ActionType.SHOPPING__TOGGLE_PLAN,
         id: ensureString(id),
     });
 }
 
 function selectPlan(id: BfsId) {
-    return Dispatcher.dispatch({
-        type: PlanActions.SELECT_PLAN,
+    return dispatcher.dispatch({
+        type: ActionType.PLAN__SELECT_PLAN,
         id,
     });
 }

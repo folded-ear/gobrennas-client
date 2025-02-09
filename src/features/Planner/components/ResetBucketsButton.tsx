@@ -1,6 +1,5 @@
 import IconButton from "@mui/material/IconButton";
-import dispatcher from "@/data/dispatcher";
-import PlanActions from "../data/PlanActions";
+import dispatcher, { ActionType } from "@/data/dispatcher";
 import { GenerateBucketsIcon } from "@/views/common/icons";
 import Tooltip from "@mui/material/Tooltip";
 import React from "react";
@@ -15,7 +14,7 @@ const ResetBucketsButton: React.FC<{ planId: BfsId } & IconButtonProps> = ({
         <IconButton
             onClick={() =>
                 dispatcher.dispatch({
-                    type: PlanActions.RESET_TO_THIS_WEEKS_BUCKETS,
+                    type: ActionType.PLAN__RESET_TO_THIS_WEEKS_BUCKETS,
                     planId: planId,
                 })
             }

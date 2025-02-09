@@ -1,17 +1,15 @@
-import PlanActions from "@/features/Planner/data/PlanActions";
 import planStore from "@/features/Planner/data/planStore";
 import { ReduceStore } from "flux/utils";
 import { Map } from "immutable";
 import { getJsonItem, setJsonItem } from "@/util/storage";
 // noinspection ES6PreferShortImport
 import { LOCAL_STORAGE_PREFERENCES } from "@/constants/index";
-import Dispatcher from "./dispatcher";
-import UserActions from "./UserActions";
-import { FluxAction } from "@/global/types/types";
-import ShoppingActions from "./ShoppingActions";
+import dispatcher, { ActionType, FluxAction } from "./dispatcher";
 import shoppingStore from "./shoppingStore";
 import { Maybe } from "graphql/jsutils/Maybe";
 import { BfsId, ensureString } from "@/global/types/identity";
+
+export type Layout = "desktop" | "mobile" | "auto";
 
 enum PrefNames {
     ACTIVE_TASK_LIST = "activeTaskList",
@@ -64,15 +62,15 @@ class PreferencesStore extends ReduceStore<State, FluxAction> {
 
     reduce(state: State, action: FluxAction): State {
         switch (action.type) {
-            case UserActions.RESTORE_PREFERENCES: {
+            case ActionType.USER__RESTORE_PREFERENCES: {
                 return Map(action.preferences);
             }
 
-            case PlanActions.SELECT_PLAN:
-            case PlanActions.PLAN_CREATED:
-            case PlanActions.DELETE_PLAN:
-            case PlanActions.PLAN_DELETED:
-            case PlanActions.PLANS_LOADED: {
+            case ActionType.PLAN__SELECT_PLAN:
+            case ActionType.PLAN__PLAN_CREATED:
+            case ActionType.PLAN__DELETE_PLAN:
+            case ActionType.PLAN__PLAN_DELETED:
+            case ActionType.PLAN__PLANS_LOADED: {
                 this.__dispatcher.waitFor([planStore.getDispatchToken()]);
                 const rlo = planStore.getActivePlanRlo();
                 return rlo.data
@@ -80,7 +78,7 @@ class PreferencesStore extends ReduceStore<State, FluxAction> {
                     : clearPref(state, PrefNames.ACTIVE_PLAN);
             }
 
-            case ShoppingActions.TOGGLE_PLAN: {
+            case ActionType.SHOPPING__TOGGLE_PLAN: {
                 this.__dispatcher.waitFor([shoppingStore.getDispatchToken()]);
                 return setPref(
                     state,
@@ -89,18 +87,20 @@ class PreferencesStore extends ReduceStore<State, FluxAction> {
                 );
             }
 
-            case UserActions.SET_DEV_MODE: {
+            case ActionType.USER__SET_DEV_MODE: {
                 if (!action.enabled) {
                     state = clearPref(state, PrefNames.LAYOUT);
                 }
+                // noinspection PointlessBooleanExpressionJS
                 return setPref(state, PrefNames.DEV_MODE, !!action.enabled);
             }
 
-            case UserActions.SET_LAYOUT: {
+            case ActionType.USER__SET_LAYOUT: {
                 return setPref(state, PrefNames.LAYOUT, action.layout);
             }
 
-            case UserActions.SET_NAV_COLLAPSED: {
+            case ActionType.USER__SET_NAV_COLLAPSED: {
+                // noinspection PointlessBooleanExpressionJS
                 return setPref(
                     state,
                     PrefNames.NAV_COLLAPSED,
@@ -134,8 +134,8 @@ class PreferencesStore extends ReduceStore<State, FluxAction> {
         return !!this.getState().get(PrefNames.DEV_MODE);
     }
 
-    getLayout(): string {
-        return <string>this.getState().get(PrefNames.LAYOUT) || "auto";
+    getLayout(): Layout {
+        return <Layout>this.getState().get(PrefNames.LAYOUT) ?? "auto";
     }
 
     isNavCollapsed() {
@@ -143,4 +143,4 @@ class PreferencesStore extends ReduceStore<State, FluxAction> {
     }
 }
 
-export default new PreferencesStore(Dispatcher);
+export default new PreferencesStore(dispatcher);

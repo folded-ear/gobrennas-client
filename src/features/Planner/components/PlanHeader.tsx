@@ -7,10 +7,9 @@ import {
     Tooltip,
     Typography,
 } from "@mui/material";
-import Dispatcher from "@/data/dispatcher";
+import dispatcher, { ActionType } from "@/data/dispatcher";
 import PlanSidebar from "@/features/Planner/components/PlanSidebar";
 import UserById from "@/features/Planner/components/UserById";
-import PlanActions from "@/features/Planner/data/PlanActions";
 import React, { useState } from "react";
 import {
     AddIcon,
@@ -33,33 +32,33 @@ import LoadingIndicator from "@/views/common/LoadingIndicator";
 import PlanAvatar from "@/views/shop/PlanAvatar";
 import { bfsIdEq } from "@/global/types/identity";
 
-const isValidName = (name) => name != null && name.trim().length > 0;
+const isValidName = (name: string) => name != null && name.trim().length > 0;
 
 const onShowDrawer = () =>
-    Dispatcher.dispatch({
-        type: PlanActions.PLAN_DETAIL_VISIBILITY,
+    dispatcher.dispatch({
+        type: ActionType.PLAN__PLAN_DETAIL_VISIBILITY,
         visible: true,
     });
 
 const onCloseDrawer = () =>
-    Dispatcher.dispatch({
-        type: PlanActions.PLAN_DETAIL_VISIBILITY,
+    dispatcher.dispatch({
+        type: ActionType.PLAN__PLAN_DETAIL_VISIBILITY,
         visible: false,
     });
 
 const onExpandAll = () =>
-    Dispatcher.dispatch({
-        type: PlanActions.EXPAND_ALL,
+    dispatcher.dispatch({
+        type: ActionType.PLAN__EXPAND_ALL,
     });
 
 const onCollapseAll = () =>
-    Dispatcher.dispatch({
-        type: PlanActions.COLLAPSE_ALL,
+    dispatcher.dispatch({
+        type: ActionType.PLAN__COLLAPSE_ALL,
     });
 
 const sortByBucket = () =>
-    Dispatcher.dispatch({
-        type: PlanActions.SORT_BY_BUCKET,
+    dispatcher.dispatch({
+        type: ActionType.PLAN__SORT_BY_BUCKET,
     });
 
 type PlanHeaderProps = {
@@ -88,8 +87,8 @@ export default function PlanHeader({
 
     const onCreate = () => {
         if (!isValidName(name)) return;
-        Dispatcher.dispatch({
-            type: PlanActions.CREATE_PLAN,
+        dispatcher.dispatch({
+            type: ActionType.PLAN__CREATE_PLAN,
             name: name.trim(),
         });
         setName("");
@@ -98,8 +97,8 @@ export default function PlanHeader({
 
     const onDuplicate = (_, plan: SelectOption<never>) => {
         if (!isValidName(name)) return;
-        Dispatcher.dispatch({
-            type: PlanActions.DUPLICATE_PLAN,
+        dispatcher.dispatch({
+            type: ActionType.PLAN__DUPLICATE_PLAN,
             name: name.trim(),
             fromId: plan.id,
         });
