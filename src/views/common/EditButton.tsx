@@ -1,10 +1,15 @@
-import { IconButton, Tooltip, TooltipProps } from "@mui/material";
-import React, { MouseEventHandler } from "react";
+import {
+    IconButton,
+    IconButtonProps,
+    Tooltip,
+    TooltipProps,
+} from "@mui/material";
+import React from "react";
 import { EditIcon } from "@/views/common/icons";
 
 interface Props {
     tooltipPlacement?: TooltipProps["placement"];
-    onClick: MouseEventHandler;
+    onClick: IconButtonProps["onClick"];
 }
 
 const EditButton: React.FC<Props> = ({ onClick, tooltipPlacement = "top" }) => {
