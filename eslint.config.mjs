@@ -71,7 +71,6 @@ export default [
                     allowTemplateLiterals: true,
                 },
             ],
-            "react/prop-types": 1,
             semi: ["warn", "always"],
             "@typescript-eslint/no-explicit-any": 0,
             "react/no-unescaped-entities": 1,
