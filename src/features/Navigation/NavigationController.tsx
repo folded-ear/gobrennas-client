@@ -72,7 +72,7 @@ export const NavigationController = ({ children }: PropsWithChildren) => {
     //   active plan without navigating to it.
     const shopView = selected === "shop";
     const planView = selected === "plan";
-    const openPlan = (id) => history.push(`/plan/${id}`);
+    const openPlan = (id: BfsId) => history.push(`/plan/${id}`);
     const handleSelectPlan = shopView
         ? toggleShoppingPlan
         : planView

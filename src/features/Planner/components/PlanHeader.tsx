@@ -95,7 +95,7 @@ export default function PlanHeader({
         setShowAdd(false);
     };
 
-    const onDuplicate = (_, plan: SelectOption<never>) => {
+    const onDuplicate = (_: never, plan: SelectOption<never>) => {
         if (!isValidName(name)) return;
         dispatcher.dispatch({
             type: ActionType.PLAN__DUPLICATE_PLAN,

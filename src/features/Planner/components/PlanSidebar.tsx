@@ -23,10 +23,12 @@ import PlanBucketManager from "@/features/Planner/components/PlanBucketManager";
 import SidebarUnit from "@/features/Planner/components/SidebarUnit";
 import User from "@/views/user/User";
 import { Plan } from "@/features/Planner/data/planStore";
-import { bfsIdEq, UserType } from "@/global/types/identity";
+import { bfsIdEq, BfsStringId, UserType } from "@/global/types/identity";
 import PlanAvatar from "@/views/shop/PlanAvatar";
 
 const LEVEL_NO_ACCESS = "NO_ACCESS";
+
+type AccessOption = AccessLevel | typeof LEVEL_NO_ACCESS;
 
 interface Props {
     open: boolean;
@@ -38,7 +40,7 @@ interface UserContentProps {
     friend: UserType;
     isAdministrator: boolean;
     grants: Record<string, AccessLevel>;
-    handleGrantChange(userId, level): void;
+    handleGrantChange(userId: BfsStringId, level: AccessOption): void;
 }
 
 function isValidColor(color: string): boolean {
@@ -69,13 +71,16 @@ function UserContent({
                             color: grants[friend.id] ? "inherit" : "#ccc",
                         }}
                         onChange={(e) =>
-                            handleGrantChange(friend.id, e.target.value)
+                            handleGrantChange(
+                                friend.id,
+                                e.target.value as AccessOption,
+                            )
                         }
                         variant={undefined}
                         size={"small"}
                     >
                         <MenuItem value={LEVEL_NO_ACCESS}>No Access</MenuItem>
-                        {/*VIEW too!*/}
+                        {/*VIEW too?*/}
                         <MenuItem value={AccessLevel.CHANGE}>Modify</MenuItem>
                         <MenuItem value={AccessLevel.ADMINISTER}>
                             Administer
@@ -126,7 +131,7 @@ const PlanSidebar: React.FC<Props> = ({ open, onClose, plan }) => {
         }
     };
 
-    const handleGrantChange = (userId, level) => {
+    const handleGrantChange = (userId: BfsStringId, level: AccessOption) => {
         if (level === LEVEL_NO_ACCESS) {
             dispatcher.dispatch({
                 type: ActionType.PLAN__CLEAR_PLAN_GRANT,

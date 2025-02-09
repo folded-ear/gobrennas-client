@@ -27,7 +27,7 @@ interface Props {
     depth: number;
     plan: any;
     item: any;
-    loading: boolean;
+    loading?: boolean | undefined;
     active?: boolean | undefined;
     selected?: boolean | undefined;
     buckets?: PlanBucket[];

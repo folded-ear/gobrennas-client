@@ -5,6 +5,10 @@ import PropTypes from "prop-types";
 export type BfsId = string | number;
 export type BfsStringId = string;
 
+export interface Identified<ID = BfsId> {
+    id: ID;
+}
+
 export type UserType = Pick<
     User,
     "id" | "name" | "provider" | "email" | "imageUrl" | "roles"

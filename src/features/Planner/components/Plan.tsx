@@ -24,8 +24,8 @@ interface Props {
     activePlan: RippedLO<TPlan>;
     planDetailVisible: boolean;
     itemTuples: ItemTuple[];
-    isItemActive: (it: ItemTuple) => boolean;
-    isItemSelected: (it: ItemTuple) => boolean;
+    isItemActive: (it: Identified) => boolean;
+    isItemSelected: (it: Identified) => boolean;
 }
 
 function moveSubtreeInternal(
@@ -96,7 +96,8 @@ function Plan({
     const buckets = plan && plan.buckets;
     const canExpand = itemTuples.some((t) => t.data && isParent(t.data));
 
-    function renderItem(item, i = -1) {
+    function renderItem(item: ItemTuple | undefined, i = -1) {
+        if (!item) return null; // this soaks up when the active dragging item is deleted
         const { data, loading, depth, ancestorDeleting } = item;
         if (data) {
             return (

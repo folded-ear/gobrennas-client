@@ -29,12 +29,12 @@ const BucketChip: React.FC<BucketChipProps> = ({
     offPlan,
     size = "small",
 }) => {
-    const [anchorEl, setAnchorEl] = React.useState(null);
+    const [anchorEl, setAnchorEl] = React.useState<Element | null>(null);
     const history = useHistory();
 
     if (buckets.length === 0) return null;
 
-    const handleClick = (event) => {
+    const handleClick = (event: React.MouseEvent) => {
         setAnchorEl(event.currentTarget);
     };
 

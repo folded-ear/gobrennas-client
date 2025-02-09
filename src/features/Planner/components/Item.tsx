@@ -48,7 +48,7 @@ const Item = ({
         id: dragId,
         disabled: !droppable,
     });
-    const setNodeRef = (el) => {
+    const setNodeRef = (el: HTMLElement | null) => {
         setDraggableRef(el);
         setDroppableRef(el);
     };
