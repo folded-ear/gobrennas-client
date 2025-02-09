@@ -1,11 +1,18 @@
-import { Box, Grid, IconButton, TextField, Typography } from "@mui/material";
+import {
+    Box,
+    Grid,
+    IconButton,
+    IconButtonProps,
+    TextField,
+    Typography,
+} from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import {
     CloseIcon,
     RotateClockwiseIcon,
     RotateCounterClockwiseIcon,
 } from "@/views/common/icons";
-import React, { MouseEventHandler, ReactNode } from "react";
+import React, { ReactNode } from "react";
 import { findSvg } from "@/util/findAncestorByName";
 import getPositionWithin from "@/util/getPositionWithin";
 import { BoundingBox, Line } from "@/data/TextractApi";
@@ -52,7 +59,7 @@ export type RenderActionsForLines = (lines: string[]) => ReactNode;
 interface Props {
     image: string;
     textract: Line[];
-    onClose: MouseEventHandler;
+    onClose: IconButtonProps["onClick"];
 
     renderActions: RenderActionsForLines;
 }

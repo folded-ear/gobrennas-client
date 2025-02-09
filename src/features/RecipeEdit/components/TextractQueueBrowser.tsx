@@ -1,6 +1,7 @@
 import {
     Drawer,
     IconButton,
+    IconButtonProps,
     ImageList,
     ImageListItem,
     ImageListItemBar,
@@ -8,7 +9,7 @@ import {
 } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import { CloseIcon } from "@/views/common/icons";
-import React, { MouseEventHandler } from "react";
+import React from "react";
 import DeleteButton from "@/views/common/DeleteButton";
 import ImageDropZone from "@/util/ImageDropZone";
 import { useQuery } from "react-query";
@@ -45,7 +46,7 @@ const useStyles = makeStyles((theme) => ({
 
 interface PassthroughProps {
     onSelect: (id: string) => void;
-    onClose: MouseEventHandler;
+    onClose: IconButtonProps["onClick"];
     onUpload: (photo: File) => void;
     onDelete: (id: string) => void;
     uploading: PendingJob[];

@@ -1,7 +1,7 @@
-import { Box, Button } from "@mui/material";
+import { Box, Button, ButtonProps } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import { LibraryIcon, TextractIcon } from "@/views/common/icons";
-import React, { MouseEventHandler } from "react";
+import React from "react";
 import { Theme } from "@mui/material/styles";
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -16,7 +16,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 }));
 
 interface Props {
-    onClick: MouseEventHandler;
+    onClick: ButtonProps["onClick"];
 }
 
 const TextractButton: React.FC<Props> = ({ onClick }) => {
