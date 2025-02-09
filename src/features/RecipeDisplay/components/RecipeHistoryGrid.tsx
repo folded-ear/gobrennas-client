@@ -19,7 +19,7 @@ import TableCell from "@mui/material/TableCell";
 import { PlanItemStatus } from "@/__generated__/graphql";
 import { CookedItIcon, DeleteIcon, EditIcon } from "@/views/common/icons";
 import User from "@/views/user/User";
-import { useCallback, useState } from "react";
+import React, { useCallback, useState } from "react";
 import { useSetRecipeHistoryRating } from "@/data/hooks/useSetRecipeHistoryRating";
 import { BfsId } from "@/global/types/identity";
 import { DateTime } from "luxon";
@@ -34,20 +34,21 @@ interface NotesCellProps {
 function NotesCell({ value, onChange }: NotesCellProps) {
     const [val, setVal] = useState("");
     const [open, setOpen] = useState(false);
-    function handleEdit(e) {
+    function handleEdit(e: React.MouseEvent) {
         e.preventDefault();
         setVal(value || "");
         setOpen(true);
     }
-    function handleChange(e) {
-        setVal(e.target.value);
+    function handleChange(e: React.ChangeEvent) {
+        const { value } = e.target as HTMLTextAreaElement;
+        setVal(value);
     }
-    function handleCancel(e) {
+    function handleCancel(e: React.MouseEvent) {
         e.preventDefault();
         setVal("");
         setOpen(false);
     }
-    function handleOk(e) {
+    function handleOk(e: React.MouseEvent) {
         onChange(val);
         handleCancel(e);
     }
@@ -116,11 +117,12 @@ export default function RecipeHistoryGrid({ recipeId, history }: Props) {
     const [setNotes, { loading: settingNotes, error: notesError }] =
         useSetRecipeHistoryNotes();
     const handleRatingChange = useCallback(
-        (h, v) => setRating(recipeId, h.id, v),
+        (h: RecipeHistory, v: number | null) =>
+            v != null && setRating(recipeId, h.id, v),
         [recipeId, setRating],
     );
     const handleNotesChange = useCallback(
-        (h, n) => setNotes(recipeId, h.id, n),
+        (h: RecipeHistory, n: string) => setNotes(recipeId, h.id, n),
         [recipeId, setNotes],
     );
     return (
