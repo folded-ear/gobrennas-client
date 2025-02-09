@@ -112,7 +112,7 @@ function groupItems(
         if (ingId == null) continue;
         orderedIngredients.push({
             id: ingId,
-            items: items,
+            items,
             ...LibraryStore.getIngredientRloById(ingId),
         });
     }

@@ -68,7 +68,7 @@ function forPlanItemStatusChanges(
                         dismiss(e);
                         dispatcher.dispatch({
                             type: ActionType.PLAN__BULK_SET_STATUS,
-                            status: status,
+                            status,
                             ids: comps.map((c) => c.id),
                         });
                     }}
