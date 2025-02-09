@@ -5,7 +5,7 @@ import PlanItemStatus, {
 import planStore, { PlanItem } from "@/features/Planner/data/planStore";
 import LibraryStore from "@/features/RecipeLibrary/data/LibraryStore";
 import { ReduceStore } from "flux/utils";
-import dispatcher, { FluxAction } from "./dispatcher";
+import dispatcher, { ActionType, FluxAction } from "./dispatcher";
 import { Maybe } from "graphql/jsutils/Maybe";
 import * as React from "react";
 import { SnackbarCloseReason } from "@mui/material/Snackbar/Snackbar";
@@ -67,7 +67,7 @@ function forPlanItemStatusChanges(
                     onClick={(e) => {
                         dismiss(e);
                         dispatcher.dispatch({
-                            type: "plan/bulk-set-status",
+                            type: ActionType.PLAN__BULK_SET_STATUS,
                             status: status,
                             ids: comps.map((c) => c.id),
                         });
@@ -93,29 +93,29 @@ class SnackBarStore extends ReduceStore<State, FluxAction> {
 
     reduce(state: State, action: FluxAction): State {
         switch (action.type) {
-            case "ui/show-fab": {
+            case ActionType.UI__SHOW_FAB: {
                 return {
                     ...state,
                     fabVisible: true,
                 };
             }
 
-            case "ui/hide-fab": {
+            case ActionType.UI__HIDE_FAB: {
                 return {
                     ...state,
                     fabVisible: false,
                 };
             }
 
-            case "ui/dismiss-snackbar": {
+            case ActionType.UI__DISMISS_SNACKBAR: {
                 return {
                     ...state,
                     queue: state.queue.slice(1),
                 };
             }
 
-            case "plan/send-to-plan":
-            case "pantry-item/send-to-plan": {
+            case ActionType.PLAN__SEND_TO_PLAN:
+            case ActionType.PANTRY_ITEM__SEND_TO_PLAN: {
                 const plan = planStore.getPlanRlo(action.planId).data!;
                 return enqueue(state, {
                     message: `Added ${action.name} to ${plan.name}`,
@@ -123,7 +123,7 @@ class SnackBarStore extends ReduceStore<State, FluxAction> {
                 });
             }
 
-            case "recipe/sent-to-plan": {
+            case ActionType.RECIPE__SENT_TO_PLAN: {
                 const plan = planStore.getPlanRlo(action.planId).data!;
                 // if came from the library, the store might not have it...
                 const recipe = LibraryStore.getIngredientById(
@@ -137,7 +137,7 @@ class SnackBarStore extends ReduceStore<State, FluxAction> {
                 });
             }
 
-            case "recipe/error-sending-to-plan": {
+            case ActionType.RECIPE__ERROR_SENDING_TO_PLAN: {
                 const plan = planStore.getPlanRlo(action.planId).data!;
                 const recipe = LibraryStore.getIngredientById(
                     action.recipeId,
@@ -148,7 +148,7 @@ class SnackBarStore extends ReduceStore<State, FluxAction> {
                 });
             }
 
-            case "plan/set-status": {
+            case ActionType.PLAN__SET_STATUS: {
                 return forPlanItemStatusChanges(
                     state,
                     [action.id],
@@ -156,7 +156,7 @@ class SnackBarStore extends ReduceStore<State, FluxAction> {
                 );
             }
 
-            case "plan/bulk-set-status": {
+            case ActionType.PLAN__BULK_SET_STATUS: {
                 return forPlanItemStatusChanges(
                     state,
                     action.ids,

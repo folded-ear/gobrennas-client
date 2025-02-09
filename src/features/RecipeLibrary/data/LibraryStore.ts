@@ -1,4 +1,4 @@
-import dispatcher, { FluxAction } from "@/data/dispatcher";
+import dispatcher, { ActionType, FluxAction } from "@/data/dispatcher";
 import RecipeApi from "@/data/RecipeApi";
 import LibraryApi from "@/features/RecipeLibrary/data/LibraryApi";
 import { ReduceStore } from "flux/utils";
@@ -36,7 +36,7 @@ class LibraryStore extends ReduceStore<State, FluxAction> {
                     stringIdArray.push(ensureString(id));
                 }
                 dispatcher.dispatch({
-                    type: "library/load-ingredients",
+                    type: ActionType.LIBRARY__LOAD_INGREDIENTS,
                     ids: stringIdArray,
                 });
             }),
@@ -45,7 +45,7 @@ class LibraryStore extends ReduceStore<State, FluxAction> {
 
     reduce(state: State, action: FluxAction): State {
         switch (action.type) {
-            case "library/load-ingredients": {
+            case ActionType.LIBRARY__LOAD_INGREDIENTS: {
                 if (action.ids.length === 0) {
                     return state;
                 }
@@ -59,7 +59,7 @@ class LibraryStore extends ReduceStore<State, FluxAction> {
                 };
             }
 
-            case "library/ingredients-loaded": {
+            case ActionType.LIBRARY__INGREDIENTS_LOADED: {
                 if (action.data.length === 0) {
                     return state;
                 }
@@ -76,7 +76,7 @@ class LibraryStore extends ReduceStore<State, FluxAction> {
                 };
             }
 
-            case "recipe/send-to-plan": {
+            case ActionType.RECIPE__SEND_TO_PLAN: {
                 RecipeApi.sendToPlan(
                     action.recipeId,
                     action.planId,
@@ -85,7 +85,7 @@ class LibraryStore extends ReduceStore<State, FluxAction> {
                 return state;
             }
 
-            case "pantry-item/order-for-store": {
+            case ActionType.PANTRY_ITEM__ORDER_FOR_STORE: {
                 const target = state.byId.get(action.targetId);
                 if (!target || !target.hasValue()) return state;
                 const tgt = target.getValueEnforcing();

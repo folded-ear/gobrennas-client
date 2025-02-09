@@ -62,7 +62,7 @@ import {
 import AccessLevel from "@/data/AccessLevel";
 import { Maybe } from "graphql/jsutils/Maybe";
 import PlanItemStatus from "@/features/Planner/data/PlanItemStatus";
-import dispatcher, { FluxAction } from "@/data/dispatcher";
+import dispatcher, { ActionType, FluxAction } from "@/data/dispatcher";
 
 /*
  * This store is way too muddled. But leaving it that way for the moment, to
@@ -131,7 +131,7 @@ class PlanStore extends FluxReduceStore<State, FluxAction> {
             selectedTaskIds: null,
             topLevelIds: new LoadObjectState<BfsId[]>(() =>
                 this.__dispatcher.dispatch({
-                    type: "plan/load-plans",
+                    type: ActionType.PLAN__LOAD_PLANS,
                 }),
             ),
             byId: {},
@@ -140,13 +140,13 @@ class PlanStore extends FluxReduceStore<State, FluxAction> {
 
     reduce(state: State, action: FluxAction): State {
         switch (action.type) {
-            case "plan/create-plan":
+            case ActionType.PLAN__CREATE_PLAN:
                 return createList(state, action.name);
 
-            case "plan/duplicate-plan":
+            case ActionType.PLAN__DUPLICATE_PLAN:
                 return createList(state, action.name, action.fromId);
 
-            case "plan/plan-created": {
+            case ActionType.PLAN__PLAN_CREATED: {
                 return listCreated(
                     state,
                     action.clientId,
@@ -155,7 +155,7 @@ class PlanStore extends FluxReduceStore<State, FluxAction> {
                 );
             }
 
-            case "plan/plan-detail-visibility": {
+            case ActionType.PLAN__PLAN_DETAIL_VISIBILITY: {
                 if (state.listDetailVisible === action.visible) return state;
                 return {
                     ...state,
@@ -163,7 +163,7 @@ class PlanStore extends FluxReduceStore<State, FluxAction> {
                 };
             }
 
-            case "plan/delete-plan": {
+            case ActionType.PLAN__DELETE_PLAN: {
                 PlanApi.deletePlan(action.id);
                 const next: State = dotProp.set(
                     state,
@@ -178,7 +178,7 @@ class PlanStore extends FluxReduceStore<State, FluxAction> {
                 return next;
             }
 
-            case "plan/plan-deleted": {
+            case ActionType.PLAN__PLAN_DELETED: {
                 return selectDefaultList({
                     ...dotProp.delete(state, ["byId", action.id]),
                     topLevelIds: state.topLevelIds.map((ids) =>
@@ -187,18 +187,18 @@ class PlanStore extends FluxReduceStore<State, FluxAction> {
                 });
             }
 
-            case "plan/load-plans":
+            case ActionType.PLAN__LOAD_PLANS:
                 return loadLists(state);
-            case "plan/plans-loaded":
+            case ActionType.PLAN__PLANS_LOADED:
                 return listsLoaded(state, action.data);
-            case "plan/select-plan":
+            case ActionType.PLAN__SELECT_PLAN:
                 return selectList(state, action.id);
-            case "plan/rename-plan":
+            case ActionType.PLAN__RENAME_PLAN:
                 return renameTask(state, action.id, action.name);
-            case "plan/set-plan-color":
+            case ActionType.PLAN__SET_PLAN_COLOR:
                 return setPlanColor(state, action.id, action.color);
 
-            case "plan/set-plan-grant": {
+            case ActionType.PLAN__SET_PLAN_GRANT: {
                 PlanApi.setPlanGrant(
                     ensureString(action.id),
                     action.userId,
@@ -217,7 +217,7 @@ class PlanStore extends FluxReduceStore<State, FluxAction> {
                 );
             }
 
-            case "plan/clear-plan-grant": {
+            case ActionType.PLAN__CLEAR_PLAN_GRANT: {
                 PlanApi.clearPlanGrant(ensureString(action.id), action.userId);
                 return dotProp.set(state, ["byId", action.id], (lo) =>
                     lo
@@ -228,71 +228,71 @@ class PlanStore extends FluxReduceStore<State, FluxAction> {
                 );
             }
 
-            case "plan/plan-grant-set":
-            case "plan/plan-grant-cleared": {
+            case ActionType.PLAN__PLAN_GRANT_SET:
+            case ActionType.PLAN__PLAN_GRANT_CLEARED: {
                 return dotProp.set(state, ["byId", action.id], (lo) =>
                     lo.done(),
                 );
             }
 
-            case "plan/plan-data-bootstrapped":
-            case "plan/plan-deltas":
-            case "recipe/sent-to-plan":
+            case ActionType.PLAN__PLAN_DATA_BOOTSTRAPPED:
+            case ActionType.PLAN__PLAN_DELTAS:
+            case ActionType.RECIPE__SENT_TO_PLAN:
                 return tasksLoaded(state, action.data);
 
-            case "plan/item-created":
+            case ActionType.PLAN__ITEM_CREATED:
                 return tasksCreated(state, action.data, action.newIds);
 
-            case "plan/rename-item":
+            case ActionType.PLAN__RENAME_ITEM:
                 return renameTask(state, action.id, action.name);
 
-            case "plan/updated":
+            case ActionType.PLAN__UPDATED:
                 return taskLoaded(state, action.data);
 
-            case "plan/deleted":
+            case ActionType.PLAN__DELETED:
                 return taskDeleted(state, action.id);
 
-            case "plan/focus": {
+            case ActionType.PLAN__FOCUS: {
                 state = focusTask(state, action.id);
                 return flushTasksToRename(state);
             }
 
-            case "shopping/focus-item":
+            case ActionType.SHOPPING__FOCUS_ITEM:
                 return flushTasksToRename(state);
 
-            case "plan/focus-next":
+            case ActionType.PLAN__FOCUS_NEXT:
                 if (state.activeTaskId == null) return state;
                 state = focusDelta(state, state.activeTaskId, 1);
                 return flushTasksToRename(state);
-            case "plan/focus-previous":
+            case ActionType.PLAN__FOCUS_PREVIOUS:
                 if (state.activeTaskId == null) return state;
                 state = focusDelta(state, state.activeTaskId, -1);
                 return flushTasksToRename(state);
 
-            case "plan/create-item-after":
-            case "shopping/create-item-after": {
+            case ActionType.PLAN__CREATE_ITEM_AFTER:
+            case ActionType.SHOPPING__CREATE_ITEM_AFTER: {
                 state = createTaskAfter(state, action.id);
                 return flushTasksToRename(state);
             }
 
-            case "plan/create-item-before":
-            case "shopping/create-item-before": {
+            case ActionType.PLAN__CREATE_ITEM_BEFORE:
+            case ActionType.SHOPPING__CREATE_ITEM_BEFORE: {
                 state = createTaskBefore(state, action.id);
                 return flushTasksToRename(state);
             }
 
-            case "plan/create-item-at-end":
-            case "shopping/create-item-at-end": {
+            case ActionType.PLAN__CREATE_ITEM_AT_END:
+            case ActionType.SHOPPING__CREATE_ITEM_AT_END: {
                 if (state.activeListId == null) return state;
                 state = addTask(state, state.activeListId, "");
                 return state;
             }
 
-            case "plan/send-to-plan": {
+            case ActionType.PLAN__SEND_TO_PLAN: {
                 return addTaskAndFlush(state, action.planId, action.name);
             }
 
-            case "pantry-item/send-to-plan": {
+            case ActionType.PANTRY_ITEM__SEND_TO_PLAN: {
                 let name = action.name.trim();
                 if (name.indexOf(" ") > 0) {
                     name = `"${name}"`;
@@ -300,19 +300,19 @@ class PlanStore extends FluxReduceStore<State, FluxAction> {
                 return addTaskAndFlush(state, action.planId, name);
             }
 
-            case "plan/delete-item-forward":
-            case "shopping/delete-item-forward": {
+            case ActionType.PLAN__DELETE_ITEM_FORWARD:
+            case ActionType.SHOPPING__DELETE_ITEM_FORWARD: {
                 state = focusDelta(state, action.id, 1);
                 return queueDelete(state, action.id);
             }
 
-            case "plan/delete-item-backwards":
-            case "shopping/delete-item-backward": {
+            case ActionType.PLAN__DELETE_ITEM_BACKWARDS:
+            case ActionType.SHOPPING__DELETE_ITEM_BACKWARD: {
                 state = focusDelta(state, action.id, -1);
                 return queueDelete(state, action.id);
             }
 
-            case "plan/complete-plan-item": {
+            case ActionType.PLAN__COMPLETE_PLAN_ITEM: {
                 return doInteractiveStatusChange(
                     state,
                     ensureString(action.id),
@@ -323,7 +323,7 @@ class PlanStore extends FluxReduceStore<State, FluxAction> {
                 );
             }
 
-            case "plan/set-status": {
+            case ActionType.PLAN__SET_STATUS: {
                 return doInteractiveStatusChange(
                     state,
                     ensureString(action.id),
@@ -331,7 +331,7 @@ class PlanStore extends FluxReduceStore<State, FluxAction> {
                 );
             }
 
-            case "plan/bulk-set-status": {
+            case ActionType.PLAN__BULK_SET_STATUS: {
                 return action.ids.reduce(
                     (s, id) =>
                         doInteractiveStatusChange(
@@ -343,63 +343,63 @@ class PlanStore extends FluxReduceStore<State, FluxAction> {
                 );
             }
 
-            case "shopping/set-ingredient-status": {
+            case ActionType.SHOPPING__SET_INGREDIENT_STATUS: {
                 return action.itemIds.reduce(
                     (s, id) => doInteractiveStatusChange(s, id, action.status),
                     state,
                 );
             }
 
-            case "plan/delete-selected": {
+            case ActionType.PLAN__DELETE_SELECTED: {
                 const tasks = getOrderedBlock(state).map(([t]) => t);
                 state = tasks.reduce((s, t) => queueDelete(s, t.id), state);
                 return focusDelta(state, tasks[0].id, -1);
             }
 
-            case "plan/undo-set-status":
+            case ActionType.PLAN__UNDO_SET_STATUS:
                 return cancelStatusUpdate(state, action.id);
 
-            case "shopping/undo-set-ingredient-status": {
+            case ActionType.SHOPPING__UNDO_SET_INGREDIENT_STATUS: {
                 return action.itemIds.reduce(
                     (s, id) => cancelStatusUpdate(s, id),
                     state,
                 );
             }
 
-            case "plan/select-next":
+            case ActionType.PLAN__SELECT_NEXT:
                 if (state.activeTaskId == null) return state;
                 return selectDelta(state, state.activeTaskId, 1);
-            case "plan/select-previous":
+            case ActionType.PLAN__SELECT_PREVIOUS:
                 if (state.activeTaskId == null) return state;
                 return selectDelta(state, state.activeTaskId, -1);
-            case "plan/select-to":
+            case ActionType.PLAN__SELECT_TO:
                 return selectTo(state, action.id);
 
-            case "plan/move-next":
+            case ActionType.PLAN__MOVE_NEXT:
                 return moveDelta(state, 1);
 
-            case "plan/move-previous":
+            case ActionType.PLAN__MOVE_PREVIOUS:
                 return moveDelta(state, -1);
 
-            case "plan/nest":
+            case ActionType.PLAN__NEST:
                 return nestTask(state);
 
-            case "plan/unnest":
+            case ActionType.PLAN__UNNEST:
                 return unnestTask(state);
 
-            case "plan/move-subtree":
+            case ActionType.PLAN__MOVE_SUBTREE:
                 return moveSubtree(state, action);
 
-            case "plan/toggle-expanded":
+            case ActionType.PLAN__TOGGLE_EXPANDED:
                 return toggleExpanded(state, action.id);
 
-            case "plan/expand-all":
+            case ActionType.PLAN__EXPAND_ALL:
                 return expandAll(state);
 
-            case "plan/collapse-all":
+            case ActionType.PLAN__COLLAPSE_ALL:
                 return collapseAll(state);
 
-            case "plan/multi-line-paste": {
+            case ActionType.PLAN__MULTI_LINE_PASTE: {
                 if (state.activeTaskId == null) return state;
                 const lines = action.text
                     .split("\n")
@@ -419,17 +419,17 @@ class PlanStore extends FluxReduceStore<State, FluxAction> {
                 return flushTasksToRename(state);
             }
 
-            case "plan/create-bucket": {
+            case ActionType.PLAN__CREATE_BUCKET: {
                 return mapPlanBuckets(state, action.planId, (bs) => [
                     { id: ClientId.next() },
                     ...bs,
                 ]);
             }
 
-            case "plan/reset-to-this-weeks-buckets":
+            case ActionType.PLAN__RESET_TO_THIS_WEEKS_BUCKETS:
                 return resetToThisWeeksBuckets(state, action.planId);
 
-            case "plan/bucket-created": {
+            case ActionType.PLAN__BUCKET_CREATED: {
                 return mapPlanBuckets(state, action.planId, (bs) =>
                     bs
                         .filter((b) => !bfsIdEq(b.id, action.clientId))
@@ -438,7 +438,7 @@ class PlanStore extends FluxReduceStore<State, FluxAction> {
                 );
             }
 
-            case "plan/delete-bucket": {
+            case ActionType.PLAN__DELETE_BUCKET: {
                 return mapPlanBuckets(state, action.planId, (bs) => {
                     const idx = bs.findIndex((b) => bfsIdEq(b.id, action.id));
                     if (idx >= 0 && !ClientId.is(action.id)) {
@@ -448,19 +448,19 @@ class PlanStore extends FluxReduceStore<State, FluxAction> {
                 });
             }
 
-            case "plan/bucket-deleted": {
+            case ActionType.PLAN__BUCKET_DELETED: {
                 return mapPlanBuckets(state, action.planId, (bs) =>
                     bs.filter((b) => !bfsIdEq(b.id, action.id)),
                 );
             }
 
-            case "plan/buckets-deleted": {
+            case ActionType.PLAN__BUCKETS_DELETED: {
                 return mapPlanBuckets(state, action.planId, (bs) =>
                     bs.filter((b) => !includesBfsId(action.ids, b.id)),
                 );
             }
 
-            case "plan/rename-bucket": {
+            case ActionType.PLAN__RENAME_BUCKET: {
                 return mapPlanBuckets(state, action.planId, (bs) =>
                     bs
                         .map((b) => {
@@ -473,7 +473,7 @@ class PlanStore extends FluxReduceStore<State, FluxAction> {
                 );
             }
 
-            case "plan/set-bucket-date": {
+            case ActionType.PLAN__SET_BUCKET_DATE: {
                 return mapPlanBuckets(state, action.planId, (bs) =>
                     bs
                         .map((b) => {
@@ -486,7 +486,7 @@ class PlanStore extends FluxReduceStore<State, FluxAction> {
                 );
             }
 
-            case "plan/bucket-updated": {
+            case ActionType.PLAN__BUCKET_UPDATED: {
                 return mapPlanBuckets(state, action.planId, (bs) =>
                     bs
                         .map((b) => {
@@ -497,15 +497,15 @@ class PlanStore extends FluxReduceStore<State, FluxAction> {
                 );
             }
 
-            case "plan/assign-item-to-bucket":
+            case ActionType.PLAN__ASSIGN_ITEM_TO_BUCKET:
                 return assignToBucket(state, action.id, action.bucketId);
 
-            case "plan/sort-by-bucket":
+            case ActionType.PLAN__SORT_BY_BUCKET:
                 return sortActivePlanByBucket(state);
 
-            case "plan/flush-renames":
+            case ActionType.PLAN__FLUSH_RENAMES:
                 return flushTasksToRename(state);
-            case "plan/flush-status-updates":
+            case ActionType.PLAN__FLUSH_STATUS_UPDATES:
                 return flushStatusUpdates(state);
 
             default:

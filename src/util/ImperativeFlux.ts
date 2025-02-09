@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import dispatcher from "@/data/dispatcher";
+import dispatcher, { ActionType } from "@/data/dispatcher";
 import { useHistory } from "react-router-dom";
 
 export default function ImperativeFlux() {
@@ -7,7 +7,7 @@ export default function ImperativeFlux() {
     useEffect(() => {
         const token = dispatcher.register((action) => {
             switch (action.type) {
-                case "plan/plan-created": {
+                case ActionType.PLAN__PLAN_CREATED: {
                     history.push(`/plan/${action.id}`);
                     break;
                 }

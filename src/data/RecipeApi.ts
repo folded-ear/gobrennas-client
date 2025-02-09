@@ -9,6 +9,7 @@ import {
     toRestPlanOrItem,
 } from "@/features/Planner/data/conversion_helpers";
 import { SEND_RECIPE_TO_PLAN } from "@/data/mutations";
+import { ActionType } from "@/data/dispatcher";
 
 const RecipeApi = {
     sendToPlan: (recipeId: BfsId, planId: BfsId, scale: Maybe<number>) =>
@@ -24,7 +25,7 @@ const RecipeApi = {
             ({ data }) => {
                 const result = data!.library.sendRecipeToPlan;
                 return {
-                    type: "recipe/sent-to-plan",
+                    type: ActionType.RECIPE__SENT_TO_PLAN,
                     recipeId,
                     planId,
                     data: [
@@ -34,7 +35,7 @@ const RecipeApi = {
                 };
             },
             () => ({
-                type: "recipe/error-sending-to-plan",
+                type: ActionType.RECIPE__ERROR_SENDING_TO_PLAN,
                 recipeId,
                 planId,
             }),

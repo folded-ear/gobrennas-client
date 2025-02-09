@@ -2,7 +2,7 @@ import { ListItemText } from "@mui/material";
 import Input from "@mui/material/Input";
 import classnames from "classnames";
 import React from "react";
-import dispatcher from "@/data/dispatcher";
+import dispatcher, { ActionType } from "@/data/dispatcher";
 import PlanItemStatus from "@/features/Planner/data/PlanItemStatus";
 import LoadingIconButton from "../common/LoadingIconButton";
 import PlaceholderIconButton from "../common/PlaceholderIconButton";
@@ -41,7 +41,7 @@ class PlanItem extends React.PureComponent<PlanItemProps> {
         const { value } = e.target;
         const { item } = this.props;
         dispatcher.dispatch({
-            type: "plan/rename-item",
+            type: ActionType.PLAN__RENAME_ITEM,
             id: item.id,
             name: value,
         });
@@ -54,7 +54,7 @@ class PlanItem extends React.PureComponent<PlanItemProps> {
         e.stopPropagation();
         if (e.shiftKey) return;
         dispatcher.dispatch({
-            type: "shopping/focus-item",
+            type: ActionType.SHOPPING__FOCUS_ITEM,
             id: item.id,
             itemType: ShopItemType.PLAN_ITEM,
         });
@@ -71,8 +71,8 @@ class PlanItem extends React.PureComponent<PlanItemProps> {
                 dispatcher.dispatch({
                     type:
                         selectionStart === 0
-                            ? "shopping/create-item-before"
-                            : "shopping/create-item-after",
+                            ? ActionType.SHOPPING__CREATE_ITEM_BEFORE
+                            : ActionType.SHOPPING__CREATE_ITEM_AFTER,
                     id: this.props.item.id,
                 });
                 break;
@@ -81,7 +81,7 @@ class PlanItem extends React.PureComponent<PlanItemProps> {
                 if (value.length === 0) {
                     e.preventDefault();
                     dispatcher.dispatch({
-                        type: "shopping/delete-item-backward",
+                        type: ActionType.SHOPPING__DELETE_ITEM_BACKWARD,
                         id: this.props.item.id,
                     });
                 }
@@ -91,7 +91,7 @@ class PlanItem extends React.PureComponent<PlanItemProps> {
                 if (value.length === 0) {
                     e.preventDefault();
                     dispatcher.dispatch({
-                        type: "shopping/delete-item-forward",
+                        type: ActionType.SHOPPING__DELETE_ITEM_FORWARD,
                         id: this.props.item.id,
                     });
                 }

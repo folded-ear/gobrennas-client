@@ -12,166 +12,290 @@ import { MoveSubtreeAction } from "@/features/Planner/data/utils";
 import { Maybe } from "graphql/jsutils/Maybe";
 import { PantryItem, Recipe } from "@/global/types/types";
 
+// Vite doesn't support `const enum`, due to using esbuild (not tsc). As such,
+// this enum wastes several KB (post-gzip) of bundle. If support is added in the
+// future, it can save ~5x the current waste, with only `logAction` impacted.
+export enum ActionType {
+    FRIEND__LOAD_FRIEND_LIST,
+    FRIEND__FRIEND_LIST_LOADED,
+    FRIEND__FRIEND_LIST_LOAD_ERROR,
+    LIBRARY__INGREDIENTS_LOADED,
+    LIBRARY__LOAD_INGREDIENTS,
+    PANTRY_ITEM__ORDER_FOR_STORE,
+    PANTRY_ITEM__SEND_TO_PLAN,
+    PLAN__CLEAR_PLAN_GRANT,
+    PLAN__COLLAPSE_ALL,
+    PLAN__CREATE_PLAN,
+    PLAN__DELETE_PLAN,
+    PLAN__DUPLICATE_PLAN,
+    PLAN__EXPAND_ALL,
+    PLAN__FLUSH_RENAMES,
+    PLAN__FLUSH_STATUS_UPDATES,
+    PLAN__LOAD_PLANS,
+    PLAN__PLAN_CREATED,
+    PLAN__PLAN_DATA_BOOTSTRAPPED,
+    PLAN__PLAN_DELETED,
+    PLAN__PLAN_DELTAS,
+    PLAN__PLAN_DETAIL_VISIBILITY,
+    PLAN__PLAN_GRANT_CLEARED,
+    PLAN__PLAN_GRANT_SET,
+    PLAN__PLANS_LOADED,
+    PLAN__RENAME_PLAN,
+    PLAN__SELECT_PLAN,
+    PLAN__SET_PLAN_COLOR,
+    PLAN__SET_PLAN_GRANT,
+    PLAN__SORT_BY_BUCKET,
+    PLAN__TOGGLE_EXPANDED,
+    PLAN__ASSIGN_ITEM_TO_BUCKET,
+    PLAN__BUCKET_CREATED,
+    PLAN__BUCKET_DELETED,
+    PLAN__BUCKET_UPDATED,
+    PLAN__BUCKETS_DELETED,
+    PLAN__CREATE_BUCKET,
+    PLAN__DELETE_BUCKET,
+    PLAN__RENAME_BUCKET,
+    PLAN__RESET_TO_THIS_WEEKS_BUCKETS,
+    PLAN__SET_BUCKET_DATE,
+    PLAN__COMPLETE_PLAN_ITEM,
+    PLAN__BULK_SET_STATUS,
+    PLAN__DELETED,
+    PLAN__FOCUS,
+    PLAN__FOCUS_NEXT,
+    PLAN__FOCUS_PREVIOUS,
+    PLAN__RENAME_ITEM,
+    PLAN__SELECT_NEXT,
+    PLAN__UPDATED,
+    PLAN__SELECT_PREVIOUS,
+    PLAN__SELECT_TO,
+    PLAN__SEND_TO_PLAN,
+    PLAN__SET_STATUS,
+    PLAN__UNDO_SET_STATUS,
+    PLAN__CREATE_ITEM_AFTER,
+    PLAN__CREATE_ITEM_AT_END,
+    PLAN__CREATE_ITEM_BEFORE,
+    PLAN__DELETE_ITEM_BACKWARDS,
+    PLAN__DELETE_ITEM_FORWARD,
+    PLAN__DELETE_SELECTED,
+    PLAN__ITEM_CREATED,
+    PLAN__MOVE_NEXT,
+    PLAN__MOVE_PREVIOUS,
+    PLAN__MOVE_SUBTREE,
+    PLAN__MULTI_LINE_PASTE,
+    PLAN__NEST,
+    PLAN__UNNEST,
+    PROMISE_FLUX__ERROR_FALLTHROUGH,
+    RECIPE__SEND_TO_PLAN,
+    RECIPE__SENT_TO_PLAN,
+    RECIPE__ERROR_SENDING_TO_PLAN,
+    SHOPPING__CREATE_ITEM_BEFORE,
+    SHOPPING__CREATE_ITEM_AFTER,
+    SHOPPING__CREATE_ITEM_AT_END,
+    SHOPPING__DELETE_ITEM_BACKWARD,
+    SHOPPING__DELETE_ITEM_FORWARD,
+    SHOPPING__FOCUS_ITEM,
+    SHOPPING__SET_INGREDIENT_STATUS,
+    SHOPPING__UNDO_SET_INGREDIENT_STATUS,
+    SHOPPING__TOGGLE_EXPANDED,
+    SHOPPING__TOGGLE_PLAN,
+    UI__DISMISS_SNACKBAR,
+    UI__HIDE_FAB,
+    UI__SHOW_FAB,
+    USER__RESTORE_PREFERENCES,
+    USER__SET_DEV_MODE,
+    USER__SET_LAYOUT,
+    USER__SET_NAV_COLLAPSED,
+    WINDOW__FOCUS_CHANGE,
+    WINDOW__RESIZE,
+    WINDOW__VISIBILITY_CHANGE,
+}
+
 export type FluxAction =
     // friend
-    | { type: "friend/load-friend-list" }
-    | { type: "friend/friend-list-loaded"; data: UserType[] }
-    | { type: "friend/friend-list-load-error" }
+    | { type: ActionType.FRIEND__LOAD_FRIEND_LIST }
+    | { type: ActionType.FRIEND__FRIEND_LIST_LOADED; data: UserType[] }
+    | { type: ActionType.FRIEND__FRIEND_LIST_LOAD_ERROR }
     // library
-    | { type: "library/ingredients-loaded"; data: Array<PantryItem | Recipe> }
-    | { type: "library/load-ingredients"; ids: BfsStringId[] }
+    | {
+          type: ActionType.LIBRARY__INGREDIENTS_LOADED;
+          data: Array<PantryItem | Recipe>;
+      }
+    | { type: ActionType.LIBRARY__LOAD_INGREDIENTS; ids: BfsStringId[] }
     // pantry-item
     | {
-          type: "pantry-item/order-for-store";
+          type: ActionType.PANTRY_ITEM__ORDER_FOR_STORE;
           id: BfsId;
           targetId: BfsId;
           after: boolean;
       }
     | {
-          type: "pantry-item/send-to-plan";
+          type: ActionType.PANTRY_ITEM__SEND_TO_PLAN;
           planId: BfsId;
           id: BfsId;
           name: string;
       }
     // plans
-    | { type: "plan/clear-plan-grant"; id: BfsId; userId: BfsId }
-    | { type: "plan/collapse-all" }
-    | { type: "plan/create-plan"; name: string }
-    | { type: "plan/delete-plan"; id: BfsId }
-    | { type: "plan/duplicate-plan"; fromId: BfsId; name: string }
-    | { type: "plan/expand-all" }
-    | { type: "plan/flush-renames" }
-    | { type: "plan/flush-status-updates" }
-    | { type: "plan/load-plans" }
+    | { type: ActionType.PLAN__CLEAR_PLAN_GRANT; id: BfsId; userId: BfsId }
+    | { type: ActionType.PLAN__COLLAPSE_ALL }
+    | { type: ActionType.PLAN__CREATE_PLAN; name: string }
+    | { type: ActionType.PLAN__DELETE_PLAN; id: BfsId }
+    | { type: ActionType.PLAN__DUPLICATE_PLAN; fromId: BfsId; name: string }
+    | { type: ActionType.PLAN__EXPAND_ALL }
+    | { type: ActionType.PLAN__FLUSH_RENAMES }
+    | { type: ActionType.PLAN__FLUSH_STATUS_UPDATES }
+    | { type: ActionType.PLAN__LOAD_PLANS }
     | {
-          type: "plan/plan-created";
+          type: ActionType.PLAN__PLAN_CREATED;
           id: BfsId;
           clientId: string;
           data: Plan;
           fromId: Maybe<BfsId>;
       }
     | {
-          type: "plan/plan-data-bootstrapped";
+          type: ActionType.PLAN__PLAN_DATA_BOOTSTRAPPED;
           id: BfsId;
           data: Array<Plan | PlanItem>;
       }
-    | { type: "plan/plan-deleted"; id: BfsId }
-    | { type: "plan/plan-deltas"; id: BfsId; data: Array<Plan | PlanItem> }
-    | { type: "plan/plan-detail-visibility"; visible: boolean }
-    | { type: "plan/plan-grant-cleared"; id: BfsId; userId: BfsId }
-    | { type: "plan/plan-grant-set"; id: BfsId; userId: BfsId }
-    | { type: "plan/plans-loaded"; data: Plan[] }
-    | { type: "plan/rename-plan"; id: BfsId; name: string }
-    | { type: "plan/select-plan"; id: BfsId }
-    | { type: "plan/set-plan-color"; id: BfsId; color: string }
+    | { type: ActionType.PLAN__PLAN_DELETED; id: BfsId }
     | {
-          type: "plan/set-plan-grant";
+          type: ActionType.PLAN__PLAN_DELTAS;
+          id: BfsId;
+          data: Array<Plan | PlanItem>;
+      }
+    | { type: ActionType.PLAN__PLAN_DETAIL_VISIBILITY; visible: boolean }
+    | { type: ActionType.PLAN__PLAN_GRANT_CLEARED; id: BfsId; userId: BfsId }
+    | { type: ActionType.PLAN__PLAN_GRANT_SET; id: BfsId; userId: BfsId }
+    | { type: ActionType.PLAN__PLANS_LOADED; data: Plan[] }
+    | { type: ActionType.PLAN__RENAME_PLAN; id: BfsId; name: string }
+    | { type: ActionType.PLAN__SELECT_PLAN; id: BfsId }
+    | { type: ActionType.PLAN__SET_PLAN_COLOR; id: BfsId; color: string }
+    | {
+          type: ActionType.PLAN__SET_PLAN_GRANT;
           id: BfsId;
           userId: BfsId;
           level: AccessLevel;
       }
-    | { type: "plan/sort-by-bucket" }
-    | { type: "plan/toggle-expanded"; id: BfsId }
+    | { type: ActionType.PLAN__SORT_BY_BUCKET }
+    | { type: ActionType.PLAN__TOGGLE_EXPANDED; id: BfsId }
     // plan buckets
-    | { type: "plan/assign-item-to-bucket"; id: BfsId; bucketId: Maybe<BfsId> }
     | {
-          type: "plan/bucket-created";
+          type: ActionType.PLAN__ASSIGN_ITEM_TO_BUCKET;
+          id: BfsId;
+          bucketId: Maybe<BfsId>;
+      }
+    | {
+          type: ActionType.PLAN__BUCKET_CREATED;
           planId: BfsId;
           clientId: string;
           data: PlanBucket;
       }
-    | { type: "plan/bucket-deleted"; planId: BfsId; id: BfsId }
-    | { type: "plan/bucket-updated"; planId: BfsId; data: PlanBucket }
-    | { type: "plan/buckets-deleted"; planId: BfsId; ids: BfsId[] }
-    | { type: "plan/create-bucket"; planId: BfsId }
-    | { type: "plan/delete-bucket"; planId: BfsId; id: BfsId }
-    | { type: "plan/rename-bucket"; planId: BfsId; id: BfsId; name: string }
-    | { type: "plan/reset-to-this-weeks-buckets"; planId: BfsId }
+    | { type: ActionType.PLAN__BUCKET_DELETED; planId: BfsId; id: BfsId }
+    | { type: ActionType.PLAN__BUCKET_UPDATED; planId: BfsId; data: PlanBucket }
+    | { type: ActionType.PLAN__BUCKETS_DELETED; planId: BfsId; ids: BfsId[] }
+    | { type: ActionType.PLAN__CREATE_BUCKET; planId: BfsId }
+    | { type: ActionType.PLAN__DELETE_BUCKET; planId: BfsId; id: BfsId }
     | {
-          type: "plan/set-bucket-date";
+          type: ActionType.PLAN__RENAME_BUCKET;
+          planId: BfsId;
+          id: BfsId;
+          name: string;
+      }
+    | { type: ActionType.PLAN__RESET_TO_THIS_WEEKS_BUCKETS; planId: BfsId }
+    | {
+          type: ActionType.PLAN__SET_BUCKET_DATE;
           planId: BfsId;
           id: BfsId;
           date: Maybe<Date>;
       }
     // plan items
     | {
-          type: "plan/complete-plan-item";
+          type: ActionType.PLAN__COMPLETE_PLAN_ITEM;
           id: BfsId;
           status: PlanItemStatus;
           doneAt: Maybe<Date>;
       }
-    | { type: "plan/bulk-set-status"; ids: BfsId[]; status: PlanItemStatus }
-    | { type: "plan/deleted"; id: BfsId }
-    | { type: "plan/focus"; id: BfsId }
-    | { type: "plan/focus-next" }
-    | { type: "plan/focus-previous" }
-    | { type: "plan/rename-item"; id: BfsId; name: string }
-    | { type: "plan/select-next" }
-    | { type: "plan/updated"; data: Plan | PlanItem }
-    | { type: "plan/select-previous" }
-    | { type: "plan/select-to"; id: BfsId }
-    | { type: "plan/send-to-plan"; planId: BfsId; name: string }
-    | { type: "plan/set-status"; id: BfsId; status: PlanItemStatus }
-    | { type: "plan/undo-set-status"; id: BfsId }
-    // plan tree
-    | { type: "plan/create-item-after"; id: BfsId }
-    | { type: "plan/create-item-at-end" }
-    | { type: "plan/create-item-before"; id: BfsId }
-    | { type: "plan/delete-item-backwards"; id: BfsId }
-    | { type: "plan/delete-item-forward"; id: BfsId }
-    | { type: "plan/delete-selected" }
     | {
-          type: "plan/item-created";
+          type: ActionType.PLAN__BULK_SET_STATUS;
+          ids: BfsId[];
+          status: PlanItemStatus;
+      }
+    | { type: ActionType.PLAN__DELETED; id: BfsId }
+    | { type: ActionType.PLAN__FOCUS; id: BfsId }
+    | { type: ActionType.PLAN__FOCUS_NEXT }
+    | { type: ActionType.PLAN__FOCUS_PREVIOUS }
+    | { type: ActionType.PLAN__RENAME_ITEM; id: BfsId; name: string }
+    | { type: ActionType.PLAN__SELECT_NEXT }
+    | { type: ActionType.PLAN__UPDATED; data: Plan | PlanItem }
+    | { type: ActionType.PLAN__SELECT_PREVIOUS }
+    | { type: ActionType.PLAN__SELECT_TO; id: BfsId }
+    | { type: ActionType.PLAN__SEND_TO_PLAN; planId: BfsId; name: string }
+    | { type: ActionType.PLAN__SET_STATUS; id: BfsId; status: PlanItemStatus }
+    | { type: ActionType.PLAN__UNDO_SET_STATUS; id: BfsId }
+    // plan tree
+    | { type: ActionType.PLAN__CREATE_ITEM_AFTER; id: BfsId }
+    | { type: ActionType.PLAN__CREATE_ITEM_AT_END }
+    | { type: ActionType.PLAN__CREATE_ITEM_BEFORE; id: BfsId }
+    | { type: ActionType.PLAN__DELETE_ITEM_BACKWARDS; id: BfsId }
+    | { type: ActionType.PLAN__DELETE_ITEM_FORWARD; id: BfsId }
+    | { type: ActionType.PLAN__DELETE_SELECTED }
+    | {
+          type: ActionType.PLAN__ITEM_CREATED;
           data: Array<Plan | PlanItem>;
           newIds: Record<BfsId, string>;
       }
-    | { type: "plan/move-next" }
-    | { type: "plan/move-previous" }
-    | ({ type: "plan/move-subtree" } & MoveSubtreeAction)
-    | { type: "plan/multi-line-paste"; text: string }
-    | { type: "plan/nest" }
-    | { type: "plan/unnest" }
+    | { type: ActionType.PLAN__MOVE_NEXT }
+    | { type: ActionType.PLAN__MOVE_PREVIOUS }
+    | ({ type: ActionType.PLAN__MOVE_SUBTREE } & MoveSubtreeAction)
+    | { type: ActionType.PLAN__MULTI_LINE_PASTE; text: string }
+    | { type: ActionType.PLAN__NEST }
+    | { type: ActionType.PLAN__UNNEST }
     // promise
-    | { type: "promise-flux/error-fallthrough"; error: unknown }
+    | { type: ActionType.PROMISE_FLUX__ERROR_FALLTHROUGH; error: unknown }
     // recipe
-    | ({ type: "recipe/send-to-plan" } & SendToPlanPayload)
+    | ({ type: ActionType.RECIPE__SEND_TO_PLAN } & SendToPlanPayload)
     | ({
-          type: "recipe/sent-to-plan";
+          type: ActionType.RECIPE__SENT_TO_PLAN;
           data: (Plan | PlanItem)[];
       } & SendToPlanPayload)
-    | ({ type: "recipe/error-sending-to-plan" } & SendToPlanPayload)
+    | ({ type: ActionType.RECIPE__ERROR_SENDING_TO_PLAN } & SendToPlanPayload)
     // shopping
-    | { type: "shopping/create-item-before"; id: BfsId }
-    | { type: "shopping/create-item-after"; id: BfsId }
-    | { type: "shopping/create-item-at-end" }
-    | { type: "shopping/delete-item-backward"; id: BfsId }
-    | { type: "shopping/delete-item-forward"; id: BfsId }
-    | { type: "shopping/focus-item"; id: BfsId; itemType: ShopItemType }
+    | { type: ActionType.SHOPPING__CREATE_ITEM_BEFORE; id: BfsId }
+    | { type: ActionType.SHOPPING__CREATE_ITEM_AFTER; id: BfsId }
+    | { type: ActionType.SHOPPING__CREATE_ITEM_AT_END }
+    | { type: ActionType.SHOPPING__DELETE_ITEM_BACKWARD; id: BfsId }
+    | { type: ActionType.SHOPPING__DELETE_ITEM_FORWARD; id: BfsId }
     | {
-          type: "shopping/set-ingredient-status";
+          type: ActionType.SHOPPING__FOCUS_ITEM;
+          id: BfsId;
+          itemType: ShopItemType;
+      }
+    | {
+          type: ActionType.SHOPPING__SET_INGREDIENT_STATUS;
           id: BfsId;
           itemIds: BfsStringId[];
           status: PlanItemStatus;
       }
     | {
-          type: "shopping/undo-set-ingredient-status";
+          type: ActionType.SHOPPING__UNDO_SET_INGREDIENT_STATUS;
           id: BfsId;
           itemIds: BfsStringId[];
       }
-    | { type: "shopping/toggle-expanded"; id: BfsId }
-    | { type: "shopping/toggle-plan"; id: BfsId }
+    | { type: ActionType.SHOPPING__TOGGLE_EXPANDED; id: BfsId }
+    | { type: ActionType.SHOPPING__TOGGLE_PLAN; id: BfsId }
     // ui
-    | { type: "ui/dismiss-snackbar"; key: Snack["key"] }
-    | { type: "ui/hide-fab" }
-    | { type: "ui/show-fab" }
+    | { type: ActionType.UI__DISMISS_SNACKBAR; key: Snack["key"] }
+    | { type: ActionType.UI__HIDE_FAB }
+    | { type: ActionType.UI__SHOW_FAB }
     // user
-    | { type: "user/restore-preferences"; preferences: [string, unknown][] }
-    | { type: "user/set-dev-mode"; enabled: boolean }
-    | { type: "user/set-layout"; layout: Layout }
-    | { type: "user/set-nav-collapsed"; collapsed: boolean }
+    | {
+          type: ActionType.USER__RESTORE_PREFERENCES;
+          preferences: [string, unknown][];
+      }
+    | { type: ActionType.USER__SET_DEV_MODE; enabled: boolean }
+    | { type: ActionType.USER__SET_LAYOUT; layout: Layout }
+    | { type: ActionType.USER__SET_NAV_COLLAPSED; collapsed: boolean }
     // window
-    | { type: "window/focus-change"; focused: boolean }
-    | { type: "window/resize"; size: WindowSize }
-    | { type: "window/visibility-change"; visible: boolean };
+    | { type: ActionType.WINDOW__FOCUS_CHANGE; focused: boolean }
+    | { type: ActionType.WINDOW__RESIZE; size: WindowSize }
+    | { type: ActionType.WINDOW__VISIBILITY_CHANGE; visible: boolean };
 
 export default new Dispatcher<FluxAction>();

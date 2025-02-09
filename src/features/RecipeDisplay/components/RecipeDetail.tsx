@@ -1,7 +1,7 @@
 import { Box, Grid, Toolbar, Typography } from "@mui/material";
 import { AddRecipeIcon } from "@/views/common/icons";
 import React from "react";
-import dispatcher from "@/data/dispatcher";
+import dispatcher, { ActionType } from "@/data/dispatcher";
 import useWindowSize from "@/data/useWindowSize";
 import { formatDuration } from "@/util/time";
 import FoodingerFab from "@/views/common/FoodingerFab";
@@ -170,7 +170,7 @@ const RecipeDetail: React.FC<Props> = ({
                             <SendToPlan
                                 onClick={(planId) =>
                                     dispatcher.dispatch({
-                                        type: "recipe/send-to-plan",
+                                        type: ActionType.RECIPE__SEND_TO_PLAN,
                                         recipeId: recipe.id,
                                         planId,
                                         scale,

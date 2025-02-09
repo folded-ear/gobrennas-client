@@ -1,7 +1,7 @@
 import { Box, IconButton, Stack, Typography } from "@mui/material";
 import List from "@mui/material/List";
 import React, { useCallback, useState } from "react";
-import dispatcher from "@/data/dispatcher";
+import dispatcher, { ActionType } from "@/data/dispatcher";
 import FoodingerFab from "@/views/common/FoodingerFab";
 import LoadingIndicator from "@/views/common/LoadingIndicator";
 import PageBody from "@/views/common/PageBody";
@@ -80,7 +80,7 @@ const TupleList: React.FC<TupleListProps> = ({ tuples }) => {
         vertical,
     ) => {
         dispatcher.dispatch({
-            type: "pantry-item/order-for-store",
+            type: ActionType.PANTRY_ITEM__ORDER_FOR_STORE,
             id,
             targetId,
             after: vertical === "below",
@@ -113,7 +113,7 @@ const ShopList: React.FC<ShopListProps> = ({
     const handleAddNew = useCallback((e) => {
         e.preventDefault();
         dispatcher.dispatch({
-            type: "shopping/create-item-at-end",
+            type: ActionType.SHOPPING__CREATE_ITEM_AT_END,
         });
     }, []);
 

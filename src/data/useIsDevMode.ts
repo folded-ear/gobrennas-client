@@ -1,10 +1,10 @@
 import preferencesStore from "@/data/preferencesStore";
 import useFluxStore from "./useFluxStore";
-import dispatcher from "./dispatcher";
+import dispatcher, { ActionType } from "./dispatcher";
 
 export function setDevMode(enabled: boolean) {
     dispatcher.dispatch({
-        type: "user/set-dev-mode",
+        type: ActionType.USER__SET_DEV_MODE,
         enabled,
     });
 }

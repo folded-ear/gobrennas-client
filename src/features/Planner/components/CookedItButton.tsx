@@ -2,7 +2,7 @@ import { ButtonProps, Stack, Tooltip } from "@mui/material";
 import { CookedItIcon, HelpIcon } from "@/views/common/icons";
 import React, { useCallback } from "react";
 import { FromPlanItem } from "@/global/types/types";
-import dispatcher from "@/data/dispatcher";
+import dispatcher, { ActionType } from "@/data/dispatcher";
 import PlanItemStatus from "@/features/Planner/data/PlanItemStatus";
 import SplitButton, { SelectOption } from "@/views/common/SplitButton";
 import { DateTime } from "luxon";
@@ -23,8 +23,8 @@ const CookButton: React.FC<Props> = ({ recipe, stayOnPage }) => {
             e.preventDefault();
             dispatcher.dispatch({
                 type: recipe.completing
-                    ? "plan/undo-set-status"
-                    : "plan/complete-plan-item",
+                    ? ActionType.PLAN__UNDO_SET_STATUS
+                    : ActionType.PLAN__COMPLETE_PLAN_ITEM,
                 id: recipe.id,
                 status: PlanItemStatus.COMPLETED,
                 doneAt: new Date(),
@@ -38,7 +38,7 @@ const CookButton: React.FC<Props> = ({ recipe, stayOnPage }) => {
         (e, option: SelectOption<Date>) => {
             e.preventDefault();
             dispatcher.dispatch({
-                type: "plan/complete-plan-item",
+                type: ActionType.PLAN__COMPLETE_PLAN_ITEM,
                 id: recipe.id,
                 status: PlanItemStatus.COMPLETED,
                 doneAt: option.value,

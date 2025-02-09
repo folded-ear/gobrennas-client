@@ -1,7 +1,7 @@
 import planStore from "@/features/Planner/data/planStore";
 import { ReduceStore } from "flux/utils";
 import { ShopItemType } from "@/views/shop/ShopList";
-import dispatcher, { FluxAction } from "./dispatcher";
+import dispatcher, { ActionType, FluxAction } from "./dispatcher";
 import { removeDistinct, toggleDistinct } from "@/util/arrayAsSet";
 import preferencesStore from "./preferencesStore";
 import PlanApi from "@/features/Planner/data/PlanApi";
@@ -33,7 +33,7 @@ class ShoppingStore extends ReduceStore<State, FluxAction> {
 
     reduce(state: State, action: FluxAction): State {
         switch (action.type) {
-            case "plan/plan-deleted":
+            case ActionType.PLAN__PLAN_DELETED:
                 return {
                     ...state,
                     activePlanIds: removeDistinct(
@@ -42,7 +42,7 @@ class ShoppingStore extends ReduceStore<State, FluxAction> {
                     ),
                 };
 
-            case "plan/plans-loaded": {
+            case ActionType.PLAN__PLANS_LOADED: {
                 this.getDispatcher().waitFor([planStore.getDispatchToken()]);
                 const validPlanIds = planStore
                     .getPlanIdsLO()
@@ -64,7 +64,7 @@ class ShoppingStore extends ReduceStore<State, FluxAction> {
                 };
             }
 
-            case "shopping/toggle-plan": {
+            case ActionType.SHOPPING__TOGGLE_PLAN: {
                 const activePlanIds = toggleDistinct(
                     state.activePlanIds?.slice(),
                     action.id,
@@ -84,11 +84,11 @@ class ShoppingStore extends ReduceStore<State, FluxAction> {
                 };
             }
 
-            case "shopping/create-item-before":
-            case "shopping/create-item-after":
-            case "shopping/create-item-at-end":
-            case "shopping/delete-item-backward":
-            case "shopping/delete-item-forward": {
+            case ActionType.SHOPPING__CREATE_ITEM_BEFORE:
+            case ActionType.SHOPPING__CREATE_ITEM_AFTER:
+            case ActionType.SHOPPING__CREATE_ITEM_AT_END:
+            case ActionType.SHOPPING__DELETE_ITEM_BACKWARD:
+            case ActionType.SHOPPING__DELETE_ITEM_FORWARD: {
                 this.__dispatcher.waitFor([planStore.getDispatchToken()]);
                 state = placeFocus(
                     state,
@@ -98,7 +98,7 @@ class ShoppingStore extends ReduceStore<State, FluxAction> {
                 return state;
             }
 
-            case "shopping/focus-item": {
+            case ActionType.SHOPPING__FOCUS_ITEM: {
                 state = placeFocus(state, action.id, action.itemType);
                 if (action.itemType === ShopItemType.INGREDIENT) {
                     state.expandedId = bfsIdEq(state.expandedId, action.id)
@@ -108,7 +108,7 @@ class ShoppingStore extends ReduceStore<State, FluxAction> {
                 return state;
             }
 
-            case "pantry-item/order-for-store": {
+            case ActionType.PANTRY_ITEM__ORDER_FOR_STORE: {
                 return {
                     ...state,
                     activeItem: {
@@ -118,7 +118,7 @@ class ShoppingStore extends ReduceStore<State, FluxAction> {
                 };
             }
 
-            case "shopping/toggle-expanded": {
+            case ActionType.SHOPPING__TOGGLE_EXPANDED: {
                 return {
                     ...state,
                     expandedId: bfsIdEq(state.expandedId, action.id)
@@ -127,7 +127,7 @@ class ShoppingStore extends ReduceStore<State, FluxAction> {
                 };
             }
 
-            case "shopping/set-ingredient-status": {
+            case ActionType.SHOPPING__SET_INGREDIENT_STATUS: {
                 return {
                     ...state,
                     expandedId: bfsIdEq(state.expandedId, action.id)

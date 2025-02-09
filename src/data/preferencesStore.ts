@@ -4,7 +4,7 @@ import { Map } from "immutable";
 import { getJsonItem, setJsonItem } from "@/util/storage";
 // noinspection ES6PreferShortImport
 import { LOCAL_STORAGE_PREFERENCES } from "@/constants/index";
-import dispatcher, { FluxAction } from "./dispatcher";
+import dispatcher, { ActionType, FluxAction } from "./dispatcher";
 import shoppingStore from "./shoppingStore";
 import { Maybe } from "graphql/jsutils/Maybe";
 import { BfsId, ensureString } from "@/global/types/identity";
@@ -62,15 +62,15 @@ class PreferencesStore extends ReduceStore<State, FluxAction> {
 
     reduce(state: State, action: FluxAction): State {
         switch (action.type) {
-            case "user/restore-preferences": {
+            case ActionType.USER__RESTORE_PREFERENCES: {
                 return Map(action.preferences);
             }
 
-            case "plan/select-plan":
-            case "plan/plan-created":
-            case "plan/delete-plan":
-            case "plan/plan-deleted":
-            case "plan/plans-loaded": {
+            case ActionType.PLAN__SELECT_PLAN:
+            case ActionType.PLAN__PLAN_CREATED:
+            case ActionType.PLAN__DELETE_PLAN:
+            case ActionType.PLAN__PLAN_DELETED:
+            case ActionType.PLAN__PLANS_LOADED: {
                 this.__dispatcher.waitFor([planStore.getDispatchToken()]);
                 const rlo = planStore.getActivePlanRlo();
                 return rlo.data
@@ -78,7 +78,7 @@ class PreferencesStore extends ReduceStore<State, FluxAction> {
                     : clearPref(state, PrefNames.ACTIVE_PLAN);
             }
 
-            case "shopping/toggle-plan": {
+            case ActionType.SHOPPING__TOGGLE_PLAN: {
                 this.__dispatcher.waitFor([shoppingStore.getDispatchToken()]);
                 return setPref(
                     state,
@@ -87,7 +87,7 @@ class PreferencesStore extends ReduceStore<State, FluxAction> {
                 );
             }
 
-            case "user/set-dev-mode": {
+            case ActionType.USER__SET_DEV_MODE: {
                 if (!action.enabled) {
                     state = clearPref(state, PrefNames.LAYOUT);
                 }
@@ -95,11 +95,11 @@ class PreferencesStore extends ReduceStore<State, FluxAction> {
                 return setPref(state, PrefNames.DEV_MODE, !!action.enabled);
             }
 
-            case "user/set-layout": {
+            case ActionType.USER__SET_LAYOUT: {
                 return setPref(state, PrefNames.LAYOUT, action.layout);
             }
 
-            case "user/set-nav-collapsed": {
+            case ActionType.USER__SET_NAV_COLLAPSED: {
                 // noinspection PointlessBooleanExpressionJS
                 return setPref(
                     state,

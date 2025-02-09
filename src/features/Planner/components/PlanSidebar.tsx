@@ -13,7 +13,7 @@ import {
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import AccessLevel, { includesLevel } from "@/data/AccessLevel";
-import dispatcher from "@/data/dispatcher";
+import dispatcher, { ActionType } from "@/data/dispatcher";
 import FriendStore from "@/data/FriendStore";
 import useFluxStore from "@/data/useFluxStore";
 import { useProfile } from "@/providers/Profile";
@@ -109,7 +109,7 @@ const PlanSidebar: React.FC<Props> = ({ open, onClose, plan }) => {
 
     const handleRename = () => {
         dispatcher.dispatch({
-            type: "plan/rename-plan",
+            type: ActionType.PLAN__RENAME_PLAN,
             id: plan.id,
             name,
         });
@@ -119,7 +119,7 @@ const PlanSidebar: React.FC<Props> = ({ open, onClose, plan }) => {
         const isBlank = color === "";
         if (isBlank || isValidColor(color)) {
             dispatcher.dispatch({
-                type: "plan/set-plan-color",
+                type: ActionType.PLAN__SET_PLAN_COLOR,
                 id: plan.id,
                 color: isBlank ? "" : "#" + color,
             });
@@ -129,13 +129,13 @@ const PlanSidebar: React.FC<Props> = ({ open, onClose, plan }) => {
     const handleGrantChange = (userId, level) => {
         if (level === LEVEL_NO_ACCESS) {
             dispatcher.dispatch({
-                type: "plan/clear-plan-grant",
+                type: ActionType.PLAN__CLEAR_PLAN_GRANT,
                 id: plan.id,
                 userId,
             });
         } else {
             dispatcher.dispatch({
-                type: "plan/set-plan-grant",
+                type: ActionType.PLAN__SET_PLAN_GRANT,
                 id: plan.id,
                 userId,
                 level,
@@ -145,7 +145,7 @@ const PlanSidebar: React.FC<Props> = ({ open, onClose, plan }) => {
 
     const handleDelete = () => {
         dispatcher.dispatch({
-            type: "plan/delete-plan",
+            type: ActionType.PLAN__DELETE_PLAN,
             id: plan.id,
         });
     };

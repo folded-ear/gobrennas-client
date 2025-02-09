@@ -39,7 +39,7 @@ import { willStatusDelete } from "@/features/Planner/data/PlanItemStatus";
 import { StatusChange, TreeMutationSpec } from "@/features/Planner/data/utils";
 import { formatLocalDate, parseLocalDate } from "@/util/time";
 import { Maybe } from "graphql/jsutils/Maybe";
-import dispatcher, { FluxAction } from "@/data/dispatcher";
+import dispatcher, { ActionType, FluxAction } from "@/data/dispatcher";
 import { GET_PLANS } from "@/data/hooks/useGetAllPlans";
 import AccessLevel from "@/data/AccessLevel";
 import { ShareInfo } from "@/global/types/types";
@@ -69,7 +69,7 @@ const PlanApi = {
             ({ data }): FluxAction => {
                 const plan = data!.planner.createPlan || null;
                 return {
-                    type: "plan/plan-created",
+                    type: ActionType.PLAN__PLAN_CREATED,
                     clientId,
                     id: plan.id,
                     data: toRestPlan(plan),
@@ -83,7 +83,7 @@ const PlanApi = {
         promiseFlux(
             client.query({ query: LOAD_PLANS }),
             ({ data }): FluxAction => ({
-                type: "plan/plans-loaded",
+                type: ActionType.PLAN__PLANS_LOADED,
                 data: data.planner.plans.map(toRestPlan),
             }),
             soakUpUnauthorized,
@@ -98,7 +98,7 @@ const PlanApi = {
                 },
             }),
             ({ data }): FluxAction => ({
-                type: "plan/plan-deleted",
+                type: ActionType.PLAN__PLAN_DELETED,
                 id: data!.planner.deletePlan.id,
             }),
         ).then(() => {
@@ -116,7 +116,7 @@ const PlanApi = {
                 },
             }),
             () => ({
-                type: "plan/plan-grant-set",
+                type: ActionType.PLAN__PLAN_GRANT_SET,
                 id,
                 userId,
             }),
@@ -132,7 +132,7 @@ const PlanApi = {
                 },
             }),
             () => ({
-                type: "plan/plan-grant-cleared",
+                type: ActionType.PLAN__PLAN_GRANT_CLEARED,
                 id,
                 userId,
             }),
@@ -156,7 +156,7 @@ const PlanApi = {
             ({ data }): FluxAction => {
                 const item = data!.planner.createItem;
                 return {
-                    type: "plan/item-created",
+                    type: ActionType.PLAN__ITEM_CREATED,
                     data: [
                         toRestPlanItem(item),
                         toRestPlanOrItem(item.fullParent!),
@@ -178,7 +178,7 @@ const PlanApi = {
             ({ data }): FluxAction => {
                 const poi = data!.planner.rename;
                 return {
-                    type: "plan/updated",
+                    type: ActionType.PLAN__UPDATED,
                     data: toRestPlanOrItem(poi),
                 };
             },
@@ -197,7 +197,7 @@ const PlanApi = {
             ({ data }): FluxAction => {
                 const plan = data!.planner.setColor;
                 return {
-                    type: "plan/updated",
+                    type: ActionType.PLAN__UPDATED,
                     data: toRestPlan(plan),
                 };
             },
@@ -216,7 +216,7 @@ const PlanApi = {
             ({ data }): FluxAction => {
                 const id = data!.planner.deleteItem.id;
                 return {
-                    type: "plan/deleted",
+                    type: ActionType.PLAN__DELETED,
                     id,
                 };
             },
@@ -237,11 +237,11 @@ const PlanApi = {
                 const info = data!.planner.setStatus;
                 return willStatusDelete(info.status)
                     ? {
-                          type: "plan/deleted",
+                          type: ActionType.PLAN__DELETED,
                           id: info?.id,
                       }
                     : {
-                          type: "plan/updated",
+                          type: ActionType.PLAN__UPDATED,
                           data: toRestPlanItem(info!),
                       };
             },
@@ -300,7 +300,7 @@ const PlanApi = {
                 },
             }),
             ({ data }): FluxAction => ({
-                type: "plan/plan-data-bootstrapped",
+                type: ActionType.PLAN__PLAN_DATA_BOOTSTRAPPED,
                 id,
                 data: [toRestPlanOrItem(data.planner.planOrItem)].concat(
                     data.planner.planOrItem.descendants.map(toRestPlanItem),
@@ -322,7 +322,7 @@ const PlanApi = {
             ({ data }): FluxAction => {
                 const bucket = data!.planner.createBucket;
                 return {
-                    type: "plan/bucket-created",
+                    type: ActionType.PLAN__BUCKET_CREATED,
                     planId,
                     clientId: clientId,
                     data: deserializeBucket(bucket),
@@ -346,7 +346,7 @@ const PlanApi = {
             ({ data }): FluxAction => {
                 const bucket = data!.planner.updateBucket;
                 return {
-                    type: "plan/bucket-updated",
+                    type: ActionType.PLAN__BUCKET_UPDATED,
                     planId,
                     data: deserializeBucket(bucket),
                 };
@@ -366,7 +366,7 @@ const PlanApi = {
             ({ data }): FluxAction => {
                 const bucket = data!.planner.deleteBucket;
                 return {
-                    type: "plan/bucket-deleted",
+                    type: ActionType.PLAN__BUCKET_DELETED,
                     planId,
                     id: bucket.id,
                 };
@@ -394,7 +394,7 @@ const PlanApi = {
             .then(({ data }) => {
                 if (idsToDelete.length) {
                     dispatcher.dispatch({
-                        type: "plan/buckets-deleted",
+                        type: ActionType.PLAN__BUCKETS_DELETED,
                         planId,
                         ids: data!.planner.deleteBuckets.map((d) => d.id),
                     });
@@ -404,7 +404,7 @@ const PlanApi = {
                     // part to do in bulk.
                     data!.planner.createBuckets.forEach((b, i) => {
                         dispatcher.dispatch({
-                            type: "plan/bucket-created",
+                            type: ActionType.PLAN__BUCKET_CREATED,
                             planId,
                             clientId: ensureString(toCreate[i].id),
                             data: deserializeBucket(b),

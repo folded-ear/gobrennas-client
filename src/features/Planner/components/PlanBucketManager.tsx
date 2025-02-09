@@ -9,7 +9,7 @@ import IconButton from "@mui/material/IconButton";
 import TableCell from "@mui/material/TableCell";
 import Tooltip from "@mui/material/Tooltip";
 import { AddIcon, DeleteIcon } from "@/views/common/icons";
-import dispatcher from "@/data/dispatcher";
+import dispatcher, { ActionType } from "@/data/dispatcher";
 import planStore from "@/features/Planner/data/planStore";
 import useFluxStore from "@/data/useFluxStore";
 import { formatLocalDate, parseLocalDate } from "@/util/time";
@@ -35,26 +35,26 @@ const BucketManager = () => {
             buckets: plan.buckets || [],
             onBucketCreate: () =>
                 dispatcher.dispatch({
-                    type: "plan/create-bucket",
+                    type: ActionType.PLAN__CREATE_BUCKET,
                     planId: plan.id,
                 }),
             onBucketNameChange: (id: BfsId, name: string) =>
                 dispatcher.dispatch({
-                    type: "plan/rename-bucket",
+                    type: ActionType.PLAN__RENAME_BUCKET,
                     planId: plan.id,
                     id,
                     name,
                 }),
             onBucketDateChange: (id: BfsId, date: Maybe<Date>) =>
                 dispatcher.dispatch({
-                    type: "plan/set-bucket-date",
+                    type: ActionType.PLAN__SET_BUCKET_DATE,
                     planId: plan.id,
                     id,
                     date,
                 }),
             onBucketDelete: (id: BfsId) =>
                 dispatcher.dispatch({
-                    type: "plan/delete-bucket",
+                    type: ActionType.PLAN__DELETE_BUCKET,
                     planId: plan.id,
                     id,
                 }),

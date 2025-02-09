@@ -9,7 +9,7 @@ import {
     compileDynamicGraphQLQuery,
 } from "@/providers/ApolloClient";
 import { soakUpUnauthorized } from "@/util/promiseFlux";
-import dispatcher from "@/data/dispatcher";
+import dispatcher, { ActionType } from "@/data/dispatcher";
 import { toRestPlanOrItem } from "@/features/Planner/data/conversion_helpers";
 import { toRestPantryItem } from "@/features/RecipeLibrary/data/conversion_helpers";
 
@@ -64,7 +64,7 @@ function buildSyncer(planIds: BfsId[]): Syncer {
                 const updates = data.pantry.updatedSince;
                 if (updates.length) {
                     dispatcher.dispatch({
-                        type: "library/ingredients-loaded",
+                        type: ActionType.LIBRARY__INGREDIENTS_LOADED,
                         data: updates.map(toRestPantryItem),
                     });
                 }
@@ -72,7 +72,7 @@ function buildSyncer(planIds: BfsId[]): Syncer {
                     const updates = data.planner[`p${id}`];
                     if (updates.length) {
                         dispatcher.dispatch({
-                            type: "plan/plan-deltas",
+                            type: ActionType.PLAN__PLAN_DELTAS,
                             id,
                             data: updates.map(toRestPlanOrItem),
                         });

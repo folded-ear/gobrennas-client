@@ -1,6 +1,6 @@
 import * as React from "react";
 import useIsDevMode, { setDevMode } from "@/data/useIsDevMode";
-import dispatcher from "@/data/dispatcher";
+import dispatcher, { ActionType } from "@/data/dispatcher";
 import Divider from "@mui/material/Divider";
 import Switch, { SwitchProps } from "@mui/material/Switch";
 import useWindowSize from "@/data/useWindowSize";
@@ -32,7 +32,7 @@ const DevMode: React.FC = () => {
     function handleLayoutChange(e, layout: Layout) {
         if (!layout) return;
         dispatcher.dispatch({
-            type: "user/set-layout",
+            type: ActionType.USER__SET_LAYOUT,
             layout,
         });
     }

@@ -1,6 +1,6 @@
 import { AddIcon } from "@/views/common/icons";
 import { List } from "@mui/material";
-import dispatcher from "@/data/dispatcher";
+import dispatcher, { ActionType } from "@/data/dispatcher";
 import LoadingItem from "@/features/Planner/components/LoadingItem";
 import PlanHeader from "@/features/Planner/components/PlanHeader";
 import PlanItem from "@/features/Planner/components/PlanItem";
@@ -34,7 +34,7 @@ function moveSubtreeInternal(
     after?: BfsId,
 ) {
     dispatcher.dispatch({
-        type: "plan/move-subtree",
+        type: ActionType.PLAN__MOVE_SUBTREE,
         id,
         parentId,
         before,
@@ -74,7 +74,7 @@ function Plan({
     const handleAddNew = (e) => {
         e.preventDefault();
         dispatcher.dispatch({
-            type: "plan/create-item-at-end",
+            type: ActionType.PLAN__CREATE_ITEM_AT_END,
         });
     };
 

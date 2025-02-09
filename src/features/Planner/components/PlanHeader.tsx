@@ -7,7 +7,7 @@ import {
     Tooltip,
     Typography,
 } from "@mui/material";
-import dispatcher from "@/data/dispatcher";
+import dispatcher, { ActionType } from "@/data/dispatcher";
 import PlanSidebar from "@/features/Planner/components/PlanSidebar";
 import UserById from "@/features/Planner/components/UserById";
 import React, { useState } from "react";
@@ -36,29 +36,29 @@ const isValidName = (name: string) => name != null && name.trim().length > 0;
 
 const onShowDrawer = () =>
     dispatcher.dispatch({
-        type: "plan/plan-detail-visibility",
+        type: ActionType.PLAN__PLAN_DETAIL_VISIBILITY,
         visible: true,
     });
 
 const onCloseDrawer = () =>
     dispatcher.dispatch({
-        type: "plan/plan-detail-visibility",
+        type: ActionType.PLAN__PLAN_DETAIL_VISIBILITY,
         visible: false,
     });
 
 const onExpandAll = () =>
     dispatcher.dispatch({
-        type: "plan/expand-all",
+        type: ActionType.PLAN__EXPAND_ALL,
     });
 
 const onCollapseAll = () =>
     dispatcher.dispatch({
-        type: "plan/collapse-all",
+        type: ActionType.PLAN__COLLAPSE_ALL,
     });
 
 const sortByBucket = () =>
     dispatcher.dispatch({
-        type: "plan/sort-by-bucket",
+        type: ActionType.PLAN__SORT_BY_BUCKET,
     });
 
 type PlanHeaderProps = {
@@ -88,7 +88,7 @@ export default function PlanHeader({
     const onCreate = () => {
         if (!isValidName(name)) return;
         dispatcher.dispatch({
-            type: "plan/create-plan",
+            type: ActionType.PLAN__CREATE_PLAN,
             name: name.trim(),
         });
         setName("");
@@ -98,7 +98,7 @@ export default function PlanHeader({
     const onDuplicate = (_, plan: SelectOption<never>) => {
         if (!isValidName(name)) return;
         dispatcher.dispatch({
-            type: "plan/duplicate-plan",
+            type: ActionType.PLAN__DUPLICATE_PLAN,
             name: name.trim(),
             fromId: plan.id,
         });

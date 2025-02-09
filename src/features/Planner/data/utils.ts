@@ -29,6 +29,7 @@ import {
     StateWithActiveTask,
 } from "@/features/Planner/data/planStore";
 import { Maybe } from "graphql/jsutils/Maybe";
+import { ActionType } from "@/data/dispatcher";
 
 const AT_END = ("AT_END_" + ClientId.next()) as BfsStringId;
 
@@ -347,7 +348,7 @@ export function flushTasksToRename(state: State): State {
         PlanApi.createItem(id, task.parentId, afterId, task.name);
     }
     tasksToRename = requeue;
-    if (requeue.size > 0) inTheFuture("plan/flush-renames", 0.5);
+    if (requeue.size > 0) inTheFuture(ActionType.PLAN__FLUSH_RENAMES, 0.5);
     return state;
 }
 
@@ -381,7 +382,7 @@ export function renameTask(state: State, id: BfsId, name: string): State {
             lo = ClientId.is(id) ? lo.creating() : lo.updating();
         }
         tasksToRename.add(ensureString(id));
-        inTheFuture("plan/flush-renames");
+        inTheFuture(ActionType.PLAN__FLUSH_RENAMES);
         return lo.map((t) => ({
             ...t,
             name,
@@ -555,7 +556,7 @@ export function flushStatusUpdates(state: State): State {
         break;
     }
     if (statusUpdatesToFlush.size > 0) {
-        inTheFuture("plan/flush-status-updates", 0.5);
+        inTheFuture(ActionType.PLAN__FLUSH_STATUS_UPDATES, 0.5);
     }
     return state;
 }
@@ -607,7 +608,7 @@ function queueStatusUpdate(
             .done();
     } else {
         statusUpdatesToFlush.set(id, change);
-        inTheFuture("plan/flush-status-updates", 4);
+        inTheFuture(ActionType.PLAN__FLUSH_STATUS_UPDATES, 4);
         nextLO = lo.map((t) => ({
             ...t,
             _next_status: status,

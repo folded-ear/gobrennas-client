@@ -1,10 +1,10 @@
 import preferencesStore from "@/data/preferencesStore";
 import useFluxStore from "./useFluxStore";
-import dispatcher from "./dispatcher";
+import dispatcher, { ActionType } from "./dispatcher";
 
 export function setNavCollapsed(collapsed: boolean) {
     dispatcher.dispatch({
-        type: "user/set-nav-collapsed",
+        type: ActionType.USER__SET_NAV_COLLAPSED,
         collapsed,
     });
 }

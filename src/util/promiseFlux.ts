@@ -1,4 +1,4 @@
-import dispatcher, { FluxAction } from "@/data/dispatcher";
+import dispatcher, { ActionType, FluxAction } from "@/data/dispatcher";
 import { askUserToReauth, isAuthError } from "@/providers/Profile";
 
 type TypeTemplateOrCallback<Data> =
@@ -25,7 +25,7 @@ let helper = <Data>(
         let payload: FluxAction;
         if (typeof typeTemplateOrCallback === "function") {
             payload = typeTemplateOrCallback(data);
-        } else if (typeof typeTemplateOrCallback === "string") {
+        } else if (typeof typeTemplateOrCallback === "number") {
             payload = {
                 [settleKey]: data,
                 type: typeTemplateOrCallback,
@@ -54,7 +54,7 @@ if (!import.meta.env.PROD) {
 }
 
 const fallthrough = (error: unknown): FluxAction => ({
-    type: "promise-flux/error-fallthrough",
+    type: ActionType.PROMISE_FLUX__ERROR_FALLTHROUGH,
     error,
 });
 

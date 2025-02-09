@@ -10,7 +10,7 @@ import { MobileNav } from "@/features/Navigation/components/MobileNav";
 import { DesktopNav } from "@/features/Navigation/components/DesktopNav";
 import { useHistory, useLocation } from "react-router-dom";
 import { useIsAuthenticated, useLogoutHandler } from "@/providers/Profile";
-import dispatcher from "@/data/dispatcher";
+import dispatcher, { ActionType } from "@/data/dispatcher";
 import useIsNavCollapsed, { setNavCollapsed } from "@/data/useIsNavCollapsed";
 import { BfsId, ensureString } from "@/global/types/identity";
 import routes from "@/routes";
@@ -19,14 +19,14 @@ import GTag from "@/GTag";
 
 export function toggleShoppingPlan(id: BfsId) {
     return dispatcher.dispatch({
-        type: "shopping/toggle-plan",
+        type: ActionType.SHOPPING__TOGGLE_PLAN,
         id: ensureString(id),
     });
 }
 
 function selectPlan(id: BfsId) {
     return dispatcher.dispatch({
-        type: "plan/select-plan",
+        type: ActionType.PLAN__SELECT_PLAN,
         id,
     });
 }

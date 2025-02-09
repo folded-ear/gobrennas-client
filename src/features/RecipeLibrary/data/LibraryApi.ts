@@ -4,7 +4,7 @@ import { ORDER_FOR_STORE } from "@/features/RecipeLibrary/data/mutations";
 import { BfsId, BfsStringId, ensureString } from "@/global/types/identity";
 import { BULK_INGREDIENTS } from "@/features/RecipeLibrary/data/queries";
 import { toRestIngredient } from "@/features/RecipeLibrary/data/conversion_helpers";
-import { FluxAction } from "@/data/dispatcher";
+import { ActionType, FluxAction } from "@/data/dispatcher";
 
 const LibraryApi = {
     getIngredientInBulk: (ids: BfsStringId[]) =>
@@ -17,7 +17,7 @@ const LibraryApi = {
             }),
             ({ data }): FluxAction => {
                 return {
-                    type: "library/ingredients-loaded",
+                    type: ActionType.LIBRARY__INGREDIENTS_LOADED,
                     data: data.library.bulkIngredients.map(toRestIngredient),
                 };
             },
