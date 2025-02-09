@@ -2,7 +2,7 @@ import { GridRenderEditCellParams, useGridApiContext } from "@mui/x-data-grid";
 import { Result } from "@/data/hooks/usePantryItemSearch";
 import { useGetAllLabels } from "@/data/hooks/useGetAllLabels";
 import { ChipPicker } from "@/global/components/ChipPicker";
-import { useCallback } from "react";
+import React, { useCallback } from "react";
 import PopperEditCell from "./PopperEditCell";
 
 export default function LabelsEditCell(
@@ -13,7 +13,7 @@ export default function LabelsEditCell(
     const apiRef = useGridApiContext();
 
     const handleChange = useCallback(
-        (e, labels: string[]) => {
+        (e: React.SyntheticEvent, labels: string[]) => {
             const val = labels.map((label) => label.replace(/\/+/g, "-"));
             apiRef.current.setEditCellValue({ id, field, value: val }, e);
         },
