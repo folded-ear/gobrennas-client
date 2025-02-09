@@ -90,6 +90,8 @@
     "@testing-library/jest-dom": "^5.12.0",
     "@testing-library/react": "^11.2.7",
     "@testing-library/user-event": "^12.8.3",
+    "@types/dot-prop-immutable": "^1.5.4",
+    "@types/invariant": "^2.2.37",
     "@types/luxon": "^3.4.2",
     "@types/node": "^20.14.11",
     "@types/react-router-dom": "^5.3.3",
