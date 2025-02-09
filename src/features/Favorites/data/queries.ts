@@ -1,9 +1,9 @@
 import { useMutation, useQuery } from "@apollo/client";
 import { gql } from "@/__generated__";
 import { useMemo } from "react";
-import { BfsId, bfsIdEq } from "@/global/types/identity";
+import { BfsId, bfsIdEq, ensureString } from "@/global/types/identity";
 
-export type IdCallback = (number) => boolean;
+export type IdCallback = (id: BfsId) => boolean;
 
 const LIST_ALL_FAVORITES = gql(`
     query listAllFavorites {
@@ -48,7 +48,7 @@ export function useMarkFavorite(type: string): IdCallback {
         execute({
             variables: {
                 type,
-                id,
+                id: ensureString(id),
             },
         });
         return true;
@@ -71,7 +71,7 @@ export function useRemoveFavorite(type: string): IdCallback {
         execute({
             variables: {
                 type,
-                id,
+                id: ensureString(id),
             },
         });
         return true;

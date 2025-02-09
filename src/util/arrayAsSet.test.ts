@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import {
+    addDistinct,
     intersection,
     removeAtIndex,
     removeDistinct,
@@ -41,6 +42,18 @@ describe("arrayAsSet", () => {
             expect(removeDistinct([0, 1], 99999)).toEqual([0, 1]));
         it("should ignore an null element", () =>
             expect(removeDistinct([0, 1], null)).toEqual([0, 1]));
+    });
+    describe("addDistinct", () => {
+        it("should balk on mixed types", () => {
+            expect(() => addDistinct([1, "two"], 3)).toThrow();
+            expect(() =>
+                addDistinct([1, 2], "three" as unknown as number),
+            ).toThrow();
+        });
+        it("should add a new element", () =>
+            expect(addDistinct(["a"], "b")).toEqual(["a", "b"]));
+        it("should not duplicate and existing element", () =>
+            expect(addDistinct(["a", "b"], "b")).toEqual(["a", "b"]));
     });
     describe("toggleDistinct", () => {
         it("should balk on mixed types", () => {

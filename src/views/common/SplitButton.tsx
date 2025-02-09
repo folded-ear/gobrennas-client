@@ -40,13 +40,17 @@ const SplitButton = <TOption,>({
 }: Props<TOption>) => {
     const [open, setOpen] = React.useState(false);
     const anchorRef = React.useRef<HTMLDivElement>(null);
-    const [selectedOption, setSelectedOption] = React.useState(null);
+    const [selectedOption, setSelectedOption] =
+        React.useState<SelectOption<TOption>>();
 
     const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
         onClick && onClick(event);
     };
 
-    const handleSelect = (event: React.MouseEvent<HTMLLIElement>, option) => {
+    const handleSelect = (
+        event: React.MouseEvent<HTMLLIElement>,
+        option: SelectOption<TOption>,
+    ) => {
         setSelectedOption(option);
         setOpen(false);
         onSelect && onSelect(event, option);

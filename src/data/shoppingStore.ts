@@ -18,7 +18,7 @@ interface State {
     expandedId?: BfsId;
 }
 
-const placeFocus = (state: State, id: BfsId, type): State => ({
+const placeFocus = (state: State, id: BfsId, type: ShopItemType): State => ({
     ...state,
     activeItem: {
         id,
