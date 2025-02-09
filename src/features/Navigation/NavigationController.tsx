@@ -1,4 +1,4 @@
-import { PropsWithChildren, useEffect, useState } from "react";
+import React, { PropsWithChildren, useEffect, useState } from "react";
 import {
     Header,
     MainDesktop,
@@ -48,7 +48,7 @@ export const NavigationController = ({ children }: PropsWithChildren) => {
         GTag("event", "page_view");
     }, [path]);
 
-    const handleProfile = (e) => {
+    const handleProfile = (e: React.SyntheticEvent) => {
         e.stopPropagation();
         history.push("/profile");
     };
@@ -57,7 +57,7 @@ export const NavigationController = ({ children }: PropsWithChildren) => {
 
     const doLogout = useLogoutHandler();
 
-    const handleLogout = (e) => {
+    const handleLogout = (e: React.SyntheticEvent) => {
         e.preventDefault();
         e.stopPropagation();
         doLogout();

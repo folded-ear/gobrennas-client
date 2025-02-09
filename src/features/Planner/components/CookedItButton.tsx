@@ -19,7 +19,7 @@ const CookButton: React.FC<Props> = ({ recipe, stayOnPage }) => {
     const disabled =
         recipe.ancestorCompleting || recipe.deleting || recipe.ancestorDeleting;
     const handleClick = useCallback(
-        (e) => {
+        (e: React.MouseEvent) => {
             e.preventDefault();
             dispatcher.dispatch({
                 type: recipe.completing
@@ -35,7 +35,7 @@ const CookButton: React.FC<Props> = ({ recipe, stayOnPage }) => {
     );
 
     const handleSelect = React.useCallback(
-        (e, option: SelectOption<Date>) => {
+        (e: React.MouseEvent, option: SelectOption<Date>) => {
             e.preventDefault();
             dispatcher.dispatch({
                 type: ActionType.PLAN__COMPLETE_PLAN_ITEM,

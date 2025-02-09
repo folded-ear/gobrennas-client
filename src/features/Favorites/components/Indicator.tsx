@@ -18,7 +18,7 @@ const Indicator: React.FC<Props> = ({ type, id }) => {
     const markFavorite = useMarkFavorite(type);
     const favorite = useIsFavorite(id);
 
-    function handleClick(e) {
+    function handleClick(e: React.MouseEvent) {
         e.stopPropagation();
         e.preventDefault();
         if (favorite) {

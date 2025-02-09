@@ -14,8 +14,9 @@ import {
     Plan as TPlan,
     PlanItem as PlanItemType,
 } from "@/features/Planner/data/planStore";
-import { BfsId, bfsIdEq } from "@/global/types/identity";
+import { BfsId, bfsIdEq, Identified } from "@/global/types/identity";
 import { RippedLO } from "@/util/ripLoadObject";
+import React from "react";
 
 interface Props {
     allPlans: any;
@@ -71,7 +72,7 @@ function Plan({
         return <LoadingIndicator primary="Loading plan..." />;
     }
 
-    const handleAddNew = (e) => {
+    const handleAddNew = (e: React.MouseEvent) => {
         e.preventDefault();
         dispatcher.dispatch({
             type: ActionType.PLAN__CREATE_ITEM_AT_END,

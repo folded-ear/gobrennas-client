@@ -18,7 +18,7 @@ export const SearchInput: React.FC<SearchInputProps> = ({
     const [searchText, setSearchText] = useState<string>(searchTerm);
 
     const onClear = React.useCallback(
-        (e) => {
+        (e: React.MouseEvent) => {
             e.preventDefault();
             e.stopPropagation();
             setSearchText("");
