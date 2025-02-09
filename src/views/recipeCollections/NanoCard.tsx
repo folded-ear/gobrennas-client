@@ -39,7 +39,7 @@ export const NanoCard: React.FC<RecipeListItemProps> = ({
             type: ActionType.RECIPE__SEND_TO_PLAN,
             recipeId: recipe.id,
             planId,
-            scale: scale,
+            scale,
         });
     };
 

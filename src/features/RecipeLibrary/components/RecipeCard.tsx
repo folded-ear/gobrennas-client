@@ -40,7 +40,7 @@ const RecipeCard: React.FC<Props> = ({ recipe, mine, showOwner }) => {
             type: ActionType.RECIPE__SEND_TO_PLAN,
             recipeId: recipe.id,
             planId,
-            scale: scale,
+            scale,
         });
     };
 

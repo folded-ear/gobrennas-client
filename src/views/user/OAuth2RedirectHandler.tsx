@@ -36,7 +36,7 @@ const OAuth2RedirectHandler: React.FC<Props> = ({ location }) => {
                     pathname: "/login",
                     state: {
                         from: location,
-                        error: error,
+                        error,
                     },
                 }}
             />
