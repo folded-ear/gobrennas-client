@@ -10,7 +10,7 @@ import PlanItem from "@/views/shop/PlanItem";
 import { BaseItemProp, ItemProps } from "./types";
 import { Plan as TPlan } from "@/features/Planner/data/planStore";
 import type { Quantity } from "@/global/types/types";
-import { BfsId, bfsIdEq } from "@/global/types/identity";
+import { BfsId, bfsIdEq, BfsStringId } from "@/global/types/identity";
 import CollapseIconButton from "@/global/components/CollapseIconButton";
 import DragContainer, {
     DragContainerProps,
@@ -28,32 +28,41 @@ export enum ShopItemType {
     PLAN_ITEM,
 }
 
-export interface ShopItemTuple extends ItemProps {
-    blockId?: BfsId;
+export interface CoreItemTuple extends ItemProps {
     _type: ShopItemType;
     active?: boolean;
     depth: number;
-    expanded?: boolean;
-    storeOrder?: number;
-    itemIds?: BfsId[];
-    quantities?: Quantity[];
     path: BaseItemProp[];
 }
 
+export interface IngredientTuple extends CoreItemTuple {
+    expanded: boolean;
+    storeOrder?: number;
+    itemIds: BfsStringId[];
+    quantities: Quantity[];
+}
+
+export interface PlanItemTuple extends CoreItemTuple {
+    blockId?: BfsId;
+}
+
+export type ShopItemTuples = Array<IngredientTuple | PlanItemTuple>;
+
 type ShopListProps = {
     plans: TPlan[];
-    neededTuples: ShopItemTuple[];
-    acquiredTuples: ShopItemTuple[];
+    neededTuples: ShopItemTuples;
+    acquiredTuples: ShopItemTuples;
     onRepartition(): void;
 };
 
 interface TupleListProps {
-    tuples: ShopItemTuple[];
+    tuples: ShopItemTuples;
 }
 
-function renderItem(it?: ShopItemTuple) {
+function renderItem(it?: IngredientTuple | PlanItemTuple) {
     if (!it) return null;
-    if (it._type === ShopItemType.INGREDIENT) {
+    if ("itemIds" in it) {
+        // it's an ingredient/aggregate
         return (
             <IngredientItem
                 key={it.id + "-ing-item"}
@@ -110,7 +119,7 @@ const ShopList: React.FC<ShopListProps> = ({
     const showPlanSelector = useIsMobile() && allPlans && allPlans.length >= 2;
     const [planSelectorOpen, setPlanSelectorOpen] = useState(false);
 
-    const handleAddNew = useCallback((e) => {
+    const handleAddNew = useCallback((e: React.MouseEvent) => {
         e.preventDefault();
         dispatcher.dispatch({
             type: ActionType.SHOPPING__CREATE_ITEM_AT_END,

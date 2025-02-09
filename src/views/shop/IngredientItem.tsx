@@ -15,23 +15,21 @@ import { BaseItemProp, ItemProps, TupleProps } from "./types";
 import { ShopItemType } from "@/views/shop/ShopList";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import { UnknownLocation } from "@/views/common/icons";
+import { BfsStringId } from "@/global/types/identity";
+import { Quantity as TQuantity } from "@/global/types/types";
 
 type IngredientItemProps = TupleProps & {
     item: ItemProps &
         BaseItemProp & {
-            expanded: boolean;
-            itemIds: string[];
+            expanded?: boolean;
+            itemIds: BfsStringId[];
             storeOrder?: number;
-            quantities: {
-                units: any;
-                quantity: number;
-                uomId?: number;
-            }[];
+            quantities: TQuantity[];
         };
 };
 
 class IngredientItem extends React.PureComponent<IngredientItemProps> {
-    constructor(props) {
+    constructor(props: IngredientItemProps) {
         super(props);
         this.onSetStatus = this.onSetStatus.bind(this);
         this.onUndoSetStatus = this.onUndoSetStatus.bind(this);
@@ -39,8 +37,8 @@ class IngredientItem extends React.PureComponent<IngredientItemProps> {
         this.onClick = this.onClick.bind(this);
     }
 
-    onSetStatus(status: PlanItemStatus, e) {
-        if (e) e.stopPropagation();
+    onSetStatus(status: PlanItemStatus, e: React.MouseEvent) {
+        e.stopPropagation();
         const {
             item: { id, itemIds },
         } = this.props;
@@ -52,8 +50,8 @@ class IngredientItem extends React.PureComponent<IngredientItemProps> {
         });
     }
 
-    onUndoSetStatus(e) {
-        if (e) e.stopPropagation();
+    onUndoSetStatus(e: React.MouseEvent) {
+        e.stopPropagation();
         const {
             item: { id, itemIds },
         } = this.props;
@@ -64,15 +62,15 @@ class IngredientItem extends React.PureComponent<IngredientItemProps> {
         });
     }
 
-    onToggleExpanded(e) {
-        if (e) e.stopPropagation();
+    onToggleExpanded(e: React.MouseEvent) {
+        e.stopPropagation();
         dispatcher.dispatch({
             type: ActionType.SHOPPING__TOGGLE_EXPANDED,
             id: this.props.item.id,
         });
     }
 
-    onClick(e) {
+    onClick(e: React.MouseEvent) {
         const { item } = this.props;
         e.preventDefault();
         e.stopPropagation();

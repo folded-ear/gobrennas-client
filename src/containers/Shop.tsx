@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import LibraryStore from "@/features/RecipeLibrary/data/LibraryStore";
 import shoppingStore, { Item } from "@/data/shoppingStore";
 import {
@@ -10,7 +10,7 @@ import PlanItemStatus from "@/features/Planner/data/PlanItemStatus";
 import planStore, { Plan, PlanItem } from "@/features/Planner/data/planStore";
 import useFluxStore from "@/data/useFluxStore";
 import groupBy from "@/util/groupBy";
-import ShopList, { ShopItemTuple, ShopItemType } from "@/views/shop/ShopList";
+import ShopList, { ShopItemTuples, ShopItemType } from "@/views/shop/ShopList";
 import { BaseItemProp, ItemProps } from "@/views/shop/types";
 import { Maybe } from "graphql/jsutils/Maybe";
 import { Quantity } from "@/global/types/types";
@@ -89,7 +89,7 @@ function groupItems(
     plans: Array<Plan | PlanItem>,
     expandedId: Maybe<BfsId>,
     activeItem: Maybe<Item>,
-): ShopItemTuple[] {
+): ShopItemTuples {
     if (plans.length === 0) return [];
     const leaves = plans.flatMap(gatherLeaves);
     if (plans.length === 1) {
@@ -126,7 +126,7 @@ function groupItems(
         if (a.name > b.name) return 1;
         return 0;
     });
-    const theTree: ShopItemTuple[] = [];
+    const theTree: ShopItemTuples = [];
     for (const {
         id: ingId,
         items,
@@ -162,7 +162,7 @@ function groupItems(
         theTree.push({
             _type: ShopItemType.INGREDIENT,
             id: ingId,
-            itemIds: items.map((it) => it.id),
+            itemIds: items.map((it) => ensureString(it.id)),
             name: ingredient ? ingredient.name : items[0].name,
             storeOrder: ingredient?.storeOrder,
             quantities,
@@ -265,31 +265,25 @@ const Shop = () => {
     useEffect(() => {
         handleRepartition();
     }, [handleRepartition, activePlanIds]);
-    const [acquiredIds, setAcquiredIds] = useState(new Set<BfsId>());
-    useEffect(
-        () => {
-            setAcquiredIds(
-                new Set<string>(
-                    itemTuples
-                        .filter((it) => it.acquiring)
-                        .map((it) => ensureString(it.id)),
-                ),
-            );
-        },
+    const acquiredIds = useMemo(
+        () =>
+            new Set<BfsId>(
+                itemTuples.filter((it) => it.acquiring).map((it) => it.id),
+            ),
         // eslint-disable-next-line react-hooks/exhaustive-deps
         [partitionReqCount],
     );
-    const [partitionedTuples, setPartitionedTuples] = useState<
-        ShopItemTuple[][]
-    >([[], []]);
-    useEffect(() => {
-        setPartitionedTuples(
+    const partitionedTuples = useMemo(
+        () =>
             partition(
                 itemTuples,
-                (it) => !acquiredIds.has(ensureString(it.blockId || it.id)),
+                (it) =>
+                    !acquiredIds.has(
+                        "blockId" in it && it.blockId ? it.blockId : it.id,
+                    ),
             ),
-        );
-    }, [itemTuples, acquiredIds]);
+        [itemTuples, acquiredIds],
+    );
     return (
         <ShopList
             plans={plans}

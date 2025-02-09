@@ -18,18 +18,17 @@ import { isDoNotRecognize } from "@/features/Planner/data/plannerUtils";
 type PlanItemProps = TupleProps & {
     depth: number;
     item: ItemProps & {
-        question: boolean;
+        question?: boolean;
         path: BaseItemProp[];
-        ingredient: any;
-        status: any;
-        _next_status: any;
+        ingredient?: any;
+        _next_status?: any;
     };
 };
 
 class PlanItem extends React.PureComponent<PlanItemProps> {
     private inputRef: React.RefObject<HTMLInputElement>;
 
-    constructor(props) {
+    constructor(props: PlanItemProps) {
         super(props);
         this.onChange = this.onChange.bind(this);
         this.onClick = this.onClick.bind(this);
@@ -37,7 +36,7 @@ class PlanItem extends React.PureComponent<PlanItemProps> {
         this.inputRef = React.createRef<HTMLInputElement>();
     }
 
-    onChange(e) {
+    onChange(e: React.ChangeEvent<HTMLInputElement>) {
         const { value } = e.target;
         const { item } = this.props;
         dispatcher.dispatch({
@@ -47,7 +46,7 @@ class PlanItem extends React.PureComponent<PlanItemProps> {
         });
     }
 
-    onClick(e) {
+    onClick(e: React.MouseEvent) {
         const { active, item } = this.props;
         if (active) return;
         e.preventDefault();
@@ -60,8 +59,8 @@ class PlanItem extends React.PureComponent<PlanItemProps> {
         });
     }
 
-    onKeyDown(e) {
-        const { value, selectionStart } = e.target;
+    onKeyDown(e: React.KeyboardEvent) {
+        const { value, selectionStart } = e.target as HTMLInputElement;
         const { key } = e;
         // eslint-disable-next-line default-case
         switch (key) {

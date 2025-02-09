@@ -1,7 +1,7 @@
 import type { BfsId } from "@/global/types/identity";
 
 export type TupleProps = {
-    active: boolean;
+    active?: boolean;
     classes: any;
 };
 
@@ -12,6 +12,7 @@ export type BaseItemProp = {
 };
 
 export type ItemProps = BaseItemProp & {
+    question?: boolean;
     loading: boolean;
     deleting: boolean;
     acquiring: boolean;
