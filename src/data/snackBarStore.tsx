@@ -7,7 +7,7 @@ import LibraryStore from "@/features/RecipeLibrary/data/LibraryStore";
 import { ReduceStore } from "flux/utils";
 import dispatcher, { ActionType, FluxAction } from "./dispatcher";
 import { Maybe } from "graphql/jsutils/Maybe";
-import * as React from "react";
+import React from "react";
 import { SnackbarCloseReason } from "@mui/material/Snackbar/Snackbar";
 import { BfsId } from "@/global/types/identity";
 

@@ -1,4 +1,4 @@
-import * as React from "react";
+import React from "react";
 import useActivePlanner from "@/data/useActivePlanner";
 import BasePlanNavItem, { BasePlanNavItemProps } from "./BasePlanNavItem";
 import { bfsIdEq } from "@/global/types/identity";

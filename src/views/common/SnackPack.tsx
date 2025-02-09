@@ -1,4 +1,4 @@
-import * as React from "react";
+import React from "react";
 import { Alert, IconButton, Snackbar } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import { CloseIcon } from "@/views/common/icons";

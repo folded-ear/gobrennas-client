@@ -13,7 +13,7 @@ import Foodinger from "@/views/Foodinger";
 import { RecipeAddController } from "./features/RecipeEdit/RecipeAddController";
 import PantryItemAdmin from "./features/PantryItemAdmin/PantryItemAdmin";
 import { CurrentPlanSidebar } from "@/features/RecipeLibrary/components/CurrentPlanSidebar";
-import * as React from "react";
+import React from "react";
 import { RouteComponentProps } from "react-router";
 import { LibraryController } from "@/features/RecipeLibrary/LibraryController";
 import { SidebarDrawer as PlannerSidebar } from "@/features/Planner/components/Sidebar";

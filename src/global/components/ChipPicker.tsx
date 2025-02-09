@@ -1,6 +1,6 @@
 import Autocomplete, { AutocompleteProps } from "@mui/material/Autocomplete";
 import TextField from "@mui/material/TextField";
-import * as React from "react";
+import React from "react";
 
 interface Props
     extends Omit<

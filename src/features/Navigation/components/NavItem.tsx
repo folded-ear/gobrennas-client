@@ -1,6 +1,6 @@
 import { ListItemButton } from "@mui/material";
 import { NavLink, NavLinkProps } from "react-router-dom";
-import * as React from "react";
+import React from "react";
 import { ListItemButtonProps } from "@mui/material/ListItemButton/ListItemButton";
 import { ItemIcon } from "./Navigation.elements";
 

@@ -32,7 +32,10 @@ export default [
                 "error",
                 {
                     paths: [
-                        "@mui/icons-material",
+                        {
+                            name: "@mui/icons-material",
+                            message: "Import icons from '@/views/common/icons'",
+                        },
                         {
                             name: "@apollo/client",
                             importNames: ["gql"],
@@ -45,7 +48,19 @@ export default [
                                 "Import 'Maybe' from 'graphql/jsutils/Maybe'",
                         },
                     ],
-                    patterns: ["@mui/icons-material/*"],
+                    patterns: [
+                        {
+                            group: ["@mui/icons-material/*"],
+                            message: "Import icons from '@/views/common/icons'",
+                        },
+                        {
+                            // TEMPORARY
+                            group: ["react"],
+                            importNamePattern: "Event(Handler)?$",
+                            message:
+                                "Import 'React' and use 'React.XxxEvent' or 'React.XxxEventHandler'",
+                        },
+                    ],
                 },
             ],
             quotes: [

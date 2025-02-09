@@ -1,4 +1,4 @@
-import * as React from "react";
+import React from "react";
 import { EditIcon, ViewIcon } from "@/views/common/icons";
 import { Box } from "@mui/material";
 import dispatcher, { ActionType } from "@/data/dispatcher";

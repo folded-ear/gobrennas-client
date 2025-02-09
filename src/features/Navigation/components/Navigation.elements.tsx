@@ -9,7 +9,7 @@ import {
     ListSubheader,
 } from "@mui/material";
 import ListItemIcon from "@mui/material/ListItemIcon";
-import * as React from "react";
+import React from "react";
 
 const TOP_MARGIN = 20;
 const drawerWidth = 240;

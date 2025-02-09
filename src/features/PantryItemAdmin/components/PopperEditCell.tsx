@@ -1,6 +1,5 @@
 import { GridRenderEditCellParams } from "@mui/x-data-grid";
-import * as React from "react";
-import { useCallback, useLayoutEffect, useState } from "react";
+import React, { useCallback, useLayoutEffect, useState } from "react";
 import Popper from "@mui/material/Popper";
 import { Paper } from "@mui/material";
 

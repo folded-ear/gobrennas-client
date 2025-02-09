@@ -1,4 +1,4 @@
-import * as React from "react";
+import React from "react";
 import { Box, Drawer as MuiDrawer, Tab, Tabs } from "@mui/material";
 import { SIDEBAR_DEFAULT_WIDTH } from "@/global/constants";
 import { styled } from "@mui/material/styles";

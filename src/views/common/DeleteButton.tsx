@@ -9,7 +9,7 @@ import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogTitle from "@mui/material/DialogTitle";
 import { DeleteIcon } from "@/views/common/icons";
-import * as React from "react";
+import React from "react";
 
 interface Props {
     onClick: IconButtonProps["onClick"];

@@ -1,4 +1,4 @@
-import * as React from "react";
+import React from "react";
 import { Button, ButtonGroup } from "@mui/material";
 import TextractFormAugment from "@/features/RecipeEdit/components/TextractFormAugment";
 import { DraftRecipe } from "@/global/types/types";

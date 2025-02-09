@@ -1,4 +1,4 @@
-import * as React from "react";
+import React from "react";
 import { Stack } from "@mui/material";
 import { ChipPicker } from "@/global/components/ChipPicker";
 import { AutocompleteChangeReason } from "@mui/material/useAutocomplete/useAutocomplete";

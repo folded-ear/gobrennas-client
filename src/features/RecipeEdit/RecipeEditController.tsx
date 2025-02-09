@@ -1,4 +1,4 @@
-import * as React from "react";
+import React from "react";
 import { useGetAllLabels } from "@/data/hooks/useGetAllLabels";
 import { Link, Redirect, useHistory, withRouter } from "react-router-dom";
 import { RouteComponentProps } from "react-router";

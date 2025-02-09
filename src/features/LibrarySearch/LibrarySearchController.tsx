@@ -1,4 +1,4 @@
-import * as React from "react";
+import React from "react";
 import { useHistory } from "react-router-dom";
 import { SearchInput } from "@/features/LibrarySearch/components/SearchInput";
 import { DisplayOptions, SearchScope } from "@/features/LibrarySearch/types";

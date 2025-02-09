@@ -1,4 +1,4 @@
-import * as React from "react";
+import React from "react";
 import { BottomNavigation, Paper } from "@mui/material";
 import { LibraryIcon, PlanIcon, ShopIcon } from "@/views/common/icons";
 import { styled } from "@mui/material/styles";

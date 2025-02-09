@@ -1,7 +1,6 @@
 import { GridRenderEditCellParams, useGridApiContext } from "@mui/x-data-grid";
 import { Result } from "@/data/hooks/usePantryItemSearch";
-import * as React from "react";
-import { ChangeEvent, useCallback } from "react";
+import React, { useCallback } from "react";
 import Input from "@mui/material/Input";
 import PopperEditCell from "./PopperEditCell";
 
@@ -15,7 +14,7 @@ export default function MultilineEditCell(
     const apiRef = useGridApiContext();
 
     const handleChange = useCallback(
-        (e: ChangeEvent<HTMLTextAreaElement>) => {
+        (e: React.ChangeEvent<HTMLTextAreaElement>) => {
             const value = e.target.value;
             setValueState(value);
             apiRef.current.setEditCellValue(

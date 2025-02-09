@@ -1,4 +1,4 @@
-import * as React from "react";
+import React from "react";
 import { API_BASE_URL, API_IS_SECURE, APP_BASE_URL } from "@/constants";
 import { UnlockedIcon } from "@/views/common/icons";
 import qs from "qs";

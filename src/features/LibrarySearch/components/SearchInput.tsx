@@ -1,6 +1,5 @@
 import InputBase from "@mui/material/Input";
-import * as React from "react";
-import { useState } from "react";
+import React, { useState } from "react";
 import { SearchScope } from "@/features/LibrarySearch/types";
 import { IconButton, InputAdornment, Toolbar } from "@mui/material";
 import { ClearIcon, SearchIcon } from "@/views/common/icons";

@@ -1,4 +1,4 @@
-import * as React from "react";
+import React from "react";
 import useIsDevMode, { setDevMode } from "@/data/useIsDevMode";
 import dispatcher, { ActionType } from "@/data/dispatcher";
 import Divider from "@mui/material/Divider";

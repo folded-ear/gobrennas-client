@@ -1,11 +1,11 @@
-import React, { ChangeEventHandler } from "react";
+import React from "react";
 import { TextFieldProps } from "@mui/material/TextField/TextField";
 import { Maybe } from "graphql/jsutils/Maybe";
 import { TextField } from "@mui/material";
 
 interface Props {
     value: Maybe<string>;
-    onChange?: ChangeEventHandler<HTMLInputElement>;
+    onChange?: TextFieldProps["onChange"];
 }
 
 const LocalTextField: React.FC<Props & TextFieldProps> = ({
