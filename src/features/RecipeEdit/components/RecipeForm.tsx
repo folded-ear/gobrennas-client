@@ -11,7 +11,7 @@ import {
     useTheme,
 } from "@mui/material";
 import makeStyles from "@mui/styles/makeStyles";
-import type { DraftRecipe, IngredientRef, Recipe } from "@/global/types/types";
+import { DraftRecipe, IngredientRef, Recipe } from "@/global/types/types";
 import {
     AddIcon,
     CancelIcon,
@@ -41,7 +41,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 interface Props {
-    recipe: Recipe;
+    recipe: Recipe<unknown>;
     title: string;
     onSave: (r: DraftRecipe) => void;
     onSaveCopy?: (r: DraftRecipe) => void;
@@ -76,7 +76,7 @@ const RecipeForm: React.FC<Props> = ({
     } = useRecipeForm(recipe);
 
     const handleUpdate = React.useCallback(
-        (e: WithTarget<string | IngredientRef>) => {
+        (e: WithTarget<string | IngredientRef<unknown>>) => {
             const { name: key, value } = e.target;
             onUpdate(key, value ? value : "");
         },

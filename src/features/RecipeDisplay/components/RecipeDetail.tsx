@@ -16,7 +16,12 @@ import IngredientDirectionsRow from "./IngredientDirectionsRow";
 import SubrecipeItem from "./SubrecipeItem";
 import SendToPlan from "@/features/RecipeLibrary/components/SendToPlan";
 import { UserType } from "@/global/types/identity";
-import type { Recipe, RecipeHistory, Subrecipe } from "@/global/types/types";
+import {
+    IIngredient,
+    Recipe,
+    RecipeHistory,
+    Subrecipe,
+} from "@/global/types/types";
 import FavoriteIndicator from "@/features/Favorites/components/Indicator";
 import { ReentrantScalingProvider, useScale } from "@/util/ScalingContext";
 import { SubHeader } from "./Subheader";
@@ -27,9 +32,9 @@ import RecipeHistoryGrid from "./RecipeHistoryGrid";
 import { useHistory } from "react-router-dom";
 import { Maybe } from "graphql/jsutils/Maybe";
 
-interface Props {
-    recipe: Recipe;
-    subrecipes: Maybe<Subrecipe[]>;
+interface Props<I = IIngredient> {
+    recipe: Recipe<I>;
+    subrecipes: Maybe<Subrecipe<I>[]>;
     planHistory?: RecipeHistory[];
     anonymous?: boolean;
     mine?: boolean;

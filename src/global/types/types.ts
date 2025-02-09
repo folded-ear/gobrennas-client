@@ -4,7 +4,7 @@ import { Maybe } from "graphql/jsutils/Maybe";
 
 type IngredientType = "Recipe" | "PantryItem";
 
-interface IIngredient {
+export interface IIngredient {
     id: BfsId;
     name: string;
     type?: IngredientType;
@@ -15,12 +15,12 @@ export interface PantryItem extends IIngredient {
     storeOrder: number;
 }
 
-export interface Recipe extends IIngredient {
+export interface Recipe<I = Ingredient> extends IIngredient {
     type?: "Recipe";
     calories?: Maybe<number>;
     directions?: Maybe<string>;
     externalUrl?: Maybe<string>;
-    ingredients: IngredientRef[];
+    ingredients: IngredientRef<I>[];
     labels?: Maybe<string[]>;
     photo?: Maybe<string>;
     photoFocus?: Maybe<number[]>;
@@ -36,14 +36,14 @@ export interface Recipe extends IIngredient {
 
 export type Ingredient = PantryItem | Recipe;
 
-export interface IngredientRef {
+export interface IngredientRef<I = Ingredient> {
     id?: BfsId;
     raw?: string;
     quantity?: number | null;
     preparation?: string | null;
     units?: string | null;
     uomId?: Maybe<BfsStringId>;
-    ingredient?: Ingredient | string | null;
+    ingredient?: I | string | null;
     ingredientId?: Maybe<BfsStringId>;
 
     /**
@@ -71,8 +71,8 @@ export interface RecipeFromPlanItem extends Recipe, FromPlanItem {
     subrecipes?: RecipeFromPlanItem[];
 }
 
-export type Subrecipe = Pick<
-    Recipe,
+export type Subrecipe<I = Ingredient> = Pick<
+    Recipe<I>,
     | "id"
     | "name"
     | "totalTime"
@@ -103,7 +103,7 @@ export interface ShareInfo {
     secret: string;
 }
 
-export interface DraftRecipe extends Omit<Recipe, "photo"> {
+export interface DraftRecipe<I = unknown> extends Omit<Recipe<I>, "photo"> {
     photoUrl: Maybe<string>;
     photoUpload: Maybe<File>;
     sourceId: Maybe<string>;

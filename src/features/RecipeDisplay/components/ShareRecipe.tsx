@@ -9,7 +9,7 @@ import { bfsIdEq } from "@/global/types/identity";
 import RecipeApi from "@/data/RecipeApi";
 
 type ShareRecipeProps = {
-    recipe: Recipe;
+    recipe: Pick<Recipe, "id">;
 };
 
 const Body: React.FC<ShareRecipeProps> = ({ recipe }) => {

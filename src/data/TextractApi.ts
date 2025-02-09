@@ -54,7 +54,7 @@ const TextractApi = {
                     textract: job.lines ?? [],
                 };
             }),
-    promiseNewJob: (photo) =>
+    promiseNewJob: (photo: File) =>
         client.mutate({
             mutation: CREATE_TEXTRACT_JOB,
             variables: { photo },

@@ -4,7 +4,7 @@ import React, { PropsWithChildren } from "react";
 import ItemApi, { RecognitionResult } from "@/data/ItemApi";
 import debounce from "@/util/debounce";
 import processRecognizedItem from "@/util/processRecognizedItem";
-import type { IngredientRef } from "@/global/types/types";
+import { IngredientRef } from "@/global/types/types";
 import { BfsId } from "@/global/types/identity";
 import LoadingIconButton from "./common/LoadingIconButton";
 import { Maybe } from "graphql/jsutils/Maybe";
@@ -20,10 +20,10 @@ export interface WithTarget<V> {
 
 interface ElEditProps {
     name: string;
-    value: IngredientRef;
+    value: IngredientRef<unknown>;
     placeholder?: string;
 
-    onChange(e: WithTarget<IngredientRef>): void;
+    onChange(e: WithTarget<IngredientRef<unknown>>): void;
 
     onPressEnter(): void;
 

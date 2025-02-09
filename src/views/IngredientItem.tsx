@@ -4,7 +4,7 @@ import React, { ReactNode } from "react";
 import dispatcher, { ActionType } from "@/data/dispatcher";
 import Quantity from "@/views/common/Quantity";
 import SendToPlan from "@/features/RecipeLibrary/components/SendToPlan";
-import type { IngredientRef } from "@/global/types/types";
+import { IIngredient, IngredientRef } from "@/global/types/types";
 import type { BfsId } from "@/global/types/identity";
 import { useScale } from "@/util/ScalingContext";
 import { LinkIcon } from "@/views/common/icons";
@@ -37,7 +37,7 @@ const Augment: React.FC<AugmentProps> = ({ text, prefix, suffix }) =>
     ) : null;
 
 interface Props {
-    ingRef: IngredientRef;
+    ingRef: IngredientRef<IIngredient>;
     hideRecipeLink?: boolean;
     hideSendToPlan?: boolean;
     inline?: boolean;

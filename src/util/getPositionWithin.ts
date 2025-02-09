@@ -1,3 +1,5 @@
+import React from "react";
+
 const getPositionWithin = (
     container: HTMLElement,
     event: React.PointerEvent,

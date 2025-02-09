@@ -38,11 +38,16 @@ const useStyles = makeStyles({
     },
 });
 
-const overlaps = (a, b) =>
-    a.left + a.width >= b.left &&
-    a.left <= b.left + b.width &&
-    a.top + a.height >= b.top &&
-    a.top <= b.top + b.height;
+type SortBox = Pick<BoundingBox, "top" | "left" | "width">;
+
+function overlaps(a: BoundingBox, b: BoundingBox): boolean {
+    return (
+        a.left + a.width >= b.left &&
+        a.left <= b.left + b.width &&
+        a.top + a.height >= b.top &&
+        a.top <= b.top + b.height
+    );
+}
 
 /**
  * A rectangular selection drawn by the user.
@@ -100,7 +105,7 @@ const TextractEditor: React.FC<Props> = ({
                       [[], []],
                   );
         setPartitionedLines(partition);
-        const toSortBox = (box) => {
+        const toSortBox = (box: BoundingBox): SortBox => {
             if (rotation === 90) {
                 // noinspection JSSuspiciousNameCombination
                 return {
@@ -154,8 +159,8 @@ const TextractEditor: React.FC<Props> = ({
                 .map((t) => t.text),
         );
     }, [textract, rotation, selectedRegion]);
-    const getXY = (e) => {
-        const svgNode = findSvg(e.target);
+    const getXY = (e: React.PointerEvent) => {
+        const svgNode = findSvg(e.target as Element);
         if (!svgNode) throw new TypeError("No SVG parent found?!");
         const [x, y] = getPositionWithin(svgNode.parentNode as HTMLElement, e);
         if (rotation === 90) {
@@ -168,7 +173,7 @@ const TextractEditor: React.FC<Props> = ({
             return [x, y];
         }
     };
-    const startBoxDraw = (e) => {
+    const startBoxDraw = (e: React.PointerEvent) => {
         const [x, y] = getXY(e);
         setDrawnRect({
             x1: x,
@@ -176,7 +181,7 @@ const TextractEditor: React.FC<Props> = ({
         });
         setSelectedRegion(null);
     };
-    const updateBoxDraw = (e) => {
+    const updateBoxDraw = (e: React.PointerEvent) => {
         if (!drawnRect) throw new TypeError("Can't update a null box");
         const [x, y] = getXY(e);
         const b = {
@@ -194,7 +199,7 @@ const TextractEditor: React.FC<Props> = ({
             width: Math.max(b.x1, b.x2) / scaledWidth - left,
         });
     };
-    const endBoxDraw = (e) => {
+    const endBoxDraw = (e: React.PointerEvent) => {
         if (!drawnRect) throw new TypeError("Can't end a null box");
         const [x, y] = getXY(e);
         if (drawnRect.x1 === x && drawnRect.y1 === y) {

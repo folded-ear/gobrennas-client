@@ -8,12 +8,12 @@ import {
 } from "@mui/material";
 import React from "react";
 import Directions from "@/views/common/Directions";
-import type { Subrecipe } from "@/global/types/types";
+import { IIngredient, Subrecipe } from "@/global/types/types";
 import { useScaleOptions } from "@/util/ScalingContext";
 import IngredientItem from "@/views/IngredientItem";
 
 interface Props {
-    recipe: Subrecipe;
+    recipe: Subrecipe<IIngredient>;
     loggedIn?: boolean;
     hideHeadings?: boolean;
 }
