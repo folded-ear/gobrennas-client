@@ -1,13 +1,13 @@
 import planStore from "@/features/Planner/data/planStore";
+import { getJsonItem, setJsonItem } from "@/util/storage";
 import { ReduceStore } from "flux/utils";
 import { Map } from "immutable";
-import { getJsonItem, setJsonItem } from "@/util/storage";
 // noinspection ES6PreferShortImport
 import { LOCAL_STORAGE_PREFERENCES } from "@/constants/index";
+import { BfsId, ensureString } from "@/global/types/identity";
+import { Maybe } from "graphql/jsutils/Maybe";
 import dispatcher, { ActionType, FluxAction } from "./dispatcher";
 import shoppingStore from "./shoppingStore";
-import { Maybe } from "graphql/jsutils/Maybe";
-import { BfsId, ensureString } from "@/global/types/identity";
 
 export type Layout = "desktop" | "mobile" | "auto";
 

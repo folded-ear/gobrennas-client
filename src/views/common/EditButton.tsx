@@ -1,3 +1,4 @@
+import { EditIcon } from "@/views/common/icons";
 import {
     IconButton,
     IconButtonProps,
@@ -5,7 +6,6 @@ import {
     TooltipProps,
 } from "@mui/material";
 import React from "react";
-import { EditIcon } from "@/views/common/icons";
 
 interface Props {
     tooltipPlacement?: TooltipProps["placement"];

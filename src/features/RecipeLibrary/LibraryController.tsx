@@ -1,17 +1,17 @@
+import useIsDevMode from "@/data/useIsDevMode";
 import { RecipesList } from "@/features/RecipeLibrary/components/RecipesList";
+import Recommendations from "@/features/RecipeLibrary/components/Recommendations";
+import { SearchRecipes } from "@/features/RecipeLibrary/components/SearchRecipes";
+import { useSearchLibrary } from "@/features/RecipeLibrary/hooks/useSearchLibrary";
+import { useIsMobile } from "@/providers/IsMobile";
 import { useProfile } from "@/providers/Profile";
+import { ScalingProvider } from "@/util/ScalingContext";
+import LoadingIndicator from "@/views/common/LoadingIndicator";
+import { LibrarySearchScope } from "@/__generated__/graphql";
+import { Container as Content, useScrollTrigger } from "@mui/material";
 import qs from "qs";
 import { useState } from "react";
 import { useHistory } from "react-router-dom";
-import { LibrarySearchScope } from "@/__generated__/graphql";
-import { useSearchLibrary } from "@/features/RecipeLibrary/hooks/useSearchLibrary";
-import { ScalingProvider } from "@/util/ScalingContext";
-import LoadingIndicator from "@/views/common/LoadingIndicator";
-import { SearchRecipes } from "@/features/RecipeLibrary/components/SearchRecipes";
-import { Container as Content, useScrollTrigger } from "@mui/material";
-import { useIsMobile } from "@/providers/IsMobile";
-import useIsDevMode from "@/data/useIsDevMode";
-import Recommendations from "@/features/RecipeLibrary/components/Recommendations";
 
 /**
  * TODO: Issue-218

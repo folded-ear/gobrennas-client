@@ -1,6 +1,6 @@
+import { Location } from "history";
 import React from "react";
 import { Redirect } from "react-router-dom";
-import { Location } from "history";
 
 function getUrlParameter(name, location) {
     name = name.replace(/[[]/, "\\[").replace(/[\]]/, "\\]");

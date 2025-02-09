@@ -1,20 +1,13 @@
-import { Box, Grid, Toolbar, Typography } from "@mui/material";
-import { AddRecipeIcon } from "@/views/common/icons";
-import React from "react";
 import dispatcher, { ActionType } from "@/data/dispatcher";
+import useIsDevMode from "@/data/useIsDevMode";
 import useWindowSize from "@/data/useWindowSize";
-import { formatDuration } from "@/util/time";
-import FoodingerFab from "@/views/common/FoodingerFab";
-import PageBody from "@/views/common/PageBody";
-import RecipeInfo from "@/views/common/RecipeInfo";
-import Source from "@/views/common/Source";
-import LabelItem from "@/global/components/LabelItem";
+import FavoriteIndicator from "@/features/Favorites/components/Indicator";
+import { extractRecipePhoto } from "@/features/RecipeDisplay/utils/extractRecipePhoto";
 import ItemImage from "@/features/RecipeLibrary/components/ItemImage";
 import ItemImageUpload from "@/features/RecipeLibrary/components/ItemImageUpload";
-import User from "@/views/user/User";
-import IngredientDirectionsRow from "./IngredientDirectionsRow";
-import SubrecipeItem from "./SubrecipeItem";
 import SendToPlan from "@/features/RecipeLibrary/components/SendToPlan";
+import { BreadcrumbLink } from "@/global/components/BreadcrumbLink";
+import LabelItem from "@/global/components/LabelItem";
 import { UserType } from "@/global/types/identity";
 import {
     IIngredient,
@@ -22,15 +15,22 @@ import {
     RecipeHistory,
     Subrecipe,
 } from "@/global/types/types";
-import FavoriteIndicator from "@/features/Favorites/components/Indicator";
 import { ReentrantScalingProvider, useScale } from "@/util/ScalingContext";
-import { SubHeader } from "./Subheader";
-import { extractRecipePhoto } from "@/features/RecipeDisplay/utils/extractRecipePhoto";
-import { BreadcrumbLink } from "@/global/components/BreadcrumbLink";
-import useIsDevMode from "@/data/useIsDevMode";
-import RecipeHistoryGrid from "./RecipeHistoryGrid";
-import { useHistory } from "react-router-dom";
+import { formatDuration } from "@/util/time";
+import FoodingerFab from "@/views/common/FoodingerFab";
+import { AddRecipeIcon } from "@/views/common/icons";
+import PageBody from "@/views/common/PageBody";
+import RecipeInfo from "@/views/common/RecipeInfo";
+import Source from "@/views/common/Source";
+import User from "@/views/user/User";
+import { Box, Grid, Toolbar, Typography } from "@mui/material";
 import { Maybe } from "graphql/jsutils/Maybe";
+import React from "react";
+import { useHistory } from "react-router-dom";
+import IngredientDirectionsRow from "./IngredientDirectionsRow";
+import RecipeHistoryGrid from "./RecipeHistoryGrid";
+import { SubHeader } from "./Subheader";
+import SubrecipeItem from "./SubrecipeItem";
 
 interface Props<I = IIngredient> {
     recipe: Recipe<I>;

@@ -1,9 +1,9 @@
+import type { UserType } from "@/global/types/identity";
+import SizedAvatar, { SizedAvatarProps } from "@/views/SizedAvatar";
+import { MakeOptional } from "@/__generated__/graphql";
 import Box from "@mui/material/Box";
 import makeStyles from "@mui/styles/makeStyles";
 import React from "react";
-import type { UserType } from "@/global/types/identity";
-import { MakeOptional } from "@/__generated__/graphql";
-import SizedAvatar, { SizedAvatarProps } from "@/views/SizedAvatar";
 
 const useStyles = makeStyles({
     root: {

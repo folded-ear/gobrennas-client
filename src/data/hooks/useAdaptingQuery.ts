@@ -6,11 +6,11 @@ import {
     TypedDocumentNode,
     useQuery,
 } from "@apollo/client";
-import { useCallback, useMemo } from "react";
 import type {
     NoInfer,
     QueryHookOptions,
 } from "@apollo/client/react/types/types";
+import { useCallback, useMemo } from "react";
 
 /**
  * I apply an adapter to both query and refetched data, properly memoized. In

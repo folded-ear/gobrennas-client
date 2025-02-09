@@ -1,3 +1,6 @@
+import { SearchRecipesContainer } from "@/features/RecipeLibrary/components/SearchRecipes.elements";
+import { ClearIcon, SearchIcon } from "@/views/common/icons";
+import { LibrarySearchScope } from "@/__generated__/graphql";
 import {
     Button,
     Divider,
@@ -8,10 +11,7 @@ import {
     Switch,
     Toolbar,
 } from "@mui/material";
-import { ClearIcon, SearchIcon } from "@/views/common/icons";
-import { LibrarySearchScope } from "@/__generated__/graphql";
 import React from "react";
-import { SearchRecipesContainer } from "@/features/RecipeLibrary/components/SearchRecipes.elements";
 
 type SearchRecipesProps = {
     isSearchFloating: boolean;

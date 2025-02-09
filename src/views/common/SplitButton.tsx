@@ -1,3 +1,6 @@
+import { BfsId } from "@/global/types/identity";
+import { DropDownIcon } from "@/views/common/icons";
+import { ButtonProps, Paper } from "@mui/material";
 import Button from "@mui/material/Button";
 import ButtonGroup, { ButtonGroupOwnProps } from "@mui/material/ButtonGroup";
 import ClickAwayListener from "@mui/material/ClickAwayListener";
@@ -5,10 +8,7 @@ import Grow from "@mui/material/Grow";
 import MenuItem from "@mui/material/MenuItem";
 import MenuList from "@mui/material/MenuList";
 import Popper from "@mui/material/Popper";
-import { DropDownIcon } from "@/views/common/icons";
 import React, { ReactNode } from "react";
-import { BfsId } from "@/global/types/identity";
-import { ButtonProps, Paper } from "@mui/material";
 
 export type SelectOption<TOption> = {
     id: BfsId;

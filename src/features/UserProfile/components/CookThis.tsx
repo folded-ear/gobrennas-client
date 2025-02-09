@@ -1,9 +1,9 @@
-import React from "react";
 import { API_BASE_URL, API_IS_SECURE, APP_BASE_URL } from "@/constants";
-import { UnlockedIcon } from "@/views/common/icons";
-import qs from "qs";
 import { useAuthToken } from "@/providers/AuthToken";
+import { UnlockedIcon } from "@/views/common/icons";
 import { Button, Stack, Typography } from "@mui/material";
+import qs from "qs";
+import React from "react";
 
 export const CookThis = () => {
     const cookThisRef = React.useRef<HTMLLinkElement>(null);

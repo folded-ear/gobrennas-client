@@ -1,21 +1,21 @@
-import React, { PropsWithChildren, useEffect, useState } from "react";
+import dispatcher, { ActionType } from "@/data/dispatcher";
+import useIsNavCollapsed, { setNavCollapsed } from "@/data/useIsNavCollapsed";
+import { DesktopNav } from "@/features/Navigation/components/DesktopNav";
+import { MobileNav } from "@/features/Navigation/components/MobileNav";
 import {
     Header,
     MainDesktop,
     MainMobile,
 } from "@/features/Navigation/components/Navigation.elements";
 import { FlexBox } from "@/global/components/FlexBox";
-import { useIsMobile } from "@/providers/IsMobile";
-import { MobileNav } from "@/features/Navigation/components/MobileNav";
-import { DesktopNav } from "@/features/Navigation/components/DesktopNav";
-import { useHistory, useLocation } from "react-router-dom";
-import { useIsAuthenticated, useLogoutHandler } from "@/providers/Profile";
-import dispatcher, { ActionType } from "@/data/dispatcher";
-import useIsNavCollapsed, { setNavCollapsed } from "@/data/useIsNavCollapsed";
 import { BfsId, ensureString } from "@/global/types/identity";
+import GTag from "@/GTag";
+import { useIsMobile } from "@/providers/IsMobile";
+import { useIsAuthenticated, useLogoutHandler } from "@/providers/Profile";
 import routes from "@/routes";
 import SidebarSwitch from "@/SidebarSwitch";
-import GTag from "@/GTag";
+import React, { PropsWithChildren, useEffect, useState } from "react";
+import { useHistory, useLocation } from "react-router-dom";
 
 export function toggleShoppingPlan(id: BfsId) {
     return dispatcher.dispatch({

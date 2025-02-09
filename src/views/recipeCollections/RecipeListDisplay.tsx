@@ -1,9 +1,9 @@
-import { Stack } from "@mui/material";
-import { bfsIdEq, UserType } from "@/global/types/identity";
 import { MessagePaper } from "@/features/RecipeLibrary/components/MessagePaper";
-import React from "react";
 import { RecipeCard } from "@/features/RecipeLibrary/types";
+import { bfsIdEq, UserType } from "@/global/types/identity";
 import { NanoCard } from "@/views/recipeCollections/NanoCard";
+import { Stack } from "@mui/material";
+import React from "react";
 
 type RecipeListDisplayProps = {
     recipes?: RecipeCard[];

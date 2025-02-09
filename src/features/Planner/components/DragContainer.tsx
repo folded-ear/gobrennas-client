@@ -1,4 +1,4 @@
-import React, { useLayoutEffect, useState } from "react";
+import { BfsId, bfsIdEq } from "@/global/types/identity";
 import {
     DndContext,
     DndContextProps,
@@ -6,9 +6,9 @@ import {
     DragOverlay,
     rectIntersection,
 } from "@dnd-kit/core";
-import { BfsId, bfsIdEq } from "@/global/types/identity";
-import { Box, darken, lighten, useTheme } from "@mui/material";
 import type { DragStartEvent } from "@dnd-kit/core/dist/types";
+import { Box, darken, lighten, useTheme } from "@mui/material";
+import React, { useLayoutEffect, useState } from "react";
 
 export type Vert = "above" | "below";
 export type Horiz = "left" | "right" | "none";

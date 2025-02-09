@@ -1,27 +1,27 @@
-import { Box, IconButton, Stack, Typography } from "@mui/material";
-import List from "@mui/material/List";
-import React, { useCallback, useState } from "react";
 import dispatcher, { ActionType } from "@/data/dispatcher";
+import useAllPlansRLO from "@/data/useAllPlansRLO";
+import { NavShopItem } from "@/features/Navigation/components/NavShopItem";
+import { toggleShoppingPlan } from "@/features/Navigation/NavigationController";
+import DragContainer, {
+    DragContainerProps,
+} from "@/features/Planner/components/DragContainer";
+import { Plan as TPlan } from "@/features/Planner/data/planStore";
+import CollapseIconButton from "@/global/components/CollapseIconButton";
+import { BfsId, bfsIdEq, BfsStringId } from "@/global/types/identity";
+import type { Quantity } from "@/global/types/types";
+import { useIsMobile } from "@/providers/IsMobile";
 import FoodingerFab from "@/views/common/FoodingerFab";
+import { AddIcon, CollapseIcon, SweepIcon } from "@/views/common/icons";
 import LoadingIndicator from "@/views/common/LoadingIndicator";
 import PageBody from "@/views/common/PageBody";
 import IngredientItem from "@/views/shop/IngredientItem";
 import PlanItem from "@/views/shop/PlanItem";
-import { BaseItemProp, ItemProps } from "./types";
-import { Plan as TPlan } from "@/features/Planner/data/planStore";
-import type { Quantity } from "@/global/types/types";
-import { BfsId, bfsIdEq, BfsStringId } from "@/global/types/identity";
-import CollapseIconButton from "@/global/components/CollapseIconButton";
-import DragContainer, {
-    DragContainerProps,
-} from "@/features/Planner/components/DragContainer";
-import { AddIcon, CollapseIcon, SweepIcon } from "@/views/common/icons";
-import { useIsMobile } from "@/providers/IsMobile";
+import { Box, IconButton, Stack, Typography } from "@mui/material";
+import List from "@mui/material/List";
+import React, { useCallback, useState } from "react";
 import MobilePlanSelector from "./MobilePlanSelector";
-import useAllPlansRLO from "@/data/useAllPlansRLO";
-import { NavShopItem } from "@/features/Navigation/components/NavShopItem";
-import { toggleShoppingPlan } from "@/features/Navigation/NavigationController";
 import PlanAvatar from "./PlanAvatar";
+import { BaseItemProp, ItemProps } from "./types";
 
 export enum ShopItemType {
     INGREDIENT,

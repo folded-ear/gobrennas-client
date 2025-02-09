@@ -1,8 +1,8 @@
+import { SearchScope } from "@/features/LibrarySearch/types";
+import { ClearIcon, SearchIcon } from "@/views/common/icons";
+import { IconButton, InputAdornment, Toolbar } from "@mui/material";
 import InputBase from "@mui/material/Input";
 import React, { useState } from "react";
-import { SearchScope } from "@/features/LibrarySearch/types";
-import { IconButton, InputAdornment, Toolbar } from "@mui/material";
-import { ClearIcon, SearchIcon } from "@/views/common/icons";
 
 type SearchInputProps = {
     searchTerm: string;

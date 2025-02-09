@@ -1,22 +1,22 @@
-import React from "react";
-import { EditIcon, ViewIcon } from "@/views/common/icons";
-import { Box } from "@mui/material";
 import dispatcher, { ActionType } from "@/data/dispatcher";
+import FavoriteIndicator from "@/features/Favorites/components/Indicator";
+import ItemImage from "@/features/RecipeLibrary/components/ItemImage";
 import SendToPlan from "@/features/RecipeLibrary/components/SendToPlan";
 import { RecipeCard } from "@/features/RecipeLibrary/types";
-import FavoriteIndicator from "@/features/Favorites/components/Indicator";
+import { TaskBar, TaskBarButton } from "@/global/elements/taskbar.elements";
+import { LinkTitle } from "@/global/elements/typography.elements";
+import { EditIcon, ViewIcon } from "@/views/common/icons";
 import {
     NanoCardContent,
     NanoRecipeCard,
 } from "@/views/recipeCollections/RecipeCollection.elements";
-import { TaskBar, TaskBarButton } from "@/global/elements/taskbar.elements";
-import { LinkTitle } from "@/global/elements/typography.elements";
-import { Link } from "react-router-dom";
-import ItemImage from "@/features/RecipeLibrary/components/ItemImage";
-import { styled } from "@mui/material/styles";
-import { BoxProps } from "@mui/material/Box/Box";
 import User from "@/views/user/User";
+import { Box } from "@mui/material";
+import { BoxProps } from "@mui/material/Box/Box";
+import { styled } from "@mui/material/styles";
 import { Maybe } from "graphql/jsutils/Maybe";
+import React from "react";
+import { Link } from "react-router-dom";
 
 type RecipeListItemProps = {
     recipe: RecipeCard;

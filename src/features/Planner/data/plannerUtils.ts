@@ -1,6 +1,6 @@
 import { Plan, PlanItem } from "@/features/Planner/data/planStore";
-import { Maybe } from "graphql/jsutils/Maybe";
 import { Named } from "@/util/comparators";
+import { Maybe } from "graphql/jsutils/Maybe";
 
 function testName(
     itemOrName: Maybe<Named | string>,

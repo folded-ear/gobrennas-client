@@ -1,6 +1,3 @@
-import { ListItemText } from "@mui/material";
-import Input from "@mui/material/Input";
-import classnames from "classnames";
 import dispatcher, { ActionType } from "@/data/dispatcher";
 import CookButton from "@/features/Planner/components/CookButton";
 import DontChangeStatusButton from "@/features/Planner/components/DontChangeStatusButton";
@@ -18,10 +15,13 @@ import {
 } from "@/features/Planner/data/plannerUtils";
 import planStore, { PlanBucket } from "@/features/Planner/data/planStore";
 import CollapseIconButton from "@/global/components/CollapseIconButton";
-import React, { createRef, PureComponent, ReactNode, RefObject } from "react";
 import LoadingIconButton from "@/views/common/LoadingIconButton";
 import PlaceholderIconButton from "@/views/common/PlaceholderIconButton";
 import IngredientItem from "@/views/IngredientItem";
+import { ListItemText } from "@mui/material";
+import Input from "@mui/material/Input";
+import classnames from "classnames";
+import React, { createRef, PureComponent, ReactNode, RefObject } from "react";
 
 interface Props {
     depth: number;

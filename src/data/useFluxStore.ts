@@ -1,7 +1,7 @@
 // @ts-expect-error Flux only has Flow types, not Typescript ones.
 import FluxContainerSubscriptions from "flux/lib/FluxContainerSubscriptions";
-import React from "react";
 import FluxReduceStore from "flux/lib/FluxReduceStore";
+import React from "react";
 
 type FluxStore = FluxReduceStore<unknown, unknown>;
 // lifted from FluxContainerSubscriptions.js.flow

@@ -1,7 +1,10 @@
-import React from "react";
-import { Box, Drawer as MuiDrawer, Tab, Tabs } from "@mui/material";
+import useIsDevMode from "@/data/useIsDevMode";
+import { LibrarySearchController } from "@/features/LibrarySearch/LibrarySearchController";
+import { BodyContainer } from "@/features/RecipeLibrary/components/CurrentPlanSidebar";
 import { SIDEBAR_DEFAULT_WIDTH } from "@/global/constants";
+import { Box, Drawer as MuiDrawer, Tab, Tabs } from "@mui/material";
 import { styled } from "@mui/material/styles";
+import React from "react";
 import {
     Link,
     Route,
@@ -9,9 +12,6 @@ import {
     useParams,
     useRouteMatch,
 } from "react-router-dom";
-import { BodyContainer } from "@/features/RecipeLibrary/components/CurrentPlanSidebar";
-import { LibrarySearchController } from "@/features/LibrarySearch/LibrarySearchController";
-import useIsDevMode from "@/data/useIsDevMode";
 
 const Drawer = styled(MuiDrawer)({
     width: SIDEBAR_DEFAULT_WIDTH,

@@ -1,12 +1,12 @@
-import React from "react";
+import { TaskBarButton } from "@/global/elements/taskbar.elements";
+import { BfsId } from "@/global/types/identity";
 import { FavoriteIcon, NotFavoriteIcon } from "@/views/common/icons";
+import React from "react";
 import {
     useIsFavorite,
     useMarkFavorite,
     useRemoveFavorite,
 } from "../data/queries";
-import { BfsId } from "@/global/types/identity";
-import { TaskBarButton } from "@/global/elements/taskbar.elements";
 
 interface Props {
     type: string;

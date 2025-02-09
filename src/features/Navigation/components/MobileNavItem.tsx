@@ -1,7 +1,7 @@
-import React from "react";
 import { BottomNavigationAction } from "@mui/material";
-import { NavLink, NavLinkProps } from "react-router-dom";
 import { ListItemButtonProps } from "@mui/material/ListItemButton/ListItemButton";
+import React from "react";
+import { NavLink, NavLinkProps } from "react-router-dom";
 
 interface MobileNavItemProps extends ListItemButtonProps<any, NavLinkProps> {
     icon: React.ReactNode;

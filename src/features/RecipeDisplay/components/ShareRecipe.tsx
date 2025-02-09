@@ -1,12 +1,12 @@
-import { Box, Button, CircularProgress, TextField } from "@mui/material";
-import { ShareIcon } from "@/views/common/icons";
-import React from "react";
 import { APP_BASE_URL } from "@/constants";
+import RecipeApi from "@/data/RecipeApi";
+import { bfsIdEq } from "@/global/types/identity";
 import type { Recipe, ShareInfo } from "@/global/types/types";
 import { RippedLO } from "@/util/ripLoadObject";
+import { ShareIcon } from "@/views/common/icons";
 import ModalButton from "@/views/ModalButton";
-import { bfsIdEq } from "@/global/types/identity";
-import RecipeApi from "@/data/RecipeApi";
+import { Box, Button, CircularProgress, TextField } from "@mui/material";
+import React from "react";
 
 type ShareRecipeProps = {
     recipe: Pick<Recipe, "id">;

@@ -1,3 +1,7 @@
+import { IIngredient, Subrecipe } from "@/global/types/types";
+import { useScaleOptions } from "@/util/ScalingContext";
+import Directions from "@/views/common/Directions";
+import IngredientItem from "@/views/IngredientItem";
 import {
     Button,
     ButtonGroup,
@@ -7,10 +11,6 @@ import {
     Typography,
 } from "@mui/material";
 import React from "react";
-import Directions from "@/views/common/Directions";
-import { IIngredient, Subrecipe } from "@/global/types/types";
-import { useScaleOptions } from "@/util/ScalingContext";
-import IngredientItem from "@/views/IngredientItem";
 
 interface Props {
     recipe: Subrecipe<IIngredient>;

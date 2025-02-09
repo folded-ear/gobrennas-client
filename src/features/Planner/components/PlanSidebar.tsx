@@ -1,3 +1,16 @@
+import AccessLevel, { includesLevel } from "@/data/AccessLevel";
+import dispatcher, { ActionType } from "@/data/dispatcher";
+import FriendStore from "@/data/FriendStore";
+import useFluxStore from "@/data/useFluxStore";
+import PlanBucketManager from "@/features/Planner/components/PlanBucketManager";
+import SidebarUnit from "@/features/Planner/components/SidebarUnit";
+import { Plan } from "@/features/Planner/data/planStore";
+import { bfsIdEq, BfsStringId, UserType } from "@/global/types/identity";
+import { useProfile } from "@/providers/Profile";
+import DeleteButton from "@/views/common/DeleteButton";
+import LoadingIndicator from "@/views/common/LoadingIndicator";
+import PlanAvatar from "@/views/shop/PlanAvatar";
+import User from "@/views/user/User";
 import {
     Box,
     Drawer,
@@ -12,19 +25,6 @@ import {
     Typography,
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
-import AccessLevel, { includesLevel } from "@/data/AccessLevel";
-import dispatcher, { ActionType } from "@/data/dispatcher";
-import FriendStore from "@/data/FriendStore";
-import useFluxStore from "@/data/useFluxStore";
-import { useProfile } from "@/providers/Profile";
-import DeleteButton from "@/views/common/DeleteButton";
-import LoadingIndicator from "@/views/common/LoadingIndicator";
-import PlanBucketManager from "@/features/Planner/components/PlanBucketManager";
-import SidebarUnit from "@/features/Planner/components/SidebarUnit";
-import User from "@/views/user/User";
-import { Plan } from "@/features/Planner/data/planStore";
-import { bfsIdEq, BfsStringId, UserType } from "@/global/types/identity";
-import PlanAvatar from "@/views/shop/PlanAvatar";
 
 const LEVEL_NO_ACCESS = "NO_ACCESS";
 

@@ -1,7 +1,7 @@
-import { useMutation, useQuery } from "@apollo/client";
-import { gql } from "@/__generated__";
-import { useMemo } from "react";
 import { BfsId, bfsIdEq, ensureString } from "@/global/types/identity";
+import { gql } from "@/__generated__";
+import { useMutation, useQuery } from "@apollo/client";
+import { useMemo } from "react";
 
 export type IdCallback = (id: BfsId) => boolean;
 

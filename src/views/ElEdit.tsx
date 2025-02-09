@@ -1,13 +1,13 @@
-import { Autocomplete, Grid, InputAdornment, TextField } from "@mui/material";
-import { ErrorIcon, OkIcon } from "./common/icons";
-import React, { PropsWithChildren } from "react";
 import ItemApi, { RecognitionResult } from "@/data/ItemApi";
+import { BfsId } from "@/global/types/identity";
+import { IngredientRef } from "@/global/types/types";
 import debounce from "@/util/debounce";
 import processRecognizedItem from "@/util/processRecognizedItem";
-import { IngredientRef } from "@/global/types/types";
-import { BfsId } from "@/global/types/identity";
-import LoadingIconButton from "./common/LoadingIconButton";
+import { Autocomplete, Grid, InputAdornment, TextField } from "@mui/material";
 import { Maybe } from "graphql/jsutils/Maybe";
+import React, { PropsWithChildren } from "react";
+import { ErrorIcon, OkIcon } from "./common/icons";
+import LoadingIconButton from "./common/LoadingIconButton";
 
 const doRecog = (raw: Maybe<string>) => raw != null && raw.trim().length >= 2;
 

@@ -1,4 +1,16 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCombinePantryItems } from "@/data/hooks/useCombinePantryItems";
+import { useDeletePantryItem } from "@/data/hooks/useDeletePantryItem";
+import {
+    Result,
+    usePantryItemSearch,
+    Variables,
+} from "@/data/hooks/usePantryItemSearch";
+import { useRenamePantryItem } from "@/data/hooks/useRenamePantryItem";
+import { useSetPantryItemLabels } from "@/data/hooks/useSetPantryItemLabels";
+import { useSetPantryItemSynonyms } from "@/data/hooks/useSetPantryItemSynonyms";
+import { ensureString } from "@/global/types/identity";
+import { SortDir } from "@/__generated__/graphql";
+import { ApolloError } from "@apollo/client";
 import {
     GridColumnVisibilityModel,
     GridFilterModel,
@@ -6,23 +18,11 @@ import {
     GridRowSelectionModel,
     GridSortModel,
 } from "@mui/x-data-grid";
-import {
-    Result,
-    usePantryItemSearch,
-    Variables,
-} from "@/data/hooks/usePantryItemSearch";
-import { SortDir } from "@/__generated__/graphql";
+import { Maybe } from "graphql/jsutils/Maybe";
+import { useCallback, useEffect, useState } from "react";
 import AdminGrid from "./components/AdminGrid";
-import { useRenamePantryItem } from "@/data/hooks/useRenamePantryItem";
-import { useCombinePantryItems } from "@/data/hooks/useCombinePantryItems";
-import { useDeletePantryItem } from "@/data/hooks/useDeletePantryItem";
 import ConfirmDialog, { DialogProps } from "./components/ConfirmDialog";
 import ViewUses from "./components/ViewUses";
-import { useSetPantryItemLabels } from "@/data/hooks/useSetPantryItemLabels";
-import { useSetPantryItemSynonyms } from "@/data/hooks/useSetPantryItemSynonyms";
-import { ensureString } from "@/global/types/identity";
-import { Maybe } from "graphql/jsutils/Maybe";
-import { ApolloError } from "@apollo/client";
 
 const DUPLICATE_PREFIX = "duplicates:";
 

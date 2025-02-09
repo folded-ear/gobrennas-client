@@ -1,6 +1,6 @@
-import makeStyles from "@mui/styles/makeStyles";
 import { AvatarProps } from "@mui/material";
 import Avatar from "@mui/material/Avatar";
+import makeStyles from "@mui/styles/makeStyles";
 
 const useStyles = makeStyles((theme) => ({
     inline: {

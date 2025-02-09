@@ -1,4 +1,3 @@
-import { describe, expect, it } from "vitest";
 import {
     addDistinct,
     intersection,
@@ -6,6 +5,7 @@ import {
     removeDistinct,
     toggleDistinct,
 } from "@/util/arrayAsSet";
+import { describe, expect, it } from "vitest";
 
 describe("arrayAsSet", () => {
     describe("removeAtIndex", () => {

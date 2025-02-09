@@ -1,11 +1,11 @@
-import { MutationResult, useMutation } from "@apollo/client";
+import throwAnyGraphQLErrors from "@/util/throwAnyGraphQLErrors";
+import { gql } from "@/__generated__";
 import {
     CombinePantryItemsMutation,
     PantryItem,
 } from "@/__generated__/graphql";
-import { gql } from "@/__generated__";
+import { MutationResult, useMutation } from "@apollo/client";
 import { useCallback } from "react";
-import throwAnyGraphQLErrors from "@/util/throwAnyGraphQLErrors";
 
 const COMBINE_PANTRY_ITEMS = gql(`
 mutation combinePantryItems($ids: [ID!]!) {

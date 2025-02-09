@@ -1,7 +1,7 @@
-import { GridRenderEditCellParams, useGridApiContext } from "@mui/x-data-grid";
 import { Result } from "@/data/hooks/usePantryItemSearch";
-import React, { useCallback } from "react";
 import Input from "@mui/material/Input";
+import { GridRenderEditCellParams, useGridApiContext } from "@mui/x-data-grid";
+import React, { useCallback } from "react";
 import PopperEditCell from "./PopperEditCell";
 
 export default function MultilineEditCell(

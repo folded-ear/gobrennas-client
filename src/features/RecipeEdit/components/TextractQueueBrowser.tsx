@@ -1,3 +1,8 @@
+import TextractApi, { PendingJob } from "@/data/TextractApi";
+import { BfsId, indexOfBfsId } from "@/global/types/identity";
+import ImageDropZone from "@/util/ImageDropZone";
+import DeleteButton from "@/views/common/DeleteButton";
+import { CloseIcon } from "@/views/common/icons";
 import {
     Drawer,
     IconButton,
@@ -8,13 +13,8 @@ import {
     Typography,
 } from "@mui/material";
 import { makeStyles } from "@mui/styles";
-import { CloseIcon } from "@/views/common/icons";
 import React from "react";
-import DeleteButton from "@/views/common/DeleteButton";
-import ImageDropZone from "@/util/ImageDropZone";
 import { useQuery } from "react-query";
-import TextractApi, { PendingJob } from "@/data/TextractApi";
-import { BfsId, indexOfBfsId } from "@/global/types/identity";
 
 const useStyles = makeStyles((theme) => ({
     drawer: {

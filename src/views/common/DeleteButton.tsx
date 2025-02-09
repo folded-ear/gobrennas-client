@@ -1,3 +1,4 @@
+import { DeleteIcon } from "@/views/common/icons";
 import {
     Button,
     ButtonProps,
@@ -8,7 +9,6 @@ import {
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogTitle from "@mui/material/DialogTitle";
-import { DeleteIcon } from "@/views/common/icons";
 import React from "react";
 
 interface Props {

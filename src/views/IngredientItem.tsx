@@ -1,13 +1,13 @@
+import dispatcher, { ActionType } from "@/data/dispatcher";
+import SendToPlan from "@/features/RecipeLibrary/components/SendToPlan";
+import type { BfsId } from "@/global/types/identity";
+import { IIngredient, IngredientRef } from "@/global/types/types";
+import { useScale } from "@/util/ScalingContext";
+import { LinkIcon } from "@/views/common/icons";
+import Quantity from "@/views/common/Quantity";
 import { Chip, Grid, IconButton } from "@mui/material";
 import makeStyles from "@mui/styles/makeStyles";
 import React, { ReactNode } from "react";
-import dispatcher, { ActionType } from "@/data/dispatcher";
-import Quantity from "@/views/common/Quantity";
-import SendToPlan from "@/features/RecipeLibrary/components/SendToPlan";
-import { IIngredient, IngredientRef } from "@/global/types/types";
-import type { BfsId } from "@/global/types/identity";
-import { useScale } from "@/util/ScalingContext";
-import { LinkIcon } from "@/views/common/icons";
 import { useHistory } from "react-router-dom";
 
 const useStyles = makeStyles(() => ({

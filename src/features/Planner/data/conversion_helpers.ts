@@ -1,16 +1,16 @@
-import throwAnyGraphQLErrors from "@/util/throwAnyGraphQLErrors";
-import type {
-    CorePlanItemLoadFragment,
-    PlanItemLoadFragment,
-    PlanLoadFragment,
-} from "@/__generated__/graphql";
+import { ActionType, FluxAction } from "@/data/dispatcher";
 import {
     Plan as TPlan,
     PlanBucket as TPlanBucket,
     PlanItem as TPlanItem,
 } from "@/features/Planner/data/planStore";
+import throwAnyGraphQLErrors from "@/util/throwAnyGraphQLErrors";
 import { parseLocalDate } from "@/util/time";
-import { ActionType, FluxAction } from "@/data/dispatcher";
+import type {
+    CorePlanItemLoadFragment,
+    PlanItemLoadFragment,
+    PlanLoadFragment,
+} from "@/__generated__/graphql";
 
 export const handleErrors = (error): FluxAction => {
     throwAnyGraphQLErrors(error);

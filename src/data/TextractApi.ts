@@ -1,7 +1,7 @@
+import { CREATE_TEXTRACT_JOB, DELETE_TEXTRACT_JOB } from "@/data/mutations";
+import { LIST_TEXTRACT_JOBS, LOAD_TEXTRACT_JOB } from "@/data/queries";
 import { BfsId, ensureString } from "@/global/types/identity";
 import { client } from "@/providers/ApolloClient";
-import { LIST_TEXTRACT_JOBS, LOAD_TEXTRACT_JOB } from "@/data/queries";
-import { CREATE_TEXTRACT_JOB, DELETE_TEXTRACT_JOB } from "@/data/mutations";
 
 export interface PendingJob {
     id: string;

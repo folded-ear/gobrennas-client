@@ -1,15 +1,15 @@
+import { API_BASE_URL, LOCAL_STORAGE_ACCESS_TOKEN } from "@/constants";
+import useAdaptingQuery from "@/data/hooks/useAdaptingQuery";
+import type { UserType } from "@/global/types/identity";
+import { requiredData, RippedLO } from "@/util/ripLoadObject";
+import { gql } from "@/__generated__";
 import React, {
     createContext,
     PropsWithChildren,
     useContext,
     useEffect,
 } from "react";
-import { API_BASE_URL, LOCAL_STORAGE_ACCESS_TOKEN } from "@/constants";
 import GTag from "../GTag";
-import type { UserType } from "@/global/types/identity";
-import { requiredData, RippedLO } from "@/util/ripLoadObject";
-import { gql } from "@/__generated__";
-import useAdaptingQuery from "@/data/hooks/useAdaptingQuery";
 
 type Profile = RippedLO<UserType> | undefined;
 

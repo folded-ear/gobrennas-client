@@ -1,13 +1,13 @@
-import React from "react";
-import useIsDevMode, { setDevMode } from "@/data/useIsDevMode";
 import dispatcher, { ActionType } from "@/data/dispatcher";
+import preferencesStore, { Layout } from "@/data/preferencesStore";
+import useFluxStore from "@/data/useFluxStore";
+import useIsDevMode, { setDevMode } from "@/data/useIsDevMode";
+import useWindowSize from "@/data/useWindowSize";
+import { AutoAwesomeIcon, DesktopIcon, MobileIcon } from "@/views/common/icons";
+import { Grid, Stack, ToggleButton, ToggleButtonGroup } from "@mui/material";
 import Divider from "@mui/material/Divider";
 import Switch, { SwitchProps } from "@mui/material/Switch";
-import useWindowSize from "@/data/useWindowSize";
-import { Grid, Stack, ToggleButton, ToggleButtonGroup } from "@mui/material";
-import { AutoAwesomeIcon, DesktopIcon, MobileIcon } from "@/views/common/icons";
-import useFluxStore from "@/data/useFluxStore";
-import preferencesStore, { Layout } from "@/data/preferencesStore";
+import React from "react";
 
 interface RowProps {
     children?: React.ReactNode;

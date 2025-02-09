@@ -1,12 +1,16 @@
-import React from "react";
+import { useGetAllPlans } from "@/data/hooks/useGetAllPlans";
+import useIsDevMode from "@/data/useIsDevMode";
+import { Logo } from "@/features/Navigation/components/Logo";
 import {
     ItemIcon,
     Navigation,
     Sidebar,
     Subheader,
 } from "@/features/Navigation/components/Navigation.elements";
-import { Logo } from "@/features/Navigation/components/Logo";
 import { NavItem } from "@/features/Navigation/components/NavItem";
+import { NavPlanItem } from "@/features/Navigation/components/NavPlanItem";
+import { BfsId, bfsIdEq } from "@/global/types/identity";
+import { useProfile } from "@/providers/Profile";
 import {
     LibraryIcon,
     LogoutIcon,
@@ -14,15 +18,11 @@ import {
     PlanIcon,
     ShopIcon,
 } from "@/views/common/icons";
-import { Box, List, ListItemButton, Typography } from "@mui/material";
-import { NavPlanItem } from "@/features/Navigation/components/NavPlanItem";
-import { NavOwnerItem } from "./NavOwnerItem";
 import User from "@/views/user/User";
-import { useProfile } from "@/providers/Profile";
+import { Box, List, ListItemButton, Typography } from "@mui/material";
+import React from "react";
+import { NavOwnerItem } from "./NavOwnerItem";
 import { NavShopItem } from "./NavShopItem";
-import { BfsId, bfsIdEq } from "@/global/types/identity";
-import { useGetAllPlans } from "@/data/hooks/useGetAllPlans";
-import useIsDevMode from "@/data/useIsDevMode";
 
 type DesktopNavProps = {
     selected: string;

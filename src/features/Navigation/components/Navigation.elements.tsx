@@ -1,4 +1,3 @@
-import { CSSObject, styled } from "@mui/material/styles";
 import {
     AppBar,
     Container,
@@ -9,6 +8,7 @@ import {
     ListSubheader,
 } from "@mui/material";
 import ListItemIcon from "@mui/material/ListItemIcon";
+import { CSSObject, styled } from "@mui/material/styles";
 import React from "react";
 
 const TOP_MARGIN = 20;

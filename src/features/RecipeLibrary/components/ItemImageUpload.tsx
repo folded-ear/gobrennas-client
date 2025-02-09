@@ -1,10 +1,10 @@
-import { makeStyles } from "@mui/styles";
-import React from "react";
-import ImageDropZone from "@/util/ImageDropZone";
 import { BfsId, ensureString } from "@/global/types/identity";
+import ImageDropZone from "@/util/ImageDropZone";
+import promiseWellSizedFile from "@/util/promiseWellSizedFile";
 import { gql } from "@/__generated__";
 import { useMutation } from "@apollo/client";
-import promiseWellSizedFile from "@/util/promiseWellSizedFile";
+import { makeStyles } from "@mui/styles";
+import React from "react";
 
 const SET_RECIPE_PHOTO = gql(`
 mutation setRecipePhoto($id: ID!, $photo: Upload!) {

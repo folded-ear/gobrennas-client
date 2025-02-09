@@ -1,3 +1,5 @@
+import objectWithType from "@/data/utils/objectWithType";
+import { BfsStringId } from "@/global/types/identity";
 import {
     IIngredient,
     IngredientRef,
@@ -6,10 +8,8 @@ import {
 } from "@/global/types/types";
 import { gql } from "@/__generated__";
 import { GetRecipeWithEverythingQuery } from "@/__generated__/graphql";
-import useAdaptingQuery from "./useAdaptingQuery";
 import { ApolloQueryResult, QueryResult } from "@apollo/client";
-import { BfsStringId } from "@/global/types/identity";
-import objectWithType from "@/data/utils/objectWithType";
+import useAdaptingQuery from "./useAdaptingQuery";
 
 const GET_FULL_RECIPE_QUERY = gql(`
 query getRecipeWithEverything($id: ID!, $secret: String) {

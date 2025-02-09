@@ -1,3 +1,12 @@
+import { BoundingBox, Line } from "@/data/TextractApi";
+import useWindowSize from "@/data/useWindowSize";
+import { findSvg } from "@/util/findAncestorByName";
+import getPositionWithin from "@/util/getPositionWithin";
+import {
+    CloseIcon,
+    RotateClockwiseIcon,
+    RotateCounterClockwiseIcon,
+} from "@/views/common/icons";
 import {
     Box,
     Grid,
@@ -7,16 +16,7 @@ import {
     Typography,
 } from "@mui/material";
 import { makeStyles } from "@mui/styles";
-import {
-    CloseIcon,
-    RotateClockwiseIcon,
-    RotateCounterClockwiseIcon,
-} from "@/views/common/icons";
 import React, { ReactNode } from "react";
-import { findSvg } from "@/util/findAncestorByName";
-import getPositionWithin from "@/util/getPositionWithin";
-import { BoundingBox, Line } from "@/data/TextractApi";
-import useWindowSize from "@/data/useWindowSize";
 
 const useStyles = makeStyles({
     rotateRight: {

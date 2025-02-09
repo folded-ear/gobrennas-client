@@ -1,12 +1,23 @@
-import dotProp from "dot-prop-immutable";
-import FluxReduceStore from "flux/lib/FluxReduceStore";
+import AccessLevel from "@/data/AccessLevel";
+import dispatcher, { ActionType, FluxAction } from "@/data/dispatcher";
+import PlanItemStatus from "@/features/Planner/data/PlanItemStatus";
+import {
+    BfsId,
+    bfsIdEq,
+    BfsStringId,
+    ensureString,
+    includesBfsId,
+} from "@/global/types/identity";
 import { removeAtIndex } from "@/util/arrayAsSet";
 import ClientId from "@/util/ClientId";
 import { bucketComparator } from "@/util/comparators";
 import LoadObject from "@/util/LoadObject";
 import LoadObjectState from "@/util/LoadObjectState";
-import PlanApi from "./PlanApi";
 import { mapData, ripLoadObject, RippedLO } from "@/util/ripLoadObject";
+import dotProp from "dot-prop-immutable";
+import FluxReduceStore from "flux/lib/FluxReduceStore";
+import { Maybe } from "graphql/jsutils/Maybe";
+import PlanApi from "./PlanApi";
 import {
     addTask,
     addTaskAndFlush,
@@ -52,17 +63,6 @@ import {
     toggleExpanded,
     unnestTask,
 } from "./utils";
-import {
-    BfsId,
-    bfsIdEq,
-    BfsStringId,
-    ensureString,
-    includesBfsId,
-} from "@/global/types/identity";
-import AccessLevel from "@/data/AccessLevel";
-import { Maybe } from "graphql/jsutils/Maybe";
-import PlanItemStatus from "@/features/Planner/data/PlanItemStatus";
-import dispatcher, { ActionType, FluxAction } from "@/data/dispatcher";
 
 /*
  * This store is way too muddled. But leaving it that way for the moment, to

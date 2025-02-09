@@ -1,19 +1,19 @@
+import { useDeleteRecipe } from "@/data/hooks/useDeleteRecipe";
+import { useGetFullRecipe } from "@/data/hooks/useGetFullRecipe";
+import { bfsIdEq } from "@/global/types/identity";
+import { useProfileId } from "@/providers/Profile";
+import { ScalingProvider } from "@/util/ScalingContext";
+import CloseButton from "@/views/common/CloseButton";
+import CopyButton from "@/views/common/CopyButton";
+import DeleteButton from "@/views/common/DeleteButton";
+import EditButton from "@/views/common/EditButton";
+import LoadingIndicator from "@/views/common/LoadingIndicator";
+import NotFound from "@/views/common/NotFound";
 import React from "react";
 import { RouteComponentProps } from "react-router";
-import { ScalingProvider } from "@/util/ScalingContext";
-import LoadingIndicator from "@/views/common/LoadingIndicator";
-import RecipeDetail from "./components/RecipeDetail";
-import { useGetFullRecipe } from "@/data/hooks/useGetFullRecipe";
-import CopyButton from "@/views/common/CopyButton";
-import ShareRecipe from "./components/ShareRecipe";
-import CloseButton from "@/views/common/CloseButton";
-import EditButton from "@/views/common/EditButton";
-import DeleteButton from "@/views/common/DeleteButton";
-import NotFound from "@/views/common/NotFound";
-import { useDeleteRecipe } from "@/data/hooks/useDeleteRecipe";
 import { useHistory } from "react-router-dom";
-import { useProfileId } from "@/providers/Profile";
-import { bfsIdEq } from "@/global/types/identity";
+import RecipeDetail from "./components/RecipeDetail";
+import ShareRecipe from "./components/ShareRecipe";
 
 type Props = RouteComponentProps<{
     id: string;

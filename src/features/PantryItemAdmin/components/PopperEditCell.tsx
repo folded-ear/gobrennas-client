@@ -1,7 +1,7 @@
+import { Paper } from "@mui/material";
+import Popper from "@mui/material/Popper";
 import { GridRenderEditCellParams } from "@mui/x-data-grid";
 import React, { useCallback, useLayoutEffect, useState } from "react";
-import Popper from "@mui/material/Popper";
-import { Paper } from "@mui/material";
 
 export default function PopperEditCell(
     props: GridRenderEditCellParams<any, string[]> & {

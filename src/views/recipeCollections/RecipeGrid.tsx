@@ -1,9 +1,9 @@
-import { Grid } from "@mui/material";
 import RecipeCard from "@/features/RecipeLibrary/components/RecipeCard";
-import { NanoCard } from "@/views/recipeCollections/NanoCard";
 import { RecipeCard as TRecipeCard } from "@/features/RecipeLibrary/types";
-import { PropsWithChildren } from "react";
 import { bfsIdEq, UserType } from "@/global/types/identity";
+import { NanoCard } from "@/views/recipeCollections/NanoCard";
+import { Grid } from "@mui/material";
+import { PropsWithChildren } from "react";
 
 type RecipeDisplayGridProps = PropsWithChildren & {
     recipes: TRecipeCard[];

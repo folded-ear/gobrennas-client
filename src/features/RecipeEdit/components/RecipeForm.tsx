@@ -1,3 +1,23 @@
+import { useRecipeForm } from "@/data/hooks/useRecipeForm";
+import useWindowSize from "@/data/useWindowSize";
+import DragContainer, {
+    Vert,
+} from "@/features/Planner/components/DragContainer";
+import DragHandle from "@/features/Planner/components/DragHandle";
+import Item from "@/features/Planner/components/Item";
+import PositionPicker from "@/features/RecipeEdit/components/PositionPicker";
+import { TextractForm } from "@/features/RecipeEdit/components/TextractForm";
+import { BfsId, bfsIdEq } from "@/global/types/identity";
+import { DraftRecipe, IngredientRef, Recipe } from "@/global/types/types";
+import ImageDropZone from "@/util/ImageDropZone";
+import {
+    AddIcon,
+    CancelIcon,
+    CopyIcon,
+    DeleteIcon,
+    SaveIcon,
+} from "@/views/common/icons";
+import ElEdit, { WithTarget } from "@/views/ElEdit";
 import {
     AutocompleteChangeReason,
     Box,
@@ -11,28 +31,8 @@ import {
     useTheme,
 } from "@mui/material";
 import makeStyles from "@mui/styles/makeStyles";
-import { DraftRecipe, IngredientRef, Recipe } from "@/global/types/types";
-import {
-    AddIcon,
-    CancelIcon,
-    CopyIcon,
-    DeleteIcon,
-    SaveIcon,
-} from "@/views/common/icons";
 import React, { ReactNode } from "react";
-import useWindowSize from "@/data/useWindowSize";
-import ImageDropZone from "@/util/ImageDropZone";
-import ElEdit, { WithTarget } from "@/views/ElEdit";
-import PositionPicker from "@/features/RecipeEdit/components/PositionPicker";
 import { LabelAutoComplete, LabelAutoCompleteProps } from "./LabelAutoComplete";
-import DragContainer, {
-    Vert,
-} from "@/features/Planner/components/DragContainer";
-import Item from "@/features/Planner/components/Item";
-import DragHandle from "@/features/Planner/components/DragHandle";
-import { TextractForm } from "@/features/RecipeEdit/components/TextractForm";
-import { useRecipeForm } from "@/data/hooks/useRecipeForm";
-import { BfsId, bfsIdEq } from "@/global/types/identity";
 
 const useStyles = makeStyles((theme) => ({
     button: {

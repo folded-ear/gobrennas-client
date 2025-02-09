@@ -1,13 +1,13 @@
-import React from "react";
-import { Redirect, Route } from "react-router-dom";
 import {
     useIsProfileInitializing,
     useIsProfilePending,
     useProfile,
 } from "@/providers/Profile";
-import LoadingIndicator from "./LoadingIndicator";
-import { Location } from "history";
 import { BfsRoute } from "@/routes";
+import { Location } from "history";
+import React from "react";
+import { Redirect, Route } from "react-router-dom";
+import LoadingIndicator from "./LoadingIndicator";
 
 function AuthenticatedHelper({ render, ...route }) {
     return render({

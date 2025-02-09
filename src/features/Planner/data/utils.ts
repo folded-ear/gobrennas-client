@@ -1,25 +1,10 @@
-import ClientId from "@/util/ClientId";
+import { ActionType } from "@/data/dispatcher";
+import preferencesStore from "@/data/preferencesStore";
+import PlanApi from "@/features/Planner/data/PlanApi";
 import PlanItemStatus, {
     willStatusDelete,
 } from "@/features/Planner/data/PlanItemStatus";
-import LoadObject from "@/util/LoadObject";
-import LoadObjectState from "@/util/LoadObjectState";
 import { isExpanded, isParent } from "@/features/Planner/data/plannerUtils";
-import invariant from "invariant/invariant";
-import PlanApi from "@/features/Planner/data/PlanApi";
-import inTheFuture from "@/util/inTheFuture";
-import dotProp from "dot-prop-immutable";
-import { bucketComparator, Named } from "@/util/comparators";
-import preferencesStore from "@/data/preferencesStore";
-import { formatLocalDate, parseLocalDate } from "@/util/time";
-import {
-    BfsId,
-    bfsIdEq,
-    BfsStringId,
-    ensureString,
-    includesBfsId,
-    indexOfBfsId,
-} from "@/global/types/identity";
 import {
     BasePlanItem,
     Plan,
@@ -28,8 +13,23 @@ import {
     State,
     StateWithActiveTask,
 } from "@/features/Planner/data/planStore";
+import {
+    BfsId,
+    bfsIdEq,
+    BfsStringId,
+    ensureString,
+    includesBfsId,
+    indexOfBfsId,
+} from "@/global/types/identity";
+import ClientId from "@/util/ClientId";
+import { bucketComparator, Named } from "@/util/comparators";
+import inTheFuture from "@/util/inTheFuture";
+import LoadObject from "@/util/LoadObject";
+import LoadObjectState from "@/util/LoadObjectState";
+import { formatLocalDate, parseLocalDate } from "@/util/time";
+import dotProp from "dot-prop-immutable";
 import { Maybe } from "graphql/jsutils/Maybe";
-import { ActionType } from "@/data/dispatcher";
+import invariant from "invariant/invariant";
 
 const AT_END = ("AT_END_" + ClientId.next()) as BfsStringId;
 
