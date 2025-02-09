@@ -6,7 +6,7 @@ import {
     GetSearchLibraryDocument,
 } from "@/__generated__/graphql";
 import throwAnyGraphQLErrors from "@/util/throwAnyGraphQLErrors";
-import { BfsId } from "@/global/types/identity";
+import { BfsId, ensureString } from "@/global/types/identity";
 
 const DELETE_RECIPE = gql(`
 mutation deleteRecipe($id: ID!) {
@@ -30,11 +30,13 @@ export const useDeleteRecipe = (): [
     });
 
     const deleteRecipe = useCallback(
-        (id) =>
-            mutateFunction({ variables: { id } }).then(({ errors }) => {
-                throwAnyGraphQLErrors(errors);
-                return true;
-            }),
+        (id: BfsId) =>
+            mutateFunction({ variables: { id: ensureString(id) } }).then(
+                ({ errors }) => {
+                    throwAnyGraphQLErrors(errors);
+                    return true;
+                },
+            ),
         [mutateFunction],
     );
 

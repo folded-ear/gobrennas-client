@@ -28,7 +28,7 @@ export const useCombinePantryItems = (): [
     const [mutateFunction, out] = useMutation(COMBINE_PANTRY_ITEMS);
 
     const combine = useCallback(
-        (ids) =>
+        (ids: string[]) =>
             mutateFunction({ variables: { ids } }).then(({ data, errors }) => {
                 throwAnyGraphQLErrors(errors);
                 if (!data?.pantry?.combineItems) {

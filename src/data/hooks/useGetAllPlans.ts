@@ -25,7 +25,7 @@ const orderComponentsById = (
     plans: GetPlansQuery["planner"]["plans"],
     userId: string,
 ): Record<BfsId, string[]> => {
-    const byId = {};
+    const byId: Record<BfsId, string[]> = {};
     for (const plan of plans) {
         const ownerName = bfsIdEq(plan.owner.id, userId)
             ? "" // me first!

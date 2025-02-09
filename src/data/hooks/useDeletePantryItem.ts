@@ -25,7 +25,7 @@ export const useDeletePantryItem = (): [
     });
 
     const deleteItem = useCallback(
-        (id) =>
+        (id: string) =>
             mutateFunction({ variables: { id } }).then(({ errors }) => {
                 throwAnyGraphQLErrors(errors);
                 return true;
