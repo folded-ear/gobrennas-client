@@ -53,7 +53,7 @@ const PositionPicker: React.FC<Props> = ({ image, value, onChange }) => {
                     src={image}
                     className={classes.image}
                     onLoad={(e) => {
-                        const img = e.target;
+                        const img = e.target as HTMLImageElement;
                         setLoaded(true);
                         setSize([img.width, img.height]);
                     }}

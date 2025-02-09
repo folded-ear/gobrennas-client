@@ -1,12 +1,17 @@
 import * as React from "react";
 import { Stack } from "@mui/material";
 import { ChipPicker } from "@/global/components/ChipPicker";
+import { AutocompleteChangeReason } from "@mui/material/useAutocomplete/useAutocomplete";
 
-interface LabelAutoCompleteProps {
+export interface LabelAutoCompleteProps {
     recipeLabels?: string[];
     labelList: string[];
 
-    onLabelChange(e, labels: string[], reason): void;
+    onLabelChange(
+        e: React.SyntheticEvent,
+        labels: string[],
+        reason: AutocompleteChangeReason,
+    ): void;
 }
 
 export const LabelAutoComplete: React.FC<LabelAutoCompleteProps> = ({

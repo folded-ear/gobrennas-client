@@ -11,7 +11,7 @@ import {
     useTheme,
 } from "@mui/material";
 import makeStyles from "@mui/styles/makeStyles";
-import type { DraftRecipe, Recipe } from "@/global/types/types";
+import type { DraftRecipe, IngredientRef, Recipe } from "@/global/types/types";
 import {
     AddIcon,
     CancelIcon,
@@ -22,15 +22,17 @@ import {
 import React, { ReactNode } from "react";
 import useWindowSize from "@/data/useWindowSize";
 import ImageDropZone from "@/util/ImageDropZone";
-import ElEdit from "@/views/ElEdit";
+import ElEdit, { WithTarget } from "@/views/ElEdit";
 import PositionPicker from "@/features/RecipeEdit/components/PositionPicker";
-import { LabelAutoComplete } from "./LabelAutoComplete";
-import DragContainer from "@/features/Planner/components/DragContainer";
+import { LabelAutoComplete, LabelAutoCompleteProps } from "./LabelAutoComplete";
+import DragContainer, {
+    Vert,
+} from "@/features/Planner/components/DragContainer";
 import Item from "@/features/Planner/components/Item";
 import DragHandle from "@/features/Planner/components/DragHandle";
 import { TextractForm } from "@/features/RecipeEdit/components/TextractForm";
 import { useRecipeForm } from "@/data/hooks/useRecipeForm";
-import { bfsIdEq } from "@/global/types/identity";
+import { BfsId, bfsIdEq } from "@/global/types/identity";
 
 const useStyles = makeStyles((theme) => ({
     button: {
@@ -74,7 +76,7 @@ const RecipeForm: React.FC<Props> = ({
     } = useRecipeForm(recipe);
 
     const handleUpdate = React.useCallback(
-        (e) => {
+        (e: WithTarget<string | IngredientRef>) => {
             const { name: key, value } = e.target;
             onUpdate(key, value ? value : "");
         },
@@ -82,7 +84,7 @@ const RecipeForm: React.FC<Props> = ({
     );
 
     const handleNumericUpdate = React.useCallback(
-        (e) => {
+        (e: WithTarget<string>) => {
             const { name: key, value } = e.target;
             const v = parseFloat(value);
             onUpdate(key, isNaN(v) ? null : v);
@@ -90,7 +92,7 @@ const RecipeForm: React.FC<Props> = ({
         [onUpdate],
     );
 
-    const handleLabelChange = (
+    const handleLabelChange: LabelAutoCompleteProps["onLabelChange"] = (
         e,
         labels: string[],
         reason: AutocompleteChangeReason,
@@ -105,17 +107,13 @@ const RecipeForm: React.FC<Props> = ({
         }
     };
 
-    const updateTextract = (key, value) => {
-        onUpdate(key, value);
-    };
-
     const hasPhoto: boolean =
         draft.photoUpload !== null || draft.photoUrl !== null;
 
     function handleIngredientDrop(
-        activeId: number,
-        targetId: number,
-        vertical: string,
+        activeId: BfsId,
+        targetId: BfsId,
+        vertical: Vert,
     ) {
         onMoveIngredientRef(activeId, targetId, vertical === "above");
     }
@@ -124,7 +122,7 @@ const RecipeForm: React.FC<Props> = ({
         <>
             <Typography variant="h2">{title}</Typography>
             <TextractForm
-                updateDraft={updateTextract}
+                updateDraft={onUpdate}
                 draft={draft}
                 onMultilinePaste={onMultilinePasteIngredientRefs}
             />

@@ -8,6 +8,7 @@ import {
 } from "@dnd-kit/core";
 import { BfsId, bfsIdEq } from "@/global/types/identity";
 import { Box, darken, lighten, useTheme } from "@mui/material";
+import type { DragStartEvent } from "@dnd-kit/core/dist/types";
 
 export type Vert = "above" | "below";
 export type Horiz = "left" | "right" | "none";
@@ -37,7 +38,7 @@ const DragContainer: React.FC<Props> = ({
     ...passthrough
 }) => {
     const theme = useTheme();
-    const [activeId, setActiveId] = useState(undefined);
+    const [activeId, setActiveId] = useState<BfsId | undefined>(undefined);
     const overlay =
         renderOverlay && activeId !== undefined && renderOverlay(activeId);
     const [overlayStyles, setOverlayStyles] = useState({});
@@ -53,7 +54,7 @@ const DragContainer: React.FC<Props> = ({
         });
     }, [theme.palette.mode, theme.palette.primary.main]);
 
-    function handleDragStart(event) {
+    function handleDragStart(event: DragStartEvent) {
         setActiveId(event.active.id);
         if (onDragStart) onDragStart(event);
     }

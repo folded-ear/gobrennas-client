@@ -108,5 +108,3 @@ export interface DraftRecipe extends Omit<Recipe, "photo"> {
     photoUpload: Maybe<File>;
     sourceId: Maybe<string>;
 }
-
-export type FormValue = string | number | number[] | string[] | File | null;
