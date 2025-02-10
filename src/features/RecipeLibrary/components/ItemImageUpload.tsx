@@ -35,7 +35,7 @@ interface Props {
 const ItemImageUpload: React.FC<Props> = ({ recipeId, ...props }) => {
     const classes = useStyles();
     const [setRecipePhoto] = useMutation(SET_RECIPE_PHOTO);
-    const handlePhoto = async (photo) => {
+    const handlePhoto = async (photo: File) => {
         if (!(photo instanceof File)) {
             throw new Error("Non-File photo? Huh?");
         }

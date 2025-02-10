@@ -10,7 +10,7 @@ import LoadingIndicator from "@/views/common/LoadingIndicator";
 import { LibrarySearchScope } from "@/__generated__/graphql";
 import { Container as Content, useScrollTrigger } from "@mui/material";
 import qs from "qs";
-import { useState } from "react";
+import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
 
 /**
@@ -53,31 +53,32 @@ export const LibraryController = () => {
         query,
     });
 
-    function handleSearchChange(e) {
-        setUnsavedQuery(e.target.value);
+    function handleSearchChange(e: React.ChangeEvent) {
+        const { value } = e.target as HTMLInputElement;
+        setUnsavedQuery(value);
     }
 
-    function handleClear(e) {
+    function handleClear(e: React.MouseEvent) {
         e.preventDefault();
         e.stopPropagation();
         setUnsavedQuery("");
         handleSearch("", scope);
     }
 
-    function doSearch(e) {
+    function doSearch(e: React.UIEvent) {
         e.preventDefault();
         e.stopPropagation();
         handleSearch(unsavedQuery, scope);
     }
 
-    function toggleScope(e) {
+    function toggleScope(e: React.ChangeEvent<HTMLInputElement>) {
         const scope = e.target.checked
             ? LibrarySearchScope.EVERYONE
             : LibrarySearchScope.MINE;
         handleSearch(query, scope);
     }
 
-    function handleSearch(newQuery, newScope) {
+    function handleSearch(newQuery: string, newScope: LibrarySearchScope) {
         if (query === newQuery && scope === newScope) {
             refetch();
         } else {

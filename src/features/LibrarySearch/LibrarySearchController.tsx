@@ -1,5 +1,4 @@
 import { SearchInput } from "@/features/LibrarySearch/components/SearchInput";
-import { DisplayOptions, SearchScope } from "@/features/LibrarySearch/types";
 import { MessagePaper } from "@/features/RecipeLibrary/components/MessagePaper";
 import { useSearchLibrary } from "@/features/RecipeLibrary/hooks/useSearchLibrary";
 import { useProfile } from "@/providers/Profile";
@@ -14,7 +13,7 @@ import React from "react";
 import { useHistory } from "react-router-dom";
 
 type LibrarySearchControllerProps = {
-    display?: DisplayOptions;
+    display?: "grid" | "list";
 };
 
 export const LibrarySearchController: React.FC<
@@ -24,7 +23,9 @@ export const LibrarySearchController: React.FC<
     const history = useHistory();
     const searchParams = new URLSearchParams(history.location.search);
     const searchTerm = searchParams.get("q") ?? "";
-    const scope = (searchParams.get("s") as SearchScope) ?? "MINE";
+    const scope =
+        (searchParams.get("s") as LibrarySearchScope) ??
+        LibrarySearchScope.MINE;
 
     const {
         data: recipes,
@@ -36,7 +37,7 @@ export const LibrarySearchController: React.FC<
     });
 
     const onSearch = React.useCallback(
-        (term: string, scope: SearchScope) => {
+        (term: string, scope: LibrarySearchScope) => {
             history.push(
                 `?q=${encodeURIComponent(term)}&s=${encodeURIComponent(scope)}`,
             );

@@ -16,11 +16,11 @@ import React from "react";
 type SearchRecipesProps = {
     isSearchFloating: boolean;
     unsavedFilter: any;
-    onSearchChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-    onSearch: (e: any) => void;
-    onClear: (e: any) => void;
+    onSearchChange: React.ChangeEventHandler<HTMLInputElement>;
+    onSearch: React.EventHandler<React.MouseEvent | React.KeyboardEvent>;
+    onClear: React.MouseEventHandler;
     scope: any;
-    toggleScope: any;
+    toggleScope: React.ChangeEventHandler<HTMLInputElement>;
 };
 
 export const SearchRecipes = ({

@@ -40,7 +40,7 @@ const SendToPlan: React.FC<Props> = ({
         // cannot, so this type assertion is safe.
         onClick && onClick(plan.id as number);
 
-    const handleSelect = (_, selected: SelectOption<number>) => {
+    const handleSelect = (_: never, selected: SelectOption<number>) => {
         onClick && onClick(plan.id as number, selected?.value);
     };
 

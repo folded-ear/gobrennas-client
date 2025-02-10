@@ -5,7 +5,9 @@ import {
     RecipeLoadFragment,
 } from "@/__generated__/graphql";
 
-export const toRestIngredient = (it) => {
+export const toRestIngredient = (
+    it: IngredientLoadFragment & (RecipeLoadFragment | PantryItemLoadFragment),
+) => {
     if (it.__typename === "PantryItem") {
         return toRestPantryItem(it);
     } else if (it.__typename === "Recipe") {

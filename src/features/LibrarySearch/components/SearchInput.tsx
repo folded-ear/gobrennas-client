@@ -1,13 +1,13 @@
-import { SearchScope } from "@/features/LibrarySearch/types";
 import { ClearIcon, SearchIcon } from "@/views/common/icons";
+import { LibrarySearchScope } from "@/__generated__/graphql";
 import { IconButton, InputAdornment, Toolbar } from "@mui/material";
 import InputBase from "@mui/material/Input";
 import React, { useState } from "react";
 
 type SearchInputProps = {
     searchTerm: string;
-    scope: SearchScope;
-    onSearch: (term: string, scope: SearchScope) => void;
+    scope: LibrarySearchScope;
+    onSearch: (term: string, scope: LibrarySearchScope) => void;
 };
 
 export const SearchInput: React.FC<SearchInputProps> = ({
