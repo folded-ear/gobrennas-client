@@ -42,7 +42,7 @@ if (!import.meta.env.PROD) {
     const ARTIFICIAL_SETTLEMENT_DELAY = 150;
     if (ARTIFICIAL_SETTLEMENT_DELAY > 0) {
         const oldHelper = helper;
-        helper = <Data>(k, ttc) => {
+        helper = <Data>(k: string, ttc: TypeTemplateOrCallback<Data>) => {
             const fast = oldHelper(k, ttc);
             return (data: Data) => {
                 const delay =
@@ -82,6 +82,7 @@ const informUserOfPromiseError = () => {
 export const defaultErrorHandler = (error: unknown) => {
     // eslint-disable-next-line no-console
     console.error("Error in Promise", error);
+    if (error == null || typeof error !== "object") return fallthrough(error);
     if (!isAuthError(error) || !askUserToReauth()) {
         informUserOfPromiseError();
     }

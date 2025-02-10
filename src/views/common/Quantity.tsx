@@ -1,5 +1,5 @@
-import React from "react";
 import { Maybe } from "graphql/jsutils/Maybe";
+import React from "react";
 
 function toVulgarFraction(quantity: number): Maybe<string> {
     if (quantity === 0.125) return "⅛";

@@ -1,6 +1,6 @@
 import preferencesStore from "@/data/preferencesStore";
-import useFluxStore from "./useFluxStore";
 import dispatcher, { ActionType } from "./dispatcher";
+import useFluxStore from "./useFluxStore";
 
 export function setDevMode(enabled: boolean) {
     dispatcher.dispatch({

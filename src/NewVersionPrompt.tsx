@@ -1,7 +1,7 @@
-import { useRegisterSW } from "virtual:pwa-register/react";
-import Button from "@mui/material/Button";
-import { Alert, AlertTitle, Stack } from "@mui/material";
 import { useIsAuthenticated } from "@/providers/Profile";
+import { Alert, AlertTitle, Stack } from "@mui/material";
+import Button from "@mui/material/Button";
+import { useRegisterSW } from "virtual:pwa-register/react";
 
 function NewVersionPrompt() {
     const authenticated = useIsAuthenticated();

@@ -1,6 +1,6 @@
+import { Result } from "@/data/hooks/usePantryItemSearch";
 import { DeleteIcon } from "@/views/common/icons";
 import { GridActionsCellItem } from "@mui/x-data-grid";
-import { Result } from "@/data/hooks/usePantryItemSearch";
 
 interface Props {
     row: Result;

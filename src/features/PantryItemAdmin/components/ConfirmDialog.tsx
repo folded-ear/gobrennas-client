@@ -1,8 +1,8 @@
-import { ReactNode } from "react";
-import Dialog from "@mui/material/Dialog";
-import DialogTitle from "@mui/material/DialogTitle";
 import { Button, DialogContent, DialogContentText } from "@mui/material";
+import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
+import DialogTitle from "@mui/material/DialogTitle";
+import { ReactNode } from "react";
 
 export interface DialogProps {
     open?: boolean;

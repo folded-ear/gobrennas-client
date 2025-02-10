@@ -1,12 +1,12 @@
+import { BfsId, ensureString } from "@/global/types/identity";
+import throwAnyErrors from "@/util/throwAnyErrors";
 import { gql } from "@/__generated__";
-import { MutationResult, useMutation } from "@apollo/client";
-import { useCallback } from "react";
 import {
     DeleteRecipeMutation,
     GetSearchLibraryDocument,
 } from "@/__generated__/graphql";
-import throwAnyGraphQLErrors from "@/util/throwAnyGraphQLErrors";
-import { BfsId } from "@/global/types/identity";
+import { MutationResult, useMutation } from "@apollo/client";
+import { useCallback } from "react";
 
 const DELETE_RECIPE = gql(`
 mutation deleteRecipe($id: ID!) {
@@ -30,11 +30,13 @@ export const useDeleteRecipe = (): [
     });
 
     const deleteRecipe = useCallback(
-        (id) =>
-            mutateFunction({ variables: { id } }).then(({ errors }) => {
-                throwAnyGraphQLErrors(errors);
-                return true;
-            }),
+        (id: BfsId) =>
+            mutateFunction({ variables: { id: ensureString(id) } }).then(
+                ({ errors }) => {
+                    throwAnyErrors(errors);
+                    return true;
+                },
+            ),
         [mutateFunction],
     );
 

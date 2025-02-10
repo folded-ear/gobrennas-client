@@ -1,11 +1,11 @@
+import { useMediaQuery } from "@mui/material";
+import { grey } from "@mui/material/colors";
 import {
     createTheme,
     responsiveFontSizes,
     ThemeOptions,
 } from "@mui/material/styles";
 import { deepmerge } from "@mui/utils";
-import { grey } from "@mui/material/colors";
-import { useMediaQuery } from "@mui/material";
 import { useMemo } from "react";
 
 declare module "@mui/material/styles" {

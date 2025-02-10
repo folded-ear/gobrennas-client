@@ -1,9 +1,9 @@
 import useAllPlansRLO from "@/data/useAllPlansRLO";
-import { Box, Collapse, List, ListSubheader } from "@mui/material";
-import { NavShopItem } from "@/features/Navigation/components/NavShopItem";
-import Divider from "@mui/material/Divider";
 import useFriendRlo from "@/data/useFriendRlo";
+import { NavShopItem } from "@/features/Navigation/components/NavShopItem";
 import { BfsId, bfsIdEq } from "@/global/types/identity";
+import { Box, Collapse, List, ListSubheader } from "@mui/material";
+import Divider from "@mui/material/Divider";
 
 function OwnerSubheader({ id }: { id: BfsId }) {
     const { data: user } = useFriendRlo(id);

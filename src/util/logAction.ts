@@ -16,7 +16,7 @@ const logAction = (action: FluxAction) => {
             ")",
     ];
     if (keys.length === 1) {
-        args.push(keys[0], action[keys[0]]);
+        args.push(keys[0], temp[keys[0]]);
     } else {
         args.push(temp);
     }

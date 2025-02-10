@@ -1,6 +1,6 @@
+import { useIsAuthenticated } from "@/providers/Profile";
 import { SwitchProps } from "@/RoutingSwitch";
 import { Route, Switch } from "react-router-dom";
-import { useIsAuthenticated } from "@/providers/Profile";
 
 const SidebarSwitch = ({ routes }: SwitchProps) => {
     const authenticated = useIsAuthenticated();

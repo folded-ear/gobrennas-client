@@ -1,4 +1,5 @@
 import { SEARCH_RECIPES } from "@/features/RecipeLibrary/data/queries";
+import { LibrarySearchScope } from "@/__generated__/graphql";
 import { QueryResult, useQuery } from "@apollo/client";
 
 interface UseSearchLibraryQueryResult
@@ -13,6 +14,9 @@ interface UseSearchLibraryQueryResult
 export const useSearchLibrary = ({
     scope,
     query,
+}: {
+    scope: LibrarySearchScope;
+    query: string;
 }): UseSearchLibraryQueryResult => {
     const { data, error, loading, refetch, fetchMore } = useQuery(
         SEARCH_RECIPES,

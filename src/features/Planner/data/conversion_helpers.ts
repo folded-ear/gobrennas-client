@@ -1,19 +1,21 @@
-import throwAnyGraphQLErrors from "@/util/throwAnyGraphQLErrors";
-import type {
-    CorePlanItemLoadFragment,
-    PlanItemLoadFragment,
-    PlanLoadFragment,
-} from "@/__generated__/graphql";
+import AccessLevel from "@/data/AccessLevel";
+import { ActionType, FluxAction } from "@/data/dispatcher";
 import {
     Plan as TPlan,
     PlanBucket as TPlanBucket,
     PlanItem as TPlanItem,
 } from "@/features/Planner/data/planStore";
+import { BfsId } from "@/global/types/identity";
+import throwAnyErrors from "@/util/throwAnyErrors";
 import { parseLocalDate } from "@/util/time";
-import { ActionType, FluxAction } from "@/data/dispatcher";
+import type {
+    CorePlanItemLoadFragment,
+    PlanItemLoadFragment,
+    PlanLoadFragment,
+} from "@/__generated__/graphql";
 
-export const handleErrors = (error): FluxAction => {
-    throwAnyGraphQLErrors(error);
+export const handleErrors = (error: unknown): FluxAction => {
+    throwAnyErrors(error);
     return {
         type: ActionType.PROMISE_FLUX__ERROR_FALLTHROUGH,
         error,
@@ -25,7 +27,9 @@ const pluckIds = (collection: { id: string }[]) => {
     return collection.map((c) => c.id);
 };
 
-export const toRestPlanOrItem = (it) => {
+export const toRestPlanOrItem = (
+    it: CorePlanItemLoadFragment & (PlanLoadFragment | PlanItemLoadFragment),
+) => {
     if (it.__typename === "Plan") {
         return toRestPlan(it);
     } else if (it.__typename === "PlanItem") {
@@ -62,10 +66,13 @@ export const toRestPlan = (
     color: plan.color,
     acl: {
         ownerId: plan.owner.id,
-        grants: plan.grants.reduce((agg, g) => {
-            agg[g.user.id] = g.level;
-            return agg;
-        }, {}),
+        grants: plan.grants.reduce(
+            (agg, g) => {
+                agg[g.user.id] = g.level;
+                return agg;
+            },
+            {} as Record<BfsId, AccessLevel>,
+        ),
     },
     subtaskIds: pluckIds(plan.children),
     buckets: plan.buckets.map((b) => {

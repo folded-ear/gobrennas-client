@@ -1,13 +1,13 @@
 import dispatcher, { ActionType, FluxAction } from "@/data/dispatcher";
 import RecipeApi from "@/data/RecipeApi";
 import LibraryApi from "@/features/RecipeLibrary/data/LibraryApi";
-import { ReduceStore } from "flux/utils";
+import { BfsId, ensureString } from "@/global/types/identity";
+import { Ingredient } from "@/global/types/types";
 import LoadObject from "@/util/LoadObject";
 import LoadObjectMap from "@/util/LoadObjectMap";
-import { fromMilliseconds } from "@/util/time";
 import { ripLoadObject, RippedLO } from "@/util/ripLoadObject";
-import { BfsId, ensureString } from "@/global/types/identity";
-import { Ingredient, Recipe } from "@/global/types/types";
+import { fromMilliseconds } from "@/util/time";
+import { ReduceStore } from "flux/utils";
 
 export interface SendToPlanPayload {
     recipeId: BfsId;
@@ -19,13 +19,14 @@ interface State {
     byId: LoadObjectMap<BfsId, Ingredient>;
 }
 
-const adaptTime = (recipe) => {
+function adaptTime<T extends Ingredient>(recipe: T): T;
+function adaptTime(recipe: any) {
     if (!recipe.totalTime) return recipe;
     return {
         ...recipe,
         totalTime: fromMilliseconds(recipe.totalTime),
     };
-};
+}
 
 class LibraryStore extends ReduceStore<State, FluxAction> {
     getInitialState(): State {
@@ -124,20 +125,6 @@ class LibraryStore extends ReduceStore<State, FluxAction> {
 
     getIngredientRloById(id: BfsId): RippedLO<Ingredient> {
         return ripLoadObject(this.getIngredientById(id));
-    }
-
-    getRecipeRloById(id: BfsId): RippedLO<Recipe> {
-        const lo = this.getIngredientById(id);
-        if (lo.hasValue() && lo.getValueEnforcing().type !== "Recipe") {
-            throw new TypeError(
-                "Ingredient '" +
-                    id +
-                    "' is a " +
-                    lo.getValueEnforcing().type +
-                    " not a Recipe",
-            );
-        }
-        return ripLoadObject(lo as LoadObject<Recipe>);
     }
 }
 

@@ -1,6 +1,6 @@
-import invariant from "invariant";
-import { Maybe } from "graphql/jsutils/Maybe";
 import { AccessLevel } from "@/__generated__/graphql";
+import { Maybe } from "graphql/jsutils/Maybe";
+import invariant from "invariant";
 
 // ORDER MATTERS! Later levels imply earlier ones.
 const levels = [AccessLevel.VIEW, AccessLevel.CHANGE, AccessLevel.ADMINISTER];

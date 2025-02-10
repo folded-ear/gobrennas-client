@@ -1,4 +1,3 @@
-import React from "react";
 import {
     Button,
     DialogContent,
@@ -7,8 +6,9 @@ import {
     Tooltip,
 } from "@mui/material";
 import Dialog from "@mui/material/Dialog";
-import DialogTitle from "@mui/material/DialogTitle";
 import DialogActions from "@mui/material/DialogActions";
+import DialogTitle from "@mui/material/DialogTitle";
+import React from "react";
 
 interface Props {
     size?: IconButtonProps["size"];

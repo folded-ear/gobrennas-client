@@ -14,7 +14,7 @@ const ClientId = {
         return PREFIX + (++counter).toString(36);
     },
 
-    is(id) {
+    is(id: unknown) {
         return (
             typeof id === "string" &&
             id.length > PREFIX.length &&

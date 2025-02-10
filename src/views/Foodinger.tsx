@@ -1,6 +1,6 @@
-import { Box, Container, Paper, Typography } from "@mui/material";
-import { useIsMobile } from "@/providers/IsMobile";
 import { APP_BASE_URL } from "@/constants";
+import { useIsMobile } from "@/providers/IsMobile";
+import { Box, Container, Paper, Typography } from "@mui/material";
 
 function Foodinger() {
     const mobile = useIsMobile();

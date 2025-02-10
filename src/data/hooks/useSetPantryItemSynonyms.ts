@@ -1,11 +1,11 @@
-import { MutationResult, useMutation } from "@apollo/client";
+import throwAnyErrors from "@/util/throwAnyErrors";
 import { gql } from "@/__generated__";
 import {
     PantryItem,
     SetPantryItemSynonymsMutation,
 } from "@/__generated__/graphql";
+import { MutationResult, useMutation } from "@apollo/client";
 import { useCallback } from "react";
-import throwAnyGraphQLErrors from "@/util/throwAnyGraphQLErrors";
 
 const SET_PANTRY_ITEM_SYNONYMS = gql(`
 mutation setPantryItemSynonyms($id: ID!, $synonyms: [String!]!) {
@@ -35,7 +35,7 @@ export const useSetPantryItemSynonyms = (): [
                     synonyms,
                 },
             }).then(({ data, errors }) => {
-                throwAnyGraphQLErrors(errors);
+                throwAnyErrors(errors);
                 if (!data?.pantry?.setSynonyms) {
                     return Promise.reject("Empty set synonyms response");
                 }

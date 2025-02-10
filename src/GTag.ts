@@ -1,7 +1,8 @@
 type Data = Record<string, unknown>;
 
 export default import.meta.env.PROD
-    ? window["gtag"]
+    ? // @ts-expect-error This is injected by index.html, from a remote script
+      window["gtag"]
     : (() => {
           let data: Data = {};
 

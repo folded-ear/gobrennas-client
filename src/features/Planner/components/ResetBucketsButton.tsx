@@ -1,10 +1,10 @@
-import IconButton from "@mui/material/IconButton";
 import dispatcher, { ActionType } from "@/data/dispatcher";
+import { BfsId } from "@/global/types/identity";
 import { GenerateBucketsIcon } from "@/views/common/icons";
+import { IconButtonProps } from "@mui/material";
+import IconButton from "@mui/material/IconButton";
 import Tooltip from "@mui/material/Tooltip";
 import React from "react";
-import { BfsId } from "@/global/types/identity";
-import { IconButtonProps } from "@mui/material";
 
 const ResetBucketsButton: React.FC<{ planId: BfsId } & IconButtonProps> = ({
     planId,

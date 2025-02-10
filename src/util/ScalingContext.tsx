@@ -1,10 +1,10 @@
+import { Maybe } from "graphql/jsutils/Maybe";
 import React, {
     createContext,
     PropsWithChildren,
     useContext,
     useState,
 } from "react";
-import { Maybe } from "graphql/jsutils/Maybe";
 
 const OPTIONS = [
     { label: "¼", value: 0.25 },

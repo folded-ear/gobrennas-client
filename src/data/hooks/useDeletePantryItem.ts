@@ -1,8 +1,8 @@
+import throwAnyErrors from "@/util/throwAnyErrors";
 import { gql } from "@/__generated__";
+import { DeletePantryItemMutation } from "@/__generated__/graphql";
 import { MutationResult, useMutation } from "@apollo/client";
 import { useCallback } from "react";
-import { DeletePantryItemMutation } from "@/__generated__/graphql";
-import throwAnyGraphQLErrors from "@/util/throwAnyGraphQLErrors";
 
 const DELETE_PANTRY_ITEM = gql(`
 mutation deletePantryItem($id: ID!) {
@@ -25,9 +25,9 @@ export const useDeletePantryItem = (): [
     });
 
     const deleteItem = useCallback(
-        (id) =>
+        (id: string) =>
             mutateFunction({ variables: { id } }).then(({ errors }) => {
-                throwAnyGraphQLErrors(errors);
+                throwAnyErrors(errors);
                 return true;
             }),
         [mutateFunction],

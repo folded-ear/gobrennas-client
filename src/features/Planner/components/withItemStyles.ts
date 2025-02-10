@@ -1,4 +1,3 @@
-import withStyles from "@mui/styles/withStyles";
 import {
     acquiredColor,
     completeColor,
@@ -8,6 +7,7 @@ import {
     selectionColor,
 } from "@/views/common/colors";
 import { darken, lighten } from "@mui/material";
+import withStyles from "@mui/styles/withStyles";
 
 const withItemStyles = withStyles((theme) => ({
     text: {

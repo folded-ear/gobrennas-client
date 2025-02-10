@@ -1,5 +1,7 @@
 import { Result } from "@/data/hooks/usePantryItemSearch";
 import { usePantryItemUses } from "@/data/hooks/usePantryItemUses";
+import { PlusIcon } from "@/views/common/icons";
+import User from "@/views/user/User";
 import {
     CircularProgress,
     DialogContentText,
@@ -9,8 +11,6 @@ import {
     ListItemText,
     Typography,
 } from "@mui/material";
-import User from "@/views/user/User";
-import { PlusIcon } from "@/views/common/icons";
 import ListItemIcon from "@mui/material/ListItemIcon";
 
 interface Props {

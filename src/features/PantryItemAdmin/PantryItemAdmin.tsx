@@ -1,4 +1,16 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCombinePantryItems } from "@/data/hooks/useCombinePantryItems";
+import { useDeletePantryItem } from "@/data/hooks/useDeletePantryItem";
+import {
+    Result,
+    usePantryItemSearch,
+    Variables,
+} from "@/data/hooks/usePantryItemSearch";
+import { useRenamePantryItem } from "@/data/hooks/useRenamePantryItem";
+import { useSetPantryItemLabels } from "@/data/hooks/useSetPantryItemLabels";
+import { useSetPantryItemSynonyms } from "@/data/hooks/useSetPantryItemSynonyms";
+import { ensureString } from "@/global/types/identity";
+import { SortDir } from "@/__generated__/graphql";
+import { ApolloError } from "@apollo/client";
 import {
     GridColumnVisibilityModel,
     GridFilterModel,
@@ -6,25 +18,18 @@ import {
     GridRowSelectionModel,
     GridSortModel,
 } from "@mui/x-data-grid";
-import {
-    Result,
-    usePantryItemSearch,
-    Variables,
-} from "@/data/hooks/usePantryItemSearch";
-import { SortDir } from "@/__generated__/graphql";
+import { Maybe } from "graphql/jsutils/Maybe";
+import { useCallback, useEffect, useState } from "react";
 import AdminGrid from "./components/AdminGrid";
-import { useRenamePantryItem } from "@/data/hooks/useRenamePantryItem";
-import { useCombinePantryItems } from "@/data/hooks/useCombinePantryItems";
-import { useDeletePantryItem } from "@/data/hooks/useDeletePantryItem";
 import ConfirmDialog, { DialogProps } from "./components/ConfirmDialog";
 import ViewUses from "./components/ViewUses";
-import { useSetPantryItemLabels } from "@/data/hooks/useSetPantryItemLabels";
-import { useSetPantryItemSynonyms } from "@/data/hooks/useSetPantryItemSynonyms";
-import { ensureString } from "@/global/types/identity";
 
 const DUPLICATE_PREFIX = "duplicates:";
 
-const useErrorAlert = (error, setDialog) =>
+const useErrorAlert = (
+    error: ApolloError | undefined,
+    setDialog: (props: DialogProps | undefined) => void,
+) =>
     useEffect(() => {
         if (error)
             setDialog({
@@ -35,6 +40,14 @@ const useErrorAlert = (error, setDialog) =>
             });
         else setDialog(undefined);
     }, [error, setDialog]);
+
+function stringSetsDiffer(a: Maybe<string[]>, b: Maybe<string[]>): boolean {
+    if (a == b) return false;
+    if (a == null || b == null) return true;
+    const aSet = new Set<string>(a);
+    const bSet = new Set<string>(b);
+    return aSet.size !== bSet.size || [...aSet].some((l) => !bSet.has(l));
+}
 
 export default function PantryItemAdmin() {
     const [dialog, setDialog] = useState<DialogProps>();
@@ -99,7 +112,7 @@ export default function PantryItemAdmin() {
     }, []);
 
     const handleFilterChange = useCallback(
-        (model) => {
+        (model: GridFilterModel) => {
             setFilterModel(model);
             toFirstPage();
         },
@@ -107,7 +120,7 @@ export default function PantryItemAdmin() {
     );
 
     const handleSortChange = useCallback(
-        (model) => {
+        (model: GridSortModel) => {
             setSortModel(model);
             toFirstPage();
         },
@@ -135,33 +148,26 @@ export default function PantryItemAdmin() {
                     synonyms: saved.synonyms,
                 };
             }
-            const stringSetUpdaters = {
-                labels: setLabels,
-                synonyms: setSynonyms,
-            };
-            for (const key in stringSetUpdaters) {
-                const oldSet = new Set<string>(oldRow[key]);
-                const newSet = new Set<string>(newRow[key]);
-                if (
-                    oldSet.size !== newSet.size ||
-                    [...oldSet].some((l) => !newSet.has(l))
-                ) {
-                    const saved: Result = await stringSetUpdaters[key](
-                        newRow.id,
-                        [...newSet],
-                    );
-                    return {
-                        ...newRow,
-                        [key]: saved[key],
-                    };
-                }
+            if (stringSetsDiffer(oldRow.labels, newRow.labels)) {
+                const saved = await setLabels(newRow.id, newRow.labels ?? []);
+                return { ...newRow, labels: saved.labels };
+            }
+            if (stringSetsDiffer(oldRow.synonyms, newRow.synonyms)) {
+                const saved = await setSynonyms(
+                    newRow.id,
+                    newRow.synonyms ?? [],
+                );
+                return { ...newRow, synonyms: saved.synonyms };
             }
             return oldRow;
         },
         [renameItem, setLabels, setSynonyms],
     );
 
-    const handleRowUpdateError = useCallback((error) => {
+    // the DataGrid itself supplies an 'any', but we don't really care.
+    const handleRowUpdateError = useCallback((error: unknown) => {
+        // eslint-disable-next-line no-console
+        console.error("PantryItemAdmin> failed to save", error);
         alert("Failed to save: " + error);
     }, []);
 
@@ -169,9 +175,12 @@ export default function PantryItemAdmin() {
         [],
     );
 
-    const handleSelectionChange = useCallback((model) => {
-        setSelectionModel(model);
-    }, []);
+    const handleSelectionChange = useCallback(
+        (model: GridRowSelectionModel) => {
+            setSelectionModel(model);
+        },
+        [],
+    );
 
     const [combineItems, { loading: combining, error: combineError }] =
         useCombinePantryItems();

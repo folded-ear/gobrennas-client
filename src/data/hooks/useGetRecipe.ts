@@ -1,9 +1,9 @@
-import { gql } from "@/__generated__";
-import { IngredientRef, Recipe } from "@/global/types/types";
+import objectWithType from "@/data/utils/objectWithType";
 import { BfsId } from "@/global/types/identity";
+import { IIngredient, IngredientRef, Recipe } from "@/global/types/types";
+import { gql } from "@/__generated__";
 import { GetRecipeQuery } from "@/__generated__/graphql";
 import useAdaptingQuery from "./useAdaptingQuery";
-import objectWithType from "@/data/utils/objectWithType";
 
 const GET_RECIPE_QUERY = gql(`
 query getRecipe($id: ID!) {
@@ -29,7 +29,7 @@ query getRecipe($id: ID!) {
 function adapter(data: GetRecipeQuery | undefined) {
     const result = data?.library?.getRecipeById || null;
 
-    const ingredients: IngredientRef[] =
+    const ingredients: IngredientRef<IIngredient>[] =
         !result || !result.ingredients
             ? []
             : result.ingredients.map((item) => ({
@@ -40,7 +40,7 @@ function adapter(data: GetRecipeQuery | undefined) {
                   ingredient: objectWithType(item.ingredient),
               }));
 
-    const recipe: Recipe = {
+    const recipe: Recipe<IIngredient> = {
         id: result?.id as BfsId,
         ownerId: result?.owner.id,
         calories: result?.calories || null,

@@ -1,10 +1,15 @@
-import { IngredientRef, Recipe, Subrecipe } from "@/global/types/types";
+import objectWithType from "@/data/utils/objectWithType";
+import { BfsStringId } from "@/global/types/identity";
+import {
+    IIngredient,
+    IngredientRef,
+    Recipe,
+    Subrecipe,
+} from "@/global/types/types";
 import { gql } from "@/__generated__";
 import { GetRecipeWithEverythingQuery } from "@/__generated__/graphql";
-import useAdaptingQuery from "./useAdaptingQuery";
 import { ApolloQueryResult, QueryResult } from "@apollo/client";
-import { BfsStringId } from "@/global/types/identity";
-import objectWithType from "@/data/utils/objectWithType";
+import useAdaptingQuery from "./useAdaptingQuery";
 
 const GET_FULL_RECIPE_QUERY = gql(`
 query getRecipeWithEverything($id: ID!, $secret: String) {
@@ -54,7 +59,7 @@ function adapter(
 
     if (!result || loading) return null;
 
-    const ingredients: IngredientRef[] =
+    const ingredients: IngredientRef<IIngredient>[] =
         !result || !result.ingredients
             ? []
             : result.ingredients.map((item) => ({
@@ -65,7 +70,7 @@ function adapter(
                   ingredient: objectWithType(item.ingredient),
               }));
 
-    const subrecipes: Subrecipe[] =
+    const subrecipes: Subrecipe<IIngredient>[] =
         !result || !result.subrecipes
             ? []
             : result.subrecipes.map((recipe) => ({
@@ -86,7 +91,7 @@ function adapter(
     const planHistory =
         !result || !result.plannedHistory ? [] : result.plannedHistory;
 
-    const recipe: Recipe = {
+    const recipe: Recipe<IIngredient> = {
         calories: result.calories,
         directions: result.directions || "",
         externalUrl: result.externalUrl,

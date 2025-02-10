@@ -1,9 +1,9 @@
-import { StrictMode } from "react";
-import GoBrennas from "./GoBrennas";
 import dispatcher, { ActionType } from "@/data/dispatcher";
 import debounce from "@/util/debounce";
+import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
+import GoBrennas from "./GoBrennas";
 
 // import logAction from "./util/logAction";
 // if (import.meta.env.DEV) {

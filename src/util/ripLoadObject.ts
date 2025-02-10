@@ -1,5 +1,5 @@
-import LoadObject from "./LoadObject";
 import { Maybe } from "graphql/jsutils/Maybe";
+import LoadObject from "./LoadObject";
 
 export interface RippedLO<T> {
     loading?: boolean;

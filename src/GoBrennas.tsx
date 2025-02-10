@@ -1,25 +1,25 @@
-import "./GoBrennas.scss";
+import PollingSynchronizer from "@/data/PollingSynchronizer";
+import queryClient from "@/data/queryClient";
+import { NavigationController } from "@/features/Navigation/NavigationController";
+import NewVersionPrompt from "@/NewVersionPrompt";
+import { client as apolloClient } from "@/providers/ApolloClient";
+import { AuthTokenProvider } from "@/providers/AuthToken";
+import { IsMobileProvider } from "@/providers/IsMobile";
 import { ProfileProvider } from "@/providers/Profile";
+import ImperativeFlux from "@/util/ImperativeFlux";
+import SnackPack from "@/views/common/SnackPack";
+import { ApolloProvider } from "@apollo/client";
+import CssBaseline from "@mui/material/CssBaseline";
 import {
     StyledEngineProvider,
     Theme,
     ThemeProvider,
 } from "@mui/material/styles";
-import { useBfsTheme } from "./theme";
-import CssBaseline from "@mui/material/CssBaseline";
-import { NavigationController } from "@/features/Navigation/NavigationController";
-import RoutingSwitch from "./RoutingSwitch";
-import routes from "./routes";
-import SnackPack from "@/views/common/SnackPack";
-import NewVersionPrompt from "@/NewVersionPrompt";
-import { ApolloProvider } from "@apollo/client";
-import { client as apolloClient } from "@/providers/ApolloClient";
-import { AuthTokenProvider } from "@/providers/AuthToken";
-import { IsMobileProvider } from "@/providers/IsMobile";
 import { QueryClientProvider } from "react-query";
-import queryClient from "@/data/queryClient";
-import PollingSynchronizer from "@/data/PollingSynchronizer";
-import ImperativeFlux from "@/util/ImperativeFlux";
+import "./GoBrennas.scss";
+import routes from "./routes";
+import RoutingSwitch from "./RoutingSwitch";
+import { useBfsTheme } from "./theme";
 
 declare module "@mui/styles/defaultTheme" {
     // eslint-disable-next-line @typescript-eslint/no-empty-interface

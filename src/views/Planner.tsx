@@ -1,7 +1,7 @@
-import { Redirect } from "react-router-dom";
-import { RouteComponentProps } from "react-router";
 import useActivePlanner from "@/data/useActivePlanner";
 import LoadingIndicator from "@/views/common/LoadingIndicator";
+import { RouteComponentProps } from "react-router";
+import { Redirect } from "react-router-dom";
 
 type Props = RouteComponentProps<{
     pid?: string;

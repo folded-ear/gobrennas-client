@@ -1,3 +1,11 @@
+import dispatcher, { ActionType } from "@/data/dispatcher";
+import useFluxStore from "@/data/useFluxStore";
+import getBucketLabel from "@/features/Planner/components/getBucketLabel";
+import planStore from "@/features/Planner/data/planStore";
+import { BfsId } from "@/global/types/identity";
+import { formatLocalDate, parseLocalDate } from "@/util/time";
+import { AddIcon, DeleteIcon } from "@/views/common/icons";
+import LocalTextField from "@/views/common/LocalTextField";
 import {
     Table,
     TableBody,
@@ -8,16 +16,8 @@ import {
 import IconButton from "@mui/material/IconButton";
 import TableCell from "@mui/material/TableCell";
 import Tooltip from "@mui/material/Tooltip";
-import { AddIcon, DeleteIcon } from "@/views/common/icons";
-import dispatcher, { ActionType } from "@/data/dispatcher";
-import planStore from "@/features/Planner/data/planStore";
-import useFluxStore from "@/data/useFluxStore";
-import { formatLocalDate, parseLocalDate } from "@/util/time";
-import LocalTextField from "@/views/common/LocalTextField";
-import getBucketLabel from "@/features/Planner/components/getBucketLabel";
-import ResetBucketsButton from "./ResetBucketsButton";
-import { BfsId } from "@/global/types/identity";
 import { Maybe } from "graphql/jsutils/Maybe";
+import ResetBucketsButton from "./ResetBucketsButton";
 
 const BucketManager = () => {
     const {

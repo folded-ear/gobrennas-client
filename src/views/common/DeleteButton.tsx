@@ -1,13 +1,18 @@
-import { Button, ButtonProps, IconButton, Tooltip } from "@mui/material";
+import { DeleteIcon } from "@/views/common/icons";
+import {
+    Button,
+    ButtonProps,
+    IconButton,
+    IconButtonProps,
+    Tooltip,
+} from "@mui/material";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogTitle from "@mui/material/DialogTitle";
-import { DeleteIcon } from "@/views/common/icons";
-import * as React from "react";
-import { MouseEventHandler } from "react";
+import React from "react";
 
 interface Props {
-    onClick: MouseEventHandler;
+    onClick: IconButtonProps["onClick"];
 }
 
 const DeleteIconButton: React.FC<Props> = ({ onClick, ...props }) => (

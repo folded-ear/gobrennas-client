@@ -1,7 +1,7 @@
-import SvgIcon from "@mui/material/SvgIcon";
-import { forwardRef } from "react";
 import { IconButton, IconButtonProps } from "@mui/material";
 import { grey } from "@mui/material/colors";
+import SvgIcon from "@mui/material/SvgIcon";
+import { forwardRef } from "react";
 
 // eslint-disable-next-line react/display-name
 const DragHandle = forwardRef<HTMLButtonElement, IconButtonProps>(
