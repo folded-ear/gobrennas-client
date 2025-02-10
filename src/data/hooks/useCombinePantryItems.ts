@@ -1,4 +1,4 @@
-import throwAnyGraphQLErrors from "@/util/throwAnyGraphQLErrors";
+import throwAnyErrors from "@/util/throwAnyErrors";
 import { gql } from "@/__generated__";
 import {
     CombinePantryItemsMutation,
@@ -30,7 +30,7 @@ export const useCombinePantryItems = (): [
     const combine = useCallback(
         (ids: string[]) =>
             mutateFunction({ variables: { ids } }).then(({ data, errors }) => {
-                throwAnyGraphQLErrors(errors);
+                throwAnyErrors(errors);
                 if (!data?.pantry?.combineItems) {
                     return Promise.reject("Empty combine items response");
                 }

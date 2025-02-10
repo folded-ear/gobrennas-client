@@ -1,5 +1,5 @@
 import { BfsId, ensureString } from "@/global/types/identity";
-import throwAnyGraphQLErrors from "@/util/throwAnyGraphQLErrors";
+import throwAnyErrors from "@/util/throwAnyErrors";
 import { gql } from "@/__generated__";
 import {
     DeleteRecipeMutation,
@@ -33,7 +33,7 @@ export const useDeleteRecipe = (): [
         (id: BfsId) =>
             mutateFunction({ variables: { id: ensureString(id) } }).then(
                 ({ errors }) => {
-                    throwAnyGraphQLErrors(errors);
+                    throwAnyErrors(errors);
                     return true;
                 },
             ),

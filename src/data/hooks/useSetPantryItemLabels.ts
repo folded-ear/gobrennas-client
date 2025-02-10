@@ -1,4 +1,4 @@
-import throwAnyGraphQLErrors from "@/util/throwAnyGraphQLErrors";
+import throwAnyErrors from "@/util/throwAnyErrors";
 import { gql } from "@/__generated__";
 import {
     PantryItem,
@@ -35,7 +35,7 @@ export const useSetPantryItemLabels = (): [
                     labels,
                 },
             }).then(({ data, errors }) => {
-                throwAnyGraphQLErrors(errors);
+                throwAnyErrors(errors);
                 if (!data?.pantry?.setLabels) {
                     return Promise.reject("Empty set labels response");
                 }

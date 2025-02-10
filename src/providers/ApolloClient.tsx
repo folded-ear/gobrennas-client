@@ -15,6 +15,7 @@ import {
 import { createFragmentRegistry } from "@apollo/client/cache";
 import { onError } from "@apollo/client/link/error";
 import { relayStylePagination } from "@apollo/client/utilities";
+// @ts-expect-error createUploadLink only ships JS, no types at all.
 import createUploadLink from "apollo-upload-client/createUploadLink.mjs";
 import possibleTypes from "./apolloPossibleTypes";
 import { askUserToReauth, isAuthError } from "./Profile";

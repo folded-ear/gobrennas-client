@@ -52,7 +52,7 @@ export const ProfileProvider: React.FC<Props> = ({ children }) => {
     );
 };
 
-export const isAuthError = (error): boolean => {
+export const isAuthError = (error: any): boolean => {
     if (!error) return false;
     if (error.response && error.response.status === 401) return true;
     if (error.extensions?.type === "NoUserPrincipalException") return true;
