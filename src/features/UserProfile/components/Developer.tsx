@@ -29,7 +29,7 @@ const DevMode: React.FC = () => {
         [preferencesStore],
     );
 
-    function handleLayoutChange(e, layout: Layout) {
+    function handleLayoutChange(e: unknown, layout: Layout) {
         if (!layout) return;
         dispatcher.dispatch({
             type: ActionType.USER__SET_LAYOUT,

@@ -25,7 +25,7 @@ const Profile: React.FC<Props> = ({ currentUser: user }) => {
     const isDeveloper = useIsDeveloper();
     const doLogout = useLogoutHandler();
 
-    const handleLogout = (e) => {
+    const handleLogout = (e: React.MouseEvent) => {
         e.preventDefault();
         e.stopPropagation();
         doLogout();
