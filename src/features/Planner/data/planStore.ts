@@ -103,7 +103,7 @@ export interface PlanItem extends BasePlanItem {
 export interface Plan extends BasePlanItem {
     acl: {
         ownerId: BfsId;
-        grants: Record<string, AccessLevel>;
+        grants: Record<BfsId, AccessLevel>;
     };
     color: string;
     buckets: PlanBucket[];
@@ -168,7 +168,7 @@ class PlanStore extends FluxReduceStore<State, FluxAction> {
                 const next: State = dotProp.set(
                     state,
                     ["byId", action.id],
-                    (lo) => lo.deleting(),
+                    (lo: LoadObject<Plan>) => lo.deleting(),
                 );
                 if (bfsIdEq(next.activeListId, action.id)) {
                     next.listDetailVisible = false;
@@ -204,34 +204,46 @@ class PlanStore extends FluxReduceStore<State, FluxAction> {
                     action.userId,
                     action.level,
                 );
-                return dotProp.set(state, ["byId", action.id], (lo) =>
-                    lo
-                        .map((l) =>
-                            dotProp.set(
-                                l,
-                                ["acl", "grants", action.userId],
-                                action.level,
-                            ),
-                        )
-                        .updating(),
+                return dotProp.set(
+                    state,
+                    ["byId", action.id],
+                    (lo: LoadObject<Plan>) =>
+                        lo
+                            .map((l) =>
+                                dotProp.set(
+                                    l,
+                                    ["acl", "grants", action.userId],
+                                    action.level,
+                                ),
+                            )
+                            .updating(),
                 );
             }
 
             case ActionType.PLAN__CLEAR_PLAN_GRANT: {
                 PlanApi.clearPlanGrant(ensureString(action.id), action.userId);
-                return dotProp.set(state, ["byId", action.id], (lo) =>
-                    lo
-                        .map((l) =>
-                            dotProp.delete(l, ["acl", "grants", action.userId]),
-                        )
-                        .deleting(),
+                return dotProp.set(
+                    state,
+                    ["byId", action.id],
+                    (lo: LoadObject<Plan>) =>
+                        lo
+                            .map((l) =>
+                                dotProp.delete(l, [
+                                    "acl",
+                                    "grants",
+                                    action.userId,
+                                ]),
+                            )
+                            .deleting(),
                 );
             }
 
             case ActionType.PLAN__PLAN_GRANT_SET:
             case ActionType.PLAN__PLAN_GRANT_CLEARED: {
-                return dotProp.set(state, ["byId", action.id], (lo) =>
-                    lo.done(),
+                return dotProp.set(
+                    state,
+                    ["byId", action.id],
+                    (lo: LoadObject<Plan>) => lo.done(),
                 );
             }
 
