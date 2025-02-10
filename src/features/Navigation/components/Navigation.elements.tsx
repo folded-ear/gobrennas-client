@@ -8,7 +8,7 @@ import {
     ListSubheader,
 } from "@mui/material";
 import ListItemIcon from "@mui/material/ListItemIcon";
-import { CSSObject, styled } from "@mui/material/styles";
+import { CSSObject, styled, Theme } from "@mui/material/styles";
 import React from "react";
 
 const TOP_MARGIN = 20;
@@ -20,7 +20,7 @@ export const Header = styled(AppBar)(({ theme }) => ({
     height: 5,
 }));
 
-const openedMixin = (theme): CSSObject => ({
+const openedMixin = (theme: Theme): CSSObject => ({
     width: drawerWidth,
     transition: theme.transitions.create("width", {
         easing: theme.transitions.easing.sharp,
@@ -29,7 +29,7 @@ const openedMixin = (theme): CSSObject => ({
     overflowX: "hidden",
 });
 
-const closedMixin = (theme): CSSObject => ({
+const closedMixin = (theme: Theme): CSSObject => ({
     transition: theme.transitions.create("width", {
         easing: theme.transitions.easing.sharp,
         duration: theme.transitions.duration.leavingScreen,
