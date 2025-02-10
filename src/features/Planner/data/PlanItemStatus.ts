@@ -9,7 +9,7 @@ import { CheckIcon, DeleteIcon, SumthinsFuckyIcon } from "@/views/common/icons";
 import { PlanItemStatus } from "@/__generated__/graphql";
 import { deepPurple } from "@mui/material/colors";
 
-export const willStatusDelete = (status) =>
+export const willStatusDelete = (status: PlanItemStatus) =>
     status === PlanItemStatus.COMPLETED || status === PlanItemStatus.DELETED;
 
 const colorByStatus: Record<PlanItemStatus, MuiColorFamily> = {

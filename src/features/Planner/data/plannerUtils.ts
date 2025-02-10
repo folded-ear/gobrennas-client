@@ -4,7 +4,7 @@ import { Maybe } from "graphql/jsutils/Maybe";
 
 function testName(
     itemOrName: Maybe<Named | string>,
-    test: (string) => boolean,
+    test: (name: string) => boolean,
 ): boolean {
     if (itemOrName == null) return false;
     let name = typeof itemOrName === "string" ? itemOrName : itemOrName.name;
@@ -25,7 +25,12 @@ function startsWith(
 }
 
 export function isSection(itemOrName: Named | string): boolean {
-    return itemOrName["fromRecipe"] || endsWith(itemOrName, ":");
+    return (
+        (typeof itemOrName === "object" &&
+            "fromRecipe" in itemOrName &&
+            !!itemOrName.fromRecipe) ||
+        endsWith(itemOrName, ":")
+    );
 }
 
 export function isDoNotRecognize(itemOrName: Named | string): boolean {
