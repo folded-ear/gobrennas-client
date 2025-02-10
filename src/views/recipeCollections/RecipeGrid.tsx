@@ -21,7 +21,7 @@ export const RecipeGrid = ({
     spacing = 2,
     children,
 }: RecipeDisplayGridProps) => {
-    const isMine = (r) => bfsIdEq(r.owner.id, me.id);
+    const isMine = (r: TRecipeCard) => bfsIdEq(r.owner.id, me.id);
     return (
         <Grid container alignItems="stretch" spacing={spacing}>
             {recipes.map((recipe) => (

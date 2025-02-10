@@ -20,7 +20,7 @@ export const RecipeListDisplay: React.FC<RecipeListDisplayProps> = ({
         return <MessagePaper primary="Nothing matches that search." />;
     }
 
-    const isMine = (r) => bfsIdEq(r.owner.id, me.id);
+    const isMine = (r: RecipeCard) => bfsIdEq(r.owner.id, me.id);
 
     return (
         <Stack gap={1.5}>
