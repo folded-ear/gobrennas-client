@@ -2,23 +2,14 @@ import { Location } from "history";
 import React from "react";
 import { Redirect } from "react-router-dom";
 
-function getUrlParameter(name, location) {
-    name = name.replace(/[[]/, "\\[").replace(/[\]]/, "\\]");
-    const regex = new RegExp("[\\?&]" + name + "=([^&#]*)");
-
-    const results = regex.exec(location.search);
-    return results === null
-        ? ""
-        : decodeURIComponent(results[1].replace(/\+/g, " "));
-}
-
 interface Props {
     location: Location;
 }
 
 const OAuth2RedirectHandler: React.FC<Props> = ({ location }) => {
-    const token = getUrlParameter("token", location);
-    const error = getUrlParameter("error", location);
+    const params = new URLSearchParams(location.search);
+    const token = params.get("token") ?? "";
+    const error = params.get("error") ?? "";
 
     if (token) {
         return (

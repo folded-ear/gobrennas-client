@@ -9,7 +9,6 @@ import { ScalingProvider } from "@/util/ScalingContext";
 import LoadingIndicator from "@/views/common/LoadingIndicator";
 import { LibrarySearchScope } from "@/__generated__/graphql";
 import { Container as Content, useScrollTrigger } from "@mui/material";
-import qs from "qs";
 import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
 
@@ -25,13 +24,11 @@ export const LibraryController = () => {
     const isMobile = useIsMobile();
     const me = useProfile();
     const history = useHistory();
-    const params = history.location.search
-        ? qs.parse(history.location.search.substring(1))
-        : {};
-    const [query, setQuery] = useState(params.q ?? "");
+    const params = new URLSearchParams(history.location.search);
+    const [query, setQuery] = useState<string>(params.get("q") ?? "");
     const [unsavedQuery, setUnsavedQuery] = useState(query);
     const [scope, setScope] = useState(
-        params.s === LibrarySearchScope.EVERYONE
+        params.get("s") === LibrarySearchScope.EVERYONE
             ? LibrarySearchScope.EVERYONE
             : LibrarySearchScope.MINE,
     );

@@ -2,7 +2,6 @@ import { API_BASE_URL, API_IS_SECURE, APP_BASE_URL } from "@/constants";
 import { useAuthToken } from "@/providers/AuthToken";
 import { UnlockedIcon } from "@/views/common/icons";
 import { Button, Stack, Typography } from "@mui/material";
-import qs from "qs";
 import React from "react";
 
 export const CookThis = () => {
@@ -10,7 +9,7 @@ export const CookThis = () => {
     const token = useAuthToken();
     React.useEffect(() => {
         if (!cookThisRef.current) return;
-        cookThisRef.current.href = `javascript:s=document.createElement('script');s.src='${API_BASE_URL}/import_bookmarklet.js?${qs.stringify(
+        cookThisRef.current.href = `javascript:s=document.createElement('script');s.src='${API_BASE_URL}/import_bookmarklet.js?${new URLSearchParams(
             {
                 appRoot: APP_BASE_URL,
                 token,
