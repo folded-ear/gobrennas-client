@@ -29,7 +29,7 @@ import LoadObjectState from "@/util/LoadObjectState";
 import { formatLocalDate, parseLocalDate } from "@/util/time";
 import dotProp from "dot-prop-immutable";
 import { Maybe } from "graphql/jsutils/Maybe";
-import invariant from "invariant/invariant";
+import invariant from "invariant";
 
 const AT_END = ("AT_END_" + ClientId.next()) as BfsStringId;
 
@@ -77,24 +77,48 @@ export function createList(
     };
 }
 
-const idFixerFactory = (cid: string, id: BfsId) => {
-    function idFixer(ids: null): null;
-    function idFixer<T>(ids: T): T;
-    function idFixer(ids) {
-        if (ids == null) return null;
-        if (ids == cid && bfsIdEq(ids, cid)) return id;
+function idFixerFactory(cid: string, id: BfsId) {
+    type Ids =
+        | Maybe<BfsId>
+        | BfsId[]
+        | LoadObject<BfsId[]>
+        | LoadObjectState<BfsId[]>;
+
+    // IntelliJ is quite silly about the union type, so ignore its inspections.
+    function idFixer<T extends Ids>(ids: T): T {
+        if (ids == null) return ids;
+        // This cast is safe; Typescript correctly identifies that a string
+        // could become a number, but that's within BfsId, so it's ok.
+        if (ids == cid && (ids === cid || bfsIdEq(ids, cid))) return id as T;
+        // noinspection SuspiciousTypeOfGuard
         if (ids instanceof Array) {
-            return ids.map((v) => (bfsIdEq(v, cid) ? id : v));
+            // This cast is safe; Typescript can't identify that if 'ids' is an
+            // array, T must be BfsId[].
+            return ids.map((v) => (bfsIdEq(v, cid) ? id : v)) as T;
         }
-        if (ids instanceof LoadObject) return ids.map(idFixer);
-        if (ids instanceof LoadObjectState) return ids.map(idFixer);
+        // noinspection SuspiciousTypeOfGuard
+        if (ids instanceof LoadObject<BfsId[]>) {
+            // This cast is safe; Typescript can't identify that if 'ids' is a
+            // LoadObject<BfsId[]>, T must be as well.
+            return ids.map(idFixer) as T;
+        }
+        // noinspection SuspiciousTypeOfGuard
+        if (ids instanceof LoadObjectState<BfsId[]>) {
+            // This cast is safe; Typescript can't identify that if 'ids' is a
+            // LoadObjectState<BfsId[]>, T must be as well.
+            return ids.map(idFixer) as T;
+        }
+        // noinspection SuspiciousTypeOfGuard
         if (typeof ids === "string") return ids;
+        // noinspection SuspiciousTypeOfGuard
         if (typeof ids === "number") return ids;
-        throw new Error("Unsupported value passed to replaceId: " + ids);
+        throw new Error(
+            `Unsupported value passed to idFixer(${cid},${id}): ${ids}`,
+        );
     }
 
     return idFixer;
-};
+}
 
 function fixIds(
     state: State,
@@ -102,7 +126,12 @@ function fixIds(
     id: BfsId,
     clientId: string,
 ): State;
-function fixIds(state: State, task, id: BfsId, clientId: string): State {
+function fixIds(
+    state: State,
+    task: Plan | PlanItem,
+    id: BfsId,
+    clientId: string,
+): State {
     const idFixer = idFixerFactory(clientId, id);
     const byId = {
         ...state.byId,
@@ -116,15 +145,17 @@ function fixIds(state: State, task, id: BfsId, clientId: string): State {
         tasksToRename.add(ensureString(id));
         tasksToRename.delete(clientId);
     }
-    if (task.parentId != null) {
-        const plo = loForId(state, task.parentId);
-        byId[task.parentId] = plo.map((p) => ({
+    const pid = parentId(task);
+    if (pid != null) {
+        const plo = loForId(state, pid);
+        byId[pid] = plo.map((p) => ({
             ...p,
             subtaskIds: idFixer(p.subtaskIds),
         }));
     }
     if (isParent(task)) {
-        task.subtaskIds.forEach((sid) => {
+        // isParent ensures subtaskIds is non-empty, so the assertion is safe
+        task.subtaskIds!.forEach((sid) => {
             byId[sid] = byId[sid].map((s) => ({
                 ...s,
                 parentId: id,
@@ -357,12 +388,9 @@ function mapTaskLO<T>(
     id: BfsId,
     work: (lo: LoadObject<T>) => LoadObject<T>,
 ): State {
-    return dotProp.set(state, ["byId", id], (lo) => {
+    return dotProp.set(state, ["byId", id], (lo: unknown) => {
         // dotProp will give us an anonymous object literal on a missing key...
-        if (!(lo instanceof LoadObject)) {
-            lo = LoadObject.empty();
-        }
-        return work(lo);
+        return work(lo instanceof LoadObject ? lo : LoadObject.empty());
     });
 }
 
@@ -665,7 +693,7 @@ export function taskDeleted(state: State, id: BfsId): State {
     };
     const byId = { ...state.byId };
     byId[p.id] = byId[p.id].setValue(p);
-    const kill = (id) => {
+    const kill = (id: BfsId) => {
         const lo = byId[id];
         if (lo == null) return;
         if (lo.hasValue()) {
@@ -771,6 +799,10 @@ export function moveSubtree(state: State, action: MoveSubtreeAction): State {
     });
 }
 
+function parentId(it: Plan | PlanItem) {
+    return "parentId" in it ? it.parentId : undefined;
+}
+
 function mutateTree(state: State, spec: TreeMutationSpec): State {
     // ensure no client IDs
     if (spec.ids.some((id) => ClientId.is(id))) return state;
@@ -780,7 +812,7 @@ function mutateTree(state: State, spec: TreeMutationSpec): State {
     for (
         let id: BfsId | undefined = spec.parentId;
         id;
-        id = taskForId(state, id)["parentId"] // eventually, the Plan itself...
+        id = parentId(taskForId(state, id))
     ) {
         if (includesBfsId(spec.ids, id)) return state;
     }
@@ -868,7 +900,7 @@ export function nestTask(state: State): State {
 
 // if expanded is nullish, it means "toggle it"
 function setExpansion(state: State, id: BfsId, expanded?: boolean): State {
-    return dotProp.set(state, ["byId", id], (lo) =>
+    return dotProp.set(state, ["byId", id], (lo: LoadObject<PlanItem>) =>
         lo.map((t) => ({
             ...t,
             _expanded: expanded == null ? !t._expanded : expanded,
@@ -922,16 +954,15 @@ function forceExpansionBuilder(expanded: boolean): (state: State) => State {
 export const expandAll = forceExpansionBuilder(true);
 export const collapseAll = forceExpansionBuilder(false);
 
-export function taskLoaded(state: State, task: Plan | PlanItem): State;
-export function taskLoaded(state: State, task): State {
-    if (task.acl) {
+export function taskLoaded(state: State, task: Plan | PlanItem): State {
+    if ("acl" in task) {
         task = {
             ...task,
             buckets: task.buckets ? task.buckets.sort(bucketComparator) : [],
         };
     }
     let lo = state.byId[task.id] || LoadObject.empty();
-    if (task.ingredientId != null) {
+    if ("ingredientId" in task && task.ingredientId != null) {
         task.ingredientId = ensureString(task.ingredientId);
     }
     if (lo.hasValue()) {
@@ -950,12 +981,11 @@ export function taskLoaded(state: State, task): State {
                 ...t,
                 ...task,
                 name: bfsIdEq(task.id, state.activeTaskId) ? t.name : task.name,
-                subtaskIds: subtaskIds.length ? subtaskIds : null,
+                subtaskIds: subtaskIds.length ? subtaskIds : undefined,
             };
-            // t might be a Plan, but this will still work
-            if (t["_next_status"] && t["status"] === t["_next_status"]) {
+            if ("_next_status" in t && t.status === t._next_status) {
                 // it worked!
-                delete t["_next_status"];
+                delete t._next_status;
             }
             return t;
         });
@@ -1075,15 +1105,23 @@ export function sortActivePlanByBucket(state: State): State {
     if (!plan.buckets || !plan.subtaskIds) return state;
     // Sort mutates directly, but it should be a no-op (i.e., the buckets are
     // already correctly ordered). If it's not, it should result in some items
-    // moving around. If not, things are just as screwy as before. :)
+    // moving around, but may not update bucket listings themselves, because
+    // React won't notice the change.
     plan.buckets.sort(bucketComparator);
-    const bucketIdOrder = plan.buckets.reduce((index, b, i) => {
-        index[b.id] = i;
-        return index;
-    }, {});
+    const bucketIdOrder = plan.buckets.reduce(
+        (index, b, i) => {
+            index[b.id] = i;
+            return index;
+        },
+        {} as Record<BfsId, number>,
+    );
+    type IdOrder = [BfsId, number]; // IntelliJ/Prettier race if inlined...
     const desiredIds = plan.subtaskIds
         .map((id) => taskForId(state, id))
-        .map((t) => [t.id, t.bucketId ? bucketIdOrder[t.bucketId] : -1])
+        .map(
+            (t) =>
+                [t.id, t.bucketId ? bucketIdOrder[t.bucketId] : -1] as IdOrder,
+        )
         .sort((pa, pb) => pa[1] - pb[1])
         .map((pair) => pair[0]);
     for (let i = 0, l = desiredIds.length; i < l; i++) {
