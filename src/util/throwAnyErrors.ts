@@ -1,4 +1,4 @@
-export default function throwAnyErrors(errors: any) {
+export default function throwAnyErrors(errors: unknown) {
     if (!errors) return;
     if (errors instanceof Array) {
         if (errors.length === 0) return;
