@@ -1,5 +1,6 @@
 import { Typography } from "@mui/material";
-import React, { useLayoutEffect, useState } from "react";
+import * as React from "react";
+import { useLayoutEffect, useState } from "react";
 
 interface Props {
     url: string;

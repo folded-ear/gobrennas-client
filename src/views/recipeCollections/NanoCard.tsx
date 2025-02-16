@@ -15,7 +15,7 @@ import { Box } from "@mui/material";
 import { BoxProps } from "@mui/material/Box/Box";
 import { styled } from "@mui/material/styles";
 import { Maybe } from "graphql/jsutils/Maybe";
-import React from "react";
+import * as React from "react";
 import { Link } from "react-router-dom";
 
 type RecipeListItemProps = {

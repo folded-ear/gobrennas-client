@@ -24,7 +24,8 @@ import {
 } from "@mui/material";
 import TableCell from "@mui/material/TableCell";
 import { DateTime } from "luxon";
-import React, { useCallback, useState } from "react";
+import * as React from "react";
+import { useCallback, useState } from "react";
 
 interface NotesCellProps {
     value: string | null;

@@ -14,7 +14,8 @@ import { useIsMobile } from "@/providers/IsMobile";
 import { useIsAuthenticated, useLogoutHandler } from "@/providers/Profile";
 import routes from "@/routes";
 import SidebarSwitch from "@/SidebarSwitch";
-import React, { PropsWithChildren, useEffect, useState } from "react";
+import * as React from "react";
+import { PropsWithChildren, useEffect, useState } from "react";
 import { useHistory, useLocation } from "react-router-dom";
 
 export function toggleShoppingPlan(id: BfsId) {

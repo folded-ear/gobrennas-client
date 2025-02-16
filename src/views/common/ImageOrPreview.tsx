@@ -1,4 +1,5 @@
-import React, { ImgHTMLAttributes } from "react";
+import * as React from "react";
+import { ImgHTMLAttributes } from "react";
 
 interface Props extends Omit<ImgHTMLAttributes<HTMLImageElement>, "src"> {
     src:

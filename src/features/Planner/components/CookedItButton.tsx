@@ -5,7 +5,8 @@ import { CookedItIcon, HelpIcon } from "@/views/common/icons";
 import SplitButton, { SelectOption } from "@/views/common/SplitButton";
 import { ButtonProps, Stack, Tooltip } from "@mui/material";
 import { DateTime } from "luxon";
-import React, { useCallback } from "react";
+import * as React from "react";
+import { useCallback } from "react";
 import { useHistory } from "react-router-dom";
 
 type Props = Omit<ButtonProps, "onClick"> & {

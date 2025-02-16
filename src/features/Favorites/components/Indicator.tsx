@@ -1,7 +1,7 @@
 import { TaskBarButton } from "@/global/elements/taskbar.elements";
 import { BfsId } from "@/global/types/identity";
 import { FavoriteIcon, NotFavoriteIcon } from "@/views/common/icons";
-import React from "react";
+import * as React from "react";
 import {
     useIsFavorite,
     useMarkFavorite,

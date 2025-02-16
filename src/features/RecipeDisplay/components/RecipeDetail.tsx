@@ -25,7 +25,7 @@ import Source from "@/views/common/Source";
 import User from "@/views/user/User";
 import { Box, Grid, Toolbar, Typography } from "@mui/material";
 import { Maybe } from "graphql/jsutils/Maybe";
-import React from "react";
+import * as React from "react";
 import { useHistory } from "react-router-dom";
 import IngredientDirectionsRow from "./IngredientDirectionsRow";
 import RecipeHistoryGrid from "./RecipeHistoryGrid";

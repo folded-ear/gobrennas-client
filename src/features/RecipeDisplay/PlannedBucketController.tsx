@@ -6,7 +6,7 @@ import { recipeRloByPlanAndBucket } from "@/features/RecipeDisplay/utils/recipeR
 import LibraryStore from "@/features/RecipeLibrary/data/LibraryStore";
 import CloseButton from "@/views/common/CloseButton";
 import LoadingIndicator from "@/views/common/LoadingIndicator";
-import React from "react";
+import * as React from "react";
 import { RouteComponentProps } from "react-router";
 import { useHistory } from "react-router-dom";
 import RecipeDetail from "./components/RecipeDetail";

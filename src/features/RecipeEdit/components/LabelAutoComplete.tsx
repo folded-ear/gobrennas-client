@@ -1,7 +1,7 @@
 import { ChipPicker } from "@/global/components/ChipPicker";
 import { Stack } from "@mui/material";
 import { AutocompleteChangeReason } from "@mui/material/useAutocomplete/useAutocomplete";
-import React from "react";
+import * as React from "react";
 
 export interface LabelAutoCompleteProps {
     recipeLabels?: string[];

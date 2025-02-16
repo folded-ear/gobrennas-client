@@ -6,7 +6,7 @@ import Foodinger from "@/views/Foodinger";
 import Planner from "@/views/Planner";
 import OAuth2RedirectHandler from "@/views/user/OAuth2RedirectHandler";
 import { Welcome } from "@/views/Welcome";
-import React from "react";
+import * as React from "react";
 import { RouteComponentProps } from "react-router";
 import { Redirect, RouteProps } from "react-router-dom";
 import Shop from "./containers/Shop";

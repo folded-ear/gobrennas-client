@@ -5,7 +5,7 @@ import { useIsDeveloper, useLogoutHandler } from "@/providers/Profile";
 import { Box, Button, Grid, Paper, Stack, Typography } from "@mui/material";
 import Avatar from "@mui/material/Avatar";
 import { styled } from "@mui/material/styles";
-import React from "react";
+import * as React from "react";
 import { LogoutIcon } from "../../../views/common/icons";
 import User from "../../../views/user/User";
 

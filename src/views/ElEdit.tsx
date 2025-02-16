@@ -5,7 +5,8 @@ import debounce from "@/util/debounce";
 import processRecognizedItem from "@/util/processRecognizedItem";
 import { Autocomplete, Grid, InputAdornment, TextField } from "@mui/material";
 import { Maybe } from "graphql/jsutils/Maybe";
-import React, { PropsWithChildren } from "react";
+import * as React from "react";
+import { PropsWithChildren } from "react";
 import { ErrorIcon, OkIcon } from "./common/icons";
 import LoadingIconButton from "./common/LoadingIconButton";
 

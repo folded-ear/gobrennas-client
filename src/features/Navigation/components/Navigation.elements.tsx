@@ -9,7 +9,7 @@ import {
 } from "@mui/material";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import { CSSObject, styled, Theme } from "@mui/material/styles";
-import React from "react";
+import * as React from "react";
 
 const TOP_MARGIN = 20;
 const drawerWidth = 240;

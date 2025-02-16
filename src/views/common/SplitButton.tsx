@@ -8,7 +8,8 @@ import Grow from "@mui/material/Grow";
 import MenuItem from "@mui/material/MenuItem";
 import MenuList from "@mui/material/MenuList";
 import Popper from "@mui/material/Popper";
-import React, { ReactNode } from "react";
+import * as React from "react";
+import { ReactNode } from "react";
 
 export type SelectOption<TOption> = {
     id: BfsId;

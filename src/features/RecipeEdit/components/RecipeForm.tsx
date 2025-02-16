@@ -31,7 +31,8 @@ import {
     useTheme,
 } from "@mui/material";
 import makeStyles from "@mui/styles/makeStyles";
-import React, { ReactNode } from "react";
+import * as React from "react";
+import { ReactNode } from "react";
 import { LabelAutoComplete, LabelAutoCompleteProps } from "./LabelAutoComplete";
 
 const useStyles = makeStyles((theme) => ({

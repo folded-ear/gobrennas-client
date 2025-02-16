@@ -53,13 +53,6 @@ export default [
                             group: ["@mui/icons-material/*"],
                             message: "Import icons from '@/views/common/icons'",
                         },
-                        {
-                            // TEMPORARY
-                            group: ["react"],
-                            importNamePattern: "Event(Handler)?$",
-                            message:
-                                "Import 'React' and use 'React.XxxEvent' or 'React.XxxEventHandler'",
-                        },
                     ],
                 },
             ],

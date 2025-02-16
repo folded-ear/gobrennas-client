@@ -24,7 +24,8 @@ import {
     TextField,
     Typography,
 } from "@mui/material";
-import React, { useEffect, useState } from "react";
+import * as React from "react";
+import { useEffect, useState } from "react";
 
 const LEVEL_NO_ACCESS = "NO_ACCESS";
 

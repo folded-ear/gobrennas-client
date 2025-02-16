@@ -1,6 +1,6 @@
 import useActivePlanner from "@/data/useActivePlanner";
 import { bfsIdEq } from "@/global/types/identity";
-import React from "react";
+import * as React from "react";
 import BasePlanNavItem, { BasePlanNavItemProps } from "./BasePlanNavItem";
 
 export const NavPlanItem: React.FC<BasePlanNavItemProps> = ({

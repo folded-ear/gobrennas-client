@@ -2,7 +2,7 @@ import { Photo } from "@/__generated__/graphql";
 import { CardMedia, SxProps, useTheme } from "@mui/material";
 import { CommonProps } from "@mui/material/OverridableComponent";
 import { Theme } from "@mui/material/styles";
-import React from "react";
+import * as React from "react";
 
 interface Props extends CommonProps {
     photo: Photo;

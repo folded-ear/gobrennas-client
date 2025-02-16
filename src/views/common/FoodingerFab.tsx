@@ -2,7 +2,7 @@ import dispatcher, { ActionType } from "@/data/dispatcher";
 import { useIsMobile } from "@/providers/IsMobile";
 import Fab, { FabProps } from "@mui/material/Fab";
 import { styled } from "@mui/material/styles";
-import React from "react";
+import * as React from "react";
 
 type AddFabProps = {
     isMobile?: boolean;

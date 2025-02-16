@@ -5,7 +5,7 @@ import { SendToPlanIcon } from "@/views/common/icons";
 import SplitButton, { SelectOption } from "@/views/common/SplitButton";
 import Button from "@mui/material/Button";
 import { styled } from "@mui/material/styles";
-import React from "react";
+import * as React from "react";
 
 interface Props {
     onClick(planId: number, scale?: number | null): void;

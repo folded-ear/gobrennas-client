@@ -10,7 +10,8 @@ import {
 } from "@/providers/ApolloClient";
 import { useIsAuthenticated } from "@/providers/Profile";
 import { soakUpUnauthorized } from "@/util/promiseFlux";
-import React, { useMemo } from "react";
+import * as React from "react";
+import { useMemo } from "react";
 import { useQuery } from "react-query";
 
 /*

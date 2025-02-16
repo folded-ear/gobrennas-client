@@ -8,7 +8,8 @@ import {
 } from "@dnd-kit/core";
 import type { DragStartEvent } from "@dnd-kit/core/dist/types";
 import { Box, darken, lighten, useTheme } from "@mui/material";
-import React, { useLayoutEffect, useState } from "react";
+import * as React from "react";
+import { useLayoutEffect, useState } from "react";
 
 export type Vert = "above" | "below";
 export type Horiz = "left" | "right" | "none";

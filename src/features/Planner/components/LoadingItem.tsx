@@ -1,7 +1,7 @@
 import LoadingIconButton from "@/views/common/LoadingIconButton";
 import { grey } from "@mui/material/colors";
 import ListItemText from "@mui/material/ListItemText";
-import React from "react";
+import * as React from "react";
 import Item from "./Item";
 
 interface Props {

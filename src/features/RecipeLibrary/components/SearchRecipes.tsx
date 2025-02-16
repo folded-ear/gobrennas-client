@@ -11,7 +11,7 @@ import {
     Switch,
     Toolbar,
 } from "@mui/material";
-import React from "react";
+import * as React from "react";
 
 type SearchRecipesProps = {
     isSearchFloating: boolean;

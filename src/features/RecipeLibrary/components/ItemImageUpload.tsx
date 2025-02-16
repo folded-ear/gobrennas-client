@@ -4,7 +4,7 @@ import promiseWellSizedFile from "@/util/promiseWellSizedFile";
 import { gql } from "@/__generated__";
 import { useMutation } from "@apollo/client";
 import { makeStyles } from "@mui/styles";
-import React from "react";
+import * as React from "react";
 
 const SET_RECIPE_PHOTO = gql(`
 mutation setRecipePhoto($id: ID!, $photo: Upload!) {

@@ -1,7 +1,7 @@
 import { TextField } from "@mui/material";
 import { TextFieldProps } from "@mui/material/TextField/TextField";
 import { Maybe } from "graphql/jsutils/Maybe";
-import React from "react";
+import * as React from "react";
 
 interface Props {
     value: Maybe<string>;

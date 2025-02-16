@@ -4,7 +4,7 @@ import { ShareInfo } from "@/global/types/types";
 import LoadingIndicator from "@/views/common/LoadingIndicator";
 import NotFound from "@/views/common/NotFound";
 import Login from "@/views/user/Login";
-import React from "react";
+import * as React from "react";
 import { match, Redirect } from "react-router-dom";
 
 const DoTheDance: React.FC<ShareInfo> = ({ secret, id }) => {

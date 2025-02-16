@@ -1,5 +1,5 @@
 import SvgIcon from "@mui/material/SvgIcon";
-import React from "react";
+import * as React from "react";
 
 //eslint-disable-next-line no-restricted-imports
 export {

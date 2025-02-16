@@ -5,7 +5,7 @@ import {
     Tooltip,
     TooltipProps,
 } from "@mui/material";
-import React from "react";
+import * as React from "react";
 
 interface Props {
     tooltipPlacement?: TooltipProps["placement"];

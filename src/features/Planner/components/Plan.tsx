@@ -14,7 +14,7 @@ import { AddIcon } from "@/views/common/icons";
 import LoadingIndicator from "@/views/common/LoadingIndicator";
 import PageBody from "@/views/common/PageBody";
 import { List } from "@mui/material";
-import React from "react";
+import * as React from "react";
 import { ItemTuple } from "../PlannerController";
 import DragContainer, { Horiz, Vert } from "./DragContainer";
 

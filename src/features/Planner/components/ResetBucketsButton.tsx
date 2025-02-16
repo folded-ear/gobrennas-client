@@ -4,7 +4,7 @@ import { GenerateBucketsIcon } from "@/views/common/icons";
 import { IconButtonProps } from "@mui/material";
 import IconButton from "@mui/material/IconButton";
 import Tooltip from "@mui/material/Tooltip";
-import React from "react";
+import * as React from "react";
 
 const ResetBucketsButton: React.FC<{ planId: BfsId } & IconButtonProps> = ({
     planId,

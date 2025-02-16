@@ -4,7 +4,7 @@ import { BodyContainer } from "@/features/RecipeLibrary/components/CurrentPlanSi
 import { SIDEBAR_DEFAULT_WIDTH } from "@/global/constants";
 import { Box, Drawer as MuiDrawer, Tab, Tabs } from "@mui/material";
 import { styled } from "@mui/material/styles";
-import React from "react";
+import * as React from "react";
 import {
     Link,
     Route,

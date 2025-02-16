@@ -7,7 +7,7 @@ import { AutoAwesomeIcon, DesktopIcon, MobileIcon } from "@/views/common/icons";
 import { Grid, Stack, ToggleButton, ToggleButtonGroup } from "@mui/material";
 import Divider from "@mui/material/Divider";
 import Switch, { SwitchProps } from "@mui/material/Switch";
-import React from "react";
+import * as React from "react";
 
 interface RowProps {
     children?: React.ReactNode;

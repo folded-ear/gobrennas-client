@@ -9,7 +9,7 @@ import DeleteButton from "@/views/common/DeleteButton";
 import EditButton from "@/views/common/EditButton";
 import LoadingIndicator from "@/views/common/LoadingIndicator";
 import NotFound from "@/views/common/NotFound";
-import React from "react";
+import * as React from "react";
 import { RouteComponentProps } from "react-router";
 import { useHistory } from "react-router-dom";
 import RecipeDetail from "./components/RecipeDetail";

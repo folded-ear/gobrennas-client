@@ -10,7 +10,7 @@ import {
     ListItem,
     Typography,
 } from "@mui/material";
-import React from "react";
+import * as React from "react";
 
 interface Props {
     recipe: Subrecipe<IIngredient>;

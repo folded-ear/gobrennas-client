@@ -12,7 +12,7 @@ import { ShopItemType } from "@/views/shop/ShopList";
 import { ListItemText } from "@mui/material";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import classnames from "classnames";
-import React from "react";
+import * as React from "react";
 import LoadingIconButton from "../common/LoadingIconButton";
 import OxfordList from "../common/OxfordList";
 import Quantity from "../common/Quantity";

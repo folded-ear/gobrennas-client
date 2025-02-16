@@ -9,7 +9,7 @@ import { ShopItemType } from "@/views/shop/ShopList";
 import { ListItemText } from "@mui/material";
 import Input from "@mui/material/Input";
 import classnames from "classnames";
-import React from "react";
+import * as React from "react";
 import LoadingIconButton from "../common/LoadingIconButton";
 import PlaceholderIconButton from "../common/PlaceholderIconButton";
 import IngredientItem from "../IngredientItem";

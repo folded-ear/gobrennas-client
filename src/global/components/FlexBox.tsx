@@ -1,5 +1,5 @@
 import { Box } from "@mui/material";
-import React from "react";
+import * as React from "react";
 
 type FlexBoxProps = {
     children?: React.ReactNode;

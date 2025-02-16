@@ -4,7 +4,7 @@ import { LibraryIcon, PlanIcon, ShopIcon } from "@/views/common/icons";
 import User from "@/views/user/User";
 import { BottomNavigation, Paper } from "@mui/material";
 import { styled } from "@mui/material/styles";
-import React from "react";
+import * as React from "react";
 
 const NavWrapper = styled(Paper)(({ theme }) => ({
     position: "fixed",

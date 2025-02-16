@@ -2,7 +2,8 @@ import { ClearIcon, SearchIcon } from "@/views/common/icons";
 import { LibrarySearchScope } from "@/__generated__/graphql";
 import { IconButton, InputAdornment, Toolbar } from "@mui/material";
 import InputBase from "@mui/material/Input";
-import React, { useState } from "react";
+import * as React from "react";
+import { useState } from "react";
 
 type SearchInputProps = {
     searchTerm: string;

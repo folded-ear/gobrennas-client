@@ -27,7 +27,8 @@ import {
     Tooltip,
     Typography,
 } from "@mui/material";
-import React, { useState } from "react";
+import * as React from "react";
+import { useState } from "react";
 import { useHistory } from "react-router-dom";
 import { NavPlanItem } from "../../Navigation/components/NavPlanItem";
 import AddToCalendar from "./AddToCalendar";

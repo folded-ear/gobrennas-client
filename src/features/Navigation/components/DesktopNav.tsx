@@ -20,7 +20,7 @@ import {
 } from "@/views/common/icons";
 import User from "@/views/user/User";
 import { Box, List, ListItemButton, Typography } from "@mui/material";
-import React from "react";
+import * as React from "react";
 import { NavOwnerItem } from "./NavOwnerItem";
 import { NavShopItem } from "./NavShopItem";
 

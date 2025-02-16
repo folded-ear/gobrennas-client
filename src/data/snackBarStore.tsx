@@ -8,7 +8,7 @@ import { AlertColor, Button } from "@mui/material";
 import { SnackbarCloseReason } from "@mui/material/Snackbar/Snackbar";
 import { ReduceStore } from "flux/utils";
 import { Maybe } from "graphql/jsutils/Maybe";
-import React from "react";
+import * as React from "react";
 import dispatcher, { ActionType, FluxAction } from "./dispatcher";
 
 export interface Snack {

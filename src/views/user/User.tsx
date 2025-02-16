@@ -3,7 +3,7 @@ import SizedAvatar, { SizedAvatarProps } from "@/views/SizedAvatar";
 import { MakeOptional } from "@/__generated__/graphql";
 import Box from "@mui/material/Box";
 import makeStyles from "@mui/styles/makeStyles";
-import React from "react";
+import * as React from "react";
 
 const useStyles = makeStyles({
     root: {

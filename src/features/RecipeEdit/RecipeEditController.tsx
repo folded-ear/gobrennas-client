@@ -10,7 +10,7 @@ import { useProfileId } from "@/providers/Profile";
 import DeleteButton from "@/views/common/DeleteButton";
 import PageBody from "@/views/common/PageBody";
 import { Alert, CircularProgress } from "@mui/material";
-import React from "react";
+import * as React from "react";
 import { RouteComponentProps } from "react-router";
 import { Link, Redirect, useHistory, withRouter } from "react-router-dom";
 

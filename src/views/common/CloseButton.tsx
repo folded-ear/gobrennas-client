@@ -1,6 +1,6 @@
 import { CloseIcon } from "@/views/common/icons";
 import { IconButton, IconButtonProps, Tooltip } from "@mui/material";
-import React from "react";
+import * as React from "react";
 
 interface Props {
     onClick: IconButtonProps["onClick"];

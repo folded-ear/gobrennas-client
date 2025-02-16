@@ -6,7 +6,7 @@ import {
 } from "@/providers/Profile";
 import { BfsRoute, BfsRouteComponentProps } from "@/routes";
 import { Location } from "history";
-import React from "react";
+import * as React from "react";
 import { Redirect, Route } from "react-router-dom";
 import LoadingIndicator from "./LoadingIndicator";
 

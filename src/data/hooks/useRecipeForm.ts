@@ -2,7 +2,7 @@ import { BfsId, bfsIdEq } from "@/global/types/identity";
 import { DraftRecipe, Recipe } from "@/global/types/types";
 import ClientId from "@/util/ClientId";
 import dotProp from "dot-prop-immutable";
-import React from "react";
+import * as React from "react";
 
 type UseRecipeFormReturn = {
     draft: DraftRecipe;

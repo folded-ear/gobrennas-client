@@ -9,7 +9,7 @@ import { RecipeGrid } from "@/views/recipeCollections/RecipeGrid";
 import { RecipeListDisplay } from "@/views/recipeCollections/RecipeListDisplay";
 import { LibrarySearchScope } from "@/__generated__/graphql";
 import { Grid } from "@mui/material";
-import React from "react";
+import * as React from "react";
 import { useHistory } from "react-router-dom";
 
 type LibrarySearchControllerProps = {

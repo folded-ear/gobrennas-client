@@ -21,7 +21,8 @@ import IngredientItem from "@/views/IngredientItem";
 import { ListItemText } from "@mui/material";
 import Input from "@mui/material/Input";
 import classnames from "classnames";
-import React, { createRef, PureComponent, ReactNode, RefObject } from "react";
+import * as React from "react";
+import { createRef, PureComponent, ReactNode, RefObject } from "react";
 
 interface Props {
     depth: number;

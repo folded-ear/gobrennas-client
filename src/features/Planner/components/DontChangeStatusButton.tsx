@@ -5,7 +5,7 @@ import PlanItemStatus, {
 import { BfsId } from "@/global/types/identity";
 import { coloredButton } from "@/views/common/colors";
 import { ButtonProps } from "@mui/material";
-import React from "react";
+import * as React from "react";
 
 const buttonLookup = new Map<
     PlanItemStatus,

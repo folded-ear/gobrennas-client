@@ -9,7 +9,7 @@ import ClientId from "@/util/ClientId";
 import promiseWellSizedFile from "@/util/promiseWellSizedFile";
 import { RippedLO } from "@/util/ripLoadObject";
 import LoadingIndicator from "@/views/common/LoadingIndicator";
-import React from "react";
+import * as React from "react";
 import { useQueryClient } from "react-query";
 
 interface Props {

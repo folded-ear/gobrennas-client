@@ -6,7 +6,7 @@ import { ClearIcon, CookIcon } from "@/views/common/icons";
 import { Chip, ChipProps, Divider, Menu, MenuItem } from "@mui/material";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import { Maybe } from "graphql/jsutils/Maybe";
-import React from "react";
+import * as React from "react";
 import { useHistory } from "react-router-dom";
 import { PlanBucket } from "../data/planStore";
 

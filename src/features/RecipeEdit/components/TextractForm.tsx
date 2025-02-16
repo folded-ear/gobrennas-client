@@ -1,7 +1,7 @@
 import TextractFormAugment from "@/features/RecipeEdit/components/TextractFormAugment";
 import { DraftRecipe } from "@/global/types/types";
 import { Button, ButtonGroup } from "@mui/material";
-import React from "react";
+import * as React from "react";
 
 type TextractFormProps = {
     updateDraft: (key: string, value: any) => void;

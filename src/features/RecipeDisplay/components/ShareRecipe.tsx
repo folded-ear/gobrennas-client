@@ -6,7 +6,7 @@ import { RippedLO } from "@/util/ripLoadObject";
 import { ShareIcon } from "@/views/common/icons";
 import ModalButton from "@/views/ModalButton";
 import { Box, Button, CircularProgress, TextField } from "@mui/material";
-import React from "react";
+import * as React from "react";
 
 type ShareRecipeProps = {
     recipe: Pick<Recipe, "id">;

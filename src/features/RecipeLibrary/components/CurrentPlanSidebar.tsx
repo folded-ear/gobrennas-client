@@ -34,7 +34,8 @@ import {
 import { CSSObject, styled } from "@mui/material/styles";
 import withStyles from "@mui/styles/withStyles";
 import { Maybe } from "graphql/jsutils/Maybe";
-import React, { ReactElement } from "react";
+import * as React from "react";
+import { ReactElement } from "react";
 import LibraryStore from "../data/LibraryStore";
 
 const drawerWidth = 220;

@@ -16,7 +16,8 @@ import {
     Typography,
 } from "@mui/material";
 import { makeStyles } from "@mui/styles";
-import React, { ReactNode } from "react";
+import * as React from "react";
+import { ReactNode } from "react";
 
 const useStyles = makeStyles({
     rotateRight: {

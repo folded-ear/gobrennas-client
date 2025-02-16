@@ -2,7 +2,7 @@ import { LibraryIcon, TextractIcon } from "@/views/common/icons";
 import { Box, Button, ButtonProps } from "@mui/material";
 import { Theme } from "@mui/material/styles";
 import { makeStyles } from "@mui/styles";
-import React from "react";
+import * as React from "react";
 
 const useStyles = makeStyles((theme: Theme) => ({
     trigger: {

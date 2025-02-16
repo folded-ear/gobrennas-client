@@ -5,7 +5,7 @@ import { CloseIcon } from "@/views/common/icons";
 import { Alert, IconButton, Snackbar } from "@mui/material";
 import { SnackbarCloseReason } from "@mui/material/Snackbar/Snackbar";
 import { makeStyles } from "@mui/styles";
-import React from "react";
+import * as React from "react";
 
 const useStyles = makeStyles(() => ({
     close: {

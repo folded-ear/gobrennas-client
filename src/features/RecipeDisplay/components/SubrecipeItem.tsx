@@ -11,7 +11,8 @@ import {
     TypographyProps,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
-import React, { useCallback } from "react";
+import * as React from "react";
+import { useCallback } from "react";
 import CookedItButton from "../../Planner/components/CookedItButton";
 import IngredientDirectionsRow from "./IngredientDirectionsRow";
 

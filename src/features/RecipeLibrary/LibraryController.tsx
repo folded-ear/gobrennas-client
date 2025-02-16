@@ -9,7 +9,8 @@ import { ScalingProvider } from "@/util/ScalingContext";
 import LoadingIndicator from "@/views/common/LoadingIndicator";
 import { LibrarySearchScope } from "@/__generated__/graphql";
 import { Container as Content, useScrollTrigger } from "@mui/material";
-import React, { useState } from "react";
+import * as React from "react";
+import { useState } from "react";
 import { useHistory } from "react-router-dom";
 
 /**

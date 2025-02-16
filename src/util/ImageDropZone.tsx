@@ -3,7 +3,7 @@ import { AddPhotoIcon, NoPhotoIcon } from "@/views/common/icons";
 import ImageOrPreview from "@/views/common/ImageOrPreview";
 import { makeStyles } from "@mui/styles";
 import clsx from "clsx";
-import React from "react";
+import * as React from "react";
 
 const useStyles = makeStyles((theme) => ({
     label: ({ notOnPaper }: StyleProps) => ({

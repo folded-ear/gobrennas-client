@@ -13,7 +13,7 @@ import {
     Typography,
 } from "@mui/material";
 import { makeStyles } from "@mui/styles";
-import React from "react";
+import * as React from "react";
 import { useQuery } from "react-query";
 
 const useStyles = makeStyles((theme) => ({

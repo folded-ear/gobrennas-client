@@ -7,7 +7,7 @@ import LibraryStore from "@/features/RecipeLibrary/data/LibraryStore";
 import { BfsId, bfsIdEq, Identified } from "@/global/types/identity";
 import { Ingredient } from "@/global/types/types";
 import { RippedLO } from "@/util/ripLoadObject";
-import React from "react";
+import * as React from "react";
 import { RouteComponentProps } from "react-router";
 import { useLoadedPlan } from "../RecipeDisplay/hooks/useLoadedPlan";
 import { PlanItem } from "./data/planStore";

@@ -7,7 +7,8 @@ import { LinkIcon } from "@/views/common/icons";
 import Quantity from "@/views/common/Quantity";
 import { Chip, Grid, IconButton } from "@mui/material";
 import makeStyles from "@mui/styles/makeStyles";
-import React, { ReactNode } from "react";
+import * as React from "react";
+import { ReactNode } from "react";
 import { useHistory } from "react-router-dom";
 
 const useStyles = makeStyles(() => ({
