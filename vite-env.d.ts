@@ -1,3 +1,4 @@
+// noinspection JSUnusedGlobalSymbols
 interface ImportMetaEnv {
     readonly BUILD_TIMESTAMP: string;
     readonly VITE_THEME_COLOR: string;
