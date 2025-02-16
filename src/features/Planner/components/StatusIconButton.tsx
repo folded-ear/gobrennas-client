@@ -4,27 +4,31 @@ import PlanItemStatus, {
     getIconForStatus,
 } from "@/features/Planner/data/PlanItemStatus";
 import { BfsId } from "@/global/types/identity";
-import { coloredIconButton } from "@/views/common/colors";
-import { IconButton, IconButtonProps, Tooltip } from "@mui/material";
+import { coloredButton, coloredIconButton } from "@/views/common/colors";
+import { IconButtonProps, Tooltip } from "@mui/material";
 
-const buttonLookup = {};
-function findButton(
-    next: PlanItemStatus,
-    curr: PlanItemStatus,
-): typeof IconButton {
-    if (!buttonLookup.hasOwnProperty(next)) {
-        buttonLookup[next] = {};
+const buttonLookup = new Map<
+    PlanItemStatus,
+    Map<PlanItemStatus, ReturnType<typeof coloredButton>>
+>();
+
+function findButton(next: PlanItemStatus, curr: PlanItemStatus) {
+    if (!buttonLookup.has(next)) {
+        buttonLookup.set(next, new Map());
     }
-    if (!buttonLookup[next].hasOwnProperty(curr)) {
-        buttonLookup[next][curr] = coloredIconButton(
-            getColorForStatus(next),
-            getColorForStatus(curr),
+    // Type assertion is safe due to defaulting above.
+    const inner = buttonLookup.get(next)!;
+    if (!inner.has(curr)) {
+        inner.set(
+            curr,
+            coloredIconButton(getColorForStatus(next), getColorForStatus(curr)),
         );
     }
-    return buttonLookup[next][curr];
+    // Type assertion is safe due to defaulting above.
+    return inner.get(curr)!;
 }
 
-interface Props extends Omit<IconButtonProps, "id"> {
+interface Props extends Omit<IconButtonProps, "id" | "color"> {
     next: PlanItemStatus;
     current?: PlanItemStatus;
     id?: BfsId;
