@@ -5,8 +5,10 @@ import * as React from "react";
 import { useCallback, useLayoutEffect, useState } from "react";
 
 export default function PopperEditCell(
-    props: GridRenderEditCellParams<any, string[]> & {
-        renderControl: (inputRef: React.Ref<any>) => React.ReactNode;
+    props: GridRenderEditCellParams<never, string[]> & {
+        renderControl: (
+            inputRef: React.Ref<HTMLInputElement>,
+        ) => React.ReactNode;
     },
 ) {
     const { renderControl, colDef, hasFocus } = props;

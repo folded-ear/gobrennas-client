@@ -17,6 +17,7 @@ type Props = {
     hideDivider?: boolean;
     dragId?: UniqueIdentifier;
     noDrag?: boolean;
+    classes: { root: string; over: string; dragging: string };
 } & Omit<ListItemProps, "prefix">;
 
 const Item = ({
@@ -30,7 +31,7 @@ const Item = ({
     dragId: explicitDragId,
     noDrag = false,
     ...props
-}: Props & { classes: any }) => {
+}: Props) => {
     const droppable = explicitDragId != null;
     const dragId = droppable ? explicitDragId : ClientId.next();
     const draggable = droppable && !noDrag;

@@ -4,7 +4,7 @@ import { Button, ButtonGroup } from "@mui/material";
 import * as React from "react";
 
 type TextractFormProps = {
-    updateDraft: (key: string, value: any) => void;
+    updateDraft: (key: string, value: unknown) => void;
     onMultilinePaste: (idx: number, text: string) => void;
     draft: DraftRecipe;
 };

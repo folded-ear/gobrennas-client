@@ -1,12 +1,12 @@
+import { ItemStyles } from "@/features/Planner/components/withItemStyles";
 import PlanItemStatus from "@/features/Planner/data/PlanItemStatus";
 import type { BfsId } from "@/global/types/identity";
 
 export type TupleProps = {
     active?: boolean;
-    // CSS classes from withItemStyles
-    classes: Record<
-        "acquiring" | "active" | "deleting" | "question" | "text",
-        string
+    classes: Pick<
+        ItemStyles,
+        "acquiring" | "active" | "deleting" | "question" | "text"
     >;
 };
 

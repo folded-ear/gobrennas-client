@@ -15,11 +15,11 @@ import * as React from "react";
 
 type SearchRecipesProps = {
     isSearchFloating: boolean;
-    unsavedFilter: any;
+    unsavedFilter: string;
     onSearchChange: React.ChangeEventHandler<HTMLInputElement>;
     onSearch: React.EventHandler<React.MouseEvent | React.KeyboardEvent>;
     onClear: React.MouseEventHandler;
-    scope: any;
+    scope: LibrarySearchScope;
     toggleScope: React.ChangeEventHandler<HTMLInputElement>;
 };
 

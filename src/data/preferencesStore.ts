@@ -118,7 +118,7 @@ class PreferencesStore extends ReduceStore<State, FluxAction> {
     }
 
     getActiveShoppingPlans(): BfsId[] {
-        let plans = <Maybe<Array<any> | string>>(
+        let plans = <Maybe<Array<BfsId> | string>>(
             this.getState().get(PrefNames.ACTIVE_SHOPPING_PLANS)
         );
         if (plans == null || typeof plans === "string" || plans.length === 0) {

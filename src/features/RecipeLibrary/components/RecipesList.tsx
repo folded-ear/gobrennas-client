@@ -1,5 +1,6 @@
 import { MessagePaper } from "@/features/RecipeLibrary/components/MessagePaper";
 import { RecipeCard as TRecipeCard } from "@/features/RecipeLibrary/types";
+import { UserType } from "@/global/types/identity";
 import FoodingerFab from "@/views/common/FoodingerFab";
 import { AddRecipeIcon } from "@/views/common/icons";
 import LazyInfinite from "@/views/common/LazyInfinite";
@@ -10,7 +11,7 @@ import { Grid } from "@mui/material";
 import { useHistory } from "react-router-dom";
 
 interface RecipesListProps {
-    me: any; // todo
+    me: UserType;
     filter?: string;
     scope?: LibrarySearchScope;
     isLoading: boolean;

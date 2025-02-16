@@ -1,6 +1,8 @@
-export function extractRecipePhoto(recipe: any) {
-    // todo: remove
-    if (!recipe || !recipe.photo) return null;
+import { Recipe } from "@/global/types/types";
+
+export function extractRecipePhoto(recipe: Recipe) {
+    if (!recipe?.photo) return null;
+    // noinspection SuspiciousTypeOfGuard
     if (typeof recipe.photo === "string") {
         // REST supplied
         return {

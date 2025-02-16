@@ -4,7 +4,7 @@ import * as React from "react";
 import { NavLink, NavLinkProps } from "react-router-dom";
 import { ItemIcon } from "./Navigation.elements";
 
-interface NavItemProps extends ListItemButtonProps<any, NavLinkProps> {
+interface NavItemProps extends ListItemButtonProps<NavLink, NavLinkProps> {
     expanded: boolean;
     icon: React.ReactNode;
     title: string;

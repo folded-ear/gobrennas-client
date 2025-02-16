@@ -4,7 +4,9 @@ import DontChangeStatusButton from "@/features/Planner/components/DontChangeStat
 import Item from "@/features/Planner/components/Item";
 import PlanItemBucketChip from "@/features/Planner/components/PlanItemBucketChip";
 import StatusIconButton from "@/features/Planner/components/StatusIconButton";
-import withItemStyles from "@/features/Planner/components/withItemStyles";
+import withItemStyles, {
+    ItemStyles,
+} from "@/features/Planner/components/withItemStyles";
 import PlanItemStatus from "@/features/Planner/data/PlanItemStatus";
 import {
     isDoNotRecognize,
@@ -13,7 +15,8 @@ import {
     isQuestionable,
     isSection,
 } from "@/features/Planner/data/plannerUtils";
-import planStore, { PlanBucket } from "@/features/Planner/data/planStore";
+import planStore, { Plan, PlanBucket } from "@/features/Planner/data/planStore";
+import { ItemData } from "@/features/Planner/PlannerController";
 import CollapseIconButton from "@/global/components/CollapseIconButton";
 import LoadingIconButton from "@/views/common/LoadingIconButton";
 import PlaceholderIconButton from "@/views/common/PlaceholderIconButton";
@@ -26,14 +29,14 @@ import { createRef, PureComponent, ReactNode, RefObject } from "react";
 
 interface Props {
     depth: number;
-    plan: any;
-    item: any;
+    plan: Plan;
+    item: ItemData;
     loading?: boolean | undefined;
     active?: boolean | undefined;
     selected?: boolean | undefined;
     buckets?: PlanBucket[];
     ancestorDeleting?: boolean | undefined;
-    classes: any;
+    classes: ItemStyles;
 }
 
 class PlanItem extends PureComponent<Props> {
@@ -272,7 +275,7 @@ class PlanItem extends PureComponent<Props> {
                 <DontChangeStatusButton
                     key="delete"
                     id={item.id}
-                    next={item._next_status}
+                    next={item._next_status!}
                 />
             ) : (
                 <StatusIconButton

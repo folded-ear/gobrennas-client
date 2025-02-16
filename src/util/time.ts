@@ -6,7 +6,7 @@ export const toMilliseconds = (time?: number) => {
 };
 
 export const fromMilliseconds = (time?: number) => {
-    if (!time) return null;
+    if (time == null) return null;
     return time / (60 * 1000);
 };
 

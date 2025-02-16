@@ -12,7 +12,7 @@ import { RouteComponentProps } from "react-router";
 import { useLoadedPlan } from "../RecipeDisplay/hooks/useLoadedPlan";
 import { PlanItem } from "./data/planStore";
 
-interface ItemData extends PlanItem {
+export interface ItemData extends PlanItem {
     ingredient?: Ingredient;
     fromRecipe?: boolean;
 }

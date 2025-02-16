@@ -8,6 +8,7 @@ import LoadObjectMap from "@/util/LoadObjectMap";
 import { ripLoadObject, RippedLO } from "@/util/ripLoadObject";
 import { fromMilliseconds } from "@/util/time";
 import { ReduceStore } from "flux/utils";
+import { Maybe } from "graphql/jsutils/Maybe";
 
 export interface SendToPlanPayload {
     recipeId: BfsId;
@@ -20,8 +21,8 @@ interface State {
 }
 
 function adaptTime<T extends Ingredient>(recipe: T): T;
-function adaptTime(recipe: any) {
-    if (!recipe.totalTime) return recipe;
+function adaptTime(recipe: { totalTime?: Maybe<number> }) {
+    if (recipe.totalTime == null) return recipe;
     return {
         ...recipe,
         totalTime: fromMilliseconds(recipe.totalTime),

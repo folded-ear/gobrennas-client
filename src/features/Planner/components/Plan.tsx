@@ -19,7 +19,7 @@ import { ItemTuple } from "../PlannerController";
 import DragContainer, { Horiz, Vert } from "./DragContainer";
 
 interface Props {
-    allPlans: any;
+    allPlans: Array<Pick<TPlan, "id" | "name" | "color">>;
     loading: boolean;
     activePlan: RippedLO<TPlan>;
     planDetailVisible: boolean;
