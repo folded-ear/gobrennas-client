@@ -28,7 +28,7 @@ const GET_ME = gql(`query me {
 
 const ProfileContext = createContext<Profile>(undefined);
 
-type Props = PropsWithChildren<unknown>;
+type Props = PropsWithChildren;
 
 export const ProfileProvider: React.FC<Props> = ({ children }) => {
     const profile: Profile = useAdaptingQuery(

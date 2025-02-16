@@ -9,7 +9,7 @@ import React, {
 
 const AuthTokenContext = createContext("");
 
-type Props = PropsWithChildren<unknown>;
+type Props = PropsWithChildren;
 
 export const AuthTokenProvider: React.FC<Props> = ({ children }) => {
     const token = useMemo(() => getCookie(COOKIE_AUTH_TOKEN), []);

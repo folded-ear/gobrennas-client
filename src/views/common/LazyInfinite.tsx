@@ -3,7 +3,7 @@ import debounce from "@/util/debounce";
 import * as React from "react";
 import { PropsWithChildren } from "react";
 
-interface Props extends PropsWithChildren<unknown> {
+interface Props extends PropsWithChildren {
     onNeedMore(): void;
 
     complete?: boolean;

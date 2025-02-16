@@ -4,7 +4,7 @@ import { Box, useScrollTrigger } from "@mui/material";
 import * as React from "react";
 import { CSSProperties, PropsWithChildren } from "react";
 
-type Props = PropsWithChildren<unknown>;
+type Props = PropsWithChildren;
 
 export const SubHeader: React.FC<Props> = ({ children }) => {
     const windowSize = useWindowSize();

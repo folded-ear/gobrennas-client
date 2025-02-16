@@ -7,7 +7,7 @@ import { createContext, PropsWithChildren, useContext } from "react";
 
 const MobileContext = createContext(true);
 
-type Props = PropsWithChildren<unknown>;
+type Props = PropsWithChildren;
 
 export function IsMobileProvider({ children }: Props): React.ReactElement {
     const bound = useTheme().breakpoints.values.sm;

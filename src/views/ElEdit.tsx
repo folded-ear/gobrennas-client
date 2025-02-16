@@ -328,7 +328,7 @@ class ElEdit extends React.PureComponent<ElEditProps, ElEditState> {
     }
 }
 
-interface HunkProps extends PropsWithChildren<unknown> {
+interface HunkProps extends PropsWithChildren {
     className?: string;
 }
 

@@ -4,7 +4,7 @@ import Paper from "@mui/material/Paper";
 import * as React from "react";
 import { PropsWithChildren } from "react";
 
-interface Props extends PropsWithChildren<unknown> {
+interface Props extends PropsWithChildren {
     primary?: string;
 }
 
