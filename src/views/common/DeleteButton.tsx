@@ -41,18 +41,18 @@ const DeleteButton: React.FC<DeleteButtonProps> = ({
     ...props
 }) => {
     const [open, setOpen] = React.useState(false);
-    const handleOpen = (e) => {
+    const handleOpen = (e: React.MouseEvent) => {
         e.stopPropagation();
         setOpen(true);
         onClick && onClick();
     };
     const handleClose = () => setOpen(false);
-    const handleCancel = (e) => {
+    const handleCancel = (e: React.MouseEvent) => {
         e.stopPropagation();
         setOpen(false);
         onCancel && onCancel();
     };
-    const handleConfirm = (e) => {
+    const handleConfirm = (e: React.MouseEvent) => {
         e.stopPropagation();
         setOpen(false);
         onConfirm && onConfirm();
