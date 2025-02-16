@@ -10,7 +10,7 @@ export const getJsonItem = (key: string, storage = localStorage) => {
     }
 };
 
-type Replacer = (this: any, key: string, value: any) => any;
+type Replacer = (this: unknown, key: string, value: unknown) => unknown;
 
 export const setJsonItem = (
     key: string,
