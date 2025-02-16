@@ -35,20 +35,22 @@ export default function PopperEditCell(
                     top: 0,
                 }}
             />
-            {anchorEl && (
-                <Popper open anchorEl={anchorEl} placement="bottom-start">
-                    <Paper
-                        elevation={1}
-                        sx={{
-                            p: 1,
-                            minWidth: colDef.computedWidth,
-                            maxWidth: colDef.computedWidth * 2,
-                        }}
-                    >
-                        {renderControl(setInputRef)}
-                    </Paper>
-                </Popper>
-            )}
+            <Popper
+                open={!!anchorEl}
+                anchorEl={anchorEl}
+                placement="bottom-start"
+            >
+                <Paper
+                    elevation={1}
+                    sx={{
+                        p: 1,
+                        minWidth: colDef.computedWidth,
+                        maxWidth: colDef.computedWidth * 2,
+                    }}
+                >
+                    {renderControl(setInputRef)}
+                </Paper>
+            </Popper>
         </div>
     );
 }
