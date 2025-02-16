@@ -20,7 +20,7 @@ import RecipeEditController from "./features/RecipeEdit/RecipeEditController";
 import Profile from "./features/UserProfile/components/Profile";
 import Landing from "./views/Landing";
 
-interface BfsRouteComponentProps extends RouteComponentProps {
+export interface BfsRouteComponentProps extends RouteComponentProps {
     readonly authenticated: boolean;
 }
 
