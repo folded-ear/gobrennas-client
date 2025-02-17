@@ -5,6 +5,7 @@ import SendToPlan from "@/features/RecipeLibrary/components/SendToPlan";
 import { RecipeCard } from "@/features/RecipeLibrary/types";
 import { TaskBar, TaskBarButton } from "@/global/elements/taskbar.elements";
 import { LinkTitle } from "@/global/elements/typography.elements";
+import { BfsId } from "@/global/types/identity";
 import { EditIcon, ViewIcon } from "@/views/common/icons";
 import {
     NanoCardContent,
@@ -34,7 +35,7 @@ export const NanoCard: React.FC<RecipeListItemProps> = ({
         recipe.labels &&
         recipe.labels.filter((label) => label.indexOf("--") !== 0);
 
-    const handleClick = (planId: number, scale?: number) => {
+    const handleClick = (planId: BfsId, scale?: number) => {
         dispatcher.dispatch({
             type: ActionType.RECIPE__SEND_TO_PLAN,
             recipeId: recipe.id,

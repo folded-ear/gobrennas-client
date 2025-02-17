@@ -4,7 +4,6 @@ import PlanItemStatus from "@/features/Planner/data/PlanItemStatus";
 import {
     BfsId,
     bfsIdEq,
-    BfsStringId,
     ensureString,
     includesBfsId,
 } from "@/global/types/identity";
@@ -91,9 +90,9 @@ export interface PlanItem extends BasePlanItem {
     parentId: BfsId;
     status: PlanItemStatus;
     quantity?: Maybe<number>;
-    uomId?: Maybe<BfsStringId>;
+    uomId?: Maybe<BfsId>;
     units?: Maybe<string>;
-    ingredientId?: Maybe<BfsStringId>;
+    ingredientId?: Maybe<BfsId>;
     preparation?: Maybe<string>;
     // client-side
     _expanded?: Maybe<boolean>;

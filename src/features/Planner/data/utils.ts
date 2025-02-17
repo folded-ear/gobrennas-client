@@ -16,7 +16,6 @@ import {
 import {
     BfsId,
     bfsIdEq,
-    BfsStringId,
     ensureString,
     includesBfsId,
     indexOfBfsId,
@@ -31,10 +30,10 @@ import dotProp from "dot-prop-immutable";
 import { Maybe } from "graphql/jsutils/Maybe";
 import invariant from "invariant";
 
-const AT_END = ("AT_END_" + ClientId.next()) as BfsStringId;
+const AT_END = ("AT_END_" + ClientId.next()) as BfsId;
 
-const statusUpdatesToFlush = new Map<BfsStringId, StatusChange>();
-let tasksToRename = new Set<BfsStringId>();
+const statusUpdatesToFlush = new Map<BfsId, StatusChange>();
+let tasksToRename = new Set<BfsId>();
 
 export interface StatusChange {
     status: PlanItemStatus;
@@ -185,7 +184,7 @@ export function tasksCreated(
 
 export function listCreated(
     state: State,
-    clientId: BfsStringId,
+    clientId: BfsId,
     id: BfsId,
     plan: Plan,
 ): State {
@@ -358,7 +357,7 @@ function getSubtaskIds(state: State, parentId: BfsId): BfsId[] {
 
 export function flushTasksToRename(state: State): State {
     if (tasksToRename.size === 0) return state;
-    const requeue = new Set<BfsStringId>();
+    const requeue = new Set<BfsId>();
     for (const id of tasksToRename) {
         const task = taskForId(state, id) as PlanItem;
         if (!ClientId.is(id)) {
@@ -564,7 +563,7 @@ function unqueueTaskId(id: BfsId): void {
     statusUpdatesToFlush.delete(ensureString(id));
 }
 
-function doTaskDelete(state: State, id: BfsStringId): State {
+function doTaskDelete(state: State, id: BfsId): State {
     unqueueTaskId(id);
     PlanApi.deleteItem(id);
     return state;
@@ -605,7 +604,7 @@ function isEmpty(taskOrString: Named | string): boolean {
 
 function queueStatusUpdate(
     state: State,
-    id: BfsStringId,
+    id: BfsId,
     change: StatusChange,
 ): State {
     const { status } = change;
@@ -1139,7 +1138,7 @@ export function sortActivePlanByBucket(state: State): State {
 
 export function doInteractiveStatusChange(
     state: State,
-    id: BfsStringId,
+    id: BfsId,
     change: PlanItemStatus | StatusChange,
 ): State {
     if (typeof change === "string") {

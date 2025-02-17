@@ -32,7 +32,7 @@ import {
     LOAD_PLANS,
 } from "@/features/Planner/data/queries";
 import { StatusChange, TreeMutationSpec } from "@/features/Planner/data/utils";
-import { BfsId, BfsStringId, ensureString } from "@/global/types/identity";
+import { BfsId, ensureString } from "@/global/types/identity";
 import { ShareInfo } from "@/global/types/types";
 import { client } from "@/providers/ApolloClient";
 import promiseFlux, {
@@ -105,7 +105,7 @@ const PlanApi = {
             client.refetchQueries({ include: [GET_PLANS] });
         }),
 
-    setPlanGrant: (id: BfsStringId, userId: BfsId, accessLevel: AccessLevel) =>
+    setPlanGrant: (id: BfsId, userId: BfsId, accessLevel: AccessLevel) =>
         promiseFlux(
             client.mutate({
                 mutation: SET_PLAN_GRANT,
@@ -122,7 +122,7 @@ const PlanApi = {
             }),
         ),
 
-    clearPlanGrant: (id: BfsStringId, userId: BfsId) =>
+    clearPlanGrant: (id: BfsId, userId: BfsId) =>
         promiseFlux(
             client.mutate({
                 mutation: REVOKE_PLAN_GRANT,

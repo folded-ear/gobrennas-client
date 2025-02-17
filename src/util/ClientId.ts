@@ -1,4 +1,4 @@
-import { BfsStringId } from "@/global/types/identity";
+import { BfsId } from "@/global/types/identity";
 
 const PREFIX =
     Date.now().toString(36) +
@@ -10,7 +10,7 @@ const PREFIX =
 let counter = 0;
 
 const ClientId = {
-    next(): BfsStringId {
+    next(): BfsId {
         return PREFIX + (++counter).toString(36);
     },
 

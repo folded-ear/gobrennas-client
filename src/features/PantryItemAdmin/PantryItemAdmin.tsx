@@ -8,7 +8,6 @@ import {
 import { useRenamePantryItem } from "@/data/hooks/useRenamePantryItem";
 import { useSetPantryItemLabels } from "@/data/hooks/useSetPantryItemLabels";
 import { useSetPantryItemSynonyms } from "@/data/hooks/useSetPantryItemSynonyms";
-import { ensureString } from "@/global/types/identity";
 import { SortDir } from "@/__generated__/graphql";
 import { ApolloError } from "@apollo/client";
 import {
@@ -194,7 +193,8 @@ export default function PantryItemAdmin() {
         }
         const confirmMsg = `Irrevocably combine these ${selectionModel.length} selected items?`;
         if (!window.confirm(confirmMsg)) return;
-        combineItems(selectionModel.map(ensureString))
+        // these are already IDs, but the grid's types don't let you say that.
+        combineItems(selectionModel.map((id) => id.toString()))
             .then(() => {
                 refetch();
                 setSelectionModel([]);

@@ -20,7 +20,7 @@ export default function useAllPlansRLO() {
                     let ownerId = p.acl?.ownerId ?? Number.MAX_SAFE_INTEGER;
                     let ownerName = "";
                     if (bfsIdEq(ownerId, myId)) {
-                        ownerId = 0;
+                        ownerId = "";
                     } else {
                         const rlo = friendStore.getFriendRlo(ownerId);
                         if (rlo.data) {

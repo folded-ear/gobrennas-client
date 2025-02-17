@@ -7,7 +7,7 @@ import DragContainer, {
 } from "@/features/Planner/components/DragContainer";
 import { Plan as TPlan } from "@/features/Planner/data/planStore";
 import CollapseIconButton from "@/global/components/CollapseIconButton";
-import { BfsId, bfsIdEq, BfsStringId } from "@/global/types/identity";
+import { BfsId, bfsIdEq } from "@/global/types/identity";
 import type { Quantity } from "@/global/types/types";
 import { useIsMobile } from "@/providers/IsMobile";
 import FoodingerFab from "@/views/common/FoodingerFab";
@@ -39,7 +39,7 @@ export interface CoreItemTuple extends ItemProps {
 export interface IngredientTuple extends CoreItemTuple {
     expanded: boolean;
     storeOrder?: number;
-    itemIds: BfsStringId[];
+    itemIds: BfsId[];
     quantities: Quantity[];
 }
 
