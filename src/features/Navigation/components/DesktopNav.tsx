@@ -57,7 +57,6 @@ export const DesktopNav: React.FC<DesktopNavProps> = ({
                     <Logo expanded={expanded} onClick={onExpand} />
                     <NavItem
                         to="/library"
-                        value="library"
                         icon={<LibraryIcon />}
                         title="Library"
                         expanded={expanded}
@@ -65,7 +64,6 @@ export const DesktopNav: React.FC<DesktopNavProps> = ({
                     />
                     <NavItem
                         to="/plan"
-                        value="plan"
                         icon={<PlanIcon />}
                         title="Plan"
                         expanded={expanded}
@@ -73,7 +71,6 @@ export const DesktopNav: React.FC<DesktopNavProps> = ({
                     />
                     <NavItem
                         to="/shop"
-                        value="shop"
                         icon={<ShopIcon />}
                         title="Shop"
                         expanded={expanded}
@@ -115,7 +112,6 @@ export const DesktopNav: React.FC<DesktopNavProps> = ({
                     {devMode && (
                         <NavItem
                             to="/pantry-item-admin"
-                            value="pantry-item-admin"
                             icon={<PantryItemAdminIcon />}
                             title="Pantry Item Admin"
                             expanded={expanded}

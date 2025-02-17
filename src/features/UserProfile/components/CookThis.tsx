@@ -17,6 +17,14 @@ export const CookThis = () => {
         )}&_='+Date.now();s.id='foodinger-import-bookmarklet';void(document.body.appendChild(s));`;
     }, [token]);
 
+    // The ref is passed in as 'any', because Typescript can't identify that the
+    // Button component is going render as an <a> in the DOM. The ref needs to
+    // be of that type for setting its 'href' attribute, so have to introduce an
+    // assertion somewhere. I picked here.
+    //
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const cookThisRefAsAny = cookThisRef as any;
+
     return (
         <>
             <Typography variant={"h2"} id={"cook-this"}>
@@ -28,14 +36,8 @@ export const CookThis = () => {
                 when viewing a recipe online.
             </p>
             <p style={{ textAlign: "center" }}>
-                {/*
-            The ref is passed in as 'any', because Typescript can't identify
-            that the Button component is going render as an <a> in the DOM. We
-            need the ref to be of that type for setting its 'href' attribute, so
-            have to introduce an assertion somewhere. I picked here.
-            */}
                 <Button
-                    ref={cookThisRef as any}
+                    ref={cookThisRefAsAny}
                     component={"a"}
                     href="#"
                     variant={import.meta.env.PROD ? "contained" : "outlined"}

@@ -7,6 +7,11 @@ import { Redirect } from "react-router-dom";
 
 type LoginProps = {
     authenticated: boolean;
+    // I cannot figure out what React Router wants here. Anything that makes its
+    // components happy ... doesn't line up with what already works in the
+    // browser and has for years. So just gonna punt.
+    //
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     location: any;
 };
 

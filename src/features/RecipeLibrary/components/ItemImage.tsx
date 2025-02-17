@@ -1,4 +1,4 @@
-import { Photo } from "@/__generated__/graphql";
+import { Photo } from "@/features/RecipeLibrary/types";
 import { CardMedia, SxProps, useTheme } from "@mui/material";
 import { CommonProps } from "@mui/material/OverridableComponent";
 import { Theme } from "@mui/material/styles";

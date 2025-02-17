@@ -1,4 +1,5 @@
 import { Recipe, User } from "@/__generated__/graphql";
+import { Maybe } from "graphql/jsutils/Maybe";
 
 export type RecipeCard = Pick<
     Recipe,
@@ -13,3 +14,8 @@ export type RecipeCard = Pick<
 > & {
     owner: Pick<User, "id" | "name" | "email" | "imageUrl">;
 };
+
+export interface Photo {
+    url: string;
+    focus: Maybe<number[]>;
+}
