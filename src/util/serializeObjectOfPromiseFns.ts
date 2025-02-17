@@ -13,12 +13,13 @@
  *  passed object, which will queue up invocations to the wrapped object's
  *  functions.
  */
-type Fn<A extends unknown[], R> = (...args: A) => Promise<R>;
-const serializeObjectOfPromiseFns = <T extends Record<string, Fn<any, any>>>(
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type Fn<A extends unknown[] = any, R = any> = (...args: A) => Promise<R>;
+const serializeObjectOfPromiseFns = <T extends Record<string, Fn>>(
     obj: T,
 ): T => {
     let queue: Promise<unknown> = Promise.resolve();
-    const result = {} as Record<string, Fn<any, any>>;
+    const result = {} as Record<string, Fn>;
     const enqueue = <A extends unknown[], R>(
         fn: Fn<A, R>,
         ...args: A
