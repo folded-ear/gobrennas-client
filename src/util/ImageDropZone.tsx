@@ -29,23 +29,23 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-type ImageDropZoneProps = {
+interface ImageDropZoneProps {
     onImage(f: File): void;
-    image?: any;
-    maxWidth?: any;
-    maxHeight?: any;
+    image?: string | Blob;
+    maxWidth?: number | undefined;
+    maxHeight?: number | undefined;
     className?: string;
     disabled?: boolean;
-    style?: any;
+    style?: React.CSSProperties;
     notOnPaper?: boolean;
-};
+}
 
 type StyleProps = Pick<
     ImageDropZoneProps,
     "maxWidth" | "maxHeight" | "notOnPaper"
 >;
 
-const ImageDropZone: React.FC<ImageDropZoneProps> = ({
+const ImageDropZone = ({
     disabled = undefined,
     image = undefined,
     onImage,
@@ -54,7 +54,7 @@ const ImageDropZone: React.FC<ImageDropZoneProps> = ({
     className: labelClassName = undefined,
     notOnPaper,
     ...props
-}) => {
+}: ImageDropZoneProps) => {
     const classes = useStyles({ notOnPaper, maxWidth, maxHeight });
     const [value, setValue] = React.useState([]);
     const inputId = React.useMemo(() => `drop-zone-${ClientId.next()}`, []);
