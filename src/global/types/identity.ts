@@ -1,9 +1,12 @@
 import { User } from "@/__generated__/graphql";
 import { Maybe } from "graphql/jsutils/Maybe";
-import PropTypes from "prop-types";
 
 export type BfsId = string | number;
 export type BfsStringId = string;
+
+export interface Identified<ID = BfsId> {
+    id: ID;
+}
 
 export type UserType = Pick<
     User,
@@ -41,8 +44,3 @@ export function includesBfsId(ids: BfsId[], id: Maybe<BfsId>): boolean {
 export function indexOfBfsId(ids: BfsId[], id: Maybe<BfsId>): number {
     return ids.findIndex((el) => bfsIdEq(id, el));
 }
-
-export const bfsIdType = PropTypes.oneOfType([
-    PropTypes.number,
-    PropTypes.string,
-]);

@@ -1,13 +1,18 @@
-import { Button, ButtonProps, IconButton, Tooltip } from "@mui/material";
+import { DeleteIcon } from "@/views/common/icons";
+import {
+    Button,
+    ButtonProps,
+    IconButton,
+    IconButtonProps,
+    Tooltip,
+} from "@mui/material";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogTitle from "@mui/material/DialogTitle";
-import { DeleteIcon } from "@/views/common/icons";
 import * as React from "react";
-import { MouseEventHandler } from "react";
 
 interface Props {
-    onClick: MouseEventHandler;
+    onClick: IconButtonProps["onClick"];
 }
 
 const DeleteIconButton: React.FC<Props> = ({ onClick, ...props }) => (
@@ -36,18 +41,18 @@ const DeleteButton: React.FC<DeleteButtonProps> = ({
     ...props
 }) => {
     const [open, setOpen] = React.useState(false);
-    const handleOpen = (e) => {
+    const handleOpen = (e: React.MouseEvent) => {
         e.stopPropagation();
         setOpen(true);
         onClick && onClick();
     };
     const handleClose = () => setOpen(false);
-    const handleCancel = (e) => {
+    const handleCancel = (e: React.MouseEvent) => {
         e.stopPropagation();
         setOpen(false);
         onCancel && onCancel();
     };
-    const handleConfirm = (e) => {
+    const handleConfirm = (e: React.MouseEvent) => {
         e.stopPropagation();
         setOpen(false);
         onConfirm && onConfirm();

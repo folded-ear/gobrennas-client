@@ -1,14 +1,14 @@
+import { ClearIcon, SearchIcon } from "@/views/common/icons";
+import { LibrarySearchScope } from "@/__generated__/graphql";
+import { IconButton, InputAdornment, Toolbar } from "@mui/material";
 import InputBase from "@mui/material/Input";
 import * as React from "react";
 import { useState } from "react";
-import { SearchScope } from "@/features/LibrarySearch/types";
-import { IconButton, InputAdornment, Toolbar } from "@mui/material";
-import { ClearIcon, SearchIcon } from "@/views/common/icons";
 
 type SearchInputProps = {
     searchTerm: string;
-    scope: SearchScope;
-    onSearch: (term: string, scope: SearchScope) => void;
+    scope: LibrarySearchScope;
+    onSearch: (term: string, scope: LibrarySearchScope) => void;
 };
 
 export const SearchInput: React.FC<SearchInputProps> = ({
@@ -19,7 +19,7 @@ export const SearchInput: React.FC<SearchInputProps> = ({
     const [searchText, setSearchText] = useState<string>(searchTerm);
 
     const onClear = React.useCallback(
-        (e) => {
+        (e: React.MouseEvent) => {
             e.preventDefault();
             e.stopPropagation();
             setSearchText("");

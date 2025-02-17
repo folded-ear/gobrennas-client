@@ -1,7 +1,7 @@
-import { IconButton, IconButtonProps, Tooltip } from "@mui/material";
-import { CookIcon } from "@/views/common/icons";
-import React from "react";
 import { BfsId } from "@/global/types/identity";
+import { CookIcon } from "@/views/common/icons";
+import { IconButton, IconButtonProps, Tooltip } from "@mui/material";
+import * as React from "react";
 import { useHistory } from "react-router-dom";
 
 interface Props extends IconButtonProps {

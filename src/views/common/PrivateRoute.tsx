@@ -1,22 +1,31 @@
-import React from "react";
-import { Redirect, Route } from "react-router-dom";
+import { UserType } from "@/global/types/identity";
 import {
     useIsProfileInitializing,
     useIsProfilePending,
     useProfile,
 } from "@/providers/Profile";
-import LoadingIndicator from "./LoadingIndicator";
+import { BfsRoute, BfsRouteComponentProps } from "@/routes";
 import { Location } from "history";
-import { BfsRoute } from "@/routes";
+import * as React from "react";
+import { Redirect, Route } from "react-router-dom";
+import LoadingIndicator from "./LoadingIndicator";
 
-function AuthenticatedHelper({ render, ...route }) {
-    return render({
-        currentUser: useProfile(),
-        ...route,
-    });
+interface AuthHelperProps extends BfsRouteComponentProps {
+    render: (
+        props: { currentUser: UserType } & BfsRouteComponentProps,
+    ) => React.ReactNode;
 }
 
-const AnonymousHelper: React.FC<{ location: Location }> = ({ location }) => {
+const AuthenticatedHelper = ({ render, ...route }: AuthHelperProps) => (
+    <>
+        {render({
+            currentUser: useProfile(),
+            ...route,
+        })}
+    </>
+);
+
+const AnonymousHelper = ({ location }: { location: Location }) => {
     if (useIsProfileInitializing()) {
         return null;
     }
@@ -50,6 +59,7 @@ const PrivateRoute: React.FC<Props> = ({
                     return (
                         <AuthenticatedHelper
                             render={(props) => <Component {...props} />}
+                            authenticated
                             {...route}
                             {...props}
                         />

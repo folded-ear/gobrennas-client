@@ -1,5 +1,5 @@
 import { IconButton, IconButtonProps } from "@mui/material";
-import React from "react";
+import * as React from "react";
 import { LoadingIcon } from "./icons";
 
 const LoadingIconButton: React.FC<IconButtonProps> = (props) => {

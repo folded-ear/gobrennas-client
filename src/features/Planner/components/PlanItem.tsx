@@ -1,6 +1,3 @@
-import { ListItemText } from "@mui/material";
-import Input from "@mui/material/Input";
-import classnames from "classnames";
 import dispatcher, { ActionType } from "@/data/dispatcher";
 import CookButton from "@/features/Planner/components/CookButton";
 import DontChangeStatusButton from "@/features/Planner/components/DontChangeStatusButton";
@@ -18,24 +15,20 @@ import {
 } from "@/features/Planner/data/plannerUtils";
 import planStore, { PlanBucket } from "@/features/Planner/data/planStore";
 import CollapseIconButton from "@/global/components/CollapseIconButton";
-import {
-    ChangeEvent,
-    ClipboardEvent,
-    createRef,
-    MouseEvent,
-    PureComponent,
-    ReactNode,
-    RefObject,
-} from "react";
 import LoadingIconButton from "@/views/common/LoadingIconButton";
 import PlaceholderIconButton from "@/views/common/PlaceholderIconButton";
 import IngredientItem from "@/views/IngredientItem";
+import { ListItemText } from "@mui/material";
+import Input from "@mui/material/Input";
+import classnames from "classnames";
+import * as React from "react";
+import { createRef, PureComponent, ReactNode, RefObject } from "react";
 
 interface Props {
     depth: number;
     plan: any;
     item: any;
-    loading: boolean;
+    loading?: boolean | undefined;
     active?: boolean | undefined;
     selected?: boolean | undefined;
     buckets?: PlanBucket[];
@@ -57,7 +50,7 @@ class PlanItem extends PureComponent<Props> {
         this.inputRef = createRef();
     }
 
-    onChange(e: ChangeEvent<HTMLInputElement>) {
+    onChange(e: React.ChangeEvent<HTMLInputElement>) {
         const { value } = e.target;
         const { item } = this.props;
         dispatcher.dispatch({
@@ -67,14 +60,14 @@ class PlanItem extends PureComponent<Props> {
         });
     }
 
-    onCopy(e: ClipboardEvent) {
+    onCopy(e: React.ClipboardEvent) {
         if (!planStore.isMultiItemSelection()) return;
         e.preventDefault();
         const text = planStore.getSelectionAsTextBlock();
         e.clipboardData.setData("text", text);
     }
 
-    onPaste(e: ClipboardEvent) {
+    onPaste(e: React.ClipboardEvent) {
         let text = e.clipboardData.getData("text");
         if (text == null) return;
         text = text.trim();
@@ -87,8 +80,8 @@ class PlanItem extends PureComponent<Props> {
         });
     }
 
-    onKeyDown(e) {
-        const { value, selectionStart } = e.target;
+    onKeyDown(e: React.KeyboardEvent) {
+        const { value, selectionStart } = e.target as HTMLInputElement;
         const { key, ctrlKey, shiftKey } = e;
         // eslint-disable-next-line default-case
         switch (key) {
@@ -188,7 +181,7 @@ class PlanItem extends PureComponent<Props> {
         }
     }
 
-    onClick(e: MouseEvent) {
+    onClick(e: React.MouseEvent) {
         const { active, item } = this.props;
         if (active) return;
         e.preventDefault();
@@ -201,7 +194,7 @@ class PlanItem extends PureComponent<Props> {
         });
     }
 
-    onToggleExpanded(e?) {
+    onToggleExpanded(e?: React.MouseEvent) {
         if (e) e.stopPropagation();
         dispatcher.dispatch({
             type: ActionType.PLAN__TOGGLE_EXPANDED,

@@ -1,4 +1,6 @@
 /* eslint-disable */
+// noinspection JSUnusedGlobalSymbols
+
 type LoadObjectOperation =
     | "NONE"
     | "CREATING"

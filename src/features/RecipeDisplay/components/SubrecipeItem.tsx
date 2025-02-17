@@ -1,3 +1,8 @@
+import { BreadcrumbLink } from "@/global/components/BreadcrumbLink";
+import CollapseIconButton from "@/global/components/CollapseIconButton";
+import { IIngredient, Subrecipe } from "@/global/types/types";
+import { ScalingProvider } from "@/util/ScalingContext";
+import { formatDuration } from "@/util/time";
 import {
     Divider,
     Grid,
@@ -5,22 +10,18 @@ import {
     Typography,
     TypographyProps,
 } from "@mui/material";
-import React, { useCallback } from "react";
-import { formatDuration } from "@/util/time";
-import CollapseIconButton from "@/global/components/CollapseIconButton";
-import IngredientDirectionsRow from "./IngredientDirectionsRow";
-import { ScalingProvider } from "@/util/ScalingContext";
-import type { Subrecipe } from "@/global/types/types";
-import { BreadcrumbLink } from "@/global/components/BreadcrumbLink";
-import CookedItButton from "../../Planner/components/CookedItButton";
 import { styled } from "@mui/material/styles";
+import * as React from "react";
+import { useCallback } from "react";
+import CookedItButton from "../../Planner/components/CookedItButton";
+import IngredientDirectionsRow from "./IngredientDirectionsRow";
 
 const ActiveTypography = styled(Typography)<TypographyProps>({
     cursor: "pointer",
 });
 
 interface Props {
-    recipe: Subrecipe;
+    recipe: Subrecipe<IIngredient>;
     loggedIn?: boolean;
 }
 

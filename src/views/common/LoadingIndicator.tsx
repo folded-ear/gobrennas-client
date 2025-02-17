@@ -1,9 +1,10 @@
 import { Typography } from "@mui/material";
 import CircularProgress from "@mui/material/CircularProgress";
 import Paper from "@mui/material/Paper";
-import React, { PropsWithChildren } from "react";
+import * as React from "react";
+import { PropsWithChildren } from "react";
 
-interface Props extends PropsWithChildren<unknown> {
+interface Props extends PropsWithChildren {
     primary?: string;
 }
 

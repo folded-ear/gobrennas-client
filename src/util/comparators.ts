@@ -56,18 +56,29 @@ export const bucketComparator = (a: PlanBucket, b: PlanBucket) => {
 };
 
 /**
- * I compare two arrays, element by element, until there is a difference, or one
- * runs out of elements. The first pair-wise comparison that differs is the
- * result, otherwise the shorter array is considered less, otherwise they are
- * considered equal.
+ * I compare two arrays/tuples, element by element, until there is a difference,
+ * or one runs out of elements. The first pair-wise comparison that differs is
+ * the result, otherwise the shorter array is considered less, otherwise they
+ * are considered equal.
  */
-export const zippedComparator = (
-    a: Array<string>,
-    b: Array<string>,
-): number => {
+export function zippedComparator<T1, T2>(a: [T1, T2], b: [T1, T2]): number;
+export function zippedComparator<T1, T2, T3>(
+    a: [T1, T2, T3],
+    b: [T1, T2, T3],
+): number;
+export function zippedComparator<T1, T2, T3, T4>(
+    a: [T1, T2, T3, T4],
+    b: [T1, T2, T3, T4],
+): number;
+export function zippedComparator<T1, T2, T3, T4, T5>(
+    a: [T1, T2, T3, T4, T5],
+    b: [T1, T2, T3, T4, T5],
+): number;
+export function zippedComparator(a: string[], b: string[]): number;
+export function zippedComparator(a: string[], b: string[]): number {
     for (let i = 0, l = Math.min(a.length, b.length); i < l; i++) {
         const c = humanStringComparator(a[i], b[i]);
         if (c !== 0) return c;
     }
     return a.length - b.length;
-};
+}

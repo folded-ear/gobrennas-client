@@ -1,10 +1,10 @@
-import React from "react";
+import * as React from "react";
+import { ImgHTMLAttributes } from "react";
 
-interface Props {
+interface Props extends Omit<ImgHTMLAttributes<HTMLImageElement>, "src"> {
     src:
         | string // actual URL
         | Blob; // including File
-    [p: string]: any;
 }
 
 /**

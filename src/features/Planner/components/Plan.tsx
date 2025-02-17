@@ -1,21 +1,22 @@
-import { AddIcon } from "@/views/common/icons";
-import { List } from "@mui/material";
 import dispatcher, { ActionType } from "@/data/dispatcher";
 import LoadingItem from "@/features/Planner/components/LoadingItem";
 import PlanHeader from "@/features/Planner/components/PlanHeader";
 import PlanItem from "@/features/Planner/components/PlanItem";
 import { isParent } from "@/features/Planner/data/plannerUtils";
-import FoodingerFab from "@/views/common/FoodingerFab";
-import LoadingIndicator from "@/views/common/LoadingIndicator";
-import PageBody from "@/views/common/PageBody";
-import DragContainer, { Horiz, Vert } from "./DragContainer";
-import { ItemTuple } from "../PlannerController";
 import {
     Plan as TPlan,
     PlanItem as PlanItemType,
 } from "@/features/Planner/data/planStore";
-import { BfsId, bfsIdEq } from "@/global/types/identity";
+import { BfsId, bfsIdEq, Identified } from "@/global/types/identity";
 import { RippedLO } from "@/util/ripLoadObject";
+import FoodingerFab from "@/views/common/FoodingerFab";
+import { AddIcon } from "@/views/common/icons";
+import LoadingIndicator from "@/views/common/LoadingIndicator";
+import PageBody from "@/views/common/PageBody";
+import { List } from "@mui/material";
+import * as React from "react";
+import { ItemTuple } from "../PlannerController";
+import DragContainer, { Horiz, Vert } from "./DragContainer";
 
 interface Props {
     allPlans: any;
@@ -23,8 +24,8 @@ interface Props {
     activePlan: RippedLO<TPlan>;
     planDetailVisible: boolean;
     itemTuples: ItemTuple[];
-    isItemActive: (it: ItemTuple) => boolean;
-    isItemSelected: (it: ItemTuple) => boolean;
+    isItemActive: (it: Identified) => boolean;
+    isItemSelected: (it: Identified) => boolean;
 }
 
 function moveSubtreeInternal(
@@ -71,7 +72,7 @@ function Plan({
         return <LoadingIndicator primary="Loading plan..." />;
     }
 
-    const handleAddNew = (e) => {
+    const handleAddNew = (e: React.MouseEvent) => {
         e.preventDefault();
         dispatcher.dispatch({
             type: ActionType.PLAN__CREATE_ITEM_AT_END,
@@ -95,7 +96,8 @@ function Plan({
     const buckets = plan && plan.buckets;
     const canExpand = itemTuples.some((t) => t.data && isParent(t.data));
 
-    function renderItem(item, i = -1) {
+    function renderItem(item: ItemTuple | undefined, i = -1) {
+        if (!item) return null; // this soaks up when the active dragging item is deleted
         const { data, loading, depth, ancestorDeleting } = item;
         if (data) {
             return (

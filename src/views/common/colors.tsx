@@ -1,6 +1,6 @@
 import { Button, IconButton } from "@mui/material";
-import withStyles from "@mui/styles/withStyles";
 import { deepPurple } from "@mui/material/colors";
+import withStyles from "@mui/styles/withStyles";
 
 export type StringColor = string;
 
@@ -22,12 +22,12 @@ export interface MuiColorFamily {
 }
 
 export {
-    yellow as questionColor,
-    lightBlue as selectionColor,
     green as completeColor,
     grey as neededColor,
+    lightBlue as selectionColor,
     lime as acquiredColor,
     red as deleteColor,
+    yellow as questionColor,
 } from "@mui/material/colors";
 
 export const coloredIconButton = (

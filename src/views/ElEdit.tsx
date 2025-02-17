@@ -1,29 +1,30 @@
-import { Autocomplete, Grid, InputAdornment, TextField } from "@mui/material";
-import { ErrorIcon, OkIcon } from "./common/icons";
-import React, { PropsWithChildren } from "react";
 import ItemApi, { RecognitionResult } from "@/data/ItemApi";
+import { BfsId } from "@/global/types/identity";
+import { IngredientRef } from "@/global/types/types";
 import debounce from "@/util/debounce";
 import processRecognizedItem from "@/util/processRecognizedItem";
-import type { IngredientRef } from "@/global/types/types";
-import { BfsId } from "@/global/types/identity";
-import LoadingIconButton from "./common/LoadingIconButton";
+import { Autocomplete, Grid, InputAdornment, TextField } from "@mui/material";
 import { Maybe } from "graphql/jsutils/Maybe";
+import * as React from "react";
+import { PropsWithChildren } from "react";
+import { ErrorIcon, OkIcon } from "./common/icons";
+import LoadingIconButton from "./common/LoadingIconButton";
 
-const doRecog = (raw) => raw != null && raw.trim().length >= 2;
+const doRecog = (raw: Maybe<string>) => raw != null && raw.trim().length >= 2;
 
-interface Target {
+export interface WithTarget<V> {
     target: {
         name: string;
-        value: IngredientRef;
+        value: V;
     };
 }
 
 interface ElEditProps {
     name: string;
-    value: IngredientRef;
+    value: IngredientRef<unknown>;
     placeholder?: string;
 
-    onChange(e: Target): void;
+    onChange(e: WithTarget<IngredientRef<unknown>>): void;
 
     onPressEnter(): void;
 
@@ -54,7 +55,7 @@ interface ElEditState {
 class ElEdit extends React.PureComponent<ElEditProps, ElEditState> {
     private _mounted: boolean;
     private readonly ref: React.RefObject<HTMLInputElement>;
-    private readonly recognizeDebounced: (...args) => void;
+    private readonly recognizeDebounced: () => void;
 
     constructor(args: ElEditProps) {
         super(args);
@@ -79,7 +80,7 @@ class ElEdit extends React.PureComponent<ElEditProps, ElEditState> {
         this._mounted = false;
     }
 
-    componentDidUpdate(prevProps) {
+    componentDidUpdate(prevProps: ElEditProps) {
         if (this.props.value.raw === prevProps.value.raw) return;
         this.recognizeDebounced();
     }
@@ -159,7 +160,7 @@ class ElEdit extends React.PureComponent<ElEditProps, ElEditState> {
         });
     }
 
-    handleChange(e, val) {
+    handleChange(e: unknown, val: string) {
         const { name, onChange, value } = this.props;
         if (value.raw === val) return;
         onChange({
@@ -175,7 +176,7 @@ class ElEdit extends React.PureComponent<ElEditProps, ElEditState> {
         this.setState({ suggestions: undefined });
     }
 
-    onPaste(e) {
+    onPaste(e: React.ClipboardEvent<HTMLDivElement>) {
         const { onMultilinePaste } = this.props;
         if (onMultilinePaste == null) return; // don't care!
         let text = e.clipboardData.getData("text");
@@ -186,8 +187,8 @@ class ElEdit extends React.PureComponent<ElEditProps, ElEditState> {
         onMultilinePaste(text);
     }
 
-    onKeyDown(e) {
-        const { value } = e.target;
+    onKeyDown(e: React.KeyboardEvent<HTMLDivElement>) {
+        const { value } = e.target as HTMLInputElement;
         const { key } = e;
         const { onDelete, onPressEnter } = this.props;
         const hasSuggestions = this._hasSuggestions();
@@ -327,7 +328,7 @@ class ElEdit extends React.PureComponent<ElEditProps, ElEditState> {
     }
 }
 
-interface HunkProps extends PropsWithChildren<unknown> {
+interface HunkProps extends PropsWithChildren {
     className?: string;
 }
 

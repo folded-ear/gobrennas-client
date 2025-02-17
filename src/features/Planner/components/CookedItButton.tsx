@@ -1,11 +1,12 @@
-import { ButtonProps, Stack, Tooltip } from "@mui/material";
-import { CookedItIcon, HelpIcon } from "@/views/common/icons";
-import React, { useCallback } from "react";
-import { FromPlanItem } from "@/global/types/types";
 import dispatcher, { ActionType } from "@/data/dispatcher";
 import PlanItemStatus from "@/features/Planner/data/PlanItemStatus";
+import { FromPlanItem } from "@/global/types/types";
+import { CookedItIcon, HelpIcon } from "@/views/common/icons";
 import SplitButton, { SelectOption } from "@/views/common/SplitButton";
+import { ButtonProps, Stack, Tooltip } from "@mui/material";
 import { DateTime } from "luxon";
+import * as React from "react";
+import { useCallback } from "react";
 import { useHistory } from "react-router-dom";
 
 type Props = Omit<ButtonProps, "onClick"> & {
@@ -19,7 +20,7 @@ const CookButton: React.FC<Props> = ({ recipe, stayOnPage }) => {
     const disabled =
         recipe.ancestorCompleting || recipe.deleting || recipe.ancestorDeleting;
     const handleClick = useCallback(
-        (e) => {
+        (e: React.MouseEvent) => {
             e.preventDefault();
             dispatcher.dispatch({
                 type: recipe.completing
@@ -35,7 +36,7 @@ const CookButton: React.FC<Props> = ({ recipe, stayOnPage }) => {
     );
 
     const handleSelect = React.useCallback(
-        (e, option: SelectOption<Date>) => {
+        (e: React.MouseEvent, option: SelectOption<Date>) => {
             e.preventDefault();
             dispatcher.dispatch({
                 type: ActionType.PLAN__COMPLETE_PLAN_ITEM,

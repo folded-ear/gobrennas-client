@@ -1,10 +1,5 @@
-import React, {
-    createContext,
-    PropsWithChildren,
-    useContext,
-    useState,
-} from "react";
 import { Maybe } from "graphql/jsutils/Maybe";
+import { createContext, PropsWithChildren, useContext, useState } from "react";
 
 const OPTIONS = [
     { label: "¼", value: 0.25 },
@@ -15,14 +10,12 @@ const OPTIONS = [
 
 const ScaleContext = createContext<number>(1);
 
-const SetScaleContext = createContext<Maybe<(Option) => void>>(null);
-
-type Props = PropsWithChildren<unknown>;
+const SetScaleContext = createContext<Maybe<(scale: number) => void>>(null);
 
 /**
  * Creates a new scaling context, initially scaled to 1 (no scaling).
  */
-export const ScalingProvider: React.FC<Props> = ({ children }) => {
+export const ScalingProvider = ({ children }: PropsWithChildren) => {
     const [scale, setScale] = useState(1);
     return (
         <ScaleContext.Provider value={scale}>
@@ -37,7 +30,7 @@ export const ScalingProvider: React.FC<Props> = ({ children }) => {
  * If a scaling context is already open, do nothing. Otherwise, create a new one
  * as if ScalingProvider had been called.
  */
-export const ReentrantScalingProvider: React.FC<Props> = ({ children }) => {
+export const ReentrantScalingProvider = ({ children }: PropsWithChildren) => {
     const ctx = useContext(SetScaleContext);
     return ctx == null ? (
         <ScalingProvider>{children}</ScalingProvider>

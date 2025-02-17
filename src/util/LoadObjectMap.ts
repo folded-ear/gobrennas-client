@@ -1,4 +1,6 @@
 /* eslint-disable */
+// noinspection JSUnusedGlobalSymbols
+
 import Immutable from "immutable";
 import LoadObject from "./LoadObject";
 

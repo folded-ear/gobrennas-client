@@ -1,11 +1,11 @@
-import React from "react";
-import { match, Redirect } from "react-router-dom";
-import LoadingIndicator from "@/views/common/LoadingIndicator";
+import { useGetFullRecipe } from "@/data/hooks/useGetFullRecipe";
 import RecipeDetail from "@/features/RecipeDisplay/components/RecipeDetail";
 import { ShareInfo } from "@/global/types/types";
-import { useGetFullRecipe } from "@/data/hooks/useGetFullRecipe";
+import LoadingIndicator from "@/views/common/LoadingIndicator";
 import NotFound from "@/views/common/NotFound";
 import Login from "@/views/user/Login";
+import * as React from "react";
+import { match, Redirect } from "react-router-dom";
 
 const DoTheDance: React.FC<ShareInfo> = ({ secret, id }) => {
     const { loading, error, data: fullRecipe } = useGetFullRecipe(id, secret);

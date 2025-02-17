@@ -1,9 +1,9 @@
-import React, { MouseEventHandler } from "react";
-import { IconButton, Tooltip } from "@mui/material";
 import { CloseIcon } from "@/views/common/icons";
+import { IconButton, IconButtonProps, Tooltip } from "@mui/material";
+import * as React from "react";
 
 interface Props {
-    onClick?: MouseEventHandler;
+    onClick: IconButtonProps["onClick"];
 }
 
 const CloseButton: React.FC<Props> = ({ onClick }) => {

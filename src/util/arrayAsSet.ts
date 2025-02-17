@@ -1,5 +1,5 @@
 export function addDistinct<T>(items: T[], newItem: T) {
-    verifySingleType(items); // todo: remove
+    verifySingleType(items, newItem); // todo: remove
     if (items == null) return [newItem];
     if (items.indexOf(newItem) >= 0) return items;
     return items.concat(newItem);
@@ -44,14 +44,17 @@ export function intersection<T>(left: T[] | undefined, right: T[] | undefined) {
     return result;
 }
 
-function verifySingleType(...args) {
+function verifySingleType(...args: unknown[]): void {
     const allTypes = new Set<string>();
-    for (let a of args) {
+    for (const a of args) {
         if (a == null) continue;
-        if (typeof a === "string" || a[Symbol.iterator] == null) a = [a];
-        for (const it of a) {
-            if (it == null) continue;
-            allTypes.add(typeof it);
+        if (typeof a === "object" && Symbol.iterator in a) {
+            for (const it of a as Iterable<unknown>) {
+                if (it == null) continue;
+                allTypes.add(typeof it);
+            }
+        } else {
+            allTypes.add(typeof a);
         }
     }
     if (allTypes.size > 1) {

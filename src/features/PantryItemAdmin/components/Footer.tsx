@@ -1,7 +1,7 @@
-import { GridFooterContainer, GridSlotProps } from "@mui/x-data-grid";
 import { Box, Grid } from "@mui/material";
-import SelectionStatus, { SelectionStatusProps } from "./SelectionStatus";
+import { GridFooterContainer, GridSlotProps } from "@mui/x-data-grid";
 import Paging, { PagingProps } from "./Paging";
+import SelectionStatus, { SelectionStatusProps } from "./SelectionStatus";
 
 export default function Footer({
     selectedCount,

@@ -1,24 +1,24 @@
-import * as React from "react";
+import { BfsId, bfsIdEq } from "@/global/types/identity";
+import { DraftRecipe, Recipe } from "@/global/types/types";
 import ClientId from "@/util/ClientId";
-import { DraftRecipe, FormValue, Recipe } from "@/global/types/types";
 import dotProp from "dot-prop-immutable";
-import { bfsIdEq } from "@/global/types/identity";
+import * as React from "react";
 
 type UseRecipeFormReturn = {
     draft: DraftRecipe;
-    onUpdate: (key: string, value: FormValue) => void;
+    onUpdate: (key: string, value: unknown) => void;
     onAddIngredientRef: (idx?: number, text?: string) => void;
     onEditIngredientRef: (idx: number) => void;
     onDeleteIngredientRef: (idx: number) => void;
     onMoveIngredientRef: (
-        activeId: number,
-        targetId: number,
+        activeId: BfsId,
+        targetId: BfsId,
         above: boolean,
     ) => void;
     onMultilinePasteIngredientRefs: (idx: number, text: string) => void;
 };
 
-const buildDraft = (recipe: Recipe): DraftRecipe => {
+const buildDraft = (recipe: Recipe<unknown>): DraftRecipe => {
     return {
         ...recipe,
         ingredients: recipe.ingredients.map((ing) => ({
@@ -39,10 +39,10 @@ const buildNewIngredient = (raw?: string) => ({
     quantity: null,
 });
 
-export function useRecipeForm(recipe: Recipe): UseRecipeFormReturn {
+export function useRecipeForm(recipe: Recipe<unknown>): UseRecipeFormReturn {
     const [draft, setDraft] = React.useState(buildDraft(recipe));
 
-    const onUpdate = (key: string, value: FormValue) => {
+    const onUpdate = (key: string, value: unknown) => {
         setDraft((draft) => dotProp.set(draft, key, value));
     };
 
@@ -80,7 +80,11 @@ export function useRecipeForm(recipe: Recipe): UseRecipeFormReturn {
         setDraft(dotProp.set(draft, "ingredients", ings));
     };
 
-    const onMoveIngredientRef = (activeId, targetId, above) => {
+    const onMoveIngredientRef = (
+        activeId: BfsId,
+        targetId: BfsId,
+        above: boolean,
+    ) => {
         const ings =
             draft.ingredients == null ? [] : draft.ingredients.slice(0);
         const idxActive = ings.findIndex((it) => bfsIdEq(it.id, activeId));

@@ -1,9 +1,9 @@
-import { SectionHeadline } from "@/global/elements/typography.elements";
-import { RecipeGrid } from "@/views/recipeCollections/RecipeGrid";
-import Button from "@mui/material/Button";
 import { useRecommendedRecipes } from "@/features/RecipeLibrary/hooks/useRecommendedRecipes";
+import { SectionHeadline } from "@/global/elements/typography.elements";
 import { useIsMobile } from "@/providers/IsMobile";
 import { useProfile } from "@/providers/Profile";
+import { RecipeGrid } from "@/views/recipeCollections/RecipeGrid";
+import Button from "@mui/material/Button";
 
 function Recommendations() {
     const isMobile = useIsMobile();

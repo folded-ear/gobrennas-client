@@ -1,3 +1,23 @@
+import dispatcher, { ActionType } from "@/data/dispatcher";
+import PlanSidebar from "@/features/Planner/components/PlanSidebar";
+import UserById from "@/features/Planner/components/UserById";
+import { Plan as TPlan } from "@/features/Planner/data/planStore";
+import CollapseIconButton from "@/global/components/CollapseIconButton";
+import { bfsIdEq } from "@/global/types/identity";
+import { useIsMobile } from "@/providers/IsMobile";
+import { useProfileId } from "@/providers/Profile";
+import {
+    AddIcon,
+    CollapseAll,
+    CollapseIcon,
+    EditIcon,
+    ExpandAll,
+    SortByBucketIcon,
+} from "@/views/common/icons";
+import LoadingIndicator from "@/views/common/LoadingIndicator";
+import SplitButton, { SelectOption } from "@/views/common/SplitButton";
+import MobilePlanSelector from "@/views/shop/MobilePlanSelector";
+import PlanAvatar from "@/views/shop/PlanAvatar";
 import {
     Box,
     Grid,
@@ -7,30 +27,11 @@ import {
     Tooltip,
     Typography,
 } from "@mui/material";
-import dispatcher, { ActionType } from "@/data/dispatcher";
-import PlanSidebar from "@/features/Planner/components/PlanSidebar";
-import UserById from "@/features/Planner/components/UserById";
-import React, { useState } from "react";
-import {
-    AddIcon,
-    CollapseAll,
-    CollapseIcon,
-    EditIcon,
-    ExpandAll,
-    SortByBucketIcon,
-} from "@/views/common/icons";
-import SplitButton, { SelectOption } from "@/views/common/SplitButton";
-import AddToCalendar from "./AddToCalendar";
-import CollapseIconButton from "@/global/components/CollapseIconButton";
-import { useIsMobile } from "@/providers/IsMobile";
-import MobilePlanSelector from "@/views/shop/MobilePlanSelector";
-import { NavPlanItem } from "../../Navigation/components/NavPlanItem";
+import * as React from "react";
+import { useState } from "react";
 import { useHistory } from "react-router-dom";
-import { useProfileId } from "@/providers/Profile";
-import { Plan as TPlan } from "@/features/Planner/data/planStore";
-import LoadingIndicator from "@/views/common/LoadingIndicator";
-import PlanAvatar from "@/views/shop/PlanAvatar";
-import { bfsIdEq } from "@/global/types/identity";
+import { NavPlanItem } from "../../Navigation/components/NavPlanItem";
+import AddToCalendar from "./AddToCalendar";
 
 const isValidName = (name: string) => name != null && name.trim().length > 0;
 
@@ -95,7 +96,7 @@ export default function PlanHeader({
         setShowAdd(false);
     };
 
-    const onDuplicate = (_, plan: SelectOption<never>) => {
+    const onDuplicate = (_: never, plan: SelectOption<never>) => {
         if (!isValidName(name)) return;
         dispatcher.dispatch({
             type: ActionType.PLAN__DUPLICATE_PLAN,

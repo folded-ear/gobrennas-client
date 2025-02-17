@@ -1,26 +1,26 @@
-import { Redirect, RouteProps } from "react-router-dom";
+import { SidebarDrawer as PlannerSidebar } from "@/features/Planner/components/Sidebar";
+import { PlannerController } from "@/features/Planner/PlannerController";
+import { CurrentPlanSidebar } from "@/features/RecipeLibrary/components/CurrentPlanSidebar";
+import { LibraryController } from "@/features/RecipeLibrary/LibraryController";
+import Foodinger from "@/views/Foodinger";
 import Planner from "@/views/Planner";
+import OAuth2RedirectHandler from "@/views/user/OAuth2RedirectHandler";
+import { Welcome } from "@/views/Welcome";
+import * as React from "react";
+import { RouteComponentProps } from "react-router";
+import { Redirect, RouteProps } from "react-router-dom";
+import Shop from "./containers/Shop";
+import PantryItemAdmin from "./features/PantryItemAdmin/PantryItemAdmin";
 import PlannedBucketController from "./features/RecipeDisplay/PlannedBucketController";
 import PlannedRecipeController from "./features/RecipeDisplay/PlannedRecipeController";
 import RecipeController from "./features/RecipeDisplay/RecipeController";
-import RecipeEditController from "./features/RecipeEdit/RecipeEditController";
-import Shop from "./containers/Shop";
 import { SharedRecipeController } from "./features/RecipeDisplay/SharedRecipeController";
-import Landing from "./views/Landing";
-import OAuth2RedirectHandler from "@/views/user/OAuth2RedirectHandler";
-import Profile from "./features/UserProfile/components/Profile";
-import Foodinger from "@/views/Foodinger";
 import { RecipeAddController } from "./features/RecipeEdit/RecipeAddController";
-import PantryItemAdmin from "./features/PantryItemAdmin/PantryItemAdmin";
-import { CurrentPlanSidebar } from "@/features/RecipeLibrary/components/CurrentPlanSidebar";
-import * as React from "react";
-import { RouteComponentProps } from "react-router";
-import { LibraryController } from "@/features/RecipeLibrary/LibraryController";
-import { SidebarDrawer as PlannerSidebar } from "@/features/Planner/components/Sidebar";
-import { Welcome } from "@/views/Welcome";
-import { PlannerController } from "@/features/Planner/PlannerController";
+import RecipeEditController from "./features/RecipeEdit/RecipeEditController";
+import Profile from "./features/UserProfile/components/Profile";
+import Landing from "./views/Landing";
 
-interface BfsRouteComponentProps extends RouteComponentProps {
+export interface BfsRouteComponentProps extends RouteComponentProps {
     readonly authenticated: boolean;
 }
 

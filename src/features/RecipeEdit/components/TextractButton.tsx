@@ -1,8 +1,8 @@
-import { Box, Button } from "@mui/material";
-import { makeStyles } from "@mui/styles";
 import { LibraryIcon, TextractIcon } from "@/views/common/icons";
-import React, { MouseEventHandler } from "react";
+import { Box, Button, ButtonProps } from "@mui/material";
 import { Theme } from "@mui/material/styles";
+import { makeStyles } from "@mui/styles";
+import * as React from "react";
 
 const useStyles = makeStyles((theme: Theme) => ({
     trigger: {
@@ -16,7 +16,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 }));
 
 interface Props {
-    onClick: MouseEventHandler;
+    onClick: ButtonProps["onClick"];
 }
 
 const TextractButton: React.FC<Props> = ({ onClick }) => {

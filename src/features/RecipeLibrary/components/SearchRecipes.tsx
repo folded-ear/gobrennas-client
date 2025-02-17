@@ -1,3 +1,6 @@
+import { SearchRecipesContainer } from "@/features/RecipeLibrary/components/SearchRecipes.elements";
+import { ClearIcon, SearchIcon } from "@/views/common/icons";
+import { LibrarySearchScope } from "@/__generated__/graphql";
 import {
     Button,
     Divider,
@@ -8,19 +11,16 @@ import {
     Switch,
     Toolbar,
 } from "@mui/material";
-import { ClearIcon, SearchIcon } from "@/views/common/icons";
-import { LibrarySearchScope } from "@/__generated__/graphql";
-import React from "react";
-import { SearchRecipesContainer } from "@/features/RecipeLibrary/components/SearchRecipes.elements";
+import * as React from "react";
 
 type SearchRecipesProps = {
     isSearchFloating: boolean;
     unsavedFilter: any;
-    onSearchChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-    onSearch: (e: any) => void;
-    onClear: (e: any) => void;
+    onSearchChange: React.ChangeEventHandler<HTMLInputElement>;
+    onSearch: React.EventHandler<React.MouseEvent | React.KeyboardEvent>;
+    onClear: React.MouseEventHandler;
     scope: any;
-    toggleScope: any;
+    toggleScope: React.ChangeEventHandler<HTMLInputElement>;
 };
 
 export const SearchRecipes = ({

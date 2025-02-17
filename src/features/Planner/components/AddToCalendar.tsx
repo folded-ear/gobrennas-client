@@ -1,8 +1,11 @@
-import React from "react";
-import { AddIcon, AddToCalendarIcon } from "@/views/common/icons";
-import type { Plan } from "@/features/Planner/data/planStore";
-import ModalButton from "@/views/ModalButton";
 import { API_BASE_URL } from "@/constants";
+import PlanApi from "@/features/Planner/data/PlanApi";
+import type { Plan } from "@/features/Planner/data/planStore";
+import { bfsIdEq, ensureString } from "@/global/types/identity";
+import { ShareInfo } from "@/global/types/types";
+import { RippedLO } from "@/util/ripLoadObject";
+import { AddIcon, AddToCalendarIcon } from "@/views/common/icons";
+import ModalButton from "@/views/ModalButton";
 import {
     Box,
     Button,
@@ -10,10 +13,7 @@ import {
     Divider,
     TextField,
 } from "@mui/material";
-import { RippedLO } from "@/util/ripLoadObject";
-import { bfsIdEq, ensureString } from "@/global/types/identity";
-import PlanApi from "@/features/Planner/data/PlanApi";
-import { ShareInfo } from "@/global/types/types";
+import * as React from "react";
 
 interface Props {
     plan: Plan;

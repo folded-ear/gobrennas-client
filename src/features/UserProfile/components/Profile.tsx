@@ -1,13 +1,13 @@
-import React from "react";
-import { useIsDeveloper, useLogoutHandler } from "@/providers/Profile";
-import User from "../../../views/user/User";
 import { CookThis } from "@/features/UserProfile/components/CookThis";
 import { Developer } from "@/features/UserProfile/components/Developer";
 import type { UserType } from "@/global/types/identity";
+import { useIsDeveloper, useLogoutHandler } from "@/providers/Profile";
 import { Box, Button, Grid, Paper, Stack, Typography } from "@mui/material";
-import { styled } from "@mui/material/styles";
 import Avatar from "@mui/material/Avatar";
+import { styled } from "@mui/material/styles";
+import * as React from "react";
 import { LogoutIcon } from "../../../views/common/icons";
+import User from "../../../views/user/User";
 
 const Info = styled(Box)({
     flex: 1,
@@ -25,7 +25,7 @@ const Profile: React.FC<Props> = ({ currentUser: user }) => {
     const isDeveloper = useIsDeveloper();
     const doLogout = useLogoutHandler();
 
-    const handleLogout = (e) => {
+    const handleLogout = (e: React.MouseEvent) => {
         e.preventDefault();
         e.stopPropagation();
         doLogout();

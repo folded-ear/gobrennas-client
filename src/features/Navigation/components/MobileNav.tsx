@@ -1,10 +1,10 @@
-import * as React from "react";
-import { BottomNavigation, Paper } from "@mui/material";
-import { LibraryIcon, PlanIcon, ShopIcon } from "@/views/common/icons";
-import { styled } from "@mui/material/styles";
 import { MobileNavItem } from "@/features/Navigation/components/MobileNavItem";
 import { useProfile } from "@/providers/Profile";
+import { LibraryIcon, PlanIcon, ShopIcon } from "@/views/common/icons";
 import User from "@/views/user/User";
+import { BottomNavigation, Paper } from "@mui/material";
+import { styled } from "@mui/material/styles";
+import * as React from "react";
 
 const NavWrapper = styled(Paper)(({ theme }) => ({
     position: "fixed",

@@ -1,5 +1,5 @@
-import { useEffect } from "react";
 import dispatcher, { ActionType } from "@/data/dispatcher";
+import { useEffect } from "react";
 import { useHistory } from "react-router-dom";
 
 export default function ImperativeFlux() {

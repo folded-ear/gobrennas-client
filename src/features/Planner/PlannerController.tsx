@@ -1,16 +1,16 @@
-import React from "react";
-import LibraryStore from "@/features/RecipeLibrary/data/LibraryStore";
-import { isExpanded } from "@/features/Planner/data/plannerUtils";
-import planStore from "@/features/Planner/data/planStore";
+import { useGetAllPlans } from "@/data/hooks/useGetAllPlans";
 import useFluxStore from "@/data/useFluxStore";
 import Plan from "@/features/Planner/components/Plan";
+import { isExpanded } from "@/features/Planner/data/plannerUtils";
+import planStore from "@/features/Planner/data/planStore";
+import LibraryStore from "@/features/RecipeLibrary/data/LibraryStore";
+import { BfsId, bfsIdEq, Identified } from "@/global/types/identity";
+import { Ingredient } from "@/global/types/types";
 import { RippedLO } from "@/util/ripLoadObject";
+import * as React from "react";
 import { RouteComponentProps } from "react-router";
 import { useLoadedPlan } from "../RecipeDisplay/hooks/useLoadedPlan";
-import { useGetAllPlans } from "@/data/hooks/useGetAllPlans";
 import { PlanItem } from "./data/planStore";
-import { Ingredient } from "@/global/types/types";
-import { bfsIdEq } from "@/global/types/identity";
 
 interface ItemData extends PlanItem {
     ingredient?: Ingredient;
@@ -22,7 +22,11 @@ export interface ItemTuple extends RippedLO<ItemData> {
     depth: number;
 }
 
-function listTheTree(id, ancestorDeleting = false, depth = 0): ItemTuple[] {
+function listTheTree(
+    id: BfsId,
+    ancestorDeleting = false,
+    depth = 0,
+): ItemTuple[] {
     const list: ItemTuple[] = planStore.getChildItemRlos(id).map((rlo) => ({
         ...rlo,
         ancestorDeleting,
@@ -72,13 +76,11 @@ export const PlannerController: React.FC<Props> = ({ match }) => {
             planDetailVisible: planStore.isPlanDetailVisible(),
             itemTuples: activePlan.data ? listTheTree(activePlan.data.id) : [],
             isItemActive: activeItem
-                ? (itemOrId) => bfsIdEq(itemOrId.id || itemOrId, activeItem.id)
+                ? (it: Identified) => bfsIdEq(it.id, activeItem.id)
                 : () => false,
             isItemSelected: selectedItems
-                ? (itemOrId) =>
-                      selectedItems.some((t) =>
-                          bfsIdEq(itemOrId.id || itemOrId, t.id),
-                      )
+                ? (it: Identified) =>
+                      selectedItems.some((t) => bfsIdEq(it.id, t.id))
                 : () => false,
         };
     }, [planStore, LibraryStore]);

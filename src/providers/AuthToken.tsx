@@ -1,15 +1,15 @@
+import { COOKIE_AUTH_TOKEN } from "@/constants";
+import { getCookie } from "@/util/cookies";
 import React, {
     createContext,
     PropsWithChildren,
     useContext,
     useMemo,
 } from "react";
-import { COOKIE_AUTH_TOKEN } from "@/constants";
-import { getCookie } from "@/util/cookies";
 
 const AuthTokenContext = createContext("");
 
-type Props = PropsWithChildren<unknown>;
+type Props = PropsWithChildren;
 
 export const AuthTokenProvider: React.FC<Props> = ({ children }) => {
     const token = useMemo(() => getCookie(COOKIE_AUTH_TOKEN), []);

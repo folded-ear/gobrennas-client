@@ -1,11 +1,11 @@
-import * as React from "react";
-import { Alert, IconButton, Snackbar } from "@mui/material";
-import { makeStyles } from "@mui/styles";
-import { CloseIcon } from "@/views/common/icons";
 import dispatcher, { ActionType } from "@/data/dispatcher";
 import snackBarStore, { Snack } from "@/data/snackBarStore";
 import useFluxStore from "@/data/useFluxStore";
+import { CloseIcon } from "@/views/common/icons";
+import { Alert, IconButton, Snackbar } from "@mui/material";
 import { SnackbarCloseReason } from "@mui/material/Snackbar/Snackbar";
+import { makeStyles } from "@mui/styles";
+import * as React from "react";
 
 const useStyles = makeStyles(() => ({
     close: {

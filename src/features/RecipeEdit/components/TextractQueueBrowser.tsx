@@ -1,19 +1,20 @@
+import TextractApi, { PendingJob } from "@/data/TextractApi";
+import { BfsId, indexOfBfsId } from "@/global/types/identity";
+import ImageDropZone from "@/util/ImageDropZone";
+import DeleteButton from "@/views/common/DeleteButton";
+import { CloseIcon } from "@/views/common/icons";
 import {
     Drawer,
     IconButton,
+    IconButtonProps,
     ImageList,
     ImageListItem,
     ImageListItemBar,
     Typography,
 } from "@mui/material";
 import { makeStyles } from "@mui/styles";
-import { CloseIcon } from "@/views/common/icons";
-import React, { MouseEventHandler } from "react";
-import DeleteButton from "@/views/common/DeleteButton";
-import ImageDropZone from "@/util/ImageDropZone";
+import * as React from "react";
 import { useQuery } from "react-query";
-import TextractApi, { PendingJob } from "@/data/TextractApi";
-import { BfsId, indexOfBfsId } from "@/global/types/identity";
 
 const useStyles = makeStyles((theme) => ({
     drawer: {
@@ -45,7 +46,7 @@ const useStyles = makeStyles((theme) => ({
 
 interface PassthroughProps {
     onSelect: (id: string) => void;
-    onClose: MouseEventHandler;
+    onClose: IconButtonProps["onClick"];
     onUpload: (photo: File) => void;
     onDelete: (id: string) => void;
     uploading: PendingJob[];

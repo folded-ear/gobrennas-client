@@ -1,12 +1,12 @@
-import React from "react";
+import { TaskBarButton } from "@/global/elements/taskbar.elements";
+import { BfsId } from "@/global/types/identity";
 import { FavoriteIcon, NotFavoriteIcon } from "@/views/common/icons";
+import * as React from "react";
 import {
     useIsFavorite,
     useMarkFavorite,
     useRemoveFavorite,
 } from "../data/queries";
-import { BfsId } from "@/global/types/identity";
-import { TaskBarButton } from "@/global/elements/taskbar.elements";
 
 interface Props {
     type: string;
@@ -18,7 +18,7 @@ const Indicator: React.FC<Props> = ({ type, id }) => {
     const markFavorite = useMarkFavorite(type);
     const favorite = useIsFavorite(id);
 
-    function handleClick(e) {
+    function handleClick(e: React.MouseEvent) {
         e.stopPropagation();
         e.preventDefault();
         if (favorite) {

@@ -1,6 +1,15 @@
+// @ts-expect-error Flux only has Flow types, not Typescript ones.
 import FluxContainerSubscriptions from "flux/lib/FluxContainerSubscriptions";
-import React from "react";
 import FluxReduceStore from "flux/lib/FluxReduceStore";
+import * as React from "react";
+
+type FluxStore = FluxReduceStore<unknown, unknown>;
+// lifted from FluxContainerSubscriptions.js.flow
+interface TFlow {
+    setStores(stores: Array<FluxStore>): void;
+    addListener(fn: () => void): void;
+    reset(): void;
+}
 
 /**
  * I replace Flux Utils' Container concept with a hook. This not only allows for
@@ -34,20 +43,20 @@ import FluxReduceStore from "flux/lib/FluxReduceStore";
  */
 function useFluxStore<S>(
     calculateState: () => S,
-    stores: FluxReduceStore<any, any>[],
-    deps: any[] = [],
+    stores: FluxStore[],
+    deps: React.DependencyList = [],
 ): S {
     const [state, setState] = React.useState(calculateState);
     React.useEffect(
         () => {
-            const subs = new FluxContainerSubscriptions();
+            const subs = new FluxContainerSubscriptions() as TFlow;
             subs.setStores(stores);
             subs.addListener(() => setState(calculateState));
             setState(calculateState);
             return () => subs.reset();
         },
         // eslint-disable-next-line react-hooks/exhaustive-deps
-        stores.concat(deps),
+        deps.concat(stores),
     );
     return state;
 }

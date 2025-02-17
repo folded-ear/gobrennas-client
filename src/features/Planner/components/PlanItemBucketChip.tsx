@@ -1,14 +1,14 @@
-import { ClearIcon, CookIcon } from "@/views/common/icons";
-import { Chip, ChipProps, Divider, Menu, MenuItem } from "@mui/material";
 import dispatcher, { ActionType } from "@/data/dispatcher";
 import getBucketLabel from "@/features/Planner/components/getBucketLabel";
-import React from "react";
-import { humanDate } from "@/util/time";
-import ListItemIcon from "@mui/material/ListItemIcon";
 import { BfsId, bfsIdEq } from "@/global/types/identity";
+import { humanDate } from "@/util/time";
+import { ClearIcon, CookIcon } from "@/views/common/icons";
+import { Chip, ChipProps, Divider, Menu, MenuItem } from "@mui/material";
+import ListItemIcon from "@mui/material/ListItemIcon";
 import { Maybe } from "graphql/jsutils/Maybe";
-import { PlanBucket } from "../data/planStore";
+import * as React from "react";
 import { useHistory } from "react-router-dom";
+import { PlanBucket } from "../data/planStore";
 
 interface BucketChipProps {
     planId: BfsId;
@@ -29,12 +29,12 @@ const BucketChip: React.FC<BucketChipProps> = ({
     offPlan,
     size = "small",
 }) => {
-    const [anchorEl, setAnchorEl] = React.useState(null);
+    const [anchorEl, setAnchorEl] = React.useState<Element | null>(null);
     const history = useHistory();
 
     if (buckets.length === 0) return null;
 
-    const handleClick = (event) => {
+    const handleClick = (event: React.MouseEvent) => {
         setAnchorEl(event.currentTarget);
     };
 

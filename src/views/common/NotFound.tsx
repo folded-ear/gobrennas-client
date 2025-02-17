@@ -1,6 +1,6 @@
 import { Box, Typography } from "@mui/material";
-import PageBody from "./PageBody";
 import { PropsWithChildren } from "react";
+import PageBody from "./PageBody";
 
 export default function NotFound({ children }: PropsWithChildren) {
     return (

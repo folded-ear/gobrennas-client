@@ -1,8 +1,8 @@
-import Fab from "@mui/material/Fab";
-import React, { PropsWithChildren } from "react";
 import dispatcher, { ActionType } from "@/data/dispatcher";
-import { styled } from "@mui/material/styles";
 import { useIsMobile } from "@/providers/IsMobile";
+import Fab, { FabProps } from "@mui/material/Fab";
+import { styled } from "@mui/material/styles";
+import * as React from "react";
 
 type AddFabProps = {
     isMobile?: boolean;
@@ -16,9 +16,7 @@ const AddFab = styled(Fab, {
     right: isMobile ? theme.spacing(1) : theme.spacing(4),
 }));
 
-type Props = PropsWithChildren<any>;
-
-const FoodingerFab: React.FC<Props> = ({ children, ...props }) => {
+const FoodingerFab: React.FC<FabProps> = ({ children, ...props }) => {
     const isMobile = useIsMobile();
     React.useEffect(() => {
         setTimeout(() =>

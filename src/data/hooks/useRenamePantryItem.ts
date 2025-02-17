@@ -1,6 +1,6 @@
-import { MutationResult, useMutation } from "@apollo/client";
 import { gql } from "@/__generated__";
 import { PantryItem, RenamePantryItemMutation } from "@/__generated__/graphql";
+import { MutationResult, useMutation } from "@apollo/client";
 import { useCallback } from "react";
 
 const RENAME_PANTRY_ITEM = gql(`

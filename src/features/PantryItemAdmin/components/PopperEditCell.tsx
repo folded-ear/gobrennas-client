@@ -1,8 +1,8 @@
+import { Paper } from "@mui/material";
+import Popper from "@mui/material/Popper";
 import { GridRenderEditCellParams } from "@mui/x-data-grid";
 import * as React from "react";
 import { useCallback, useLayoutEffect, useState } from "react";
-import Popper from "@mui/material/Popper";
-import { Paper } from "@mui/material";
 
 export default function PopperEditCell(
     props: GridRenderEditCellParams<any, string[]> & {
@@ -35,20 +35,22 @@ export default function PopperEditCell(
                     top: 0,
                 }}
             />
-            {anchorEl && (
-                <Popper open anchorEl={anchorEl} placement="bottom-start">
-                    <Paper
-                        elevation={1}
-                        sx={{
-                            p: 1,
-                            minWidth: colDef.computedWidth,
-                            maxWidth: colDef.computedWidth * 2,
-                        }}
-                    >
-                        {renderControl(setInputRef)}
-                    </Paper>
-                </Popper>
-            )}
+            <Popper
+                open={!!anchorEl}
+                anchorEl={anchorEl}
+                placement="bottom-start"
+            >
+                <Paper
+                    elevation={1}
+                    sx={{
+                        p: 1,
+                        minWidth: colDef.computedWidth,
+                        maxWidth: colDef.computedWidth * 2,
+                    }}
+                >
+                    {renderControl(setInputRef)}
+                </Paper>
+            </Popper>
         </div>
     );
 }

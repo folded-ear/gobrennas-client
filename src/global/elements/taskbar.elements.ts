@@ -1,5 +1,5 @@
-import { styled } from "@mui/material/styles";
 import { IconButton } from "@mui/material";
+import { styled } from "@mui/material/styles";
 
 export const TaskBar = styled("div")(({ theme }) => ({
     display: "flex",

@@ -1,11 +1,11 @@
-import { MutationResult, useMutation } from "@apollo/client";
+import throwAnyErrors from "@/util/throwAnyErrors";
 import { gql } from "@/__generated__";
 import {
     PantryItem,
     SetPantryItemLabelsMutation,
 } from "@/__generated__/graphql";
+import { MutationResult, useMutation } from "@apollo/client";
 import { useCallback } from "react";
-import throwAnyGraphQLErrors from "@/util/throwAnyGraphQLErrors";
 
 const SET_PANTRY_ITEM_LABELS = gql(`
 mutation setPantryItemLabels($id: ID!, $labels: [String!]!) {
@@ -35,7 +35,7 @@ export const useSetPantryItemLabels = (): [
                     labels,
                 },
             }).then(({ data, errors }) => {
-                throwAnyGraphQLErrors(errors);
+                throwAnyErrors(errors);
                 if (!data?.pantry?.setLabels) {
                     return Promise.reject("Empty set labels response");
                 }

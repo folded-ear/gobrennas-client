@@ -1,19 +1,24 @@
-import React from "react";
 import dispatcher, { ActionType } from "@/data/dispatcher";
 import PlanItemStatus, {
     getColorForStatus,
 } from "@/features/Planner/data/PlanItemStatus";
-import { coloredButton } from "@/views/common/colors";
 import { BfsId } from "@/global/types/identity";
+import { coloredButton } from "@/views/common/colors";
 import { ButtonProps } from "@mui/material";
+import * as React from "react";
 
-const buttonLookup = {}; // Map<next, Button>
-const findButton = (next) => {
-    if (!buttonLookup.hasOwnProperty(next)) {
-        buttonLookup[next] = coloredButton(getColorForStatus(next));
+const buttonLookup = new Map<
+    PlanItemStatus,
+    ReturnType<typeof coloredButton>
+>();
+
+function findButton(next: PlanItemStatus) {
+    if (!buttonLookup.has(next)) {
+        buttonLookup.set(next, coloredButton(getColorForStatus(next)));
     }
-    return buttonLookup[next];
-};
+    // Type assertion is safe due to defaulting above.
+    return buttonLookup.get(next)!;
+}
 
 interface Props extends Omit<ButtonProps, "id"> {
     next: PlanItemStatus;

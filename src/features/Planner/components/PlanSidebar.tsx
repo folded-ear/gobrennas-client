@@ -1,3 +1,16 @@
+import AccessLevel, { includesLevel } from "@/data/AccessLevel";
+import dispatcher, { ActionType } from "@/data/dispatcher";
+import FriendStore from "@/data/FriendStore";
+import useFluxStore from "@/data/useFluxStore";
+import PlanBucketManager from "@/features/Planner/components/PlanBucketManager";
+import SidebarUnit from "@/features/Planner/components/SidebarUnit";
+import { Plan } from "@/features/Planner/data/planStore";
+import { bfsIdEq, BfsStringId, UserType } from "@/global/types/identity";
+import { useProfile } from "@/providers/Profile";
+import DeleteButton from "@/views/common/DeleteButton";
+import LoadingIndicator from "@/views/common/LoadingIndicator";
+import PlanAvatar from "@/views/shop/PlanAvatar";
+import User from "@/views/user/User";
 import {
     Box,
     Drawer,
@@ -11,22 +24,12 @@ import {
     TextField,
     Typography,
 } from "@mui/material";
-import React, { useEffect, useState } from "react";
-import AccessLevel, { includesLevel } from "@/data/AccessLevel";
-import dispatcher, { ActionType } from "@/data/dispatcher";
-import FriendStore from "@/data/FriendStore";
-import useFluxStore from "@/data/useFluxStore";
-import { useProfile } from "@/providers/Profile";
-import DeleteButton from "@/views/common/DeleteButton";
-import LoadingIndicator from "@/views/common/LoadingIndicator";
-import PlanBucketManager from "@/features/Planner/components/PlanBucketManager";
-import SidebarUnit from "@/features/Planner/components/SidebarUnit";
-import User from "@/views/user/User";
-import { Plan } from "@/features/Planner/data/planStore";
-import { bfsIdEq, UserType } from "@/global/types/identity";
-import PlanAvatar from "@/views/shop/PlanAvatar";
+import * as React from "react";
+import { useEffect, useState } from "react";
 
 const LEVEL_NO_ACCESS = "NO_ACCESS";
+
+type AccessOption = AccessLevel | typeof LEVEL_NO_ACCESS;
 
 interface Props {
     open: boolean;
@@ -38,7 +41,7 @@ interface UserContentProps {
     friend: UserType;
     isAdministrator: boolean;
     grants: Record<string, AccessLevel>;
-    handleGrantChange(userId, level): void;
+    handleGrantChange(userId: BfsStringId, level: AccessOption): void;
 }
 
 function isValidColor(color: string): boolean {
@@ -69,13 +72,16 @@ function UserContent({
                             color: grants[friend.id] ? "inherit" : "#ccc",
                         }}
                         onChange={(e) =>
-                            handleGrantChange(friend.id, e.target.value)
+                            handleGrantChange(
+                                friend.id,
+                                e.target.value as AccessOption,
+                            )
                         }
                         variant={undefined}
                         size={"small"}
                     >
                         <MenuItem value={LEVEL_NO_ACCESS}>No Access</MenuItem>
-                        {/*VIEW too!*/}
+                        {/*VIEW too?*/}
                         <MenuItem value={AccessLevel.CHANGE}>Modify</MenuItem>
                         <MenuItem value={AccessLevel.ADMINISTER}>
                             Administer
@@ -126,7 +132,7 @@ const PlanSidebar: React.FC<Props> = ({ open, onClose, plan }) => {
         }
     };
 
-    const handleGrantChange = (userId, level) => {
+    const handleGrantChange = (userId: BfsStringId, level: AccessOption) => {
         if (level === LEVEL_NO_ACCESS) {
             dispatcher.dispatch({
                 type: ActionType.PLAN__CLEAR_PLAN_GRANT,

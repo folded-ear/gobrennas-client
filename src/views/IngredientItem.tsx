@@ -1,13 +1,14 @@
-import { Chip, Grid, IconButton } from "@mui/material";
-import makeStyles from "@mui/styles/makeStyles";
-import React, { ReactNode } from "react";
 import dispatcher, { ActionType } from "@/data/dispatcher";
-import Quantity from "@/views/common/Quantity";
 import SendToPlan from "@/features/RecipeLibrary/components/SendToPlan";
-import type { IngredientRef } from "@/global/types/types";
 import type { BfsId } from "@/global/types/identity";
+import { IIngredient, IngredientRef } from "@/global/types/types";
 import { useScale } from "@/util/ScalingContext";
 import { LinkIcon } from "@/views/common/icons";
+import Quantity from "@/views/common/Quantity";
+import { Chip, Grid, IconButton } from "@mui/material";
+import makeStyles from "@mui/styles/makeStyles";
+import * as React from "react";
+import { ReactNode } from "react";
 import { useHistory } from "react-router-dom";
 
 const useStyles = makeStyles(() => ({
@@ -37,7 +38,7 @@ const Augment: React.FC<AugmentProps> = ({ text, prefix, suffix }) =>
     ) : null;
 
 interface Props {
-    ingRef: IngredientRef;
+    ingRef: IngredientRef<IIngredient>;
     hideRecipeLink?: boolean;
     hideSendToPlan?: boolean;
     inline?: boolean;

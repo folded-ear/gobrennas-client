@@ -1,7 +1,7 @@
-import React from "react";
-import { Redirect } from "react-router-dom";
 import { SESSION_STORAGE_POST_LOGIN } from "@/constants";
 import { getJsonItem } from "@/util/storage";
+import * as React from "react";
+import { Redirect } from "react-router-dom";
 
 interface Props {
     authenticated: boolean;

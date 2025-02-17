@@ -1,5 +1,5 @@
-import { styled } from "@mui/material/styles";
 import { Box, Card } from "@mui/material";
+import { styled } from "@mui/material/styles";
 
 export const SearchResults = styled(Box)(({ theme }) => ({
     marginTop: theme.spacing(2),

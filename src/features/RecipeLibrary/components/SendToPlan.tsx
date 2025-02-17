@@ -1,11 +1,11 @@
-import { SendToPlanIcon } from "@/views/common/icons";
-import React from "react";
 import useActivePlanner from "@/data/useActivePlanner";
-import SplitButton, { SelectOption } from "@/views/common/SplitButton";
-import { useScaleOptions } from "@/util/ScalingContext";
 import { TaskBarButton } from "@/global/elements/taskbar.elements";
+import { useScaleOptions } from "@/util/ScalingContext";
+import { SendToPlanIcon } from "@/views/common/icons";
+import SplitButton, { SelectOption } from "@/views/common/SplitButton";
 import Button from "@mui/material/Button";
 import { styled } from "@mui/material/styles";
+import * as React from "react";
 
 interface Props {
     onClick(planId: number, scale?: number | null): void;
@@ -40,7 +40,7 @@ const SendToPlan: React.FC<Props> = ({
         // cannot, so this type assertion is safe.
         onClick && onClick(plan.id as number);
 
-    const handleSelect = (_, selected: SelectOption<number>) => {
+    const handleSelect = (_: never, selected: SelectOption<number>) => {
         onClick && onClick(plan.id as number, selected?.value);
     };
 

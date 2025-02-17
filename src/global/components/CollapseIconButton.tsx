@@ -1,10 +1,10 @@
 import { DropDownIcon } from "@/views/common/icons";
-import React from "react";
 import { IconButton, IconButtonProps } from "@mui/material";
 import { styled } from "@mui/material/styles";
+import * as React from "react";
 
 interface Props extends IconButtonProps {
-    expanded: boolean;
+    expanded?: boolean;
     Icon?: typeof DropDownIcon;
 }
 

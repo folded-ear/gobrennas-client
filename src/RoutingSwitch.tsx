@@ -1,9 +1,9 @@
+import { useIsAuthenticated } from "@/providers/Profile";
+import { BfsRoutes } from "@/routes";
 import { Route, Switch, useLocation } from "react-router-dom";
 import NotFound from "./views/common/NotFound";
 import PrivateRoute from "./views/common/PrivateRoute";
 import Login from "./views/user/Login";
-import { BfsRoutes } from "@/routes";
-import { useIsAuthenticated } from "@/providers/Profile";
 
 export interface SwitchProps {
     readonly routes: BfsRoutes;

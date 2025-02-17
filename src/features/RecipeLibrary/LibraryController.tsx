@@ -1,17 +1,17 @@
+import useIsDevMode from "@/data/useIsDevMode";
 import { RecipesList } from "@/features/RecipeLibrary/components/RecipesList";
-import { useProfile } from "@/providers/Profile";
-import qs from "qs";
-import { useState } from "react";
-import { useHistory } from "react-router-dom";
-import { LibrarySearchScope } from "@/__generated__/graphql";
+import Recommendations from "@/features/RecipeLibrary/components/Recommendations";
+import { SearchRecipes } from "@/features/RecipeLibrary/components/SearchRecipes";
 import { useSearchLibrary } from "@/features/RecipeLibrary/hooks/useSearchLibrary";
+import { useIsMobile } from "@/providers/IsMobile";
+import { useProfile } from "@/providers/Profile";
 import { ScalingProvider } from "@/util/ScalingContext";
 import LoadingIndicator from "@/views/common/LoadingIndicator";
-import { SearchRecipes } from "@/features/RecipeLibrary/components/SearchRecipes";
+import { LibrarySearchScope } from "@/__generated__/graphql";
 import { Container as Content, useScrollTrigger } from "@mui/material";
-import { useIsMobile } from "@/providers/IsMobile";
-import useIsDevMode from "@/data/useIsDevMode";
-import Recommendations from "@/features/RecipeLibrary/components/Recommendations";
+import * as React from "react";
+import { useState } from "react";
+import { useHistory } from "react-router-dom";
 
 /**
  * TODO: Issue-218
@@ -25,13 +25,11 @@ export const LibraryController = () => {
     const isMobile = useIsMobile();
     const me = useProfile();
     const history = useHistory();
-    const params = history.location.search
-        ? qs.parse(history.location.search.substring(1))
-        : {};
-    const [query, setQuery] = useState(params.q ?? "");
+    const params = new URLSearchParams(history.location.search);
+    const [query, setQuery] = useState<string>(params.get("q") ?? "");
     const [unsavedQuery, setUnsavedQuery] = useState(query);
     const [scope, setScope] = useState(
-        params.s === LibrarySearchScope.EVERYONE
+        params.get("s") === LibrarySearchScope.EVERYONE
             ? LibrarySearchScope.EVERYONE
             : LibrarySearchScope.MINE,
     );
@@ -53,31 +51,32 @@ export const LibraryController = () => {
         query,
     });
 
-    function handleSearchChange(e) {
-        setUnsavedQuery(e.target.value);
+    function handleSearchChange(e: React.ChangeEvent) {
+        const { value } = e.target as HTMLInputElement;
+        setUnsavedQuery(value);
     }
 
-    function handleClear(e) {
+    function handleClear(e: React.MouseEvent) {
         e.preventDefault();
         e.stopPropagation();
         setUnsavedQuery("");
         handleSearch("", scope);
     }
 
-    function doSearch(e) {
+    function doSearch(e: React.UIEvent) {
         e.preventDefault();
         e.stopPropagation();
         handleSearch(unsavedQuery, scope);
     }
 
-    function toggleScope(e) {
+    function toggleScope(e: React.ChangeEvent<HTMLInputElement>) {
         const scope = e.target.checked
             ? LibrarySearchScope.EVERYONE
             : LibrarySearchScope.MINE;
         handleSearch(query, scope);
     }
 
-    function handleSearch(newQuery, newScope) {
+    function handleSearch(newQuery: string, newScope: LibrarySearchScope) {
         if (query === newQuery && scope === newScope) {
             refetch();
         } else {

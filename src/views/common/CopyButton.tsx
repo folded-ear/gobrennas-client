@@ -1,10 +1,10 @@
-import { IconButton, Tooltip } from "@mui/material";
 import { CopyIcon } from "@/views/common/icons";
-import React, { MouseEventHandler } from "react";
+import { IconButton, IconButtonProps, Tooltip } from "@mui/material";
+import * as React from "react";
 
 interface Props {
     title: string;
-    onClick: MouseEventHandler;
+    onClick: IconButtonProps["onClick"];
 }
 
 const CopyButton: React.FC<Props> = ({ title, onClick }) => {

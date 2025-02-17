@@ -1,10 +1,9 @@
-import { makeStyles } from "@mui/styles";
+import ClientId from "@/util/ClientId";
 import { AddPhotoIcon, NoPhotoIcon } from "@/views/common/icons";
+import ImageOrPreview from "@/views/common/ImageOrPreview";
+import { makeStyles } from "@mui/styles";
 import clsx from "clsx";
 import * as React from "react";
-import { DragEvent } from "react";
-import ImageOrPreview from "@/views/common/ImageOrPreview";
-import ClientId from "@/util/ClientId";
 
 const useStyles = makeStyles((theme) => ({
     label: ({ notOnPaper }: StyleProps) => ({
@@ -78,20 +77,21 @@ const ImageDropZone: React.FC<ImageDropZoneProps> = ({
         }
     };
 
-    const handleDragOver = (event) => {
+    const handleDragOver = (event: React.DragEvent) => {
         event.preventDefault();
         event.dataTransfer.dropEffect = "copy";
     };
 
-    const handleDrop = (event: DragEvent) => {
+    const handleDrop = (event: React.DragEvent) => {
         event.preventDefault();
         const dt = event.dataTransfer;
         const files = dt.files;
         sendOffFirstFile(files);
     };
 
-    const handleFileSelect = (event) => {
-        sendOffFirstFile(event.target.files);
+    const handleFileSelect = (event: React.ChangeEvent) => {
+        const { files } = event.target as HTMLInputElement;
+        files && sendOffFirstFile(files);
     };
 
     return (

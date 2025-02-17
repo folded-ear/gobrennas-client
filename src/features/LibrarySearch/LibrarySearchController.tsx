@@ -1,20 +1,19 @@
-import * as React from "react";
-import { useHistory } from "react-router-dom";
 import { SearchInput } from "@/features/LibrarySearch/components/SearchInput";
-import { DisplayOptions, SearchScope } from "@/features/LibrarySearch/types";
+import { MessagePaper } from "@/features/RecipeLibrary/components/MessagePaper";
 import { useSearchLibrary } from "@/features/RecipeLibrary/hooks/useSearchLibrary";
-import LoadingIndicator from "@/views/common/LoadingIndicator";
-import { RecipeListDisplay } from "@/views/recipeCollections/RecipeListDisplay";
 import { useProfile } from "@/providers/Profile";
 import { ScalingProvider } from "@/util/ScalingContext";
+import LoadingIndicator from "@/views/common/LoadingIndicator";
+import { SearchResults } from "@/views/recipeCollections/RecipeCollection.elements";
+import { RecipeGrid } from "@/views/recipeCollections/RecipeGrid";
+import { RecipeListDisplay } from "@/views/recipeCollections/RecipeListDisplay";
 import { LibrarySearchScope } from "@/__generated__/graphql";
 import { Grid } from "@mui/material";
-import { MessagePaper } from "@/features/RecipeLibrary/components/MessagePaper";
-import { RecipeGrid } from "@/views/recipeCollections/RecipeGrid";
-import { SearchResults } from "@/views/recipeCollections/RecipeCollection.elements";
+import * as React from "react";
+import { useHistory } from "react-router-dom";
 
 type LibrarySearchControllerProps = {
-    display?: DisplayOptions;
+    display?: "grid" | "list";
 };
 
 export const LibrarySearchController: React.FC<
@@ -24,7 +23,9 @@ export const LibrarySearchController: React.FC<
     const history = useHistory();
     const searchParams = new URLSearchParams(history.location.search);
     const searchTerm = searchParams.get("q") ?? "";
-    const scope = (searchParams.get("s") as SearchScope) ?? "MINE";
+    const scope =
+        (searchParams.get("s") as LibrarySearchScope) ??
+        LibrarySearchScope.MINE;
 
     const {
         data: recipes,
@@ -36,7 +37,7 @@ export const LibrarySearchController: React.FC<
     });
 
     const onSearch = React.useCallback(
-        (term: string, scope: SearchScope) => {
+        (term: string, scope: LibrarySearchScope) => {
             history.push(
                 `?q=${encodeURIComponent(term)}&s=${encodeURIComponent(scope)}`,
             );

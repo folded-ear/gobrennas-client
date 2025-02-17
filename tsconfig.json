@@ -26,7 +26,7 @@
       "vite-plugin-pwa/client",
       "node"
     ],
-    "noImplicitAny": false,
+    "noImplicitAny": true,
     "removeComments": true,
     "preserveConstEnums": true,
     "sourceMap": true,

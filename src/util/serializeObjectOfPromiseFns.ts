@@ -13,22 +13,33 @@
  *  passed object, which will queue up invocations to the wrapped object's
  *  functions.
  */
-const serializeObjectOfPromiseFns = <T extends object>(obj: T): T => {
-    let queue = Promise.resolve();
-    const result = {} as T;
-    const enqueue = (fn, args) => {
+type Fn<A extends unknown[], R> = (...args: A) => Promise<R>;
+const serializeObjectOfPromiseFns = <T extends Record<string, Fn<any, any>>>(
+    obj: T,
+): T => {
+    let queue: Promise<unknown> = Promise.resolve();
+    const result = {} as Record<string, Fn<any, any>>;
+    const enqueue = <A extends unknown[], R>(
+        fn: Fn<A, R>,
+        ...args: A
+    ): Promise<R> => {
         queue = queue
             .catch((error) =>
                 // eslint-disable-next-line no-console
                 console.error("Error in Promise", error),
             )
             .then(() => fn(...args));
-        return queue;
+        // This cast is safe, as queue currently matches, even though it won't
+        // match in general.
+        return queue as Promise<R>;
     };
     for (const k of Object.keys(obj)) {
-        result[k] = (...args) => enqueue(obj[k], args);
+        result[k] = (...args) => enqueue(obj[k], ...args);
     }
-    return result;
+    // This cast is safe; I can't figure out how to trace the types of the
+    // open-ended "methods" on the passed object, but the above loop will ensure
+    // the same set of keys exist, and each has a value of the right type.
+    return result as T;
 };
 
 export default serializeObjectOfPromiseFns;

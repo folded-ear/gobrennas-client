@@ -1,4 +1,15 @@
+import dispatcher, { ActionType } from "@/data/dispatcher";
+import ItemImage from "@/features/RecipeLibrary/components/ItemImage";
+import ItemImageUpload from "@/features/RecipeLibrary/components/ItemImageUpload";
+import SendToPlan from "@/features/RecipeLibrary/components/SendToPlan";
+import { RecipeCard as TRecipeCard } from "@/features/RecipeLibrary/types";
+import LabelItem from "@/global/components/LabelItem";
+import { TaskBar, TaskBarButton } from "@/global/elements/taskbar.elements";
+import { formatDuration } from "@/util/time";
 import { EditIcon, ViewIcon } from "@/views/common/icons";
+import RecipeInfo from "@/views/common/RecipeInfo";
+import Source from "@/views/common/Source";
+import User from "@/views/user/User";
 import {
     Box,
     Card,
@@ -7,20 +18,9 @@ import {
     Grid,
     Typography,
 } from "@mui/material";
-import dispatcher, { ActionType } from "@/data/dispatcher";
-import ItemImage from "@/features/RecipeLibrary/components/ItemImage";
-import ItemImageUpload from "@/features/RecipeLibrary/components/ItemImageUpload";
-import SendToPlan from "@/features/RecipeLibrary/components/SendToPlan";
-import React from "react";
+import * as React from "react";
 import { Link } from "react-router-dom";
-import { formatDuration } from "@/util/time";
-import RecipeInfo from "@/views/common/RecipeInfo";
-import Source from "@/views/common/Source";
-import User from "@/views/user/User";
 import FavoriteIndicator from "../../Favorites/components/Indicator";
-import LabelItem from "@/global/components/LabelItem";
-import { TaskBar, TaskBarButton } from "@/global/elements/taskbar.elements";
-import { RecipeCard as TRecipeCard } from "@/features/RecipeLibrary/types";
 
 interface Props {
     recipe: TRecipeCard;

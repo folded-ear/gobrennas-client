@@ -1,3 +1,6 @@
+import { BfsId } from "@/global/types/identity";
+import { DropDownIcon } from "@/views/common/icons";
+import { ButtonProps, Paper } from "@mui/material";
 import Button from "@mui/material/Button";
 import ButtonGroup, { ButtonGroupOwnProps } from "@mui/material/ButtonGroup";
 import ClickAwayListener from "@mui/material/ClickAwayListener";
@@ -5,10 +8,8 @@ import Grow from "@mui/material/Grow";
 import MenuItem from "@mui/material/MenuItem";
 import MenuList from "@mui/material/MenuList";
 import Popper from "@mui/material/Popper";
-import { DropDownIcon } from "@/views/common/icons";
-import React, { MouseEventHandler, ReactNode } from "react";
-import { BfsId } from "@/global/types/identity";
-import { Paper } from "@mui/material";
+import * as React from "react";
+import { ReactNode } from "react";
 
 export type SelectOption<TOption> = {
     id: BfsId;
@@ -18,9 +19,9 @@ export type SelectOption<TOption> = {
 
 interface Props<TOption> extends ButtonGroupOwnProps {
     primary: ReactNode | string;
-    onClick: MouseEventHandler;
+    onClick: ButtonProps["onClick"];
     options: SelectOption<TOption>[];
-    onSelect(event: Event, opt: SelectOption<TOption>): void;
+    onSelect(event: React.MouseEvent, opt: SelectOption<TOption>): void;
     disabled?: boolean;
     dropdownDisabled?: boolean;
     startIcon?: ReactNode;
@@ -40,13 +41,17 @@ const SplitButton = <TOption,>({
 }: Props<TOption>) => {
     const [open, setOpen] = React.useState(false);
     const anchorRef = React.useRef<HTMLDivElement>(null);
-    const [selectedOption, setSelectedOption] = React.useState(null);
+    const [selectedOption, setSelectedOption] =
+        React.useState<SelectOption<TOption>>();
 
-    const handleClick = (event) => {
+    const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
         onClick && onClick(event);
     };
 
-    const handleSelect = (event, option) => {
+    const handleSelect = (
+        event: React.MouseEvent<HTMLLIElement>,
+        option: SelectOption<TOption>,
+    ) => {
         setSelectedOption(option);
         setOpen(false);
         onSelect && onSelect(event, option);
@@ -56,10 +61,7 @@ const SplitButton = <TOption,>({
         setOpen((prevOpen) => !prevOpen);
     };
 
-    const handleClose = (event) => {
-        if (anchorRef.current && anchorRef.current.contains(event.target)) {
-            return;
-        }
+    const handleClose = () => {
         setOpen(false);
     };
 

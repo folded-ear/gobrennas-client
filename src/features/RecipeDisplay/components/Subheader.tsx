@@ -1,9 +1,10 @@
-import React, { CSSProperties, PropsWithChildren } from "react";
+import { HEADER_HEIGHT } from "@/constants/layout";
 import useWindowSize from "@/data/useWindowSize";
 import { Box, useScrollTrigger } from "@mui/material";
-import { HEADER_HEIGHT } from "@/constants/layout";
+import * as React from "react";
+import { CSSProperties, PropsWithChildren } from "react";
 
-type Props = PropsWithChildren<unknown>;
+type Props = PropsWithChildren;
 
 export const SubHeader: React.FC<Props> = ({ children }) => {
     const windowSize = useWindowSize();

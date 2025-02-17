@@ -1,8 +1,8 @@
+import dispatcher, { ActionType } from "@/data/dispatcher";
 import useFluxStore from "@/data/useFluxStore";
 import planStore from "@/features/Planner/data/planStore";
-import React from "react";
-import dispatcher, { ActionType } from "@/data/dispatcher";
 import { BfsId, includesBfsId } from "@/global/types/identity";
+import * as React from "react";
 import { useHistory } from "react-router-dom";
 
 export const useLoadedPlan = (pid: BfsId | undefined) => {

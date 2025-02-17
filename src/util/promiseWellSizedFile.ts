@@ -6,8 +6,8 @@ function get2dContextFromCanvas(canvas: HTMLCanvasElement) {
     return ctx;
 }
 
-const promiseWellSizedFile = (fileOrString: File | string) =>
-    new Promise<File | string>((resolve, reject) => {
+const promiseWellSizedFile = <T extends File | string>(fileOrString: T) =>
+    new Promise<T>((resolve, reject) => {
         if (
             fileOrString instanceof File &&
             fileOrString.size >= MAX_UPLOAD_BYTES
@@ -65,9 +65,11 @@ const promiseWellSizedFile = (fileOrString: File | string) =>
                             MAX_UPLOAD_BYTES,
                         );
                         resolve(
+                            // At this point T had to be File, so these casts
+                            // are safe to make.
                             file.size >= MAX_UPLOAD_BYTES
-                                ? promiseWellSizedFile(file)
-                                : file,
+                                ? promiseWellSizedFile(file as T)
+                                : (file as T),
                         );
                     }, contentType);
                 };

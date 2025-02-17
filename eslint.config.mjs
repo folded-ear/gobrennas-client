@@ -1,9 +1,9 @@
-import globals from "globals";
 import pluginJs from "@eslint/js";
-import tseslint from "typescript-eslint";
-import pluginReactConfig from "eslint-plugin-react/configs/recommended.js";
-import pluginJsxRuntimeConfig from "eslint-plugin-react/configs/jsx-runtime.js";
 import pluginReactHooks_nonFlat from "eslint-plugin-react-hooks";
+import pluginJsxRuntimeConfig from "eslint-plugin-react/configs/jsx-runtime.js";
+import pluginReactConfig from "eslint-plugin-react/configs/recommended.js";
+import globals from "globals";
+import tseslint from "typescript-eslint";
 
 export default [
     { settings: { react: { version: "detect" } } },
@@ -32,7 +32,10 @@ export default [
                 "error",
                 {
                     paths: [
-                        "@mui/icons-material",
+                        {
+                            name: "@mui/icons-material",
+                            message: "Import icons from '@/views/common/icons'",
+                        },
                         {
                             name: "@apollo/client",
                             importNames: ["gql"],
@@ -45,7 +48,12 @@ export default [
                                 "Import 'Maybe' from 'graphql/jsutils/Maybe'",
                         },
                     ],
-                    patterns: ["@mui/icons-material/*"],
+                    patterns: [
+                        {
+                            group: ["@mui/icons-material/*"],
+                            message: "Import icons from '@/views/common/icons'",
+                        },
+                    ],
                 },
             ],
             quotes: [
@@ -56,7 +64,6 @@ export default [
                     allowTemplateLiterals: true,
                 },
             ],
-            "react/prop-types": 1,
             semi: ["warn", "always"],
             "@typescript-eslint/no-explicit-any": 0,
             "react/no-unescaped-entities": 1,

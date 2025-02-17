@@ -1,5 +1,6 @@
-import React, { ReactNode } from "react";
 import { Box, Paper, Typography } from "@mui/material";
+import * as React from "react";
+import { ReactNode } from "react";
 
 interface P {
     primary: string;

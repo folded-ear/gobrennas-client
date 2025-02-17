@@ -1,9 +1,9 @@
-import { gql } from "@/__generated__";
 import useAdaptingQuery from "@/data/hooks/useAdaptingQuery";
-import { GetPlansQuery } from "@/__generated__/graphql";
-import { useProfileId } from "@/providers/Profile";
 import { BfsId, bfsIdEq } from "@/global/types/identity";
+import { useProfileId } from "@/providers/Profile";
 import { zippedComparator } from "@/util/comparators";
+import { gql } from "@/__generated__";
+import { GetPlansQuery } from "@/__generated__/graphql";
 
 export const GET_PLANS = gql(`
 query getPlans {
@@ -25,7 +25,7 @@ const orderComponentsById = (
     plans: GetPlansQuery["planner"]["plans"],
     userId: string,
 ): Record<BfsId, string[]> => {
-    const byId = {};
+    const byId: Record<BfsId, string[]> = {};
     for (const plan of plans) {
         const ownerName = bfsIdEq(plan.owner.id, userId)
             ? "" // me first!

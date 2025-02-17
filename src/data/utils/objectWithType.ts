@@ -1,4 +1,8 @@
-export default function objectWithType(ing) {
+import { Maybe } from "graphql/jsutils/Maybe";
+
+export default function objectWithType<T, O extends { __typename?: T }>(
+    ing: Maybe<O>,
+): Maybe<O & { type: T | undefined }> {
     return ing
         ? {
               ...ing,

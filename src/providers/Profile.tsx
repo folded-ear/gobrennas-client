@@ -1,15 +1,15 @@
+import { API_BASE_URL, LOCAL_STORAGE_ACCESS_TOKEN } from "@/constants";
+import useAdaptingQuery from "@/data/hooks/useAdaptingQuery";
+import type { UserType } from "@/global/types/identity";
+import { requiredData, RippedLO } from "@/util/ripLoadObject";
+import { gql } from "@/__generated__";
 import React, {
     createContext,
     PropsWithChildren,
     useContext,
     useEffect,
 } from "react";
-import { API_BASE_URL, LOCAL_STORAGE_ACCESS_TOKEN } from "@/constants";
 import GTag from "../GTag";
-import type { UserType } from "@/global/types/identity";
-import { requiredData, RippedLO } from "@/util/ripLoadObject";
-import { gql } from "@/__generated__";
-import useAdaptingQuery from "@/data/hooks/useAdaptingQuery";
 
 type Profile = RippedLO<UserType> | undefined;
 
@@ -28,7 +28,7 @@ const GET_ME = gql(`query me {
 
 const ProfileContext = createContext<Profile>(undefined);
 
-type Props = PropsWithChildren<unknown>;
+type Props = PropsWithChildren;
 
 export const ProfileProvider: React.FC<Props> = ({ children }) => {
     const profile: Profile = useAdaptingQuery(
@@ -52,7 +52,7 @@ export const ProfileProvider: React.FC<Props> = ({ children }) => {
     );
 };
 
-export const isAuthError = (error): boolean => {
+export const isAuthError = (error: any): boolean => {
     if (!error) return false;
     if (error.response && error.response.status === 401) return true;
     if (error.extensions?.type === "NoUserPrincipalException") return true;

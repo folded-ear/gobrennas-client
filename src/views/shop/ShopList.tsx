@@ -1,59 +1,69 @@
-import { Box, IconButton, Stack, Typography } from "@mui/material";
-import List from "@mui/material/List";
-import React, { useCallback, useState } from "react";
 import dispatcher, { ActionType } from "@/data/dispatcher";
+import useAllPlansRLO from "@/data/useAllPlansRLO";
+import { NavShopItem } from "@/features/Navigation/components/NavShopItem";
+import { toggleShoppingPlan } from "@/features/Navigation/NavigationController";
+import DragContainer, {
+    DragContainerProps,
+} from "@/features/Planner/components/DragContainer";
+import { Plan as TPlan } from "@/features/Planner/data/planStore";
+import CollapseIconButton from "@/global/components/CollapseIconButton";
+import { BfsId, bfsIdEq, BfsStringId } from "@/global/types/identity";
+import type { Quantity } from "@/global/types/types";
+import { useIsMobile } from "@/providers/IsMobile";
 import FoodingerFab from "@/views/common/FoodingerFab";
+import { AddIcon, CollapseIcon, SweepIcon } from "@/views/common/icons";
 import LoadingIndicator from "@/views/common/LoadingIndicator";
 import PageBody from "@/views/common/PageBody";
 import IngredientItem from "@/views/shop/IngredientItem";
 import PlanItem from "@/views/shop/PlanItem";
-import { BaseItemProp, ItemProps } from "./types";
-import { Plan as TPlan } from "@/features/Planner/data/planStore";
-import type { Quantity } from "@/global/types/types";
-import { BfsId, bfsIdEq } from "@/global/types/identity";
-import CollapseIconButton from "@/global/components/CollapseIconButton";
-import DragContainer, {
-    DragContainerProps,
-} from "@/features/Planner/components/DragContainer";
-import { AddIcon, CollapseIcon, SweepIcon } from "@/views/common/icons";
-import { useIsMobile } from "@/providers/IsMobile";
+import { Box, IconButton, Stack, Typography } from "@mui/material";
+import List from "@mui/material/List";
+import * as React from "react";
+import { useCallback, useState } from "react";
 import MobilePlanSelector from "./MobilePlanSelector";
-import useAllPlansRLO from "@/data/useAllPlansRLO";
-import { NavShopItem } from "@/features/Navigation/components/NavShopItem";
-import { toggleShoppingPlan } from "@/features/Navigation/NavigationController";
 import PlanAvatar from "./PlanAvatar";
+import { BaseItemProp, ItemProps } from "./types";
 
 export enum ShopItemType {
     INGREDIENT,
     PLAN_ITEM,
 }
 
-export interface ShopItemTuple extends ItemProps {
-    blockId?: BfsId;
+export interface CoreItemTuple extends ItemProps {
     _type: ShopItemType;
     active?: boolean;
     depth: number;
-    expanded?: boolean;
-    storeOrder?: number;
-    itemIds?: BfsId[];
-    quantities?: Quantity[];
     path: BaseItemProp[];
 }
 
+export interface IngredientTuple extends CoreItemTuple {
+    expanded: boolean;
+    storeOrder?: number;
+    itemIds: BfsStringId[];
+    quantities: Quantity[];
+}
+
+export interface PlanItemTuple extends CoreItemTuple {
+    blockId?: BfsId;
+}
+
+export type ShopItemTuples = Array<IngredientTuple | PlanItemTuple>;
+
 type ShopListProps = {
     plans: TPlan[];
-    neededTuples: ShopItemTuple[];
-    acquiredTuples: ShopItemTuple[];
+    neededTuples: ShopItemTuples;
+    acquiredTuples: ShopItemTuples;
     onRepartition(): void;
 };
 
 interface TupleListProps {
-    tuples: ShopItemTuple[];
+    tuples: ShopItemTuples;
 }
 
-function renderItem(it?: ShopItemTuple) {
+function renderItem(it?: IngredientTuple | PlanItemTuple) {
     if (!it) return null;
-    if (it._type === ShopItemType.INGREDIENT) {
+    if ("itemIds" in it) {
+        // it's an ingredient/aggregate
         return (
             <IngredientItem
                 key={it.id + "-ing-item"}
@@ -110,7 +120,7 @@ const ShopList: React.FC<ShopListProps> = ({
     const showPlanSelector = useIsMobile() && allPlans && allPlans.length >= 2;
     const [planSelectorOpen, setPlanSelectorOpen] = useState(false);
 
-    const handleAddNew = useCallback((e) => {
+    const handleAddNew = useCallback((e: React.MouseEvent) => {
         e.preventDefault();
         dispatcher.dispatch({
             type: ActionType.SHOPPING__CREATE_ITEM_AT_END,

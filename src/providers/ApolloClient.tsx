@@ -1,16 +1,4 @@
-import {
-    ApolloClient,
-    ApolloLink,
-    defaultDataIdFromObject,
-    InMemoryCache,
-} from "@apollo/client";
-import { onError } from "@apollo/client/link/error";
-import { relayStylePagination } from "@apollo/client/utilities";
 import { API_BASE_URL } from "@/constants";
-import { askUserToReauth, isAuthError } from "./Profile";
-import createUploadLink from "apollo-upload-client/createUploadLink.mjs";
-import possibleTypes from "./apolloPossibleTypes";
-import { createFragmentRegistry } from "@apollo/client/cache";
 import {
     CORE_PLAN_ITEM_LOAD_FRAGMENT,
     INGREDIENT_LOAD_FRAGMENT,
@@ -18,6 +6,19 @@ import {
     PLAN_ITEM_LOAD_FRAGMENT,
     PLAN_LOAD_FRAGMENT,
 } from "@/data/hooks/fragments";
+import {
+    ApolloClient,
+    ApolloLink,
+    defaultDataIdFromObject,
+    InMemoryCache,
+} from "@apollo/client";
+import { createFragmentRegistry } from "@apollo/client/cache";
+import { onError } from "@apollo/client/link/error";
+import { relayStylePagination } from "@apollo/client/utilities";
+// @ts-expect-error createUploadLink only ships JS, no types at all.
+import createUploadLink from "apollo-upload-client/createUploadLink.mjs";
+import possibleTypes from "./apolloPossibleTypes";
+import { askUserToReauth, isAuthError } from "./Profile";
 
 const errorLink = onError(({ operation, graphQLErrors }) => {
     // don't ask about reauth if requesting me; that's the profile gate
