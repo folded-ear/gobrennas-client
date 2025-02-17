@@ -1,7 +1,7 @@
 import getBucketLabel from "@/features/Planner/components/getBucketLabel";
 import planStore, { Plan } from "@/features/Planner/data/planStore";
 import { recipeRloFromItemRlo as buildSingleItemRecipeLO } from "@/features/RecipeDisplay/utils/recipeRloFromItemRlo";
-import { BfsId, ensureString } from "@/global/types/identity";
+import { BfsId } from "@/global/types/identity";
 import type { RecipeFromPlanItem } from "@/global/types/types";
 import { mapData, RippedLO } from "@/util/ripLoadObject";
 import { PlanItemStatus } from "@/__generated__/graphql";
@@ -37,13 +37,13 @@ export const recipeRloByPlanAndBucket = (
         }),
         (r) => {
             const idToIdx = new Map<string, number>();
-            items.forEach((it, i) => idToIdx.set(ensureString(it.id), i));
+            items.forEach((it, i) => idToIdx.set(it.id, i));
             const itToSubIdx = new Map<RecipeFromPlanItem, number>();
             if (!r.subrecipes) {
                 throw new Error("No subrecipes?!");
             }
             r.subrecipes.forEach((it) =>
-                itToSubIdx.set(it, idToIdx.get(ensureString(it.id)) ?? -1),
+                itToSubIdx.set(it, idToIdx.get(it.id) ?? -1),
             );
             const recipeWithPhoto = r.subrecipes
                 .slice()

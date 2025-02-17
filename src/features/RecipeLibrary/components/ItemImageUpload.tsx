@@ -1,4 +1,4 @@
-import { BfsId, ensureString } from "@/global/types/identity";
+import { BfsId } from "@/global/types/identity";
 import ImageDropZone from "@/util/ImageDropZone";
 import promiseWellSizedFile from "@/util/promiseWellSizedFile";
 import { gql } from "@/__generated__";
@@ -42,7 +42,7 @@ const ItemImageUpload: React.FC<Props> = ({ recipeId, ...props }) => {
         photo = await promiseWellSizedFile(photo);
         setRecipePhoto({
             variables: {
-                id: ensureString(recipeId),
+                id: recipeId,
                 photo,
             },
         });

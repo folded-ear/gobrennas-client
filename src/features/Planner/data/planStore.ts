@@ -1,7 +1,7 @@
 import AccessLevel from "@/data/AccessLevel";
 import dispatcher, { ActionType, FluxAction } from "@/data/dispatcher";
 import PlanItemStatus from "@/features/Planner/data/PlanItemStatus";
-import { BfsId, ensureString, includesBfsId } from "@/global/types/identity";
+import { BfsId, includesBfsId } from "@/global/types/identity";
 import { removeAtIndex } from "@/util/arrayAsSet";
 import ClientId from "@/util/ClientId";
 import { bucketComparator } from "@/util/comparators";
@@ -193,11 +193,7 @@ class PlanStore extends FluxReduceStore<State, FluxAction> {
                 return setPlanColor(state, action.id, action.color);
 
             case ActionType.PLAN__SET_PLAN_GRANT: {
-                PlanApi.setPlanGrant(
-                    ensureString(action.id),
-                    action.userId,
-                    action.level,
-                );
+                PlanApi.setPlanGrant(action.id, action.userId, action.level);
                 return dotProp.set(
                     state,
                     ["byId", action.id],
@@ -215,7 +211,7 @@ class PlanStore extends FluxReduceStore<State, FluxAction> {
             }
 
             case ActionType.PLAN__CLEAR_PLAN_GRANT: {
-                PlanApi.clearPlanGrant(ensureString(action.id), action.userId);
+                PlanApi.clearPlanGrant(action.id, action.userId);
                 return dotProp.set(
                     state,
                     ["byId", action.id],
@@ -319,32 +315,23 @@ class PlanStore extends FluxReduceStore<State, FluxAction> {
             }
 
             case ActionType.PLAN__COMPLETE_PLAN_ITEM: {
-                return doInteractiveStatusChange(
-                    state,
-                    ensureString(action.id),
-                    {
-                        status: PlanItemStatus.COMPLETED,
-                        doneAt: action.doneAt,
-                    },
-                );
+                return doInteractiveStatusChange(state, action.id, {
+                    status: PlanItemStatus.COMPLETED,
+                    doneAt: action.doneAt,
+                });
             }
 
             case ActionType.PLAN__SET_STATUS: {
                 return doInteractiveStatusChange(
                     state,
-                    ensureString(action.id),
+                    action.id,
                     action.status,
                 );
             }
 
             case ActionType.PLAN__BULK_SET_STATUS: {
                 return action.ids.reduce(
-                    (s, id) =>
-                        doInteractiveStatusChange(
-                            s,
-                            ensureString(id),
-                            action.status,
-                        ),
+                    (s, id) => doInteractiveStatusChange(s, id, action.status),
                     state,
                 );
             }

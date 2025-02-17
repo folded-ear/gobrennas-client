@@ -13,12 +13,7 @@ import {
     State,
     StateWithActiveTask,
 } from "@/features/Planner/data/planStore";
-import {
-    BfsId,
-    ensureString,
-    includesBfsId,
-    indexOfBfsId,
-} from "@/global/types/identity";
+import { BfsId, includesBfsId, indexOfBfsId } from "@/global/types/identity";
 import ClientId from "@/util/ClientId";
 import { bucketComparator, Named } from "@/util/comparators";
 import inTheFuture from "@/util/inTheFuture";
@@ -140,7 +135,7 @@ function fixIds(
     };
     delete byId[clientId];
     if (tasksToRename.has(clientId)) {
-        tasksToRename.add(ensureString(id));
+        tasksToRename.add(id);
         tasksToRename.delete(clientId);
     }
     const pid = parentId(task);
@@ -238,7 +233,7 @@ export function selectList(state: State, id: Maybe<BfsId>): State {
 }
 
 export function isKnown(state: State, id: BfsId): boolean {
-    return state.byId.hasOwnProperty(ensureString(id));
+    return state.byId.hasOwnProperty(id);
 }
 
 export function taskForId(state: State, id: BfsId): Plan | PlanItem {
@@ -316,7 +311,7 @@ export function addTaskAndFlush(
     after: BfsId = AT_END,
 ): State {
     state = addTask(state, parentId, name, after);
-    tasksToRename.add(ensureString(state.activeTaskId!));
+    tasksToRename.add(state.activeTaskId!);
     return flushTasksToRename(state);
 }
 
@@ -407,7 +402,7 @@ export function renameTask(state: State, id: BfsId, name: string): State {
         if (lo.isDone()) {
             lo = ClientId.is(id) ? lo.creating() : lo.updating();
         }
-        tasksToRename.add(ensureString(id));
+        tasksToRename.add(id);
         inTheFuture(ActionType.PLAN__FLUSH_RENAMES);
         return lo.map((t) => ({
             ...t,
@@ -558,8 +553,8 @@ export function selectDelta(state: State, id: BfsId, delta: number): State {
 }
 
 function unqueueTaskId(id: BfsId): void {
-    tasksToRename.delete(ensureString(id));
-    statusUpdatesToFlush.delete(ensureString(id));
+    tasksToRename.delete(id);
+    statusUpdatesToFlush.delete(id);
 }
 
 function doTaskDelete(state: State, id: BfsId): State {
@@ -589,7 +584,7 @@ export function flushStatusUpdates(state: State): State {
 
 export function queueDelete(state: State, id: BfsId): State {
     if (!isKnown(state, id)) return state; // already gone...
-    return queueStatusUpdate(state, ensureString(id), {
+    return queueStatusUpdate(state, id, {
         status: PlanItemStatus.DELETED,
     });
 }
@@ -622,7 +617,7 @@ function queueStatusUpdate(
     }
     let nextLO;
     if (t.status === status) {
-        statusUpdatesToFlush.delete(ensureString(t.id));
+        statusUpdatesToFlush.delete(t.id);
         nextLO = lo
             .map((t) => {
                 t = {
@@ -663,8 +658,8 @@ function queueStatusUpdate(
 }
 
 export function cancelStatusUpdate(state: State, id: BfsId): State {
-    if (!statusUpdatesToFlush.has(ensureString(id))) return state;
-    statusUpdatesToFlush.delete(ensureString(id));
+    if (!statusUpdatesToFlush.has(id)) return state;
+    statusUpdatesToFlush.delete(id);
     return mapTaskLO<PlanItem>(state, id, (lo) =>
         lo
             .map((t) => {
@@ -958,9 +953,6 @@ export function taskLoaded(state: State, task: Plan | PlanItem): State {
         };
     }
     let lo = state.byId[task.id] || LoadObject.empty();
-    if ("ingredientId" in task && task.ingredientId != null) {
-        task.ingredientId = ensureString(task.ingredientId);
-    }
     if (lo.hasValue()) {
         lo = lo.map((t) => {
             const subtaskIds = task.subtaskIds ? task.subtaskIds.slice() : [];

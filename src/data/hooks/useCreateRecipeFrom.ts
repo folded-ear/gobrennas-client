@@ -1,5 +1,4 @@
 import { recipeToIngredientInfo } from "@/data/utils/graphql";
-import { ensureString } from "@/global/types/identity";
 import { DraftRecipe } from "@/global/types/types";
 import promiseWellSizedFile from "@/util/promiseWellSizedFile";
 import { gql } from "@/__generated__";
@@ -37,7 +36,7 @@ export const useCreateRecipeFrom = () => {
 
         return mutateFunction({
             variables: {
-                sourceRecipeId: ensureString(recipe.id),
+                sourceRecipeId: recipe.id,
                 info: recipeToIngredientInfo(recipe),
                 photo: typeof sizedUpload !== "string" ? sizedUpload : null,
             },

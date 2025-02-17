@@ -1,4 +1,4 @@
-import { BfsId, ensureString } from "@/global/types/identity";
+import { BfsId } from "@/global/types/identity";
 import throwAnyErrors from "@/util/throwAnyErrors";
 import { gql } from "@/__generated__";
 import {
@@ -31,12 +31,10 @@ export const useDeleteRecipe = (): [
 
     const deleteRecipe = useCallback(
         (id: BfsId) =>
-            mutateFunction({ variables: { id: ensureString(id) } }).then(
-                ({ errors }) => {
-                    throwAnyErrors(errors);
-                    return true;
-                },
-            ),
+            mutateFunction({ variables: { id } }).then(({ errors }) => {
+                throwAnyErrors(errors);
+                return true;
+            }),
         [mutateFunction],
     );
 

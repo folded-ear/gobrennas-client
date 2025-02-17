@@ -1,7 +1,7 @@
 import dispatcher, { ActionType, FluxAction } from "@/data/dispatcher";
 import RecipeApi from "@/data/RecipeApi";
 import LibraryApi from "@/features/RecipeLibrary/data/LibraryApi";
-import { BfsId, ensureString } from "@/global/types/identity";
+import { BfsId } from "@/global/types/identity";
 import { Ingredient } from "@/global/types/types";
 import LoadObject from "@/util/LoadObject";
 import LoadObjectMap from "@/util/LoadObjectMap";
@@ -33,13 +33,9 @@ class LibraryStore extends ReduceStore<State, FluxAction> {
     getInitialState(): State {
         return {
             byId: new LoadObjectMap((ids) => {
-                const stringIdArray: string[] = [];
-                for (const id of ids) {
-                    stringIdArray.push(ensureString(id));
-                }
                 dispatcher.dispatch({
                     type: ActionType.LIBRARY__LOAD_INGREDIENTS,
-                    ids: stringIdArray,
+                    ids: [...ids],
                 });
             }),
         };
@@ -70,7 +66,7 @@ class LibraryStore extends ReduceStore<State, FluxAction> {
                     byId: action.data.reduce(
                         (byId, it) =>
                             byId.set(
-                                ensureString(it.id),
+                                it.id,
                                 LoadObject.withValue(adaptTime(it)),
                             ),
                         state.byId,
@@ -117,7 +113,7 @@ class LibraryStore extends ReduceStore<State, FluxAction> {
 
     getIngredientById(id: BfsId): LoadObject<Ingredient> {
         const LOMap = this.getState().byId;
-        let lo = LOMap.get(ensureString(id));
+        let lo = LOMap.get(id);
         if (lo.isEmpty()) {
             lo = lo.loading();
         }

@@ -1,4 +1,4 @@
-import { BfsId, bfsIdEq, ensureString } from "@/global/types/identity";
+import { BfsId } from "@/global/types/identity";
 import { gql } from "@/__generated__";
 import { useMutation, useQuery } from "@apollo/client";
 import { useMemo } from "react";
@@ -48,7 +48,7 @@ export function useMarkFavorite(type: string): IdCallback {
         execute({
             variables: {
                 type,
-                id: ensureString(id),
+                id,
             },
         });
         return true;
@@ -71,7 +71,7 @@ export function useRemoveFavorite(type: string): IdCallback {
         execute({
             variables: {
                 type,
-                id: ensureString(id),
+                id,
             },
         });
         return true;

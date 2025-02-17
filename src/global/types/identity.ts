@@ -13,12 +13,6 @@ export type UserType = Pick<
 >;
 
 // todo: remove
-export function ensureString(id: BfsId | number): BfsId {
-    if (typeof id !== "string") throw new Error(typeof id + " BfsId: " + id);
-    return id;
-}
-
-// todo: remove
 export function includesBfsId(ids: BfsId[], id: Maybe<BfsId>): boolean {
     return indexOfBfsId(ids, id) >= 0;
 }

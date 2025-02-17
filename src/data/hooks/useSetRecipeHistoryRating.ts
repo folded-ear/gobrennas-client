@@ -1,4 +1,4 @@
-import { BfsId, ensureString } from "@/global/types/identity";
+import { BfsId } from "@/global/types/identity";
 import { gql } from "@/__generated__";
 import {
     PlannedRecipeHistory,
@@ -34,8 +34,8 @@ export const useSetRecipeHistoryRating = (): [
         (recipeId: BfsId, id: BfsId, rating: number) =>
             mutateFunction({
                 variables: {
-                    recipeId: ensureString(recipeId),
-                    id: ensureString(id),
+                    recipeId,
+                    id,
                     rating,
                 },
             }).then(({ data, errors }) => {

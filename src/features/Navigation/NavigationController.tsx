@@ -8,7 +8,7 @@ import {
     MainMobile,
 } from "@/features/Navigation/components/Navigation.elements";
 import { FlexBox } from "@/global/components/FlexBox";
-import { BfsId, ensureString } from "@/global/types/identity";
+import { BfsId } from "@/global/types/identity";
 import GTag from "@/GTag";
 import { useIsMobile } from "@/providers/IsMobile";
 import { useIsAuthenticated, useLogoutHandler } from "@/providers/Profile";
@@ -21,7 +21,7 @@ import { useHistory, useLocation } from "react-router-dom";
 export function toggleShoppingPlan(id: BfsId) {
     return dispatcher.dispatch({
         type: ActionType.SHOPPING__TOGGLE_PLAN,
-        id: ensureString(id),
+        id,
     });
 }
 

@@ -1,7 +1,6 @@
 import planStore, {
     PlanItem as TPlanItem,
 } from "@/features/Planner/data/planStore";
-import { ensureString } from "@/global/types/identity";
 import type {
     Ingredient,
     IngredientRef,
@@ -24,12 +23,10 @@ export const recipeRloFromItemRlo = (
     let loading = false;
     const computeKids = (item: OrphanPlanItem): TPlanItem[] => {
         const subIds = item.subtaskIds || [];
-        const subIdLookup = new Set<string>(subIds.map(ensureString));
+        const subIdLookup = new Set<string>(subIds);
         return subIds
             .concat(
-                (item.componentIds || []).filter(
-                    (id) => !subIdLookup.has(ensureString(id)),
-                ),
+                (item.componentIds || []).filter((id) => !subIdLookup.has(id)),
             )
             .map((id) => planStore.getItemRlo(id))
             .filter((rlo) => {
@@ -65,9 +62,7 @@ export const recipeRloFromItemRlo = (
                     kid.subtaskIds != null && kid.subtaskIds.length > 0;
                 let iRlo: RippedLO<Ingredient> | undefined;
                 if (ref.ingredientId) {
-                    iRlo = LibraryStore.getIngredientRloById(
-                        ensureString(ref.ingredientId),
-                    );
+                    iRlo = LibraryStore.getIngredientRloById(ref.ingredientId);
                     if (iRlo.loading) {
                         loading = true;
                     }
