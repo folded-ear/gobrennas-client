@@ -1,14 +1,19 @@
+import { ItemStyles } from "@/features/Planner/components/withItemStyles";
+import PlanItemStatus from "@/features/Planner/data/PlanItemStatus";
 import type { BfsId } from "@/global/types/identity";
 
 export type TupleProps = {
     active?: boolean;
-    classes: any;
+    classes: Pick<
+        ItemStyles,
+        "acquiring" | "active" | "deleting" | "question" | "text"
+    >;
 };
 
 export type BaseItemProp = {
     id: BfsId;
     name: string;
-    status?: string;
+    status?: PlanItemStatus;
 };
 
 export type ItemProps = BaseItemProp & {

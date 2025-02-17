@@ -5,6 +5,7 @@ import StatusIconButton from "@/features/Planner/components/StatusIconButton";
 import withItemStyles from "@/features/Planner/components/withItemStyles";
 import PlanItemStatus from "@/features/Planner/data/PlanItemStatus";
 import { isDoNotRecognize } from "@/features/Planner/data/plannerUtils";
+import { Ingredient } from "@/global/types/types";
 import { ShopItemType } from "@/views/shop/ShopList";
 import { ListItemText } from "@mui/material";
 import Input from "@mui/material/Input";
@@ -20,8 +21,8 @@ type PlanItemProps = TupleProps & {
     item: ItemProps & {
         question?: boolean;
         path: BaseItemProp[];
-        ingredient?: any;
-        _next_status?: any;
+        ingredient?: Ingredient;
+        _next_status?: PlanItemStatus | undefined;
     };
 };
 
@@ -131,11 +132,12 @@ class PlanItem extends React.PureComponent<PlanItemProps> {
                 />,
             );
         }
+        // Assertion is safe, since can't be deleting unless _next_status == deleted.
         const addonAfter = deleting ? (
             <DontChangeStatusButton
                 key="delete"
                 id={item.id}
-                next={item._next_status}
+                next={item._next_status!}
             />
         ) : null;
         return (

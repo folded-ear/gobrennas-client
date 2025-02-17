@@ -2,7 +2,6 @@ import dispatcher, { ActionType } from "@/data/dispatcher";
 import useIsDevMode from "@/data/useIsDevMode";
 import useWindowSize from "@/data/useWindowSize";
 import FavoriteIndicator from "@/features/Favorites/components/Indicator";
-import { extractRecipePhoto } from "@/features/RecipeDisplay/utils/extractRecipePhoto";
 import ItemImage from "@/features/RecipeLibrary/components/ItemImage";
 import ItemImageUpload from "@/features/RecipeLibrary/components/ItemImageUpload";
 import SendToPlan from "@/features/RecipeLibrary/components/SendToPlan";
@@ -71,7 +70,12 @@ const RecipeDetail: React.FC<Props> = ({
         mine = false;
     }
 
-    const photo = extractRecipePhoto(recipe);
+    const photo = recipe.photo
+        ? {
+              url: recipe.photo,
+              focus: recipe.photoFocus,
+          }
+        : undefined;
 
     const labelsToDisplay =
         recipe.labels &&

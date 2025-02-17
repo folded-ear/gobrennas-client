@@ -52,6 +52,7 @@ export const ProfileProvider: React.FC<Props> = ({ children }) => {
     );
 };
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const isAuthError = (error: any): boolean => {
     if (!error) return false;
     if (error.response && error.response.status === 401) return true;

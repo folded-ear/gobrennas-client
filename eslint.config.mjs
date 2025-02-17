@@ -65,9 +65,9 @@ export default [
                 },
             ],
             semi: ["warn", "always"],
-            "@typescript-eslint/no-explicit-any": 0,
-            "react/no-unescaped-entities": 1,
-            "react/no-deprecated": 1,
+            "@typescript-eslint/no-explicit-any": "error",
+            "react/no-unescaped-entities": "warn",
+            "react/no-deprecated": "warn",
         },
     },
 ];

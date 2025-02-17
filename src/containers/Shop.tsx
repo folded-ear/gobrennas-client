@@ -139,11 +139,11 @@ function groupItems(
             !allAcquiring && items.some(isOrWillBeAcquired)
                 ? items.filter((it) => !isOrWillBeAcquired(it))
                 : items.filter((it) => !isZeroQuantity(it));
-        const unitLookup = new Map<string, any>();
+        const unitLookup = new Map<string, string>();
         const byUnit = groupBy(toAgg, (it) => {
             const uomId = it.uomId ? ensureString(it.uomId) : undefined;
             if (uomId) {
-                unitLookup.set(uomId, it.units);
+                unitLookup.set(uomId, it.units!);
             }
             return uomId;
         });

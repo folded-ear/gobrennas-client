@@ -27,6 +27,7 @@ export interface BfsRouteComponentProps extends RouteComponentProps {
 // Don't allow an undefined component. Not sure why that'd be useful.
 type BfsRouteComponent =
     | React.ComponentType<BfsRouteComponentProps>
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     | React.ComponentType<any>;
 
 export interface BfsRoute extends RouteProps {

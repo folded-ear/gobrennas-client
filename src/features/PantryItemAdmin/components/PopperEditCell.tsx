@@ -1,3 +1,4 @@
+import { Result } from "@/data/hooks/usePantryItemSearch";
 import { Paper } from "@mui/material";
 import Popper from "@mui/material/Popper";
 import { GridRenderEditCellParams } from "@mui/x-data-grid";
@@ -5,8 +6,10 @@ import * as React from "react";
 import { useCallback, useLayoutEffect, useState } from "react";
 
 export default function PopperEditCell(
-    props: GridRenderEditCellParams<any, string[]> & {
-        renderControl: (inputRef: React.Ref<any>) => React.ReactNode;
+    props: GridRenderEditCellParams<Result, string[]> & {
+        renderControl: (
+            inputRef: React.Ref<HTMLInputElement>,
+        ) => React.ReactNode;
     },
 ) {
     const { renderControl, colDef, hasFocus } = props;

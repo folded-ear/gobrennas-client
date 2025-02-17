@@ -9,6 +9,19 @@ import {
 import { darken, lighten } from "@mui/material";
 import withStyles from "@mui/styles/withStyles";
 
+export interface ItemStyles {
+    text: string;
+    section: string;
+    question: string;
+    active: string;
+    selected: string;
+    acquiring: string;
+    needing: string;
+    completing: string;
+    deleting: string;
+    ancestorDeleting: string;
+}
+
 const withItemStyles = withStyles((theme) => ({
     text: {
         whiteSpace: "nowrap",

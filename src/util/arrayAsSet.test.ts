@@ -12,7 +12,7 @@ describe("arrayAsSet", () => {
         it("should balk on mixed types", () =>
             expect(() => removeAtIndex([1, "two"], 0)).toThrow());
         it("should ignore a null/undefined array", () =>
-            expect(removeAtIndex(null as unknown as any[], 0)).toEqual(null));
+            expect(removeAtIndex(null as unknown as never[], 0)).toEqual(null));
         it("should ignore a negative index", () =>
             expect(removeAtIndex([0, 1, 2], -1)).toEqual([0, 1, 2]));
         it("should ignore a too-large index", () =>
@@ -35,7 +35,9 @@ describe("arrayAsSet", () => {
             ).toThrow();
         });
         it("should ignore a null/undefined array", () =>
-            expect(removeDistinct(null as unknown as any[], 0)).toEqual(null));
+            expect(removeDistinct(null as unknown as never[], 0)).toEqual(
+                null,
+            ));
         it("should remove an element", () =>
             expect(removeDistinct(["zero", "one"], "one")).toEqual(["zero"]));
         it("should ignore an unknown element", () =>
@@ -63,7 +65,7 @@ describe("arrayAsSet", () => {
             ).toThrow();
         });
         it("should consider a null/undefined array as empty", () =>
-            expect(toggleDistinct(null as unknown as any[], 0)).toEqual([0]));
+            expect(toggleDistinct(null as unknown as never[], 0)).toEqual([0]));
         it("should remove an element", () =>
             expect(toggleDistinct(["zero", "one"], "one")).toEqual(["zero"]));
         it("should remove a null element", () =>
@@ -84,8 +86,12 @@ describe("arrayAsSet", () => {
             expect(() => intersection([1, 2], [3, "four"])).toThrow();
         });
         it("should consider a null/undefined array as empty", () => {
-            expect(intersection(null as unknown as any[], [3, 4])).toEqual([]);
-            expect(intersection([1, 2], null as unknown as any[])).toEqual([]);
+            expect(intersection(null as unknown as never[], [3, 4])).toEqual(
+                [],
+            );
+            expect(intersection([1, 2], null as unknown as never[])).toEqual(
+                [],
+            );
         });
         it("should find intersections", () => {
             expect(intersection([], [])).toEqual([]);

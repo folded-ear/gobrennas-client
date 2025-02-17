@@ -114,7 +114,7 @@ type Props = Pick<
 };
 
 function CellWithButton(
-    params: GridRenderCellParams<Result, any, any> & {
+    params: GridRenderCellParams<Result> & {
         Icon: SvgIconComponent;
         onClick(r: Result): void;
     },
@@ -225,7 +225,8 @@ export default function AdminGrid({
                     id === duplicatesOf ? "duplicates-of" : ""
                 }
                 slots={{
-                    footer: Footer as any, // should be DataGridProps["slots"]["footer"],
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                    footer: Footer as any, // should be DataGridProps["slots"]["footer"]
                     toolbar: Header,
                 }}
                 slotProps={{
@@ -233,7 +234,8 @@ export default function AdminGrid({
                         selectedCount: rowSelectionModel.length,
                         onCombine,
                         hasNextPage,
-                    } as any,
+                        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                    } as any, // should match above...
                 }}
                 {...passthrough}
             />
