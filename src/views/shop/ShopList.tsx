@@ -7,7 +7,7 @@ import DragContainer, {
 } from "@/features/Planner/components/DragContainer";
 import { Plan as TPlan } from "@/features/Planner/data/planStore";
 import CollapseIconButton from "@/global/components/CollapseIconButton";
-import { BfsId, bfsIdEq } from "@/global/types/identity";
+import { BfsId } from "@/global/types/identity";
 import type { Quantity } from "@/global/types/types";
 import { useIsMobile } from "@/providers/IsMobile";
 import FoodingerFab from "@/views/common/FoodingerFab";
@@ -101,7 +101,7 @@ const TupleList: React.FC<TupleListProps> = ({ tuples }) => {
         <DragContainer
             onDrop={handleDrop}
             renderOverlay={(id) =>
-                renderItem(tuples.find((it) => bfsIdEq(it.id, id)))
+                renderItem(tuples.find((it) => it.id === id))
             }
         >
             <List>{tuples.map(renderItem)}</List>

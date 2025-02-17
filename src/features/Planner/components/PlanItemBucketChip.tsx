@@ -1,6 +1,6 @@
 import dispatcher, { ActionType } from "@/data/dispatcher";
 import getBucketLabel from "@/features/Planner/components/getBucketLabel";
-import { BfsId, bfsIdEq } from "@/global/types/identity";
+import { BfsId } from "@/global/types/identity";
 import { humanDate } from "@/util/time";
 import { ClearIcon, CookIcon } from "@/views/common/icons";
 import { Chip, ChipProps, Divider, Menu, MenuItem } from "@mui/material";
@@ -53,7 +53,7 @@ const BucketChip: React.FC<BucketChipProps> = ({
     };
 
     const chipProps: ChipProps = { size };
-    const bucket = buckets.find((b) => bfsIdEq(b.id, bucketId));
+    const bucket = buckets.find((b) => b.id === bucketId);
     if (bucket) {
         const label = getBucketLabel(bucket);
         let title = label;

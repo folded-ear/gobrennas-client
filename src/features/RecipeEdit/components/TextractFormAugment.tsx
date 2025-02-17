@@ -4,7 +4,7 @@ import TextractEditor, {
     RenderActionsForLines,
 } from "@/features/RecipeEdit/components/TextractEditor";
 import TextractQueueBrowser from "@/features/RecipeEdit/components/TextractQueueBrowser";
-import { BfsId, bfsIdEq } from "@/global/types/identity";
+import { BfsId } from "@/global/types/identity";
 import ClientId from "@/util/ClientId";
 import promiseWellSizedFile from "@/util/promiseWellSizedFile";
 import { RippedLO } from "@/util/ripLoadObject";
@@ -65,7 +65,7 @@ const TextractFormAugment: React.FC<Props> = ({ renderActions }) => {
                                 queryClient.invalidateQueries("textract-jobs");
                                 setCreating((curr) =>
                                     curr.filter((p) => {
-                                        if (bfsIdEq(p.id, id)) {
+                                        if (p.id === id) {
                                             URL.revokeObjectURL(p.url);
                                             return false;
                                         }
@@ -80,9 +80,7 @@ const TextractFormAugment: React.FC<Props> = ({ renderActions }) => {
                         setDeleting((curr) => curr.concat(id));
                         return TextractApi.promiseJobDelete(id).finally(() => {
                             queryClient.invalidateQueries("textract-jobs");
-                            setDeleting((curr) =>
-                                curr.filter((i) => !bfsIdEq(i, id)),
-                            );
+                            setDeleting((curr) => curr.filter((i) => i !== id));
                         });
                     }}
                 />

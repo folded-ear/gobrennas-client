@@ -1,7 +1,7 @@
 import getBucketLabel from "@/features/Planner/components/getBucketLabel";
 import planStore, { Plan } from "@/features/Planner/data/planStore";
 import { recipeRloFromItemRlo as buildSingleItemRecipeLO } from "@/features/RecipeDisplay/utils/recipeRloFromItemRlo";
-import { BfsId, bfsIdEq, ensureString } from "@/global/types/identity";
+import { BfsId, ensureString } from "@/global/types/identity";
 import type { RecipeFromPlanItem } from "@/global/types/types";
 import { mapData, RippedLO } from "@/util/ripLoadObject";
 import { PlanItemStatus } from "@/__generated__/graphql";
@@ -16,7 +16,7 @@ export const recipeRloByPlanAndBucket = (
         // no value means value's type is irrelevant
         return planRLO as unknown as RippedLO<RecipeFromPlanItem>;
     }
-    const bucket = plan.buckets.find((b) => bfsIdEq(b.id, bucketId));
+    const bucket = plan.buckets.find((b) => b.id === bucketId);
     if (!bucket) return {};
     const items = planStore.getItemsInBucket(planId, bucketId);
     if (items.length === 0) return {};

@@ -1,5 +1,5 @@
 import useAdaptingQuery from "@/data/hooks/useAdaptingQuery";
-import { BfsId, bfsIdEq } from "@/global/types/identity";
+import { BfsId } from "@/global/types/identity";
 import { useProfileId } from "@/providers/Profile";
 import { zippedComparator } from "@/util/comparators";
 import { gql } from "@/__generated__";
@@ -27,9 +27,10 @@ const orderComponentsById = (
 ): Record<BfsId, string[]> => {
     const byId: Record<BfsId, string[]> = {};
     for (const plan of plans) {
-        const ownerName = bfsIdEq(plan.owner.id, userId)
-            ? "" // me first!
-            : plan.owner.name || "\u7fff";
+        const ownerName =
+            plan.owner.id === userId
+                ? "" // me first!
+                : plan.owner.name || "\u7fff";
         byId[plan.id] = [ownerName, plan.name];
     }
     return byId;

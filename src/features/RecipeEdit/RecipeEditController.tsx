@@ -4,7 +4,7 @@ import { useGetAllLabels } from "@/data/hooks/useGetAllLabels";
 import { useGetRecipe } from "@/data/hooks/useGetRecipe";
 import { useUpdateRecipe } from "@/data/hooks/useUpdateRecipe";
 import RecipeForm from "@/features/RecipeEdit/components/RecipeForm";
-import { BfsId, bfsIdEq } from "@/global/types/identity";
+import { BfsId } from "@/global/types/identity";
 import type { DraftRecipe } from "@/global/types/types";
 import { useProfileId } from "@/providers/Profile";
 import DeleteButton from "@/views/common/DeleteButton";
@@ -36,7 +36,7 @@ const RecipeEditController: React.FC<Props> = ({ match }) => {
 
     const shouldCreateCopy = match.path.split("/").includes("make-copy");
 
-    const isMine = myProfileId && bfsIdEq(myProfileId, recipe.ownerId);
+    const isMine = myProfileId && myProfileId === recipe.ownerId;
     if (!isMine && !shouldCreateCopy) {
         return (
             <Alert severity={"error"}>

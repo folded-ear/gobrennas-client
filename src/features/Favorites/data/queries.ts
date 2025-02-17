@@ -22,7 +22,7 @@ export function useIsFavorite(id: BfsId): boolean {
     return useMemo(() => {
         if (!data?.favorite?.all) return false;
         for (const f of data.favorite.all) {
-            if (bfsIdEq(f.objectId, id)) return true;
+            if (f.objectId === id) return true;
         }
         return false;
     }, [id, data?.favorite?.all]);

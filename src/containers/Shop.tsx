@@ -10,7 +10,7 @@ import {
 } from "@/features/Planner/data/plannerUtils";
 import planStore, { Plan, PlanItem } from "@/features/Planner/data/planStore";
 import LibraryStore from "@/features/RecipeLibrary/data/LibraryStore";
-import { BfsId, bfsIdEq, ensureString } from "@/global/types/identity";
+import { BfsId, ensureString } from "@/global/types/identity";
 import { Quantity } from "@/global/types/types";
 import { intersection } from "@/util/arrayAsSet";
 import groupBy from "@/util/groupBy";
@@ -158,7 +158,7 @@ function groupItems(
                 units: uomId ? unitLookup.get(uomId) : undefined,
             });
         }
-        const expanded = bfsIdEq(ingId, expandedId);
+        const expanded = ingId === expandedId;
         theTree.push({
             _type: ShopItemType.INGREDIENT,
             id: ingId,
@@ -199,10 +199,7 @@ function groupItems(
     );
     return activeItem
         ? theTree.map((it) => {
-              if (
-                  bfsIdEq(it.id, activeItem.id) &&
-                  it._type === activeItem.type
-              ) {
+              if (it.id === activeItem.id && it._type === activeItem.type) {
                   it = {
                       ...it,
                       active: true,

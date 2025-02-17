@@ -19,20 +19,11 @@ export function ensureString(id: BfsId | number): BfsId {
 }
 
 // todo: remove
-export function bfsIdEq(a: Maybe<BfsId>, b: Maybe<BfsId>): boolean {
-    // soak up null/undefined that get passed via any (e.g., from JS)
-    if (a == null) return b == null;
-    if (b == null) return false;
-    // stringify and test!
-    return ensureString(a) === ensureString(b);
-}
-
-// todo: remove
 export function includesBfsId(ids: BfsId[], id: Maybe<BfsId>): boolean {
     return indexOfBfsId(ids, id) >= 0;
 }
 
 // todo: remove
 export function indexOfBfsId(ids: BfsId[], id: Maybe<BfsId>): number {
-    return ids.findIndex((el) => bfsIdEq(id, el));
+    return ids.findIndex((el) => id === el);
 }

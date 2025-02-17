@@ -1,4 +1,4 @@
-import { BfsId, bfsIdEq } from "@/global/types/identity";
+import { BfsId } from "@/global/types/identity";
 import {
     DndContext,
     DndContextProps,
@@ -67,7 +67,7 @@ const DragContainer: React.FC<Props> = ({
         if (!event.over) return;
         const id = event.active.id.toString();
         const targetId = event.over.id.toString();
-        if (bfsIdEq(id, targetId)) return;
+        if (id === targetId) return;
         const finalRect = event.active.rect.current.translated;
         const overRect = event.over.rect;
         let vertical: Vert = "below";

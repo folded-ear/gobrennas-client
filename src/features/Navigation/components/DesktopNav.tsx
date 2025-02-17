@@ -9,7 +9,7 @@ import {
 } from "@/features/Navigation/components/Navigation.elements";
 import { NavItem } from "@/features/Navigation/components/NavItem";
 import { NavPlanItem } from "@/features/Navigation/components/NavPlanItem";
-import { BfsId, bfsIdEq } from "@/global/types/identity";
+import { BfsId } from "@/global/types/identity";
 import { useProfile } from "@/providers/Profile";
 import {
     LibraryIcon,
@@ -93,7 +93,7 @@ export const DesktopNav: React.FC<DesktopNavProps> = ({
                                 <Subheader key="mine">Plans</Subheader>,
                             );
                         } else if (
-                            !bfsIdEq(plan.owner.id, planItems[idx - 1].owner.id)
+                            plan.owner.id !== planItems[idx - 1].owner.id
                         ) {
                             elements.unshift(
                                 <NavOwnerItem

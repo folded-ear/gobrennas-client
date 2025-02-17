@@ -1,4 +1,4 @@
-import { BfsId, bfsIdEq } from "@/global/types/identity";
+import { BfsId } from "@/global/types/identity";
 import { DraftRecipe, Recipe } from "@/global/types/types";
 import ClientId from "@/util/ClientId";
 import dotProp from "dot-prop-immutable";
@@ -87,10 +87,10 @@ export function useRecipeForm(recipe: Recipe<unknown>): UseRecipeFormReturn {
     ) => {
         const ings =
             draft.ingredients == null ? [] : draft.ingredients.slice(0);
-        const idxActive = ings.findIndex((it) => bfsIdEq(it.id, activeId));
+        const idxActive = ings.findIndex((it) => it.id === activeId);
         if (idxActive > 0) {
             const removed = ings.splice(idxActive, 1);
-            const idxTarget = ings.findIndex((it) => bfsIdEq(it.id, targetId));
+            const idxTarget = ings.findIndex((it) => it.id === targetId);
             if (idxTarget > 0) {
                 ings.splice(above ? idxTarget : idxTarget + 1, 0, ...removed);
             }

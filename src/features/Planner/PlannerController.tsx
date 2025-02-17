@@ -4,7 +4,7 @@ import Plan from "@/features/Planner/components/Plan";
 import { isExpanded } from "@/features/Planner/data/plannerUtils";
 import planStore from "@/features/Planner/data/planStore";
 import LibraryStore from "@/features/RecipeLibrary/data/LibraryStore";
-import { BfsId, bfsIdEq, Identified } from "@/global/types/identity";
+import { BfsId, Identified } from "@/global/types/identity";
 import { Ingredient } from "@/global/types/types";
 import { RippedLO } from "@/util/ripLoadObject";
 import * as React from "react";
@@ -76,11 +76,10 @@ export const PlannerController: React.FC<Props> = ({ match }) => {
             planDetailVisible: planStore.isPlanDetailVisible(),
             itemTuples: activePlan.data ? listTheTree(activePlan.data.id) : [],
             isItemActive: activeItem
-                ? (it: Identified) => bfsIdEq(it.id, activeItem.id)
+                ? (it: Identified) => it.id === activeItem.id
                 : () => false,
             isItemSelected: selectedItems
-                ? (it: Identified) =>
-                      selectedItems.some((t) => bfsIdEq(it.id, t.id))
+                ? (it: Identified) => selectedItems.some((t) => it.id === t.id)
                 : () => false,
         };
     }, [planStore, LibraryStore]);

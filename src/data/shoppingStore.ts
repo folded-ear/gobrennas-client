@@ -1,6 +1,6 @@
 import PlanApi from "@/features/Planner/data/PlanApi";
 import planStore from "@/features/Planner/data/planStore";
-import { BfsId, bfsIdEq, includesBfsId } from "@/global/types/identity";
+import { BfsId, includesBfsId } from "@/global/types/identity";
 import { removeDistinct, toggleDistinct } from "@/util/arrayAsSet";
 import { ShopItemType } from "@/views/shop/ShopList";
 import { ReduceStore } from "flux/utils";
@@ -54,7 +54,7 @@ class ShoppingStore extends ReduceStore<State, FluxAction> {
                 for (const id of preferencesStore.getActiveShoppingPlans()) {
                     if (!includesBfsId(validPlanIds, id)) continue;
                     shopIds.push(id);
-                    if (bfsIdEq(id, activePlanId)) continue;
+                    if (id === activePlanId) continue;
                     // load up its items, so we can shop for them
                     PlanApi.getDescendantsAsList(id);
                 }
@@ -101,9 +101,8 @@ class ShoppingStore extends ReduceStore<State, FluxAction> {
             case ActionType.SHOPPING__FOCUS_ITEM: {
                 state = placeFocus(state, action.id, action.itemType);
                 if (action.itemType === ShopItemType.INGREDIENT) {
-                    state.expandedId = bfsIdEq(state.expandedId, action.id)
-                        ? undefined
-                        : action.id;
+                    state.expandedId =
+                        state.expandedId === action.id ? undefined : action.id;
                 }
                 return state;
             }
@@ -121,18 +120,18 @@ class ShoppingStore extends ReduceStore<State, FluxAction> {
             case ActionType.SHOPPING__TOGGLE_EXPANDED: {
                 return {
                     ...state,
-                    expandedId: bfsIdEq(state.expandedId, action.id)
-                        ? undefined
-                        : action.id,
+                    expandedId:
+                        state.expandedId === action.id ? undefined : action.id,
                 };
             }
 
             case ActionType.SHOPPING__SET_INGREDIENT_STATUS: {
                 return {
                     ...state,
-                    expandedId: bfsIdEq(state.expandedId, action.id)
-                        ? undefined
-                        : state.expandedId,
+                    expandedId:
+                        state.expandedId === action.id
+                            ? undefined
+                            : state.expandedId,
                 };
             }
 

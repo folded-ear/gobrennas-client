@@ -1,7 +1,7 @@
 import planStore, {
     PlanItem as TPlanItem,
 } from "@/features/Planner/data/planStore";
-import { bfsIdEq, ensureString } from "@/global/types/identity";
+import { ensureString } from "@/global/types/identity";
 import type {
     Ingredient,
     IngredientRef,
@@ -77,7 +77,7 @@ export const recipeRloFromItemRlo = (
                         recurse = recurse || ing.type === "Recipe";
                     }
                 }
-                if (recurse && subs.every((s) => !bfsIdEq(s.id, ref.id))) {
+                if (recurse && subs.every((s) => s.id !== ref.id)) {
                     subs.push(
                         prepRecipe(
                             kid,
