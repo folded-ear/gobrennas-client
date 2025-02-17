@@ -13,14 +13,7 @@ import {
     State,
     StateWithActiveTask,
 } from "@/features/Planner/data/planStore";
-import {
-    BfsId,
-    bfsIdEq,
-    BfsStringId,
-    ensureString,
-    includesBfsId,
-    indexOfBfsId,
-} from "@/global/types/identity";
+import { BfsId } from "@/global/types/identity";
 import ClientId from "@/util/ClientId";
 import { bucketComparator, Named } from "@/util/comparators";
 import inTheFuture from "@/util/inTheFuture";
@@ -31,10 +24,10 @@ import dotProp from "dot-prop-immutable";
 import { Maybe } from "graphql/jsutils/Maybe";
 import invariant from "invariant";
 
-const AT_END = ("AT_END_" + ClientId.next()) as BfsStringId;
+const AT_END = ("AT_END_" + ClientId.next()) as BfsId;
 
-const statusUpdatesToFlush = new Map<BfsStringId, StatusChange>();
-let tasksToRename = new Set<BfsStringId>();
+const statusUpdatesToFlush = new Map<BfsId, StatusChange>();
+let tasksToRename = new Set<BfsId>();
 
 export interface StatusChange {
     status: PlanItemStatus;
@@ -89,12 +82,12 @@ function idFixerFactory(cid: string, id: BfsId) {
         if (ids == null) return ids;
         // This cast is safe; Typescript correctly identifies that a string
         // could become a number, but that's within BfsId, so it's ok.
-        if (ids == cid && (ids === cid || bfsIdEq(ids, cid))) return id as T;
+        if (ids == cid && (ids === cid || ids === cid)) return id as T;
         // noinspection SuspiciousTypeOfGuard
         if (ids instanceof Array) {
             // This cast is safe; Typescript can't identify that if 'ids' is an
             // array, T must be BfsId[].
-            return ids.map((v) => (bfsIdEq(v, cid) ? id : v)) as T;
+            return ids.map((v) => (v === cid ? id : v)) as T;
         }
         // noinspection SuspiciousTypeOfGuard
         if (ids instanceof LoadObject<BfsId[]>) {
@@ -142,7 +135,7 @@ function fixIds(
     };
     delete byId[clientId];
     if (tasksToRename.has(clientId)) {
-        tasksToRename.add(ensureString(id));
+        tasksToRename.add(id);
         tasksToRename.delete(clientId);
     }
     const pid = parentId(task);
@@ -185,7 +178,7 @@ export function tasksCreated(
 
 export function listCreated(
     state: State,
-    clientId: BfsStringId,
+    clientId: BfsId,
     id: BfsId,
     plan: Plan,
 ): State {
@@ -207,16 +200,13 @@ export function listCreated(
 }
 
 export function selectList(state: State, id: Maybe<BfsId>): State {
-    if (bfsIdEq(state.activeListId, id)) return state;
+    if (state.activeListId === id) return state;
     // flush any yet-unsaved changes
     state = flushTasksToRename(state);
     // only valid ids, please
     invariant(
         id == null ||
-            includesBfsId(
-                state.topLevelIds.getLoadObject().getValueEnforcing(),
-                id,
-            ),
+            state.topLevelIds.getLoadObject().getValueEnforcing().includes(id),
         `Task '${id}' is not a list.`,
     );
     state = {
@@ -240,7 +230,7 @@ export function selectList(state: State, id: Maybe<BfsId>): State {
 }
 
 export function isKnown(state: State, id: BfsId): boolean {
-    return state.byId.hasOwnProperty(ensureString(id));
+    return state.byId.hasOwnProperty(id);
 }
 
 export function taskForId(state: State, id: BfsId): Plan | PlanItem {
@@ -282,7 +272,7 @@ function spliceIds(
     if (after == null) {
         return [id].concat(ids);
     }
-    let idx = indexOfBfsId(ids, after);
+    let idx = ids.indexOf(after);
     if (idx < 0) return ids.concat(id);
     idx += 1; // we want to be after that guy
     return ids.slice(0, idx).concat(id, ids.slice(idx));
@@ -318,7 +308,7 @@ export function addTaskAndFlush(
     after: BfsId = AT_END,
 ): State {
     state = addTask(state, parentId, name, after);
-    tasksToRename.add(ensureString(state.activeTaskId!));
+    tasksToRename.add(state.activeTaskId!);
     return flushTasksToRename(state);
 }
 
@@ -340,7 +330,7 @@ export function createTaskBefore(state: State, id: BfsId): State {
     const p = taskForId(state, t.parentId);
     let afterId: BfsId = AT_END; // implied first
     if (p.subtaskIds != null) {
-        const idx = indexOfBfsId(p.subtaskIds, id);
+        const idx = p.subtaskIds.indexOf(id);
         if (idx > 0) {
             afterId = p.subtaskIds[idx - 1];
         }
@@ -358,7 +348,7 @@ function getSubtaskIds(state: State, parentId: BfsId): BfsId[] {
 
 export function flushTasksToRename(state: State): State {
     if (tasksToRename.size === 0) return state;
-    const requeue = new Set<BfsStringId>();
+    const requeue = new Set<BfsId>();
     for (const id of tasksToRename) {
         const task = taskForId(state, id) as PlanItem;
         if (!ClientId.is(id)) {
@@ -370,7 +360,7 @@ export function flushTasksToRename(state: State): State {
             continue;
         }
         const selfAndSiblingIds = getSubtaskIds(state, task.parentId);
-        const idx = indexOfBfsId(selfAndSiblingIds, id);
+        const idx = selfAndSiblingIds.indexOf(id);
         const afterId = idx === 0 ? null : selfAndSiblingIds[idx - 1];
         if (ClientId.is(afterId)) {
             requeue.add(id);
@@ -409,7 +399,7 @@ export function renameTask(state: State, id: BfsId, name: string): State {
         if (lo.isDone()) {
             lo = ClientId.is(id) ? lo.creating() : lo.updating();
         }
-        tasksToRename.add(ensureString(id));
+        tasksToRename.add(id);
         inTheFuture(ActionType.PLAN__FLUSH_RENAMES);
         return lo.map((t) => ({
             ...t,
@@ -445,7 +435,7 @@ export function assignToBucket(
 
 export function focusTask(state: State, id: BfsId): State {
     taskForId(state, id);
-    if (bfsIdEq(state.activeTaskId, id)) return state;
+    if (state.activeTaskId === id) return state;
     return {
         ...state,
         activeTaskId: id,
@@ -464,7 +454,7 @@ function getNeighborId(
     const t = taskForId(state, id) as PlanItem;
     if (t.parentId == null) return null;
     const siblingIds = getSubtaskIds(state, t.parentId);
-    const idx = indexOfBfsId(siblingIds, id);
+    const idx = siblingIds.indexOf(id);
     invariant(
         idx >= 0,
         `Task '${t.id}' isn't a child of it's parent ('${t.parentId}')?`,
@@ -487,7 +477,7 @@ function getNeighborId(
                 ? lastDescendantIdOf(state, siblingIds[idx - 1])
                 : siblingIds[idx - 1];
         // to parent (null or not)
-        if (crossGenerations && !bfsIdEq(t.parentId, state.activeListId))
+        if (crossGenerations && t.parentId !== state.activeListId)
             return t.parentId;
         return null;
     }
@@ -511,11 +501,11 @@ export function focusDelta(state: State, id: BfsId, delta: number): State {
 
 export function selectTo(state: State, id: BfsId): State {
     if (state.activeTaskId == null) return focusTask(state, id);
-    if (bfsIdEq(id, state.activeTaskId)) return state;
+    if (id === state.activeTaskId) return state;
     const target = taskForId(state, id) as PlanItem;
     const siblingIds = getSubtaskIds(state, target.parentId);
-    let i = indexOfBfsId(siblingIds, state.activeTaskId);
-    let j = indexOfBfsId(siblingIds, id);
+    let i = siblingIds.indexOf(state.activeTaskId);
+    let j = siblingIds.indexOf(id);
     if (i > j) {
         j += 1; // active doesn't get selected
         i += 1; // inclusive upper bound
@@ -540,7 +530,7 @@ export function selectDelta(state: State, id: BfsId, delta: number): State {
             selectedTaskIds: [id],
         };
     }
-    const idx = indexOfBfsId(state.selectedTaskIds, next);
+    const idx = state.selectedTaskIds.indexOf(next);
     if (idx >= 0) {
         // contract selection
         return {
@@ -560,11 +550,11 @@ export function selectDelta(state: State, id: BfsId, delta: number): State {
 }
 
 function unqueueTaskId(id: BfsId): void {
-    tasksToRename.delete(ensureString(id));
-    statusUpdatesToFlush.delete(ensureString(id));
+    tasksToRename.delete(id);
+    statusUpdatesToFlush.delete(id);
 }
 
-function doTaskDelete(state: State, id: BfsStringId): State {
+function doTaskDelete(state: State, id: BfsId): State {
     unqueueTaskId(id);
     PlanApi.deleteItem(id);
     return state;
@@ -591,7 +581,7 @@ export function flushStatusUpdates(state: State): State {
 
 export function queueDelete(state: State, id: BfsId): State {
     if (!isKnown(state, id)) return state; // already gone...
-    return queueStatusUpdate(state, ensureString(id), {
+    return queueStatusUpdate(state, id, {
         status: PlanItemStatus.DELETED,
     });
 }
@@ -605,7 +595,7 @@ function isEmpty(taskOrString: Named | string): boolean {
 
 function queueStatusUpdate(
     state: State,
-    id: BfsStringId,
+    id: BfsId,
     change: StatusChange,
 ): State {
     const { status } = change;
@@ -624,7 +614,7 @@ function queueStatusUpdate(
     }
     let nextLO;
     if (t.status === status) {
-        statusUpdatesToFlush.delete(ensureString(t.id));
+        statusUpdatesToFlush.delete(t.id);
         nextLO = lo
             .map((t) => {
                 t = {
@@ -655,20 +645,18 @@ function queueStatusUpdate(
             [id]: nextLO,
         },
     };
-    if (bfsIdEq(state.activeListId, id)) {
+    if (state.activeListId === id) {
         state.activeTaskId = undefined;
     }
     if (state.selectedTaskIds) {
-        state.selectedTaskIds = state.selectedTaskIds.filter(
-            (it) => !bfsIdEq(it, id),
-        );
+        state.selectedTaskIds = state.selectedTaskIds.filter((it) => it !== id);
     }
     return state;
 }
 
 export function cancelStatusUpdate(state: State, id: BfsId): State {
-    if (!statusUpdatesToFlush.has(ensureString(id))) return state;
-    statusUpdatesToFlush.delete(ensureString(id));
+    if (!statusUpdatesToFlush.has(id)) return state;
+    statusUpdatesToFlush.delete(id);
     return mapTaskLO<PlanItem>(state, id, (lo) =>
         lo
             .map((t) => {
@@ -686,7 +674,7 @@ export function taskDeleted(state: State, id: BfsId): State {
     const t = taskForId(state, id) as PlanItem;
     let p = taskForId(state, t.parentId);
     const siblingIds = p.subtaskIds!;
-    const idx = indexOfBfsId(siblingIds, id);
+    const idx = siblingIds.indexOf(id);
     p = {
         ...p,
         subtaskIds: siblingIds.slice(0, idx).concat(siblingIds.slice(idx + 1)),
@@ -713,7 +701,7 @@ export function taskDeleted(state: State, id: BfsId): State {
             activeTaskId: undefined,
         };
     }
-    if (bfsIdEq(p.id, state.activeListId) && !isParent(p)) {
+    if (p.id === state.activeListId && !isParent(p)) {
         // it was the last task on the list
         state = addTask(state, p.id, "", AT_END);
     }
@@ -739,7 +727,7 @@ export function getOrderedBlock(
         .map(([t, p]): [PlanItem, BasePlanItem, number] => [
             t,
             p,
-            indexOfBfsId(p.subtaskIds!, t.id),
+            p.subtaskIds!.indexOf(t.id),
         ])
         .sort((a, b) => a[2] - b[2]);
 }
@@ -767,7 +755,7 @@ function subtaskIdBefore(
 ): Maybe<BfsId> {
     const p = taskForId(state, parentId);
     if (!p.subtaskIds || p.subtaskIds.length === 0) return null;
-    const idx = indexOfBfsId(p.subtaskIds, before);
+    const idx = before ? p.subtaskIds.indexOf(before) : -1;
     if (idx < 0) return p.subtaskIds[p.subtaskIds.length - 1];
     if (idx === 0) return null;
     return p.subtaskIds[idx - 1];
@@ -779,8 +767,8 @@ export function moveSubtree(state: State, action: MoveSubtreeAction): State {
         ? subtaskIdBefore(state, action.parentId, action.before)
         : action.after;
     if (
-        includesBfsId(blockIds, action.parentId) ||
-        includesBfsId(blockIds, afterId)
+        blockIds.includes(action.parentId) ||
+        (afterId && blockIds.includes(afterId))
     ) {
         // dragging into the selection, so unselect
         state = {
@@ -789,7 +777,7 @@ export function moveSubtree(state: State, action: MoveSubtreeAction): State {
         };
         blockIds = [state.activeTaskId!];
     }
-    if (!includesBfsId(blockIds, action.id)) {
+    if (!blockIds.includes(action.id)) {
         blockIds = [action.id];
     }
     return mutateTree(state, {
@@ -814,10 +802,10 @@ function mutateTree(state: State, spec: TreeMutationSpec): State {
         id;
         id = parentId(taskForId(state, id))
     ) {
-        if (includesBfsId(spec.ids, id)) return state;
+        if (spec.ids.includes(id)) return state;
     }
     // ensure we're not positioning something based on itself
-    if (includesBfsId(spec.ids, spec.afterId)) return state;
+    if (spec.afterId && spec.ids.includes(spec.afterId)) return state;
     PlanApi.mutateTree(spec);
     // do it now so the UI updates; the future delta will be a race-y no-op
     return treeMutated(state, spec);
@@ -833,7 +821,7 @@ function treeMutated(state: State, spec: TreeMutationSpec): State {
         const oldPid = (lo.getValueEnforcing() as PlanItem).parentId;
         byId[oldPid] = byId[oldPid].map((t) => {
             const ids = t.subtaskIds!;
-            const idx = indexOfBfsId(ids, id);
+            const idx = ids.indexOf(id);
             if (idx < 0) return t;
             const subtaskIds = ids.slice();
             subtaskIds.splice(idx, 1);
@@ -852,8 +840,8 @@ function treeMutated(state: State, spec: TreeMutationSpec): State {
             let subtaskIds = t.subtaskIds;
             if (subtaskIds) {
                 const afterIdx =
-                    afterId == null ? 0 : indexOfBfsId(subtaskIds, afterId) + 1;
-                const currIdx = indexOfBfsId(subtaskIds, id);
+                    afterId == null ? 0 : subtaskIds.indexOf(afterId) + 1;
+                const currIdx = subtaskIds.indexOf(id);
                 if (currIdx < 0 || currIdx !== afterIdx + 1) {
                     subtaskIds = subtaskIds.slice();
                     if (currIdx >= 0) {
@@ -879,13 +867,13 @@ function treeMutated(state: State, spec: TreeMutationSpec): State {
 
 export function nestTask(state: State): State {
     const block = getOrderedBlock(state);
-    if (block.some(([t, p]) => indexOfBfsId(p.subtaskIds!, t.id) === 0)) {
+    if (block.some(([t, p]) => p.subtaskIds!.indexOf(t.id) === 0)) {
         // nothing to nest under
         return state;
     }
     const [t, p] = block[0];
     const subtaskIds = p.subtaskIds!;
-    const idx = indexOfBfsId(subtaskIds, t.id);
+    const idx = subtaskIds.indexOf(t.id);
     const np = taskForId(state, subtaskIds[idx - 1]);
     state = mutateTree(state, {
         ids: block.map(([t]) => t.id),
@@ -910,7 +898,7 @@ function setExpansion(state: State, id: BfsId, expanded?: boolean): State {
 
 export function unnestTask(state: State): State {
     const block = getOrderedBlock(state);
-    if (block.some(([t]) => bfsIdEq(t.parentId, state.activeListId))) {
+    if (block.some(([t]) => t.parentId === state.activeListId)) {
         // nothing to unnest from
         return state;
     }
@@ -926,7 +914,7 @@ export function toggleExpanded(state: State, id: BfsId): State {
     // if toggling a non-parent, that means "collapse my parent"
     const t = taskForId(state, id) as PlanItem;
     if (!isParent(t)) {
-        if (bfsIdEq(t.parentId, state.activeListId)) {
+        if (t.parentId === state.activeListId) {
             // we don't do the plan
             return state;
         }
@@ -962,9 +950,6 @@ export function taskLoaded(state: State, task: Plan | PlanItem): State {
         };
     }
     let lo = state.byId[task.id] || LoadObject.empty();
-    if ("ingredientId" in task && task.ingredientId != null) {
-        task.ingredientId = ensureString(task.ingredientId);
-    }
     if (lo.hasValue()) {
         lo = lo.map((t) => {
             const subtaskIds = task.subtaskIds ? task.subtaskIds.slice() : [];
@@ -980,7 +965,7 @@ export function taskLoaded(state: State, task: Plan | PlanItem): State {
             t = {
                 ...t,
                 ...task,
-                name: bfsIdEq(task.id, state.activeTaskId) ? t.name : task.name,
+                name: task.id === state.activeTaskId ? t.name : task.name,
                 subtaskIds: subtaskIds.length ? subtaskIds : undefined,
             };
             if ("_next_status" in t && t.status === t._next_status) {
@@ -1021,7 +1006,7 @@ export function selectDefaultList(state: State): State {
     if (listIds.length > 0) {
         // see if there's a preferred active plan
         let activePlanId = preferencesStore.getActivePlan();
-        if (listIds.find((id) => bfsIdEq(id, activePlanId)) == null) {
+        if (listIds.find((id) => id === activePlanId) == null) {
             // auto-select the first one, if there is one
             activePlanId = listIds[0];
         }
@@ -1125,7 +1110,7 @@ export function sortActivePlanByBucket(state: State): State {
         .sort((pa, pb) => pa[1] - pb[1])
         .map((pair) => pair[0]);
     for (let i = 0, l = desiredIds.length; i < l; i++) {
-        if (!bfsIdEq(plan.subtaskIds[i], desiredIds[i])) {
+        if (plan.subtaskIds[i] !== desiredIds[i]) {
             PlanApi.reorderSubitems(plan.id, desiredIds);
             // update immediately; the coming delta will be a no-op
             return mapTask<Plan>(state, plan.id, (v) => ({
@@ -1139,13 +1124,13 @@ export function sortActivePlanByBucket(state: State): State {
 
 export function doInteractiveStatusChange(
     state: State,
-    id: BfsStringId,
+    id: BfsId,
     change: PlanItemStatus | StatusChange,
 ): State {
     if (typeof change === "string") {
         change = { status: change };
     }
-    if (willStatusDelete(change.status) && bfsIdEq(id, state.activeTaskId)) {
+    if (willStatusDelete(change.status) && id === state.activeTaskId) {
         state = focusDelta(state, id, 1);
     }
     return queueStatusUpdate(state, id, change);

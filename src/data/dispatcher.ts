@@ -6,7 +6,7 @@ import PlanItemStatus from "@/features/Planner/data/PlanItemStatus";
 import { Plan, PlanBucket, PlanItem } from "@/features/Planner/data/planStore";
 import { MoveSubtreeAction } from "@/features/Planner/data/utils";
 import { SendToPlanPayload } from "@/features/RecipeLibrary/data/LibraryStore";
-import { BfsId, BfsStringId, UserType } from "@/global/types/identity";
+import { BfsId, UserType } from "@/global/types/identity";
 import { PantryItem, Recipe } from "@/global/types/types";
 import { ShopItemType } from "@/views/shop/ShopList";
 import { Dispatcher } from "flux";
@@ -119,7 +119,7 @@ export type FluxAction =
           type: ActionType.LIBRARY__INGREDIENTS_LOADED;
           data: Array<PantryItem | Recipe>;
       }
-    | { type: ActionType.LIBRARY__LOAD_INGREDIENTS; ids: BfsStringId[] }
+    | { type: ActionType.LIBRARY__LOAD_INGREDIENTS; ids: BfsId[] }
     // pantry-item
     | {
           type: ActionType.PANTRY_ITEM__ORDER_FOR_STORE;
@@ -271,13 +271,13 @@ export type FluxAction =
     | {
           type: ActionType.SHOPPING__SET_INGREDIENT_STATUS;
           id: BfsId;
-          itemIds: BfsStringId[];
+          itemIds: BfsId[];
           status: PlanItemStatus;
       }
     | {
           type: ActionType.SHOPPING__UNDO_SET_INGREDIENT_STATUS;
           id: BfsId;
-          itemIds: BfsStringId[];
+          itemIds: BfsId[];
       }
     | { type: ActionType.SHOPPING__TOGGLE_EXPANDED; id: BfsId }
     | { type: ActionType.SHOPPING__TOGGLE_PLAN; id: BfsId }

@@ -1,7 +1,6 @@
 import { API_BASE_URL } from "@/constants";
 import PlanApi from "@/features/Planner/data/PlanApi";
 import type { Plan } from "@/features/Planner/data/planStore";
-import { bfsIdEq, ensureString } from "@/global/types/identity";
 import { ShareInfo } from "@/global/types/types";
 import { RippedLO } from "@/util/ripLoadObject";
 import { AddIcon, AddToCalendarIcon } from "@/views/common/icons";
@@ -22,13 +21,13 @@ interface Props {
 const Body: React.FC<Props> = ({ plan }) => {
     const [rlo, setRlo] = React.useState<RippedLO<ShareInfo>>({});
     React.useEffect(() => {
-        if (rlo.data && bfsIdEq(rlo.data.id, plan.id)) {
+        if (rlo.data && rlo.data.id === plan.id) {
             return;
         }
         setRlo({
             loading: true,
             data: {
-                id: ensureString(plan.id),
+                id: plan.id,
                 slug: "",
                 secret: "",
             },

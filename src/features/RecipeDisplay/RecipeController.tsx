@@ -1,6 +1,5 @@
 import { useDeleteRecipe } from "@/data/hooks/useDeleteRecipe";
 import { useGetFullRecipe } from "@/data/hooks/useGetFullRecipe";
-import { bfsIdEq } from "@/global/types/identity";
 import { useProfileId } from "@/providers/Profile";
 import { ScalingProvider } from "@/util/ScalingContext";
 import CloseButton from "@/views/common/CloseButton";
@@ -36,7 +35,7 @@ const RecipeController: React.FC<Props> = ({ match }) => {
     if (error) {
         return <NotFound />;
     }
-    const mine = !!fullRecipe && bfsIdEq(fullRecipe.owner.id, myId);
+    const mine = !!fullRecipe && fullRecipe.owner.id === myId;
 
     const handleDelete = () =>
         fullRecipe?.recipe &&

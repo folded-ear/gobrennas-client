@@ -5,7 +5,7 @@ import StatusIconButton from "@/features/Planner/components/StatusIconButton";
 import withItemStyles from "@/features/Planner/components/withItemStyles";
 import PlanItemStatus from "@/features/Planner/data/PlanItemStatus";
 import CollapseIconButton from "@/global/components/CollapseIconButton";
-import { BfsStringId } from "@/global/types/identity";
+import { BfsId } from "@/global/types/identity";
 import { Quantity as TQuantity } from "@/global/types/types";
 import { UnknownLocation } from "@/views/common/icons";
 import { ShopItemType } from "@/views/shop/ShopList";
@@ -22,7 +22,7 @@ type IngredientItemProps = TupleProps & {
     item: ItemProps &
         BaseItemProp & {
             expanded?: boolean;
-            itemIds: BfsStringId[];
+            itemIds: BfsId[];
             storeOrder?: number;
             quantities: TQuantity[];
         };

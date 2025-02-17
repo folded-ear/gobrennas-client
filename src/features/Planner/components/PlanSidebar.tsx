@@ -5,7 +5,7 @@ import useFluxStore from "@/data/useFluxStore";
 import PlanBucketManager from "@/features/Planner/components/PlanBucketManager";
 import SidebarUnit from "@/features/Planner/components/SidebarUnit";
 import { Plan } from "@/features/Planner/data/planStore";
-import { bfsIdEq, BfsStringId, UserType } from "@/global/types/identity";
+import { BfsId, UserType } from "@/global/types/identity";
 import { useProfile } from "@/providers/Profile";
 import DeleteButton from "@/views/common/DeleteButton";
 import LoadingIndicator from "@/views/common/LoadingIndicator";
@@ -41,7 +41,7 @@ interface UserContentProps {
     friend: UserType;
     isAdministrator: boolean;
     grants: Record<string, AccessLevel>;
-    handleGrantChange(userId: BfsStringId, level: AccessOption): void;
+    handleGrantChange(userId: BfsId, level: AccessOption): void;
 }
 
 function isValidColor(color: string): boolean {
@@ -132,7 +132,7 @@ const PlanSidebar: React.FC<Props> = ({ open, onClose, plan }) => {
         }
     };
 
-    const handleGrantChange = (userId: BfsStringId, level: AccessOption) => {
+    const handleGrantChange = (userId: BfsId, level: AccessOption) => {
         if (level === LEVEL_NO_ACCESS) {
             dispatcher.dispatch({
                 type: ActionType.PLAN__CLEAR_PLAN_GRANT,
@@ -158,10 +158,8 @@ const PlanSidebar: React.FC<Props> = ({ open, onClose, plan }) => {
 
     const acl = plan.acl || {};
     const grants = acl.grants || {};
-    const isMine = bfsIdEq(acl.ownerId, me.id);
-    const owner = isMine
-        ? me
-        : friendList?.find((it) => bfsIdEq(it.id, acl.ownerId));
+    const isMine = acl.ownerId === me.id;
+    const owner = isMine ? me : friendList?.find((it) => it.id === acl.ownerId);
     const isAdministrator =
         isMine || includesLevel(grants[me.id], AccessLevel.ADMINISTER);
 
@@ -248,10 +246,7 @@ const PlanSidebar: React.FC<Props> = ({ open, onClose, plan }) => {
                                 {(isMine
                                     ? friendList
                                     : friendList
-                                          .filter(
-                                              (f) =>
-                                                  !bfsIdEq(f.id, acl.ownerId),
-                                          )
+                                          .filter((f) => f.id !== acl.ownerId)
                                           .concat(me)
                                 ).map((f) => (
                                     <ListItem key={f.id}>

@@ -32,7 +32,7 @@ import {
     LOAD_PLANS,
 } from "@/features/Planner/data/queries";
 import { StatusChange, TreeMutationSpec } from "@/features/Planner/data/utils";
-import { BfsId, BfsStringId, ensureString } from "@/global/types/identity";
+import { BfsId } from "@/global/types/identity";
 import { ShareInfo } from "@/global/types/types";
 import { client } from "@/providers/ApolloClient";
 import promiseFlux, {
@@ -59,10 +59,7 @@ const PlanApi = {
                 mutation: CREATE_PLAN,
                 variables: {
                     name,
-                    sourcePlanId:
-                        sourcePlanId == null
-                            ? null
-                            : ensureString(sourcePlanId),
+                    sourcePlanId: sourcePlanId ?? null,
                 },
                 refetchQueries: [GET_PLANS],
             }),
@@ -94,7 +91,7 @@ const PlanApi = {
             client.mutate({
                 mutation: DELETE_PLAN,
                 variables: {
-                    id: ensureString(id),
+                    id,
                 },
             }),
             ({ data }): FluxAction => ({
@@ -105,13 +102,13 @@ const PlanApi = {
             client.refetchQueries({ include: [GET_PLANS] });
         }),
 
-    setPlanGrant: (id: BfsStringId, userId: BfsId, accessLevel: AccessLevel) =>
+    setPlanGrant: (id: BfsId, userId: BfsId, accessLevel: AccessLevel) =>
         promiseFlux(
             client.mutate({
                 mutation: SET_PLAN_GRANT,
                 variables: {
                     planId: id,
-                    userId: ensureString(userId),
+                    userId,
                     accessLevel,
                 },
             }),
@@ -122,13 +119,13 @@ const PlanApi = {
             }),
         ),
 
-    clearPlanGrant: (id: BfsStringId, userId: BfsId) =>
+    clearPlanGrant: (id: BfsId, userId: BfsId) =>
         promiseFlux(
             client.mutate({
                 mutation: REVOKE_PLAN_GRANT,
                 variables: {
                     planId: id,
-                    userId: ensureString(userId),
+                    userId,
                 },
             }),
             () => ({
@@ -148,8 +145,8 @@ const PlanApi = {
             client.mutate({
                 mutation: CREATE_PLAN_ITEM,
                 variables: {
-                    parentId: ensureString(parentId),
-                    afterId: afterId ? ensureString(afterId) : null,
+                    parentId,
+                    afterId: afterId ?? null,
                     name,
                 },
             }),
@@ -171,7 +168,7 @@ const PlanApi = {
             client.mutate({
                 mutation: RENAME_PLAN_OR_ITEM,
                 variables: {
-                    id: ensureString(id),
+                    id,
                     name,
                 },
             }),
@@ -190,7 +187,7 @@ const PlanApi = {
             client.mutate({
                 mutation: SET_PLAN_COLOR,
                 variables: {
-                    id: ensureString(id),
+                    id,
                     color,
                 },
             }),
@@ -210,7 +207,7 @@ const PlanApi = {
             client.mutate({
                 mutation: DELETE_PLAN_ITEM,
                 variables: {
-                    id: ensureString(id),
+                    id,
                 },
             }),
             ({ data }): FluxAction => {
@@ -228,7 +225,7 @@ const PlanApi = {
             client.mutate({
                 mutation: SET_PLAN_ITEM_STATUS,
                 variables: {
-                    id: ensureString(id),
+                    id,
                     status,
                     doneAt: doneAt?.toISOString() || null,
                 },
@@ -253,12 +250,9 @@ const PlanApi = {
             mutation: MUTATE_PLAN_TREE,
             variables: {
                 spec: {
-                    ids: spec.ids.map(ensureString),
-                    parentId: ensureString(spec.parentId),
-                    afterId:
-                        spec.afterId == null
-                            ? null
-                            : ensureString(spec.afterId),
+                    ids: spec.ids,
+                    parentId: spec.parentId,
+                    afterId: spec.afterId ?? null,
                 },
             },
         }),
@@ -267,8 +261,8 @@ const PlanApi = {
         client.mutate({
             mutation: ASSIGN_BUCKET,
             variables: {
-                id: ensureString(id),
-                bucketId: bucketId == null ? null : ensureString(bucketId),
+                id,
+                bucketId: bucketId ?? null,
             },
         }),
 
@@ -276,8 +270,8 @@ const PlanApi = {
         client.mutate({
             mutation: REORDER_PLAN_ITEMS,
             variables: {
-                parentId: ensureString(id),
-                itemIds: subitemIds.map(ensureString),
+                parentId: id,
+                itemIds: subitemIds,
             },
         }),
 
@@ -286,7 +280,7 @@ const PlanApi = {
             .query({
                 query: GET_PLAN_SHARE_INFO,
                 variables: {
-                    id: ensureString(id),
+                    id,
                 },
             })
             .then(({ data }): ShareInfo => data.planner.plan.share),
@@ -296,7 +290,7 @@ const PlanApi = {
             client.query({
                 query: LOAD_DESCENDANTS,
                 variables: {
-                    id: ensureString(id),
+                    id,
                 },
             }),
             ({ data }): FluxAction => ({
@@ -309,12 +303,12 @@ const PlanApi = {
         ),
 
     createBucket: (planId: BfsId, bucket: PlanBucket) => {
-        const clientId = ensureString(bucket.id);
+        const clientId = bucket.id;
         return promiseFlux(
             client.mutate({
                 mutation: CREATE_BUCKET,
                 variables: {
-                    planId: ensureString(planId),
+                    planId,
                     name: bucket.name ?? null,
                     date: formatLocalDate(bucket.date),
                 },
@@ -324,7 +318,7 @@ const PlanApi = {
                 return {
                     type: ActionType.PLAN__BUCKET_CREATED,
                     planId,
-                    clientId: clientId,
+                    clientId,
                     data: deserializeBucket(bucket),
                 };
             },
@@ -337,8 +331,8 @@ const PlanApi = {
             client.mutate({
                 mutation: UPDATE_BUCKET,
                 variables: {
-                    planId: ensureString(planId),
-                    bucketId: ensureString(id),
+                    planId,
+                    bucketId: id,
                     name: bucket.name ?? null,
                     date: formatLocalDate(bucket.date),
                 },
@@ -354,13 +348,13 @@ const PlanApi = {
         ),
 
     deleteBucket: (planId: BfsId, id: BfsId) => {
-        client.cache.evict({ id: ensureString(id) });
+        client.cache.evict({ id });
         return promiseFlux(
             client.mutate({
                 mutation: DELETE_BUCKET,
                 variables: {
-                    planId: ensureString(planId),
-                    bucketId: ensureString(id),
+                    planId,
+                    bucketId: id,
                 },
             }),
             ({ data }): FluxAction => {
@@ -383,8 +377,8 @@ const PlanApi = {
             .mutate({
                 mutation: SPLICE_BUCKETS,
                 variables: {
-                    planId: ensureString(planId),
-                    idsToDelete: idsToDelete.map((id) => ensureString(id)),
+                    planId,
+                    idsToDelete,
                     toCreate: toCreate.map((b) => ({
                         name: b.name ?? null,
                         date: formatLocalDate(b.date),
@@ -406,7 +400,7 @@ const PlanApi = {
                         dispatcher.dispatch({
                             type: ActionType.PLAN__BUCKET_CREATED,
                             planId,
-                            clientId: ensureString(toCreate[i].id),
+                            clientId: toCreate[i].id,
                             data: deserializeBucket(b),
                         });
                     });

@@ -1,5 +1,5 @@
 import planStore from "@/features/Planner/data/planStore";
-import { BfsId, bfsIdEq } from "@/global/types/identity";
+import { BfsId } from "@/global/types/identity";
 import { usePendingProfile } from "@/providers/Profile";
 import { zippedComparator } from "@/util/comparators";
 import { mapData } from "@/util/ripLoadObject";
@@ -19,8 +19,8 @@ export default function useAllPlansRLO() {
                 for (const p of plans) {
                     let ownerId = p.acl?.ownerId ?? Number.MAX_SAFE_INTEGER;
                     let ownerName = "";
-                    if (bfsIdEq(ownerId, myId)) {
-                        ownerId = 0;
+                    if (ownerId === myId) {
+                        ownerId = "";
                     } else {
                         const rlo = friendStore.getFriendRlo(ownerId);
                         if (rlo.data) {

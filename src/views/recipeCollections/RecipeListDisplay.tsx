@@ -1,6 +1,6 @@
 import { MessagePaper } from "@/features/RecipeLibrary/components/MessagePaper";
 import { RecipeCard } from "@/features/RecipeLibrary/types";
-import { bfsIdEq, UserType } from "@/global/types/identity";
+import { UserType } from "@/global/types/identity";
 import { NanoCard } from "@/views/recipeCollections/NanoCard";
 import { Stack } from "@mui/material";
 import * as React from "react";
@@ -20,7 +20,7 @@ export const RecipeListDisplay: React.FC<RecipeListDisplayProps> = ({
         return <MessagePaper primary="Nothing matches that search." />;
     }
 
-    const isMine = (r: RecipeCard) => bfsIdEq(r.owner.id, me.id);
+    const isMine = (r: RecipeCard) => r.owner.id === me.id;
 
     return (
         <Stack gap={1.5}>

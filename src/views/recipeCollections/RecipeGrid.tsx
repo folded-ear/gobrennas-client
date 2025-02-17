@@ -1,6 +1,6 @@
 import RecipeCard from "@/features/RecipeLibrary/components/RecipeCard";
 import { RecipeCard as TRecipeCard } from "@/features/RecipeLibrary/types";
-import { bfsIdEq, UserType } from "@/global/types/identity";
+import { UserType } from "@/global/types/identity";
 import { NanoCard } from "@/views/recipeCollections/NanoCard";
 import { Grid } from "@mui/material";
 import { PropsWithChildren } from "react";
@@ -21,7 +21,7 @@ export const RecipeGrid = ({
     spacing = 2,
     children,
 }: RecipeDisplayGridProps) => {
-    const isMine = (r: TRecipeCard) => bfsIdEq(r.owner.id, me.id);
+    const isMine = (r: TRecipeCard) => r.owner.id === me.id;
     return (
         <Grid container alignItems="stretch" spacing={spacing}>
             {recipes.map((recipe) => (

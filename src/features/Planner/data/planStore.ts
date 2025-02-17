@@ -1,13 +1,7 @@
 import AccessLevel from "@/data/AccessLevel";
 import dispatcher, { ActionType, FluxAction } from "@/data/dispatcher";
 import PlanItemStatus from "@/features/Planner/data/PlanItemStatus";
-import {
-    BfsId,
-    bfsIdEq,
-    BfsStringId,
-    ensureString,
-    includesBfsId,
-} from "@/global/types/identity";
+import { BfsId } from "@/global/types/identity";
 import { removeAtIndex } from "@/util/arrayAsSet";
 import ClientId from "@/util/ClientId";
 import { bucketComparator } from "@/util/comparators";
@@ -91,9 +85,9 @@ export interface PlanItem extends BasePlanItem {
     parentId: BfsId;
     status: PlanItemStatus;
     quantity?: Maybe<number>;
-    uomId?: Maybe<BfsStringId>;
+    uomId?: Maybe<BfsId>;
     units?: Maybe<string>;
-    ingredientId?: Maybe<BfsStringId>;
+    ingredientId?: Maybe<BfsId>;
     preparation?: Maybe<string>;
     // client-side
     _expanded?: Maybe<boolean>;
@@ -170,7 +164,7 @@ class PlanStore extends FluxReduceStore<State, FluxAction> {
                     ["byId", action.id],
                     (lo: LoadObject<Plan>) => lo.deleting(),
                 );
-                if (bfsIdEq(next.activeListId, action.id)) {
+                if (next.activeListId === action.id) {
                     next.listDetailVisible = false;
                     next.activeTaskId = null;
                     next.selectedTaskIds = null;
@@ -182,7 +176,7 @@ class PlanStore extends FluxReduceStore<State, FluxAction> {
                 return selectDefaultList({
                     ...dotProp.delete(state, ["byId", action.id]),
                     topLevelIds: state.topLevelIds.map((ids) =>
-                        ids.filter((id) => !bfsIdEq(id, action.id)),
+                        ids.filter((id) => id !== action.id),
                     ),
                 });
             }
@@ -199,11 +193,7 @@ class PlanStore extends FluxReduceStore<State, FluxAction> {
                 return setPlanColor(state, action.id, action.color);
 
             case ActionType.PLAN__SET_PLAN_GRANT: {
-                PlanApi.setPlanGrant(
-                    ensureString(action.id),
-                    action.userId,
-                    action.level,
-                );
+                PlanApi.setPlanGrant(action.id, action.userId, action.level);
                 return dotProp.set(
                     state,
                     ["byId", action.id],
@@ -221,7 +211,7 @@ class PlanStore extends FluxReduceStore<State, FluxAction> {
             }
 
             case ActionType.PLAN__CLEAR_PLAN_GRANT: {
-                PlanApi.clearPlanGrant(ensureString(action.id), action.userId);
+                PlanApi.clearPlanGrant(action.id, action.userId);
                 return dotProp.set(
                     state,
                     ["byId", action.id],
@@ -325,32 +315,23 @@ class PlanStore extends FluxReduceStore<State, FluxAction> {
             }
 
             case ActionType.PLAN__COMPLETE_PLAN_ITEM: {
-                return doInteractiveStatusChange(
-                    state,
-                    ensureString(action.id),
-                    {
-                        status: PlanItemStatus.COMPLETED,
-                        doneAt: action.doneAt,
-                    },
-                );
+                return doInteractiveStatusChange(state, action.id, {
+                    status: PlanItemStatus.COMPLETED,
+                    doneAt: action.doneAt,
+                });
             }
 
             case ActionType.PLAN__SET_STATUS: {
                 return doInteractiveStatusChange(
                     state,
-                    ensureString(action.id),
+                    action.id,
                     action.status,
                 );
             }
 
             case ActionType.PLAN__BULK_SET_STATUS: {
                 return action.ids.reduce(
-                    (s, id) =>
-                        doInteractiveStatusChange(
-                            s,
-                            ensureString(id),
-                            action.status,
-                        ),
+                    (s, id) => doInteractiveStatusChange(s, id, action.status),
                     state,
                 );
             }
@@ -444,7 +425,7 @@ class PlanStore extends FluxReduceStore<State, FluxAction> {
             case ActionType.PLAN__BUCKET_CREATED: {
                 return mapPlanBuckets(state, action.planId, (bs) =>
                     bs
-                        .filter((b) => !bfsIdEq(b.id, action.clientId))
+                        .filter((b) => b.id !== action.clientId)
                         .concat(action.data)
                         .sort(bucketComparator),
                 );
@@ -452,7 +433,7 @@ class PlanStore extends FluxReduceStore<State, FluxAction> {
 
             case ActionType.PLAN__DELETE_BUCKET: {
                 return mapPlanBuckets(state, action.planId, (bs) => {
-                    const idx = bs.findIndex((b) => bfsIdEq(b.id, action.id));
+                    const idx = bs.findIndex((b) => b.id === action.id);
                     if (idx >= 0 && !ClientId.is(action.id)) {
                         PlanApi.deleteBucket(state.activeListId!, action.id);
                     }
@@ -462,13 +443,13 @@ class PlanStore extends FluxReduceStore<State, FluxAction> {
 
             case ActionType.PLAN__BUCKET_DELETED: {
                 return mapPlanBuckets(state, action.planId, (bs) =>
-                    bs.filter((b) => !bfsIdEq(b.id, action.id)),
+                    bs.filter((b) => b.id !== action.id),
                 );
             }
 
             case ActionType.PLAN__BUCKETS_DELETED: {
                 return mapPlanBuckets(state, action.planId, (bs) =>
-                    bs.filter((b) => !includesBfsId(action.ids, b.id)),
+                    bs.filter((b) => !action.ids.includes(b.id)),
                 );
             }
 
@@ -476,7 +457,7 @@ class PlanStore extends FluxReduceStore<State, FluxAction> {
                 return mapPlanBuckets(state, action.planId, (bs) =>
                     bs
                         .map((b) => {
-                            if (!bfsIdEq(b.id, action.id)) return b;
+                            if (b.id !== action.id) return b;
                             b = { ...b, name: action.name };
                             saveBucket(state, b);
                             return b;
@@ -489,7 +470,7 @@ class PlanStore extends FluxReduceStore<State, FluxAction> {
                 return mapPlanBuckets(state, action.planId, (bs) =>
                     bs
                         .map((b) => {
-                            if (!bfsIdEq(b.id, action.id)) return b;
+                            if (b.id !== action.id) return b;
                             b = { ...b, date: action.date };
                             saveBucket(state, b);
                             return b;
@@ -502,7 +483,7 @@ class PlanStore extends FluxReduceStore<State, FluxAction> {
                 return mapPlanBuckets(state, action.planId, (bs) =>
                     bs
                         .map((b) => {
-                            if (!bfsIdEq(b.id, action.data.id)) return b;
+                            if (b.id !== action.data.id) return b;
                             return action.data;
                         })
                         .sort(bucketComparator),
@@ -564,7 +545,7 @@ class PlanStore extends FluxReduceStore<State, FluxAction> {
             let curr = comp;
             let descendant = false;
             while (curr.parentId != null) {
-                if (bfsIdEq(curr.parentId, id)) {
+                if (curr.parentId === id) {
                     descendant = true;
                     break;
                 }
@@ -636,7 +617,7 @@ class PlanStore extends FluxReduceStore<State, FluxAction> {
             const lo = byId[stack.pop()!];
             if (!lo || !lo.hasValue()) continue;
             const it = lo.getValueEnforcing() as PlanItem;
-            if (bfsIdEq(it.bucketId, bucketId)) {
+            if (it.bucketId === bucketId) {
                 items.push(it);
                 continue;
             }
@@ -664,8 +645,8 @@ class PlanStore extends FluxReduceStore<State, FluxAction> {
                 (taskForId(s, s.activeTaskId) as PlanItem).parentId,
             ).subtaskIds?.filter(
                 (id) =>
-                    bfsIdEq(id, s.activeTaskId) ||
-                    (s.selectedTaskIds && includesBfsId(s.selectedTaskIds, id)),
+                    id === s.activeTaskId ||
+                    (s.selectedTaskIds && s.selectedTaskIds.includes(id)),
             ),
         )
             .map((t) => t.name)

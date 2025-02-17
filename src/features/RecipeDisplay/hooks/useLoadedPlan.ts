@@ -1,7 +1,7 @@
 import dispatcher, { ActionType } from "@/data/dispatcher";
 import useFluxStore from "@/data/useFluxStore";
 import planStore from "@/features/Planner/data/planStore";
-import { BfsId, includesBfsId } from "@/global/types/identity";
+import { BfsId } from "@/global/types/identity";
 import * as React from "react";
 import { useHistory } from "react-router-dom";
 
@@ -15,7 +15,7 @@ export const useLoadedPlan = (pid: BfsId | undefined) => {
     // ensure it's selected
     React.useEffect(() => {
         if (pid != null && allPlanIds && allPlanIds.length) {
-            if (!includesBfsId(allPlanIds, pid)) {
+            if (!allPlanIds.includes(pid)) {
                 // Deleted; navigate to the first still-present plan.
                 history.push(`/plan/${allPlanIds[0]}`);
             } else {

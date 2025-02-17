@@ -1,4 +1,4 @@
-import { BfsId, bfsIdEq, UserType } from "@/global/types/identity";
+import { BfsId, UserType } from "@/global/types/identity";
 import { client } from "@/providers/ApolloClient";
 import LoadObjectState from "@/util/LoadObjectState";
 import promiseFlux from "@/util/promiseFlux";
@@ -60,7 +60,7 @@ class FriendStore extends ReduceStore<State, FluxAction> {
 
     getFriendRlo(id: BfsId): RippedLO<UserType> {
         return mapData(this.getFriendsRlo(), (fs) =>
-            fs.find((f) => bfsIdEq(f.id, id)),
+            fs.find((f) => f.id === id),
         );
     }
 }

@@ -4,7 +4,7 @@ import { ReduceStore } from "flux/utils";
 import { Map } from "immutable";
 // noinspection ES6PreferShortImport
 import { LOCAL_STORAGE_PREFERENCES } from "@/constants/index";
-import { BfsId, ensureString } from "@/global/types/identity";
+import { BfsId } from "@/global/types/identity";
 import { Maybe } from "graphql/jsutils/Maybe";
 import dispatcher, { ActionType, FluxAction } from "./dispatcher";
 import shoppingStore from "./shoppingStore";
@@ -124,8 +124,6 @@ class PreferencesStore extends ReduceStore<State, FluxAction> {
         if (plans == null || typeof plans === "string" || plans.length === 0) {
             const activePlanId = this.getActivePlan();
             plans = activePlanId != null ? [activePlanId] : [];
-        } else {
-            plans = plans.map(ensureString);
         }
         return plans;
     }

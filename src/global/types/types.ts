@@ -1,4 +1,4 @@
-import { BfsId, BfsStringId } from "@/global/types/identity";
+import { BfsId } from "@/global/types/identity";
 import { PlannedRecipeHistory, User } from "@/__generated__/graphql";
 import { Maybe } from "graphql/jsutils/Maybe";
 
@@ -42,9 +42,9 @@ export interface IngredientRef<I = Ingredient> {
     quantity?: number | null;
     preparation?: string | null;
     units?: string | null;
-    uomId?: Maybe<BfsStringId>;
+    uomId?: Maybe<BfsId>;
     ingredient?: I | string | null;
-    ingredientId?: Maybe<BfsStringId>;
+    ingredientId?: Maybe<BfsId>;
 
     /**
      * On the shopping list, napalm entries will only have name, not raw.

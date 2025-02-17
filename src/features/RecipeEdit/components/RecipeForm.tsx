@@ -7,7 +7,7 @@ import DragHandle from "@/features/Planner/components/DragHandle";
 import Item from "@/features/Planner/components/Item";
 import PositionPicker from "@/features/RecipeEdit/components/PositionPicker";
 import { TextractForm } from "@/features/RecipeEdit/components/TextractForm";
-import { BfsId, bfsIdEq } from "@/global/types/identity";
+import { BfsId } from "@/global/types/identity";
 import { DraftRecipe, IngredientRef, Recipe } from "@/global/types/types";
 import ImageDropZone from "@/util/ImageDropZone";
 import {
@@ -179,8 +179,8 @@ const RecipeForm: React.FC<Props> = ({
                 renderOverlay={(id) => (
                     <Box px={2} py={1}>
                         <DragHandle />
-                        {draft.ingredients.find((it) => bfsIdEq(it.id, id))
-                            ?.raw || ""}
+                        {draft.ingredients.find((it) => it.id === id)?.raw ||
+                            ""}
                     </Box>
                 )}
             >

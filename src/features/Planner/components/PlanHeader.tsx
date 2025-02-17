@@ -3,7 +3,6 @@ import PlanSidebar from "@/features/Planner/components/PlanSidebar";
 import UserById from "@/features/Planner/components/UserById";
 import { Plan as TPlan } from "@/features/Planner/data/planStore";
 import CollapseIconButton from "@/global/components/CollapseIconButton";
-import { bfsIdEq } from "@/global/types/identity";
 import { useIsMobile } from "@/providers/IsMobile";
 import { useProfileId } from "@/providers/Profile";
 import {
@@ -147,7 +146,7 @@ export default function PlanHeader({
                             </IconButton>
                         </span>
                     </Tooltip>
-                    {activePlan && !bfsIdEq(activePlan.acl.ownerId, myId) && (
+                    {activePlan && activePlan.acl.ownerId !== myId && (
                         <UserById id={activePlan.acl.ownerId} iconOnly />
                     )}
                 </Stack>

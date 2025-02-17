@@ -15,7 +15,7 @@ const ResetBucketsButton: React.FC<{ planId: BfsId } & IconButtonProps> = ({
             onClick={() =>
                 dispatcher.dispatch({
                     type: ActionType.PLAN__RESET_TO_THIS_WEEKS_BUCKETS,
-                    planId: planId,
+                    planId,
                 })
             }
             size="small"

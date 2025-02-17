@@ -18,7 +18,7 @@ import planStore, {
     PlanBucket,
     PlanItem,
 } from "@/features/Planner/data/planStore";
-import { BfsId, bfsIdEq, ensureString } from "@/global/types/identity";
+import { BfsId } from "@/global/types/identity";
 import { Recipe } from "@/global/types/types";
 import groupBy, { mapBy } from "@/util/groupBy";
 import useWhileOver from "@/util/useWhileOver";
@@ -125,11 +125,11 @@ export const BodyContainer: React.FC = () => {
         goDeeper(plan, 0);
 
         if (plan.buckets) {
-            const bucketsById = mapBy(plan.buckets, (b) => ensureString(b.id));
+            const bucketsById = mapBy(plan.buckets, (b) => b.id);
             recipes.forEach(
                 (it) =>
                     (it.bucket = it.bucketId
-                        ? bucketsById.get(ensureString(it.bucketId))
+                        ? bucketsById.get(it.bucketId)
                         : undefined),
             );
         }
@@ -154,12 +154,13 @@ export const BodyContainer: React.FC = () => {
             plan.recipes.forEach((item) => children.push(renderItem(item)));
         }
     } else {
-        const byBucket = groupBy(plan.recipes, (item) =>
-            item.bucketId ? ensureString(item.bucketId) : undefined,
+        const byBucket = groupBy(
+            plan.recipes,
+            (item) => item.bucketId ?? undefined,
         );
         plan.buckets.forEach((b) => {
             children.push(<Bucket key={b.id} bucket={b} />);
-            const rs = byBucket.get(ensureString(b.id));
+            const rs = byBucket.get(b.id);
             if (rs) rs.forEach((item) => children.push(renderItem(item)));
         });
         children.push(<Bucket key={"none"} />);
@@ -170,25 +171,20 @@ export const BodyContainer: React.FC = () => {
     return (
         <DragContainer
             renderOverlay={(id) => {
-                const it = plan.recipes.find((it) => bfsIdEq(it.id, id));
+                const it = plan.recipes.find((it) => it.id === id);
                 return it && renderItem(it);
             }}
             onDrop={(activeId, targetId, vertical) => {
-                const act = plan.recipes.find((r) => bfsIdEq(r.id, activeId));
+                const act = plan.recipes.find((r) => r.id === activeId);
                 if (!act) return;
                 let target: Maybe<RecipeInfo>;
                 let targetBucket: Maybe<PlanBucket>;
-                if (
-                    typeof targetId === "number" ||
-                    !targetId.startsWith(BUCKET_PREFIX)
-                ) {
-                    target = plan.recipes.find((r) => bfsIdEq(r.id, targetId));
-                    targetBucket = target?.bucket;
-                } else {
+                if (targetId.startsWith(BUCKET_PREFIX)) {
                     const bucketId = targetId.substring(BUCKET_PREFIX.length);
-                    targetBucket = plan?.buckets.find((b) =>
-                        bfsIdEq(b.id, bucketId),
-                    );
+                    targetBucket = plan?.buckets.find((b) => b.id === bucketId);
+                } else {
+                    target = plan.recipes.find((r) => r.id === targetId);
+                    targetBucket = target?.bucket;
                 }
                 // triple equals doesn't equate null and undefined, but Maybe allows either
                 // eslint-disable-next-line eqeqeq

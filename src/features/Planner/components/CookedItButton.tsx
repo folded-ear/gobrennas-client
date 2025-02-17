@@ -62,7 +62,7 @@ const CookButton: React.FC<Props> = ({ recipe, stayOnPage }) => {
             return day + " Days Ago";
         };
         return days.map((day) => ({
-            id: day,
+            id: day.toString(),
             label: createLabel(day),
             value: start.minus({ days: day }).toJSDate(),
         }));

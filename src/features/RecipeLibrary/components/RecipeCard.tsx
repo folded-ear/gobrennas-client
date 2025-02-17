@@ -5,6 +5,7 @@ import SendToPlan from "@/features/RecipeLibrary/components/SendToPlan";
 import { RecipeCard as TRecipeCard } from "@/features/RecipeLibrary/types";
 import LabelItem from "@/global/components/LabelItem";
 import { TaskBar, TaskBarButton } from "@/global/elements/taskbar.elements";
+import { BfsId } from "@/global/types/identity";
 import { formatDuration } from "@/util/time";
 import { EditIcon, ViewIcon } from "@/views/common/icons";
 import RecipeInfo from "@/views/common/RecipeInfo";
@@ -35,7 +36,7 @@ const RecipeCard: React.FC<Props> = ({ recipe, mine, showOwner }) => {
         recipe.labels &&
         recipe.labels.filter((label) => label.indexOf("--") !== 0);
 
-    const handleClick = (planId: number, scale?: number) => {
+    const handleClick = (planId: BfsId, scale?: number) => {
         dispatcher.dispatch({
             type: ActionType.RECIPE__SEND_TO_PLAN,
             recipeId: recipe.id,

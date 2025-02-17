@@ -1,7 +1,7 @@
 import useAllPlansRLO from "@/data/useAllPlansRLO";
 import useFriendRlo from "@/data/useFriendRlo";
 import { NavShopItem } from "@/features/Navigation/components/NavShopItem";
-import { BfsId, bfsIdEq } from "@/global/types/identity";
+import { BfsId } from "@/global/types/identity";
 import { Box, Collapse, List, ListSubheader } from "@mui/material";
 import Divider from "@mui/material/Divider";
 
@@ -56,10 +56,7 @@ export default function MobilePlanSelector({
                         ];
                         if (
                             i > 0 &&
-                            !bfsIdEq(
-                                plan.acl.ownerId,
-                                allPlans[i - 1].acl.ownerId,
-                            )
+                            plan.acl.ownerId !== allPlans[i - 1].acl.ownerId
                         ) {
                             elements.unshift(
                                 <OwnerSubheader

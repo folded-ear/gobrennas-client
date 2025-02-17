@@ -5,7 +5,7 @@ import {
     toRestPlanItem,
     toRestPlanOrItem,
 } from "@/features/Planner/data/conversion_helpers";
-import { BfsId, ensureString } from "@/global/types/identity";
+import { BfsId } from "@/global/types/identity";
 import { ShareInfo } from "@/global/types/types";
 import { client } from "@/providers/ApolloClient";
 import promiseFlux from "@/util/promiseFlux";
@@ -17,8 +17,8 @@ const RecipeApi = {
             client.mutate({
                 mutation: SEND_RECIPE_TO_PLAN,
                 variables: {
-                    id: ensureString(recipeId),
-                    planId: ensureString(planId),
+                    id: recipeId,
+                    planId,
                     scale,
                 },
             }),
@@ -46,7 +46,7 @@ const RecipeApi = {
             .query({
                 query: GET_RECIPE_SHARE_INFO,
                 variables: {
-                    id: ensureString(id),
+                    id,
                 },
             })
             .then(({ data }) => data.library.getRecipeById.share as ShareInfo),

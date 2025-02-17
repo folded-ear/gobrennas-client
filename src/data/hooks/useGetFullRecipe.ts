@@ -1,5 +1,5 @@
 import objectWithType from "@/data/utils/objectWithType";
-import { BfsStringId } from "@/global/types/identity";
+import { BfsId } from "@/global/types/identity";
 import {
     IIngredient,
     IngredientRef,
@@ -49,7 +49,7 @@ query getRecipeWithEverything($id: ID!, $secret: String) {
 }
 `);
 
-export const useGetFullRecipe = (id: BfsStringId, secret?: string) => {
+export const useGetFullRecipe = (id: BfsId, secret?: string) => {
     return useAdaptingQuery(
         GET_FULL_RECIPE_QUERY,
         (data, { loading }) => {

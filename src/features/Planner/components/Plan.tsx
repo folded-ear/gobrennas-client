@@ -7,7 +7,7 @@ import {
     Plan as TPlan,
     PlanItem as PlanItemType,
 } from "@/features/Planner/data/planStore";
-import { BfsId, bfsIdEq, Identified } from "@/global/types/identity";
+import { BfsId, Identified } from "@/global/types/identity";
 import { RippedLO } from "@/util/ripLoadObject";
 import FoodingerFab from "@/views/common/FoodingerFab";
 import { AddIcon } from "@/views/common/icons";
@@ -87,7 +87,7 @@ function Plan({
     ) => {
         // nice linear scan...
         const target = itemTuples.find(
-            (it) => it.data && bfsIdEq(it.data.id, targetId),
+            (it) => it.data && it.data.id === targetId,
         )?.data;
         moveSubtree(id, target, horizontal, vertical);
     };
@@ -133,7 +133,7 @@ function Plan({
                 renderOverlay={(activeId) =>
                     renderItem(
                         itemTuples.find(
-                            (it) => it.data && bfsIdEq(it.data.id, activeId),
+                            (it) => it.data && it.data.id === activeId,
                         ),
                     )
                 }

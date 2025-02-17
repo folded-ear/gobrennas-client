@@ -1,5 +1,6 @@
 import useActivePlanner from "@/data/useActivePlanner";
 import { TaskBarButton } from "@/global/elements/taskbar.elements";
+import { BfsId } from "@/global/types/identity";
 import { useScaleOptions } from "@/util/ScalingContext";
 import { SendToPlanIcon } from "@/views/common/icons";
 import SplitButton, { SelectOption } from "@/views/common/SplitButton";
@@ -8,7 +9,7 @@ import { styled } from "@mui/material/styles";
 import * as React from "react";
 
 interface Props {
-    onClick(planId: number, scale?: number | null): void;
+    onClick(planId: BfsId, scale?: number | null): void;
     iconOnly?: boolean;
     showScaleOptions?: boolean;
 }
@@ -28,8 +29,8 @@ const SendToPlan: React.FC<Props> = ({
     const plan = useActivePlanner().data;
     const scaleOpts = useScaleOptions();
 
-    const scaleToPlanOpts = scaleOpts.map((it, idx) => ({
-        id: idx,
+    const scaleToPlanOpts = scaleOpts.map((it) => ({
+        id: it.label,
         label: it.label,
         value: it.value,
     }));
@@ -38,10 +39,10 @@ const SendToPlan: React.FC<Props> = ({
     const handleClick = () =>
         // While items can exist in the store in an unsaved state, plans
         // cannot, so this type assertion is safe.
-        onClick && onClick(plan.id as number);
+        onClick && onClick(plan.id);
 
     const handleSelect = (_: never, selected: SelectOption<number>) => {
-        onClick && onClick(plan.id as number, selected?.value);
+        onClick && onClick(plan.id, selected?.value);
     };
 
     if (iconOnly) {

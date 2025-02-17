@@ -1,6 +1,5 @@
 import { APP_BASE_URL } from "@/constants";
 import RecipeApi from "@/data/RecipeApi";
-import { bfsIdEq } from "@/global/types/identity";
 import type { Recipe, ShareInfo } from "@/global/types/types";
 import { RippedLO } from "@/util/ripLoadObject";
 import { ShareIcon } from "@/views/common/icons";
@@ -16,7 +15,7 @@ const Body: React.FC<ShareRecipeProps> = ({ recipe }) => {
     const [rlo, setRlo] = React.useState<RippedLO<ShareInfo>>({});
     const [retry, setRetry] = React.useState(0);
     React.useEffect(() => {
-        if (bfsIdEq(rlo.data?.id, recipe.id)) {
+        if (rlo.data?.id === recipe.id) {
             return;
         }
         setRlo({

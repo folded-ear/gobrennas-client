@@ -10,7 +10,7 @@ import {
 } from "@/features/Planner/data/plannerUtils";
 import planStore, { Plan, PlanItem } from "@/features/Planner/data/planStore";
 import LibraryStore from "@/features/RecipeLibrary/data/LibraryStore";
-import { BfsId, bfsIdEq, ensureString } from "@/global/types/identity";
+import { BfsId } from "@/global/types/identity";
 import { Quantity } from "@/global/types/types";
 import { intersection } from "@/util/arrayAsSet";
 import groupBy from "@/util/groupBy";
@@ -98,9 +98,7 @@ function groupItems(
             l.path.splice(l.path.length - 1, 1);
         }
     }
-    const byIngredient = groupBy(leaves, (it) =>
-        it.ingredientId ? ensureString(it.ingredientId) : undefined,
-    );
+    const byIngredient = groupBy(leaves, (it) => it.ingredientId);
     const unparsed: PathedItemTuple[] = [];
     if (byIngredient.has(undefined)) {
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -141,11 +139,10 @@ function groupItems(
                 : items.filter((it) => !isZeroQuantity(it));
         const unitLookup = new Map<string, string>();
         const byUnit = groupBy(toAgg, (it) => {
-            const uomId = it.uomId ? ensureString(it.uomId) : undefined;
-            if (uomId) {
-                unitLookup.set(uomId, it.units!);
+            if (it.uomId) {
+                unitLookup.set(it.uomId, it.units!);
             }
-            return uomId;
+            return it.uomId ?? undefined;
         });
         const quantities: Quantity[] = [];
         for (const uomId of byUnit.keys()) {
@@ -158,11 +155,11 @@ function groupItems(
                 units: uomId ? unitLookup.get(uomId) : undefined,
             });
         }
-        const expanded = bfsIdEq(ingId, expandedId);
+        const expanded = ingId === expandedId;
         theTree.push({
             _type: ShopItemType.INGREDIENT,
             id: ingId,
-            itemIds: items.map((it) => ensureString(it.id)),
+            itemIds: items.map((it) => it.id),
             name: ingredient ? ingredient.name : items[0].name,
             storeOrder: ingredient?.storeOrder,
             quantities,
@@ -199,10 +196,7 @@ function groupItems(
     );
     return activeItem
         ? theTree.map((it) => {
-              if (
-                  bfsIdEq(it.id, activeItem.id) &&
-                  it._type === activeItem.type
-              ) {
+              if (it.id === activeItem.id && it._type === activeItem.type) {
                   it = {
                       ...it,
                       active: true,

@@ -1,5 +1,5 @@
 import { GET_RECOGNIZED_ITEM } from "@/data/queries";
-import { BfsStringId } from "@/global/types/identity";
+import { BfsId } from "@/global/types/identity";
 import { client } from "@/providers/ApolloClient";
 import serializeObjectOfPromiseFns from "@/util/serializeObjectOfPromiseFns";
 import { RecognizedRangeType } from "@/__generated__/graphql";
@@ -12,7 +12,7 @@ export interface RecognitionRange {
     // for QUANTITY ranges, the numeric quantity
     quantity?: Maybe<number>;
     // for UNIT and ITEM ranges, the object's ID
-    id?: Maybe<BfsStringId>;
+    id?: Maybe<BfsId>;
 }
 
 interface RecognitionSuggestion {

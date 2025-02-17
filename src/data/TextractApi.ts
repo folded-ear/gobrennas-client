@@ -1,6 +1,6 @@
 import { CREATE_TEXTRACT_JOB, DELETE_TEXTRACT_JOB } from "@/data/mutations";
 import { LIST_TEXTRACT_JOBS, LOAD_TEXTRACT_JOB } from "@/data/queries";
-import { BfsId, ensureString } from "@/global/types/identity";
+import { BfsId } from "@/global/types/identity";
 import { client } from "@/providers/ApolloClient";
 
 export interface PendingJob {
@@ -44,7 +44,7 @@ const TextractApi = {
         client
             .query({
                 query: LOAD_TEXTRACT_JOB,
-                variables: { id: ensureString(id) },
+                variables: { id },
                 fetchPolicy: "no-cache",
             })
             .then(({ data }) => {
@@ -62,7 +62,7 @@ const TextractApi = {
     promiseJobDelete: (id: BfsId) =>
         client.mutate({
             mutation: DELETE_TEXTRACT_JOB,
-            variables: { id: ensureString(id) },
+            variables: { id },
         }),
 };
 

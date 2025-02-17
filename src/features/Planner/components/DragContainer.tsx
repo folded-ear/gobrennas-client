@@ -1,4 +1,4 @@
-import { BfsId, bfsIdEq } from "@/global/types/identity";
+import { BfsId } from "@/global/types/identity";
 import {
     DndContext,
     DndContextProps,
@@ -56,7 +56,7 @@ const DragContainer: React.FC<Props> = ({
     }, [theme.palette.mode, theme.palette.primary.main]);
 
     function handleDragStart(event: DragStartEvent) {
-        setActiveId(event.active.id);
+        setActiveId(event.active.id.toString());
         if (onDragStart) onDragStart(event);
     }
 
@@ -65,9 +65,9 @@ const DragContainer: React.FC<Props> = ({
         if (!onDrop) return;
         setActiveId(undefined);
         if (!event.over) return;
-        const id = event.active.id;
-        const targetId = event.over.id;
-        if (bfsIdEq(id, targetId)) return;
+        const id = event.active.id.toString();
+        const targetId = event.over.id.toString();
+        if (id === targetId) return;
         const finalRect = event.active.rect.current.translated;
         const overRect = event.over.rect;
         let vertical: Vert = "below";
