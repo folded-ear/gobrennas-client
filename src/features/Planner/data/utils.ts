@@ -13,7 +13,7 @@ import {
     State,
     StateWithActiveTask,
 } from "@/features/Planner/data/planStore";
-import { BfsId, includesBfsId, indexOfBfsId } from "@/global/types/identity";
+import { BfsId, indexOfBfsId } from "@/global/types/identity";
 import ClientId from "@/util/ClientId";
 import { bucketComparator, Named } from "@/util/comparators";
 import inTheFuture from "@/util/inTheFuture";
@@ -206,10 +206,7 @@ export function selectList(state: State, id: Maybe<BfsId>): State {
     // only valid ids, please
     invariant(
         id == null ||
-            includesBfsId(
-                state.topLevelIds.getLoadObject().getValueEnforcing(),
-                id,
-            ),
+            state.topLevelIds.getLoadObject().getValueEnforcing().includes(id),
         `Task '${id}' is not a list.`,
     );
     state = {
@@ -770,8 +767,8 @@ export function moveSubtree(state: State, action: MoveSubtreeAction): State {
         ? subtaskIdBefore(state, action.parentId, action.before)
         : action.after;
     if (
-        includesBfsId(blockIds, action.parentId) ||
-        includesBfsId(blockIds, afterId)
+        blockIds.includes(action.parentId) ||
+        (afterId && blockIds.includes(afterId))
     ) {
         // dragging into the selection, so unselect
         state = {
@@ -780,7 +777,7 @@ export function moveSubtree(state: State, action: MoveSubtreeAction): State {
         };
         blockIds = [state.activeTaskId!];
     }
-    if (!includesBfsId(blockIds, action.id)) {
+    if (!blockIds.includes(action.id)) {
         blockIds = [action.id];
     }
     return mutateTree(state, {
@@ -805,10 +802,10 @@ function mutateTree(state: State, spec: TreeMutationSpec): State {
         id;
         id = parentId(taskForId(state, id))
     ) {
-        if (includesBfsId(spec.ids, id)) return state;
+        if (spec.ids.includes(id)) return state;
     }
     // ensure we're not positioning something based on itself
-    if (includesBfsId(spec.ids, spec.afterId)) return state;
+    if (spec.afterId && spec.ids.includes(spec.afterId)) return state;
     PlanApi.mutateTree(spec);
     // do it now so the UI updates; the future delta will be a race-y no-op
     return treeMutated(state, spec);

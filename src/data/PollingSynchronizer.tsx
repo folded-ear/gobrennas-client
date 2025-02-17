@@ -3,7 +3,7 @@ import useActivePlanner from "@/data/useActivePlanner";
 import useActiveShoppingPlanIds from "@/data/useActiveShoppingPlanIds";
 import { toRestPlanOrItem } from "@/features/Planner/data/conversion_helpers";
 import { toRestPantryItem } from "@/features/RecipeLibrary/data/conversion_helpers";
-import { BfsId, includesBfsId } from "@/global/types/identity";
+import { BfsId } from "@/global/types/identity";
 import {
     client as apolloClient,
     compileDynamicGraphQLQuery,
@@ -106,7 +106,7 @@ function useSynchronizer(queryKey: unknown[], queryFn: Syncer) {
 function PollingSynchronizer() {
     let planIds = useActiveShoppingPlanIds();
     const plan = useActivePlanner().data;
-    if (plan?.id != null && !includesBfsId(planIds, plan.id)) {
+    if (plan?.id != null && !planIds.includes(plan.id)) {
         planIds = planIds.concat(plan.id);
     }
     planIds.sort();

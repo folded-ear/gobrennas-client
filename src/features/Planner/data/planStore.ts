@@ -1,7 +1,7 @@
 import AccessLevel from "@/data/AccessLevel";
 import dispatcher, { ActionType, FluxAction } from "@/data/dispatcher";
 import PlanItemStatus from "@/features/Planner/data/PlanItemStatus";
-import { BfsId, includesBfsId } from "@/global/types/identity";
+import { BfsId } from "@/global/types/identity";
 import { removeAtIndex } from "@/util/arrayAsSet";
 import ClientId from "@/util/ClientId";
 import { bucketComparator } from "@/util/comparators";
@@ -449,7 +449,7 @@ class PlanStore extends FluxReduceStore<State, FluxAction> {
 
             case ActionType.PLAN__BUCKETS_DELETED: {
                 return mapPlanBuckets(state, action.planId, (bs) =>
-                    bs.filter((b) => !includesBfsId(action.ids, b.id)),
+                    bs.filter((b) => !action.ids.includes(b.id)),
                 );
             }
 
@@ -646,7 +646,7 @@ class PlanStore extends FluxReduceStore<State, FluxAction> {
             ).subtaskIds?.filter(
                 (id) =>
                     id === s.activeTaskId ||
-                    (s.selectedTaskIds && includesBfsId(s.selectedTaskIds, id)),
+                    (s.selectedTaskIds && s.selectedTaskIds.includes(id)),
             ),
         )
             .map((t) => t.name)

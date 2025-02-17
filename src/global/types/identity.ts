@@ -13,11 +13,6 @@ export type UserType = Pick<
 >;
 
 // todo: remove
-export function includesBfsId(ids: BfsId[], id: Maybe<BfsId>): boolean {
-    return indexOfBfsId(ids, id) >= 0;
-}
-
-// todo: remove
 export function indexOfBfsId(ids: BfsId[], id: Maybe<BfsId>): number {
     return ids.findIndex((el) => id === el);
 }
