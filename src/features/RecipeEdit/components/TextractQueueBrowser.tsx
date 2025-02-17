@@ -1,5 +1,5 @@
 import TextractApi, { PendingJob } from "@/data/TextractApi";
-import { BfsId, indexOfBfsId } from "@/global/types/identity";
+import { BfsId } from "@/global/types/identity";
 import ImageDropZone from "@/util/ImageDropZone";
 import DeleteButton from "@/views/common/DeleteButton";
 import { CloseIcon } from "@/views/common/icons";
@@ -77,7 +77,7 @@ const Ui: React.FC<UiProps> = ({
             persistent.map((j) => ({
                 ...j,
                 state:
-                    indexOfBfsId(deleting, j.id) >= 0
+                    deleting.indexOf(j.id) >= 0
                         ? "deleting"
                         : j.ready
                         ? "ready"

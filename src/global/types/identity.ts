@@ -1,5 +1,4 @@
 import { User } from "@/__generated__/graphql";
-import { Maybe } from "graphql/jsutils/Maybe";
 
 export type BfsId = string;
 
@@ -11,8 +10,3 @@ export type UserType = Pick<
     User,
     "id" | "name" | "provider" | "email" | "imageUrl" | "roles"
 >;
-
-// todo: remove
-export function indexOfBfsId(ids: BfsId[], id: Maybe<BfsId>): number {
-    return ids.findIndex((el) => id === el);
-}
