@@ -1,12 +1,10 @@
 import dispatcher, { ActionType } from "@/data/dispatcher";
 import LoadingItem from "@/features/Planner/components/LoadingItem";
+import { moveSubtree } from "@/features/Planner/components/moveSubtree";
 import PlanHeader from "@/features/Planner/components/PlanHeader";
 import PlanItem from "@/features/Planner/components/PlanItem";
 import { isParent } from "@/features/Planner/data/plannerUtils";
-import {
-    Plan as TPlan,
-    PlanItem as PlanItemType,
-} from "@/features/Planner/data/planStore";
+import { Plan as TPlan } from "@/features/Planner/data/planStore";
 import { BfsId, Identified } from "@/global/types/identity";
 import { RippedLO } from "@/util/ripLoadObject";
 import FoodingerFab from "@/views/common/FoodingerFab";
@@ -26,37 +24,6 @@ interface Props {
     itemTuples: ItemTuple[];
     isItemActive: (it: Identified) => boolean;
     isItemSelected: (it: Identified) => boolean;
-}
-
-function moveSubtreeInternal(
-    id: BfsId,
-    parentId: BfsId,
-    before?: BfsId,
-    after?: BfsId,
-) {
-    dispatcher.dispatch({
-        type: ActionType.PLAN__MOVE_SUBTREE,
-        id,
-        parentId,
-        before,
-        after,
-    });
-}
-
-export function moveSubtree(
-    id: BfsId,
-    target: PlanItemType | undefined,
-    horizontal: Horiz,
-    vertical: Vert,
-) {
-    if (!target) return;
-    if (horizontal === "right") {
-        moveSubtreeInternal(id, target.id); // as last child
-    } else if (vertical === "above") {
-        moveSubtreeInternal(id, target.parentId, target.id);
-    } else {
-        moveSubtreeInternal(id, target.parentId, undefined, target.id);
-    }
 }
 
 function Plan({

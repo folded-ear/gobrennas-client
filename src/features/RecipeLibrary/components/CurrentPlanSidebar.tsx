@@ -4,7 +4,7 @@ import DontChangeStatusButton from "@/features/Planner/components/DontChangeStat
 import DragContainer from "@/features/Planner/components/DragContainer";
 import getBucketLabel from "@/features/Planner/components/getBucketLabel";
 import Item from "@/features/Planner/components/Item";
-import { moveSubtree } from "@/features/Planner/components/Plan";
+import { moveSubtree } from "@/features/Planner/components/moveSubtree";
 import { assignItemToBucket } from "@/features/Planner/components/PlanItemBucketChip";
 import ResetBucketsButton from "@/features/Planner/components/ResetBucketsButton";
 import StatusIconButton from "@/features/Planner/components/StatusIconButton";
