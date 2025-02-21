@@ -36,6 +36,16 @@ mutation setPlanColor($id: ID!, $color: String!) {
   }
 }`);
 
+export const UPDATE_PLAN_NOTES = gql(`
+mutation updatePlanNotes($id:ID!, $notes: String) {
+  planner {
+    updatePlanNotes(planId: $id, notes: $notes) {
+      ...corePlanItemLoad
+      ...planLoad
+    }
+  }
+}`);
+
 export const DELETE_PLAN_ITEM = gql(`
 mutation deletePlanItem($id: ID!) {
   planner {

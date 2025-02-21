@@ -73,6 +73,7 @@ fragment planLoad on Plan {
     date
     name
   }
+  notes
 }`);
 
 export const PLAN_ITEM_LOAD_FRAGMENT = gql(`

@@ -364,6 +364,7 @@ type Plan implements AccessControlled & CorePlanItem & Node & Owned {
     grants: [AccessControlEntry!]!
     id: ID!
     name: String!
+    notes: String
     "The plan's owner"
     owner: User!
     "A plan's plan is always itself."
@@ -480,6 +481,7 @@ type PlannerMutation {
     setStatus(doneAt: DateTime, id: ID!, status: PlanItemStatus!): PlanItem!
     "Update a bucket w/in a plan, by setting or clearing its name and date."
     updateBucket(bucketId: ID!, date: Date, name: String, planId: ID!): PlanBucket!
+    updatePlanNotes(notes: String, planId: ID!): Plan!
 }
 
 type PlannerQuery {

@@ -83,4 +83,5 @@ export const toRestPlan = (
         if (b.name) result.name = b.name;
         return result;
     }),
+    notes: plan.notes,
 });

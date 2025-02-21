@@ -5,11 +5,13 @@ import { Plan as TPlan } from "@/features/Planner/data/planStore";
 import CollapseIconButton from "@/global/components/CollapseIconButton";
 import { useIsMobile } from "@/providers/IsMobile";
 import { useProfileId } from "@/providers/Profile";
+import Directions from "@/views/common/Directions";
 import {
     AddIcon,
     CollapseAll,
     CollapseIcon,
     EditIcon,
+    EditPlanNotes,
     ExpandAll,
     SortByBucketIcon,
 } from "@/views/common/icons";
@@ -26,6 +28,7 @@ import {
     Tooltip,
     Typography,
 } from "@mui/material";
+import Divider from "@mui/material/Divider";
 import * as React from "react";
 import { useState } from "react";
 import { useHistory } from "react-router-dom";
@@ -84,8 +87,13 @@ export default function PlanHeader({
     const [planSelectorOpen, setPlanSelectorOpen] = useState(false);
     const history = useHistory();
     const myId = useProfileId();
+    const [editingNotes, setEditingNotes] = useState(false);
 
-    const onCreate = () => {
+    if (!activePlan) {
+        return <LoadingIndicator />;
+    }
+
+    const handleCreate = () => {
         if (!isValidName(name)) return;
         dispatcher.dispatch({
             type: ActionType.PLAN__CREATE_PLAN,
@@ -95,7 +103,7 @@ export default function PlanHeader({
         setShowAdd(false);
     };
 
-    const onDuplicate = (_: never, plan: SelectOption<never>) => {
+    const handleDuplicate = (_: never, plan: SelectOption<never>) => {
         if (!isValidName(name)) return;
         dispatcher.dispatch({
             type: ActionType.PLAN__DUPLICATE_PLAN,
@@ -106,9 +114,21 @@ export default function PlanHeader({
         setShowAdd(false);
     };
 
-    if (!activePlan) {
-        return <LoadingIndicator />;
-    }
+    const handleEditNotes = () => setEditingNotes(true);
+
+    const handleNotesUpdated = (e: React.FocusEvent) => {
+        setEditingNotes(false);
+        const { value } = e.target as HTMLTextAreaElement;
+        const notes = (value ?? "").trim();
+        const curr = (activePlan.notes ?? "").trim();
+        if (notes !== curr) {
+            dispatcher.dispatch({
+                type: ActionType.PLAN__SET_PLAN_NOTES,
+                id: activePlan.id,
+                notes,
+            });
+        }
+    };
 
     return (
         <Box mx={showPlanSelector ? 0 : 1}>
@@ -158,6 +178,27 @@ export default function PlanHeader({
                     onSelectPlan={(id) => history.push(`/plan/${id}`)}
                 />
             )}
+            {editingNotes ? (
+                <TextField
+                    name="notes"
+                    label="Notes"
+                    multiline
+                    rows={6}
+                    defaultValue={activePlan.notes || ""}
+                    onBlur={handleNotesUpdated}
+                    placeholder="Notes..."
+                    fullWidth
+                    variant="outlined"
+                    autoFocus
+                />
+            ) : (
+                activePlan.notes && (
+                    <>
+                        <Directions text={activePlan.notes} />
+                        <Divider />
+                    </>
+                )
+            )}
             <Grid container justifyContent={"space-between"}>
                 {activePlan && (
                     <Grid item>
@@ -190,6 +231,18 @@ export default function PlanHeader({
                                     <CollapseAll />
                                 </IconButton>
                             </span>
+                        </Tooltip>
+                        <Tooltip
+                            title="Edit plan notes"
+                            placement="bottom-start"
+                        >
+                            <IconButton
+                                aria-label="edit-notes"
+                                onClick={handleEditNotes}
+                                size="large"
+                            >
+                                <EditPlanNotes />
+                            </IconButton>
                         </Tooltip>
                         {hasBuckets && (
                             <>
@@ -242,7 +295,7 @@ export default function PlanHeader({
                             <Grid item>
                                 <SplitButton
                                     primary={<AddIcon />}
-                                    onClick={onCreate}
+                                    onClick={handleCreate}
                                     options={
                                         (allPlans.length > 0 &&
                                             allPlans.map((p) => ({
@@ -251,7 +304,7 @@ export default function PlanHeader({
                                             }))) ||
                                         []
                                     }
-                                    onSelect={onDuplicate}
+                                    onSelect={handleDuplicate}
                                     disabled={!isValidName(name)}
                                 />
                             </Grid>

@@ -24,6 +24,7 @@ import {
     SET_PLAN_ITEM_STATUS,
     SPLICE_BUCKETS,
     UPDATE_BUCKET,
+    UPDATE_PLAN_NOTES,
 } from "@/features/Planner/data/mutations";
 import { willStatusDelete } from "@/features/Planner/data/PlanItemStatus";
 import {
@@ -193,6 +194,25 @@ const PlanApi = {
             }),
             ({ data }): FluxAction => {
                 const plan = data!.planner.setColor;
+                return {
+                    type: ActionType.PLAN__UPDATED,
+                    data: toRestPlan(plan),
+                };
+            },
+            handleErrors,
+        ),
+
+    setPlanNotes: (id: BfsId, notes: string) =>
+        promiseFlux(
+            client.mutate({
+                mutation: UPDATE_PLAN_NOTES,
+                variables: {
+                    id,
+                    notes,
+                },
+            }),
+            ({ data }): FluxAction => {
+                const plan = data!.planner.updatePlanNotes;
                 return {
                     type: ActionType.PLAN__UPDATED,
                     data: toRestPlan(plan),
