@@ -420,6 +420,18 @@ export function setPlanColor(state: State, id: BfsId, color: string): State {
     });
 }
 
+export function setPlanNotes(state: State, id: BfsId, notes: string): State {
+    return mapTaskLO<Plan>(state, id, (lo) => {
+        PlanApi.setPlanNotes(id, notes);
+        return lo
+            .map((t) => ({
+                ...t,
+                notes,
+            }))
+            .updating();
+    });
+}
+
 export function assignToBucket(
     state: State,
     id: BfsId,

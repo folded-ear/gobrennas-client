@@ -24,6 +24,7 @@ export {
     DeleteForeverOutlined as DeleteIcon,
     DynamicFeed as SortByBucketIcon,
     Edit as EditIcon,
+    EditNote as EditPlanNotes,
     ErrorOutline as ErrorIcon,
     EventNote as PlanIcon,
     ExitToApp as SendToPlanIcon,

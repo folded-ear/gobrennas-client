@@ -23,6 +23,7 @@ import {
     Stack,
     TextField,
     Typography,
+    useTheme,
 } from "@mui/material";
 import * as React from "react";
 import { useEffect, useState } from "react";
@@ -162,122 +163,120 @@ const PlanSidebar: React.FC<Props> = ({ open, onClose, plan }) => {
     const owner = isMine ? me : friendList?.find((it) => it.id === acl.ownerId);
     const isAdministrator =
         isMine || includesLevel(grants[me.id], AccessLevel.ADMINISTER);
+    const canChange =
+        isAdministrator || includesLevel(grants[me.id], AccessLevel.CHANGE);
+    const theme = useTheme();
 
     return (
         <Drawer open={open} anchor="right" onClose={onClose}>
-            <div
-                style={{
-                    minHeight: "100%",
+            <Box
+                sx={{
+                    p: 2,
                     minWidth: "40vw",
                     maxWidth: "90vw",
+                    backgroundColor: theme.palette.background.default,
                 }}
             >
-                <Box m={2}>
-                    <SidebarUnit>
-                        {owner && (
-                            <div style={{ float: "right" }}>
-                                <User {...owner} />
-                            </div>
-                        )}
-                        {isAdministrator ? (
-                            <TextField
-                                label="Name"
-                                required
-                                value={name}
-                                onChange={(e) => setName(e.target.value)}
-                                onBlur={handleRename}
-                                variant="outlined"
-                                fullWidth
-                            />
-                        ) : (
-                            <Typography variant="h2" component="h3">
-                                {plan.name}
-                            </Typography>
-                        )}
-                    </SidebarUnit>
-                    {isAdministrator && (
-                        <SidebarUnit>
-                            <Stack direction={"row"} gap={1}>
-                                <TextField
-                                    label="Color"
-                                    value={color}
-                                    onChange={(e) => setColor(e.target.value)}
-                                    onBlur={handleSetColor}
-                                    variant="outlined"
-                                    size={"small"}
-                                    error={!isValidColor(color)}
-                                    helperText={"An RGB color (six hex digits)"}
-                                    InputProps={{
-                                        startAdornment: (
-                                            <InputAdornment position="start">
-                                                #
-                                            </InputAdornment>
-                                        ),
-                                        sx: {
-                                            fontFamily: "monospace",
-                                            fontSize: "90%",
-                                        },
-                                    }}
-                                />
-                                <PlanAvatar
-                                    plan={{
-                                        ...plan,
-                                        color:
-                                            "#" +
-                                            color
-                                                .padEnd(6, "0")
-                                                .substring(0, 6),
-                                    }}
-                                    empty
-                                />
-                            </Stack>
-                        </SidebarUnit>
+                <SidebarUnit>
+                    {owner && (
+                        <div style={{ float: "right" }}>
+                            <User {...owner} />
+                        </div>
                     )}
-                    {isAdministrator && (
-                        <SidebarUnit>
-                            <PlanBucketManager />
-                        </SidebarUnit>
-                    )}
-                    {friendsLoading ? (
-                        <LoadingIndicator primary="Loading friends list..." />
+                    {canChange ? (
+                        <TextField
+                            label="Name"
+                            required
+                            value={name}
+                            onChange={(e) => setName(e.target.value)}
+                            onBlur={handleRename}
+                            variant="outlined"
+                            fullWidth
+                        />
                     ) : (
-                        <SidebarUnit>
-                            <List>
-                                {(isMine
-                                    ? friendList
-                                    : friendList
-                                          .filter((f) => f.id !== acl.ownerId)
-                                          .concat(me)
-                                ).map((f) => (
-                                    <ListItem key={f.id}>
-                                        <UserContent
-                                            friend={f}
-                                            isAdministrator={isAdministrator}
-                                            grants={grants}
-                                            handleGrantChange={
-                                                handleGrantChange
-                                            }
-                                        />
-                                    </ListItem>
-                                ))}
-                            </List>
-                        </SidebarUnit>
+                        <Typography variant="h2" component="h3">
+                            {plan.name}
+                        </Typography>
                     )}
-                    {isAdministrator && (
-                        <SidebarUnit
-                            style={{
-                                textAlign: "center",
-                            }}
-                        >
-                            <DeleteButton
-                                forType="plan"
-                                onConfirm={handleDelete}
-                                label="Delete Plan"
+                </SidebarUnit>
+                {canChange && (
+                    <SidebarUnit>
+                        <Stack direction={"row"} gap={1}>
+                            <TextField
+                                label="Color"
+                                value={color}
+                                onChange={(e) => setColor(e.target.value)}
+                                onBlur={handleSetColor}
+                                variant="outlined"
+                                size={"small"}
+                                error={!isValidColor(color)}
+                                helperText={"An RGB color (six hex digits)"}
+                                InputProps={{
+                                    startAdornment: (
+                                        <InputAdornment position="start">
+                                            #
+                                        </InputAdornment>
+                                    ),
+                                    sx: {
+                                        fontFamily: "monospace",
+                                        fontSize: "90%",
+                                    },
+                                }}
                             />
-                        </SidebarUnit>
-                    )}
-                </Box>
-            </div>
+                            <PlanAvatar
+                                plan={{
+                                    ...plan,
+                                    color:
+                                        "#" +
+                                        color.padEnd(6, "0").substring(0, 6),
+                                }}
+                                empty
+                            />
+                        </Stack>
+                    </SidebarUnit>
+                )}
+                {isAdministrator && (
+                    <SidebarUnit>
+                        <PlanBucketManager />
+                    </SidebarUnit>
+                )}
+                {friendsLoading ? (
+                    <LoadingIndicator primary="Loading friends list..." />
+                ) : (
+                    <SidebarUnit>
+                        <List>
+                            {(isMine
+                                ? friendList
+                                : friendList
+                                      .filter((f) => f.id !== acl.ownerId)
+                                      .concat(me)
+                            ).map((f) => (
+                                <ListItem key={f.id}>
+                                    <UserContent
+                                        friend={f}
+                                        isAdministrator={isAdministrator}
+                                        grants={grants}
+                                        handleGrantChange={handleGrantChange}
+                                    />
+                                </ListItem>
+                            ))}
+                        </List>
+                    </SidebarUnit>
+                )}
+                {isAdministrator && (
+                    <SidebarUnit
+                        style={{
+                            textAlign: "center",
+                        }}
+                    >
+                        <DeleteButton
+                            forType="plan"
+                            onConfirm={handleDelete}
+                            label="Delete Plan"
+                        />
+                    </SidebarUnit>
+                )}
+            </Box>
         </Drawer>
     );
 };

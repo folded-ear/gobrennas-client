@@ -47,6 +47,7 @@ import {
     selectList,
     selectTo,
     setPlanColor,
+    setPlanNotes,
     sortActivePlanByBucket,
     taskDeleted,
     taskForId,
@@ -101,6 +102,7 @@ export interface Plan extends BasePlanItem {
     };
     color: string;
     buckets: PlanBucket[];
+    notes: string | null;
 }
 
 export interface State {
@@ -191,6 +193,8 @@ class PlanStore extends FluxReduceStore<State, FluxAction> {
                 return renameTask(state, action.id, action.name);
             case ActionType.PLAN__SET_PLAN_COLOR:
                 return setPlanColor(state, action.id, action.color);
+            case ActionType.PLAN__SET_PLAN_NOTES:
+                return setPlanNotes(state, action.id, action.notes);
 
             case ActionType.PLAN__SET_PLAN_GRANT: {
                 PlanApi.setPlanGrant(action.id, action.userId, action.level);

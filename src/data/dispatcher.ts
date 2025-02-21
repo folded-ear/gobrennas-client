@@ -77,6 +77,7 @@ export enum ActionType {
     PLAN__SET_BUCKET_DATE,
     PLAN__SET_PLAN_COLOR,
     PLAN__SET_PLAN_GRANT,
+    PLAN__SET_PLAN_NOTES,
     PLAN__SET_STATUS,
     PLAN__SORT_BY_BUCKET,
     PLAN__TOGGLE_EXPANDED,
@@ -174,6 +175,7 @@ export type FluxAction =
           userId: BfsId;
           level: AccessLevel;
       }
+    | { type: ActionType.PLAN__SET_PLAN_NOTES; id: BfsId; notes: string }
     | { type: ActionType.PLAN__SORT_BY_BUCKET }
     | { type: ActionType.PLAN__TOGGLE_EXPANDED; id: BfsId }
     // plan buckets
