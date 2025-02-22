@@ -7,7 +7,7 @@ interface Props {
 
 const RE_LIST = /(^|\n) *(1[.)]|[-*]) +\S.*\n/;
 
-const RE_INLINE = /(\*|_|~~)\w(.*\w)?\1/;
+const RE_INLINE = /(\*|_|~~)(\w|[,.;:?!])(.*(\w|[,.;:?!]))?\1/;
 
 function isMarkdown(text: string): boolean {
     return RE_LIST.test(text) || RE_INLINE.test(text);
