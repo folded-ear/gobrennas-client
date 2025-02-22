@@ -1,3 +1,4 @@
+import * as React from "react";
 import Markdown from "./Markdown";
 
 interface Props {
@@ -6,23 +7,32 @@ interface Props {
 
 const RE_LIST = /(^|\n) *(1[.)]|[-*]) +\S.*\n/;
 
+const RE_INLINE = /(\*|_|~~)\w(.*\w)?\1/;
+
 function isMarkdown(text: string): boolean {
-    return RE_LIST.test(text);
+    return RE_LIST.test(text) || RE_INLINE.test(text);
 }
 
 const Directions = ({ text }: Props) => {
     if (text == null) return null;
     text = text.trim();
     if (text.length === 0) return null;
-    // if there appears to be a markdown list, assume it's markdown
+    // if there appears to be markdown, render it as such.
     if (isMarkdown(text)) {
         return <Markdown text={text} />;
     }
-    // ok, just split paragraphs at line breaks and call it good.
+    // just split it up at line breaks and call it good.
     return (
         <>
-            {text.split("\n").map((line, i) => (
-                <p key={i}>{line}</p>
+            {text.split(/\n{2,}/).map((para, i) => (
+                <p key={i}>
+                    {para.split("\n").map((line, j) => (
+                        <React.Fragment key={j}>
+                            {j > 0 && <br />}
+                            {line}
+                        </React.Fragment>
+                    ))}
+                </p>
             ))}
         </>
     );
