@@ -9,7 +9,7 @@ body {
     padding: 0;
 }
 
-.markdown {
+.recipe-detail .markdown {
     h1:first-child,
     h2:first-child,
     h3:first-child,
@@ -103,7 +103,8 @@ body {
         color: #f2f4f5;
         background-color: #1b1b1b;
     }
-    .markdown {
+
+    .recipe-detail .markdown {
         .diff {
             .range {
                 color: #a990d7;

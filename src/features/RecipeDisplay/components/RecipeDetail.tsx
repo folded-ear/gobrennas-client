@@ -81,7 +81,7 @@ const RecipeDetail: React.FC<Props> = ({
         recipe.labels &&
         recipe.labels.filter((label) => label.indexOf("--") !== 0);
     return (
-        <PageBody id="toolbar">
+        <PageBody id="toolbar" className="recipe-detail">
             <SubHeader>
                 <Toolbar
                     sx={(theme) => ({
