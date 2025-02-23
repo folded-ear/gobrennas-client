@@ -10,21 +10,12 @@ import ImperativeFlux from "@/util/ImperativeFlux";
 import SnackPack from "@/views/common/SnackPack";
 import { ApolloProvider } from "@apollo/client";
 import CssBaseline from "@mui/material/CssBaseline";
-import {
-    StyledEngineProvider,
-    Theme,
-    ThemeProvider,
-} from "@mui/material/styles";
+import { StyledEngineProvider, ThemeProvider } from "@mui/material/styles";
 import { QueryClientProvider } from "react-query";
 import "./GoBrennas.scss";
 import routes from "./routes";
 import RoutingSwitch from "./RoutingSwitch";
 import { useBfsTheme } from "./theme";
-
-declare module "@mui/styles/defaultTheme" {
-    // eslint-disable-next-line @typescript-eslint/no-empty-interface
-    interface DefaultTheme extends Theme {}
-}
 
 function GoBrennas() {
     return (

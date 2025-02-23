@@ -3,10 +3,16 @@ import { grey } from "@mui/material/colors";
 import {
     createTheme,
     responsiveFontSizes,
+    Theme,
     ThemeOptions,
 } from "@mui/material/styles";
 import { deepmerge } from "@mui/utils";
 import { useMemo } from "react";
+
+declare module "@mui/styles/defaultTheme" {
+    // eslint-disable-next-line @typescript-eslint/no-empty-interface
+    interface DefaultTheme extends Theme {}
+}
 
 declare module "@mui/material/styles" {
     interface Palette {
