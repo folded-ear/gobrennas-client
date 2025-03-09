@@ -2,6 +2,7 @@ export const APP_BASE_URL = window.location.origin;
 export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 export const API_IS_SECURE = API_BASE_URL.indexOf("https:") === 0;
 export const COOKIE_AUTH_TOKEN = "FTOKEN";
+export const COOKIE_DEVICE_KEY = "FDEVICE";
 export const LOCAL_STORAGE_ACCESS_TOKEN = "accessToken";
 export const LOCAL_STORAGE_PREFERENCES = "preferences";
 export const SESSION_STORAGE_POST_LOGIN = "postLogin";
