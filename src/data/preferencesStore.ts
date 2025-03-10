@@ -80,14 +80,14 @@ function saveToCache(state: State) {
 
 function promiseServerUpdate(
     name: PrefName,
-    value: unknown,
+    value: string,
 ): Promise<FetchResult<SetPreferenceMutation>> {
     return apolloClient.mutate({
         mutation: SET_PREF,
         variables: {
             name,
             deviceKey,
-            value: serialize(TYPES[name], value),
+            value,
         },
     });
 }
@@ -116,8 +116,9 @@ function loadFromServer() {
 
 function setPref(state: State, name: PrefName, value: unknown): State {
     if (state.get(name) === value) return state;
+    const serialized = serialize(TYPES[name], value);
     let promise;
-    if (value == null) {
+    if (serialized == null) {
         state = state.delete(name);
         promise = apolloClient.mutate({
             mutation: CLEAR_PREF,
@@ -127,8 +128,8 @@ function setPref(state: State, name: PrefName, value: unknown): State {
             },
         });
     } else {
-        state = state.set(name, value);
-        promise = promiseServerUpdate(name, value);
+        state = state.set(name, deserialize(TYPES[name], serialized));
+        promise = promiseServerUpdate(name, serialized);
     }
     promiseFlux(promise, ({ data }): FluxAction => {
         const p = data!.profile.update;
@@ -171,10 +172,15 @@ class PreferencesStore extends ReduceStore<State, FluxAction> {
                                 ? v.map((it) => "" + it)
                                 : null;
                     }
-                    queue = queue.then(() =>
-                        promiseServerUpdate(n as PrefName, v),
-                    );
+                    queue = queue.then(() => {
+                        const name = n as PrefName;
+                        const serialized = serialize(TYPES[name], v);
+                        return serialized
+                            ? promiseServerUpdate(name, serialized)
+                            : null;
+                    });
                 }
+                // finally, refresh from the server
                 queue.then(() => loadFromServer());
                 return state;
             }

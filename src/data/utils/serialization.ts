@@ -1,8 +1,6 @@
 import { DataType } from "@/__generated__/graphql";
 import { Maybe } from "graphql/jsutils/Maybe";
 
-export function serialize(type: DataType, value: null): null;
-export function serialize(type: DataType, value: unknown): string;
 export function serialize(type: DataType, value: unknown): string | null {
     if (value == null) return null;
     switch (type) {
