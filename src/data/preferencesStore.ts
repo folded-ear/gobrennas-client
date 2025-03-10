@@ -8,6 +8,7 @@ import deviceKey from "@/data/utils/deviceKey";
 import { deserialize, serialize } from "@/data/utils/serialization";
 import { BfsId } from "@/global/types/identity";
 import { client as apolloClient } from "@/providers/ApolloClient";
+import promiseFlux from "@/util/promiseFlux";
 import { gql } from "@/__generated__";
 import { DataType, SetPreferenceMutation } from "@/__generated__/graphql";
 import { FetchResult } from "@apollo/client";
@@ -91,19 +92,26 @@ function promiseServerUpdate(
     });
 }
 
-async function loadFromServer() {
-    const data = await apolloClient.query({
-        query: LOAD_PREFS,
-        variables: { deviceKey },
-    });
-    const preferences = data.data!.profile.me.preferences.map(
-        (p): [string, unknown] => [p.name, deserialize(p.type, p.value)],
+function loadFromServer() {
+    return promiseFlux(
+        apolloClient.query({
+            query: LOAD_PREFS,
+            variables: { deviceKey },
+        }),
+        ({ data }): FluxAction => {
+            const preferences = data!.profile.me.preferences.map(
+                (p): [string, unknown] => [
+                    p.name,
+                    deserialize(p.type, p.value),
+                ],
+            );
+            preferences.push([PrefName.CANONICAL_SERVER, true]);
+            return {
+                type: ActionType.USER__PREFERENCES_LOADED,
+                preferences,
+            };
+        },
     );
-    preferences.push([PrefName.CANONICAL_SERVER, true]);
-    dispatcher.dispatch({
-        type: ActionType.USER__PREFERENCES_LOADED,
-        preferences,
-    });
 }
 
 function setPref(state: State, name: PrefName, value: unknown): State {
@@ -122,12 +130,12 @@ function setPref(state: State, name: PrefName, value: unknown): State {
         state = state.set(name, value);
         promise = promiseServerUpdate(name, value);
     }
-    promise.then((data) => {
-        const p = data.data!.profile.update;
-        dispatcher.dispatch({
+    promiseFlux(promise, ({ data }): FluxAction => {
+        const p = data!.profile.update;
+        return {
             type: ActionType.USER__PREFERENCES_LOADED,
             preferences: [[name, deserialize(p.type, p.value)]],
-        });
+        };
     });
     return saveToCache(state);
 }
