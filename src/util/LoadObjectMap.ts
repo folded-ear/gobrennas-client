@@ -114,7 +114,6 @@ class LoadObjectMap<K, V> {
         return this._mutate(() => this._data.set(key, lo));
     }
 
-    // eslint-disable-next-line no-undef
     merge(map: Iterable<[K, LoadObject<V>]>): LoadObjectMap<K, V> {
         return this._mutate(() => this._data.merge(map));
     }

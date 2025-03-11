@@ -1,4 +1,3 @@
-/* eslint-disable */
 import LoadObject from "./LoadObject";
 
 /**

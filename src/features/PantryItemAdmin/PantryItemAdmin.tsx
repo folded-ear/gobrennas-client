@@ -41,7 +41,7 @@ const useErrorAlert = (
     }, [error, setDialog]);
 
 function stringSetsDiffer(a: Maybe<string[]>, b: Maybe<string[]>): boolean {
-    if (a == b) return false;
+    if (a === b) return false;
     if (a == null || b == null) return true;
     const aSet = new Set<string>(a);
     const bSet = new Set<string>(b);

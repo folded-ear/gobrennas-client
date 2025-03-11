@@ -82,7 +82,7 @@ function idFixerFactory(cid: string, id: BfsId) {
         if (ids == null) return ids;
         // This cast is safe; Typescript correctly identifies that a string
         // could become a number, but that's within BfsId, so it's ok.
-        if (ids == cid && (ids === cid || ids === cid)) return id as T;
+        if (ids === cid) return id as T;
         // noinspection SuspiciousTypeOfGuard
         if (ids instanceof Array) {
             // This cast is safe; Typescript can't identify that if 'ids' is an

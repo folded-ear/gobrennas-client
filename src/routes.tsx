@@ -77,7 +77,6 @@ const routes: BfsRoutes = {
             sidebar: CurrentPlanSidebar,
         },
         { path: "/add", component: RecipeAddController },
-        // eslint-disable-next-line react/display-name
         { path: "/tasks", component: () => <Redirect to="/plan" /> },
         { path: "/plan/:pid/recipe/:rid", component: PlannedRecipeController },
         { path: "/plan/:pid/bucket/:bid", component: PlannedBucketController },

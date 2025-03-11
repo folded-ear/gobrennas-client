@@ -193,7 +193,6 @@ class ElEdit extends React.PureComponent<ElEditProps, ElEditState> {
         const { onDelete, onPressEnter } = this.props;
         const hasSuggestions = this._hasSuggestions();
 
-        // eslint-disable-next-line default-case
         switch (key) {
             case "Enter":
                 if (!hasSuggestions) {

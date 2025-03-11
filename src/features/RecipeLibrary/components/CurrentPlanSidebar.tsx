@@ -291,9 +291,7 @@ const PlannedRecipe: React.FC<PlannedRecipeProps> = ({ item }) => {
                         {goingAway ? (
                             <DontChangeStatusButton
                                 id={item.id}
-                                next={
-                                    item._next_status! /* eslint-disable-line @typescript-eslint/no-non-null-assertion */
-                                }
+                                next={item._next_status!}
                             />
                         ) : (
                             <StatusIconButton

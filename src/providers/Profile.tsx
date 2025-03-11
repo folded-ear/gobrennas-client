@@ -82,7 +82,6 @@ export const askUserToReauth = () => {
         return false;
     }
     lastReauthPrompt = now;
-    // eslint-disable-next-line no-restricted-globals
     if (confirm("Your session has terminated.\n\nLog back in?")) {
         logoutHandler();
     }

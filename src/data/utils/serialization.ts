@@ -50,7 +50,7 @@ export function deserialize(type: DataType, value: Maybe<string>): unknown {
             if (value === "yes" || value === "y") return true;
             if (value === "no" || value === "n") return false;
             const n = parseInt(value);
-            if (!isNaN(n)) return n != 0;
+            if (!isNaN(n)) return n !== 0;
             return false;
         }
         case DataType.FLOAT: {

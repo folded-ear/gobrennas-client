@@ -86,7 +86,6 @@ class PlanItem extends PureComponent<Props> {
     onKeyDown(e: React.KeyboardEvent) {
         const { value, selectionStart } = e.target as HTMLInputElement;
         const { key, ctrlKey, shiftKey } = e;
-        // eslint-disable-next-line default-case
         switch (key) {
             case "Enter":
                 if (value.length === 0) break;
