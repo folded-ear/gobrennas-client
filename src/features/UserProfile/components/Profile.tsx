@@ -1,5 +1,6 @@
 import { CookThis } from "@/features/UserProfile/components/CookThis";
 import { Developer } from "@/features/UserProfile/components/Developer";
+import Devices from "@/features/UserProfile/components/Devices";
 import type { UserType } from "@/global/types/identity";
 import { useIsDeveloper, useLogoutHandler } from "@/providers/Profile";
 import { Box, Button, Grid, Paper, Stack, Typography } from "@mui/material";
@@ -7,7 +8,6 @@ import Avatar from "@mui/material/Avatar";
 import { styled } from "@mui/material/styles";
 import * as React from "react";
 import { LogoutIcon } from "../../../views/common/icons";
-import User from "../../../views/user/User";
 
 const Info = styled(Box)({
     flex: 1,
@@ -60,11 +60,11 @@ const Profile: React.FC<Props> = ({ currentUser: user }) => {
                     </div>
                 </Grid>
             </ProfileDisplay>
+            <Paper>
+                <Devices />
+            </Paper>
             <ProfileDisplay>
                 <CookThis />
-            </ProfileDisplay>
-            <ProfileDisplay>
-                <User {...user} />
             </ProfileDisplay>
             {isDeveloper && (
                 <ProfileDisplay>

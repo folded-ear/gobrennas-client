@@ -501,6 +501,8 @@ type PlannerQuery {
 
 type ProfileMutation {
     clearPreference(deviceKey: String, name: String!): UserPreference!
+    deleteDevice(id: ID!): Deletion!
+    renameDevice(id: ID!, name: String!): UserDevice!
     setPreference(deviceKey: String, name: String!, value: String!): UserPreference!
 }
 
