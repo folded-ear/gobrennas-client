@@ -1,3 +1,4 @@
+import { LibrarySearchScope } from "@/__generated__/graphql";
 import useIsDevMode from "@/data/useIsDevMode";
 import { RecipesList } from "@/features/RecipeLibrary/components/RecipesList";
 import Recommendations from "@/features/RecipeLibrary/components/Recommendations";
@@ -7,7 +8,6 @@ import { useIsMobile } from "@/providers/IsMobile";
 import { useProfile } from "@/providers/Profile";
 import { ScalingProvider } from "@/util/ScalingContext";
 import LoadingIndicator from "@/views/common/LoadingIndicator";
-import { LibrarySearchScope } from "@/__generated__/graphql";
 import { Container as Content, useScrollTrigger } from "@mui/material";
 import * as React from "react";
 import { useState } from "react";

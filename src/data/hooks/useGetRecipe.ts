@@ -1,8 +1,8 @@
+import { gql } from "@/__generated__";
+import { GetRecipeQuery } from "@/__generated__/graphql";
 import objectWithType from "@/data/utils/objectWithType";
 import { BfsId } from "@/global/types/identity";
 import { IIngredient, IngredientRef, Recipe } from "@/global/types/types";
-import { gql } from "@/__generated__";
-import { GetRecipeQuery } from "@/__generated__/graphql";
 import useAdaptingQuery from "./useAdaptingQuery";
 
 const GET_RECIPE_QUERY = gql(`

@@ -1,6 +1,6 @@
-import throwAnyErrors from "@/util/throwAnyErrors";
 import { gql } from "@/__generated__";
 import { DeletePantryItemMutation } from "@/__generated__/graphql";
+import throwAnyErrors from "@/util/throwAnyErrors";
 import { MutationResult, useMutation } from "@apollo/client";
 import { useCallback } from "react";
 

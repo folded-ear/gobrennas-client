@@ -31,14 +31,13 @@ const TextractApi = {
     promiseJobList: (): Promise<PendingJob[]> =>
         client
             .query({ query: LIST_TEXTRACT_JOBS, fetchPolicy: "no-cache" })
-            .then(
-                ({ data }) =>
-                    data?.textract.listJobs.map((job) => ({
-                        id: job.id,
-                        url: job.photo.url,
-                        name: job.photo.filename,
-                        ready: job.ready,
-                    })),
+            .then(({ data }) =>
+                data?.textract.listJobs.map((job) => ({
+                    id: job.id,
+                    url: job.photo.url,
+                    name: job.photo.filename,
+                    ready: job.ready,
+                })),
             ),
     promiseJob: (id: BfsId): Promise<Job> =>
         client

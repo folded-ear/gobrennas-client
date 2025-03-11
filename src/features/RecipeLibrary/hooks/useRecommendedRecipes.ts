@@ -1,8 +1,8 @@
+import { gql } from "@/__generated__";
+import { GetRecipeSuggestionsQuery } from "@/__generated__/graphql";
 import useAdaptingQuery from "@/data/hooks/useAdaptingQuery";
 import { Results } from "@/data/types";
 import { RecipeCard } from "@/features/RecipeLibrary/types";
-import { gql } from "@/__generated__";
-import { GetRecipeSuggestionsQuery } from "@/__generated__/graphql";
 
 const GET_RECOMMENDATIONS_QUERY = gql(`
 query getRecipeSuggestions(

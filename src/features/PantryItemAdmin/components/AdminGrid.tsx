@@ -1,8 +1,8 @@
 import { Result } from "@/data/hooks/usePantryItemSearch";
 import { BfsId } from "@/global/types/identity";
 import {
-    SearchIcon as ViewDuplicatesIcon,
     SvgIconComponent,
+    SearchIcon as ViewDuplicatesIcon,
     ViewIcon,
 } from "@/views/common/icons";
 import { Box, IconButton, Paper } from "@mui/material";

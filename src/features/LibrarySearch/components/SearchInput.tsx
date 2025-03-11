@@ -1,5 +1,5 @@
-import { ClearIcon, SearchIcon } from "@/views/common/icons";
 import { LibrarySearchScope } from "@/__generated__/graphql";
+import { ClearIcon, SearchIcon } from "@/views/common/icons";
 import { IconButton, InputAdornment, Toolbar } from "@mui/material";
 import InputBase from "@mui/material/Input";
 import * as React from "react";

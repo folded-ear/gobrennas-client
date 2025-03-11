@@ -1,10 +1,10 @@
-import { Results } from "@/data/types";
 import { gql } from "@/__generated__";
 import {
     PantryItemConnectionEdge,
     PantryItemsQuery,
     SortDir,
 } from "@/__generated__/graphql";
+import { Results } from "@/data/types";
 import useAdaptingQuery from "./useAdaptingQuery";
 
 // This is stupid, but its either increase the duplication even further or lose

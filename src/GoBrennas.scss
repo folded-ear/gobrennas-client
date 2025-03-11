@@ -131,23 +131,38 @@ body {
 
     .el-edit {
         .quantity {
-            background-color: color.adjust(color.adjust(#fde, $saturation: -30%), $lightness: -70%);
+            background-color: color.adjust(
+                color.adjust(#fde, $saturation: -30%),
+                $lightness: -70%
+            );
         }
 
         .unit {
-            background-color: color.adjust(color.adjust(#efd, $saturation: -30%), $lightness: -80%);
+            background-color: color.adjust(
+                color.adjust(#efd, $saturation: -30%),
+                $lightness: -80%
+            );
         }
 
         .new-unit {
-            background-color: color.adjust(color.adjust(#dfe, $saturation: -60%), $lightness: -65%);
+            background-color: color.adjust(
+                color.adjust(#dfe, $saturation: -60%),
+                $lightness: -65%
+            );
         }
 
         .ingredient {
-            background-color: color.adjust(color.adjust(#def, $saturation: -30%), $lightness: -75%);
+            background-color: color.adjust(
+                color.adjust(#def, $saturation: -30%),
+                $lightness: -75%
+            );
         }
 
         .new-ingredient {
-            background-color: color.adjust(color.adjust(#edf, $saturation: -30%), $lightness: -65%);
+            background-color: color.adjust(
+                color.adjust(#edf, $saturation: -30%),
+                $lightness: -65%
+            );
         }
     }
 }

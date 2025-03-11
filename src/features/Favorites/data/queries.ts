@@ -1,5 +1,5 @@
-import { BfsId } from "@/global/types/identity";
 import { gql } from "@/__generated__";
+import { BfsId } from "@/global/types/identity";
 import { useMutation, useQuery } from "@apollo/client";
 import { useMemo } from "react";
 

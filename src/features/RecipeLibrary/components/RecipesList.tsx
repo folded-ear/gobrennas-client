@@ -1,3 +1,4 @@
+import { LibrarySearchScope } from "@/__generated__/graphql";
 import { MessagePaper } from "@/features/RecipeLibrary/components/MessagePaper";
 import { RecipeCard as TRecipeCard } from "@/features/RecipeLibrary/types";
 import { UserType } from "@/global/types/identity";
@@ -6,7 +7,6 @@ import { AddRecipeIcon } from "@/views/common/icons";
 import LazyInfinite from "@/views/common/LazyInfinite";
 import LoadingIndicator from "@/views/common/LoadingIndicator";
 import { RecipeGrid } from "@/views/recipeCollections/RecipeGrid";
-import { LibrarySearchScope } from "@/__generated__/graphql";
 import { Grid } from "@mui/material";
 import { useHistory } from "react-router-dom";
 

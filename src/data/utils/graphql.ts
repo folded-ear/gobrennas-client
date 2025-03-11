@@ -1,6 +1,6 @@
+import { IngredientInfo, IngredientRefInfo } from "@/__generated__/graphql";
 import { DraftRecipe } from "@/global/types/types";
 import { toMilliseconds } from "@/util/time";
-import { IngredientInfo, IngredientRefInfo } from "@/__generated__/graphql";
 
 /**
  * Converts a DraftRecipe to IngredientInfo for transmission

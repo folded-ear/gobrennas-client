@@ -80,8 +80,8 @@ const Ui: React.FC<UiProps> = ({
                     deleting.indexOf(j.id) >= 0
                         ? "deleting"
                         : j.ready
-                        ? "ready"
-                        : "extracting",
+                          ? "ready"
+                          : "extracting",
             })),
         );
     return (

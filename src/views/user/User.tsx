@@ -1,6 +1,6 @@
+import { MakeOptional } from "@/__generated__/graphql";
 import type { UserType } from "@/global/types/identity";
 import SizedAvatar, { SizedAvatarProps } from "@/views/SizedAvatar";
-import { MakeOptional } from "@/__generated__/graphql";
 import Box from "@mui/material/Box";
 import makeStyles from "@mui/styles/makeStyles";
 import * as React from "react";

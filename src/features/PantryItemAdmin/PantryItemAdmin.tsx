@@ -1,3 +1,4 @@
+import { SortDir } from "@/__generated__/graphql";
 import { useCombinePantryItems } from "@/data/hooks/useCombinePantryItems";
 import { useDeletePantryItem } from "@/data/hooks/useDeletePantryItem";
 import {
@@ -8,7 +9,6 @@ import {
 import { useRenamePantryItem } from "@/data/hooks/useRenamePantryItem";
 import { useSetPantryItemLabels } from "@/data/hooks/useSetPantryItemLabels";
 import { useSetPantryItemSynonyms } from "@/data/hooks/useSetPantryItemSynonyms";
-import { SortDir } from "@/__generated__/graphql";
 import { ApolloError } from "@apollo/client";
 import {
     GridColumnVisibilityModel,

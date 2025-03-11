@@ -1,5 +1,5 @@
-import { BfsId } from "@/global/types/identity";
 import { PlannedRecipeHistory, User } from "@/__generated__/graphql";
+import { BfsId } from "@/global/types/identity";
 import { Maybe } from "graphql/jsutils/Maybe";
 
 type IngredientType = "Recipe" | "PantryItem";

@@ -1,5 +1,5 @@
-import { deserialize, serialize } from "@/data/utils/serialization";
 import { DataType } from "@/__generated__/graphql";
+import { deserialize, serialize } from "@/data/utils/serialization";
 import { describe, expect, it } from "vitest";
 
 describe("serialization", () => {

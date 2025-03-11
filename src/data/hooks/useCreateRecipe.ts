@@ -1,8 +1,8 @@
+import { gql } from "@/__generated__";
+import { GetSearchLibraryDocument } from "@/__generated__/graphql";
 import { recipeToIngredientInfo } from "@/data/utils/graphql";
 import { DraftRecipe } from "@/global/types/types";
 import promiseWellSizedFile from "@/util/promiseWellSizedFile";
-import { gql } from "@/__generated__";
-import { GetSearchLibraryDocument } from "@/__generated__/graphql";
 import { useMutation } from "@apollo/client";
 
 const CREATE_RECIPE_MUTATION = gql(`

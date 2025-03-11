@@ -38,8 +38,8 @@ export default function SizedAvatar({
                     size && classes.hasOwnProperty(size)
                         ? size
                         : inline
-                        ? "inline"
-                        : "small"
+                          ? "inline"
+                          : "small"
                 ]
             }
             {...passthrough}

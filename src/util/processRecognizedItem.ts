@@ -1,6 +1,6 @@
 // This is "duplicated" as RawIngredientDissection.fromRecognizedItem
-import { RecognitionRange, RecognitionResult } from "@/data/ItemApi";
 import { RecognizedRangeType } from "@/__generated__/graphql";
+import { RecognitionRange, RecognitionResult } from "@/data/ItemApi";
 import { Maybe } from "graphql/jsutils/Maybe";
 
 function processRecognizedItem(recog: RecognitionResult) {

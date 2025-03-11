@@ -1,3 +1,5 @@
+import { gql } from "@/__generated__";
+import { DataType, SetPreferenceMutation } from "@/__generated__/graphql";
 import planStore from "@/features/Planner/data/planStore";
 import { getJsonItem, setJsonItem } from "@/util/storage";
 import { ReduceStore } from "flux/utils";
@@ -9,8 +11,6 @@ import { deserialize, serialize } from "@/data/utils/serialization";
 import { BfsId } from "@/global/types/identity";
 import { client as apolloClient } from "@/providers/ApolloClient";
 import promiseFlux from "@/util/promiseFlux";
-import { gql } from "@/__generated__";
-import { DataType, SetPreferenceMutation } from "@/__generated__/graphql";
 import { FetchResult } from "@apollo/client";
 import { Maybe } from "graphql/jsutils/Maybe";
 import dispatcher, { ActionType, FluxAction } from "./dispatcher";

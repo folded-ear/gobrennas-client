@@ -1,3 +1,8 @@
+import type {
+    CorePlanItemLoadFragment,
+    PlanItemLoadFragment,
+    PlanLoadFragment,
+} from "@/__generated__/graphql";
 import AccessLevel from "@/data/AccessLevel";
 import { ActionType, FluxAction } from "@/data/dispatcher";
 import {
@@ -8,11 +13,6 @@ import {
 import { BfsId } from "@/global/types/identity";
 import throwAnyErrors from "@/util/throwAnyErrors";
 import { parseLocalDate } from "@/util/time";
-import type {
-    CorePlanItemLoadFragment,
-    PlanItemLoadFragment,
-    PlanLoadFragment,
-} from "@/__generated__/graphql";
 
 export const handleErrors = (error: unknown): FluxAction => {
     throwAnyErrors(error);

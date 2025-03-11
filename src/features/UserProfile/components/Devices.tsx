@@ -1,11 +1,11 @@
+import { gql } from "@/__generated__";
+import { UserDevice } from "@/__generated__/graphql";
 import useAdaptingQuery from "@/data/hooks/useAdaptingQuery";
 import useIsDevMode from "@/data/useIsDevMode";
 import deviceKey from "@/data/utils/deviceKey";
 import { useIsMobile } from "@/providers/IsMobile";
 import { FavoriteIcon } from "@/views/common/icons";
 import LoadingIndicator from "@/views/common/LoadingIndicator";
-import { gql } from "@/__generated__";
-import { UserDevice } from "@/__generated__/graphql";
 import { useMutation } from "@apollo/client";
 import { IconButton } from "@mui/material";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";

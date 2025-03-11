@@ -1,7 +1,7 @@
+import { gql } from "@/__generated__";
 import { recipeToIngredientInfo } from "@/data/utils/graphql";
 import { DraftRecipe } from "@/global/types/types";
 import promiseWellSizedFile from "@/util/promiseWellSizedFile";
-import { gql } from "@/__generated__";
 import { useMutation } from "@apollo/client";
 
 const UPDATE_RECIPE_MUTATION = gql(`
@@ -34,6 +34,7 @@ export const useUpdateRecipe = () => {
             sizedUpload = await promiseWellSizedFile(recipe.photoUpload);
         }
 
+        // noinspection SuspiciousTypeOfGuard
         return mutateFunction({
             variables: {
                 id: recipe.id,

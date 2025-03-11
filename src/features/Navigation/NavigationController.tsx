@@ -77,8 +77,8 @@ export const NavigationController = ({ children }: PropsWithChildren) => {
     const handleSelectPlan = shopView
         ? toggleShoppingPlan
         : planView
-        ? openPlan
-        : selectPlan;
+          ? openPlan
+          : selectPlan;
     const handleOpenPlan = shopView ? toggleShoppingPlan : openPlan;
 
     if (!authenticated) {
