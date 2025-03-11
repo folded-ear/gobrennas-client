@@ -234,7 +234,7 @@ export default function PantryItemAdmin() {
                 confirmLabel: "Delete",
                 onClose: (confirmed) => {
                     setDialog(undefined);
-                    confirmed &&
+                    if (confirmed)
                         deleteItem(row.id).then(() => {
                             refetch();
                         });

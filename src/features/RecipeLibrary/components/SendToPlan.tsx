@@ -42,7 +42,7 @@ const SendToPlan: React.FC<Props> = ({
         onClick && onClick(plan.id);
 
     const handleSelect = (_: never, selected: SelectOption<number>) => {
-        onClick && onClick(plan.id, selected?.value);
+        if (onClick) onClick(plan.id, selected?.value);
     };
 
     if (iconOnly) {

@@ -16,6 +16,8 @@ const Source: React.FC<Props> = ({ url }) => {
             }
             setHostname(hostname);
         } catch (e) {
+            // eslint-disable-next-line
+            console.warn("failed to parse hostname", url, e);
             setHostname("");
         }
     }, [url]);

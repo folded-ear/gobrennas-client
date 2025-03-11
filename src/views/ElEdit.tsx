@@ -205,7 +205,7 @@ class ElEdit extends React.PureComponent<ElEditProps, ElEditState> {
                 // if the value is empty, delete the item and focus previous
                 if (value.length === 0) {
                     e.preventDefault();
-                    onDelete && onDelete();
+                    if (onDelete) onDelete();
                 }
                 break;
             case "ArrowLeft":

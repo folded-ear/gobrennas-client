@@ -75,6 +75,8 @@ export function deserialize(type: DataType, value: Maybe<string>): unknown {
             try {
                 return JSON.parse(value);
             } catch (e) {
+                // eslint-disable-next-line
+                console.warn("Failed to parse", value, e);
                 return null;
             }
         }

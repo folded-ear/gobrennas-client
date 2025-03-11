@@ -557,7 +557,7 @@ class PlanStore extends FluxReduceStore<State, FluxAction> {
             }
             // process the component...
             if (descendant) {
-                comp.componentIds && queue.push(...comp.componentIds);
+                if (comp.componentIds) queue.push(...comp.componentIds);
             } else {
                 result.push(comp);
             }

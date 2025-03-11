@@ -135,7 +135,6 @@ class PlanItem extends PureComponent<Props> {
                     type: shiftKey
                         ? ActionType.PLAN__UNNEST
                         : ActionType.PLAN__NEST,
-                    id: this.props.item.id,
                 });
                 break;
             case "ArrowUp":

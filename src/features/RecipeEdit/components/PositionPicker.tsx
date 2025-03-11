@@ -83,7 +83,7 @@ const PositionPicker: React.FC<Props> = ({ image, value, onChange }) => {
                         );
                         const val = [x / width, y / height];
                         setOffset(val);
-                        onChange && onChange(val);
+                        if (onChange) onChange(val);
                     }}
                 >
                     <circle

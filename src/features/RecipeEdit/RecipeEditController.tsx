@@ -56,9 +56,7 @@ const RecipeEditController: React.FC<Props> = ({ match }) => {
     const handleSaveCopy = (recipe: DraftRecipe) => {
         createRecipeFrom(recipe).then((result) => {
             const id = result.data?.library?.createRecipeFrom.id;
-            id
-                ? history.push(`/library/recipe/${id}`)
-                : history.push(`/library`);
+            history.push(id ? `/library/recipe/${id}` : `/library`);
         });
     };
 

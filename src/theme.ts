@@ -10,7 +10,7 @@ import { deepmerge } from "@mui/utils";
 import { useMemo } from "react";
 
 declare module "@mui/styles/defaultTheme" {
-    // eslint-disable-next-line @typescript-eslint/no-empty-interface
+    // eslint-disable-next-line @typescript-eslint/no-empty-object-type
     interface DefaultTheme extends Theme {}
 }
 

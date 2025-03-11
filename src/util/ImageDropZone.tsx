@@ -91,7 +91,7 @@ const ImageDropZone = ({
 
     const handleFileSelect = (event: React.ChangeEvent) => {
         const { files } = event.target as HTMLInputElement;
-        files && sendOffFirstFile(files);
+        if (files) sendOffFirstFile(files);
     };
 
     return (

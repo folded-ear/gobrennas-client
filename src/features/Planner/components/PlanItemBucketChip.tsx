@@ -43,12 +43,12 @@ const BucketChip: React.FC<BucketChipProps> = ({
     };
 
     const handleSelect = (bucketId: Maybe<BfsId>) => {
-        onSelect && onSelect(bucketId);
+        if (onSelect) onSelect(bucketId);
         setAnchorEl(null);
     };
 
     const handleManage = () => {
-        onManage && onManage();
+        if (onManage) onManage();
         setAnchorEl(null);
     };
 
