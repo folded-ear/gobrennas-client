@@ -8,3 +8,5 @@ f727005b4b6a991c14b1c36e2db782babc5837bc
 d284583edcbf19a2813cc33b1d18ef1361a2fe0c
 # order all import statements (2025-02-09)
 f4edd8eaa487de1af78a17198b895994ac779353
+# run prettier after upgrading it (2025-03-11)
+b53bf8dee53a25ace3953b85752926f5a602ab67
