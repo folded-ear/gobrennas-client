@@ -1,4 +1,5 @@
 import { API_BASE_URL, LOCAL_STORAGE_ACCESS_TOKEN } from "@/constants";
+import dispatcher, { ActionType } from "@/data/dispatcher";
 import useAdaptingQuery from "@/data/hooks/useAdaptingQuery";
 import type { UserType } from "@/global/types/identity";
 import { requiredData, RippedLO } from "@/util/ripLoadObject";
@@ -16,13 +17,15 @@ type Profile = RippedLO<UserType> | undefined;
 let globalProfile: Profile = undefined;
 
 const GET_ME = gql(`query me {
-  getCurrentUser {
-    id
-    name
-    email
-    imageUrl
-    provider
-    roles
+  profile {
+    me {
+      id
+      name
+      email
+      imageUrl
+      provider
+      roles
+    }
   }
 }`);
 
@@ -33,7 +36,7 @@ type Props = PropsWithChildren;
 export const ProfileProvider: React.FC<Props> = ({ children }) => {
     const profile: Profile = useAdaptingQuery(
         GET_ME,
-        (data) => data?.getCurrentUser || undefined,
+        (data) => data?.profile.me || undefined,
     );
 
     useEffect(() => {
@@ -42,7 +45,12 @@ export const ProfileProvider: React.FC<Props> = ({ children }) => {
 
     useEffect(() => {
         const uid = profile.data?.id;
-        if (uid) GTag("set", { uid });
+        if (uid) {
+            GTag("set", { uid });
+            dispatcher.dispatch({
+                type: ActionType.USER__AUTHENTICATED,
+            });
+        }
     }, [profile.data?.id]);
 
     return (

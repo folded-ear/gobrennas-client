@@ -1,11 +1,7 @@
 import { BfsId } from "@/global/types/identity";
+import { rand_chars } from "@/util/entropy";
 
-const PREFIX =
-    Date.now().toString(36) +
-    Math.floor(Math.random() * 60466176 /* 36^5 */)
-        .toString(36)
-        .padStart(5, "0") +
-    "_";
+const PREFIX = Date.now().toString(36) + rand_chars(5) + "_";
 
 let counter = 0;
 

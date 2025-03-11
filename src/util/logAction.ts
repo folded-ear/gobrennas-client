@@ -17,7 +17,7 @@ const logAction = (action: FluxAction) => {
     ];
     if (keys.length === 1) {
         args.push(keys[0], temp[keys[0]]);
-    } else {
+    } else if (keys.length > 1) {
         args.push(temp);
     }
     // eslint-disable-next-line no-console
