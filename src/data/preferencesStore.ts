@@ -152,7 +152,7 @@ class PreferencesStore extends ReduceStore<State, FluxAction> {
 
     reduce(state: State, action: FluxAction): State {
         switch (action.type) {
-            case ActionType.USER__LOAD_PREFERENCES_FROM_SERVER: {
+            case ActionType.USER__AUTHENTICATED: {
                 if (state.get(PrefName.CANONICAL_SERVER)) {
                     // noinspection JSIgnoredPromiseFromCall
                     loadFromServer();

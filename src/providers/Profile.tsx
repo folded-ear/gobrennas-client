@@ -48,7 +48,7 @@ export const ProfileProvider: React.FC<Props> = ({ children }) => {
         if (uid) {
             GTag("set", { uid });
             dispatcher.dispatch({
-                type: ActionType.USER__LOAD_PREFERENCES_FROM_SERVER,
+                type: ActionType.USER__AUTHENTICATED,
             });
         }
     }, [profile.data?.id]);

@@ -101,7 +101,7 @@ export enum ActionType {
     UI__DISMISS_SNACKBAR,
     UI__HIDE_FAB,
     UI__SHOW_FAB,
-    USER__LOAD_PREFERENCES_FROM_SERVER,
+    USER__AUTHENTICATED,
     USER__PREFERENCES_LOADED,
     USER__SET_DEV_MODE,
     USER__SET_LAYOUT,
@@ -289,7 +289,7 @@ export type FluxAction =
     | { type: ActionType.UI__HIDE_FAB }
     | { type: ActionType.UI__SHOW_FAB }
     // user
-    | { type: ActionType.USER__LOAD_PREFERENCES_FROM_SERVER }
+    | { type: ActionType.USER__AUTHENTICATED }
     | {
           type: ActionType.USER__PREFERENCES_LOADED;
           preferences: [string, unknown][];
