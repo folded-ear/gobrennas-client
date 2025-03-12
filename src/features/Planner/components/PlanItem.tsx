@@ -40,7 +40,7 @@ interface Props {
 }
 
 class PlanItem extends PureComponent<Props> {
-    private readonly inputRef: RefObject<HTMLInputElement>;
+    private readonly inputRef: RefObject<HTMLInputElement | null>;
 
     constructor(props: Props) {
         super(props);

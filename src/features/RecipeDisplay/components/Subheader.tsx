@@ -10,7 +10,7 @@ export const SubHeader: React.FC<Props> = ({ children }) => {
     const windowSize = useWindowSize();
     const [height, setHeight] = React.useState<CSSProperties["height"]>("auto");
     const [width, setWidth] = React.useState<CSSProperties["width"]>("auto");
-    const inner = React.useRef<HTMLDivElement>();
+    const inner = React.useRef<HTMLDivElement>(null);
     React.useLayoutEffect(() => {
         setHeight(inner?.current?.clientHeight);
         setWidth((inner?.current?.parentNode as HTMLElement).clientWidth);
