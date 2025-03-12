@@ -10,9 +10,9 @@ import {
 } from "@/providers/ApolloClient";
 import { useIsAuthenticated } from "@/providers/Profile";
 import { soakUpUnauthorized } from "@/util/promiseFlux";
+import { useQuery } from "@tanstack/react-query";
 import * as React from "react";
 import { useMemo } from "react";
-import { useQuery } from "react-query";
 
 /*
  * Unlike every other BFS query, this one is dynamically constructed at runtime
@@ -79,6 +79,7 @@ function buildSyncer(planIds: BfsId[]): Syncer {
                         });
                     }
                 }
+                return 0; // have to give _something_ to react-query to cache
             }, soakUpUnauthorized);
 }
 

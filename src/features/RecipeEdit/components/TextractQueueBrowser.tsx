@@ -13,8 +13,8 @@ import {
     Typography,
 } from "@mui/material";
 import { makeStyles } from "@mui/styles";
+import { useQuery } from "@tanstack/react-query";
 import * as React from "react";
-import { useQuery } from "react-query";
 
 const useStyles = makeStyles((theme) => ({
     drawer: {
@@ -145,7 +145,7 @@ const Ui: React.FC<UiProps> = ({
 
 const TextractQueueBrowser: React.FC<PassthroughProps> = (props) => {
     const { data: queue = [] } = useQuery(
-        "textract-jobs",
+        ["textract-jobs"],
         () => TextractApi.promiseJobList(),
         {
             refetchInterval: (jobs: PendingJob[] | undefined) => {

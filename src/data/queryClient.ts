@@ -1,4 +1,4 @@
-import { QueryClient } from "react-query";
+import { QueryClient } from "@tanstack/react-query";
 
 /*
  This indirection allows for non-hook access to the query client, which is still
