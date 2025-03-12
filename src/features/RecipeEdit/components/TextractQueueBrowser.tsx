@@ -144,16 +144,15 @@ const Ui: React.FC<UiProps> = ({
 };
 
 const TextractQueueBrowser: React.FC<PassthroughProps> = (props) => {
-    const { data: queue = [] } = useQuery(
-        ["textract-jobs"],
-        () => TextractApi.promiseJobList(),
-        {
-            refetchInterval: (jobs: PendingJob[] | undefined) => {
-                return !jobs || jobs.some((j) => !j.ready) ? 5_000 : 15_000;
-            },
-            refetchIntervalInBackground: false,
+    const { data: queue = [] } = useQuery({
+        queryKey: ["textract-jobs"],
+        queryFn: () => TextractApi.promiseJobList(),
+        refetchInterval: (query) => {
+            const jobs = query.state.data;
+            return !jobs || jobs.some((j) => !j.ready) ? 5_000 : 15_000;
         },
-    );
+        refetchIntervalInBackground: false,
+    });
     return <Ui queue={queue} {...props} />;
 };
 

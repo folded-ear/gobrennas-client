@@ -62,9 +62,9 @@ const TextractFormAugment: React.FC<Props> = ({ renderActions }) => {
                         );
                         promiseWellSizedFile(photo).then((p) => {
                             TextractApi.promiseNewJob(p).finally(() => {
-                                queryClient.invalidateQueries([
-                                    "textract-jobs",
-                                ]);
+                                queryClient.invalidateQueries({
+                                    queryKey: ["textract-jobs"],
+                                });
                                 setCreating((curr) =>
                                     curr.filter((p) => {
                                         if (p.id === id) {
@@ -81,7 +81,9 @@ const TextractFormAugment: React.FC<Props> = ({ renderActions }) => {
                     onDelete={(id) => {
                         setDeleting((curr) => curr.concat(id));
                         return TextractApi.promiseJobDelete(id).finally(() => {
-                            queryClient.invalidateQueries(["textract-jobs"]);
+                            queryClient.invalidateQueries({
+                                queryKey: ["textract-jobs"],
+                            });
                             setDeleting((curr) => curr.filter((i) => i !== id));
                         });
                     }}
