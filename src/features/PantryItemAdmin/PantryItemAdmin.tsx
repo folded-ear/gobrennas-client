@@ -1,3 +1,4 @@
+import { SortDir } from "@/__generated__/graphql";
 import { useCombinePantryItems } from "@/data/hooks/useCombinePantryItems";
 import { useDeletePantryItem } from "@/data/hooks/useDeletePantryItem";
 import {
@@ -8,7 +9,6 @@ import {
 import { useRenamePantryItem } from "@/data/hooks/useRenamePantryItem";
 import { useSetPantryItemLabels } from "@/data/hooks/useSetPantryItemLabels";
 import { useSetPantryItemSynonyms } from "@/data/hooks/useSetPantryItemSynonyms";
-import { SortDir } from "@/__generated__/graphql";
 import { ApolloError } from "@apollo/client";
 import {
     GridColumnVisibilityModel,
@@ -41,7 +41,7 @@ const useErrorAlert = (
     }, [error, setDialog]);
 
 function stringSetsDiffer(a: Maybe<string[]>, b: Maybe<string[]>): boolean {
-    if (a == b) return false;
+    if (a === b) return false;
     if (a == null || b == null) return true;
     const aSet = new Set<string>(a);
     const bSet = new Set<string>(b);
@@ -234,7 +234,7 @@ export default function PantryItemAdmin() {
                 confirmLabel: "Delete",
                 onClose: (confirmed) => {
                     setDialog(undefined);
-                    confirmed &&
+                    if (confirmed)
                         deleteItem(row.id).then(() => {
                             refetch();
                         });

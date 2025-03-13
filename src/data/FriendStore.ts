@@ -1,9 +1,9 @@
+import { gql } from "@/__generated__";
 import { BfsId, UserType } from "@/global/types/identity";
 import { client } from "@/providers/ApolloClient";
 import LoadObjectState from "@/util/LoadObjectState";
 import promiseFlux from "@/util/promiseFlux";
 import { mapData, ripLoadObject, RippedLO } from "@/util/ripLoadObject";
-import { gql } from "@/__generated__";
 import { ReduceStore } from "flux/utils";
 import dispatcher, { ActionType, FluxAction } from "./dispatcher";
 

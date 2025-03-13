@@ -1,7 +1,7 @@
+import { gql } from "@/__generated__";
 import { BfsId } from "@/global/types/identity";
 import ImageDropZone from "@/util/ImageDropZone";
 import promiseWellSizedFile from "@/util/promiseWellSizedFile";
-import { gql } from "@/__generated__";
 import { useMutation } from "@apollo/client";
 import { makeStyles } from "@mui/styles";
 import * as React from "react";

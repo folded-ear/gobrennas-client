@@ -1,6 +1,6 @@
+import { LibrarySearchScope } from "@/__generated__/graphql";
 import { SearchRecipesContainer } from "@/features/RecipeLibrary/components/SearchRecipes.elements";
 import { ClearIcon, SearchIcon } from "@/views/common/icons";
-import { LibrarySearchScope } from "@/__generated__/graphql";
 import {
     Button,
     Divider,

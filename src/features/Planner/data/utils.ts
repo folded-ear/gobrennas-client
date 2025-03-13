@@ -82,7 +82,7 @@ function idFixerFactory(cid: string, id: BfsId) {
         if (ids == null) return ids;
         // This cast is safe; Typescript correctly identifies that a string
         // could become a number, but that's within BfsId, so it's ok.
-        if (ids == cid && (ids === cid || ids === cid)) return id as T;
+        if (ids === cid) return id as T;
         // noinspection SuspiciousTypeOfGuard
         if (ids instanceof Array) {
             // This cast is safe; Typescript can't identify that if 'ids' is an
@@ -90,13 +90,13 @@ function idFixerFactory(cid: string, id: BfsId) {
             return ids.map((v) => (v === cid ? id : v)) as T;
         }
         // noinspection SuspiciousTypeOfGuard
-        if (ids instanceof LoadObject<BfsId[]>) {
+        if (ids instanceof LoadObject) {
             // This cast is safe; Typescript can't identify that if 'ids' is a
             // LoadObject<BfsId[]>, T must be as well.
             return ids.map(idFixer) as T;
         }
         // noinspection SuspiciousTypeOfGuard
-        if (ids instanceof LoadObjectState<BfsId[]>) {
+        if (ids instanceof LoadObjectState) {
             // This cast is safe; Typescript can't identify that if 'ids' is a
             // LoadObjectState<BfsId[]>, T must be as well.
             return ids.map(idFixer) as T;
@@ -965,7 +965,7 @@ export function taskLoaded(state: State, task: Plan | PlanItem): State {
     if (lo.hasValue()) {
         lo = lo.map((t) => {
             const subtaskIds = task.subtaskIds ? task.subtaskIds.slice() : [];
-            t.subtaskIds &&
+            if (t.subtaskIds)
                 t.subtaskIds.forEach((id, idx) => {
                     if (!ClientId.is(id)) return;
                     if (idx < subtaskIds.length) {
@@ -1052,9 +1052,11 @@ export function mapPlanBuckets(
 }
 
 export function saveBucket(state: State, bucket: PlanBucket) {
-    ClientId.is(bucket.id)
-        ? PlanApi.createBucket(state.activeListId!, bucket)
-        : PlanApi.updateBucket(state.activeListId!, bucket.id, bucket);
+    if (ClientId.is(bucket.id)) {
+        PlanApi.createBucket(state.activeListId!, bucket);
+    } else {
+        PlanApi.updateBucket(state.activeListId!, bucket.id, bucket);
+    }
 }
 
 export function resetToThisWeeksBuckets(state: State, planId: BfsId): State {

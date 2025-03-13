@@ -31,17 +31,14 @@ const Markdown: React.FC<Props> = ({ text }) => {
                             for (let i = start + 1; i < end; i++) {
                                 const l = lines[i];
                                 if (l.startsWith("@@")) {
-                                    lines[
-                                        i
-                                    ] = `<code class="range">${l}</code>`;
+                                    lines[i] =
+                                        `<code class="range">${l}</code>`;
                                 } else if (l.startsWith("+")) {
-                                    lines[
-                                        i
-                                    ] = `<code class="inserted">${l}</code>`;
+                                    lines[i] =
+                                        `<code class="inserted">${l}</code>`;
                                 } else if (l.startsWith("-")) {
-                                    lines[
-                                        i
-                                    ] = `<code class="deleted">${l}</code>`;
+                                    lines[i] =
+                                        `<code class="deleted">${l}</code>`;
                                 }
                             }
                             // Combine the start and first line, to avoid the

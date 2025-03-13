@@ -40,7 +40,7 @@ interface Props {
 }
 
 class PlanItem extends PureComponent<Props> {
-    private readonly inputRef: RefObject<HTMLInputElement>;
+    private readonly inputRef: RefObject<HTMLInputElement | null>;
 
     constructor(props: Props) {
         super(props);
@@ -86,7 +86,6 @@ class PlanItem extends PureComponent<Props> {
     onKeyDown(e: React.KeyboardEvent) {
         const { value, selectionStart } = e.target as HTMLInputElement;
         const { key, ctrlKey, shiftKey } = e;
-        // eslint-disable-next-line default-case
         switch (key) {
             case "Enter":
                 if (value.length === 0) break;
@@ -135,7 +134,6 @@ class PlanItem extends PureComponent<Props> {
                     type: shiftKey
                         ? ActionType.PLAN__UNNEST
                         : ActionType.PLAN__NEST,
-                    id: this.props.item.id,
                 });
                 break;
             case "ArrowUp":

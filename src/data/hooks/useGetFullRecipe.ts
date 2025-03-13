@@ -1,3 +1,4 @@
+import { gql } from "@/__generated__";
 import objectWithType from "@/data/utils/objectWithType";
 import { BfsId } from "@/global/types/identity";
 import {
@@ -6,7 +7,6 @@ import {
     Recipe,
     Subrecipe,
 } from "@/global/types/types";
-import { gql } from "@/__generated__";
 import useAdaptingQuery from "./useAdaptingQuery";
 
 const GET_FULL_RECIPE_QUERY = gql(`

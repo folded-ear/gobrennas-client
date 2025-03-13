@@ -101,7 +101,6 @@ function groupItems(
     const byIngredient = groupBy(leaves, (it) => it.ingredientId);
     const unparsed: PathedItemTuple[] = [];
     if (byIngredient.has(undefined)) {
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         unparsed.push(...byIngredient.get(undefined)!);
         byIngredient.delete(undefined);
     }
@@ -147,7 +146,6 @@ function groupItems(
         const quantities: Quantity[] = [];
         for (const uomId of byUnit.keys()) {
             quantities.push({
-                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                 quantity: byUnit
                     .get(uomId)!
                     .reduce((q, it) => q + (it.quantity || 0), 0),

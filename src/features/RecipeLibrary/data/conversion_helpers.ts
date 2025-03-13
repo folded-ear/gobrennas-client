@@ -1,9 +1,9 @@
-import { PantryItem, Recipe } from "@/global/types/types";
 import {
     IngredientLoadFragment,
     PantryItemLoadFragment,
     RecipeLoadFragment,
 } from "@/__generated__/graphql";
+import { PantryItem, Recipe } from "@/global/types/types";
 
 export const toRestIngredient = (
     it: IngredientLoadFragment & (RecipeLoadFragment | PantryItemLoadFragment),

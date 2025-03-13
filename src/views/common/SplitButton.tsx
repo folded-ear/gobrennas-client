@@ -45,7 +45,7 @@ const SplitButton = <TOption,>({
         React.useState<SelectOption<TOption>>();
 
     const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-        onClick && onClick(event);
+        if (onClick) onClick(event);
     };
 
     const handleSelect = (
@@ -54,7 +54,7 @@ const SplitButton = <TOption,>({
     ) => {
         setSelectedOption(option);
         setOpen(false);
-        onSelect && onSelect(event, option);
+        if (onSelect) onSelect(event, option);
     };
 
     const handleToggle = () => {

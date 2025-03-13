@@ -22,12 +22,12 @@ export interface MuiColorFamily {
 }
 
 export {
-    green as completeColor,
-    grey as neededColor,
-    lightBlue as selectionColor,
     lime as acquiredColor,
+    green as completeColor,
     red as deleteColor,
+    grey as neededColor,
     yellow as questionColor,
+    lightBlue as selectionColor,
 } from "@mui/material/colors";
 
 export const coloredIconButton = (

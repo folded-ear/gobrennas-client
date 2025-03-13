@@ -44,7 +44,7 @@ function SnackPack() {
         reason?: SnackbarCloseReason,
     ) => {
         setOpen(false);
-        messageInfo.onClose &&
+        if (messageInfo.onClose)
             messageInfo.onClose.call(undefined, event, reason);
         dispatcher.dispatch({
             type: ActionType.UI__DISMISS_SNACKBAR,
@@ -54,7 +54,7 @@ function SnackPack() {
 
     const handleClickToClose: React.MouseEventHandler = (event) => {
         setOpen(false);
-        messageInfo.onClose &&
+        if (messageInfo.onClose)
             messageInfo.onClose.call(undefined, event, "clickaway");
         dispatcher.dispatch({
             type: ActionType.UI__DISMISS_SNACKBAR,

@@ -13,8 +13,8 @@ import {
     Typography,
 } from "@mui/material";
 import { makeStyles } from "@mui/styles";
+import { useQuery } from "@tanstack/react-query";
 import * as React from "react";
-import { useQuery } from "react-query";
 
 const useStyles = makeStyles((theme) => ({
     drawer: {
@@ -80,8 +80,8 @@ const Ui: React.FC<UiProps> = ({
                     deleting.indexOf(j.id) >= 0
                         ? "deleting"
                         : j.ready
-                        ? "ready"
-                        : "extracting",
+                          ? "ready"
+                          : "extracting",
             })),
         );
     return (
@@ -144,16 +144,15 @@ const Ui: React.FC<UiProps> = ({
 };
 
 const TextractQueueBrowser: React.FC<PassthroughProps> = (props) => {
-    const { data: queue = [] } = useQuery(
-        "textract-jobs",
-        () => TextractApi.promiseJobList(),
-        {
-            refetchInterval: (jobs: PendingJob[] | undefined) => {
-                return !jobs || jobs.some((j) => !j.ready) ? 5_000 : 15_000;
-            },
-            refetchIntervalInBackground: false,
+    const { data: queue = [] } = useQuery({
+        queryKey: ["textract-jobs"],
+        queryFn: () => TextractApi.promiseJobList(),
+        refetchInterval: (query) => {
+            const jobs = query.state.data;
+            return !jobs || jobs.some((j) => !j.ready) ? 5_000 : 15_000;
         },
-    );
+        refetchIntervalInBackground: false,
+    });
     return <Ui queue={queue} {...props} />;
 };
 

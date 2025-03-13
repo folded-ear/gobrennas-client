@@ -1,10 +1,10 @@
+import { PlanItemStatus } from "@/__generated__/graphql";
 import getBucketLabel from "@/features/Planner/components/getBucketLabel";
 import planStore, { Plan } from "@/features/Planner/data/planStore";
 import { recipeRloFromItemRlo as buildSingleItemRecipeLO } from "@/features/RecipeDisplay/utils/recipeRloFromItemRlo";
 import { BfsId } from "@/global/types/identity";
 import type { RecipeFromPlanItem } from "@/global/types/types";
 import { mapData, RippedLO } from "@/util/ripLoadObject";
-import { PlanItemStatus } from "@/__generated__/graphql";
 
 export const recipeRloByPlanAndBucket = (
     planId: BfsId,

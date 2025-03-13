@@ -25,9 +25,11 @@ export default [
     },
     {
         rules: {
-            "no-console": 1,
+            eqeqeq: ["error", "smart"],
+            "no-console": "warn",
             "no-debugger": "warn",
-            "no-prototype-builtins": 0,
+            "no-prototype-builtins": "off",
+            "no-restricted-globals": "warn",
             "no-restricted-imports": [
                 "error",
                 {
@@ -66,6 +68,7 @@ export default [
             ],
             semi: ["warn", "always"],
             "@typescript-eslint/no-explicit-any": "error",
+            // "@typescript-eslint/no-non-null-assertion": "warn",
             "react/no-unescaped-entities": "warn",
             "react/no-deprecated": "warn",
         },

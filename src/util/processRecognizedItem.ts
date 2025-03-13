@@ -1,6 +1,6 @@
 // This is "duplicated" as RawIngredientDissection.fromRecognizedItem
-import { RecognitionRange, RecognitionResult } from "@/data/ItemApi";
 import { RecognizedRangeType } from "@/__generated__/graphql";
+import { RecognitionRange, RecognitionResult } from "@/data/ItemApi";
 import { Maybe } from "graphql/jsutils/Maybe";
 
 function processRecognizedItem(recog: RecognitionResult) {
@@ -37,15 +37,9 @@ function processRecognizedItem(recog: RecognitionResult) {
     const nv = nr && nr.id;
     const p = [qr, ur, nr]
         .filter((it) => it != null)
-        .sort(
-            (a, b) =>
-                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                b!.start - a!.start,
-        )
+        .sort((a, b) => b!.start - a!.start)
         .reduce(
-            (p, r) =>
-                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                p.substring(0, r!.start) + p.substring(r!.end),
+            (p, r) => p.substring(0, r!.start) + p.substring(r!.end),
             recog.raw,
         )
         .trim()

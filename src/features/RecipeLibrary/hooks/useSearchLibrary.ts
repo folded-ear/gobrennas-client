@@ -1,5 +1,5 @@
-import { SEARCH_RECIPES } from "@/features/RecipeLibrary/data/queries";
 import { LibrarySearchScope } from "@/__generated__/graphql";
+import { SEARCH_RECIPES } from "@/features/RecipeLibrary/data/queries";
 import { QueryResult, useQuery } from "@apollo/client";
 
 interface UseSearchLibraryQueryResult

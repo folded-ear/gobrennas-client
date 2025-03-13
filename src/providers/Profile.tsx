@@ -1,9 +1,9 @@
+import { gql } from "@/__generated__";
 import { API_BASE_URL, LOCAL_STORAGE_ACCESS_TOKEN } from "@/constants";
 import dispatcher, { ActionType } from "@/data/dispatcher";
 import useAdaptingQuery from "@/data/hooks/useAdaptingQuery";
 import type { UserType } from "@/global/types/identity";
 import { requiredData, RippedLO } from "@/util/ripLoadObject";
-import { gql } from "@/__generated__";
 import React, {
     createContext,
     PropsWithChildren,
@@ -82,7 +82,6 @@ export const askUserToReauth = () => {
         return false;
     }
     lastReauthPrompt = now;
-    // eslint-disable-next-line no-restricted-globals
     if (confirm("Your session has terminated.\n\nLog back in?")) {
         logoutHandler();
     }

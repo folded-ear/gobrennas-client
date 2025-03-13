@@ -1,3 +1,4 @@
+import { PlanItemStatus } from "@/__generated__/graphql";
 import { useSetRecipeHistoryNotes } from "@/data/hooks/useSetRecipeHistoryNotes";
 import { useSetRecipeHistoryRating } from "@/data/hooks/useSetRecipeHistoryRating";
 import { BfsId } from "@/global/types/identity";
@@ -6,7 +7,6 @@ import { useProfile } from "@/providers/Profile";
 import { CookedItIcon, DeleteIcon, EditIcon } from "@/views/common/icons";
 import Markdown from "@/views/common/Markdown";
 import User from "@/views/user/User";
-import { PlanItemStatus } from "@/__generated__/graphql";
 import {
     Alert,
     Button,

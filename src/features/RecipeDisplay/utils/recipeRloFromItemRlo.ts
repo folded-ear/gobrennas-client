@@ -1,3 +1,4 @@
+import { PlanItemStatus } from "@/__generated__/graphql";
 import planStore, {
     PlanItem as TPlanItem,
 } from "@/features/Planner/data/planStore";
@@ -7,7 +8,6 @@ import type {
     RecipeFromPlanItem,
 } from "@/global/types/types";
 import { RippedLO } from "@/util/ripLoadObject";
-import { PlanItemStatus } from "@/__generated__/graphql";
 import LibraryStore from "../../RecipeLibrary/data/LibraryStore";
 
 type OrphanPlanItem = Omit<TPlanItem, "parentId">;

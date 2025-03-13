@@ -11,7 +11,7 @@ import SnackPack from "@/views/common/SnackPack";
 import { ApolloProvider } from "@apollo/client";
 import CssBaseline from "@mui/material/CssBaseline";
 import { StyledEngineProvider, ThemeProvider } from "@mui/material/styles";
-import { QueryClientProvider } from "react-query";
+import { QueryClientProvider } from "@tanstack/react-query";
 import "./GoBrennas.scss";
 import routes from "./routes";
 import RoutingSwitch from "./RoutingSwitch";

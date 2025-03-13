@@ -1,3 +1,4 @@
+import { PlanItemStatus } from "@/__generated__/graphql";
 import {
     acquiredColor,
     completeColor,
@@ -6,7 +7,6 @@ import {
     neededColor,
 } from "@/views/common/colors";
 import { CheckIcon, DeleteIcon, SumthinsFuckyIcon } from "@/views/common/icons";
-import { PlanItemStatus } from "@/__generated__/graphql";
 import { deepPurple } from "@mui/material/colors";
 
 export const willStatusDelete = (status: PlanItemStatus) =>

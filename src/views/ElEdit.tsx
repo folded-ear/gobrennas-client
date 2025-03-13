@@ -54,7 +54,7 @@ interface ElEditState {
 
 class ElEdit extends React.PureComponent<ElEditProps, ElEditState> {
     private _mounted: boolean;
-    private readonly ref: React.RefObject<HTMLInputElement>;
+    private readonly ref: React.RefObject<HTMLInputElement | null>;
     private readonly recognizeDebounced: () => void;
 
     constructor(args: ElEditProps) {
@@ -193,7 +193,6 @@ class ElEdit extends React.PureComponent<ElEditProps, ElEditState> {
         const { onDelete, onPressEnter } = this.props;
         const hasSuggestions = this._hasSuggestions();
 
-        // eslint-disable-next-line default-case
         switch (key) {
             case "Enter":
                 if (!hasSuggestions) {
@@ -205,7 +204,7 @@ class ElEdit extends React.PureComponent<ElEditProps, ElEditState> {
                 // if the value is empty, delete the item and focus previous
                 if (value.length === 0) {
                     e.preventDefault();
-                    onDelete && onDelete();
+                    if (onDelete) onDelete();
                 }
                 break;
             case "ArrowLeft":

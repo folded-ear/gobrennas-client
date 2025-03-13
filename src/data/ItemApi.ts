@@ -1,8 +1,8 @@
+import { RecognizedRangeType } from "@/__generated__/graphql";
 import { GET_RECOGNIZED_ITEM } from "@/data/queries";
 import { BfsId } from "@/global/types/identity";
 import { client } from "@/providers/ApolloClient";
 import serializeObjectOfPromiseFns from "@/util/serializeObjectOfPromiseFns";
-import { RecognizedRangeType } from "@/__generated__/graphql";
 import { Maybe } from "graphql/jsutils/Maybe";
 
 export interface RecognitionRange {

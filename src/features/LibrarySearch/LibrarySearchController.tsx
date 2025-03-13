@@ -1,3 +1,4 @@
+import { LibrarySearchScope } from "@/__generated__/graphql";
 import { SearchInput } from "@/features/LibrarySearch/components/SearchInput";
 import { MessagePaper } from "@/features/RecipeLibrary/components/MessagePaper";
 import { useSearchLibrary } from "@/features/RecipeLibrary/hooks/useSearchLibrary";
@@ -7,7 +8,6 @@ import LoadingIndicator from "@/views/common/LoadingIndicator";
 import { SearchResults } from "@/views/recipeCollections/RecipeCollection.elements";
 import { RecipeGrid } from "@/views/recipeCollections/RecipeGrid";
 import { RecipeListDisplay } from "@/views/recipeCollections/RecipeListDisplay";
-import { LibrarySearchScope } from "@/__generated__/graphql";
 import { Grid } from "@mui/material";
 import * as React from "react";
 import { useHistory } from "react-router-dom";

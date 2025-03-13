@@ -10,9 +10,9 @@ import {
 } from "@/providers/ApolloClient";
 import { useIsAuthenticated } from "@/providers/Profile";
 import { soakUpUnauthorized } from "@/util/promiseFlux";
+import { useQuery } from "@tanstack/react-query";
 import * as React from "react";
 import { useMemo } from "react";
-import { useQuery } from "react-query";
 
 /*
  * Unlike every other BFS query, this one is dynamically constructed at runtime
@@ -79,15 +79,16 @@ function buildSyncer(planIds: BfsId[]): Syncer {
                         });
                     }
                 }
+                return 0; // have to give _something_ to react-query to cache
             }, soakUpUnauthorized);
 }
 
 function useSynchronizer(queryKey: unknown[], queryFn: Syncer) {
     const [cutoff, setCutoff] = React.useState(Date.now());
     const authenticated = useIsAuthenticated();
-    useQuery(
-        queryKey,
-        () => {
+    useQuery({
+        queryKey: queryKey,
+        queryFn: () => {
             if (!authenticated) return Promise.reject();
             const nextTs = Date.now();
             return queryFn(cutoff).then((data) => {
@@ -96,11 +97,10 @@ function useSynchronizer(queryKey: unknown[], queryFn: Syncer) {
                 return data;
             });
         },
-        {
-            refetchInterval: 15_000,
-            refetchIntervalInBackground: false,
-        },
-    );
+        refetchOnWindowFocus: true,
+        refetchInterval: 15_000,
+        refetchIntervalInBackground: false,
+    });
 }
 
 function PollingSynchronizer() {

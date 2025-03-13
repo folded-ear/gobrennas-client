@@ -14,9 +14,9 @@ import {
     isSection,
 } from "@/features/Planner/data/plannerUtils";
 import planStore, {
-    Plan as TPlan,
     PlanBucket,
     PlanItem,
+    Plan as TPlan,
 } from "@/features/Planner/data/planStore";
 import { BfsId } from "@/global/types/identity";
 import { Recipe } from "@/global/types/types";
@@ -264,8 +264,8 @@ const PlannedRecipe: React.FC<PlannedRecipeProps> = ({ item }) => {
                     {isDoNotRecognize(item)
                         ? item.name.substring(1)
                         : isSection(item)
-                        ? item.name.substring(0, item.name.length - 1)
-                        : item.name}
+                          ? item.name.substring(0, item.name.length - 1)
+                          : item.name}
                     <Box
                         component={"span"}
                         sx={(theme) => ({
@@ -291,9 +291,7 @@ const PlannedRecipe: React.FC<PlannedRecipeProps> = ({ item }) => {
                         {goingAway ? (
                             <DontChangeStatusButton
                                 id={item.id}
-                                next={
-                                    item._next_status! /* eslint-disable-line @typescript-eslint/no-non-null-assertion */
-                                }
+                                next={item._next_status!}
                             />
                         ) : (
                             <StatusIconButton
