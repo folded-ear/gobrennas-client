@@ -6,7 +6,6 @@ import TextractEditor, {
 import TextractQueueBrowser from "@/features/RecipeEdit/components/TextractQueueBrowser";
 import { BfsId } from "@/global/types/identity";
 import ClientId from "@/util/ClientId";
-import promiseWellSizedFile from "@/util/promiseWellSizedFile";
 import { RippedLO } from "@/util/ripLoadObject";
 import LoadingIndicator from "@/views/common/LoadingIndicator";
 import { useQueryClient } from "@tanstack/react-query";
@@ -60,21 +59,19 @@ const TextractFormAugment: React.FC<Props> = ({ renderActions }) => {
                                 },
                             ].concat(curr),
                         );
-                        promiseWellSizedFile(photo).then((p) => {
-                            TextractApi.promiseNewJob(p).finally(() => {
-                                queryClient.invalidateQueries({
-                                    queryKey: ["textract-jobs"],
-                                });
-                                setCreating((curr) =>
-                                    curr.filter((p) => {
-                                        if (p.id === id) {
-                                            URL.revokeObjectURL(p.url);
-                                            return false;
-                                        }
-                                        return true;
-                                    }),
-                                );
+                        TextractApi.promiseNewJob(photo).finally(() => {
+                            queryClient.invalidateQueries({
+                                queryKey: ["textract-jobs"],
                             });
+                            setCreating((curr) =>
+                                curr.filter((p) => {
+                                    if (p.id === id) {
+                                        URL.revokeObjectURL(p.url);
+                                        return false;
+                                    }
+                                    return true;
+                                }),
+                            );
                         });
                     }}
                     deleting={deleting}

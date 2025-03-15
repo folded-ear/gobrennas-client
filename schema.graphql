@@ -509,6 +509,14 @@ type ProfileMutation {
 type ProfileQuery {
     friends: [User!]!
     me: User!
+    """
+
+    Request a pre-signed upload URL to PUT a scratch file to, identified by
+    the returned `filename`. Upload URLs are valid for only a short time; they
+    should be requested when an upload is needed, not preemptively in case one
+    may be needed in the future.
+    """
+    scratchFile(contentType: String!, originalFilename: String): ScratchUpload!
 }
 
 type Quantity {
@@ -518,7 +526,8 @@ type Quantity {
 
 type Query {
     favorite: FavoriteQuery!
-    getCurrentUser: User @deprecated(reason: "Prefer 'profile/me'")
+    "DEPRECATED: prefer `profile.me`"
+    getCurrentUser: User
     labels: LabelsQuery!
     library: LibraryQuery!
     node(id: ID!): Node
@@ -628,6 +637,27 @@ type RecognizedRange {
     type: RecognizedRangeType!
 }
 
+"""
+
+I represent an uploadable "scratch file", which may be PUT without further
+authentication of the client. Scratch files are identified by their filename,
+which may be passed to other APIs to "use" an uploaded scratch file.
+"""
+type ScratchUpload {
+    "The cache-control header which must be set on the request."
+    cacheControl: String!
+    "The content type of the scratch file."
+    contentType: String!
+    "INFORMATIONAL: an example cURL command you might use to upload the file."
+    curl: String!
+    "When the URL's signature will expire."
+    expiration: DateTime!
+    "The filename which uniquely identifies the uploaded scratch file."
+    filename: String!
+    "The URL to PUT the scratch file to."
+    url: String!
+}
+
 type ShareInfo {
     id: ID!
     secret: String!
@@ -655,7 +685,14 @@ type TextractLine {
 }
 
 type TextractMutation {
+    "DEPRECATED: Uploads over GraphQL have CSRF issues. Use textract.createPreUploadedJob instead."
     createJob(photo: Upload!): TextractJob!
+    """
+
+    Create a new job from a pre-uploaded file. Use the `profile.photoUpload`
+    field to obtain a pre-signed upload URL, and pass its filename here when done.
+    """
+    createPreUploadedJob(filename: String!): TextractJob!
     deleteJob(id: ID!): Deletion!
 }
 
