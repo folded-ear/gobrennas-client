@@ -27,7 +27,7 @@ type PlanItemProps = TupleProps & {
 };
 
 class PlanItem extends React.PureComponent<PlanItemProps> {
-    private inputRef: React.RefObject<HTMLInputElement | null>;
+    private inputRef: React.RefObject<HTMLInputElement>;
 
     constructor(props: PlanItemProps) {
         super(props);
