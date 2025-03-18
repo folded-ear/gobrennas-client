@@ -1,20 +1,14 @@
 import { gql } from "@/__generated__";
 import { GetSearchLibraryDocument } from "@/__generated__/graphql";
 import { recipeToIngredientInfo } from "@/data/utils/graphql";
+import promiseScratchUpload from "@/data/utils/promiseScratchUpload";
 import { DraftRecipe } from "@/global/types/types";
-import promiseWellSizedFile from "@/util/promiseWellSizedFile";
 import { useMutation } from "@apollo/client";
 
 const CREATE_RECIPE_FROM_MUTATION = gql(`
-mutation createRecipeFrom($sourceRecipeId: ID!
-  , $info: IngredientInfo!
-  , $photo: Upload
-) {
+mutation createRecipeFrom($sourceRecipeId: ID!, $info: IngredientInfo!) {
   library {
-    createRecipeFrom(sourceRecipeId: $sourceRecipeId
-      , info: $info
-      , photo: $photo
-      ) {
+    createRecipeFrom(sourceRecipeId: $sourceRecipeId, info: $info) {
       id
     }
   }
@@ -28,17 +22,14 @@ export const useCreateRecipeFrom = () => {
     );
 
     const createRecipeFrom = async (recipe: DraftRecipe) => {
-        let sizedUpload: File | string | null = null;
-
+        const info = recipeToIngredientInfo(recipe);
         if (recipe.photoUpload) {
-            sizedUpload = await promiseWellSizedFile(recipe.photoUpload);
+            info.photo = await promiseScratchUpload(recipe.photoUpload);
         }
-
         return mutateFunction({
             variables: {
                 sourceRecipeId: recipe.id,
-                info: recipeToIngredientInfo(recipe),
-                photo: typeof sizedUpload !== "string" ? sizedUpload : null,
+                info: info,
             },
         });
     };

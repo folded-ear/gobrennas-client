@@ -1,15 +1,15 @@
 import { gql } from "@/__generated__";
+import promiseScratchUpload from "@/data/utils/promiseScratchUpload";
 import { BfsId } from "@/global/types/identity";
 import ImageDropZone from "@/util/ImageDropZone";
-import promiseWellSizedFile from "@/util/promiseWellSizedFile";
 import { useMutation } from "@apollo/client";
 import { makeStyles } from "@mui/styles";
 import * as React from "react";
 
 const SET_RECIPE_PHOTO = gql(`
-mutation setRecipePhoto($id: ID!, $photo: Upload!) {
+mutation setRecipePhoto($id: ID!, $filename: String!) {
   library {
-    setRecipePhoto(id: $id, photo: $photo) {
+    setRecipePhoto(id: $id, filename: $filename) {
       id
       photo {
         url
@@ -39,11 +39,11 @@ const ItemImageUpload: React.FC<Props> = ({ recipeId, ...props }) => {
         if (!(photo instanceof File)) {
             throw new Error("Non-File photo? Huh?");
         }
-        photo = await promiseWellSizedFile(photo);
+        const filename = await promiseScratchUpload(photo);
         setRecipePhoto({
             variables: {
                 id: recipeId,
-                photo,
+                filename,
             },
         });
     };

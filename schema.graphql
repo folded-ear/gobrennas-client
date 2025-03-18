@@ -122,13 +122,23 @@ type LabelsQuery {
 
 type LibraryMutation {
     "Create a new recipe in your library, from the passed info."
-    createRecipe(cookThis: Boolean, info: IngredientInfo!, photo: Upload): Recipe!
+    createRecipe(
+        cookThis: Boolean,
+        info: IngredientInfo!,
+        "DEPRECATED: use `profile.scratchFile`, and pass the filename in `info.photo`"
+        photo: Upload
+    ): Recipe!
     """
 
     Create a new recipe in your library, from the passed info, which is based
     on the passed source recipe id.
     """
-    createRecipeFrom(info: IngredientInfo!, photo: Upload, sourceRecipeId: ID!): Recipe!
+    createRecipeFrom(
+        info: IngredientInfo!,
+        "DEPRECATED: use `profile.scratchFile`, and pass the filename in `info.photo`"
+        photo: Upload,
+        sourceRecipeId: ID!
+    ): Recipe!
     "Delete a recipe from your library."
     deleteRecipe(id: ID!): Deletion!
     history(recipeId: ID!): RecipeHistoryMutation
@@ -143,9 +153,21 @@ type LibraryMutation {
     Set the photo for a recipe in your library, without changing any other
     info about the recipe. A photo may be set during create and/or update.
     """
-    setRecipePhoto(id: ID!, photo: Upload!): Recipe!
+    setRecipePhoto(
+        "Filename of a scratch upload."
+        filename: String,
+        focus: [Float!],
+        id: ID!,
+        "DEPRECATED: use `profile.scratchFile`, and pass the filename to `filename`"
+        photo: Upload
+    ): Recipe!
     "Update a recipe in your library, from the passed info."
-    updateRecipe(id: ID!, info: IngredientInfo!, photo: Upload): Recipe!
+    updateRecipe(
+        id: ID!,
+        info: IngredientInfo!,
+        "DEPRECATED: use `profile.scratchFile`, and pass the filename in `info.photo`"
+        photo: Upload
+    ): Recipe!
 }
 
 type LibraryQuery {
@@ -837,6 +859,8 @@ input IngredientInfo {
     ingredients: [IngredientRefInfo!]
     labels: [String!]
     name: String!
+    "Filename of a scratch upload to set as this recipe's photo."
+    photo: String
     photoFocus: [Float!]
     storeOrder: Int
     totalTime: Int
