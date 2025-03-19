@@ -54,7 +54,7 @@ interface ElEditState {
 
 class ElEdit extends React.PureComponent<ElEditProps, ElEditState> {
     private _mounted: boolean;
-    private readonly ref: React.RefObject<HTMLInputElement | null>;
+    private readonly ref: React.RefObject<HTMLInputElement>;
     private readonly recognizeDebounced: () => void;
 
     constructor(args: ElEditProps) {
