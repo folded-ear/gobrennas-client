@@ -1,13 +1,13 @@
 import { gql } from "@/__generated__";
 import { recipeToIngredientInfo } from "@/data/utils/graphql";
+import promiseScratchUpload from "@/data/utils/promiseScratchUpload";
 import { DraftRecipe } from "@/global/types/types";
-import promiseWellSizedFile from "@/util/promiseWellSizedFile";
 import { useMutation } from "@apollo/client";
 
 const UPDATE_RECIPE_MUTATION = gql(`
-mutation updateRecipe($id: ID!, $info: IngredientInfo!, $photo: Upload) {
+mutation updateRecipe($id: ID!, $info: IngredientInfo!) {
   library {
-    updateRecipe(id: $id, info: $info, photo: $photo) {
+    updateRecipe(id: $id, info: $info) {
       ...recipeCore
       yield
       calories
@@ -28,18 +28,14 @@ export const useUpdateRecipe = () => {
     );
 
     const updateRecipe = async (recipe: DraftRecipe) => {
-        let sizedUpload: File | string | null = null;
-
+        const info = recipeToIngredientInfo(recipe);
         if (recipe.photoUpload) {
-            sizedUpload = await promiseWellSizedFile(recipe.photoUpload);
+            info.photo = await promiseScratchUpload(recipe.photoUpload);
         }
-
-        // noinspection SuspiciousTypeOfGuard
         return mutateFunction({
             variables: {
                 id: recipe.id,
-                info: recipeToIngredientInfo(recipe),
-                photo: typeof sizedUpload !== "string" ? sizedUpload : null,
+                info,
             },
         });
     };

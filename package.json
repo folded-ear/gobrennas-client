@@ -19,7 +19,6 @@
     "@types/react-dom": "^18.0.0",
     "@vite-pwa/assets-generator": "^0.2.6",
     "@vitejs/plugin-react-swc": "^3.8.0",
-    "apollo-upload-client": "^18.0.1",
     "classnames": "^2.3.1",
     "clsx": "^1.1.1",
     "dot-prop-immutable": "^1.6.0",
@@ -117,9 +116,6 @@
   "overrides": {
     "@mui/styles": {
       "react": "$react"
-    },
-    "apollo-upload-client": {
-      "@apollo/client": "$@apollo/client"
     },
     "flux": {
       "react": "$react"

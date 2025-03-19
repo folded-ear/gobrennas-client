@@ -20,7 +20,6 @@ const config: CodegenConfig = {
                     NonNegativeFloat: "number",
                     NonNegativeInt: "number",
                     PositiveInt: "number",
-                    Upload: "File",
                 },
                 namingConvention: {
                     enumValues: "keep",

@@ -1,5 +1,6 @@
 import { CREATE_TEXTRACT_JOB, DELETE_TEXTRACT_JOB } from "@/data/mutations";
 import { LIST_TEXTRACT_JOBS, LOAD_TEXTRACT_JOB } from "@/data/queries";
+import promiseScratchUpload from "@/data/utils/promiseScratchUpload";
 import { BfsId } from "@/global/types/identity";
 import { client } from "@/providers/ApolloClient";
 
@@ -53,11 +54,14 @@ const TextractApi = {
                     textract: job.lines ?? [],
                 };
             }),
-    promiseNewJob: (photo: File) =>
-        client.mutate({
-            mutation: CREATE_TEXTRACT_JOB,
-            variables: { photo },
-        }),
+    promiseNewJob: (photo: File) => {
+        return promiseScratchUpload(photo).then((filename) => {
+            return client.mutate({
+                mutation: CREATE_TEXTRACT_JOB,
+                variables: { filename },
+            });
+        });
+    },
     promiseJobDelete: (id: BfsId) =>
         client.mutate({
             mutation: DELETE_TEXTRACT_JOB,

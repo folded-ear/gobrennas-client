@@ -10,13 +10,12 @@ import {
     ApolloClient,
     ApolloLink,
     defaultDataIdFromObject,
+    HttpLink,
     InMemoryCache,
 } from "@apollo/client";
 import { createFragmentRegistry } from "@apollo/client/cache";
 import { onError } from "@apollo/client/link/error";
 import { relayStylePagination } from "@apollo/client/utilities";
-// @ts-expect-error createUploadLink only ships JS, no types at all.
-import createUploadLink from "apollo-upload-client/createUploadLink.mjs";
 import possibleTypes from "./apolloPossibleTypes";
 import { askUserToReauth, isAuthError } from "./Profile";
 
@@ -84,12 +83,9 @@ export const client = new ApolloClient({
     }),
     link: ApolloLink.from([
         errorLink,
-        createUploadLink({
+        new HttpLink({
             uri: `${API_BASE_URL}/graphql`,
             credentials: "include",
-            headers: {
-                "Apollo-Require-Preflight": "true",
-            },
         }),
     ]),
 });

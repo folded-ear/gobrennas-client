@@ -20,9 +20,9 @@ mutation sendRecipeToPlan($id: ID!, $planId: ID!, $scale: Float = 1) {
 }`);
 
 export const CREATE_TEXTRACT_JOB = gql(`
-mutation createTextractJob($photo: Upload!) {
+mutation createTextractJob($filename: String!) {
   textract {
-    createJob(photo: $photo) {
+    createPreUploadedJob(filename: $filename) {
       id
       photo {
         url
