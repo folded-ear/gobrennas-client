@@ -747,8 +747,10 @@ type User implements Node {
 }
 
 type UserDevice implements Node {
+    createdAt: DateTime!
     id: ID!
     key: String!
+    lastEnsuredAt: DateTime!
     name: String!
     preferences: [UserPreference!]!
     user: User!

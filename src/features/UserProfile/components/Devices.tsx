@@ -4,6 +4,7 @@ import useAdaptingQuery from "@/data/hooks/useAdaptingQuery";
 import useIsDevMode from "@/data/useIsDevMode";
 import deviceKey from "@/data/utils/deviceKey";
 import { useIsMobile } from "@/providers/IsMobile";
+import { humanDate } from "@/util/time";
 import { FavoriteIcon } from "@/views/common/icons";
 import LoadingIndicator from "@/views/common/LoadingIndicator";
 import { useMutation } from "@apollo/client";
@@ -11,7 +12,7 @@ import { IconButton } from "@mui/material";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { useCallback, useMemo } from "react";
 
-type Device = Pick<UserDevice, "id" | "name" | "key">;
+type Device = Pick<UserDevice, "id" | "name" | "key" | "lastEnsuredAt">;
 
 const GET_DEVICES = gql(`query myDevices {
   profile {
@@ -20,6 +21,7 @@ const GET_DEVICES = gql(`query myDevices {
         id
         name
         key
+        lastEnsuredAt
       }
     }
   }
@@ -56,6 +58,15 @@ const COLUMNS: GridColDef<Device[][number]>[] = [
         headerName: "Device",
         flex: 1,
         editable: true,
+    },
+    {
+        field: "lastEnsuredAt",
+        headerName: "Last Use",
+        flex: 0.5,
+        editable: false,
+        renderCell: ({ row }) => {
+            return humanDate(new Date(row.lastEnsuredAt));
+        },
     },
 ];
 
@@ -106,7 +117,6 @@ export default function Devices() {
             disableColumnFilter
             disableColumnMenu
             disableDensitySelector
-            disableColumnSorting
             disableVirtualization
             disableMultipleRowSelection
             hideFooter
