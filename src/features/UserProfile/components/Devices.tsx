@@ -65,7 +65,7 @@ const COLUMNS: GridColDef<Device[][number]>[] = [
         flex: 0.5,
         editable: false,
         renderCell: ({ row }) => {
-            return relativeDate(new Date(row.lastEnsuredAt));
+            return relativeDate(row.lastEnsuredAt);
         },
     },
 ];

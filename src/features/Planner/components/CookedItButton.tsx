@@ -4,7 +4,6 @@ import { FromPlanItem } from "@/global/types/types";
 import { CookedItIcon, HelpIcon } from "@/views/common/icons";
 import SplitButton, { SelectOption } from "@/views/common/SplitButton";
 import { ButtonProps, Stack, Tooltip } from "@mui/material";
-import { DateTime } from "luxon";
 import * as React from "react";
 import { useCallback } from "react";
 import { useHistory } from "react-router-dom";
@@ -50,7 +49,6 @@ const CookButton: React.FC<Props> = ({ recipe, stayOnPage }) => {
     );
 
     const cookedItOptions = React.useMemo(() => {
-        const start = DateTime.now();
         const days = [...Array(7).keys()];
         const createLabel = (day: number) => {
             if (day === 0) {
@@ -61,10 +59,15 @@ const CookButton: React.FC<Props> = ({ recipe, stayOnPage }) => {
             }
             return day + " Days Ago";
         };
+        const daysAgo = (day: number) => {
+            const d = new Date();
+            d.setDate(d.getDate() - day);
+            return d;
+        };
         return days.map((day) => ({
             id: day.toString(),
             label: createLabel(day),
-            value: start.minus({ days: day }).toJSDate(),
+            value: daysAgo(day),
         }));
     }, []);
 
