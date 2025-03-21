@@ -91,6 +91,14 @@ const humanDateFormatter = new Intl.DateTimeFormat("default", {
 
 export function humanDate(date?: Date): string {
     if (!date) return "";
+    if (Math.abs(Date.now() - date.valueOf()) < 86400 * 1000 * 90) {
+        return humanDateFormatter.format(date);
+    }
+    return date.toLocaleDateString();
+}
+
+export function relativeDate(date?: Date): string {
+    if (!date) return "";
     const tgt = new Date();
     if (
         date.getFullYear() === tgt.getFullYear() &&
@@ -115,8 +123,5 @@ export function humanDate(date?: Date): string {
     ) {
         return "Tomorrow";
     }
-    if (Math.abs(tgt.valueOf() - date.valueOf()) < 86400 * 1000 * 90) {
-        return humanDateFormatter.format(date);
-    }
-    return date.toLocaleDateString();
+    return humanDate(date);
 }
