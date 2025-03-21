@@ -90,5 +90,33 @@ const humanDateFormatter = new Intl.DateTimeFormat("default", {
 });
 
 export function humanDate(date?: Date): string {
-    return date ? humanDateFormatter.format(date) : "";
+    if (!date) return "";
+    const tgt = new Date();
+    if (
+        date.getFullYear() === tgt.getFullYear() &&
+        date.getMonth() === tgt.getMonth() &&
+        date.getDate() === tgt.getDate()
+    ) {
+        return "Today";
+    }
+    tgt.setDate(tgt.getDate() - 1);
+    if (
+        date.getFullYear() === tgt.getFullYear() &&
+        date.getMonth() === tgt.getMonth() &&
+        date.getDate() === tgt.getDate()
+    ) {
+        return "Yesterday";
+    }
+    tgt.setDate(tgt.getDate() + 2);
+    if (
+        date.getFullYear() === tgt.getFullYear() &&
+        date.getMonth() === tgt.getMonth() &&
+        date.getDate() === tgt.getDate()
+    ) {
+        return "Tomorrow";
+    }
+    if (Math.abs(tgt.valueOf() - date.valueOf()) < 86400 * 1000 * 90) {
+        return humanDateFormatter.format(date);
+    }
+    return date.toLocaleDateString();
 }

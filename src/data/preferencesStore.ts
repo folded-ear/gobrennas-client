@@ -1,5 +1,9 @@
 import { gql } from "@/__generated__";
-import { DataType, SetPreferenceMutation } from "@/__generated__/graphql";
+import {
+    ClearPreferenceMutation,
+    DataType,
+    SetPreferenceMutation,
+} from "@/__generated__/graphql";
 import planStore from "@/features/Planner/data/planStore";
 import { getJsonItem, setJsonItem } from "@/util/storage";
 import { ReduceStore } from "flux/utils";
@@ -114,22 +118,27 @@ function loadFromServer() {
     );
 }
 
+let promise: Promise<FetchResult<ClearPreferenceMutation>> = Promise.resolve(
+    null as unknown as FetchResult<ClearPreferenceMutation>,
+);
+
 function setPref(state: State, name: PrefName, value: unknown): State {
     if (state.get(name) === value) return state;
     const serialized = serialize(TYPES[name], value);
-    let promise;
     if (serialized == null) {
         state = state.delete(name);
-        promise = apolloClient.mutate({
-            mutation: CLEAR_PREF,
-            variables: {
-                name,
-                deviceKey,
-            },
-        });
+        promise = promise.then(() =>
+            apolloClient.mutate({
+                mutation: CLEAR_PREF,
+                variables: {
+                    name,
+                    deviceKey,
+                },
+            }),
+        );
     } else {
         state = state.set(name, deserialize(TYPES[name], serialized));
-        promise = promiseServerUpdate(name, serialized);
+        promise = promise.then(() => promiseServerUpdate(name, serialized));
     }
     promiseFlux(promise, ({ data }): FluxAction => {
         const p = data!.profile.update;
@@ -137,6 +146,9 @@ function setPref(state: State, name: PrefName, value: unknown): State {
             type: ActionType.USER__PREFERENCES_LOADED,
             preferences: [[name, deserialize(p.type, p.value)]],
         };
+    }).catch((reason) => {
+        // eslint-disable-next-line no-console
+        console.error("promiseFlux failed: ", reason);
     });
     return saveToCache(state);
 }
