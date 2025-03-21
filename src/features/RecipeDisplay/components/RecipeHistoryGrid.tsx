@@ -4,6 +4,7 @@ import { useSetRecipeHistoryRating } from "@/data/hooks/useSetRecipeHistoryRatin
 import { BfsId } from "@/global/types/identity";
 import { RecipeHistory } from "@/global/types/types";
 import { useProfile } from "@/providers/Profile";
+import { relativeDate } from "@/util/time";
 import { CookedItIcon, DeleteIcon, EditIcon } from "@/views/common/icons";
 import Markdown from "@/views/common/Markdown";
 import User from "@/views/user/User";
@@ -23,7 +24,6 @@ import {
     Typography,
 } from "@mui/material";
 import TableCell from "@mui/material/TableCell";
-import { DateTime } from "luxon";
 import * as React from "react";
 import { useCallback, useState } from "react";
 
@@ -172,15 +172,9 @@ export default function RecipeHistoryGrid({ recipeId, history }: Props) {
                                     )}
                                 </TableCell>
                                 <TableCell>
-                                    {DateTime.fromISO(
-                                        h.plannedAt,
-                                    ).toLocaleString()}
+                                    {relativeDate(h.plannedAt)}
                                 </TableCell>
-                                <TableCell>
-                                    {DateTime.fromISO(
-                                        h.doneAt,
-                                    ).toLocaleString()}
-                                </TableCell>
+                                <TableCell>{relativeDate(h.doneAt)}</TableCell>
                                 <TableCell>
                                     {(mine || !!h.rating) && (
                                         <Rating

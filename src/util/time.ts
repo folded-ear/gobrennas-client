@@ -97,8 +97,11 @@ export function humanDate(date?: Date): string {
     return date.toLocaleDateString();
 }
 
-export function relativeDate(date?: Date): string {
+export function relativeDate(date?: Date): string;
+export function relativeDate(date?: string): string;
+export function relativeDate(date?: Date | string): string {
     if (!date) return "";
+    if (typeof date === "string") date = new Date(date);
     const tgt = new Date();
     if (
         date.getFullYear() === tgt.getFullYear() &&
