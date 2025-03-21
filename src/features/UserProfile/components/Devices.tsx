@@ -4,7 +4,7 @@ import useAdaptingQuery from "@/data/hooks/useAdaptingQuery";
 import useIsDevMode from "@/data/useIsDevMode";
 import deviceKey from "@/data/utils/deviceKey";
 import { useIsMobile } from "@/providers/IsMobile";
-import { humanDate } from "@/util/time";
+import { relativeDate } from "@/util/time";
 import { FavoriteIcon } from "@/views/common/icons";
 import LoadingIndicator from "@/views/common/LoadingIndicator";
 import { useMutation } from "@apollo/client";
@@ -65,7 +65,7 @@ const COLUMNS: GridColDef<Device[][number]>[] = [
         flex: 0.5,
         editable: false,
         renderCell: ({ row }) => {
-            return humanDate(new Date(row.lastEnsuredAt));
+            return relativeDate(new Date(row.lastEnsuredAt));
         },
     },
 ];
