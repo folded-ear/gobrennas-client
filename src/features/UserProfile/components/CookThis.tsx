@@ -9,12 +9,13 @@ export const CookThis = () => {
     const token = useAuthToken();
     React.useEffect(() => {
         if (!cookThisRef.current) return;
-        cookThisRef.current.href = `javascript:s=document.createElement('script');s.src='${API_BASE_URL}/import_bookmarklet.js?${new URLSearchParams(
-            {
-                appRoot: APP_BASE_URL,
-                token,
-            },
-        )}&_='+Date.now();s.id='foodinger-import-bookmarklet';void(document.body.appendChild(s));`;
+        const params: Record<string, string> = {
+            appRoot: APP_BASE_URL,
+            color: import.meta.env.VITE_THEME_COLOR,
+        };
+        if (token) params["token"] = token;
+        const qs = new URLSearchParams(params);
+        cookThisRef.current.href = `javascript:s=document.createElement('script');s.src='${API_BASE_URL}/import_bookmarklet.js?${qs}&_='+Date.now();s.id='foodinger-import-bookmarklet';void(document.body.appendChild(s));`;
     }, [token]);
 
     // The ref is passed in as 'any', because Typescript can't identify that the
@@ -42,18 +43,18 @@ export const CookThis = () => {
                     href="#"
                     variant={import.meta.env.PROD ? "contained" : "outlined"}
                     color="primary"
-                    disabled={!token}
+                    disabled={!API_IS_SECURE && !token}
                 >
                     {import.meta.env.PROD ? "Cook This!" : "DEV Cook This!"}
                 </Button>
             </p>
             {!API_IS_SECURE && (
-                <Stack direction={"row"} alignItems={"center"} gap={1}>
+                <Stack direction={"row"} alignItems={"center"} gap={2}>
                     <UnlockedIcon />
                     <p>
                         Since you hate SSL, you&apos;ll have to do this each
                         time you log into Brenna&apos;s Food Software (deleting
-                        the old one first). Sorry, man.
+                        the old one first).
                     </p>
                     <UnlockedIcon />
                 </Stack>
