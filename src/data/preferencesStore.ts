@@ -171,7 +171,6 @@ class PreferencesStore extends ReduceStore<State, FluxAction> {
                     return state;
                 }
                 // Sending prefs individually is silly, but migration is one-shot.
-                let queue: Promise<unknown> = Promise.resolve();
                 for (const n of state.keys()) {
                     let v = state.get(n);
                     if (v == null) continue;
@@ -184,16 +183,16 @@ class PreferencesStore extends ReduceStore<State, FluxAction> {
                                 ? v.map((it) => "" + it)
                                 : null;
                     }
-                    queue = queue.then(() => {
+                    promise = promise.then(() => {
                         const name = n as PrefName;
                         const serialized = serialize(TYPES[name], v);
                         return serialized
                             ? promiseServerUpdate(name, serialized)
-                            : null;
+                            : (null as unknown as FetchResult<ClearPreferenceMutation>);
                     });
                 }
                 // finally, refresh from the server
-                queue.then(() => loadFromServer());
+                promise.then(() => loadFromServer());
                 return state;
             }
 
