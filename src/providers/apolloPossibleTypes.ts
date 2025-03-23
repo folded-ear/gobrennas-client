@@ -17,6 +17,7 @@ const apolloPossibleTypes: PossibleTypesMap = {
         "Recipe",
         "UnitOfMeasure",
         "User",
+        "UserDevice",
     ],
     Owned: ["Acl", "Plan", "Recipe"],
 };

@@ -1,5 +1,5 @@
 # build environment
-FROM node:20 as build
+FROM node:20 AS build
 WORKDIR /app
 COPY . ./
 ENV NO_COLOR=true \
@@ -14,7 +14,8 @@ RUN MODE="production" \
     && npm ci \
     && npx browserslist@latest --update-db \
     && npm run test \
-    && npm run build -- --mode $MODE
+    && npm run build -- --mode $MODE \
+    && cp build/manifest.webmanifest build/manifest.json
 
 # server environment
 FROM nginx:alpine
