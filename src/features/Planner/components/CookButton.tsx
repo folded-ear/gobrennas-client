@@ -6,15 +6,28 @@ import { useHistory } from "react-router-dom";
 
 interface Props extends IconButtonProps {
     planId: BfsId;
-    itemId: BfsId;
+    itemId?: BfsId;
+    bucketId?: BfsId;
 }
 
-const CookButton: React.FC<Props> = ({ planId, itemId, ...props }) => {
+const CookButton: React.FC<Props> = ({
+    planId,
+    itemId,
+    bucketId,
+    ...props
+}) => {
     const history = useHistory();
     return (
         <Tooltip title="Cook / Kitchen View" placement="top">
             <IconButton
-                onClick={() => history.push(`/plan/${planId}/recipe/${itemId}`)}
+                onClick={() =>
+                    history.push(
+                        `/plan/${planId}` +
+                            (bucketId != null
+                                ? `/bucket/${bucketId}`
+                                : `/recipe/${itemId}`),
+                    )
+                }
                 size="large"
                 {...props}
             >
