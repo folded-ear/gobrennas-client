@@ -35,7 +35,7 @@ import { CSSObject, styled } from "@mui/material/styles";
 import withStyles from "@mui/styles/withStyles";
 import { Maybe } from "graphql/jsutils/Maybe";
 import * as React from "react";
-import { ReactElement } from "react";
+import { PropsWithChildren, ReactElement } from "react";
 import LibraryStore from "../data/LibraryStore";
 
 const drawerWidth = 220;
@@ -173,8 +173,15 @@ export const BodyContainer: React.FC = () => {
             (item) => item.bucketId ?? undefined,
         );
         plan.buckets.forEach((b) => {
-            children.push(<Bucket key={b.id} bucket={b} />);
             const rs = byBucket.get(b.id);
+            children.push(
+                <Bucket
+                    key={b.id}
+                    planId={plan.id}
+                    bucket={b}
+                    canCook={rs && rs.length > 0}
+                />,
+            );
             if (rs) rs.forEach((item) => children.push(renderItem(item)));
         });
         children.push(<Bucket key={"none"} />);
@@ -226,10 +233,30 @@ const Subheader = withStyles((theme) => ({
     },
 }))(DndItem);
 
-const Bucket = ({ bucket }: { bucket?: PlanBucket }) => {
+const Bucket = ({
+    bucket,
+    planId,
+    canCook,
+}: {
+    bucket?: PlanBucket;
+    planId?: BfsId;
+    canCook?: boolean;
+}) => {
+    const { over: buttonVisible, sensorProps } = useWhileOver();
     return (
         <Subheader dragId={BUCKET_PREFIX + (bucket ? bucket.id : -1)} noDrag>
-            <ListItemText primary={bucket ? getBucketLabel(bucket) : "Other"} />
+            <ListItemText id={"sdf"} {...sensorProps}>
+                {bucket ? getBucketLabel(bucket) : "Other"}
+                {bucket && canCook && (
+                    <Actions visible={buttonVisible}>
+                        <CookButton
+                            size="small"
+                            planId={planId!}
+                            bucketId={bucket.id}
+                        />
+                    </Actions>
+                )}
+            </ListItemText>
         </Subheader>
     );
 };
@@ -245,18 +272,36 @@ const Plan: React.FC<PlanProps> = ({ plan }) => {
             <Typography variant="h6" sx={{ padding: "8px" }}>
                 {plan.name}
             </Typography>
-            <ResetBucketsButton
-                planId={plan.id}
-                sx={{
-                    display: over ? "block" : "none",
-                    position: "absolute",
-                    right: 0,
-                    top: 7,
-                }}
-            />
+            <Actions visible={over}>
+                <ResetBucketsButton planId={plan.id} />
+            </Actions>
         </Header>
     );
 };
+
+interface ActionsProps {
+    visible: boolean;
+}
+
+const Actions: React.FC<PropsWithChildren<ActionsProps>> = ({
+    children,
+    visible,
+}) => (
+    <Box
+        component={"span"}
+        sx={(theme) => ({
+            position: "absolute",
+            paddingRight: 0.25,
+            right: 0,
+            top: 0,
+            // this masks the text, if the buttons overlay it
+            backgroundColor: alpha(theme.palette.background.paper, 0.7),
+            display: visible ? "block" : "none",
+        })}
+    >
+        {children}
+    </Box>
+);
 
 interface PlannedRecipeProps {
     item: RecipeInfo;
@@ -280,23 +325,9 @@ const PlannedRecipe: React.FC<PlannedRecipeProps> = ({ item }) => {
                         : isSection(item)
                           ? item.name.substring(0, item.name.length - 1)
                           : item.name}
-                    <Box
-                        component={"span"}
-                        sx={(theme) => ({
-                            position: "absolute",
-                            right: 0,
-                            top: 0,
-                            backgroundColor: alpha(
-                                theme.palette.background.paper,
-                                0.7,
-                            ),
-                            display:
-                                buttonVisible || goingAway ? "block" : "none",
-                        })}
-                    >
+                    <Actions visible={buttonVisible || goingAway}>
                         {buttonVisible && !goingAway && item.canCook && (
                             <CookButton
-                                key="cook"
                                 size="small"
                                 planId={item.planId}
                                 itemId={item.id}
@@ -314,7 +345,7 @@ const PlannedRecipe: React.FC<PlannedRecipeProps> = ({ item }) => {
                                 next={PlanItemStatus.DELETED}
                             />
                         )}
-                    </Box>
+                    </Actions>
                 </Typography>
             </ListItemText>
         </DndItem>
