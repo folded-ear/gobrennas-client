@@ -93,13 +93,21 @@ export const BodyContainer: React.FC = () => {
         if (!plan || loading) return;
         const recipes: RecipeInfo[] = [];
         // DFS, expressed as mutual recursion, for simpler types
-        const search = (it: PlanItem, depth: number) => {
+        const search = (
+            it: PlanItem,
+            depth: number,
+            contextualBucketId: Maybe<string>,
+        ) => {
             if (it.ingredientId) {
                 const ing = LibraryStore.getIngredientRloById(it.ingredientId)
                     .data as Recipe;
                 if (ing && ing.type === "Recipe") {
+                    if (it.bucketId != null) {
+                        contextualBucketId = it.bucketId;
+                    }
                     recipes.push({
                         ...it,
+                        bucketId: contextualBucketId,
                         canCook: true,
                         planId: plan.id,
                         depth,
@@ -115,14 +123,20 @@ export const BodyContainer: React.FC = () => {
                     depth,
                 });
             }
-            goDeeper(it, depth);
+            goDeeper(it, depth, contextualBucketId);
         };
-        const goDeeper = (it: TPlan | PlanItem, depth: number) => {
+        const goDeeper = (
+            it: TPlan | PlanItem,
+            depth: number,
+            contextualBucketId: Maybe<string>,
+        ) => {
             for (const kid of planStore.getChildItemRlos(it.id)) {
-                if (!kid.loading && kid.data) search(kid.data, depth + 1);
+                if (!kid.loading && kid.data) {
+                    search(kid.data, depth + 1, contextualBucketId);
+                }
             }
         };
-        goDeeper(plan, 0);
+        goDeeper(plan, 0, undefined);
 
         if (plan.buckets) {
             const bucketsById = mapBy(plan.buckets, (b) => b.id);
