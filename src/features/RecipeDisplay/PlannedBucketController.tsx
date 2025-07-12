@@ -6,6 +6,7 @@ import { recipeRloByPlanAndBucket } from "@/features/RecipeDisplay/utils/recipeR
 import LibraryStore from "@/features/RecipeLibrary/data/LibraryStore";
 import CloseButton from "@/views/common/CloseButton";
 import LoadingIndicator from "@/views/common/LoadingIndicator";
+import NotFound from "@/views/common/NotFound";
 import * as React from "react";
 import { RouteComponentProps } from "react-router";
 import { useHistory } from "react-router-dom";
@@ -19,8 +20,8 @@ type Props = RouteComponentProps<{
 const PlannedBucketController: React.FC<Props> = ({ match }) => {
     const pid = match.params.pid;
     const bid = match.params.bid;
-    const recipe = useFluxStore(
-        () => recipeRloByPlanAndBucket(pid, bid).data,
+    const recipeLO = useFluxStore(
+        () => recipeRloByPlanAndBucket(pid, bid),
         [planStore, LibraryStore],
         [pid, bid],
     );
@@ -28,8 +29,12 @@ const PlannedBucketController: React.FC<Props> = ({ match }) => {
 
     useLoadedPlan(pid); // don't actually need the data, just need it loaded
 
-    if (!recipe) {
+    if (recipeLO.loading) {
         return <LoadingIndicator />;
+    }
+    const recipe = recipeLO.data;
+    if (!recipe) {
+        return <NotFound />;
     }
 
     return (
