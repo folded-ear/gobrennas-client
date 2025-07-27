@@ -10,6 +10,7 @@ import { toMilliseconds } from "@/util/time";
 export function recipeToIngredientInfo(recipe: DraftRecipe): IngredientInfo {
     return {
         type: "Recipe",
+        id: recipe.id,
         name: recipe.name || "",
         storeOrder: 1,
         externalUrl: recipe.externalUrl || "",
@@ -19,6 +20,7 @@ export function recipeToIngredientInfo(recipe: DraftRecipe): IngredientInfo {
             delete it.id;
             return it as IngredientRefInfo;
         }),
+        sections: [], // todo
         labels: recipe.labels || [],
         yield: recipe.recipeYield ? recipe.recipeYield : null,
         calories: recipe.calories ? recipe.calories : null,
