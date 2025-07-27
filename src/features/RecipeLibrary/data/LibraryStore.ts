@@ -6,9 +6,7 @@ import { Ingredient } from "@/global/types/types";
 import LoadObject from "@/util/LoadObject";
 import LoadObjectMap from "@/util/LoadObjectMap";
 import { ripLoadObject, RippedLO } from "@/util/ripLoadObject";
-import { fromMilliseconds } from "@/util/time";
 import { ReduceStore } from "flux/utils";
-import { Maybe } from "graphql/jsutils/Maybe";
 
 export interface SendToPlanPayload {
     recipeId: BfsId;
@@ -18,15 +16,6 @@ export interface SendToPlanPayload {
 
 interface State {
     byId: LoadObjectMap<BfsId, Ingredient>;
-}
-
-function adaptTime<T extends Ingredient>(recipe: T): T;
-function adaptTime(recipe: { totalTime?: Maybe<number> }) {
-    if (recipe.totalTime == null) return recipe;
-    return {
-        ...recipe,
-        totalTime: fromMilliseconds(recipe.totalTime),
-    };
 }
 
 class LibraryStore extends ReduceStore<State, FluxAction> {
@@ -64,11 +53,7 @@ class LibraryStore extends ReduceStore<State, FluxAction> {
                 return {
                     ...state,
                     byId: action.data.reduce(
-                        (byId, it) =>
-                            byId.set(
-                                it.id,
-                                LoadObject.withValue(adaptTime(it)),
-                            ),
+                        (byId, it) => byId.set(it.id, LoadObject.withValue(it)),
                         state.byId,
                     ),
                 };
