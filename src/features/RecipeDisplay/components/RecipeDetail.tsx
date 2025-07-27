@@ -22,7 +22,7 @@ import PageBody from "@/views/common/PageBody";
 import RecipeInfo from "@/views/common/RecipeInfo";
 import Source from "@/views/common/Source";
 import User from "@/views/user/User";
-import { Box, Grid, Toolbar, Typography } from "@mui/material";
+import { Box, Divider, Grid, Toolbar, Typography } from "@mui/material";
 import { Maybe } from "graphql/jsutils/Maybe";
 import * as React from "react";
 import { useHistory } from "react-router-dom";
@@ -204,6 +204,23 @@ const RecipeDetail: React.FC<Props> = ({
                         recipe={recipe}
                         loggedIn={loggedIn}
                     />
+                    {recipe.sections != null &&
+                        recipe.sections.map((it) => (
+                            <React.Fragment key={it.id}>
+                                <Grid item xs={12}>
+                                    <Divider flexItem textAlign={"left"}>
+                                        <Typography variant={"h6"}>
+                                            {it.name || "Unnamed Section"}
+                                        </Typography>
+                                    </Divider>
+                                </Grid>
+                                <IngredientDirectionsRow
+                                    loggedIn={loggedIn}
+                                    recipe={it}
+                                    hideHeadings
+                                />
+                            </React.Fragment>
+                        ))}
                 </ReentrantScalingProvider>
                 {devMode && planHistory && planHistory.length > 0 && (
                     <RecipeHistoryGrid

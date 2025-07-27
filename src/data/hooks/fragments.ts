@@ -21,6 +21,28 @@ fragment recipeCore on Recipe {
     }
     preparation
   }
+  sections {
+    ...sectionCore
+  }
+}`);
+
+export const SECTION_CORE_FRAGMENT = gql(`
+fragment sectionCore on Section {
+  id
+  name
+  directions
+  ingredients {
+    raw
+    quantity {
+      quantity
+      units { name }
+    }
+    ingredient {
+      id
+      name
+    }
+    preparation
+  }
 }`);
 
 export const LIBRARY_SEARCH_RESULT_FRAGMENT = gql(`

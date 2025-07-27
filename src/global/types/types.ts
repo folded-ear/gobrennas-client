@@ -15,12 +15,21 @@ export interface PantryItem extends IIngredient {
     storeOrder: number;
 }
 
+export interface Section<I = Ingredient> {
+    id: BfsId;
+    name: string;
+    directions?: Maybe<string>;
+    ingredients: IngredientRef<I>[];
+    labels?: Maybe<string[]>;
+}
+
 export interface Recipe<I = Ingredient> extends IIngredient {
     type?: "Recipe";
     calories?: Maybe<number>;
     directions?: Maybe<string>;
     externalUrl?: Maybe<string>;
     ingredients: IngredientRef<I>[];
+    sections?: Maybe<Section<I>[]>;
     labels?: Maybe<string[]>;
     photo?: Maybe<string>;
     photoFocus?: Maybe<number[]>;

@@ -5,6 +5,7 @@ import {
     IIngredient,
     IngredientRef,
     Recipe,
+    Section,
     Subrecipe,
 } from "@/global/types/types";
 import useAdaptingQuery from "./useAdaptingQuery";
@@ -57,15 +58,29 @@ export const useGetFullRecipe = (id: BfsId, secret?: string) => {
 
             if (!result || loading) return null;
 
+            const mapIngredient = (item: (typeof result)["ingredients"][0]) =>
+                ({
+                    raw: item.raw,
+                    preparation: item.preparation,
+                    quantity: item.quantity?.quantity,
+                    units: item.quantity?.units?.name || null,
+                    ingredient: objectWithType(item.ingredient),
+                    ingredientId: item.ingredient ? item.ingredient.id : null,
+                }) as IngredientRef;
+
             const ingredients: IngredientRef<IIngredient>[] =
                 !result || !result.ingredients
                     ? []
-                    : result.ingredients.map((item) => ({
-                          raw: item.raw,
-                          preparation: item.preparation,
-                          quantity: item.quantity?.quantity,
-                          units: item.quantity?.units?.name || null,
-                          ingredient: objectWithType(item.ingredient),
+                    : result.ingredients.map(mapIngredient);
+
+            const sections: Section<IIngredient>[] =
+                !result || !result.sections
+                    ? []
+                    : result.sections.map((section) => ({
+                          id: section.id,
+                          name: section.name,
+                          directions: section.directions,
+                          ingredients: section.ingredients.map(mapIngredient),
                       }));
 
             const subrecipes: Subrecipe<IIngredient>[] =
@@ -76,16 +91,7 @@ export const useGetFullRecipe = (id: BfsId, secret?: string) => {
                           name: recipe.name,
                           totalTime: recipe.totalTime,
                           directions: recipe.directions,
-                          ingredients: recipe.ingredients.map((item) => ({
-                              raw: item.raw,
-                              preparation: item.preparation,
-                              quantity: item.quantity?.quantity,
-                              units: item.quantity?.units?.name || null,
-                              ingredient: objectWithType(item.ingredient),
-                              ingredientId: item.ingredient
-                                  ? item.ingredient.id
-                                  : null,
-                          })),
+                          ingredients: recipe.ingredients.map(mapIngredient),
                       }));
 
             const planHistory =
@@ -97,6 +103,7 @@ export const useGetFullRecipe = (id: BfsId, secret?: string) => {
                 externalUrl: result.externalUrl,
                 id: result.id,
                 ingredients,
+                sections,
                 labels: result.labels || [],
                 name: result.name || "",
                 photo: result.photo?.url || null,
