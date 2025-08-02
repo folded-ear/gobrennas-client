@@ -70,7 +70,6 @@ const RecipeForm: React.FC<Props> = ({
         draft,
         onUpdate,
         onAddIngredientRef,
-        onEditIngredientRef,
         onDeleteIngredientRef,
         onMoveIngredientRef,
         onMultilinePasteIngredientRefs,
@@ -197,7 +196,7 @@ const RecipeForm: React.FC<Props> = ({
                                             size="small"
                                             tabIndex={-1}
                                             onClick={() =>
-                                                onEditIngredientRef(i)
+                                                onAddIngredientRef(i)
                                             }
                                         >
                                             <AddIcon />

@@ -8,7 +8,6 @@ type UseRecipeFormReturn = {
     draft: DraftRecipe;
     onUpdate: (key: string, value: unknown) => void;
     onAddIngredientRef: (idx?: number, text?: string) => void;
-    onEditIngredientRef: (idx: number) => void;
     onDeleteIngredientRef: (idx: number) => void;
     onMoveIngredientRef: (
         activeId: BfsId,
@@ -50,7 +49,7 @@ export function useRecipeForm(recipe: Recipe<unknown>): UseRecipeFormReturn {
         const ing = buildNewIngredient();
         const ings =
             draft.ingredients == null ? [] : draft.ingredients.slice(0);
-        const newIdx = idx ? idx : ings.length;
+        const newIdx = idx ?? ings.length;
         if (newIdx < 0 || newIdx >= ings.length) {
             ings.push(ing);
         } else {
@@ -65,19 +64,6 @@ export function useRecipeForm(recipe: Recipe<unknown>): UseRecipeFormReturn {
             ings.splice(idx, 1);
             setDraft(dotProp.set(draft, "ingredients", ings));
         }
-    };
-
-    const onEditIngredientRef = (idx: number) => {
-        const ing = buildNewIngredient();
-        const ings =
-            draft.ingredients == null ? [] : draft.ingredients.slice(0);
-        const index = idx ? idx : ings.length;
-        if (index < 0 || index >= ings.length) {
-            ings.push(ing);
-        } else {
-            ings.splice(index + 1, 0, ing);
-        }
-        setDraft(dotProp.set(draft, "ingredients", ings));
     };
 
     const onMoveIngredientRef = (
@@ -123,7 +109,6 @@ export function useRecipeForm(recipe: Recipe<unknown>): UseRecipeFormReturn {
         onUpdate,
         onAddIngredientRef,
         onDeleteIngredientRef,
-        onEditIngredientRef,
         onMoveIngredientRef,
         onMultilinePasteIngredientRefs,
     };
