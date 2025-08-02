@@ -23,7 +23,7 @@ const IngredientDirectionsRow: React.FC<Props> = ({
     loggedIn,
     hideHeadings,
 }) => {
-    const scaleOpts = useScaleOptions();
+    const scaleOpts = useScaleOptions(hideHeadings);
     return (
         <>
             <Grid item xs={12} sm={5}>
