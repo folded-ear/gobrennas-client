@@ -1,8 +1,9 @@
 import { gql } from "@/__generated__";
 import { GetRecipeQuery } from "@/__generated__/graphql";
-import objectWithType from "@/data/utils/objectWithType";
+import mapIngredientRef from "@/data/utils/mapIngredientRef";
+import mapSection from "@/data/utils/mapSection";
 import { BfsId } from "@/global/types/identity";
-import { IIngredient, IngredientRef, Recipe } from "@/global/types/types";
+import { Ingredient, Recipe } from "@/global/types/types";
 import useAdaptingQuery from "./useAdaptingQuery";
 
 const GET_RECIPE_QUERY = gql(`
@@ -29,24 +30,24 @@ query getRecipe($id: ID!) {
 function adapter(data: GetRecipeQuery | undefined) {
     const result = data?.library?.getRecipeById || null;
 
-    const ingredients: IngredientRef<IIngredient>[] =
+    const ingredients =
         !result || !result.ingredients
             ? []
-            : result.ingredients.map((item) => ({
-                  raw: item.raw,
-                  preparation: item.preparation,
-                  quantity: item.quantity?.quantity,
-                  units: item.quantity?.units?.name || null,
-                  ingredient: objectWithType(item.ingredient),
-              }));
+            : result.ingredients.map(mapIngredientRef<Ingredient>);
 
-    const recipe: Recipe<IIngredient> = {
+    const sections =
+        !result || !result.sections
+            ? []
+            : result.sections.map(mapSection<Ingredient>);
+
+    const recipe: Recipe<Ingredient> = {
         id: result?.id as BfsId,
         ownerId: result?.owner.id,
         calories: result?.calories || null,
         directions: result?.directions || null,
         externalUrl: result?.externalUrl || null,
         ingredients,
+        sections,
         labels: result?.labels || [],
         name: result?.name || "",
         photo: result?.photo?.url || null,

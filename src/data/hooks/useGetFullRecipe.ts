@@ -1,13 +1,8 @@
 import { gql } from "@/__generated__";
-import objectWithType from "@/data/utils/objectWithType";
+import mapIngredientRef from "@/data/utils/mapIngredientRef";
+import mapSection from "@/data/utils/mapSection";
 import { BfsId } from "@/global/types/identity";
-import {
-    IIngredient,
-    IngredientRef,
-    Recipe,
-    Section,
-    Subrecipe,
-} from "@/global/types/types";
+import { IIngredient, Recipe } from "@/global/types/types";
 import useAdaptingQuery from "./useAdaptingQuery";
 
 const GET_FULL_RECIPE_QUERY = gql(`
@@ -58,32 +53,17 @@ export const useGetFullRecipe = (id: BfsId, secret?: string) => {
 
             if (!result || loading) return null;
 
-            const mapIngredient = (item: (typeof result)["ingredients"][0]) =>
-                ({
-                    raw: item.raw,
-                    preparation: item.preparation,
-                    quantity: item.quantity?.quantity,
-                    units: item.quantity?.units?.name || null,
-                    ingredient: objectWithType(item.ingredient),
-                    ingredientId: item.ingredient ? item.ingredient.id : null,
-                }) as IngredientRef;
-
-            const ingredients: IngredientRef<IIngredient>[] =
+            const ingredients =
                 !result || !result.ingredients
                     ? []
-                    : result.ingredients.map(mapIngredient);
+                    : result.ingredients.map(mapIngredientRef<IIngredient>);
 
-            const sections: Section<IIngredient>[] =
+            const sections =
                 !result || !result.sections
                     ? []
-                    : result.sections.map((section) => ({
-                          id: section.id,
-                          name: section.name,
-                          directions: section.directions,
-                          ingredients: section.ingredients.map(mapIngredient),
-                      }));
+                    : result.sections.map(mapSection<IIngredient>);
 
-            const subrecipes: Subrecipe<IIngredient>[] =
+            const subrecipes =
                 !result || !result.subrecipes
                     ? []
                     : result.subrecipes.map((recipe) => ({
@@ -91,7 +71,9 @@ export const useGetFullRecipe = (id: BfsId, secret?: string) => {
                           name: recipe.name,
                           totalTime: recipe.totalTime,
                           directions: recipe.directions,
-                          ingredients: recipe.ingredients.map(mapIngredient),
+                          ingredients: recipe.ingredients.map(
+                              mapIngredientRef<IIngredient>,
+                          ),
                       }));
 
             const planHistory =

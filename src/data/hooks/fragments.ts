@@ -31,6 +31,9 @@ fragment sectionCore on Section {
   id
   name
   directions
+  sectionOf {
+    id
+  }
   ingredients {
     raw
     quantity {
@@ -43,6 +46,7 @@ fragment sectionCore on Section {
     }
     preparation
   }
+  labels
 }`);
 
 export const LIBRARY_SEARCH_RESULT_FRAGMENT = gql(`
