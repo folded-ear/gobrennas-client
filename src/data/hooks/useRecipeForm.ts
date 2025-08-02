@@ -80,16 +80,11 @@ export function useRecipeForm(recipe: Recipe<unknown>): UseRecipeFormReturn {
             const ings =
                 draft.ingredients == null ? [] : draft.ingredients.slice(0);
             const idxActive = ings.findIndex((it) => it.id === activeId);
-            if (idxActive > 0) {
+            if (idxActive >= 0) {
                 const removed = ings.splice(idxActive, 1);
-                const idxTarget = ings.findIndex((it) => it.id === targetId);
-                if (idxTarget > 0) {
-                    ings.splice(
-                        above ? idxTarget : idxTarget + 1,
-                        0,
-                        ...removed,
-                    );
-                }
+                let idxTarget = ings.findIndex((it) => it.id === targetId);
+                if (idxTarget < 0) idxTarget = ings.length - 1;
+                ings.splice(above ? idxTarget : idxTarget + 1, 0, ...removed);
             }
             return dotProp.set(draft, "ingredients", ings);
         });
