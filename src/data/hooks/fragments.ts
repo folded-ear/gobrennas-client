@@ -160,6 +160,9 @@ fragment recipeLoad on Recipe {
     }
     preparation
   }
+  sections {
+    ...sectionLoad
+  }
   labels
   owner {
     id
@@ -171,4 +174,27 @@ fragment recipeLoad on Recipe {
     url
     focus
   }
+}`);
+
+export const SECTION_LOAD_FRAGMENT = gql(`
+fragment sectionLoad on Section {
+  id
+  name
+  directions
+  ingredients {
+    raw
+    quantity {
+      quantity
+      units {
+        id
+        name
+      }
+    }
+    ingredient {
+      id
+      name
+    }
+    preparation
+  }
+  labels
 }`);
