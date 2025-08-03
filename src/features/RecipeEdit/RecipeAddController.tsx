@@ -1,5 +1,6 @@
 import { useCreateRecipe } from "@/data/hooks/useCreateRecipe";
 import { useGetAllLabels } from "@/data/hooks/useGetAllLabels";
+import { buildNewIngredientRef } from "@/data/hooks/useRecipeForm";
 import RecipeForm from "@/features/RecipeEdit/components/RecipeForm";
 import { DraftRecipe } from "@/global/types/types";
 import ClientId from "@/util/ClientId";
@@ -16,15 +17,8 @@ export const RecipeAddController = () => {
         id: ClientId.next(),
         name: "",
         externalUrl: "",
-        ingredients: [
-            {
-                id: ClientId.next(),
-                raw: "",
-                ingredient: null,
-                preparation: null,
-                quantity: null,
-            },
-        ],
+        ingredients: [buildNewIngredientRef()],
+        sections: [],
         directions: "",
         recipeYield: null,
         totalTime: null,

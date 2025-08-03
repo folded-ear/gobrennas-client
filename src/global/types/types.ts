@@ -16,7 +16,8 @@ export interface PantryItem extends IIngredient {
 }
 
 export interface Section<I = Ingredient> {
-    id: BfsId;
+    id?: BfsId;
+    sectionOf?: Maybe<BfsId>;
     name: string;
     directions?: Maybe<string>;
     ingredients: IngredientRef<I>[];
@@ -112,7 +113,7 @@ export interface ShareInfo {
     secret: string;
 }
 
-export interface DraftRecipe<I = unknown> extends Omit<Recipe<I>, "photo"> {
+export interface DraftRecipe<I = Ingredient> extends Omit<Recipe<I>, "photo"> {
     photoUrl: Maybe<string>;
     photoUpload: Maybe<File>;
     sourceId: Maybe<string>;

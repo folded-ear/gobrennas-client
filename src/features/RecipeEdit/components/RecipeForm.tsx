@@ -1,15 +1,19 @@
-import { useRecipeForm } from "@/data/hooks/useRecipeForm";
+import { useRecipeForm, UseRecipeFormReturn } from "@/data/hooks/useRecipeForm";
 import useWindowSize from "@/data/useWindowSize";
 import DragContainer, {
     Vert,
 } from "@/features/Planner/components/DragContainer";
 import DragHandle from "@/features/Planner/components/DragHandle";
 import Item from "@/features/Planner/components/Item";
+import IngredientDirectionsRow from "@/features/RecipeDisplay/components/IngredientDirectionsRow";
 import PositionPicker from "@/features/RecipeEdit/components/PositionPicker";
 import { TextractForm } from "@/features/RecipeEdit/components/TextractForm";
 import { BfsId } from "@/global/types/identity";
 import { DraftRecipe, IngredientRef, Recipe } from "@/global/types/types";
+import { useIsMobile } from "@/providers/IsMobile";
 import ImageDropZone from "@/util/ImageDropZone";
+import useWhileOver from "@/util/useWhileOver";
+import DeleteButton from "@/views/common/DeleteButton";
 import {
     AddIcon,
     CancelIcon,
@@ -22,19 +26,21 @@ import {
     AutocompleteChangeReason,
     Box,
     Button,
+    ButtonProps,
     Grid,
     IconButton,
     List,
+    Paper,
+    Stack,
     TextField,
     Typography,
-    useMediaQuery,
-    useTheme,
 } from "@mui/material";
 import makeStyles from "@mui/styles/makeStyles";
 import * as React from "react";
 import { ReactNode } from "react";
-import { LabelAutoComplete, LabelAutoCompleteProps } from "./LabelAutoComplete";
+import { LabelAutoComplete } from "./LabelAutoComplete";
 
+const MARGIN = 2;
 const useStyles = makeStyles((theme) => ({
     button: {
         margin: theme.spacing(1),
@@ -42,7 +48,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 interface Props {
-    recipe: Recipe<unknown>;
+    recipe: Recipe;
     title: string;
     onSave: (r: DraftRecipe) => void;
     onSaveCopy?: (r: DraftRecipe) => void;
@@ -61,10 +67,7 @@ const RecipeForm: React.FC<Props> = ({
     labelList,
 }) => {
     const windowSize = useWindowSize();
-    const theme = useTheme();
-    const mobile = useMediaQuery(theme.breakpoints.down("sm"));
     const classes = useStyles();
-    const MARGIN = 2;
 
     const {
         draft,
@@ -73,6 +76,8 @@ const RecipeForm: React.FC<Props> = ({
         onDeleteIngredientRef,
         onMoveIngredientRef,
         onMultilinePasteIngredientRefs,
+        onAddSection,
+        onDeleteSection,
     } = useRecipeForm(recipe);
 
     const handleUpdate = React.useCallback(
@@ -92,8 +97,8 @@ const RecipeForm: React.FC<Props> = ({
         [onUpdate],
     );
 
-    const handleLabelChange: LabelAutoCompleteProps["onLabelChange"] = (
-        e,
+    const handleLabelChange = (
+        key: string,
         labels: string[],
         reason: AutocompleteChangeReason,
     ) => {
@@ -103,28 +108,23 @@ const RecipeForm: React.FC<Props> = ({
             reason === "removeOption"
         ) {
             const val = labels.map((label) => label.replace(/\/+/g, "-"));
-            onUpdate("labels", val);
+            onUpdate(key, val);
         }
     };
 
     const hasPhoto: boolean =
         draft.photoUpload !== null || draft.photoUrl !== null;
 
-    function handleIngredientDrop(
-        activeId: BfsId,
-        targetId: BfsId,
-        vertical: Vert,
-    ) {
-        onMoveIngredientRef(activeId, targetId, vertical === "above");
-    }
-
+    const hasSections = draft.sections && draft.sections.length > 0;
     return (
         <>
             <Typography variant="h2">{title}</Typography>
             <TextractForm
                 updateDraft={onUpdate}
                 draft={draft}
-                onMultilinePaste={onMultilinePasteIngredientRefs}
+                onMultilinePaste={(idx, text) =>
+                    onMultilinePasteIngredientRefs("ingredients", idx, text)
+                }
             />
             <Box my={MARGIN}>
                 <TextField
@@ -173,77 +173,125 @@ const RecipeForm: React.FC<Props> = ({
                     </Grid>
                 </Grid>
             </Box>
-            <DragContainer
-                onDrop={handleIngredientDrop}
-                renderOverlay={(id) => (
-                    <Box px={2} py={1}>
-                        <DragHandle />
-                        {draft.ingredients.find((it) => it.id === id)?.raw ||
-                            ""}
-                    </Box>
-                )}
-            >
-                <List>
-                    {draft.ingredients.map((it, i) => (
-                        <Item
-                            key={it.id}
-                            hideDivider
-                            dragId={it.id}
-                            suffix={
-                                <>
-                                    {!mobile && (
-                                        <IconButton
-                                            size="small"
-                                            tabIndex={-1}
-                                            onClick={() =>
-                                                onAddIngredientRef(i)
-                                            }
-                                        >
-                                            <AddIcon />
-                                        </IconButton>
-                                    )}
-                                    <IconButton
-                                        size="small"
-                                        tabIndex={-1}
-                                        onClick={() => onDeleteIngredientRef(i)}
-                                    >
-                                        <DeleteIcon />
-                                    </IconButton>
-                                </>
-                            }
-                        >
-                            <ElEdit
-                                name={`ingredients.${i}`}
-                                value={it}
-                                onChange={handleUpdate}
-                                onMultilinePaste={(text) =>
-                                    onMultilinePasteIngredientRefs(i, text)
-                                }
-                                onPressEnter={() => onAddIngredientRef(i)}
-                                onDelete={() => onDeleteIngredientRef(i)}
-                                placeholder={
-                                    i === 0
-                                        ? "E.g., 1 cup onion, diced fine"
-                                        : ""
-                                }
+            <HunkOfIngredients
+                name={"ingredients"}
+                container={draft}
+                onUpdate={handleUpdate}
+                onAddIngredientRef={onAddIngredientRef}
+                onDeleteIngredientRef={onDeleteIngredientRef}
+                onMoveIngredientRef={onMoveIngredientRef}
+                onMultilinePasteIngredientRefs={onMultilinePasteIngredientRefs}
+                onAddSection={hasSections ? undefined : onAddSection}
+            />
+            {draft.sections?.map((s, i) => {
+                const owned = s.sectionOf === draft.id;
+                const keyPrefix = `sections.${i}.`;
+                return (
+                    <SectionUi key={i}>
+                        <Stack direction={"row"}>
+                            <Typography variant={"h6"}>
+                                {owned ? (
+                                    <TextField
+                                        name={keyPrefix + "name"}
+                                        placeholder="Section Name"
+                                        value={s.name || ""}
+                                        size={"small"}
+                                        onChange={handleUpdate}
+                                        variant="outlined"
+                                        inputProps={{
+                                            sx: {
+                                                minWidth: "10em",
+                                                fontWeight: "bold",
+                                            },
+                                        }}
+                                    />
+                                ) : (
+                                    s.name
+                                )}
+                            </Typography>
+                            <DeleteButton
+                                forType={"Section"}
+                                onConfirm={() => onDeleteSection(i)}
+                                tabIndex={-1}
                             />
-                        </Item>
-                    ))}
-                </List>
-            </DragContainer>
-            <Button
-                className={classes.button}
-                startIcon={<AddIcon />}
-                color="neutral"
-                variant="contained"
-                onClick={() => onAddIngredientRef()}
-            >
-                Add Ingredient
-            </Button>
+                        </Stack>
+                        {owned ? (
+                            <>
+                                <HunkOfIngredients
+                                    name={keyPrefix + "ingredients"}
+                                    container={s}
+                                    onUpdate={handleUpdate}
+                                    onAddIngredientRef={onAddIngredientRef}
+                                    onDeleteIngredientRef={
+                                        onDeleteIngredientRef
+                                    }
+                                    onMoveIngredientRef={onMoveIngredientRef}
+                                    onMultilinePasteIngredientRefs={
+                                        onMultilinePasteIngredientRefs
+                                    }
+                                    size={"small"}
+                                />
+                                <Box my={MARGIN}>
+                                    <TextField
+                                        name={keyPrefix + "directions"}
+                                        label="Section Directions"
+                                        size={"small"}
+                                        multiline
+                                        minRows={3}
+                                        maxRows={
+                                            (windowSize.height - 75) /
+                                            2 /
+                                            36 /* aiming for something around 25vh */
+                                        }
+                                        value={s.directions || ""}
+                                        onChange={handleUpdate}
+                                        placeholder="Section Directions"
+                                        fullWidth
+                                        variant="outlined"
+                                    />
+                                </Box>
+                                <Box my={MARGIN}>
+                                    <LabelAutoComplete
+                                        size={"small"}
+                                        fieldLabel={"Section Labels"}
+                                        labelList={labelList || []}
+                                        recipeLabels={s.labels ?? undefined}
+                                        onLabelChange={(_, labels, reason) =>
+                                            handleLabelChange(
+                                                keyPrefix + "labels",
+                                                labels,
+                                                reason,
+                                            )
+                                        }
+                                    />
+                                </Box>
+                            </>
+                        ) : (
+                            <Grid container spacing={1}>
+                                <IngredientDirectionsRow
+                                    recipe={s}
+                                    hideHeadings
+                                />
+                            </Grid>
+                        )}
+                    </SectionUi>
+                );
+            })}
+            {hasSections && (
+                <Button
+                    className={classes.button}
+                    startIcon={<AddIcon />}
+                    color="neutral"
+                    variant="contained"
+                    onClick={() => onAddSection()}
+                >
+                    Section
+                </Button>
+            )}
             <Box my={MARGIN}>
                 <TextField
                     name="directions"
-                    label="Directions"
+                    label="Recipe Directions"
                     multiline
                     minRows={6}
                     maxRows={
@@ -297,9 +345,12 @@ const RecipeForm: React.FC<Props> = ({
             </Box>
             <Box my={MARGIN}>
                 <LabelAutoComplete
+                    fieldLabel={"Recipe Labels"}
                     labelList={labelList || []}
                     recipeLabels={draft.labels ?? undefined}
-                    onLabelChange={handleLabelChange}
+                    onLabelChange={(_, labels, reason) =>
+                        handleLabelChange("labels", labels, reason)
+                    }
                 />
             </Box>
             <Grid container justifyContent={"space-between"}>
@@ -339,5 +390,141 @@ const RecipeForm: React.FC<Props> = ({
         </>
     );
 };
+
+type HunkProps = Omit<
+    UseRecipeFormReturn,
+    "draft" | "onUpdate" | "onAddSection" | "onDeleteSection"
+> & {
+    name: string;
+    container: Pick<DraftRecipe, "ingredients">;
+    onUpdate: (e: WithTarget<string | IngredientRef<unknown>>) => void;
+    size?: ButtonProps["size"];
+    onAddSection?: UseRecipeFormReturn["onAddSection"];
+};
+
+function HunkOfIngredients({
+    name,
+    container,
+    onUpdate,
+    onAddIngredientRef,
+    onDeleteIngredientRef,
+    onMoveIngredientRef,
+    onMultilinePasteIngredientRefs,
+    onAddSection,
+    size,
+}: HunkProps) {
+    const mobile = useIsMobile();
+    const classes = useStyles();
+
+    function handleIngredientDrop(
+        activeId: BfsId,
+        targetId: BfsId,
+        vertical: Vert,
+    ) {
+        onMoveIngredientRef(name, activeId, targetId, vertical === "above");
+    }
+
+    return (
+        <>
+            <DragContainer
+                onDrop={handleIngredientDrop}
+                renderOverlay={(id) => (
+                    <Box px={2} py={1}>
+                        <DragHandle />
+                        {container.ingredients.find((it) => it.id === id)
+                            ?.raw || ""}
+                    </Box>
+                )}
+            >
+                <List>
+                    {container.ingredients.map((it, i) => (
+                        <Item
+                            key={it.id}
+                            hideDivider
+                            dragId={it.id}
+                            suffix={
+                                <>
+                                    {!mobile && (
+                                        <IconButton
+                                            size="small"
+                                            tabIndex={-1}
+                                            onClick={() =>
+                                                onAddIngredientRef(name, i)
+                                            }
+                                        >
+                                            <AddIcon />
+                                        </IconButton>
+                                    )}
+                                    <IconButton
+                                        size="small"
+                                        tabIndex={-1}
+                                        onClick={() =>
+                                            onDeleteIngredientRef(name, i)
+                                        }
+                                    >
+                                        <DeleteIcon />
+                                    </IconButton>
+                                </>
+                            }
+                        >
+                            <ElEdit
+                                name={`${name}.${i}`}
+                                value={it}
+                                onChange={onUpdate}
+                                onMultilinePaste={(text) =>
+                                    onMultilinePasteIngredientRefs(
+                                        name,
+                                        i,
+                                        text,
+                                    )
+                                }
+                                onPressEnter={() => onAddIngredientRef(name, i)}
+                                onDelete={() => onDeleteIngredientRef(name, i)}
+                                placeholder={
+                                    i === 0 ? "1 cup onion, diced fine" : ""
+                                }
+                            />
+                        </Item>
+                    ))}
+                </List>
+            </DragContainer>
+            <Stack direction={"row"}>
+                <Button
+                    size={size}
+                    className={classes.button}
+                    startIcon={<AddIcon />}
+                    color="neutral"
+                    variant="contained"
+                    onClick={() => onAddIngredientRef(name)}
+                >
+                    Ingredient
+                </Button>
+                {onAddSection && (
+                    <Button
+                        size={size}
+                        className={classes.button}
+                        startIcon={<AddIcon />}
+                        color="neutral"
+                        variant="contained"
+                        onClick={() => onAddSection()}
+                    >
+                        Section
+                    </Button>
+                )}
+            </Stack>
+        </>
+    );
+}
+
+function SectionUi({ children }: React.PropsWithChildren) {
+    const { over, sensorProps } = useWhileOver();
+    return (
+        <Box my={MARGIN}>
+            <Paper elevation={over ? 6 : 2} {...sensorProps}>
+                <Box p={MARGIN}>{children}</Box>
+            </Paper>
+        </Box>
+    );
+}
 
 export default RecipeForm;
