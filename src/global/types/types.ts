@@ -30,7 +30,7 @@ export interface Recipe<I = Ingredient> extends IIngredient {
     directions?: Maybe<string>;
     externalUrl?: Maybe<string>;
     ingredients: IngredientRef<I>[];
-    sections?: Maybe<Section<I>[]>;
+    sections: Section<I>[];
     labels?: Maybe<string[]>;
     photo?: Maybe<string>;
     photoFocus?: Maybe<number[]>;

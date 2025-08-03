@@ -84,6 +84,7 @@ export const recipeRloFromItemRlo = (
                 }
                 return ref;
             }),
+            sections: [],
         };
         if (planItem.notes) {
             // replace the recipe's directions
