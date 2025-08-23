@@ -17,6 +17,9 @@ mutation updateRecipe($id: ID!, $info: IngredientInfo!) {
         url
         focus
       }
+      subrecipes {
+        id
+      }
     }
   }
 }
