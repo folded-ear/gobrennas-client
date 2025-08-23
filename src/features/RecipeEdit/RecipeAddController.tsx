@@ -1,11 +1,11 @@
 import { useCreateRecipe } from "@/data/hooks/useCreateRecipe";
 import { useGetAllLabels } from "@/data/hooks/useGetAllLabels";
 import { buildNewIngredientRef } from "@/data/hooks/useRecipeForm";
+import ErrorOccurred from "@/features/RecipeEdit/components/ErrorOccurred";
 import RecipeForm from "@/features/RecipeEdit/components/RecipeForm";
 import { DraftRecipe } from "@/global/types/types";
 import ClientId from "@/util/ClientId";
 import PageBody from "@/views/common/PageBody";
-import { Alert } from "@mui/material";
 import { useHistory } from "react-router-dom";
 
 export const RecipeAddController = () => {
@@ -46,9 +46,7 @@ export const RecipeAddController = () => {
 
     return (
         <PageBody>
-            {error && (
-                <Alert severity="error">Unable to save: {error?.message}</Alert>
-            )}
+            <ErrorOccurred title="Unable to save" errors={[error?.message]} />
             <RecipeForm
                 recipe={draft}
                 title={"Add A New Recipe"}
