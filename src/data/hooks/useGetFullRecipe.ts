@@ -53,31 +53,32 @@ export const useGetFullRecipe = (id: BfsId, secret?: string) => {
 
             if (!result || loading) return null;
 
-            const ingredients =
-                !result || !result.ingredients
-                    ? []
-                    : result.ingredients.map(mapIngredientRef<IIngredient>);
+            const ingredients = !result.ingredients
+                ? []
+                : result.ingredients.map(mapIngredientRef<IIngredient>);
 
-            const sections =
-                !result || !result.sections
-                    ? []
-                    : result.sections.map(mapSection<IIngredient>);
+            const sections = !result.sections
+                ? []
+                : result.sections.map(mapSection<IIngredient>);
 
-            const subrecipes =
-                !result || !result.subrecipes
-                    ? []
-                    : result.subrecipes.map((recipe) => ({
-                          id: recipe.id,
-                          name: recipe.name,
-                          totalTime: recipe.totalTime,
-                          directions: recipe.directions,
-                          ingredients: recipe.ingredients.map(
-                              mapIngredientRef<IIngredient>,
-                          ),
-                      }));
+            if (result.subrecipes) {
+                // treat subrecipes (and thus their sections) as sections
+                sections.splice(
+                    0,
+                    0,
+                    ...result.subrecipes.map((recipe) => ({
+                        id: recipe.id,
+                        name: recipe.name,
+                        totalTime: recipe.totalTime,
+                        directions: recipe.directions,
+                        ingredients: recipe.ingredients.map(
+                            mapIngredientRef<IIngredient>,
+                        ),
+                    })),
+                );
+            }
 
-            const planHistory =
-                !result || !result.plannedHistory ? [] : result.plannedHistory;
+            const planHistory = result.plannedHistory ?? [];
 
             const recipe: Recipe<IIngredient> = {
                 calories: result.calories,
@@ -97,7 +98,6 @@ export const useGetFullRecipe = (id: BfsId, secret?: string) => {
             return {
                 owner: result.owner,
                 recipe,
-                subrecipes,
                 planHistory,
             };
         },

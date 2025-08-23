@@ -23,7 +23,6 @@ const DoTheDance: React.FC<ShareInfo> = ({ secret, id }) => {
         <RecipeDetail
             anonymous
             recipe={fullRecipe.recipe}
-            subrecipes={fullRecipe.subrecipes}
             owner={fullRecipe.owner}
         />
     );

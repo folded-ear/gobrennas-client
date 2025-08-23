@@ -26,42 +26,12 @@ export const recipeRloByPlanAndBucket = (
             name: `${it.name} (${getBucketLabel(bucket)})`,
         }));
     }
-    return mapData(
-        buildSingleItemRecipeLO({
-            data: {
-                id: bucket.id,
-                status: PlanItemStatus.NEEDED,
-                name: getBucketLabel(bucket),
-                componentIds: items.map((it) => it.id),
-            },
-        }),
-        (r) => {
-            const idToIdx = new Map<string, number>();
-            items.forEach((it, i) => idToIdx.set(it.id, i));
-            const itToSubIdx = new Map<RecipeFromPlanItem, number>();
-            if (!r.subrecipes) {
-                throw new Error("No subrecipes?!");
-            }
-            r.subrecipes.forEach((it) =>
-                itToSubIdx.set(it, idToIdx.get(it.id) ?? -1),
-            );
-            const recipeWithPhoto = r.subrecipes
-                .slice()
-                .sort((a, b) => {
-                    const ai = itToSubIdx.get(a)!;
-                    const bi = itToSubIdx.get(b)!;
-                    if (ai >= 0 && bi < 0) return -1;
-                    if (ai < 0 && bi >= 0) return +1;
-                    return 0;
-                })
-                .find((it) => it.photo);
-            return recipeWithPhoto
-                ? {
-                      ...r,
-                      photo: recipeWithPhoto.photo,
-                      photoFocus: recipeWithPhoto.photoFocus,
-                  }
-                : r;
+    return buildSingleItemRecipeLO({
+        data: {
+            id: bucket.id,
+            status: PlanItemStatus.NEEDED,
+            name: getBucketLabel(bucket),
+            componentIds: items.map((it) => it.id),
         },
-    );
+    });
 };

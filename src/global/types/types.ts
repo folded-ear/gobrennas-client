@@ -76,9 +76,12 @@ export interface FromPlanItem {
     ancestorDeleting?: boolean;
 }
 
+export type SectionWithPhoto = Section &
+    Pick<RecipeFromPlanItem, "photo" | "photoFocus">;
+
 export interface RecipeFromPlanItem extends Recipe, FromPlanItem {
     subtaskIds?: BfsId[];
-    subrecipes?: RecipeFromPlanItem[];
+    sections: SectionWithPhoto[];
 }
 
 export type Subrecipe<I = Ingredient> = Pick<

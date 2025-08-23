@@ -2,9 +2,11 @@ import dispatcher, { ActionType } from "@/data/dispatcher";
 import useIsDevMode from "@/data/useIsDevMode";
 import useWindowSize from "@/data/useWindowSize";
 import FavoriteIndicator from "@/features/Favorites/components/Indicator";
+import SectionItem from "@/features/RecipeDisplay/components/SectionItem";
 import ItemImage from "@/features/RecipeLibrary/components/ItemImage";
 import ItemImageUpload from "@/features/RecipeLibrary/components/ItemImageUpload";
 import SendToPlan from "@/features/RecipeLibrary/components/SendToPlan";
+import { Photo } from "@/features/RecipeLibrary/types";
 import { BreadcrumbLink } from "@/global/components/BreadcrumbLink";
 import LabelItem from "@/global/components/LabelItem";
 import { UserType } from "@/global/types/identity";
@@ -12,7 +14,7 @@ import {
     IIngredient,
     Recipe,
     RecipeHistory,
-    Subrecipe,
+    SectionWithPhoto,
 } from "@/global/types/types";
 import { ReentrantScalingProvider, useScale } from "@/util/ScalingContext";
 import { formatDuration } from "@/util/time";
@@ -22,18 +24,16 @@ import PageBody from "@/views/common/PageBody";
 import RecipeInfo from "@/views/common/RecipeInfo";
 import Source from "@/views/common/Source";
 import User from "@/views/user/User";
-import { Box, Divider, Grid, Toolbar, Typography } from "@mui/material";
-import { Maybe } from "graphql/jsutils/Maybe";
+import { Box, Grid, Toolbar, Typography } from "@mui/material";
 import * as React from "react";
+import { useMemo } from "react";
 import { useHistory } from "react-router-dom";
 import IngredientDirectionsRow from "./IngredientDirectionsRow";
 import RecipeHistoryGrid from "./RecipeHistoryGrid";
 import { SubHeader } from "./Subheader";
-import SubrecipeItem from "./SubrecipeItem";
 
 interface Props<I = IIngredient> {
     recipe: Recipe<I>;
-    subrecipes: Maybe<Subrecipe<I>[]>;
     planHistory?: RecipeHistory[];
     anonymous?: boolean;
     mine?: boolean;
@@ -45,9 +45,28 @@ interface Props<I = IIngredient> {
     showFab?: boolean;
 }
 
+function findPhoto(recipe: Recipe<IIngredient>): Photo | undefined {
+    if (recipe.photo) {
+        return {
+            url: recipe.photo,
+            focus: recipe.photoFocus,
+        };
+    } else {
+        // This cast is safe, as the properties it declares are optional
+        const withPhoto = (recipe.sections as SectionWithPhoto[]).find(
+            (it) => it.photo,
+        );
+        if (withPhoto) {
+            return {
+                url: withPhoto.photo!,
+                focus: withPhoto.photoFocus,
+            };
+        }
+    }
+}
+
 const RecipeDetail: React.FC<Props> = ({
     recipe,
-    subrecipes,
     planHistory = [],
     mine = false,
     owner,
@@ -70,12 +89,7 @@ const RecipeDetail: React.FC<Props> = ({
         mine = false;
     }
 
-    const photo = recipe.photo
-        ? {
-              url: recipe.photo,
-              focus: recipe.photoFocus,
-          }
-        : undefined;
+    const photo = useMemo(() => findPhoto(recipe), [recipe]);
 
     const labelsToDisplay =
         recipe.labels &&
@@ -190,37 +204,18 @@ const RecipeDetail: React.FC<Props> = ({
                     )}
                 </Grid>
 
-                {subrecipes != null &&
-                    subrecipes.map((it) => (
-                        <SubrecipeItem
-                            key={it.id}
-                            recipe={it}
-                            loggedIn={loggedIn}
-                        />
-                    ))}
-
                 <ReentrantScalingProvider>
                     <IngredientDirectionsRow
                         recipe={recipe}
                         loggedIn={loggedIn}
                     />
-                    {recipe.sections != null &&
-                        recipe.sections.map((it) => (
-                            <React.Fragment key={it.id}>
-                                <Grid item xs={12}>
-                                    <Divider flexItem textAlign={"left"}>
-                                        <Typography variant={"h6"}>
-                                            {it.name || "Unnamed Section"}
-                                        </Typography>
-                                    </Divider>
-                                </Grid>
-                                <IngredientDirectionsRow
-                                    loggedIn={loggedIn}
-                                    recipe={it}
-                                    hideHeadings
-                                />
-                            </React.Fragment>
-                        ))}
+                    {recipe.sections.map((it) => (
+                        <SectionItem
+                            key={it.id}
+                            section={it}
+                            loggedIn={loggedIn}
+                        />
+                    ))}
                 </ReentrantScalingProvider>
                 {devMode && planHistory && planHistory.length > 0 && (
                     <RecipeHistoryGrid
