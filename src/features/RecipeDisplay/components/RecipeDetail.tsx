@@ -16,6 +16,7 @@ import {
     RecipeHistory,
     SectionWithPhoto,
 } from "@/global/types/types";
+import distinctByKey from "@/util/distinctByKey";
 import { ReentrantScalingProvider, useScale } from "@/util/ScalingContext";
 import { formatDuration } from "@/util/time";
 import FoodingerFab from "@/views/common/FoodingerFab";
@@ -209,13 +210,15 @@ const RecipeDetail: React.FC<Props> = ({
                         recipe={recipe}
                         loggedIn={loggedIn}
                     />
-                    {recipe.sections.map((it) => (
-                        <SectionItem
-                            key={it.id}
-                            section={it}
-                            loggedIn={loggedIn}
-                        />
-                    ))}
+                    {recipe.sections
+                        .filter(distinctByKey((it) => it.id))
+                        .map((it) => (
+                            <SectionItem
+                                key={it.id}
+                                section={it}
+                                loggedIn={loggedIn}
+                            />
+                        ))}
                 </ReentrantScalingProvider>
                 {devMode && planHistory && planHistory.length > 0 && (
                     <RecipeHistoryGrid
