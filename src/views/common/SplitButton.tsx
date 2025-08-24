@@ -1,6 +1,6 @@
 import { BfsId } from "@/global/types/identity";
 import { DropDownIcon } from "@/views/common/icons";
-import { ButtonProps, Paper } from "@mui/material";
+import { ButtonGroupProps, ButtonProps, Paper } from "@mui/material";
 import Button from "@mui/material/Button";
 import ButtonGroup, { ButtonGroupOwnProps } from "@mui/material/ButtonGroup";
 import ClickAwayListener from "@mui/material/ClickAwayListener";
@@ -17,7 +17,7 @@ export type SelectOption<TOption> = {
     value?: TOption | null;
 };
 
-interface Props<TOption> extends ButtonGroupOwnProps {
+type Props<TOption> = ButtonGroupOwnProps & {
     primary: ReactNode | string;
     onClick: ButtonProps["onClick"];
     options: SelectOption<TOption>[];
@@ -25,10 +25,12 @@ interface Props<TOption> extends ButtonGroupOwnProps {
     disabled?: boolean;
     dropdownDisabled?: boolean;
     startIcon?: ReactNode;
-}
+    className?: ButtonGroupProps["className"];
+};
 
 const SplitButton = <TOption,>({
     primary,
+    className,
     onClick,
     onSelect,
     options,
@@ -36,6 +38,7 @@ const SplitButton = <TOption,>({
     dropdownDisabled = disabled,
     variant = "contained",
     color = "primary",
+    size = "small",
     startIcon,
     disableElevation,
 }: Props<TOption>) => {
@@ -76,10 +79,12 @@ const SplitButton = <TOption,>({
                 sx={{
                     minWidth: 0,
                 }}
+                size={size}
+                className={className}
             >
                 <Button
                     startIcon={startIcon ? startIcon : null}
-                    size="small"
+                    size={size}
                     onClick={handleClick}
                     disabled={disabled}
                 >
@@ -94,7 +99,7 @@ const SplitButton = <TOption,>({
                     </span>
                 </Button>
                 <Button
-                    size="small"
+                    size={size}
                     onClick={handleToggle}
                     disabled={dropdownDisabled || !options || !options.length}
                     sx={{
@@ -112,24 +117,31 @@ const SplitButton = <TOption,>({
                 disablePortal
                 placement={"bottom-end"}
                 sx={{
-                    popper: {
-                        zIndex: 1100,
-                    },
+                    // this gets the menu up above field placeholders
+                    zIndex: 2,
                 }}
             >
                 {({ TransitionProps, placement }) => (
                     <Grow
                         {...TransitionProps}
                         style={{
-                            transformOrigin:
-                                placement === "bottom"
-                                    ? "right top"
-                                    : "right bottom",
+                            transformOrigin: placement.includes("bottom")
+                                ? "right top"
+                                : "right bottom",
                         }}
                     >
-                        <Paper>
+                        <Paper
+                            elevation={4}
+                            sx={{
+                                borderStartStartRadius: 0,
+                                borderStartEndRadius: 0,
+                            }}
+                        >
                             <ClickAwayListener onClickAway={handleClose}>
-                                <MenuList id="split-button-menu">
+                                <MenuList
+                                    id="split-button-menu"
+                                    dense={size === "small"}
+                                >
                                     {options.map((option) => (
                                         <MenuItem
                                             key={option.id}

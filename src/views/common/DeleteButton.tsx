@@ -82,8 +82,16 @@ const DeleteButton: React.FC<DeleteButtonProps> = ({
                     Irrevocably delete this {forType}?
                 </DialogTitle>
                 <DialogActions>
-                    <Button onClick={handleCancel}>Cancel</Button>
-                    <Button onClick={handleConfirm} color="primary" autoFocus>
+                    <Button size={"small"} onClick={handleCancel}>
+                        Cancel
+                    </Button>
+                    <Button
+                        size={"small"}
+                        onClick={handleConfirm}
+                        color="primary"
+                        autoFocus
+                        variant={"contained"}
+                    >
                         Delete
                     </Button>
                 </DialogActions>

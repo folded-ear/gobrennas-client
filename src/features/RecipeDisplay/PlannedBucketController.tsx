@@ -35,7 +35,6 @@ const PlannedBucketController: React.FC<Props> = ({ match }) => {
     return (
         <RecipeDetail
             recipe={recipe}
-            subrecipes={recipe.subrecipes}
             nav={
                 <>
                     {recipe.libraryRecipeId != null && (

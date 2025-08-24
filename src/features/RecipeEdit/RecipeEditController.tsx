@@ -3,6 +3,7 @@ import { useDeleteRecipe } from "@/data/hooks/useDeleteRecipe";
 import { useGetAllLabels } from "@/data/hooks/useGetAllLabels";
 import { useGetRecipe } from "@/data/hooks/useGetRecipe";
 import { useUpdateRecipe } from "@/data/hooks/useUpdateRecipe";
+import ErrorOccurred from "@/features/RecipeEdit/components/ErrorOccurred";
 import RecipeForm from "@/features/RecipeEdit/components/RecipeForm";
 import { BfsId } from "@/global/types/identity";
 import type { DraftRecipe } from "@/global/types/types";
@@ -72,16 +73,10 @@ const RecipeEditController: React.FC<Props> = ({ match }) => {
 
     return (
         <PageBody>
-            {createError && (
-                <Alert severity="error">
-                    Unable to save: {createError?.message}
-                </Alert>
-            )}
-            {updateError && (
-                <Alert severity="error">
-                    Unable to save: {updateError?.message}
-                </Alert>
-            )}
+            <ErrorOccurred
+                title="Unable to save"
+                errors={[createError?.message, updateError?.message]}
+            />
             <RecipeForm
                 title={
                     shouldCreateCopy

@@ -45,10 +45,11 @@ export const ReentrantScalingProvider = ({ children }: PropsWithChildren) => {
  */
 export const useScale = () => useContext(ScaleContext);
 
-export const useScaleOptions = () => {
+export const useScaleOptions = (noScaling?: boolean) => {
     let found = false;
     const value = useScale();
     const set = useContext(SetScaleContext);
+    if (noScaling) return [];
     if (set == null) {
         throw new TypeError(
             "useScaleOptions must be used w/in a scaling context.",

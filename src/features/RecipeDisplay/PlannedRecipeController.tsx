@@ -44,7 +44,6 @@ const PlannedRecipeController: React.FC<Props> = ({ match }) => {
     return (
         <RecipeDetail
             recipe={recipe}
-            subrecipes={recipe.subrecipes}
             nav={
                 <>
                     <CookedItButton recipe={recipe} />

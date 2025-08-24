@@ -5,11 +5,6 @@ export const toMilliseconds = (time?: number) => {
     return time * 60 * 1000;
 };
 
-export const fromMilliseconds = (time?: number) => {
-    if (time == null) return null;
-    return time / (60 * 1000);
-};
-
 export const formatDuration = (minutes: number) => {
     minutes = Math.ceil(minutes); // round up
     if (minutes < 60) {

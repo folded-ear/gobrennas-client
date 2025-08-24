@@ -21,6 +21,33 @@ fragment recipeCore on Recipe {
     }
     preparation
   }
+  sections {
+    ...sectionCore
+  }
+}`);
+
+export const SECTION_CORE_FRAGMENT = gql(`
+fragment sectionCore on Section {
+  id
+  name
+  directions
+  sectionOf {
+    id
+    name
+  }
+  ingredients {
+    raw
+    quantity {
+      quantity
+      units { name }
+    }
+    ingredient {
+      id
+      name
+    }
+    preparation
+  }
+  labels
 }`);
 
 export const LIBRARY_SEARCH_RESULT_FRAGMENT = gql(`
@@ -134,6 +161,9 @@ fragment recipeLoad on Recipe {
     }
     preparation
   }
+  sections {
+    ...sectionLoad
+  }
   labels
   owner {
     id
@@ -145,4 +175,27 @@ fragment recipeLoad on Recipe {
     url
     focus
   }
+}`);
+
+export const SECTION_LOAD_FRAGMENT = gql(`
+fragment sectionLoad on Section {
+  id
+  name
+  directions
+  ingredients {
+    raw
+    quantity {
+      quantity
+      units {
+        id
+        name
+      }
+    }
+    ingredient {
+      id
+      name
+    }
+    preparation
+  }
+  labels
 }`);

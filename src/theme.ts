@@ -150,6 +150,15 @@ export function useBfsTheme() {
                             },
                         },
                     },
+                    MuiDivider: {
+                        styleOverrides: {
+                            textAlignLeft: {
+                                // default is 10/90
+                                "&::before": { width: "5%" },
+                                "&::after": { width: "95%" },
+                            },
+                        },
+                    },
                 },
             }),
         );

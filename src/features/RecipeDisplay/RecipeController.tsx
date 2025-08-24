@@ -49,7 +49,6 @@ const RecipeController: React.FC<Props> = ({ match }) => {
             <ScalingProvider>
                 <RecipeDetail
                     recipe={fullRecipe.recipe}
-                    subrecipes={fullRecipe.subrecipes}
                     planHistory={fullRecipe.planHistory}
                     mine={mine}
                     owner={fullRecipe.owner}

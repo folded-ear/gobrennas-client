@@ -2,10 +2,12 @@ import { PlanItemStatus } from "@/__generated__/graphql";
 import planStore, {
     PlanItem as TPlanItem,
 } from "@/features/Planner/data/planStore";
+import { BfsId } from "@/global/types/identity";
 import type {
     Ingredient,
     IngredientRef,
     RecipeFromPlanItem,
+    SectionWithPhoto,
 } from "@/global/types/types";
 import { RippedLO } from "@/util/ripLoadObject";
 import LibraryStore from "../../RecipeLibrary/data/LibraryStore";
@@ -19,7 +21,14 @@ export const recipeRloFromItemRlo = (
     if (itemRlo.data == null)
         return itemRlo as unknown as RippedLO<RecipeFromPlanItem>;
 
-    const subs: RecipeFromPlanItem[] = [];
+    // If components are shuffled around, we can end up visiting a given item
+    // as both a component and a descendant, but only want it to appear once.
+    // Note that if recipe is present multiple times, all instances need to be
+    // present, as they may have undergone distinct mods on the plan. The user's
+    // going to have to do some work to figure out which one goes with what, but
+    // we already know they're smart - they use BFS!
+    const visitedItemIds = new Set<BfsId>();
+    const sections: SectionWithPhoto[] = [];
     let loading = false;
     const computeKids = (item: OrphanPlanItem): TPlanItem[] => {
         const subIds = item.subtaskIds || [];
@@ -72,18 +81,20 @@ export const recipeRloFromItemRlo = (
                         recurse = recurse || ing.type === "Recipe";
                     }
                 }
-                if (recurse && subs.every((s) => s.id !== ref.id)) {
-                    subs.push(
-                        prepRecipe(
-                            kid,
-                            iRlo,
-                            completing || ancestorCompleting,
-                            deleting || ancestorDeleting,
-                        ),
+                if (recurse && !visitedItemIds.has(kid.id)) {
+                    visitedItemIds.add(kid.id);
+                    const idx = sections.length;
+                    const sub = prepRecipe(
+                        kid,
+                        iRlo,
+                        completing || ancestorCompleting,
+                        deleting || ancestorDeleting,
                     );
+                    sections.splice(idx, 0, sub);
                 }
                 return ref;
             }),
+            sections: [],
         };
         if (planItem.notes) {
             // replace the recipe's directions
@@ -106,7 +117,7 @@ export const recipeRloFromItemRlo = (
         };
     };
     const recipe = prepRecipe(itemRlo.data);
-    recipe.subrecipes = subs;
+    recipe.sections = sections;
     return {
         ...itemRlo,
         data: recipe,

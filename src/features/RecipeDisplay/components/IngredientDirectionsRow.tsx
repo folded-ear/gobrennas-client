@@ -1,4 +1,4 @@
-import { IIngredient, Subrecipe } from "@/global/types/types";
+import { IIngredient, Recipe } from "@/global/types/types";
 import { useScaleOptions } from "@/util/ScalingContext";
 import Directions from "@/views/common/Directions";
 import IngredientItem from "@/views/IngredientItem";
@@ -13,7 +13,7 @@ import {
 import * as React from "react";
 
 interface Props {
-    recipe: Subrecipe<IIngredient>;
+    recipe: Pick<Recipe<IIngredient>, "ingredients" | "directions">;
     loggedIn?: boolean;
     hideHeadings?: boolean;
 }
@@ -23,7 +23,7 @@ const IngredientDirectionsRow: React.FC<Props> = ({
     loggedIn,
     hideHeadings,
 }) => {
-    const scaleOpts = useScaleOptions();
+    const scaleOpts = useScaleOptions(hideHeadings);
     return (
         <>
             <Grid item xs={12} sm={5}>
