@@ -114,6 +114,21 @@ const RecipeForm: React.FC<Props> = ({
         }
     };
 
+    const handleSave = (callback: Props["onSave"]): void => {
+        // this is ridiculous, but better than the nothing it was before
+        if (!draft.name || !draft.name.trim()) {
+            alert("A recipe title is required.");
+            return;
+        }
+        for (const s of draft.sections) {
+            if (!s.name || !s.name.trim()) {
+                alert("A section title is required.");
+                return;
+            }
+        }
+        callback(draft);
+    };
+
     const hasPhoto: boolean =
         draft.photoUpload !== null || draft.photoUrl !== null;
 
@@ -133,6 +148,7 @@ const RecipeForm: React.FC<Props> = ({
             />
             <Box my={MARGIN}>
                 <TextField
+                    required
                     name="name"
                     fullWidth
                     variant="outlined"
@@ -140,6 +156,7 @@ const RecipeForm: React.FC<Props> = ({
                     label="Title"
                     value={draft.name || ""}
                     onChange={handleUpdate}
+                    error={!draft.name || !draft.name.trim()}
                 />
             </Box>
             <Box my={MARGIN}>
@@ -200,6 +217,7 @@ const RecipeForm: React.FC<Props> = ({
                         <Stack direction={"row"}>
                             {owned ? (
                                 <TextField
+                                    required
                                     name={keyPrefix + "name"}
                                     placeholder="Salad Dressing"
                                     value={s.name || ""}
@@ -212,6 +230,7 @@ const RecipeForm: React.FC<Props> = ({
                                             fontWeight: "bold",
                                         },
                                     }}
+                                    error={!s.name || !s.name.trim()}
                                 />
                             ) : (
                                 <Typography variant={"h6"}>
@@ -378,7 +397,7 @@ const RecipeForm: React.FC<Props> = ({
                         className={classes.button}
                         variant="contained"
                         color="primary"
-                        onClick={() => onSave(draft)}
+                        onClick={() => handleSave(onSave)}
                         startIcon={<SaveIcon />}
                     >
                         Save
@@ -389,7 +408,7 @@ const RecipeForm: React.FC<Props> = ({
                             variant="contained"
                             color="neutral"
                             startIcon={<CopyIcon />}
-                            onClick={() => onSaveCopy(draft)}
+                            onClick={() => handleSave(onSaveCopy)}
                         >
                             Save as Copy
                         </Button>
