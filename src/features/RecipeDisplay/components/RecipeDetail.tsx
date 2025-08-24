@@ -215,6 +215,7 @@ const RecipeDetail: React.FC<Props> = ({
                         .map((it) => (
                             <SectionItem
                                 key={it.id}
+                                recipe={recipe}
                                 section={it}
                                 loggedIn={loggedIn}
                             />

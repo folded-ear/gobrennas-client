@@ -27,9 +27,9 @@ export function recipeToIngredientInfo(recipe: DraftRecipe): IngredientInfo {
             const s = {
                 ...it,
                 id: it.id == null || ClientId.is(it.id) ? null : it.id,
-                ingredients: it.ingredients.map(mapIngRef),
+                ingredients: (it.ingredients ?? []).map(mapIngRef),
                 directions: it.directions ?? "",
-                labels: it.labels || [],
+                labels: it.labels ?? [],
             };
             delete s.sectionOf;
             return s;

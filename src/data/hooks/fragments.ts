@@ -33,6 +33,7 @@ fragment sectionCore on Section {
   directions
   sectionOf {
     id
+    name
   }
   ingredients {
     raw

@@ -4,6 +4,7 @@ import mapIngredientRef from "@/data/utils/mapIngredientRef";
 import mapSection from "@/data/utils/mapSection";
 import { BfsId } from "@/global/types/identity";
 import { Ingredient, Recipe } from "@/global/types/types";
+import { client } from "@/providers/ApolloClient";
 import useAdaptingQuery from "./useAdaptingQuery";
 
 const GET_RECIPE_QUERY = gql(`
@@ -40,7 +41,7 @@ function adapter(data: GetRecipeQuery | undefined) {
             ? []
             : result.sections.map(mapSection<Ingredient>);
 
-    const recipe: Recipe<Ingredient> = {
+    const recipe: Recipe = {
         id: result?.id as BfsId,
         ownerId: result?.owner.id,
         calories: result?.calories || null,
@@ -60,6 +61,14 @@ function adapter(data: GetRecipeQuery | undefined) {
 
 export const useGetRecipe = (id: string) => {
     return useAdaptingQuery(GET_RECIPE_QUERY, adapter, {
-        variables: { id: id },
+        variables: { id },
     });
 };
+
+export const promiseGetRecipe = (id: string) =>
+    client
+        .query({
+            query: GET_RECIPE_QUERY,
+            variables: { id },
+        })
+        .then((raw) => adapter(raw.data));

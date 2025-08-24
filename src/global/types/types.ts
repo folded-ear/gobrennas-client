@@ -16,8 +16,8 @@ export interface PantryItem extends IIngredient {
 }
 
 export interface Section<I = Ingredient> {
-    id?: BfsId;
-    sectionOf?: Maybe<BfsId>;
+    id: BfsId;
+    sectionOf?: Maybe<{ id: BfsId; name: string }>;
     name: string;
     directions?: Maybe<string>;
     ingredients: IngredientRef<I>[];

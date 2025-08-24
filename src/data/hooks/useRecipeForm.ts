@@ -1,3 +1,4 @@
+import { promiseGetRecipe } from "@/data/hooks/useGetRecipe";
 import { BfsId, Identified } from "@/global/types/identity";
 import {
     DraftRecipe,
@@ -25,7 +26,8 @@ export type UseRecipeFormReturn = {
         idx: number,
         text: string,
     ): void;
-    onAddSection(idx?: number): void;
+    onAddOwnedSection(idx?: number): void;
+    onAddByRefSection(ref: Partial<Section> & Identified): void;
     onDeleteSection(idx: number): void;
 };
 
@@ -62,7 +64,7 @@ export const buildNewIngredientRef = (
 
 const buildNewSection = (sectionOf: BfsId): Section & Identified => ({
     id: ClientId.next(),
-    sectionOf,
+    sectionOf: { id: sectionOf, name: "" },
     name: "",
     directions: "",
     ingredients: [buildNewIngredientRef()],
@@ -167,8 +169,28 @@ export function useRecipeForm(recipe: Recipe): UseRecipeFormReturn {
         onDeleteIngredientRef: onDelete,
         onMoveIngredientRef: onMoveWithin,
         onMultilinePasteIngredientRefs,
-        // a draft's id will never change, so this is safe
-        onAddSection: () => onAdd("sections", () => buildNewSection(draft.id)),
+        onAddOwnedSection: () =>
+            // a draft's id will never change, so this is safe
+            onAdd("sections", () => buildNewSection(draft.id)),
+        onAddByRefSection: (ref) => {
+            // need to pull down the rest of the details
+            promiseGetRecipe(ref.id).then((section) =>
+                onAdd(
+                    "sections",
+                    (): Section => ({
+                        id: section.id,
+                        name: section.name,
+                        directions: section.directions,
+                        ingredients: section.ingredients,
+                        labels: section.labels,
+                        sectionOf: {
+                            id: ref.sectionOf!.id,
+                            name: ref.sectionOf!.name,
+                        },
+                    }),
+                ),
+            );
+        },
         onDeleteSection: (idx: number) => onDelete("sections", idx),
     };
 }

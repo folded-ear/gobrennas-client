@@ -7,7 +7,7 @@ export default function mapSection<I>(
 ) {
     return {
         id: section.id,
-        sectionOf: section.sectionOf?.id,
+        sectionOf: section.sectionOf,
         name: section.name,
         directions: section.directions,
         ingredients: section.ingredients.map(mapIngredientRef),

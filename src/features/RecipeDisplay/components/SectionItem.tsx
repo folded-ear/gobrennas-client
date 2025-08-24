@@ -1,16 +1,17 @@
 import CollapseIconButton from "@/global/components/CollapseIconButton";
-import { IIngredient, Section } from "@/global/types/types";
+import { IIngredient, Recipe, Section } from "@/global/types/types";
 import { Divider, Grid, Stack, Typography } from "@mui/material";
 import * as React from "react";
 import { useCallback } from "react";
 import IngredientDirectionsRow from "./IngredientDirectionsRow";
 
 interface Props {
+    recipe: Recipe<IIngredient>;
     section: Section<IIngredient>;
     loggedIn?: boolean;
 }
 
-const SectionItem: React.FC<Props> = ({ section, loggedIn }) => {
+const SectionItem: React.FC<Props> = ({ recipe, section, loggedIn }) => {
     const [expanded, setExpanded] = React.useState(true);
     const toggleExpanded = useCallback(() => setExpanded((s) => !s), []);
     return (
@@ -31,6 +32,16 @@ const SectionItem: React.FC<Props> = ({ section, loggedIn }) => {
                             }}
                         >
                             {section.name || "Unnamed Section"}
+                            {section.sectionOf &&
+                                section.sectionOf.id !== recipe.id && (
+                                    <Typography
+                                        variant={"body1"}
+                                        component={"span"}
+                                        sx={{ ml: 1 }}
+                                    >
+                                        (of {section.sectionOf.name})
+                                    </Typography>
+                                )}
                         </Typography>
                     </Stack>
                 </Divider>

@@ -6,6 +6,7 @@ import DragContainer, {
 import DragHandle from "@/features/Planner/components/DragHandle";
 import Item from "@/features/Planner/components/Item";
 import IngredientDirectionsRow from "@/features/RecipeDisplay/components/IngredientDirectionsRow";
+import NewSectionButton from "@/features/RecipeEdit/components/NewSectionButton";
 import PositionPicker from "@/features/RecipeEdit/components/PositionPicker";
 import { TextractForm } from "@/features/RecipeEdit/components/TextractForm";
 import { BfsId } from "@/global/types/identity";
@@ -76,14 +77,15 @@ const RecipeForm: React.FC<Props> = ({
         onDeleteIngredientRef,
         onMoveIngredientRef,
         onMultilinePasteIngredientRefs,
-        onAddSection,
+        onAddOwnedSection,
+        onAddByRefSection,
         onDeleteSection,
     } = useRecipeForm(recipe);
 
     const handleUpdate = React.useCallback(
         (e: WithTarget<string | IngredientRef<unknown>>) => {
             const { name: key, value } = e.target;
-            onUpdate(key, value ? value : "");
+            onUpdate(key, value ?? "");
         },
         [onUpdate],
     );
@@ -116,6 +118,9 @@ const RecipeForm: React.FC<Props> = ({
         draft.photoUpload !== null || draft.photoUrl !== null;
 
     const hasSections = draft.sections && draft.sections.length > 0;
+    // It's possible to have an owned section be a by reference-section of its
+    // owner as well. It shouldn't happen, but ensure it won't cause problems.
+    const ownedSectionIds = new Set<BfsId>();
     return (
         <>
             <Typography variant="h2">{title}</Typography>
@@ -181,34 +186,51 @@ const RecipeForm: React.FC<Props> = ({
                 onDeleteIngredientRef={onDeleteIngredientRef}
                 onMoveIngredientRef={onMoveIngredientRef}
                 onMultilinePasteIngredientRefs={onMultilinePasteIngredientRefs}
-                onAddSection={hasSections ? undefined : onAddSection}
+                onAddOwnedSection={hasSections ? undefined : onAddOwnedSection}
+                onAddByRefSection={hasSections ? undefined : onAddByRefSection}
+                placeholder={"1 cup onion, diced fine"}
             />
             {draft.sections?.map((s, i) => {
-                const owned = s.sectionOf === draft.id;
+                const owned =
+                    s.sectionOf?.id === draft.id && !ownedSectionIds.has(s.id);
+                if (owned) ownedSectionIds.add(s.id);
                 const keyPrefix = `sections.${i}.`;
                 return (
                     <SectionUi key={i}>
                         <Stack direction={"row"}>
-                            <Typography variant={"h6"}>
-                                {owned ? (
-                                    <TextField
-                                        name={keyPrefix + "name"}
-                                        placeholder="Section Name"
-                                        value={s.name || ""}
-                                        size={"small"}
-                                        onChange={handleUpdate}
-                                        variant="outlined"
-                                        inputProps={{
-                                            sx: {
-                                                minWidth: "10em",
-                                                fontWeight: "bold",
-                                            },
-                                        }}
-                                    />
-                                ) : (
-                                    s.name
-                                )}
-                            </Typography>
+                            {owned ? (
+                                <TextField
+                                    name={keyPrefix + "name"}
+                                    placeholder="Salad Dressing"
+                                    value={s.name || ""}
+                                    size={"small"}
+                                    onChange={handleUpdate}
+                                    variant="outlined"
+                                    inputProps={{
+                                        sx: {
+                                            minWidth: "10em",
+                                            fontWeight: "bold",
+                                        },
+                                    }}
+                                />
+                            ) : (
+                                <Typography variant={"h6"}>
+                                    {s.name}
+                                    {!owned && s.sectionOf && (
+                                        <Typography
+                                            variant={"body1"}
+                                            component={"span"}
+                                            sx={{ ml: 1 }}
+                                        >
+                                            (of{" "}
+                                            {s.sectionOf.id === draft.id
+                                                ? "this recipe"
+                                                : s.sectionOf.name}
+                                            )
+                                        </Typography>
+                                    )}
+                                </Typography>
+                            )}
                             <DeleteButton
                                 forType={"Section"}
                                 onConfirm={() => onDeleteSection(i)}
@@ -230,6 +252,7 @@ const RecipeForm: React.FC<Props> = ({
                                         onMultilinePasteIngredientRefs
                                     }
                                     size={"small"}
+                                    placeholder={"½ c olive oil"}
                                 />
                                 <Box my={MARGIN}>
                                     <TextField
@@ -278,15 +301,11 @@ const RecipeForm: React.FC<Props> = ({
                 );
             })}
             {hasSections && (
-                <Button
+                <NewSectionButton
                     className={classes.button}
-                    startIcon={<AddIcon />}
-                    color="neutral"
-                    variant="contained"
-                    onClick={() => onAddSection()}
-                >
-                    Section
-                </Button>
+                    onAddOwnedSection={onAddOwnedSection}
+                    onAddByRefSection={onAddByRefSection}
+                />
             )}
             <Box my={MARGIN}>
                 <TextField
@@ -391,16 +410,22 @@ const RecipeForm: React.FC<Props> = ({
     );
 };
 
-type HunkProps = Omit<
+type HunkProps = Pick<
     UseRecipeFormReturn,
-    "draft" | "onUpdate" | "onAddSection" | "onDeleteSection"
-> & {
-    name: string;
-    container: Pick<DraftRecipe, "ingredients">;
-    onUpdate: (e: WithTarget<string | IngredientRef<unknown>>) => void;
-    size?: ButtonProps["size"];
-    onAddSection?: UseRecipeFormReturn["onAddSection"];
-};
+    | "onAddIngredientRef"
+    | "onDeleteIngredientRef"
+    | "onMoveIngredientRef"
+    | "onMultilinePasteIngredientRefs"
+> &
+    Partial<
+        Pick<UseRecipeFormReturn, "onAddOwnedSection" | "onAddByRefSection">
+    > & {
+        name: string;
+        container: Pick<DraftRecipe, "ingredients">;
+        onUpdate: (e: WithTarget<string | IngredientRef<unknown>>) => void;
+        size?: ButtonProps["size"];
+        placeholder?: string;
+    };
 
 function HunkOfIngredients({
     name,
@@ -410,8 +435,10 @@ function HunkOfIngredients({
     onDeleteIngredientRef,
     onMoveIngredientRef,
     onMultilinePasteIngredientRefs,
-    onAddSection,
+    onAddOwnedSection,
+    onAddByRefSection,
     size,
+    placeholder,
 }: HunkProps) {
     const mobile = useIsMobile();
     const classes = useStyles();
@@ -480,9 +507,7 @@ function HunkOfIngredients({
                                 }
                                 onPressEnter={() => onAddIngredientRef(name, i)}
                                 onDelete={() => onDeleteIngredientRef(name, i)}
-                                placeholder={
-                                    i === 0 ? "1 cup onion, diced fine" : ""
-                                }
+                                placeholder={i === 0 ? placeholder : ""}
                             />
                         </Item>
                     ))}
@@ -499,17 +524,13 @@ function HunkOfIngredients({
                 >
                     Ingredient
                 </Button>
-                {onAddSection && (
-                    <Button
-                        size={size}
+                {onAddOwnedSection && onAddByRefSection && (
+                    <NewSectionButton
                         className={classes.button}
-                        startIcon={<AddIcon />}
-                        color="neutral"
-                        variant="contained"
-                        onClick={() => onAddSection()}
-                    >
-                        Section
-                    </Button>
+                        size={size}
+                        onAddOwnedSection={onAddOwnedSection}
+                        onAddByRefSection={onAddByRefSection}
+                    />
                 )}
             </Stack>
         </>
