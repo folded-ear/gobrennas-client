@@ -38,7 +38,7 @@ import * as React from "react";
 import { PropsWithChildren, ReactElement } from "react";
 import LibraryStore from "../data/LibraryStore";
 
-const drawerWidth = 220;
+const drawerWidth = 250;
 const BUCKET_PREFIX = "bucket-";
 
 const openedMixin: CSSObject = {
@@ -74,6 +74,7 @@ const DndItem = withStyles(() => ({
 type RecipeInfo = PlanItem & {
     depth: number;
     bucket?: Maybe<PlanBucket>;
+    implicitBucket?: boolean;
     photo?: Recipe["photo"];
 } & (
         | { canCook: false }
@@ -108,6 +109,7 @@ export const BodyContainer: React.FC = () => {
                     recipes.push({
                         ...it,
                         bucketId: contextualBucketId,
+                        implicitBucket: it.bucketId == null && depth > 1,
                         canCook: true,
                         planId: plan.id,
                         depth,
@@ -318,7 +320,7 @@ const PlannedRecipe: React.FC<PlannedRecipeProps> = ({ item }) => {
                 <Typography
                     component={goingAway ? "del" : "div"}
                     variant={"body2"}
-                    fontWeight={"bold"}
+                    fontWeight={item.implicitBucket ? undefined : "bold"}
                 >
                     {isDoNotRecognize(item)
                         ? item.name.substring(1)
