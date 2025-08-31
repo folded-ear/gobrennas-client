@@ -6,6 +6,7 @@ import DragContainer, {
 import DragHandle from "@/features/Planner/components/DragHandle";
 import Item from "@/features/Planner/components/Item";
 import IngredientDirectionsRow from "@/features/RecipeDisplay/components/IngredientDirectionsRow";
+import ErrorOccurred from "@/features/RecipeEdit/components/ErrorOccurred";
 import NewSectionButton from "@/features/RecipeEdit/components/NewSectionButton";
 import PositionPicker from "@/features/RecipeEdit/components/PositionPicker";
 import { TextractForm } from "@/features/RecipeEdit/components/TextractForm";
@@ -38,7 +39,7 @@ import {
 } from "@mui/material";
 import makeStyles from "@mui/styles/makeStyles";
 import * as React from "react";
-import { ReactNode } from "react";
+import { ReactNode, useState } from "react";
 import { LabelAutoComplete } from "./LabelAutoComplete";
 
 const MARGIN = 2;
@@ -69,6 +70,7 @@ const RecipeForm: React.FC<Props> = ({
 }) => {
     const windowSize = useWindowSize();
     const classes = useStyles();
+    const [errorMessage, setErrorMessage] = useState("");
 
     const {
         draft,
@@ -117,12 +119,12 @@ const RecipeForm: React.FC<Props> = ({
     const handleSave = (callback: Props["onSave"]): void => {
         // this is ridiculous, but better than the nothing it was before
         if (!draft.name || !draft.name.trim()) {
-            alert("A recipe title is required.");
+            setErrorMessage("A recipe title is required.");
             return;
         }
         for (const s of draft.sections) {
             if (!s.name || !s.name.trim()) {
-                alert("A section title is required.");
+                setErrorMessage("A section title is required.");
                 return;
             }
         }
@@ -138,6 +140,11 @@ const RecipeForm: React.FC<Props> = ({
     const ownedSectionIds = new Set<BfsId>();
     return (
         <>
+            <ErrorOccurred
+                title="Unable to save"
+                errors={[errorMessage]}
+                onClose={() => setErrorMessage("")}
+            />
             <Typography variant="h2">{title}</Typography>
             <TextractForm
                 updateDraft={onUpdate}

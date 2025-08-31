@@ -14,16 +14,20 @@ import { useEffect, useState } from "react";
 interface Props {
     title: string;
     errors: Array<string | undefined | null>;
+    onClose?: () => void;
 }
 
-export default function ErrorOccurred({ title, errors }: Props) {
+export default function ErrorOccurred({ title, errors, onClose }: Props) {
     const [open, setOpen] = useState(false);
     const error = errors.find((it) => it);
     useEffect(() => {
         if (error) setOpen(true);
     }, [error]);
 
-    const handleClose = () => setOpen(false);
+    const handleClose = () => {
+        setOpen(false);
+        if (onClose) onClose();
+    };
 
     return (
         <Dialog
@@ -42,7 +46,7 @@ export default function ErrorOccurred({ title, errors }: Props) {
             </DialogTitle>
             <DialogContent>
                 <DialogContentText id="error-occurred-description">
-                    <Typography>{error}</Typography>
+                    <Typography sx={{ minWidth: "18em" }}>{error}</Typography>
                 </DialogContentText>
             </DialogContent>
             <DialogActions>
