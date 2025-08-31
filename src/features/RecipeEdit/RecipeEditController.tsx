@@ -3,6 +3,7 @@ import { useDeleteRecipe } from "@/data/hooks/useDeleteRecipe";
 import { useGetAllLabels } from "@/data/hooks/useGetAllLabels";
 import { useGetRecipe } from "@/data/hooks/useGetRecipe";
 import { useUpdateRecipe } from "@/data/hooks/useUpdateRecipe";
+import ErrorOccurred from "@/features/RecipeEdit/components/ErrorOccurred";
 import RecipeForm from "@/features/RecipeEdit/components/RecipeForm";
 import { BfsId } from "@/global/types/identity";
 import type { DraftRecipe } from "@/global/types/types";
@@ -24,7 +25,7 @@ const RecipeEditController: React.FC<Props> = ({ match }) => {
     const { error: updateError, updateRecipe } = useUpdateRecipe();
     const { error: createError, createRecipeFrom } = useCreateRecipeFrom();
     const myProfileId = useProfileId();
-    const [deleteRecipe] = useDeleteRecipe();
+    const { error: deleteError, deleteRecipe } = useDeleteRecipe();
 
     if (!id) {
         return <Redirect to="/library" />;
@@ -72,16 +73,14 @@ const RecipeEditController: React.FC<Props> = ({ match }) => {
 
     return (
         <PageBody>
-            {createError && (
-                <Alert severity="error">
-                    Unable to save: {createError?.message}
-                </Alert>
-            )}
-            {updateError && (
-                <Alert severity="error">
-                    Unable to save: {updateError?.message}
-                </Alert>
-            )}
+            <ErrorOccurred
+                title="Server Error"
+                errors={[
+                    createError?.message,
+                    updateError?.message,
+                    deleteError?.message,
+                ]}
+            />
             <RecipeForm
                 title={
                     shouldCreateCopy

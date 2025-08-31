@@ -190,25 +190,30 @@ type LibraryQuery {
         """
 
         Cursor to find results after. This should be omitted to retrieve the
-        first page.
+        first page. Prefer `search.after`.
         """
         after: Cursor,
         """
 
         How many recipes to return in the connection. If not specified, 10
-        will be returned.
+        will be returned.  Prefer `search.first`.
         """
         first: NonNegativeInt! = 10,
-        "Ingredient(s) to include. Missing/empty means \"all\"."
+        """
+
+        Only return results which include at least one of these ingredients.
+        An empty list means "unconstrained". Prefer `search.ingredients`.
+        """
         ingredients: [ID!]! = [],
         """
 
         The textual query to filter results by. Can include simple words, as
-        well as quoted phrases.
+        well as quoted phrases. Prefer `search.query`.
         """
         query: String! = "",
-        "The scope to search for recipes within."
-        scope: LibrarySearchScope! = MINE
+        "The scope to search for recipes within. Prefer `search.scope`."
+        scope: LibrarySearchScope! = MINE,
+        search: LibrarySearch
     ): RecipeConnection!
     """
 
@@ -226,7 +231,15 @@ type LibraryQuery {
         "The raw string to recognize."
         raw: String!
     ): RecognizedItem!
-    suggestRecipesToCook(after: Cursor, first: NonNegativeInt! = 5): RecipeConnection!
+    "Search for sections of recipes."
+    sections(search: LibrarySearch!): SectionConnection!
+    suggestRecipesToCook(
+        "Prefer `search.after`."
+        after: Cursor,
+        "Prefer `search.first`."
+        first: NonNegativeInt! = 5,
+        search: SuggestionSearch
+    ): RecipeConnection!
 }
 
 type Mutation {
@@ -334,7 +347,8 @@ type PantryQuery {
     Identical to the query of the same name in 'pantry'.
     """
     bulkIngredients(ids: [ID!]): [Ingredient!]!
-    "Search available pantry items."
+    pantryItems(search: PantrySearch!): PantryItemConnection!
+    "Search available pantry items. Prefer `pantryItems()`."
     search(
         """
 
@@ -565,6 +579,11 @@ type Recipe implements Ingredient & Node & Owned {
     externalUrl: String
     favorite: Boolean!
     id: ID!
+    """
+
+    Ingredients which are part of the recipe. Ingredients and sections are
+    disjoint.
+    """
     ingredients(
         "Ingredient(s) to include. Missing/empty means \"all\"."
         ingredients: [ID!]! = []
@@ -586,11 +605,19 @@ type Recipe implements Ingredient & Node & Owned {
     sense). By default, only the five most recent records will be returned.
     """
     plannedHistory(last: NonNegativeInt = 5, status: PlanItemStatus): [PlannedRecipeHistory!]!
+    """
+
+    Sections of the recipe, owned or by reference. Use `sectionOf` if you
+    need to differentiate. Sections and ingredients are disjoint.
+    """
+    sections: [Section!]!
     share: ShareInfo!
     """
 
     All subrecipes. Multiple layers of nested recipes are flattened, and the
-    contextual recipe is not included.
+    contextual recipe is not included. This does not include sections (owned or
+    unowned) of the contextual recipe, only recipe-as-ingredient, but sections
+    of those subrecipes _are_ included.
     """
     subrecipes: [Recipe!]!
     totalTime(unit: ChronoUnit = MINUTES): Int
@@ -678,6 +705,30 @@ type ScratchUpload {
     filename: String!
     "The URL to PUT the scratch file to."
     url: String!
+}
+
+type Section implements Node {
+    directions: String
+    id: ID!
+    ingredients: [IngredientRef!]!
+    labels: [String!]
+    name: String!
+    """
+
+    The recipe this section belongs to, if owned. When a top-level recipe is
+    used as a section, this will be null.
+    """
+    sectionOf: Recipe
+}
+
+type SectionConnection {
+    edges: [SectionConnectionEdge!]!
+    pageInfo: PageInfo!
+}
+
+type SectionConnectionEdge {
+    cursor: Cursor!
+    node: Section!
 }
 
 type ShareInfo {
@@ -858,12 +909,14 @@ input IngredientInfo {
     calories: Int
     directions: String
     externalUrl: String
+    id: ID
     ingredients: [IngredientRefInfo!]
     labels: [String!]
     name: String!
     "Filename of a scratch upload to set as this recipe's photo."
     photo: String
     photoFocus: [Float!]
+    sections: [SectionInfo!]
     storeOrder: Int
     totalTime: Int
     type: String!
@@ -872,18 +925,91 @@ input IngredientInfo {
 
 input IngredientRefInfo {
     ingredient: String
-    ingredientId: Long
+    ingredientId: ID
     preparation: String
     quantity: Float
     raw: String!
     units: String
-    uomId: Long
+    uomId: ID
+}
+
+input LibrarySearch {
+    "Cursor to find results after. Omit to retrieve the first page."
+    after: Cursor
+    "How many results to return. If not specified, 10 will be returned."
+    first: NonNegativeInt! = 10
+    """
+
+    Only return results which include at least one of these ingredients. An
+    empty list means "unconstrained".
+    """
+    ingredients: [ID!]! = []
+    """
+
+    The textual query to filter results by. Can include simple words, as
+    well as quoted phrases.
+    """
+    query: String! = ""
+    "The scope to search within, 'only mine' by default."
+    scope: LibrarySearchScope! = MINE
 }
 
 input MutatePlanTree {
     afterId: ID
     ids: [ID!]!
     parentId: ID!
+}
+
+input PantrySearch {
+    """
+
+    Cursor to find results after. This should be omitted to retrieve the
+    first page.
+    """
+    after: Cursor
+    """
+
+    How many items to return in the connection. If not specified, 25 will be
+    returned.
+    """
+    first: NonNegativeInt! = 25
+    """
+
+    Textual query to filter items by. The exact query operation performed
+    is unspecified, except that 'duplicates:12345' will return auto-detected
+    duplicates of the item with id '12345'. Exactly what "duplicate" means
+    is unspecified and subject to change, excepting that it will remain
+    consistent with results' "duplicateCount".
+    """
+    query: String
+    """
+
+    Field to sort the result by. If omitted, the sort will be stable, but
+    is otherwise unspecified.
+    """
+    sortBy: String
+    "Direction to sort the result, ascending by default."
+    sortDir: SortDir = ASC
+}
+
+input SectionInfo {
+    directions: String
+    """
+
+    Id of the section, owned or by reference. Unsaved owned sections have
+    null. By reference sections will have no other fields populated.
+    """
+    id: ID
+    ingredients: [IngredientRefInfo!]
+    labels: [String!]
+    name: String
+}
+
+input SuggestionSearch {
+    "Cursor to find results after. Omit to retrieve the first page."
+    after: Cursor
+    "How many results to return. If not specified, 5 will be returned."
+    first: NonNegativeInt! = 5
 }
 
 input UnsavedBucket {

@@ -15,12 +15,22 @@ export interface PantryItem extends IIngredient {
     storeOrder: number;
 }
 
+export interface Section<I = Ingredient> {
+    id: BfsId;
+    sectionOf?: Maybe<{ id: BfsId; name: string }>;
+    name: string;
+    directions?: Maybe<string>;
+    ingredients: IngredientRef<I>[];
+    labels?: Maybe<string[]>;
+}
+
 export interface Recipe<I = Ingredient> extends IIngredient {
     type?: "Recipe";
     calories?: Maybe<number>;
     directions?: Maybe<string>;
     externalUrl?: Maybe<string>;
     ingredients: IngredientRef<I>[];
+    sections: Section<I>[];
     labels?: Maybe<string[]>;
     photo?: Maybe<string>;
     photoFocus?: Maybe<number[]>;
@@ -66,9 +76,12 @@ export interface FromPlanItem {
     ancestorDeleting?: boolean;
 }
 
+export type SectionWithPhoto = Section &
+    Pick<RecipeFromPlanItem, "photo" | "photoFocus">;
+
 export interface RecipeFromPlanItem extends Recipe, FromPlanItem {
     subtaskIds?: BfsId[];
-    subrecipes?: RecipeFromPlanItem[];
+    sections: SectionWithPhoto[];
 }
 
 export type Subrecipe<I = Ingredient> = Pick<
@@ -103,7 +116,7 @@ export interface ShareInfo {
     secret: string;
 }
 
-export interface DraftRecipe<I = unknown> extends Omit<Recipe<I>, "photo"> {
+export interface DraftRecipe<I = Ingredient> extends Omit<Recipe<I>, "photo"> {
     photoUrl: Maybe<string>;
     photoUpload: Maybe<File>;
     sourceId: Maybe<string>;

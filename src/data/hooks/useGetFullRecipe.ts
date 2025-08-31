@@ -1,12 +1,8 @@
 import { gql } from "@/__generated__";
-import objectWithType from "@/data/utils/objectWithType";
+import mapIngredientRef from "@/data/utils/mapIngredientRef";
+import mapSection from "@/data/utils/mapSection";
 import { BfsId } from "@/global/types/identity";
-import {
-    IIngredient,
-    IngredientRef,
-    Recipe,
-    Subrecipe,
-} from "@/global/types/types";
+import { IIngredient, Recipe } from "@/global/types/types";
 import useAdaptingQuery from "./useAdaptingQuery";
 
 const GET_FULL_RECIPE_QUERY = gql(`
@@ -57,39 +53,32 @@ export const useGetFullRecipe = (id: BfsId, secret?: string) => {
 
             if (!result || loading) return null;
 
-            const ingredients: IngredientRef<IIngredient>[] =
-                !result || !result.ingredients
-                    ? []
-                    : result.ingredients.map((item) => ({
-                          raw: item.raw,
-                          preparation: item.preparation,
-                          quantity: item.quantity?.quantity,
-                          units: item.quantity?.units?.name || null,
-                          ingredient: objectWithType(item.ingredient),
-                      }));
+            const ingredients = !result.ingredients
+                ? []
+                : result.ingredients.map(mapIngredientRef<IIngredient>);
 
-            const subrecipes: Subrecipe<IIngredient>[] =
-                !result || !result.subrecipes
-                    ? []
-                    : result.subrecipes.map((recipe) => ({
-                          id: recipe.id,
-                          name: recipe.name,
-                          totalTime: recipe.totalTime,
-                          directions: recipe.directions,
-                          ingredients: recipe.ingredients.map((item) => ({
-                              raw: item.raw,
-                              preparation: item.preparation,
-                              quantity: item.quantity?.quantity,
-                              units: item.quantity?.units?.name || null,
-                              ingredient: objectWithType(item.ingredient),
-                              ingredientId: item.ingredient
-                                  ? item.ingredient.id
-                                  : null,
-                          })),
-                      }));
+            const sections = !result.sections
+                ? []
+                : result.sections.map(mapSection<IIngredient>);
 
-            const planHistory =
-                !result || !result.plannedHistory ? [] : result.plannedHistory;
+            if (result.subrecipes) {
+                // treat subrecipes (and thus their sections) as sections
+                sections.splice(
+                    0,
+                    0,
+                    ...result.subrecipes.map((recipe) => ({
+                        id: recipe.id,
+                        name: recipe.name,
+                        totalTime: recipe.totalTime,
+                        directions: recipe.directions,
+                        ingredients: recipe.ingredients.map(
+                            mapIngredientRef<IIngredient>,
+                        ),
+                    })),
+                );
+            }
+
+            const planHistory = result.plannedHistory ?? [];
 
             const recipe: Recipe<IIngredient> = {
                 calories: result.calories,
@@ -97,6 +86,7 @@ export const useGetFullRecipe = (id: BfsId, secret?: string) => {
                 externalUrl: result.externalUrl,
                 id: result.id,
                 ingredients,
+                sections,
                 labels: result.labels || [],
                 name: result.name || "",
                 photo: result.photo?.url || null,
@@ -108,7 +98,6 @@ export const useGetFullRecipe = (id: BfsId, secret?: string) => {
             return {
                 owner: result.owner,
                 recipe,
-                subrecipes,
                 planHistory,
             };
         },

@@ -3,7 +3,8 @@ import {
     PantryItemLoadFragment,
     RecipeLoadFragment,
 } from "@/__generated__/graphql";
-import { PantryItem, Recipe } from "@/global/types/types";
+import mapIngredientRef from "@/data/utils/mapIngredientRef";
+import { Ingredient, PantryItem, Recipe } from "@/global/types/types";
 
 export const toRestIngredient = (
     it: IngredientLoadFragment & (RecipeLoadFragment | PantryItemLoadFragment),
@@ -25,14 +26,10 @@ export const toRestRecipe = (
     name: r.name,
     externalUrl: r.externalUrl,
     directions: r.directions,
-    ingredients: r.ingredients.map((i) => ({
-        raw: i.raw,
-        quantity: i.quantity?.quantity,
-        preparation: i.preparation,
-        units: i.quantity?.units?.name,
-        uomId: i.quantity?.units?.id,
-        ingredient: i.ingredient?.name,
-        ingredientId: i.ingredient?.id,
+    ingredients: r.ingredients.map(mapIngredientRef<Ingredient>),
+    sections: r.sections.map((s) => ({
+        ...s,
+        ingredients: r.ingredients.map(mapIngredientRef<Ingredient>),
     })),
     labels: r.labels && r.labels.length ? r.labels : undefined,
     ownerId: r.owner.id,

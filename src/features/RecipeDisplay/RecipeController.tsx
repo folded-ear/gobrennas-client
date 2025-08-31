@@ -1,5 +1,6 @@
 import { useDeleteRecipe } from "@/data/hooks/useDeleteRecipe";
 import { useGetFullRecipe } from "@/data/hooks/useGetFullRecipe";
+import ErrorOccurred from "@/features/RecipeEdit/components/ErrorOccurred";
 import { useProfileId } from "@/providers/Profile";
 import { ScalingProvider } from "@/util/ScalingContext";
 import CloseButton from "@/views/common/CloseButton";
@@ -25,7 +26,7 @@ const RecipeController: React.FC<Props> = ({ match }) => {
         data: fullRecipe,
     } = useGetFullRecipe(match.params.id);
     const myId = useProfileId();
-    const [deleteRecipe] = useDeleteRecipe();
+    const { deleteRecipe, error: deleteError } = useDeleteRecipe();
     const history = useHistory();
 
     if (loading) {
@@ -47,9 +48,12 @@ const RecipeController: React.FC<Props> = ({ match }) => {
         fullRecipe &&
         fullRecipe.recipe && (
             <ScalingProvider>
+                <ErrorOccurred
+                    title="Unable to Delete"
+                    errors={[deleteError?.message]}
+                />
                 <RecipeDetail
                     recipe={fullRecipe.recipe}
-                    subrecipes={fullRecipe.subrecipes}
                     planHistory={fullRecipe.planHistory}
                     mine={mine}
                     owner={fullRecipe.owner}
