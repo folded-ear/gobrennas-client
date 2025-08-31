@@ -141,7 +141,7 @@ const RecipeForm: React.FC<Props> = ({
     return (
         <>
             <ErrorOccurred
-                title="Unable to save"
+                title="Unable to Save"
                 errors={[errorMessage]}
                 onClose={() => setErrorMessage("")}
             />

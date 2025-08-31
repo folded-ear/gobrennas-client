@@ -46,7 +46,7 @@ export const RecipeAddController = () => {
 
     return (
         <PageBody>
-            <ErrorOccurred title="Unable to save" errors={[error?.message]} />
+            <ErrorOccurred title="Unable to Save" errors={[error?.message]} />
             <RecipeForm
                 recipe={draft}
                 title={"Add A New Recipe"}

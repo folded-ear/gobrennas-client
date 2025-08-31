@@ -25,7 +25,7 @@ const RecipeEditController: React.FC<Props> = ({ match }) => {
     const { error: updateError, updateRecipe } = useUpdateRecipe();
     const { error: createError, createRecipeFrom } = useCreateRecipeFrom();
     const myProfileId = useProfileId();
-    const [deleteRecipe] = useDeleteRecipe();
+    const { error: deleteError, deleteRecipe } = useDeleteRecipe();
 
     if (!id) {
         return <Redirect to="/library" />;
@@ -74,8 +74,12 @@ const RecipeEditController: React.FC<Props> = ({ match }) => {
     return (
         <PageBody>
             <ErrorOccurred
-                title="Unable to save"
-                errors={[createError?.message, updateError?.message]}
+                title="Server Error"
+                errors={[
+                    createError?.message,
+                    updateError?.message,
+                    deleteError?.message,
+                ]}
             />
             <RecipeForm
                 title={
