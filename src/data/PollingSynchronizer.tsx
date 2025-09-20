@@ -38,17 +38,22 @@ const PLAN_SUFFIX = `, cutoff: $cutoff) {
 type Syncer = (cutoff: number) => Promise<unknown>;
 
 function buildSyncer(planIds: BfsId[]): Syncer {
-    const parts = [
-        `query pollForUpdates($cutoff: Long!) {`,
-        `pantry { ${PANTRY_ITEM_TEMPLATE} }`,
-    ];
+    const parts = [`pantry { ${PANTRY_ITEM_TEMPLATE} }`];
+    const variables: Record<string, BfsId> = {};
     if (planIds.length) {
         parts.push("planner {");
-        for (const id of planIds) {
-            parts.push(`p${id}: ${PLAN_PREFIX}${id}${PLAN_SUFFIX}`);
-        }
+        planIds.forEach((id, i) => {
+            const v = "id" + i;
+            variables[v] = id;
+            parts.push(`p${i}: ${PLAN_PREFIX}$${v}${PLAN_SUFFIX}`);
+        });
         parts.push("}");
     }
+    parts.unshift(
+        `query pollForUpdates($cutoff: Long!${Object.keys(variables)
+            .map((v) => `$${v}: ID!`)
+            .join("")}) {`,
+    );
     parts.push("}");
     const query = compileDynamicGraphQLQuery(parts.join("\n"));
     return (cutoff) =>
@@ -56,6 +61,7 @@ function buildSyncer(planIds: BfsId[]): Syncer {
             .query({
                 query,
                 variables: {
+                    ...variables,
                     cutoff,
                 },
                 fetchPolicy: "network-only",
@@ -69,8 +75,8 @@ function buildSyncer(planIds: BfsId[]): Syncer {
                         data: updates.map(toRestPantryItem),
                     });
                 }
-                for (const id of planIds) {
-                    const updates = data.planner[`p${id}`];
+                planIds.forEach((id, i) => {
+                    const updates = data.planner[`p${i}`];
                     if (updates.length) {
                         dispatcher.dispatch({
                             type: ActionType.PLAN__PLAN_DELTAS,
@@ -78,7 +84,7 @@ function buildSyncer(planIds: BfsId[]): Syncer {
                             data: updates.map(toRestPlanOrItem),
                         });
                     }
-                }
+                });
                 return 0; // have to give _something_ to react-query to cache
             }, soakUpUnauthorized);
 }
