@@ -53,9 +53,11 @@ export interface IngredientRef<I = Ingredient> {
     preparation?: string | null;
     units?: string | null;
     uomId?: Maybe<BfsId>;
+    /**
+     * This is 'I' in read contexts and 'string' in write ones. More or less.
+     */
     ingredient?: I | string | null;
     ingredientId?: Maybe<BfsId>;
-
     /**
      * On the shopping list, napalm entries will only have name, not raw.
      */

@@ -5,7 +5,8 @@ import { toMilliseconds } from "@/util/time";
 
 const mapIngRef = (it: IngredientRef): IngredientRefInfo => {
     it = { ...it };
-    delete it.id;
+    delete it.id; // this is a client-only concept - refs have no identity.
+    delete it.ingredient; // the dereferenced ingredientId, for rendering.
     return it as IngredientRefInfo;
 };
 
