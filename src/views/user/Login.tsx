@@ -1,5 +1,6 @@
 import { GOOGLE_AUTH_URL, SESSION_STORAGE_POST_LOGIN } from "@/constants";
 import { setJsonItem } from "@/util/storage";
+import DocumentTitle from "@/views/DocumentTitle";
 import { Box, Container, Paper, Typography } from "@mui/material";
 import Button from "@mui/material/Button";
 import { useEffect } from "react";
@@ -53,6 +54,7 @@ export default function Login({ authenticated, location }: LoginProps) {
     }
     return (
         <Container maxWidth={"sm"}>
+            <DocumentTitle>Log In</DocumentTitle>
             <Box m={2}>
                 <Paper elevation={3}>
                     <Box p={3}>

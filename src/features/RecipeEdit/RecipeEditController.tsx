@@ -85,7 +85,7 @@ const RecipeEditController: React.FC<Props> = ({ match }) => {
                 title={
                     shouldCreateCopy
                         ? `Copy ${recipe.name}`
-                        : `Editing ${recipe.name}`
+                        : `Edit ${recipe.name}`
                 }
                 recipe={recipe}
                 onSave={shouldCreateCopy ? handleSaveCopy : handleUpdate}

@@ -24,6 +24,7 @@ import { AddRecipeIcon } from "@/views/common/icons";
 import PageBody from "@/views/common/PageBody";
 import RecipeInfo from "@/views/common/RecipeInfo";
 import Source from "@/views/common/Source";
+import DocumentTitle from "@/views/DocumentTitle";
 import User from "@/views/user/User";
 import { Box, Grid, Toolbar, Typography } from "@mui/material";
 import * as React from "react";
@@ -97,6 +98,7 @@ const RecipeDetail: React.FC<Props> = ({
         recipe.labels.filter((label) => label.indexOf("--") !== 0);
     return (
         <PageBody id="toolbar" className="recipe-detail">
+            <DocumentTitle>{recipe.name}</DocumentTitle>
             <SubHeader>
                 <Toolbar
                     sx={(theme) => ({

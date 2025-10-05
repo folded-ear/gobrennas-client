@@ -23,6 +23,7 @@ import {
     DeleteIcon,
     SaveIcon,
 } from "@/views/common/icons";
+import DocumentTitle from "@/views/DocumentTitle";
 import ElEdit, { WithTarget } from "@/views/ElEdit";
 import {
     AutocompleteChangeReason,
@@ -140,6 +141,7 @@ const RecipeForm: React.FC<Props> = ({
     const ownedSectionIds = new Set<BfsId>();
     return (
         <>
+            <DocumentTitle>{title}</DocumentTitle>
             <ErrorOccurred
                 title="Unable to Save"
                 errors={[errorMessage]}

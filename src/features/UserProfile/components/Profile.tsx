@@ -3,7 +3,8 @@ import { Developer } from "@/features/UserProfile/components/Developer";
 import Devices from "@/features/UserProfile/components/Devices";
 import type { UserType } from "@/global/types/identity";
 import { useIsDeveloper, useLogoutHandler } from "@/providers/Profile";
-import { Box, Button, Grid, Paper, Stack, Typography } from "@mui/material";
+import DocumentTitle from "@/views/DocumentTitle";
+import { Box, Button, Paper, Stack, Typography } from "@mui/material";
 import Avatar from "@mui/material/Avatar";
 import { styled } from "@mui/material/styles";
 import * as React from "react";
@@ -33,8 +34,9 @@ const Profile: React.FC<Props> = ({ currentUser: user }) => {
 
     return (
         <Stack gap={2}>
+            <DocumentTitle>Profile</DocumentTitle>
             <ProfileDisplay>
-                <Grid container gap={2}>
+                <Stack direction={"row"} gap={2}>
                     <Box>
                         {user.imageUrl && (
                             <Avatar
@@ -58,14 +60,14 @@ const Profile: React.FC<Props> = ({ currentUser: user }) => {
                             Logout
                         </Button>
                     </div>
-                </Grid>
+                </Stack>
+            </ProfileDisplay>
+            <ProfileDisplay>
+                <CookThis />
             </ProfileDisplay>
             <Paper>
                 <Devices />
             </Paper>
-            <ProfileDisplay>
-                <CookThis />
-            </ProfileDisplay>
             {isDeveloper && (
                 <ProfileDisplay>
                     <Developer />

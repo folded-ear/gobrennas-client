@@ -11,6 +11,7 @@ import FoodingerFab from "@/views/common/FoodingerFab";
 import { AddIcon } from "@/views/common/icons";
 import LoadingIndicator from "@/views/common/LoadingIndicator";
 import PageBody from "@/views/common/PageBody";
+import DocumentTitle from "@/views/DocumentTitle";
 import { List } from "@mui/material";
 import * as React from "react";
 import { ItemTuple } from "../PlannerController";
@@ -87,6 +88,7 @@ function Plan({
 
     return (
         <PageBody>
+            <DocumentTitle>{`Plan ${plan.name}`}</DocumentTitle>
             <PlanHeader
                 allPlans={allPlans}
                 activePlan={plan}
