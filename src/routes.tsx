@@ -4,6 +4,7 @@ import { CurrentPlanSidebar } from "@/features/RecipeLibrary/components/CurrentP
 import { LibraryController } from "@/features/RecipeLibrary/LibraryController";
 import Foodinger from "@/views/Foodinger";
 import Planner from "@/views/Planner";
+import Login from "@/views/user/Login";
 import OAuth2RedirectHandler from "@/views/user/OAuth2RedirectHandler";
 import { Welcome } from "@/views/Welcome";
 import * as React from "react";
@@ -52,6 +53,7 @@ const routes: BfsRoutes = {
     public: [
         { path: "/", component: Landing, exact: true },
         { path: "/foodinger", component: Foodinger },
+        { path: "/login", component: Login },
         { path: "/post-oauth2/redirect", component: OAuth2RedirectHandler },
         {
             path: "/share/recipe/:slug/:secret/:id",

@@ -3,7 +3,6 @@ import { BfsRoutes } from "@/routes";
 import { Route, Switch, useLocation } from "react-router-dom";
 import NotFound from "./views/common/NotFound";
 import PrivateRoute from "./views/common/PrivateRoute";
-import Login from "./views/user/Login";
 
 export interface SwitchProps {
     readonly routes: BfsRoutes;
@@ -37,12 +36,6 @@ const RoutingSwitch = ({ routes }: SwitchProps) => {
                     authenticated={authenticated}
                 />
             ))}
-            <Route
-                path="/login"
-                render={(props) => (
-                    <Login authenticated={authenticated} {...props} />
-                )}
-            />
             <Route component={NotFound} />
         </Switch>
     );

@@ -9,6 +9,7 @@ import {
 import { useRenamePantryItem } from "@/data/hooks/useRenamePantryItem";
 import { useSetPantryItemLabels } from "@/data/hooks/useSetPantryItemLabels";
 import { useSetPantryItemSynonyms } from "@/data/hooks/useSetPantryItemSynonyms";
+import DocumentTitle from "@/views/DocumentTitle";
 import { ApolloError } from "@apollo/client";
 import {
     GridColumnVisibilityModel,
@@ -246,6 +247,7 @@ export default function PantryItemAdmin() {
 
     return (
         <>
+            <DocumentTitle>Pantry Item Admin</DocumentTitle>
             <AdminGrid
                 columnVisibilityModel={columnVizModel}
                 onColumnVisibilityModelChange={setColumnVizModel}

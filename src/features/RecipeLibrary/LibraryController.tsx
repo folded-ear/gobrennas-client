@@ -8,6 +8,7 @@ import { useIsMobile } from "@/providers/IsMobile";
 import { useProfile } from "@/providers/Profile";
 import { ScalingProvider } from "@/util/ScalingContext";
 import LoadingIndicator from "@/views/common/LoadingIndicator";
+import DocumentTitle from "@/views/DocumentTitle";
 import { Container as Content, useScrollTrigger } from "@mui/material";
 import * as React from "react";
 import { useState } from "react";
@@ -106,6 +107,7 @@ export const LibraryController = () => {
 
     return (
         <>
+            <DocumentTitle>{unsavedQuery || "Recipe Library"}</DocumentTitle>
             <SearchRecipes
                 isSearchFloating={isSearchFloating || isMobile}
                 onClear={handleClear}

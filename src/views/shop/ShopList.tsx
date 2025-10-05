@@ -14,6 +14,7 @@ import FoodingerFab from "@/views/common/FoodingerFab";
 import { AddIcon, CollapseIcon, SweepIcon } from "@/views/common/icons";
 import LoadingIndicator from "@/views/common/LoadingIndicator";
 import PageBody from "@/views/common/PageBody";
+import DocumentTitle from "@/views/DocumentTitle";
 import IngredientItem from "@/views/shop/IngredientItem";
 import PlanItem from "@/views/shop/PlanItem";
 import { Box, IconButton, Stack, Typography } from "@mui/material";
@@ -138,6 +139,7 @@ const ShopList: React.FC<ShopListProps> = ({
 
     return (
         <PageBody>
+            <DocumentTitle>{`Shop ${plans[0].name}`}</DocumentTitle>
             <Box mx={showPlanSelector ? 0 : 1}>
                 <Stack direction="row" justifyContent={"space-between"}>
                     <Stack direction="row" alignItems={"center"} spacing={1}>
