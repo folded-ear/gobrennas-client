@@ -3,6 +3,10 @@ import { RecognizedRangeType } from "@/__generated__/graphql";
 import { RecognitionRange, RecognitionResult } from "@/data/ItemApi";
 import { Maybe } from "graphql/jsutils/Maybe";
 
+const RE_CANON_SPACES = /\s+/g;
+const RE_CANON_COMMAS = /\s*(,\s*)+/g;
+const RE_LEADING_COMMAS = /^,\s*/;
+
 function processRecognizedItem(recog: RecognitionResult) {
     const qr = recog.ranges.find(
         (r) => r.type === RecognizedRangeType.QUANTITY,
@@ -35,7 +39,7 @@ function processRecognizedItem(recog: RecognitionResult) {
     const uv = ur && ur.id;
     const n = textFromRange(nr);
     const nv = nr && nr.id;
-    const p = [qr, ur, nr]
+    const prep = [qr, ur, nr]
         .filter((it) => it != null)
         .sort((a, b) => b!.start - a!.start)
         .reduce(
@@ -43,8 +47,9 @@ function processRecognizedItem(recog: RecognitionResult) {
             recog.raw,
         )
         .trim()
-        .replace(/\s+/g, " ")
-        .replace(/^\s*,/, "");
+        .replace(RE_CANON_SPACES, " ")
+        .replace(RE_CANON_COMMAS, ", ")
+        .replace(RE_LEADING_COMMAS, "");
     return {
         raw: recog.raw,
         quantity: qv,
@@ -55,7 +60,7 @@ function processRecognizedItem(recog: RecognitionResult) {
         ingredientId: nv,
         ingredient: stripMarkers(n),
         ingredient_raw: n,
-        preparation: p,
+        preparation: prep,
     };
 }
 
