@@ -3,13 +3,12 @@ import SendToPlan from "@/features/RecipeLibrary/components/SendToPlan";
 import type { BfsId } from "@/global/types/identity";
 import { IIngredient, IngredientRef } from "@/global/types/types";
 import { useScale } from "@/util/ScalingContext";
-import { LinkIcon } from "@/views/common/icons";
 import Quantity from "@/views/common/Quantity";
-import { Chip, Grid, IconButton } from "@mui/material";
+import RecipeLink from "@/views/common/RecipeLink";
+import { Chip, Grid } from "@mui/material";
 import makeStyles from "@mui/styles/makeStyles";
 import * as React from "react";
 import { ReactNode } from "react";
-import { useHistory } from "react-router-dom";
 
 const useStyles = makeStyles(() => ({
     quantity: {
@@ -51,7 +50,6 @@ const IngredientItem: React.FC<Props> = ({
     inline,
 }) => {
     const classes = useStyles();
-    const history = useHistory();
     const scale = useScale();
 
     let left: ReactNode, right: ReactNode;
@@ -91,15 +89,7 @@ const IngredientItem: React.FC<Props> = ({
                 {isRecipe && !hideRecipeLink && (
                     <>
                         {" "}
-                        <IconButton
-                            size={"small"}
-                            onClick={() =>
-                                history.push(`/library/recipe/${ingredient.id}`)
-                            }
-                            title={`Open ${ingredient.name}`}
-                        >
-                            <LinkIcon fontSize="inherit" />
-                        </IconButton>
+                        <RecipeLink recipe={ingredient} />
                     </>
                 )}
                 <Augment text={ref.preparation} prefix=", " />

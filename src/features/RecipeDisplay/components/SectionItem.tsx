@@ -1,5 +1,6 @@
 import CollapseIconButton from "@/global/components/CollapseIconButton";
 import { IIngredient, Recipe, Section } from "@/global/types/types";
+import RecipeLink from "@/views/common/RecipeLink";
 import { Divider, Grid, Stack, Typography } from "@mui/material";
 import * as React from "react";
 import { useCallback } from "react";
@@ -39,7 +40,11 @@ const SectionItem: React.FC<Props> = ({ recipe, section, loggedIn }) => {
                                         component={"span"}
                                         sx={{ ml: 1 }}
                                     >
-                                        (of {section.sectionOf.name})
+                                        (of {section.sectionOf.name}{" "}
+                                        <RecipeLink
+                                            recipe={section.sectionOf}
+                                        />
+                                        )
                                     </Typography>
                                 )}
                         </Typography>
