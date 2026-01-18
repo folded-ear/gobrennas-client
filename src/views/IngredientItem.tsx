@@ -62,8 +62,7 @@ const IngredientItem: React.FC<Props> = ({
     }
 
     if (ref.ingredient == null || typeof ref.ingredient === "string") {
-        left = null;
-        const name = ref.raw || ref.name;
+        const name = ref.preparation || ref.raw || ref.name;
         right = name;
         if (name && !hideSendToPlan) {
             right = (
