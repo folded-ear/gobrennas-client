@@ -98,6 +98,16 @@ body {
     background-color: rgba(255, 228, 1, 0.2);
 }
 
+.MuiImageListItem-img {
+    overflow: hidden;
+}
+
+.ingredient-name {
+    text-decoration-color: #999;
+    text-decoration-style: dotted;
+    text-decoration-line: underline;
+}
+
 @media (prefers-color-scheme: dark) {
     html,
     body {
@@ -165,8 +175,8 @@ body {
             );
         }
     }
-}
 
-.MuiImageListItem-img {
-    overflow: hidden;
+    .ingredient-name {
+        text-decoration-color: #bbb;
+    }
 }

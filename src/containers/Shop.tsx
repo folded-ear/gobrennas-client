@@ -148,7 +148,7 @@ function groupItems(
             quantities.push({
                 quantity: byUnit
                     .get(uomId)!
-                    .reduce((q, it) => q + (it.quantity || 0), 0),
+                    .reduce((q, it) => q + (it.quantity ?? 1), 0),
                 uomId,
                 units: uomId ? unitLookup.get(uomId) : undefined,
             });
