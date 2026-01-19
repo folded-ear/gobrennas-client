@@ -3,6 +3,7 @@ import SendToPlan from "@/features/RecipeLibrary/components/SendToPlan";
 import type { BfsId } from "@/global/types/identity";
 import { IIngredient, IngredientRef } from "@/global/types/types";
 import { useScale } from "@/util/ScalingContext";
+import IngredientName from "@/views/common/IngredientName";
 import Quantity from "@/views/common/Quantity";
 import RecipeLink from "@/views/common/RecipeLink";
 import { Chip, Grid } from "@mui/material";
@@ -13,11 +14,6 @@ import { ReactNode } from "react";
 const useStyles = makeStyles(() => ({
     quantity: {
         textAlign: "right",
-    },
-    name: {
-        textDecorationColor: "#999",
-        textDecorationStyle: "dotted",
-        textDecorationLine: "underline",
     },
 }));
 
@@ -85,7 +81,7 @@ const IngredientItem: React.FC<Props> = ({
 
         right = (
             <>
-                <span className={classes.name}>{ingredient.name}</span>
+                <IngredientName name={ingredient.name} />
                 {isRecipe && !hideRecipeLink && (
                     <>
                         {" "}
