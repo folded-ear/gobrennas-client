@@ -27,11 +27,7 @@ export const LibrarySearchController: React.FC<
         (searchParams.get("s") as LibrarySearchScope) ??
         LibrarySearchScope.MINE;
 
-    const {
-        data: recipes,
-        loading,
-        isComplete,
-    } = useSearchLibrary({
+    const { data: recipes, loading } = useSearchLibrary({
         scope,
         query: searchTerm,
     });
@@ -79,12 +75,12 @@ export const LibrarySearchController: React.FC<
                         </>
                     )}
                 </ScalingProvider>
+                {recipes.length === 0 && (
+                    <Grid item xs={12}>
+                        <MessagePaper primary={"No recipes matched. 🙁"} />
+                    </Grid>
+                )}
             </SearchResults>
-            {isComplete && recipes.length > 5 && (
-                <Grid item xs={12}>
-                    <MessagePaper primary={"That's it. Fin. The end."} />
-                </Grid>
-            )}
         </>
     );
 };
