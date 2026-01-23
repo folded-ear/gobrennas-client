@@ -1,21 +1,45 @@
 import CollapseIconButton from "@/global/components/CollapseIconButton";
 import { IIngredient, Recipe, Section } from "@/global/types/types";
+import { ScalingProvider } from "@/util/ScalingContext";
 import IngredientName from "@/views/common/IngredientName";
 import RecipeLink from "@/views/common/RecipeLink";
 import { Divider, Grid, Stack, Typography } from "@mui/material";
 import * as React from "react";
-import { useCallback } from "react";
+import { ReactNode, useCallback } from "react";
 import IngredientDirectionsRow from "./IngredientDirectionsRow";
 
 interface Props {
     recipe: Recipe<IIngredient>;
     section: Section<IIngredient>;
     loggedIn?: boolean;
+    isLibrary?: boolean;
 }
 
-const SectionItem: React.FC<Props> = ({ recipe, section, loggedIn }) => {
-    const [expanded, setExpanded] = React.useState(true);
+const SectionItem: React.FC<Props> = ({
+    recipe,
+    section,
+    isLibrary,
+    loggedIn,
+}) => {
+    const [expanded, setExpanded] = React.useState(
+        !isLibrary || section.sectionOf != null,
+    );
     const toggleExpanded = useCallback(() => setExpanded((s) => !s), []);
+    let ingredientsAndDirections: ReactNode = null;
+    if (expanded) {
+        ingredientsAndDirections = (
+            <IngredientDirectionsRow
+                loggedIn={loggedIn}
+                recipe={section}
+                hideHeadings
+            />
+        );
+        if (isLibrary && !section.sectionOf) {
+            ingredientsAndDirections = (
+                <ScalingProvider>{ingredientsAndDirections}</ScalingProvider>
+            );
+        }
+    }
     return (
         <>
             <Grid item xs={12}>
@@ -57,13 +81,7 @@ const SectionItem: React.FC<Props> = ({ recipe, section, loggedIn }) => {
                     </Stack>
                 </Divider>
             </Grid>
-            {expanded && (
-                <IngredientDirectionsRow
-                    loggedIn={loggedIn}
-                    recipe={section}
-                    hideHeadings
-                />
-            )}
+            {ingredientsAndDirections}
         </>
     );
 };

@@ -1,18 +1,13 @@
 import useActivePlanner from "@/data/useActivePlanner";
+import { Plan } from "@/features/Planner/data/planStore";
 import { TaskBarButton } from "@/global/elements/taskbar.elements";
 import { BfsId } from "@/global/types/identity";
-import { useScaleOptions } from "@/util/ScalingContext";
+import { SCALE_OPTIONS } from "@/util/ScalingContext";
 import { SendToPlanIcon } from "@/views/common/icons";
 import SplitButton, { SelectOption } from "@/views/common/SplitButton";
 import Button from "@mui/material/Button";
 import { styled } from "@mui/material/styles";
 import * as React from "react";
-
-interface Props {
-    onClick(planId: BfsId, scale?: number | null): void;
-    iconOnly?: boolean;
-    showScaleOptions?: boolean;
-}
 
 const SendToPlanWrapper = styled("div")({
     width: "100%",
@@ -21,29 +16,56 @@ const SendToPlanWrapper = styled("div")({
     textOverflow: "ellipsis",
 });
 
+interface PropsWithScale {
+    onClick(planId: BfsId, scale?: number | null): void;
+    plan: Plan;
+}
+
+const SendToPlanWithScaleOptions: React.FC<PropsWithScale> = ({
+    onClick,
+    plan,
+}) => {
+    const scaleToPlanOpts = SCALE_OPTIONS.map((it) => ({
+        id: it.label,
+        label: it.label,
+        value: it.value,
+    }));
+
+    const handleClick = () => onClick && onClick(plan.id);
+
+    const handleSelect = (_: never, selected: SelectOption<number>) => {
+        if (onClick) onClick(plan.id, selected?.value);
+    };
+
+    return (
+        <SplitButton
+            disableElevation
+            primary={`To ${plan.name}`}
+            onClick={handleClick}
+            options={scaleToPlanOpts}
+            color="neutral"
+            variant="contained"
+            onSelect={handleSelect}
+            startIcon={<SendToPlanIcon />}
+        />
+    );
+};
+
+interface Props {
+    onClick(planId: BfsId, scale?: number | null): void;
+    iconOnly?: boolean;
+    showScaleOptions?: boolean;
+}
+
 const SendToPlan: React.FC<Props> = ({
     onClick,
     iconOnly,
     showScaleOptions = false,
 }) => {
     const plan = useActivePlanner().data;
-    const scaleOpts = useScaleOptions();
-
-    const scaleToPlanOpts = scaleOpts.map((it) => ({
-        id: it.label,
-        label: it.label,
-        value: it.value,
-    }));
-
     if (!plan) return null;
-    const handleClick = () =>
-        // While items can exist in the store in an unsaved state, plans
-        // cannot, so this type assertion is safe.
-        onClick && onClick(plan.id);
 
-    const handleSelect = (_: never, selected: SelectOption<number>) => {
-        if (onClick) onClick(plan.id, selected?.value);
-    };
+    const handleClick = () => onClick && onClick(plan.id);
 
     if (iconOnly) {
         return (
@@ -57,18 +79,7 @@ const SendToPlan: React.FC<Props> = ({
     }
 
     if (showScaleOptions) {
-        return (
-            <SplitButton
-                disableElevation
-                primary={`To ${plan.name}`}
-                onClick={handleClick}
-                options={scaleToPlanOpts}
-                color="neutral"
-                variant="contained"
-                onSelect={handleSelect}
-                startIcon={<SendToPlanIcon />}
-            />
-        );
+        return <SendToPlanWithScaleOptions onClick={onClick} plan={plan} />;
     }
 
     return (

@@ -2,7 +2,6 @@ import { useDeleteRecipe } from "@/data/hooks/useDeleteRecipe";
 import { useGetFullRecipe } from "@/data/hooks/useGetFullRecipe";
 import ErrorOccurred from "@/features/RecipeEdit/components/ErrorOccurred";
 import { useProfileId } from "@/providers/Profile";
-import { ScalingProvider } from "@/util/ScalingContext";
 import CloseButton from "@/views/common/CloseButton";
 import CopyButton from "@/views/common/CopyButton";
 import DeleteButton from "@/views/common/DeleteButton";
@@ -47,7 +46,7 @@ const RecipeController: React.FC<Props> = ({ match }) => {
     return (
         fullRecipe &&
         fullRecipe.recipe && (
-            <ScalingProvider>
+            <>
                 <ErrorOccurred
                     title="Unable to Delete"
                     errors={[deleteError?.message]}
@@ -91,9 +90,9 @@ const RecipeController: React.FC<Props> = ({ match }) => {
                     }
                     canFavorite
                     canShare
-                    canSendToPlan
+                    isLibrary
                 />
-            </ScalingProvider>
+            </>
         )
     );
 };

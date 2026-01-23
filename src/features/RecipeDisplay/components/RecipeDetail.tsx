@@ -9,7 +9,7 @@ import SendToPlan from "@/features/RecipeLibrary/components/SendToPlan";
 import { Photo } from "@/features/RecipeLibrary/types";
 import { BreadcrumbLink } from "@/global/components/BreadcrumbLink";
 import LabelItem from "@/global/components/LabelItem";
-import { UserType } from "@/global/types/identity";
+import { BfsId, UserType } from "@/global/types/identity";
 import {
     IIngredient,
     Recipe,
@@ -17,7 +17,7 @@ import {
     SectionWithPhoto,
 } from "@/global/types/types";
 import distinctByKey from "@/util/distinctByKey";
-import { ReentrantScalingProvider, useScale } from "@/util/ScalingContext";
+import { ScalingProvider, useScale } from "@/util/ScalingContext";
 import { formatDuration } from "@/util/time";
 import FoodingerFab from "@/views/common/FoodingerFab";
 import { AddRecipeIcon } from "@/views/common/icons";
@@ -42,7 +42,7 @@ interface Props<I = IIngredient> {
     owner?: Pick<UserType, "imageUrl" | "name" | "email">;
     canFavorite?: boolean;
     canShare?: boolean;
-    canSendToPlan?: boolean;
+    isLibrary?: boolean;
     nav?: React.ReactNode;
     showFab?: boolean;
 }
@@ -67,6 +67,22 @@ function findPhoto(recipe: Recipe<IIngredient>): Photo | undefined {
     }
 }
 
+const SendScaled = ({ recipeId }: { recipeId: BfsId }) => {
+    const scale = useScale();
+    return (
+        <SendToPlan
+            onClick={(planId) =>
+                dispatcher.dispatch({
+                    type: ActionType.RECIPE__SEND_TO_PLAN,
+                    recipeId,
+                    planId,
+                    scale,
+                })
+            }
+        />
+    );
+};
+
 const RecipeDetail: React.FC<Props> = ({
     recipe,
     planHistory = [],
@@ -74,7 +90,7 @@ const RecipeDetail: React.FC<Props> = ({
     owner,
     anonymous = false,
     canFavorite = false,
-    canSendToPlan = false,
+    isLibrary = false,
     nav,
     showFab = false,
 }) => {
@@ -82,7 +98,6 @@ const RecipeDetail: React.FC<Props> = ({
     const history = useHistory();
 
     const windowSize = useWindowSize();
-    const scale = useScale();
 
     const loggedIn = !anonymous;
     if (anonymous && mine) {
@@ -152,62 +167,53 @@ const RecipeDetail: React.FC<Props> = ({
                         />
                     )}
                 </Grid>
-                <Grid item xs={7}>
-                    {recipe.externalUrl && (
-                        <RecipeInfo
-                            label="Source"
-                            text={<Source url={recipe.externalUrl} />}
-                        />
-                    )}
-                    {recipe.recipeYield && (
-                        <RecipeInfo
-                            label="Yield"
-                            text={`${recipe.recipeYield} servings`}
-                        />
-                    )}
-                    {recipe.totalTime && (
-                        <RecipeInfo
-                            label="Time"
-                            text={formatDuration(recipe.totalTime)}
-                        />
-                    )}
-                    {recipe.calories && (
-                        <RecipeInfo
-                            label="Cal."
-                            text={`${recipe.calories} per serving`}
-                        />
-                    )}
-                    {labelsToDisplay && (
-                        <Box my={1}>
-                            {labelsToDisplay.map((label) => (
-                                <LabelItem key={label} label={label} />
-                            ))}
-                        </Box>
-                    )}
-                    {recipe.libraryRecipeId && (
-                        <BreadcrumbLink
-                            text="Open Library Recipe"
-                            url={`/library/recipe/${recipe.libraryRecipeId}`}
-                        />
-                    )}
-
-                    {loggedIn && canSendToPlan && (
-                        <Box mt={1}>
-                            <SendToPlan
-                                onClick={(planId) =>
-                                    dispatcher.dispatch({
-                                        type: ActionType.RECIPE__SEND_TO_PLAN,
-                                        recipeId: recipe.id,
-                                        planId,
-                                        scale,
-                                    })
-                                }
+                <ScalingProvider>
+                    <Grid item xs={7}>
+                        {recipe.externalUrl && (
+                            <RecipeInfo
+                                label="Source"
+                                text={<Source url={recipe.externalUrl} />}
                             />
-                        </Box>
-                    )}
-                </Grid>
+                        )}
+                        {recipe.recipeYield && (
+                            <RecipeInfo
+                                label="Yield"
+                                text={`${recipe.recipeYield} servings`}
+                            />
+                        )}
+                        {recipe.totalTime && (
+                            <RecipeInfo
+                                label="Time"
+                                text={formatDuration(recipe.totalTime)}
+                            />
+                        )}
+                        {recipe.calories && (
+                            <RecipeInfo
+                                label="Cal."
+                                text={`${recipe.calories} per serving`}
+                            />
+                        )}
+                        {labelsToDisplay && (
+                            <Box my={1}>
+                                {labelsToDisplay.map((label) => (
+                                    <LabelItem key={label} label={label} />
+                                ))}
+                            </Box>
+                        )}
+                        {recipe.libraryRecipeId && (
+                            <BreadcrumbLink
+                                text="Open Library Recipe"
+                                url={`/library/recipe/${recipe.libraryRecipeId}`}
+                            />
+                        )}
 
-                <ReentrantScalingProvider>
+                        {loggedIn && isLibrary && (
+                            <Box mt={1}>
+                                <SendScaled recipeId={recipe.id} />
+                            </Box>
+                        )}
+                    </Grid>
+
                     <IngredientDirectionsRow
                         recipe={recipe}
                         loggedIn={loggedIn}
@@ -220,9 +226,10 @@ const RecipeDetail: React.FC<Props> = ({
                                 recipe={recipe}
                                 section={it}
                                 loggedIn={loggedIn}
+                                isLibrary={isLibrary}
                             />
                         ))}
-                </ReentrantScalingProvider>
+                </ScalingProvider>
                 {devMode && planHistory && planHistory.length > 0 && (
                     <RecipeHistoryGrid
                         recipeId={recipe.id}

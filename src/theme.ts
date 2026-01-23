@@ -154,7 +154,11 @@ export function useBfsTheme() {
                         styleOverrides: {
                             textAlignLeft: {
                                 // default is 10/90
-                                "&::before": { width: "5%" },
+                                "&::before": {
+                                    minWidth: "0.5rem",
+                                    maxWidth: "0.5rem",
+                                    marginRight: theme.spacing(-1.2),
+                                },
                                 "&::after": { width: "95%" },
                             },
                         },
