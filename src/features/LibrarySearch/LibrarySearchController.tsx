@@ -3,7 +3,6 @@ import { SearchInput } from "@/features/LibrarySearch/components/SearchInput";
 import { MessagePaper } from "@/features/RecipeLibrary/components/MessagePaper";
 import { useSearchLibrary } from "@/features/RecipeLibrary/hooks/useSearchLibrary";
 import { useProfile } from "@/providers/Profile";
-import { ScalingProvider } from "@/util/ScalingContext";
 import LoadingIndicator from "@/views/common/LoadingIndicator";
 import { SearchResults } from "@/views/recipeCollections/RecipeCollection.elements";
 import { RecipeGrid } from "@/views/recipeCollections/RecipeGrid";
@@ -55,26 +54,24 @@ export const LibrarySearchController: React.FC<
             />
             <SearchResults>
                 {showLoading && <LoadingIndicator />}
-                <ScalingProvider>
-                    {recipes && (
-                        <>
-                            {display === "list" ? (
-                                <RecipeListDisplay
-                                    recipes={recipes}
-                                    me={me}
-                                    showOwner={markAsMine}
-                                />
-                            ) : (
-                                <RecipeGrid
-                                    recipes={recipes}
-                                    me={me}
-                                    showOwner={markAsMine}
-                                    cardType="standard"
-                                />
-                            )}
-                        </>
-                    )}
-                </ScalingProvider>
+                {recipes && (
+                    <>
+                        {display === "list" ? (
+                            <RecipeListDisplay
+                                recipes={recipes}
+                                me={me}
+                                showOwner={markAsMine}
+                            />
+                        ) : (
+                            <RecipeGrid
+                                recipes={recipes}
+                                me={me}
+                                showOwner={markAsMine}
+                                cardType="standard"
+                            />
+                        )}
+                    </>
+                )}
                 {recipes.length === 0 && (
                     <Grid item xs={12}>
                         <MessagePaper primary={"No recipes matched. 🙁"} />

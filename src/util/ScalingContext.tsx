@@ -1,7 +1,7 @@
 import { Maybe } from "graphql/jsutils/Maybe";
 import { createContext, PropsWithChildren, useContext, useState } from "react";
 
-const OPTIONS = [
+export const SCALE_OPTIONS = [
     { label: "¼", value: 0.25 },
     { label: "½", value: 0.5 },
     { label: "1", value: 1 },
@@ -55,7 +55,7 @@ export const useScaleOptions = (noScaling?: boolean) => {
             "useScaleOptions must be used w/in a scaling context.",
         );
     }
-    const opts = OPTIONS.map((it) => {
+    const opts = SCALE_OPTIONS.map((it) => {
         if (it.value === value) {
             found = true;
             return { ...it, active: true };

@@ -6,7 +6,6 @@ import { SearchRecipes } from "@/features/RecipeLibrary/components/SearchRecipes
 import { useSearchLibrary } from "@/features/RecipeLibrary/hooks/useSearchLibrary";
 import { useIsMobile } from "@/providers/IsMobile";
 import { useProfile } from "@/providers/Profile";
-import { ScalingProvider } from "@/util/ScalingContext";
 import LoadingIndicator from "@/views/common/LoadingIndicator";
 import DocumentTitle from "@/views/DocumentTitle";
 import { Container as Content, useScrollTrigger } from "@mui/material";
@@ -117,21 +116,19 @@ export const LibraryController = () => {
                 scope={scope}
                 toggleScope={toggleScope}
             />
-            <ScalingProvider>
-                <Content disableGutters={!isMobile}>
-                    {showRecommendations && <Recommendations />}
-                    <RecipesList
-                        me={me}
-                        onSearch={handleSearch}
-                        scope={scope}
-                        filter={query}
-                        recipes={recipes}
-                        isLoading={loading}
-                        isComplete={isComplete}
-                        onNeedMore={handleNeedMore}
-                    />
-                </Content>
-            </ScalingProvider>
+            <Content disableGutters={!isMobile}>
+                {showRecommendations && <Recommendations />}
+                <RecipesList
+                    me={me}
+                    onSearch={handleSearch}
+                    scope={scope}
+                    filter={query}
+                    recipes={recipes}
+                    isLoading={loading}
+                    isComplete={isComplete}
+                    onNeedMore={handleNeedMore}
+                />
+            </Content>
         </>
     );
 };
