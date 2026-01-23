@@ -27,19 +27,6 @@ export const ScalingProvider = ({ children }: PropsWithChildren) => {
 };
 
 /**
- * If a scaling context is already open, do nothing. Otherwise, create a new one
- * as if ScalingProvider had been called.
- */
-export const ReentrantScalingProvider = ({ children }: PropsWithChildren) => {
-    const ctx = useContext(SetScaleContext);
-    return ctx == null ? (
-        <ScalingProvider>{children}</ScalingProvider>
-    ) : (
-        <>{children}</>
-    );
-};
-
-/**
  * Returns the current context's scaling factor, or 1 (no scaling) if outside a
  * scaling context.
  */
