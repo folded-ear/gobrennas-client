@@ -226,6 +226,7 @@ const RecipeDetail: React.FC<Props> = ({
                                 recipe={recipe}
                                 section={it}
                                 loggedIn={loggedIn}
+                                isLibrary={isLibrary}
                             />
                         ))}
                 </ScalingProvider>
