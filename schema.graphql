@@ -5,6 +5,17 @@ schema {
     mutation: Mutation
 }
 
+"This directive allows results to be deferred during execution"
+directive @defer(
+    "Deferred behaviour is controlled by this argument"
+    if: Boolean! = true,
+    "A unique label that represents the fragment being deferred"
+    label: String
+) on FRAGMENT_SPREAD | INLINE_FRAGMENT
+
+"This directive disables error propagation when a non nullable field returns null for the given operation."
+directive @experimental_disableErrorPropagation on QUERY | MUTATION | SUBSCRIPTION
+
 "Indicates an Input Object is a OneOf Input Object."
 directive @oneOf on INPUT_OBJECT
 
@@ -122,23 +133,13 @@ type LabelsQuery {
 
 type LibraryMutation {
     "Create a new recipe in your library, from the passed info."
-    createRecipe(
-        cookThis: Boolean,
-        info: IngredientInfo!,
-        "DEPRECATED: use `profile.scratchFile`, and pass the filename in `info.photo`"
-        photo: Upload
-    ): Recipe!
+    createRecipe(cookThis: Boolean, info: IngredientInfo!): Recipe!
     """
 
     Create a new recipe in your library, from the passed info, which is based
     on the passed source recipe id.
     """
-    createRecipeFrom(
-        info: IngredientInfo!,
-        "DEPRECATED: use `profile.scratchFile`, and pass the filename in `info.photo`"
-        photo: Upload,
-        sourceRecipeId: ID!
-    ): Recipe!
+    createRecipeFrom(info: IngredientInfo!, sourceRecipeId: ID!): Recipe!
     "Delete a recipe from your library."
     deleteRecipe(id: ID!): Deletion!
     history(recipeId: ID!): RecipeHistoryMutation
@@ -157,17 +158,10 @@ type LibraryMutation {
         "Filename of a scratch upload."
         filename: String,
         focus: [Float!],
-        id: ID!,
-        "DEPRECATED: use `profile.scratchFile`, and pass the filename to `filename`"
-        photo: Upload
+        id: ID!
     ): Recipe!
     "Update a recipe in your library, from the passed info."
-    updateRecipe(
-        id: ID!,
-        info: IngredientInfo!,
-        "DEPRECATED: use `profile.scratchFile`, and pass the filename in `info.photo`"
-        photo: Upload
-    ): Recipe!
+    updateRecipe(id: ID!, info: IngredientInfo!): Recipe!
 }
 
 type LibraryQuery {
@@ -758,8 +752,6 @@ type TextractLine {
 }
 
 type TextractMutation {
-    "DEPRECATED: Uploads over GraphQL have CSRF issues. Use textract.createPreUploadedJob instead."
-    createJob(photo: Upload!): TextractJob!
     """
 
     Create a new job from a pre-uploaded file. Use the `profile.photoUpload`
@@ -881,13 +873,13 @@ enum SortDir {
     DESC
 }
 
-"The type of a cursor, an opaque string used for walking connections."
+"The type of a cursor, an opaque string used for walking connections"
 scalar Cursor
 
 "An RFC-3339 compliant Full Date Scalar"
 scalar Date
 
-"An RFC-3339 compliant DateTime Scalar"
+"A slightly refined version of RFC-3339 compliant DateTime Scalar"
 scalar DateTime
 
 "A 64-bit signed integer"
@@ -901,9 +893,6 @@ scalar NonNegativeInt
 
 "An Int scalar that must be a positive value"
 scalar PositiveInt
-
-"A file part in a multipart request"
-scalar Upload
 
 input IngredientInfo {
     calories: Int
