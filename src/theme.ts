@@ -138,6 +138,14 @@ export function useBfsTheme() {
                     }),
                 },
                 components: {
+                    MuiSvgIcon: {
+                        styleOverrides: {
+                            root: {
+                                width: "1.1em",
+                                height: "1.1em",
+                            },
+                        },
+                    },
                     MuiIconButton: {
                         defaultProps: {
                             size: "small",
