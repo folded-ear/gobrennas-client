@@ -10,6 +10,15 @@ const useStyles = makeStyles({
         display: "inline-flex",
         alignItems: "center",
     },
+    stacked: {
+        display: "inline-flex",
+        flexDirection: "column",
+        lineHeight: 1.25,
+    },
+    email: {
+        fontSize: "0.75em",
+        opacity: 0.7,
+    },
 });
 
 export interface UserProps
@@ -19,6 +28,7 @@ export interface UserProps
             "imageUrl" | "name"
         > {
     iconOnly?: boolean;
+    showEmail?: boolean;
 }
 
 const User: React.FC<UserProps> = ({
@@ -28,6 +38,7 @@ const User: React.FC<UserProps> = ({
     size,
     iconOnly = false,
     inline = false,
+    showEmail = false,
 }) => {
     const classes = useStyles();
     const avatar = (
@@ -41,6 +52,17 @@ const User: React.FC<UserProps> = ({
         </SizedAvatar>
     );
     if (inline) return avatar;
+    if (showEmail && !iconOnly) {
+        return (
+            <Box className={classes.root}>
+                {avatar}
+                <span className={classes.stacked}>
+                    <span>{name || email}</span>
+                    {name && <span className={classes.email}>{email}</span>}
+                </span>
+            </Box>
+        );
+    }
     return (
         <Box
             title={
