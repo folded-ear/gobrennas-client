@@ -63,7 +63,7 @@ function UserContent({
             alignItems="center"
         >
             <Grid item>
-                <User {...friend} />
+                <User {...friend} showEmail />
             </Grid>
             <Grid item>
                 {isAdministrator ? (
