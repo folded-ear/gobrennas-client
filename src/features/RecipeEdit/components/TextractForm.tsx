@@ -1,5 +1,10 @@
 import TextractFormAugment from "@/features/RecipeEdit/components/TextractFormAugment";
 import { DraftRecipe } from "@/global/types/types";
+import {
+    noAllCaps,
+    noAllCapsForProse,
+    noAllCapsForTitle,
+} from "@/util/no-all-caps";
 import { Button, ButtonGroup } from "@mui/material";
 import * as React from "react";
 
@@ -21,7 +26,9 @@ export const TextractForm: React.FC<TextractFormProps> = ({
                 return (
                     <ButtonGroup>
                         <Button
-                            onClick={() => updateDraft("name", lines[0])}
+                            onClick={() =>
+                                updateDraft("name", noAllCapsForTitle(lines[0]))
+                            }
                             disabled={disabled || lines.length > 1}
                         >
                             Set Title
@@ -30,10 +37,12 @@ export const TextractForm: React.FC<TextractFormProps> = ({
                             onClick={() =>
                                 onMultilinePaste(
                                     999999,
-                                    lines
-                                        .map((s) => s.trim())
-                                        .filter((s) => s.length)
-                                        .join("\n"),
+                                    noAllCaps(
+                                        lines
+                                            .map((s) => s.trim())
+                                            .filter((s) => s.length)
+                                            .join("\n"),
+                                    ),
                                 )
                             }
                             disabled={disabled}
@@ -47,7 +56,7 @@ export const TextractForm: React.FC<TextractFormProps> = ({
                                     (
                                         draft.directions +
                                         "\n\n" +
-                                        lines.join("\n")
+                                        noAllCapsForProse(lines.join("\n"))
                                     ).trim(),
                                 )
                             }
