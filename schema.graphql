@@ -23,10 +23,19 @@ interface AccessControlled {
     "The object's ACL, which includes its owner and any grants of access."
     acl: Acl!
     grants: [AccessControlEntry!]!
+    mine: Boolean!
+    notMine: Boolean!
+    ownedBy: User
     owner: User!
 }
 
 interface CorePlanItem {
+    """
+
+    The user explicitly assigned to this item, if any. A null assignee
+    means the item inherits its parent's, which bottoms out at the plan.
+    """
+    assignee: User
     childCount: NonNegativeInt!
     children: [PlanItem!]!
     descendantCount: NonNegativeInt!
@@ -41,11 +50,29 @@ interface Ingredient {
     name: String!
 }
 
+interface IngredientCollection {
+    directions: String
+    id: ID!
+    ingredients: [IngredientRef!]!
+    labels: [String!]
+    name: String!
+}
+
 interface Node {
     id: ID!
 }
 
 interface Owned {
+    "Is the owner of this object me (the current user)?"
+    mine: Boolean!
+    "Is the owner of this object not me (the current user)?"
+    notMine: Boolean!
+    """
+
+    Another user who owns this object. Always null if the current user is the
+    owner, always the same as `owner` otherwise.
+    """
+    ownedBy: User
     "The user who owns this object."
     owner: User!
 }
@@ -60,10 +87,14 @@ type AccessControlEntry {
 type Acl implements Owned {
     """
 
-    Users granted access, by the owner. This is conceptually map, so a given
-    user (the key) uniquely identifies their access level (the value).
+    Users granted access by the owner or an administrator. Conceptually,
+    this is a map, so a given user (the key) uniquely identifies their access
+    level (the value).
     """
     grants: [AccessControlEntry!]!
+    mine: Boolean!
+    notMine: Boolean!
+    ownedBy: User
     owner: User!
 }
 
@@ -152,11 +183,21 @@ type LibraryMutation {
     """
 
     Set the photo for a recipe in your library, without changing any other
-    info about the recipe. A photo may be set during create and/or update.
+    info about the recipe. A photo may be set during create and/or update. A
+    photo can be replaced, but not removed.
     """
     setRecipePhoto(
-        "Filename of a scratch upload."
+        """
+
+        Filename of a scratch upload. If null, nothing is changed, including
+        focus.
+        """
         filename: String,
+        """
+
+        The photo's focal point, as `[left, top]`. Ignored unless exactly
+        two elements are supplied.
+        """
         focus: [Float!],
         id: ID!
     ): Recipe!
@@ -218,6 +259,12 @@ type LibraryQuery {
     recognizeItem(
         """
 
+        Keep an explicitly selected ingredient while recognizing the surrounding text.
+        The range uses UTF-16 offsets and must contain that ingredient's name.
+        """
+        choice: RecognitionChoice,
+        """
+
         The position of the cursor in the raw string, used to make contextual
         suggestions. If not specified, the end of the raw string is assumed.
         """
@@ -248,17 +295,9 @@ type Mutation {
 type PageInfo {
     "The last cursor returned in this page's edges."
     endCursor: Cursor
-    """
-
-    Whether this connection has a next page, or null if included in the
-    result of a backward paging operation.
-    """
+    "Whether this connection has a next page."
     hasNextPage: Boolean!
-    """
-
-    Whether this connection has a previous page, or null if included in the
-    result of a forward paging operation.
-    """
+    "Whether this connection has a previous page."
     hasPreviousPage: Boolean!
     "The first cursor returned in this page's edges."
     startCursor: Cursor
@@ -338,7 +377,7 @@ type PantryQuery {
     Retrieve ingredients in bulk, regardless of type. Invalid IDs will be
     silently ignored, and no result returned for them. Duplicate IDs will only
     have a single result returned. The order of results is unspecified.
-    Identical to the query of the same name in 'pantry'.
+    Identical to the query of the same name in 'library'.
     """
     bulkIngredients(ids: [ID!]): [Ingredient!]!
     pantryItems(search: PantrySearch!): PantryItemConnection!
@@ -370,18 +409,31 @@ type PantryQuery {
         "Direction to sort the result, ascending by default."
         sortDir: SortDir = ASC
     ): PantryItemConnection!
+    """
+
+    Retrieve all pantry items which have been updated since the passed
+    cutoff (expressed in milliseconds since the UNIX epoch).
+    """
     updatedSince(cutoff: Long!): [PantryItem!]!
 }
 
 type Photo {
+    """
+
+    The photo's focal point, as a two-element `[left, top]` list, or null
+    if not set.
+    """
     focus: [Float!]
     url: String!
 }
 
 type Plan implements AccessControlled & CorePlanItem & Node & Owned {
     acl: Acl!
+    "A plan's assignee is always its owner."
+    assignee: User!
     bucketCount: NonNegativeInt!
-    buckets: [PlanBucket!]!
+    "The plan's buckets, in the requested order (by date if omitted)."
+    buckets(sort: PlanBucketSort! = DATE): [PlanBucket!]!
     childCount: NonNegativeInt!
     children: [PlanItem!]!
     """
@@ -394,8 +446,11 @@ type Plan implements AccessControlled & CorePlanItem & Node & Owned {
     descendants: [PlanItem!]!
     grants: [AccessControlEntry!]!
     id: ID!
+    mine: Boolean!
     name: String!
+    notMine: Boolean!
     notes: String
+    ownedBy: User
     "The plan's owner"
     owner: User!
     "A plan's plan is always itself."
@@ -419,6 +474,7 @@ type PlanBucket {
 "Represents a single item on a plan"
 type PlanItem implements CorePlanItem & Node {
     aggregate: PlanItem
+    assignee: User
     bucket: PlanBucket
     childCount: NonNegativeInt!
     children: [PlanItem!]!
@@ -466,10 +522,21 @@ type PlannerMutation {
     """
 
     Create a new item under the specified parent (which may be a plan, for
-    top-level items), after the specified peer item (null means 'at end'), and with
-    the specified name.
+    top-level items), after the specified peer item (null means 'first'), and
+    with the specified name.
     """
-    createItem(afterId: ID, name: String!, parentId: ID!): PlanItem!
+    createItem(
+        afterId: ID,
+        """
+
+        An explicitly selected ingredient and its range in name. Omitted or
+        null keeps automatic name recognition unchanged. A leading ! in name
+        still disables recognition, including an explicit choice.
+        """
+        choice: RecognitionChoice,
+        name: String!,
+        parentId: ID!
+    ): PlanItem!
     "Create a new empty plan, optionally duplicating the specified source plan."
     createPlan(name: String!, sourcePlanId: ID): Plan!
     "Delete a bucket from a plan."
@@ -482,6 +549,12 @@ type PlannerMutation {
     deletePlan(id: ID!): Deletion!
     "Create a new plan by duplicating the specified source plan."
     duplicatePlan(name: String!, sourcePlanId: ID!): Plan!
+    """
+
+    Move a bucket within its plan, after the specified bucket (null means
+    first). The plan's info is returned.
+    """
+    moveBucket(afterId: ID, bucketId: ID!, planId: ID!): Plan!
     """
 
     Move the given items under the given parent, in order, optionally after a
@@ -500,6 +573,13 @@ type PlannerMutation {
     reorderSubitems(itemIds: [ID!]!, parentId: ID!): PlanItem
     "Revokes the grant for a user w/in a plan, if one exists."
     revokeGrant(planId: ID!, userId: ID!): Plan!
+    """
+
+    Assign a plan item to a user, or clear its explicit assignment so that
+    it inherits from its parent. The user must have at least view access to the
+    item's plan.
+    """
+    setAssignee(id: ID!, userId: ID): PlanItem!
     "Set the plan's color (e.g., '#F57F17'), or reset it with a null or empty string."
     setColor(color: String, planId: ID!): Plan!
     "Set the access level granted to a user w/in a plan."
@@ -507,7 +587,7 @@ type PlannerMutation {
     """
 
     Sets the status of the given item. This will always return the updated
-    item, though it may immediately moved to the trash (in the background).
+    item, though it may immediately be moved to the trash (in the background).
     """
     setStatus(doneAt: DateTime, id: ID!, status: PlanItemStatus!): PlanItem!
     "Update a bucket w/in a plan, by setting or clearing its name and date."
@@ -519,7 +599,12 @@ type PlannerQuery {
     plan(id: ID!): Plan!
     planItem(id: ID!): PlanItem!
     planOrItem(id: ID!): CorePlanItem!
-    plans: [Plan!]!
+    """
+
+    Retrieve the plans with the given IDs, in the same order, or all plans
+    visible to the current user if omitted.
+    """
+    plans(ids: [ID!]): [Plan!]!
     """
 
     Retrieve all items on the given plan which have been updated since the
@@ -567,7 +652,7 @@ type Query {
     textract: TextractQuery!
 }
 
-type Recipe implements Ingredient & Node & Owned {
+type Recipe implements Ingredient & IngredientCollection & Node & Owned {
     calories: Int
     directions: String
     externalUrl: String
@@ -580,10 +665,13 @@ type Recipe implements Ingredient & Node & Owned {
     """
     ingredients(
         "Ingredient(s) to include. Missing/empty means \"all\"."
-        ingredients: [ID!]! = []
+        ingredients: [ID!]
     ): [IngredientRef!]!
     labels: [String!]
+    mine: Boolean!
     name: String!
+    notMine: Boolean!
+    ownedBy: User
     owner: User!
     photo: Photo
     """
@@ -614,7 +702,12 @@ type Recipe implements Ingredient & Node & Owned {
     of those subrecipes _are_ included.
     """
     subrecipes: [Recipe!]!
-    totalTime(unit: ChronoUnit = MINUTES): Int
+    """
+
+    Total time to make the recipe, in the requested unit, truncated to a
+    whole number.
+    """
+    totalTime(unit: ChronoUnit! = MINUTES): Int
     yield: Int
 }
 
@@ -646,6 +739,9 @@ A suggestion for what might come next at the cursor position, along with the
 target range of the raw string it would replace.
 """
 type RecognitionSuggestion {
+    "Optional disambiguating context; sections return their parent recipe name."
+    detail: String
+    kind: RecognitionKind!
     name: String!
     target: RecognizedRange!
 }
@@ -664,12 +760,21 @@ type RecognizedItem {
     position. If more than 'count' suggestions are available, the returned
     subset is unspecified, other than pantry items are preferred to recipes.
     """
-    suggestions(count: PositiveInt! = 10): [RecognitionSuggestion!]!
+    suggestions(
+        count: PositiveInt! = 10,
+        """
+
+        Opt in to candidates for a grouped picker: include owned sections and
+        keep distinct ingredient IDs even when names match. By default, exclude
+        owned sections and deduplicate by name for existing text-only clients.
+        """
+        grouped: Boolean! = false
+    ): [RecognitionSuggestion!]!
 }
 
 """
 
-A recognized quantity in the raw string. The type indicates which of the id
+A recognized range of the raw string. The type indicates which of the id
 or quantity fields will be non-null, if either.
 """
 type RecognizedRange {
@@ -701,7 +806,7 @@ type ScratchUpload {
     url: String!
 }
 
-type Section implements Node {
+type Section implements IngredientCollection & Node {
     directions: String
     id: ID!
     ingredients: [IngredientRef!]!
@@ -754,7 +859,7 @@ type TextractLine {
 type TextractMutation {
     """
 
-    Create a new job from a pre-uploaded file. Use the `profile.photoUpload`
+    Create a new job from a pre-uploaded file. Use the `profile.scratchFile`
     field to obtain a pre-signed upload URL, and pass its filename here when done.
     """
     createPreUploadedJob(filename: String!): TextractJob!
@@ -777,12 +882,21 @@ type User implements Node {
     email: String!
     id: ID!
     imageUrl: String
+    me: Boolean!
     name: String
+    notMe: Boolean!
+    """
+
+    Return a single preference. If a deviceKey is provided, that device's
+    value will be used. Otherwise, the user's global preference will be used, if
+    one exists. If not, the static default is returned.
+    """
+    preference(deviceKey: String, name: String!): UserPreference!
     """
 
     A value for every preference is returned. If a deviceKey is provided,
-    that device's values are preferred. Otherwise, the user's global preferences
-    are used, if they exists. If not, the static default is returned.
+    that device's values will be used. Otherwise, the user's global preferences
+    are used, if they exist. If not, the static default is returned.
     """
     preferences(deviceKey: String): [UserPreference!]!
     provider: String!
@@ -844,6 +958,19 @@ enum LibrarySearchScope {
     MINE
 }
 
+enum PlanBucketSort {
+    "Undated buckets first, then by date. Ties are broken by position."
+    DATE
+    """
+
+    Unnamed buckets first, then by name, ignoring case. Ties are broken
+    by position.
+    """
+    NAME
+    "The order buckets were created in, adjusted by any moves."
+    POSITION
+}
+
 enum PlanItemStatus {
     ACQUIRED
     COMPLETED
@@ -857,6 +984,12 @@ enum Rating {
     ONE_STAR
     THREE_STARS
     TWO_STARS
+}
+
+enum RecognitionKind {
+    PANTRY_ITEM
+    RECIPE
+    SECTION
 }
 
 enum RecognizedRangeType {
@@ -904,9 +1037,19 @@ input IngredientInfo {
     name: String!
     "Filename of a scratch upload to set as this recipe's photo."
     photo: String
+    """
+
+    The photo's focal point, as `[left, top]`. Ignored unless exactly two
+    elements are supplied.
+    """
     photoFocus: [Float!]
     sections: [SectionInfo!]
     storeOrder: Int
+    """
+
+    Total time to make the recipe, in milliseconds. Note that
+    `Recipe.totalTime` returns minutes by default.
+    """
     totalTime: Int
     type: String!
     yield: Int
@@ -944,8 +1087,15 @@ input LibrarySearch {
 }
 
 input MutatePlanTree {
+    """
+
+    Optional ID to move the plan items after w/in the parent. If null, they
+    will be placed first (i.e., after nothing).
+    """
     afterId: ID
+    "IDs of plan items to move."
     ids: [ID!]!
+    "ID of the item to move under (if not already under)."
     parentId: ID!
 }
 
@@ -979,6 +1129,12 @@ input PantrySearch {
     sortBy: String
     "Direction to sort the result, ascending by default."
     sortDir: SortDir = ASC
+}
+
+input RecognitionChoice {
+    end: NonNegativeInt!
+    id: ID!
+    start: NonNegativeInt!
 }
 
 input SectionInfo {
